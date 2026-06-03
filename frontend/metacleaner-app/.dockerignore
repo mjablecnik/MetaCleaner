@@ -1,0 +1,15 @@
+.git/
+node_modules/
+build/
+.svelte-kit/
+android/
+ios/
+storybook-static/
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
