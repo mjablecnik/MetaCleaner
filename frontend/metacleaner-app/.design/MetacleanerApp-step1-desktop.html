@@ -1,0 +1,580 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .dashed-border-anim
+      {
+        background-image: linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%);
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+        background-position: left top, right bottom, left bottom, right top;
+        animation: border-dance 1s infinite linear;
+      }
+
+      @keyframes border-dance
+      {
+        0%
+        {
+          background-position: left top, right bottom, left bottom, right top;
+        }
+
+        100%
+        {
+          background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
+        }
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 160px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background .15s, color .15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+
+      .lang-check
+      {
+        margin-left: auto;
+        color: #3b82f6;
+      }
+
+      .progress-bar
+      {
+        background: linear-gradient(90deg, #3b82f6, #22c55e);
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+
+      .tab-active
+      {
+        background: #3b82f6;
+        color: #fff;
+      }
+
+      .tab-inactive
+      {
+        background: transparent;
+        color: #94a3b8;
+      }
+
+      .file-row:hover
+      {
+        background: #1e293b;
+      }
+
+      @keyframes spin-slow
+      {
+        from
+        {
+          transform: rotate(0deg);
+        }
+
+        to
+        {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spin-slow
+      {
+        animation: spin-slow 1.5s linear infinite;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #progress-bar
+      {
+        width: 0%;
+      }
+
+      #userDropdownMenu
+      {
+        min-width: 200px;
+      }
+
+      #iu8qn
+      {
+        color: #ef4444;
+      }
+
+      #i7b63
+      {
+        color: #ef4444;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center min-h-[1024px]">
+    <!-- Navigation -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full max-w-[1100px] mx-auto px-6 py-6 flex justify-between items-center z-50">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
+          class="text-xl font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="langDropdown" class="relative inline-block"><button
+            onclick="toggleLangDropdown()"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
+              id="currentLangFlag">🇨🇿</span><span
+              id="currentLangLabel">CS</span><i id="langDropdownChevron"
+              class="fa-solid fa-chevron-down text-text-muted text-xs ml-1"></i></button>
+          <div id="langDropdownMenu" class="lang-dropdown-menu">
+            <div id="opt-cs" onclick="setLang('cs')" class="lang-option active">
+              <span>🇨🇿</span> Čeština <span id="check-cs"
+                class="lang-check"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-en" onclick="setLang('en')" class="lang-option">
+              <span>🇬🇧</span> English <span id="check-en"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-de" onclick="setLang('de')" class="lang-option">
+              <span>🇩🇪</span> Deutsch <span id="check-de"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-sk" onclick="setLang('sk')" class="lang-option">
+              <span>🇸🇰</span> Slovenčina <span id="check-sk"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+          </div>
+        </div>
+        <div id="userDropdown" class="relative inline-block"><button
+            onclick="toggleUserDropdown()"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
+            <div
+              class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
+              <i class="fa-solid fa-user text-brand-blue text-xs"></i></div>
+            <span class="hidden md:block">Jana Nováková</span><i
+              id="userDropdownChevron"
+              class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
+          </button>
+          <div id="userDropdownMenu" class="lang-dropdown-menu">
+            <div class="px-4 py-3 border-b border-gray-700">
+              <p class="text-xs text-text-muted">Přihlášen jako</p>
+              <p class="text-sm font-semibold text-white mt-0.5">
+                jana.novakova@email.cz</p>
+            </div>
+            <div onclick="" class="lang-option"><i
+                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
+            </div>
+            <div onclick="" class="lang-option" id="iu8qn"><i
+                class="fa-solid fa-right-from-bracket text-sm"
+                id="i7b63"></i><span>Odhlásit se</span></div>
+          </div>
+        </div>
+      </div>
+    </nav><!-- App Main -->
+    <main id="app-main"
+      class="w-full max-w-[1100px] mx-auto px-6 pb-24 flex flex-col gap-6">
+      <!-- Page Header -->
+      <div id="app-header" class="flex flex-col gap-1 mb-2">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-3xl font-bold text-white">Čištění metadat</h1>
+            <p class="text-text-muted text-sm mt-1">Nahrajte soubory a odstraňte
+              skrytá metadata lokálně na vašem zařízení.</p>
+          </div>
+        </div>
+      </div><!-- Main Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-[55%_43%] gap-6">
+        <!-- Left Column -->
+        <div class="flex flex-col gap-5">
+          <!-- Upload Zone -->
+          <div id="upload-zone-card"
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col gap-4 shadow-card">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-lg text-white">Nahrát soubory</h3>
+              <div class="flex gap-1.5"><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">JPG</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">PNG</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">HEIC</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">MP4</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">MOV</span>
+              </div>
+            </div><!-- Drop Zone -->
+            <div id="drop-zone"
+              onclick="document.getElementById('fileInput').click()"
+              class="dashed-border-anim rounded-xl bg-navy-main/50 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-navy-main/80 transition-colors py-12 relative">
+              <div
+                class="w-16 h-16 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-2xl shadow-glow-blue">
+                <i class="fa-solid fa-file-arrow-up"></i></div>
+              <div class="text-center">
+                <p class="font-semibold text-white mb-1">Přetáhněte soubory sem
+                </p>
+                <p class="text-xs text-text-muted">nebo klikněte pro výběr ze
+                  zařízení</p>
+              </div>
+              <div class="flex flex-wrap gap-2 justify-center mt-1"><span
+                  class="text-[11px] text-text-muted bg-navy-lighter px-3 py-1 rounded-full">Fotografie</span><span
+                  class="text-[11px] text-text-muted bg-navy-lighter px-3 py-1 rounded-full">Videa</span><span
+                  class="text-[11px] text-text-muted bg-navy-lighter px-3 py-1 rounded-full">Max
+                  500 MB / soubor</span></div><input type="file" id="fileInput"
+                multiple="" accept="image/*,video/*"
+                onchange="handleFiles(this.files)" class="hidden">
+            </div><!-- File List -->
+            <div id="file-list" class="flex flex-col gap-2 hidden">
+              <div class="flex items-center justify-between mb-1"><span
+                  class="text-sm font-semibold text-white">Soubory ke
+                  zpracování</span><button onclick="clearFiles()"
+                  class="text-xs text-text-muted hover:text-brand-red transition-colors"><i
+                    class="fa-solid fa-trash mr-1"></i>Vymazat vše</button>
+              </div>
+              <div id="file-items"
+                class="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
+              </div>
+            </div><!-- Options -->
+            <!-- Action Buttons -->
+            <div class="flex gap-3 mt-1"><button id="clean-btn"
+                onclick="startCleaning()"
+                disabled
+                class="flex-1 py-3.5 rounded-xl bg-gray-700 text-gray-500 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60"><i
+                  class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+              </button><button
+                class="px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center gap-2"><i
+                  class="fa-solid fa-sliders"></i> Možnosti
+              </button></div>
+          </div>
+        </div><!-- Right Column -->
+        <div class="flex flex-col gap-5">
+          <!-- Status / Progress Card -->
+          <div id="status-card"
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-lg text-white">Stav zpracování</h3>
+              <span id="status-badge"
+                class="text-xs font-bold px-3 py-1 rounded-full bg-navy-lighter text-text-muted uppercase tracking-wider">Čeká
+                na soubory</span>
+            </div><!-- Idle State -->
+            <div id="idle-state"
+              class="flex flex-col items-center justify-center py-8 gap-4">
+              <div
+                class="w-20 h-20 rounded-full bg-navy-lighter flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-4xl text-gray-700"></i>
+              </div>
+              <div class="text-center">
+                <p class="text-text-muted text-sm">Nahrajte soubory pro zahájení
+                  čištění metadat.</p>
+              </div>
+            </div><!-- Processing State (hidden by default) -->
+            <div id="processing-state" class="hidden flex-col gap-5">
+              <div class="flex flex-col items-center gap-4 py-4">
+                <div
+                  class="w-20 h-20 rounded-full bg-brand-blue/10 border-2 border-brand-blue/30 flex items-center justify-center relative">
+                  <i id="proc-icon"
+                    class="fa-solid fa-gear text-brand-blue text-3xl spin-slow"></i>
+                </div>
+                <div class="text-center">
+                  <p id="proc-label" class="font-semibold text-white text-sm">
+                    Zpracovávám soubory…</p>
+                  <p id="proc-sub" class="text-xs text-text-muted mt-1">
+                    Odstraňuji metadata</p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <div class="flex justify-between text-xs text-text-muted mb-1">
+                  <span>Postup</span><span id="progress-pct">0%</span></div>
+                <div class="h-2 rounded-full bg-navy-lighter overflow-hidden">
+                  <div id="progress-bar" class="progress-bar h-2"></div>
+                </div>
+              </div>
+              <div id="processing-files" class="flex flex-col gap-2"></div>
+            </div><!-- Done State (hidden by default) -->
+            <div id="done-state" class="hidden flex-col gap-4">
+              <div class="flex flex-col items-center gap-3 py-4">
+                <div
+                  class="w-20 h-20 rounded-full bg-brand-green/10 border-2 border-brand-green/30 flex items-center justify-center">
+                  <i
+                    class="fa-solid fa-circle-check text-brand-green text-4xl"></i>
+                </div>
+                <div class="text-center">
+                  <p class="font-bold text-white text-lg">Hotovo!</p>
+                  <p class="text-xs text-text-muted mt-1">Všechna metadata byla
+                    úspěšně odstraněna.</p>
+                </div>
+              </div>
+              <div id="done-stats" class="grid grid-cols-3 gap-3">
+                <div
+                  class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+                  <p id="stat-files" class="text-xl font-black text-white">0</p>
+                  <p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+                </div>
+                <div
+                  class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+                  <p id="stat-fields"
+                    class="text-xl font-black text-brand-green">0</p>
+                  <p class="text-[10px] text-text-muted mt-0.5">Polí odstraněno
+                  </p>
+                </div>
+                <div
+                  class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+                  <p id="stat-time" class="text-xl font-black text-brand-blue">
+                    0s</p>
+                  <p class="text-[10px] text-text-muted mt-0.5">Čas</p>
+                </div>
+              </div><button onclick="downloadAll()"
+                class="w-full py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-500 transition-all shadow-glow-green flex items-center justify-center gap-2"><i
+                  class="fa-solid fa-download"></i> Stáhnout vyčištěné soubory
+              </button><button onclick="resetApp()"
+                class="w-full py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"><i
+                  class="fa-solid fa-rotate-left"></i> Zpracovat další soubory
+              </button>
+            </div>
+          </div><!-- Metadata Preview Card -->
+        </div>
+      </div>
+    </main>
+    <script>
+      function toggleLangDropdown()
+      {
+        const menu = document.getElementById('langDropdownMenu');
+        const chevron = document.getElementById('langDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.style.transform = menu.classList.contains('open') ?
+          'rotate(180deg)' : '';
+      }
+
+      document.addEventListener('click', function(e)
+      {
+        const ud = document.getElementById('langDropdown');
+        if (ud && !ud.contains(e.target))
+        {
+          document.getElementById('langDropdownMenu').classList.remove(
+            'open');
+          document.getElementById('langDropdownChevron').style.transform =
+            '';
+        }
+      });
+
+      function toggleUserDropdown()
+      {
+        const menu = document.getElementById('userDropdownMenu');
+        const chevron = document.getElementById('userDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.style.transform = menu.classList.contains('open') ?
+          'rotate(180deg)' : '';
+      }
+
+      document.addEventListener('click', function(e)
+      {
+        const ud = document.getElementById('userDropdown');
+        if (ud && !ud.contains(e.target))
+        {
+          document.getElementById('userDropdownMenu').classList.remove(
+            'open');
+          document.getElementById('userDropdownChevron').style.transform =
+            '';
+        }
+      });
+
+      function setLang(lang)
+      {
+        // Update language settings
+        // Update UI elements
+        // Update current language flag and label
+        // Update dropdown menu
+      }
+
+      function toggleOption(button)
+      {
+        // Toggle option state
+        // Update UI elements
+      }
+
+      function handleFiles(files)
+      {
+        // Handle file selection
+        // Update file list
+        // Update status
+        updateCleanBtn(files && files.length > 0);
+      }
+
+      function clearFiles()
+      {
+        // Clear selected files
+        // Update file list
+        // Update status
+        updateCleanBtn(false);
+      }
+
+      function updateCleanBtn(hasFiles)
+      {
+        const btn = document.getElementById('clean-btn');
+        if (hasFiles) {
+          btn.disabled = false;
+          btn.classList.remove('bg-gray-700', 'text-gray-500', 'cursor-not-allowed', 'opacity-60');
+          btn.classList.add('bg-brand-green', 'text-white', 'hover:bg-green-500', 'shadow-glow-green', 'cursor-pointer');
+        } else {
+          btn.disabled = true;
+          btn.classList.add('bg-gray-700', 'text-gray-500', 'cursor-not-allowed', 'opacity-60');
+          btn.classList.remove('bg-brand-green', 'text-white', 'hover:bg-green-500', 'shadow-glow-green', 'cursor-pointer');
+        }
+      }
+
+      function startCleaning()
+      {
+        // Start cleaning process
+        // Update status
+        // Update progress bar
+        // Update processing state
+      }
+
+      function downloadAll()
+      {
+        // Download all cleaned files
+      }
+
+      function resetApp()
+      {
+        // Reset app state
+        // Update status
+        // Update file list
+      }
+
+      function switchTab(tab)
+      {
+        // Switch between before and after metadata
+        // Update UI elements
+      }
+    </script>
+  </body>
+
+</html>

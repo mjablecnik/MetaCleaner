@@ -1,0 +1,595 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 160px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background .15s, color .15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+
+      .lang-check
+      {
+        margin-left: auto;
+        color: #3b82f6;
+      }
+
+      .file-row
+      {
+        transition: background 0.15s;
+      }
+
+      .file-row:hover
+      {
+        background: #1e293b;
+      }
+
+      .progress-bar-fill
+      {
+        transition: width 0.6s ease;
+      }
+
+      @keyframes spin-slow
+      {
+        from
+        {
+          transform: rotate(0deg);
+        }
+
+        to
+        {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spin-slow
+      {
+        animation: spin-slow 2s linear infinite;
+      }
+
+      @keyframes pulse-ring
+      {
+
+        0%,
+        100%
+        {
+          opacity: .4;
+          transform: scale(1)
+        }
+
+        50%
+        {
+          opacity: .8;
+          transform: scale(1.08)
+        }
+      }
+
+      .pulse-ring
+      {
+        animation: pulse-ring 1.8s ease-in-out infinite;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #userDropdownMenu
+      {
+        min-width: 200px;
+      }
+
+      #iawqr
+      {
+        color: #ef4444;
+      }
+
+      #irn5t
+      {
+        color: #ef4444;
+      }
+
+      #overall-bar
+      {
+        width: 62%;
+      }
+
+      #i5fx6j
+      {
+        width: 38%;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center">
+    <!-- Navigation -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full max-w-[1100px] mx-auto px-6 py-5 flex justify-between items-center z-50">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
+          class="text-xl font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="langDropdown" class="relative inline-block"><button
+            onclick="toggleLangDropdown()"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
+              id="currentLangFlag">🇨🇿</span><span
+              id="currentLangLabel">CS</span><i id="langDropdownChevron"
+              class="fa-solid fa-chevron-down text-text-muted text-xs ml-1"></i></button>
+          <div id="langDropdownMenu" class="lang-dropdown-menu">
+            <div onclick="setLang('cs','🇨🇿','CS')" class="lang-option active">
+              <span>🇨🇿</span> Čeština <span id="check-cs"
+                class="lang-check"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div onclick="setLang('en','🇬🇧','EN')" class="lang-option">
+              <span>🇬🇧</span> English <span id="check-en"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div onclick="setLang('de','🇩🇪','DE')" class="lang-option">
+              <span>🇩🇪</span> Deutsch <span id="check-de"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div onclick="setLang('sk','🇸🇰','SK')" class="lang-option">
+              <span>🇸🇰</span> Slovenčina <span id="check-sk"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+          </div>
+        </div>
+        <div id="userDropdown" class="relative inline-block"><button
+            onclick="toggleUserDropdown()"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
+            <div
+              class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
+              <i class="fa-solid fa-user text-brand-blue text-xs"></i></div>
+            <span class="hidden md:block">Jana Nováková</span><i
+              id="userDropdownChevron"
+              class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
+          </button>
+          <div id="userDropdownMenu" class="lang-dropdown-menu">
+            <div class="px-4 py-3 border-b border-gray-700">
+              <p class="text-xs text-text-muted">Přihlášen jako</p>
+              <p class="text-sm font-semibold text-white mt-0.5">
+                jana.novakova@email.cz</p>
+            </div>
+            <div class="lang-option"><i
+                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
+            </div>
+            <div class="lang-option" id="iawqr"><i
+                class="fa-solid fa-right-from-bracket text-sm"
+                id="irn5t"></i><span>Odhlásit se</span></div>
+          </div>
+        </div>
+      </div>
+    </nav><!-- Main -->
+    <main id="app-main"
+      class="w-full max-w-[1100px] mx-auto px-6 pb-24 flex flex-col gap-6">
+      <!-- Page Header -->
+      <div id="app-header" class="flex flex-col gap-1 mb-2">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 class="text-3xl font-bold text-white">Čištění metadat</h1>
+            <p class="text-text-muted text-sm mt-1">Nahrajte soubory a odstraňte
+              skrytá metadata lokálně na vašem zařízení.</p>
+          </div>
+          <div
+            class="flex items-center gap-2 bg-navy-card border border-blue-800/50 rounded-xl px-4 py-2.5 self-start sm:self-auto">
+            <div class="w-2 h-2 rounded-full bg-brand-blue animate-pulse"></div>
+            <span class="text-xs font-semibold text-brand-blue">Probíhá
+              čištění...</span>
+          </div>
+        </div>
+      </div><!-- Main Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-[55%_43%] gap-6">
+        <!-- LEFT COLUMN -->
+        <div class="flex flex-col gap-5">
+          <!-- Upload Zone Card - Processing State -->
+          <div id="upload-zone-card"
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col gap-4 shadow-card">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-lg text-white">Soubory ke zpracování
+              </h3><span
+                class="text-xs font-bold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1.5"><i
+                  class="fa-solid fa-circle-notch spin-slow text-[10px]"></i>
+                Zpracovávám
+              </span>
+            </div><!-- Overall Progress -->
+            <div id="overall-progress"
+              class="bg-navy-main/60 rounded-xl p-4 border border-blue-900/30">
+              <div class="flex items-center justify-between mb-2"><span
+                  class="text-xs font-semibold text-text-muted">Celkový
+                  průběh</span><span id="overall-pct"
+                  class="text-xs font-bold text-brand-blue">62%</span></div>
+              <div
+                class="w-full h-2.5 bg-navy-lighter rounded-full overflow-hidden">
+                <div id="overall-bar"
+                  class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400 progress-bar-fill">
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-2"><span
+                  class="text-[11px] text-text-muted">2 z 4 souborů
+                  dokončeno</span><span class="text-[11px] text-text-muted">~14s
+                  zbývá</span></div>
+            </div><!-- File List with statuses -->
+            <div id="file-items"
+              class="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
+              <!-- File 1 - Done -->
+              <div
+                class="file-row flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/20 group cursor-default">
+                <div
+                  class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-image text-brand-green text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-white truncate">
+                    IMG_4821.jpg</p>
+                  <div class="flex items-center gap-2 mt-0.5"><span
+                      class="text-[11px] text-text-muted">3.2 MB</span><span
+                      class="w-1 h-1 rounded-full bg-gray-600"></span><span
+                      class="text-[11px] text-brand-green font-medium flex items-center gap-1"><i
+                        class="fa-solid fa-circle-check text-[9px]"></i> 12 polí
+                      odstraněno</span></div>
+                </div>
+                <div class="flex items-center gap-2"><span
+                    class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">JPG</span>
+                  <div
+                    class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
+                    <i
+                      class="fa-solid fa-check text-brand-green text-[10px]"></i>
+                  </div>
+                </div>
+              </div><!-- File 2 - Done (GPS) -->
+              <div
+                class="file-row flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/20 group cursor-default">
+                <div
+                  class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-image text-brand-green text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-white truncate">
+                    photo_holiday_2024.heic</p>
+                  <div class="flex items-center gap-2 mt-0.5"><span
+                      class="text-[11px] text-text-muted">8.7 MB</span><span
+                      class="w-1 h-1 rounded-full bg-gray-600"></span><span
+                      class="text-[11px] text-brand-green font-medium flex items-center gap-1"><i
+                        class="fa-solid fa-circle-check text-[9px]"></i> GPS +
+                      18 polí odstraněno</span></div>
+                </div>
+                <div class="flex items-center gap-2"><span
+                    class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">HEIC</span>
+                  <div
+                    class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
+                    <i
+                      class="fa-solid fa-check text-brand-green text-[10px]"></i>
+                  </div>
+                </div>
+              </div><!-- File 3 - In Progress -->
+              <div
+                class="file-row flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-blue/5 border border-brand-blue/30 group cursor-default">
+                <div
+                  class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-video text-brand-orange text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-white truncate">
+                    video_prague_walk.mp4</p>
+                  <div class="flex flex-col gap-1 mt-1">
+                    <div class="flex items-center justify-between"><span
+                        class="text-[11px] text-brand-blue font-medium flex items-center gap-1"><i
+                          class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
+                        Zpracovávám...</span><span
+                        class="text-[11px] text-brand-blue font-bold">38%</span>
+                    </div>
+                    <div
+                      class="w-full h-1.5 bg-navy-lighter rounded-full overflow-hidden">
+                      <div
+                        class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400 progress-bar-fill"
+                        id="i5fx6j"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2"><span
+                    class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">MP4</span><i
+                    class="fa-solid fa-circle-notch spin-slow text-brand-blue text-sm"></i>
+                </div>
+              </div><!-- File 4 - Waiting -->
+              <div
+                class="file-row flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-gray-800 group cursor-default opacity-50">
+                <div
+                  class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-image text-brand-blue text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-white truncate">
+                    screenshot_map.png</p>
+                  <div class="flex items-center gap-2 mt-0.5"><span
+                      class="text-[11px] text-text-muted">1.1 MB</span><span
+                      class="w-1 h-1 rounded-full bg-gray-600"></span><span
+                      class="text-[11px] text-text-muted flex items-center gap-1"><i
+                        class="fa-solid fa-clock text-[9px]"></i> Čeká ve
+                      frontě</span></div>
+                </div>
+                <div class="flex items-center gap-2"><span
+                    class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">PNG</span>
+                </div>
+              </div>
+            </div><!-- Action Buttons - disabled during processing -->
+            <div class="flex gap-3 mt-1"><button disabled=""
+                class="flex-1 py-3.5 rounded-xl bg-brand-green/40 text-white/50 font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2"><i
+                  class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+              </button><button
+                class="px-5 py-3.5 rounded-xl bg-brand-red/10 border border-brand-red/30 text-brand-red font-semibold text-sm hover:bg-brand-red/20 transition-all flex items-center gap-2"><i
+                  class="fa-solid fa-stop"></i> Zastavit
+              </button></div>
+          </div>
+        </div><!-- RIGHT COLUMN -->
+        <div class="flex flex-col gap-5">
+          <!-- Status Card - Processing -->
+          <div id="status-card"
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold text-lg text-white">Stav zpracování</h3>
+              <span
+                class="text-xs font-bold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1.5"><i
+                  class="fa-solid fa-circle-notch spin-slow text-[10px]"></i>
+                Probíhá
+              </span>
+            </div><!-- Animated Processing Visual -->
+            <div class="flex flex-col items-center justify-center py-4 gap-4">
+              <div class="relative flex items-center justify-center">
+                <div
+                  class="pulse-ring absolute w-24 h-24 rounded-full border-2 border-brand-blue/20">
+                </div>
+                <div
+                  class="w-20 h-20 rounded-full bg-brand-blue/10 border-2 border-brand-blue/40 flex items-center justify-center">
+                  <i
+                    class="fa-solid fa-shield-halved text-brand-blue text-4xl"></i>
+                </div>
+                <div
+                  class="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-brand-blue flex items-center justify-center">
+                  <i
+                    class="fa-solid fa-circle-notch spin-slow text-white text-[10px]"></i>
+                </div>
+              </div>
+              <div class="text-center">
+                <p class="font-bold text-white text-base">Probíhá čištění
+                  metadat</p>
+                <p class="text-text-muted text-xs mt-1">Zpracovávám soubor <span
+                    class="text-brand-blue font-semibold">video_prague_walk.mp4</span>
+                </p>
+              </div>
+            </div><!-- Live Stats -->
+            <div class="grid grid-cols-3 gap-3 w-full">
+              <div
+                class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+                <p class="text-xl font-black text-white">4</p>
+                <p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+              </div>
+              <div
+                class="bg-navy-main/60 rounded-xl p-3 text-center border border-brand-green/20">
+                <p class="text-xl font-black text-brand-green">30</p>
+                <p class="text-[10px] text-text-muted mt-0.5">Polí odstraněno
+                </p>
+              </div>
+              <div
+                class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+                <p class="text-xl font-black text-brand-blue">2<span
+                    class="text-sm font-semibold">/4</span></p>
+                <p class="text-[10px] text-text-muted mt-0.5">Hotovo</p>
+              </div>
+            </div><!-- Log / Activity -->
+            <div id="activity-log" class="flex flex-col gap-1">
+              <p
+                class="text-xs font-semibold text-text-muted mb-1 uppercase tracking-wider">
+                Průběžný log</p>
+              <div
+                class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 max-h-[160px] overflow-y-auto font-mono">
+                <div class="flex items-start gap-2"><span
+                    class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span><span
+                    class="text-[11px] text-brand-green">✓ IMG_4821.jpg — 12
+                    polí odstraněno (EXIF, XMP)</span></div>
+                <div class="flex items-start gap-2"><span
+                    class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:03</span><span
+                    class="text-[11px] text-brand-green">✓
+                    photo_holiday_2024.heic — GPS souřadnice + 18 polí
+                    odstraněno</span></div>
+                <div class="flex items-start gap-2"><span
+                    class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:05</span><span
+                    class="text-[11px] text-brand-blue flex items-center gap-1"><i
+                      class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
+                    video_prague_walk.mp4 — zpracovávám (38%)...</span></div>
+                <div class="flex items-start gap-2 opacity-40"><span
+                    class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">—</span><span
+                    class="text-[11px] text-text-muted">screenshot_map.png —
+                    čeká ve frontě</span></div>
+              </div>
+            </div><!-- Security Note -->
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      function toggleLangDropdown()
+      {
+        const menu = document.getElementById('langDropdownMenu');
+        const chevron = document.getElementById('langDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.style.transform = menu.classList.contains('open') ?
+          'rotate(180deg)' : '';
+      }
+
+      function setLang(code, flag, label)
+      {
+        document.getElementById('currentLangFlag').textContent = flag;
+        document.getElementById('currentLangLabel').textContent = label;
+        ['cs', 'en', 'de', 'sk'].forEach(l =>
+        {
+          const el = document.getElementById('check-' + l);
+          if (el) el.classList.add('hidden');
+        });
+        const active = document.getElementById('check-' + code);
+        if (active) active.classList.remove('hidden');
+        document.getElementById('langDropdownMenu').classList.remove('open');
+      }
+
+      function toggleUserDropdown()
+      {
+        const menu = document.getElementById('userDropdownMenu');
+        const chevron = document.getElementById('userDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.style.transform = menu.classList.contains('open') ?
+          'rotate(180deg)' : '';
+      }
+      document.addEventListener('click', function(e)
+      {
+        if (!document.getElementById('langDropdown').contains(e.target))
+        {
+          document.getElementById('langDropdownMenu').classList.remove(
+            'open');
+        }
+        if (!document.getElementById('userDropdown').contains(e.target))
+        {
+          document.getElementById('userDropdownMenu').classList.remove(
+            'open');
+        }
+      });
+
+      // Animate progress bar
+      let pct = 62;
+      const bar = document.getElementById('overall-bar');
+      const pctLabel = document.getElementById('overall-pct');
+      const interval = setInterval(() =>
+      {
+        if (pct >= 75)
+        {
+          clearInterval(interval);
+          return;
+        }
+        pct += 0.5;
+        bar.style.width = pct + '%';
+        pctLabel.textContent = Math.round(pct) + '%';
+      }, 300);
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,571 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 160px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background .15s, color .15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+
+      @keyframes fadeInUp
+      {
+        from
+        {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to
+        {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in-up
+      {
+        animation: fadeInUp 0.5s ease forwards;
+      }
+
+      .delay-1
+      {
+        animation-delay: 0.1s;
+        opacity: 0;
+      }
+
+      .delay-2
+      {
+        animation-delay: 0.2s;
+        opacity: 0;
+      }
+
+      .delay-3
+      {
+        animation-delay: 0.3s;
+        opacity: 0;
+      }
+
+      .report-row
+      {
+        transition: background 0.15s;
+      }
+
+      .report-row:hover
+      {
+        background: rgba(30, 41, 59, 0.5);
+      }
+
+      .filter-btn
+      {
+        transition: all 0.15s;
+      }
+
+      .filter-btn.active
+      {
+        background: #3b82f6;
+        color: #fff;
+        border-color: #3b82f6;
+      }
+
+      .sort-icon
+      {
+        cursor: pointer;
+        transition: color 0.15s;
+      }
+
+      .sort-icon:hover
+      {
+        color: #fff;
+      }
+
+      .toast
+      {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        z-index: 999;
+        background: #111d33;
+        border: 1px solid #22c55e;
+        border-radius: 12px;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .toast.show
+      {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #userDropdownMenu
+      {
+        min-width: 200px;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center">
+    <!-- NAV -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full max-w-[1100px] mx-auto px-6 py-5 flex justify-between items-center z-50">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
+          class="text-xl font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-3"><a href="#"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-text-muted hover:text-white hover:bg-gray-800 transition-colors"><i
+            class="fa-solid fa-arrow-left text-xs"></i><span
+            class="hidden sm:inline">Zpět na čištění</span></a>
+        <div class="relative inline-block"><button
+            onclick="toggleUserDropdown()"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
+            <div
+              class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
+              <i class="fa-solid fa-user text-brand-blue text-xs"></i></div>
+            <span class="hidden md:block">Jana Nováková</span><i
+              class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
+          </button>
+          <div id="userDropdownMenu" class="lang-dropdown-menu">
+            <div class="px-4 py-3 border-b border-gray-700">
+              <p class="text-xs text-text-muted">Přihlášen jako</p>
+              <p class="text-sm font-semibold text-white mt-0.5">
+                jana.novakova@email.cz</p>
+            </div>
+            <div class="lang-option"><i
+                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
+            </div>
+            <div class="lang-option"><i
+                class="fa-solid fa-right-from-bracket text-sm"></i><span>Odhlásit
+                se</span></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main id="reports-main"
+      class="w-full max-w-[1100px] mx-auto px-6 pb-24 flex flex-col gap-6">
+      <!-- Page Header -->
+      <div id="page-header"
+        class="fade-in-up flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-14 h-14 rounded-2xl bg-brand-blue/10 border-2 border-brand-blue/40 flex items-center justify-center">
+            <i
+              class="fa-solid fa-clock-rotate-left text-brand-blue text-3xl"></i>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold text-white">Historie reportů</h1>
+            <p class="text-text-muted text-sm mt-1">Log všech čistících operací
+              · 12 reportů celkem</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 self-start sm:self-auto"><button
+            class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-400 transition-all shadow-glow-green"><i
+              class="fa-solid fa-plus"></i><span>Nové čištění</span></button>
+        </div>
+      </div><!-- Summary Stats -->
+      <div id="log-stats"
+        class="fade-in-up delay-1 grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
+          <div
+            class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center mb-2">
+            <i class="fa-solid fa-file-lines text-brand-blue text-base"></i>
+          </div>
+          <p class="text-2xl font-black text-white">12</p>
+          <p class="text-xs text-text-muted">Celkem reportů</p>
+        </div>
+        <div
+          class="bg-navy-card rounded-2xl border border-brand-green/20 p-5 shadow-card flex flex-col gap-1">
+          <div
+            class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center mb-2">
+            <i class="fa-solid fa-eraser text-brand-green text-base"></i></div>
+          <p class="text-2xl font-black text-brand-green">1 248</p>
+          <p class="text-xs text-text-muted">Polí metadat odstraněno</p>
+        </div>
+        <div
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
+          <div
+            class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-2">
+            <i
+              class="fa-solid fa-file-circle-check text-brand-orange text-base"></i>
+          </div>
+          <p class="text-2xl font-black text-brand-orange">47</p>
+          <p class="text-xs text-text-muted">Souborů zpracováno</p>
+        </div>
+        <div
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
+          <div
+            class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center mb-2">
+            <i class="fa-solid fa-location-dot text-brand-red text-base"></i>
+          </div>
+          <p class="text-2xl font-black text-brand-red">31</p>
+          <p class="text-xs text-text-muted">GPS lokací odstraněno</p>
+        </div>
+      </div><!-- Filters & Search -->
+      <div id="filters-bar"
+        class="fade-in-up delay-2 bg-navy-card rounded-2xl border border-gray-800 p-4 shadow-card">
+        <div
+          class="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+          <div class="flex items-center gap-2 flex-wrap"><span
+              class="text-xs text-text-muted font-semibold uppercase tracking-wider mr-1">Filtr:</span><button
+              onclick="setFilter(this,'all')"
+              class="filter-btn active text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted">Vše</button><button
+              onclick="setFilter(this,'success')"
+              class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"><i
+                class="fa-solid fa-circle-check text-brand-green mr-1"></i>Úspěšné
+            </button><button onclick="setFilter(this,'gps')"
+              class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"><i
+                class="fa-solid fa-location-dot text-brand-red mr-1"></i>Obsahovalo
+              GPS
+            </button><button onclick="setFilter(this,'image')"
+              class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"><i
+                class="fa-solid fa-image text-brand-blue mr-1"></i>Fotografie
+            </button><button onclick="setFilter(this,'video')"
+              class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"><i
+                class="fa-solid fa-video text-brand-orange mr-1"></i>Video
+            </button></div>
+          <div class="relative w-full md:w-64"><i
+              class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"></i><input
+              id="search-input" oninput="filterReports()" type="text"
+              placeholder="Hledat report..."
+              class="w-full pl-8 pr-4 py-2 rounded-lg bg-navy-main border border-gray-700 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-blue transition-colors">
+          </div>
+        </div>
+      </div><!-- Reports Table -->
+      <div id="reports-table"
+        class="fade-in-up delay-3 bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
+        <!-- Table Header -->
+        <div
+          class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+          <h3 class="font-semibold text-base text-white">Seznam reportů</h3>
+          <div class="flex items-center gap-2"><span id="result-count"
+              class="text-xs text-text-muted">Zobrazeno 12 z 12</span></div>
+        </div><!-- Column Headers -->
+        <div
+          class="grid grid-cols-12 gap-2 px-6 py-3 border-b border-gray-800/60 bg-navy-main/40">
+          <div
+            class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+            ID</div>
+          <div
+            class="col-span-3 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+            Datum <i class="fa-solid fa-sort sort-icon text-gray-600"></i></div>
+          <div
+            class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+            Soubory <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
+          </div>
+          <div
+            class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+            Pole <i class="fa-solid fa-sort sort-icon text-gray-600"></i></div>
+          <div
+            class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+            Typy</div>
+          <div
+            class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+            Status</div>
+          <div
+            class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold text-right">
+            Akce</div>
+        </div><!-- Table Body -->
+        <div id="reports-list">
+          <!-- Row 1 -->
+          <div data-type="image" data-gps="true"
+            class="report-row grid grid-cols-12 gap-2 px-6 py-4 border-b border-gray-800/40 items-center">
+            <div class="col-span-1"><span
+                class="text-[10px] font-mono text-text-muted">#A1</span></div>
+            <div class="col-span-3">
+              <p class="text-sm font-semibold text-white">2. 6. 2025</p>
+              <p class="text-[10px] text-text-muted">10:22 · 28s</p>
+            </div>
+            <div class="col-span-2 flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
+                <i
+                  class="fa-solid fa-file-lines text-brand-green text-[10px]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-white">4 soubory</p>
+                <p class="text-[10px] text-text-muted">JPG, HEIC, MP4</p>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <p class="text-sm font-bold text-white">87</p>
+              <p class="text-[10px] text-text-muted">polí odstraněno</p>
+            </div>
+            <div class="col-span-2 flex flex-wrap gap-1"><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-red/10 border border-brand-red/20 text-brand-red font-semibold">GPS</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-orange/10 border border-brand-orange/20 text-brand-orange font-semibold">EXIF</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-blue/10 border border-brand-blue/20 text-brand-blue font-semibold">XMP</span>
+            </div>
+            <div class="col-span-1">
+              <div class="flex items-center gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-brand-green flex-shrink-0">
+                </div><span
+                  class="text-[10px] text-brand-green font-semibold hidden lg:block">OK</span>
+              </div>
+            </div>
+            <div class="col-span-1 flex items-center justify-end gap-1"><button
+                onclick="viewReport()" title="Zobrazit report"
+                class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center hover:bg-brand-blue/20 transition-colors"><i
+                  class="fa-solid fa-eye text-brand-blue text-[10px]"></i></button><button
+                onclick="downloadReport('MCR-2025-0602-A1')"
+                title="Stáhnout PDF"
+                class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center hover:bg-brand-green/20 transition-colors"><i
+                  class="fa-solid fa-download text-brand-green text-[10px]"></i></button>
+            </div>
+          </div><!-- Row 2 -->
+          <div data-type="image" data-gps="false"
+            class="report-row grid grid-cols-12 gap-2 px-6 py-4 border-b border-gray-800/40 items-center">
+            <div class="col-span-1"><span
+                class="text-[10px] font-mono text-text-muted">#B2</span></div>
+            <div class="col-span-3">
+              <p class="text-sm font-semibold text-white">29. 5. 2025</p>
+              <p class="text-[10px] text-text-muted">14:05 · 12s</p>
+            </div>
+            <div class="col-span-2 flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
+                <i
+                  class="fa-solid fa-file-lines text-brand-blue text-[10px]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-white">2 soubory</p>
+                <p class="text-[10px] text-text-muted">PNG, WEBP</p>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <p class="text-sm font-bold text-white">34</p>
+              <p class="text-[10px] text-text-muted">polí odstraněno</p>
+            </div>
+            <div class="col-span-2 flex flex-wrap gap-1"><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-orange/10 border border-brand-orange/20 text-brand-orange font-semibold">EXIF</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-blue/10 border border-brand-blue/20 text-brand-blue font-semibold">XMP</span>
+            </div>
+            <div class="col-span-1">
+              <div class="flex items-center gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-brand-green flex-shrink-0">
+                </div><span
+                  class="text-[10px] text-brand-green font-semibold hidden lg:block">OK</span>
+              </div>
+            </div>
+            <div class="col-span-1 flex items-center justify-end gap-1"><button
+                onclick="viewReport()"
+                class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center hover:bg-brand-blue/20 transition-colors"><i
+                  class="fa-solid fa-eye text-brand-blue text-[10px]"></i></button><button
+                onclick="downloadReport('MCR-2025-0529-B2')"
+                class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center hover:bg-brand-green/20 transition-colors"><i
+                  class="fa-solid fa-download text-brand-green text-[10px]"></i></button>
+            </div>
+          </div><!-- Row 3 -->
+          <div data-type="video" data-gps="true"
+            class="report-row grid grid-cols-12 gap-2 px-6 py-4 border-b border-gray-800/40 items-center">
+            <div class="col-span-1"><span
+                class="text-[10px] font-mono text-text-muted">#C3</span></div>
+            <div class="col-span-3">
+              <p class="text-sm font-semibold text-white">25. 5. 2025</p>
+              <p class="text-[10px] text-text-muted">09:17 · 1m 42s</p>
+            </div>
+            <div class="col-span-2 flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
+                <i
+                  class="fa-solid fa-file-lines text-brand-orange text-[10px]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-white">1 soubor</p>
+                <p class="text-[10px] text-text-muted">MP4</p>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <p class="text-sm font-bold text-brand-orange">156</p>
+              <p class="text-[10px] text-text-muted">polí odstraněno</p>
+            </div>
+            <div class="col-span-2 flex flex-wrap gap-1"><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-red/10 border border-brand-red/20 text-brand-red font-semibold">GPS</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-orange/10 border border-brand-orange/20 text-brand-orange font-semibold">EXIF</span>
+            </div>
+            <div class="col-span-1">
+              <div class="flex items-center gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-brand-green flex-shrink-0">
+                </div><span
+                  class="text-[10px] text-brand-green font-semibold hidden lg:block">OK</span>
+              </div>
+            </div>
+            <div class="col-span-1 flex items-center justify-end gap-1"><button
+                onclick="viewReport()"
+                class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center hover:bg-brand-blue/20 transition-colors"><i
+                  class="fa-solid fa-eye text-brand-blue text-[10px]"></i></button><button
+                onclick="downloadReport('MCR-2025-0525-C3')"
+                class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center hover:bg-brand-green/20 transition-colors"><i
+                  class="fa-solid fa-download text-brand-green text-[10px]"></i></button>
+            </div>
+          </div><!-- Row 4 -->
+          <div data-type="image" data-gps="true"
+            class="report-row grid grid-cols-12 gap-2 px-6 py-4 border-b border-gray-800/40 items-center">
+            <div class="col-span-1"><span
+                class="text-[10px] font-mono text-text-muted">#D4</span></div>
+            <div class="col-span-3">
+              <p class="text-sm font-semibold text-white">20. 5. 2025</p>
+              <p class="text-[10px] text-text-muted">16:44 · 55s</p>
+            </div>
+            <div class="col-span-2 flex items-center gap-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
+                <i
+                  class="fa-solid fa-file-lines text-brand-green text-[10px]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-white">7 souborů</p>
+                <p class="text-[10px] text-text-muted">JPG, HEIC</p>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <p class="text-sm font-bold text-white">203</p>
+              <p class="text-[10px] text-text-muted">polí odstraněno</p>
+            </div>
+            <div class="col-span-2 flex flex-wrap gap-1"><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-red/10 border border-brand-red/20 text-brand-red font-semibold">GPS</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-orange/10 border border-brand-orange/20 text-brand-orange font-semibold">EXIF</span><span
+                class="text-[9px] px-1.5 py-0.5 rounded bg-brand-blue/10 border border-brand-blue/20 text-brand-blue font-semibold">XMP</span>
+            </div>
+            <div class="col-span-1">
+              <div class="flex items-center gap-1.5">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+
+</html>

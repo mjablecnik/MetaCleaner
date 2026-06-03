@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+                        brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+                        text: { main: '#ffffff', muted: '#94a3b8' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    boxShadow: {
+                        'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+                        'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+                        'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; padding: 0; background-color: #0a1628; color: #fff; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { display: none; }
+        .dashed-border-anim {
+            background-image: linear-gradient(90deg, #334155 50%, transparent 50%), linear-gradient(90deg, #334155 50%, transparent 50%), linear-gradient(0deg, #334155 50%, transparent 50%), linear-gradient(0deg, #334155 50%, transparent 50%);
+            background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+            background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+            background-position: left top, right bottom, left bottom, right top;
+            animation: border-dance 1s infinite linear;
+        }
+        @keyframes border-dance {
+            0% { background-position: left top, right bottom, left bottom, right top; }
+            100% { background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px; }
+        }
+        .lang-dropdown-menu { display: none; position: absolute; right: 0; top: calc(100% + 8px); background: #111d33; border: 1px solid #374151; border-radius: 10px; min-width: 160px; z-index: 200; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        .lang-dropdown-menu.open { display: block; }
+        .lang-option { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; font-size: 13px; font-weight: 500; color: #94a3b8; transition: background .15s, color .15s; }
+        .lang-option:hover { background: #1e293b; color: #fff; }
+        .lang-option.active { color: #fff; background: #1e293b; }
+        .lang-check { margin-left: auto; color: #3b82f6; }
+        .file-row { transition: background 0.15s; }
+        .accordion-content { display: none; }
+        .accordion-content.open { display: block; }
+        #i4n4bb { width: 92%; }
+        #i3r0qc { width: 68%; }
+        #im0hzd { width: 48%; }
+        #ii3fru { width: 22%; }
+        #iai958 { filter: drop-shadow(0 0 6px rgba(239,68,68,0.6)); }
+    </style>
+</head>
+<body class="bg-navy-main min-w-0">
+
+<!-- Top Nav -->
+<nav id="navbar" class="w-full px-4 py-4 flex justify-between items-center sticky top-0 z-50 bg-navy-main border-b border-gray-800/60">
+    <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+            <i class="fa-solid fa-shield-halved text-base"></i>
+        </div>
+        <span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <div id="langDropdown" class="relative inline-block">
+            <button onclick="toggleLangDropdown()" class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white">
+                <span id="currentLangFlag">🇨🇿</span><span id="currentLangLabel">CS</span><i class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
+            </button>
+            <div id="langDropdownMenu" class="lang-dropdown-menu">
+                <div onclick="setLang('cs','🇨🇿','CS')" class="lang-option active"><span>🇨🇿</span> Čeština <span id="check-cs" class="lang-check"><i class="fa-solid fa-check text-xs"></i></span></div>
+                <div onclick="setLang('en','🇬🇧','EN')" class="lang-option"><span>🇬🇧</span> English <span id="check-en" class="lang-check hidden"><i class="fa-solid fa-check text-xs"></i></span></div>
+                <div onclick="setLang('de','🇩🇪','DE')" class="lang-option"><span>🇩🇪</span> Deutsch <span id="check-de" class="lang-check hidden"><i class="fa-solid fa-check text-xs"></i></span></div>
+                <div onclick="setLang('sk','🇸🇰','SK')" class="lang-option"><span>🇸🇰</span> Slovenčina <span id="check-sk" class="lang-check hidden"><i class="fa-solid fa-check text-xs"></i></span></div>
+            </div>
+        </div>
+        <div id="userDropdown" class="relative inline-block">
+            <button onclick="toggleUserDropdown()" class="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-navy-lighter border border-gray-700">
+                <div class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
+                    <i class="fa-solid fa-user text-brand-blue text-xs"></i>
+                </div>
+                <i id="userDropdownChevron" class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
+            </button>
+            <div id="userDropdownMenu" class="lang-dropdown-menu" style="min-width:200px">
+                <div class="px-4 py-3 border-b border-gray-700">
+                    <p class="text-xs text-text-muted">Přihlášen jako</p>
+                    <p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+                </div>
+                <div class="lang-option"><i class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span></div>
+                <div class="lang-option" style="color:rgb(239,68,68)"><i class="fa-solid fa-right-from-bracket text-sm" style="color:rgb(239,68,68)"></i><span>Odhlásit se</span></div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main -->
+<main id="app-main" class="w-full px-4 pb-28 flex flex-col gap-4 mt-4">
+
+    <!-- Page Header -->
+    <div id="app-header" class="flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white">Čištění metadat</h1>
+                <p class="text-text-muted text-xs mt-1">Nahrajte soubory a odstraňte skrytá metadata lokálně.</p>
+            </div>
+            <div class="flex items-center gap-1.5 bg-navy-card border border-gray-700 rounded-xl px-3 py-2">
+                <div class="w-2 h-2 rounded-full bg-brand-orange animate-pulse"></div>
+                <span class="text-[10px] font-semibold text-text-muted">Připraveno</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Banner (collapsed accordion) -->
+    <div id="risk-banner" class="bg-navy-card rounded-2xl border border-brand-red/30 shadow-card overflow-hidden">
+        <button onclick="toggleAccordion('risk-body','risk-chevron')" class="w-full flex items-center justify-between px-4 py-3.5">
+            <div class="flex items-center gap-3">
+                <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                    <svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" stroke-width="3"></circle>
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#ef4444" stroke-width="3.5" stroke-dasharray="72 28" stroke-linecap="round" id="iai958"></circle>
+                    </svg>
+                    <span class="text-sm font-black text-brand-red z-10">72</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-0.5">
+                        <span class="text-sm font-bold text-white">Risk Scanner</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse inline-block"></span>Vysoké riziko</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 rounded bg-brand-red/15 text-brand-red text-[9px] font-bold border border-brand-red/25">GPS</span>
+                        <span class="px-1.5 py-0.5 rounded bg-brand-orange/15 text-brand-orange text-[9px] font-bold border border-brand-orange/25">Identita</span>
+                        <span class="px-1.5 py-0.5 rounded bg-brand-orange/15 text-brand-orange text-[9px] font-bold border border-brand-orange/25">Zařízení</span>
+                    </div>
+                </div>
+            </div>
+            <i id="risk-chevron" class="fa-solid fa-chevron-down text-text-muted text-sm transition-transform"></i>
+        </button>
+        <div id="risk-body" class="accordion-content px-4 pb-4 flex flex-col gap-4">
+            <p class="text-xs text-text-muted leading-relaxed">Vaše soubory obsahují citlivá metadata, která mohou odhalit vaši polohu, identitu a zařízení.</p>
+            <!-- Risk Bars -->
+            <div class="flex flex-col gap-3">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-text-muted">Analýza rizik</p>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between text-xs"><span class="flex items-center gap-1.5 text-white font-medium"><i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i>GPS souřadnice</span><span class="text-brand-red font-bold">Kritické</span></div>
+                    <div class="w-full bg-navy-lighter rounded-full h-2"><div class="h-2 rounded-full bg-gradient-to-r from-brand-red to-red-400" id="i4n4bb"></div></div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between text-xs"><span class="flex items-center gap-1.5 text-white font-medium"><i class="fa-solid fa-mobile-screen text-brand-orange text-[10px]"></i>Identita zařízení</span><span class="text-brand-orange font-bold">Vysoké</span></div>
+                    <div class="w-full bg-navy-lighter rounded-full h-2"><div class="h-2 rounded-full bg-brand-orange" id="i3r0qc"></div></div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between text-xs"><span class="flex items-center gap-1.5 text-white font-medium"><i class="fa-solid fa-user text-brand-blue text-[10px]"></i>Osobní údaje</span><span class="text-brand-orange font-bold">Střední</span></div>
+                    <div class="w-full bg-navy-lighter rounded-full h-2"><div class="h-2 rounded-full bg-gradient-to-r from-brand-orange to-yellow-400" id="im0hzd"></div></div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between text-xs"><span class="flex items-center gap-1.5 text-white font-medium"><i class="fa-solid fa-clock text-text-muted text-[10px]"></i>Časové razítko</span><span class="text-text-muted font-bold">Nízké</span></div>
+                    <div class="w-full bg-navy-lighter rounded-full h-2"><div class="h-2 rounded-full bg-gray-500" id="ii3fru"></div></div>
+                </div>
+            </div>
+            <!-- Before/After -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-red/25" style="background:rgba(239,68,68,0.06)">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-brand-red">Nyní</span>
+                    <span class="text-2xl font-black text-brand-red">72</span>
+                    <span class="text-[10px] text-text-muted">Risk Score</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-green/25" style="background:rgba(34,197,94,0.06)">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-brand-green">Po čištění</span>
+                    <span class="text-2xl font-black text-brand-green">100</span>
+                    <span class="text-[10px] text-text-muted">Clean Score</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Zone Card -->
+    <div id="upload-zone-card" class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex flex-col gap-4 shadow-card">
+        <div class="flex items-center justify-between">
+            <h3 class="font-semibold text-base text-white">Nahrát soubory</h3>
+            <div class="flex gap-1 flex-wrap">
+                <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">JPG</span>
+                <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">PNG</span>
+                <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">HEIC</span>
+                <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">MP4</span>
+                <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">MOV</span>
+            </div>
+        </div>
+        <!-- Drop Zone -->
+        <div id="drop-zone" onclick="document.getElementById('fileInput').click()" class="dashed-border-anim rounded-xl flex flex-col items-center justify-center gap-2.5 cursor-pointer py-5" style="background:rgba(10,22,40,0.5)">
+            <div class="w-10 h-10 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-lg shadow-glow-blue">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+            <p class="text-xs text-text-muted">Přidat další soubory</p>
+            <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
+        </div>
+
+        <!-- File List -->
+        <div id="file-list" class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-white">Soubory <span class="text-text-muted font-normal">(4)</span></span>
+                <button class="text-xs text-text-muted flex items-center gap-1 py-1"><i class="fa-solid fa-trash text-[10px]"></i>Vymazat vše</button>
+            </div>
+            <div id="file-items" class="flex flex-col gap-2">
+                <!-- File 1 -->
+                <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl border border-gray-800" style="background:rgba(10,22,40,0.6)">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-blue/20" style="background:rgba(59,130,246,0.1)">
+                        <i class="fa-solid fa-image text-brand-blue text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">IMG_4821.jpg</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-[11px] text-text-muted">3.2 MB</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                            <span class="text-[11px] text-brand-orange font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[9px]"></i>12 polí</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">JPG</span>
+                        <button class="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-brand-red transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+                </div>
+                <!-- File 2 - GPS -->
+                <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl border border-red-900/30" style="background:rgba(10,22,40,0.6)">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-red/20" style="background:rgba(239,68,68,0.1)">
+                        <i class="fa-solid fa-image text-brand-red text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">photo_holiday_2024.heic</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-[11px] text-text-muted">8.7 MB</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                            <span class="text-[11px] text-brand-red font-medium flex items-center gap-1"><i class="fa-solid fa-location-dot text-[9px]"></i>GPS nalezeno</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">HEIC</span>
+                        <button class="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-brand-red transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+                </div>
+                <!-- File 3 - Video -->
+                <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl border border-gray-800" style="background:rgba(10,22,40,0.6)">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-orange/20" style="background:rgba(249,115,22,0.1)">
+                        <i class="fa-solid fa-video text-brand-orange text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">video_prague_walk.mp4</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-[11px] text-text-muted">142.5 MB</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                            <span class="text-[11px] text-brand-orange font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[9px]"></i>8 polí</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">MP4</span>
+                        <button class="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-brand-red transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+                </div>
+                <!-- File 4 - PNG -->
+                <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl border border-gray-800" style="background:rgba(10,22,40,0.6)">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-blue/20" style="background:rgba(59,130,246,0.1)">
+                        <i class="fa-solid fa-image text-brand-blue text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">screenshot_map.png</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="text-[11px] text-text-muted">1.1 MB</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                            <span class="text-[11px] text-text-muted flex items-center gap-1"><i class="fa-solid fa-circle-check text-brand-green text-[9px]"></i>3 pole</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">PNG</span>
+                        <button class="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-brand-red transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA hint -->
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-green/20" style="background:rgba(34,197,94,0.06)">
+        <i class="fa-solid fa-shield-halved text-brand-green text-sm"></i>
+        <p class="text-xs text-text-muted">Spusťte čištění a <span class="text-brand-green font-semibold">snižte riziko na 0</span></p>
+    </div>
+
+</main>
+
+<!-- Fixed Bottom CTA -->
+<div id="bottom-cta" class="fixed bottom-0 left-0 right-0 px-4 py-4 z-50 border-t border-gray-800" style="background:#0a1628">
+    <div class="flex gap-3">
+        <button id="clean-btn" class="flex-1 py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2 active:scale-95 transition-transform">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+        </button>
+        <button class="px-5 py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center gap-2 active:scale-95 transition-transform">
+            <i class="fa-solid fa-sliders"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    function toggleLangDropdown() {
+        const menu = document.getElementById('langDropdownMenu');
+        menu.classList.toggle('open');
+        const userMenu = document.getElementById('userDropdownMenu');
+        userMenu.classList.remove('open');
+    }
+    function toggleUserDropdown() {
+        const menu = document.getElementById('userDropdownMenu');
+        menu.classList.toggle('open');
+        const langMenu = document.getElementById('langDropdownMenu');
+        langMenu.classList.remove('open');
+    }
+    function setLang(code, flag, label) {
+        document.getElementById('currentLangFlag').textContent = flag;
+        document.getElementById('currentLangLabel').textContent = label;
+        ['cs','en','de','sk'].forEach(l => {
+            const el = document.getElementById('check-' + l);
+            if(el) el.classList.add('hidden');
+        });
+        const check = document.getElementById('check-' + code);
+        if(check) check.classList.remove('hidden');
+        document.getElementById('langDropdownMenu').classList.remove('open');
+    }
+    function toggleAccordion(bodyId, chevronId) {
+        const body = document.getElementById(bodyId);
+        const chevron = document.getElementById(chevronId);
+        body.classList.toggle('open');
+        chevron.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+    }
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('langDropdown').contains(e.target)) {
+            document.getElementById('langDropdownMenu').classList.remove('open');
+        }
+        if (!document.getElementById('userDropdown').contains(e.target)) {
+            document.getElementById('userDropdownMenu').classList.remove('open');
+        }
+    });
+</script>
+</body>
+</html>

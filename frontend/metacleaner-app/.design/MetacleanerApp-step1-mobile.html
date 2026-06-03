@@ -1,0 +1,718 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .dashed-border-anim
+      {
+        background-image: linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%);
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+        background-position: left top, right bottom, left bottom, right top;
+        animation: border-dance 1s infinite linear;
+      }
+
+      @keyframes border-dance
+      {
+        0%
+        {
+          background-position: left top, right bottom, left bottom, right top;
+        }
+
+        100%
+        {
+          background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
+        }
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 200px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background .15s, color .15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+
+      .lang-check
+      {
+        margin-left: auto;
+        color: #3b82f6;
+      }
+
+      .progress-bar
+      {
+        background: linear-gradient(90deg, #3b82f6, #22c55e);
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+
+      #progress-bar
+      {
+        width: 0%;
+      }
+
+      @keyframes spin-slow
+      {
+        from
+        {
+          transform: rotate(0deg);
+        }
+
+        to
+        {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spin-slow
+      {
+        animation: spin-slow 1.5s linear infinite;
+      }
+
+      #userDropdownMenu
+      {
+        min-width: 200px;
+      }
+
+      #iu8qn
+      {
+        color: #ef4444;
+      }
+
+      #i7b63
+      {
+        color: #ef4444;
+      }
+
+      .bottom-sheet
+      {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #111d33;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-top: 1px solid #374151;
+        z-index: 300;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .bottom-sheet.open
+      {
+        transform: translateY(0);
+      }
+
+      .sheet-overlay
+      {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 299;
+        display: none;
+      }
+
+      .sheet-overlay.open
+      {
+        display: block;
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #progress-bar
+      {
+        width: 0%;
+      }
+
+      #iu8qn
+      {
+        color: rgb(239, 68, 68);
+      }
+
+      #i7b63
+      {
+        color: rgb(239, 68, 68);
+      }
+
+      #hamburgerMenu
+      {
+        min-width: 220px;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-navy-main">
+    <!-- Top Navigation -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full px-4 py-4 flex justify-between items-center z-50 bg-navy-main border-b border-gray-800/50 sticky top-0">
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-base"></i></div><span
+          class="text-lg font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- FREE/PRO Badge -->
+        <div id="hamburgerDropdown" class="relative inline-block"><button
+            onclick="toggleHamburgerMenu()"
+            class="flex items-center justify-center w-11 h-11 rounded-lg bg-navy-lighter border border-gray-700 text-white"><i
+              id="hamburgerIcon"
+              class="fa-solid fa-bars text-base"></i></button>
+          <div id="hamburgerMenu" class="lang-dropdown-menu">
+            <div class="px-4 py-3 border-b border-gray-700">
+              <p class="text-xs text-text-muted">Přihlášen jako</p>
+              <p class="text-sm font-semibold text-white mt-0.5 truncate">
+                jana.novakova@email.cz</p>
+            </div><!-- Language -->
+            <div class="px-4 py-2 border-b border-gray-700">
+              <p
+                class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+                Jazyk</p>
+              <div class="flex flex-col gap-0.5">
+                <div id="opt-cs" onclick="setLang('cs')"
+                  class="lang-option active rounded-lg"><span>🇨🇿</span>
+                  Čeština <span id="check-cs" class="lang-check"><i
+                      class="fa-solid fa-check text-xs"></i></span></div>
+                <div id="opt-en" onclick="setLang('en')"
+                  class="lang-option rounded-lg"><span>🇬🇧</span> English <span
+                    id="check-en" class="lang-check hidden"><i
+                      class="fa-solid fa-check text-xs"></i></span></div>
+                <div id="opt-de" onclick="setLang('de')"
+                  class="lang-option rounded-lg"><span>🇩🇪</span> Deutsch <span
+                    id="check-de" class="lang-check hidden"><i
+                      class="fa-solid fa-check text-xs"></i></span></div>
+                <div id="opt-sk" onclick="setLang('sk')"
+                  class="lang-option rounded-lg"><span>🇸🇰</span> Slovenčina
+                  <span id="check-sk" class="lang-check hidden"><i
+                      class="fa-solid fa-check text-xs"></i></span></div>
+              </div>
+            </div><!-- Actions -->
+            <div class="lang-option"><i
+                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
+            </div>
+            <div id="iu8qn" class="lang-option"><i id="i7b63"
+                class="fa-solid fa-right-from-bracket text-sm"></i><span>Odhlásit
+                se</span></div>
+          </div>
+        </div>
+      </div>
+    </nav><!-- Main Content -->
+    <main id="app-main" class="w-full px-4 pb-8 flex flex-col gap-4 mt-4">
+      <!-- Page Header -->
+      <div id="app-header" class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold text-white">Čištění metadat</h1>
+        <p class="text-text-muted text-sm">Nahrajte soubory a odstraňte skrytá
+          metadata lokálně na vašem zařízení.</p>
+      </div><!-- Upload Zone Card -->
+      <div id="upload-zone-card"
+        class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex flex-col gap-4 shadow-card">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold text-base text-white">Nahrát soubory</h3>
+          <div class="flex gap-1 flex-wrap justify-end"><span
+              class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">JPG</span><span
+              class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">PNG</span><span
+              class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">HEIC</span><span
+              class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">MP4</span><span
+              class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">MOV</span>
+          </div>
+        </div><!-- Drop Zone -->
+        <div id="drop-zone"
+          onclick="document.getElementById('fileInput').click()"
+          class="dashed-border-anim rounded-xl bg-navy-main/50 flex flex-col items-center justify-center gap-3 cursor-pointer py-8 relative">
+          <div
+            class="w-14 h-14 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-xl shadow-glow-blue">
+            <i class="fa-solid fa-file-arrow-up"></i></div>
+          <div class="text-center">
+            <p class="font-semibold text-white text-sm mb-0.5">Klepněte pro
+              výběr souborů</p>
+            <p class="text-xs text-text-muted">nebo přetáhněte soubory sem</p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 justify-center"><span
+              class="text-[10px] text-text-muted bg-navy-lighter px-2.5 py-1 rounded-full">Fotografie</span><span
+              class="text-[10px] text-text-muted bg-navy-lighter px-2.5 py-1 rounded-full">Videa</span><span
+              class="text-[10px] text-text-muted bg-navy-lighter px-2.5 py-1 rounded-full">Max
+              500 MB</span></div><input type="file" id="fileInput" multiple=""
+            accept="image/*,video/*" onchange="handleFiles(this.files)"
+            class="hidden">
+        </div><!-- File List -->
+        <div id="file-list" class="flex flex-col gap-2 hidden">
+          <div class="flex items-center justify-between"><span
+              class="text-sm font-semibold text-white">Soubory ke
+              zpracování</span><button onclick="clearFiles()"
+              class="text-xs text-text-muted flex items-center gap-1 min-h-[44px] px-2"><i
+                class="fa-solid fa-trash"></i>Vymazat vše
+            </button></div>
+          <div id="file-items"
+            class="flex flex-col gap-2 max-h-[180px] overflow-y-auto"></div>
+        </div><!-- Action Buttons -->
+        <div class="flex flex-col gap-2.5 mt-1"><button id="clean-btn"
+            onclick="startCleaning()" disabled=""
+            class="w-full py-4 rounded-xl bg-gray-700 text-gray-500 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-not-allowed opacity-60"><i
+              class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+          </button><button onclick="openOptionsSheet()"
+            class="w-full py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2"><i
+              class="fa-solid fa-sliders"></i> Možnosti
+          </button></div>
+      </div><!-- Status Card -->
+      <div id="status-card"
+        class="bg-navy-card rounded-2xl border border-gray-800 p-4 shadow-card flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold text-base text-white">Stav zpracování</h3>
+          <span id="status-badge"
+            class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-navy-lighter text-text-muted uppercase tracking-wider">Čeká
+            na soubory</span>
+        </div><!-- Idle State -->
+        <div id="idle-state"
+          class="flex flex-col items-center justify-center py-6 gap-3">
+          <div
+            class="w-16 h-16 rounded-full bg-navy-lighter flex items-center justify-center">
+            <i class="fa-solid fa-shield-halved text-3xl text-gray-700"></i>
+          </div>
+          <p class="text-text-muted text-sm text-center">Nahrajte soubory pro
+            zahájení čištění metadat.</p>
+        </div><!-- Processing State -->
+        <div id="processing-state" class="hidden flex-col gap-4">
+          <div class="flex flex-col items-center gap-3 py-3">
+            <div
+              class="w-16 h-16 rounded-full bg-brand-blue/10 border-2 border-brand-blue/30 flex items-center justify-center relative">
+              <i id="proc-icon"
+                class="fa-solid fa-gear text-brand-blue text-2xl spin-slow"></i>
+            </div>
+            <div class="text-center">
+              <p id="proc-label" class="font-semibold text-white text-sm">
+                Zpracovávám soubory…</p>
+              <p id="proc-sub" class="text-xs text-text-muted mt-0.5">Odstraňuji
+                metadata</p>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between text-xs text-text-muted">
+              <span>Postup</span><span id="progress-pct">0%</span></div>
+            <div class="h-2.5 rounded-full bg-navy-lighter overflow-hidden">
+              <div id="progress-bar" class="progress-bar h-2.5"></div>
+            </div>
+          </div>
+          <div id="processing-files" class="flex flex-col gap-2"></div>
+        </div><!-- Done State -->
+        <div id="done-state" class="hidden flex-col gap-4">
+          <div class="flex flex-col items-center gap-3 py-3">
+            <div
+              class="w-16 h-16 rounded-full bg-brand-green/10 border-2 border-brand-green/30 flex items-center justify-center">
+              <i class="fa-solid fa-circle-check text-brand-green text-3xl"></i>
+            </div>
+            <div class="text-center">
+              <p class="font-bold text-white text-lg">Hotovo!</p>
+              <p class="text-xs text-text-muted mt-0.5">Všechna metadata byla
+                úspěšně odstraněna.</p>
+            </div>
+          </div>
+          <div id="done-stats" class="grid grid-cols-3 gap-2">
+            <div
+              class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+              <p id="stat-files" class="text-xl font-black text-white">0</p>
+              <p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+            </div>
+            <div
+              class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+              <p id="stat-fields" class="text-xl font-black text-brand-green">0
+              </p>
+              <p class="text-[10px] text-text-muted mt-0.5">Polí odstraněno</p>
+            </div>
+            <div
+              class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+              <p id="stat-time" class="text-xl font-black text-brand-blue">0s
+              </p>
+              <p class="text-[10px] text-text-muted mt-0.5">Čas</p>
+            </div>
+          </div><button onclick="downloadAll()"
+            class="w-full py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2"><i
+              class="fa-solid fa-download"></i> Stáhnout vyčištěné soubory
+          </button><button onclick="resetApp()"
+            class="w-full py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2"><i
+              class="fa-solid fa-rotate-left"></i> Zpracovat další soubory
+          </button>
+        </div>
+      </div>
+    </main><!-- Options Bottom Sheet Overlay -->
+    <div id="sheet-overlay" onclick="closeOptionsSheet()" class="sheet-overlay">
+    </div><!-- Options Bottom Sheet -->
+    <div id="options-sheet" class="bottom-sheet">
+      <div class="flex flex-col gap-0">
+        <div
+          class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-800">
+          <h3 class="font-bold text-white text-base">Možnosti čištění</h3>
+          <button onclick="closeOptionsSheet()"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="px-5 py-4 flex flex-col gap-4">
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <p class="text-sm font-semibold text-white">GPS lokace</p>
+              <p class="text-xs text-text-muted mt-0.5">Odstranit souřadnice
+                polohy</p>
+            </div>
+            <div
+              class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1">
+              <div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <p class="text-sm font-semibold text-white">Datum a čas</p>
+              <p class="text-xs text-text-muted mt-0.5">Odstranit časové razítko
+              </p>
+            </div>
+            <div
+              class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1">
+              <div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <p class="text-sm font-semibold text-white">Informace o zařízení
+              </p>
+              <p class="text-xs text-text-muted mt-0.5">Model fotoaparátu,
+                výrobce</p>
+            </div>
+            <div
+              class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1">
+              <div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <p class="text-sm font-semibold text-white">Komentáře a popisy</p>
+              <p class="text-xs text-text-muted mt-0.5">Textová metadata a tagy
+              </p>
+            </div>
+            <div
+              class="w-12 h-6 bg-navy-lighter border border-gray-600 rounded-full relative cursor-pointer flex items-center px-1">
+              <div class="w-4 h-4 bg-gray-500 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        <div class="px-5 pb-6 pt-2"><button onclick="closeOptionsSheet()"
+            class="w-full py-4 rounded-xl bg-brand-blue text-white font-bold text-sm flex items-center justify-center gap-2"><i
+              class="fa-solid fa-check"></i> Uložit možnosti
+          </button></div>
+      </div>
+    </div><!-- Upgrade Bottom Sheet Overlay -->
+    <div id="upgrade-overlay" onclick="closeUpgradeSheet()"
+      class="sheet-overlay"></div><!-- Upgrade Bottom Sheet -->
+    <div id="upgrade-sheet" class="bottom-sheet">
+      <div class="flex flex-col">
+        <div
+          class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-800">
+          <h3 class="font-bold text-white text-base">Upgrade na Pro</h3><button
+            onclick="closeUpgradeSheet()"
+            class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div><!-- Current Plan -->
+        <div class="px-5 pt-4 pb-2">
+          <div
+            class="bg-navy-main/60 rounded-xl p-3.5 border border-gray-700 flex items-center gap-3 mb-4">
+            <div
+              class="w-9 h-9 rounded-lg bg-navy-lighter flex items-center justify-center">
+              <i class="fa-solid fa-bolt text-text-muted text-sm"></i></div>
+            <div class="flex-1">
+              <p
+                class="text-xs font-bold text-text-muted uppercase tracking-wider">
+                Aktuální plán</p>
+              <p class="text-sm font-semibold text-white mt-0.5">Free</p>
+            </div><span
+              class="text-xs text-text-muted bg-navy-lighter px-2 py-1 rounded-full">Aktivní</span>
+          </div><!-- Pro Plan Card -->
+          <div
+            class="bg-gradient-to-br from-brand-orange/10 to-brand-orange/5 rounded-xl p-4 border border-brand-orange/40 flex flex-col gap-3 mb-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div
+                  class="w-9 h-9 rounded-lg bg-brand-orange/20 flex items-center justify-center">
+                  <i class="fa-solid fa-crown text-brand-orange text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-bold text-white">Pro</p>
+                  <p class="text-[10px] text-text-muted">Plný přístup</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-black text-white">99 Kč</p>
+                <p class="text-[10px] text-text-muted">/ měsíc</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2"><i
+                  class="fa-solid fa-check text-brand-green text-xs w-4"></i><span
+                  class="text-xs text-text-muted">Neomezený počet souborů</span>
+              </div>
+              <div class="flex items-center gap-2"><i
+                  class="fa-solid fa-check text-brand-green text-xs w-4"></i><span
+                  class="text-xs text-text-muted">Soubory až do 2 GB</span>
+              </div>
+              <div class="flex items-center gap-2"><i
+                  class="fa-solid fa-check text-brand-green text-xs w-4"></i><span
+                  class="text-xs text-text-muted">Dávkové zpracování</span>
+              </div>
+              <div class="flex items-center gap-2"><i
+                  class="fa-solid fa-check text-brand-green text-xs w-4"></i><span
+                  class="text-xs text-text-muted">Prioritní podpora</span></div>
+            </div>
+          </div><!-- Free limits -->
+          <div class="flex flex-col gap-1.5 mb-4">
+            <p
+              class="text-[10px] text-text-muted uppercase tracking-wider font-bold">
+              Limity Free plánu</p>
+            <div class="flex items-center gap-2"><i
+                class="fa-solid fa-xmark text-brand-red text-xs w-4"></i><span
+                class="text-xs text-text-muted">Max 10 souborů / den</span>
+            </div>
+            <div class="flex items-center gap-2"><i
+                class="fa-solid fa-xmark text-brand-red text-xs w-4"></i><span
+                class="text-xs text-text-muted">Max 50 MB na soubor</span></div>
+          </div>
+        </div>
+        <div class="px-5 pb-6 pt-2 flex flex-col gap-2"><button
+            onclick="closeUpgradeSheet()"
+            class="w-full py-4 rounded-xl bg-brand-orange text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg"><i
+              class="fa-solid fa-crown"></i> Přejít na Pro
+          </button><button onclick="closeUpgradeSheet()"
+            class="w-full py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2">
+            Zůstat na Free
+          </button></div>
+      </div>
+    </div>
+    <script>
+      function toggleHamburgerMenu()
+      {
+        const menu = document.getElementById('hamburgerMenu');
+        const icon = document.getElementById('hamburgerIcon');
+        menu.classList.toggle('open');
+        icon.className = menu.classList.contains('open') ?
+          'fa-solid fa-xmark text-base' : 'fa-solid fa-bars text-base';
+      }
+      document.addEventListener('click', function(e)
+      {
+        const hd = document.getElementById('hamburgerDropdown');
+        if (hd && !hd.contains(e.target))
+        {
+          document.getElementById('hamburgerMenu').classList.remove('open');
+          document.getElementById('hamburgerIcon').className =
+            'fa-solid fa-bars text-base';
+        }
+      });
+
+      function toggleLangDropdown()
+      {}
+
+      function toggleUserDropdown()
+      {}
+
+      function setLang(lang)
+      {}
+
+      function openOptionsSheet()
+      {
+        document.getElementById('options-sheet').classList.add('open');
+        document.getElementById('sheet-overlay').classList.add('open');
+      }
+
+      function closeOptionsSheet()
+      {
+        document.getElementById('options-sheet').classList.remove('open');
+        document.getElementById('sheet-overlay').classList.remove('open');
+      }
+
+      function handleFiles(files)
+      {
+        updateCleanBtn(files && files.length > 0);
+        if (files && files.length > 0)
+        {
+          document.getElementById('file-list').classList.remove('hidden');
+          const container = document.getElementById('file-items');
+          container.innerHTML = '';
+          Array.from(files).forEach(f =>
+          {
+            const div = document.createElement('div');
+            div.className =
+              'flex items-center gap-3 bg-navy-lighter rounded-xl px-3 py-2.5';
+            div.innerHTML =
+              `<div class="w-8 h-8 rounded-lg bg-navy-main flex items-center justify-center text-brand-blue text-sm"><i class="fa-solid fa-file-image"></i></div><div class="flex-1 min-w-0"><p class="text-xs font-semibold text-white truncate">${f.name}</p><p class="text-[10px] text-text-muted">${(f.size/1024/1024).toFixed(2)} MB</p></div><i class="fa-solid fa-circle text-gray-700 text-xs"></i>`;
+            container.appendChild(div);
+          });
+        }
+      }
+
+      function clearFiles()
+      {
+        document.getElementById('file-list').classList.add('hidden');
+        document.getElementById('file-items').innerHTML = '';
+        document.getElementById('fileInput').value = '';
+        updateCleanBtn(false);
+      }
+
+      function updateCleanBtn(hasFiles)
+      {
+        const btn = document.getElementById('clean-btn');
+        if (hasFiles)
+        {
+          btn.disabled = false;
+          btn.classList.remove('bg-gray-700', 'text-gray-500',
+            'cursor-not-allowed', 'opacity-60');
+          btn.classList.add('bg-brand-green', 'text-white', 'shadow-glow-green',
+            'cursor-pointer');
+        }
+        else
+        {
+          btn.disabled = true;
+          btn.classList.add('bg-gray-700', 'text-gray-500',
+            'cursor-not-allowed', 'opacity-60');
+          btn.classList.remove('bg-brand-green', 'text-white',
+            'shadow-glow-green', 'cursor-pointer');
+        }
+      }
+
+      function startCleaning()
+      {}
+
+      function downloadAll()
+      {}
+
+      function resetApp()
+      {}
+
+      function showUpgradeSheet()
+      {
+        document.getElementById('upgrade-sheet').classList.add('open');
+        document.getElementById('upgrade-overlay').classList.add('open');
+      }
+
+      function closeUpgradeSheet()
+      {
+        document.getElementById('upgrade-sheet').classList.remove('open');
+        document.getElementById('upgrade-overlay').classList.remove('open');
+      }
+    </script>
+  </body>
+
+</html>
