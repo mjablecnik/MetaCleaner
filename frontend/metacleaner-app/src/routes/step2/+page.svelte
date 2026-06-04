@@ -5,6 +5,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
 	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
+	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
@@ -13,6 +14,7 @@
 
 	let langOptions = $state<Language[]>([]);
 	let user = $state<User | null>(null);
+	let uploadedFiles = $state<UploadedFile[]>([]);
 	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -41,6 +43,9 @@
 		});
 		getCurrentUser().then((u) => {
 			user = u;
+		});
+		getUploadedFiles().then((files) => {
+			uploadedFiles = files;
 		});
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
@@ -417,7 +422,7 @@
 					<div class="flex flex-col gap-2">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-sm font-semibold text-white"
-								>{tx('step1.files.title')} <span class="text-text-muted font-normal">(4)</span></span
+								>{tx('step1.files.title')} <span class="text-text-muted font-normal">({uploadedFiles.length})</span></span
 							>
 							<button
 								class="text-xs text-text-muted hover:text-brand-red transition-colors flex items-center gap-1 min-h-[44px] lg:min-h-0 px-2 lg:px-0"
@@ -428,155 +433,54 @@
 						<div
 							class="flex flex-col gap-2 max-h-[260px] lg:max-h-[240px] overflow-y-auto pr-1"
 						>
-							<!-- File 1 - IMG_4821.jpg -->
-							<div
-								class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default"
-								style="background:rgba(10,22,40,0.6)"
-							>
+							{#each uploadedFiles as file (file.id)}
 								<div
-									class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-blue/20"
-									style="background:rgba(59,130,246,0.1)"
+									class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border cursor-default {file.hasGps ? 'border-red-900/30' : 'border-gray-800'}"
+									style="background:rgba(10,22,40,0.6)"
 								>
-									<i class="fa-solid fa-image text-brand-blue text-sm"></i>
-								</div>
-								<div class="flex-1 min-w-0">
-									<p class="text-sm font-medium text-white truncate">IMG_4821.jpg</p>
-									<div class="flex items-center gap-2 mt-0.5">
-										<span class="text-[11px] text-text-muted">3.2 MB</span>
-										<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+									<div
+										class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border {file.hasGps ? 'border-brand-red/20' : file.type === 'video' ? 'border-brand-orange/20' : 'border-brand-blue/20'}"
+										style="{file.hasGps ? 'background:rgba(239,68,68,0.1)' : file.type === 'video' ? 'background:rgba(249,115,22,0.1)' : 'background:rgba(59,130,246,0.1)'}"
+									>
+										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} {file.hasGps ? 'text-brand-red' : file.type === 'video' ? 'text-brand-orange' : 'text-brand-blue'} text-sm"></i>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-white truncate">{file.name}</p>
+										<div class="flex items-center gap-2 mt-0.5">
+											<span class="text-[11px] text-text-muted">{file.size}</span>
+											<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+											{#if file.hasGps}
+												<span class="text-[11px] text-brand-red font-medium flex items-center gap-1">
+													<i class="fa-solid fa-location-dot text-[9px]"></i>{tx('step2.files.gpsFound')}
+												</span>
+											{:else if file.metadataFieldCount > 5}
+												<span class="text-[11px] text-brand-orange font-medium flex items-center gap-1">
+													<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
+													<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: file.metadataFieldCount})}</span>
+													<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: file.metadataFieldCount})}</span>
+												</span>
+											{:else}
+												<span class="text-[11px] text-text-muted flex items-center gap-1">
+													<i class="fa-solid fa-circle-check text-brand-green text-[9px]"></i>
+													<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: file.metadataFieldCount})}</span>
+													<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: file.metadataFieldCount})}</span>
+												</span>
+											{/if}
+										</div>
+									</div>
+									<div class="flex items-center gap-2">
 										<span
-											class="text-[11px] text-brand-orange font-medium flex items-center gap-1"
+											class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+											>{file.extension}</span
 										>
-											<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 12})}</span>
-											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 12})}</span>
-										</span>
+										<button
+											class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
+										>
+											<i class="fa-solid fa-xmark text-sm"></i>
+										</button>
 									</div>
 								</div>
-								<div class="flex items-center gap-2">
-									<span
-										class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-										>JPG</span
-									>
-									<button
-										class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
-									>
-										<i class="fa-solid fa-xmark text-sm"></i>
-									</button>
-								</div>
-							</div>
-
-							<!-- File 2 - photo_holiday_2024.heic (GPS warning) -->
-							<div
-								class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-red-900/30 cursor-default"
-								style="background:rgba(10,22,40,0.6)"
-							>
-								<div
-									class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-red/20"
-									style="background:rgba(239,68,68,0.1)"
-								>
-									<i class="fa-solid fa-image text-brand-red text-sm"></i>
-								</div>
-								<div class="flex-1 min-w-0">
-									<p class="text-sm font-medium text-white truncate">photo_holiday_2024.heic</p>
-									<div class="flex items-center gap-2 mt-0.5">
-										<span class="text-[11px] text-text-muted">8.7 MB</span>
-										<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-										<span
-											class="text-[11px] text-brand-red font-medium flex items-center gap-1"
-										>
-											<i class="fa-solid fa-location-dot text-[9px]"></i>{tx('step2.files.gpsFound')}
-										</span>
-									</div>
-								</div>
-								<div class="flex items-center gap-2">
-									<span
-										class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-										>HEIC</span
-									>
-									<button
-										class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
-									>
-										<i class="fa-solid fa-xmark text-sm"></i>
-									</button>
-								</div>
-							</div>
-
-							<!-- File 3 - video_prague_walk.mp4 -->
-							<div
-								class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default"
-								style="background:rgba(10,22,40,0.6)"
-							>
-								<div
-									class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-orange/20"
-									style="background:rgba(249,115,22,0.1)"
-								>
-									<i class="fa-solid fa-video text-brand-orange text-sm"></i>
-								</div>
-								<div class="flex-1 min-w-0">
-									<p class="text-sm font-medium text-white truncate">video_prague_walk.mp4</p>
-									<div class="flex items-center gap-2 mt-0.5">
-										<span class="text-[11px] text-text-muted">142.5 MB</span>
-										<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-										<span
-											class="text-[11px] text-brand-orange font-medium flex items-center gap-1"
-										>
-											<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 8})}</span>
-											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 8})}</span>
-										</span>
-									</div>
-								</div>
-								<div class="flex items-center gap-2">
-									<span
-										class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-										>MP4</span
-									>
-									<button
-										class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
-									>
-										<i class="fa-solid fa-xmark text-sm"></i>
-									</button>
-								</div>
-							</div>
-
-							<!-- File 4 - screenshot_map.png -->
-							<div
-								class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default"
-								style="background:rgba(10,22,40,0.6)"
-							>
-								<div
-									class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand-blue/20"
-									style="background:rgba(59,130,246,0.1)"
-								>
-									<i class="fa-solid fa-image text-brand-blue text-sm"></i>
-								</div>
-								<div class="flex-1 min-w-0">
-									<p class="text-sm font-medium text-white truncate">screenshot_map.png</p>
-									<div class="flex items-center gap-2 mt-0.5">
-										<span class="text-[11px] text-text-muted">1.1 MB</span>
-										<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-										<span
-											class="text-[11px] text-text-muted flex items-center gap-1"
-										>
-											<i class="fa-solid fa-circle-check text-brand-green text-[9px]"></i>
-											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 3})}</span>
-											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 3})}</span>
-										</span>
-									</div>
-								</div>
-								<div class="flex items-center gap-2">
-									<span
-										class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-										>PNG</span
-									>
-									<button
-										class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
-									>
-										<i class="fa-solid fa-xmark text-sm"></i>
-									</button>
-								</div>
-							</div>
+							{/each}
 						</div>
 					</div>
 
