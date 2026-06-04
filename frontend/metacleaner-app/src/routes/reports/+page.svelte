@@ -628,16 +628,16 @@
 		transition: all 0.15s;
 	}
 	.filter-btn.active {
-		background: #3b82f6;
-		color: #fff;
-		border-color: #3b82f6;
+		background: var(--color-brand-blue);
+		color: var(--color-text-main);
+		border-color: var(--color-brand-blue);
 	}
 	.sort-icon {
 		cursor: pointer;
 		transition: color 0.15s;
 	}
 	.sort-icon:hover {
-		color: #fff;
+		color: var(--color-text-main);
 	}
 	.filters-scroll {
 		display: flex;
@@ -655,13 +655,13 @@
 		bottom: 32px;
 		right: 32px;
 		z-index: 999;
-		background: #111d33;
-		border: 1px solid #22c55e;
+		background: var(--color-navy-card);
+		border: 1px solid var(--color-brand-green);
 		border-radius: 12px;
 		padding: 14px 20px;
 		align-items: center;
 		gap: 12px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+		box-shadow: var(--shadow-dropdown);
 		transform: translateY(100px);
 		opacity: 0;
 		transition: all 0.3s ease;
@@ -679,13 +679,13 @@
 		left: 50%;
 		transform: translateX(-50%) translateY(100px);
 		z-index: 999;
-		background: #111d33;
-		border: 1px solid #22c55e;
+		background: var(--color-navy-card);
+		border: 1px solid var(--color-brand-green);
 		border-radius: 12px;
 		padding: 12px 18px;
 		align-items: center;
 		gap: 10px;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+		box-shadow: var(--shadow-dropdown);
 		opacity: 0;
 		transition: all 0.3s ease;
 		white-space: nowrap;

@@ -240,18 +240,17 @@
 					<!-- Mini ring -->
 					<div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
 						<svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
-							<circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" stroke-width="3"
+							<circle cx="18" cy="18" r="15.9" fill="none" style="stroke: var(--color-navy-lighter)" stroke-width="3"
 							></circle>
 							<circle
 								cx="18"
 								cy="18"
 								r="15.9"
 								fill="none"
-								stroke="#ef4444"
 								stroke-width="3.5"
 								stroke-dasharray="72 28"
 								stroke-linecap="round"
-								style="filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
+								style="stroke: var(--color-brand-red); filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
 							></circle>
 						</svg>
 						<span class="text-sm font-black text-brand-red z-10">72</span>
@@ -514,18 +513,17 @@
 							class="relative w-28 h-28 flex-shrink-0 flex items-center justify-center"
 						>
 							<svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
-								<circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" stroke-width="3"
+								<circle cx="18" cy="18" r="15.9" fill="none" style="stroke: var(--color-navy-lighter)" stroke-width="3"
 								></circle>
 								<circle
 									cx="18"
 									cy="18"
 									r="15.9"
 									fill="none"
-									stroke="#ef4444"
 									stroke-width="3.5"
 									stroke-dasharray="72 28"
 									stroke-linecap="round"
-									style="filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
+									style="stroke: var(--color-brand-red); filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
 								></circle>
 							</svg>
 							<div class="text-center z-10">

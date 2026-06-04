@@ -741,6 +741,6 @@
 		transition: background 0.15s;
 	}
 	.file-row:hover {
-		background: #1e293b;
+		background: var(--color-navy-lighter);
 	}
 </style>
