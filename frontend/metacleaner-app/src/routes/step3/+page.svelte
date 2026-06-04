@@ -1,25 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import '../layout.css';
+	import { currentLocale, switchLocale } from '$lib/locale.svelte';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
 	let logAccordionOpen = $state(false);
 
-	let currentLang = $state('cs');
 	const langOptions = [
 		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
 		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
 		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
 		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
 	];
-	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLang) ?? langOptions[0]);
+	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
 
 	let overallPct = $state(62);
 
 	function setLang(lang: string) {
-		currentLang = lang;
+		switchLocale(lang);
 		langDropdownOpen = false;
 		hamburgerMenuOpen = false;
 	}
@@ -88,14 +88,14 @@
 						{#each langOptions as lang}
 							<div
 								class="lang-option"
-								class:active={currentLang === lang.code}
+								class:active={currentLocale === lang.code}
 								onclick={() => setLang(lang.code)}
 								role="button"
 								tabindex="0"
 							>
 								<span>{lang.flag}</span>
 								{lang.name}
-								{#if currentLang === lang.code}
+								{#if currentLocale === lang.code}
 									<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
 								{/if}
 							</div>
@@ -167,14 +167,14 @@
 								{#each langOptions as lang}
 									<div
 										class="lang-option rounded-lg"
-										class:active={currentLang === lang.code}
+										class:active={currentLocale === lang.code}
 										onclick={() => setLang(lang.code)}
 										role="button"
 										tabindex="0"
 									>
 										<span>{lang.flag}</span>
 										{lang.name}
-										{#if currentLang === lang.code}
+										{#if currentLocale === lang.code}
 											<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
 										{/if}
 									</div>
