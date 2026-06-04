@@ -41,7 +41,7 @@
 
 ## Final Verification
 
-- [ ] 25. [LOW] Verify all strings in `report/+page.svelte` are translated or served by repository — no hardcoded user-facing text remains
-- [ ] 26. [LOW] Verify `step2/+page.svelte` file list renders dynamically from repository data
+- [x] 25. [LOW] Verify all strings in `report/+page.svelte` are translated or served by repository — no hardcoded user-facing text remains
+- [x] 26. [LOW] Verify `step2/+page.svelte` file list renders dynamically from repository data
 - [ ] 27. [LOW] Verify language switching works on report page (locale state + tx function operational)
 - [ ] 28. [LOW] Run full app to confirm no visual regressions after refactoring
