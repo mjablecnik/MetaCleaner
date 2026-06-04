@@ -2,6 +2,11 @@
 	import '../layout.css';
 	import { onMount } from 'svelte';
 	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
+	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
+	import { getResults, type ProcessingResults } from '$lib/repositories/processingRepository';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
@@ -9,13 +14,28 @@
 	let metaAccordionOpen = $state(true);
 	let activeMetaTab = $state<'before' | 'after'>('before');
 
-	const langOptions = [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	];
+	let langOptions = $state<Language[]>([]);
+	let user = $state<User | null>(null);
+	let uploadedFiles = $state<UploadedFile[]>([]);
+	let results = $state<ProcessingResults | null>(null);
+
 	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale;
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
+
+	function getFileById(id: string): UploadedFile | undefined {
+		return uploadedFiles.find((f) => f.id === id);
+	}
+
+	function getFileIconStyle(file: UploadedFile): { bg: string; text: string; border: string } {
+		if (file.type === 'video') return { bg: 'bg-brand-orange/10', text: 'text-brand-orange', border: 'border-brand-orange/20' };
+		if (file.extension === 'PNG') return { bg: 'bg-brand-blue/10', text: 'text-brand-blue', border: 'border-brand-blue/20' };
+		return { bg: 'bg-brand-green/10', text: 'text-brand-green', border: 'border-brand-green/20' };
+	}
 
 	function setLang(lang: string) {
 		switchLocale(lang);
@@ -32,12 +52,16 @@
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
+		getLanguages().then((langs) => { langOptions = langs; });
+		getCurrentUser().then((u) => { user = u; });
+		getUploadedFiles().then((files) => { uploadedFiles = files; });
+		getResults().then((r) => { results = r; });
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Čištění dokončeno</title>
+	<title>{tx('step5.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -55,7 +79,7 @@
 				>
 					<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 				</div>
-				<span class="text-lg lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+				<span class="text-lg lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 			</a>
 
 			<!-- Desktop right side -->
@@ -65,8 +89,8 @@
 						onclick={() => (langDropdownOpen = !langDropdownOpen)}
 						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 					>
-						<span>{currentLangInfo.flag}</span>
-						<span>{currentLangInfo.label}</span>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
 							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -101,7 +125,7 @@
 						>
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -109,16 +133,16 @@
 					</button>
 					<div class="lang-dropdown-menu" class:open={userDropdownOpen} style="min-width:200px">
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -139,13 +163,13 @@
 						style="min-width:220px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 							<p class="text-sm font-semibold text-white mt-0.5 truncate">
-								jana.novakova@email.cz
+								{user?.email ?? ''}
 							</p>
 						</div>
 						<div class="px-4 py-2 border-b border-gray-700">
-							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">Jazyk</p>
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">{tx('common.nav.language')}</p>
 							<div class="flex flex-col gap-0.5">
 								{#each langOptions as lang}
 									<div
@@ -168,11 +192,11 @@
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -196,13 +220,13 @@
 				</div>
 				<div>
 					<h1 class="text-xl lg:text-3xl font-bold text-white leading-tight">
-						Čištění dokončeno!
+						{tx('step5.header.title')}
 					</h1>
 					<p class="text-text-muted text-xs lg:text-sm mt-0.5 lg:mt-1">
 						<span class="hidden lg:inline"
-							>Všechna metadata byla úspěšně odstraněna ze 4 souborů.</span
+							>{tx('step5.header.descriptionDesktop', { count: results?.filesProcessed ?? 4 })}</span
 						>
-						<span class="inline lg:hidden">Všechna metadata odstraněna ze 4 souborů.</span>
+						<span class="inline lg:hidden">{tx('step5.header.descriptionMobile', { count: results?.filesProcessed ?? 4 })}</span>
 					</p>
 				</div>
 			</div>
@@ -212,13 +236,13 @@
 					class="hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-semibold text-sm hover:bg-brand-blue/20 transition-all"
 				>
 					<i class="fa-solid fa-arrow-up-from-bracket"></i>
-					<span>Nahrát nové soubory</span>
+					<span>{tx('step5.actions.uploadNew')}</span>
 				</a>
 				<div
 					class="flex items-center gap-2 bg-brand-green/10 border border-brand-green/30 rounded-xl px-4 py-2.5"
 				>
 					<div class="w-2 h-2 rounded-full bg-brand-green"></div>
-					<span class="text-xs font-semibold text-brand-green">100% Úspěšně dokončeno</span>
+					<span class="text-xs font-semibold text-brand-green">{tx('step5.badge.success')}</span>
 				</div>
 			</div>
 		</div>
@@ -231,8 +255,8 @@
 				>
 					<i class="fa-solid fa-file-circle-check text-brand-green text-sm lg:text-base"></i>
 				</div>
-				<p class="text-2xl font-black text-white">4</p>
-				<p class="text-[11px] lg:text-xs text-text-muted">Souborů zpracováno</p>
+				<p class="text-2xl font-black text-white">{results?.filesProcessed ?? 4}</p>
+				<p class="text-[11px] lg:text-xs text-text-muted">{tx('step5.stats.filesProcessed')}</p>
 			</div>
 			<div
 				class="bg-navy-card rounded-2xl border border-brand-green/20 p-4 lg:p-5 shadow-card flex flex-col gap-1"
@@ -242,8 +266,8 @@
 				>
 					<i class="fa-solid fa-eraser text-brand-green text-sm lg:text-base"></i>
 				</div>
-				<p class="text-2xl font-black text-brand-green">87</p>
-				<p class="text-[11px] lg:text-xs text-text-muted">Polí metadat odstraněno</p>
+				<p class="text-2xl font-black text-brand-green">{results?.fieldsRemoved ?? 87}</p>
+				<p class="text-[11px] lg:text-xs text-text-muted">{tx('step5.stats.fieldsRemoved')}</p>
 			</div>
 			<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-5 shadow-card flex flex-col gap-1">
 				<div
@@ -251,8 +275,8 @@
 				>
 					<i class="fa-solid fa-location-dot text-brand-blue text-sm lg:text-base"></i>
 				</div>
-				<p class="text-2xl font-black text-brand-blue">3</p>
-				<p class="text-[11px] lg:text-xs text-text-muted">GPS lokací odstraněno</p>
+				<p class="text-2xl font-black text-brand-blue">{results?.gpsLocationsRemoved ?? 3}</p>
+				<p class="text-[11px] lg:text-xs text-text-muted">{tx('step5.stats.gpsRemoved')}</p>
 			</div>
 			<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-5 shadow-card flex flex-col gap-1">
 				<div
@@ -260,8 +284,8 @@
 				>
 					<i class="fa-solid fa-clock text-brand-orange text-sm lg:text-base"></i>
 				</div>
-				<p class="text-2xl font-black text-white">28s</p>
-				<p class="text-[11px] lg:text-xs text-text-muted">Celková doba čištění</p>
+				<p class="text-2xl font-black text-white">{results?.totalTimeSeconds ?? 28}s</p>
+				<p class="text-[11px] lg:text-xs text-text-muted">{tx('step5.stats.totalTime')}</p>
 			</div>
 		</div>
 
@@ -269,7 +293,7 @@
 		<div
 			class="fade-in-up delay-2 hidden lg:block bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card"
 		>
-			<h3 class="font-semibold text-lg text-white mb-6">Přehled metadat</h3>
+			<h3 class="font-semibold text-lg text-white mb-6">{tx('step5.metadata.title')}</h3>
 			<div class="grid grid-cols-2 gap-6">
 				<!-- Before -->
 				<div
@@ -283,9 +307,9 @@
 						</div>
 						<div>
 							<span class="text-xs font-bold uppercase tracking-wider text-brand-red"
-								>Před čištěním</span
+								>{tx('step5.metadata.before')}</span
 							>
-							<p class="text-sm font-semibold text-white">Soubory obsahovaly skrytá data</p>
+							<p class="text-sm font-semibold text-white">{tx('step5.metadata.beforeDesc')}</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
@@ -293,37 +317,37 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-location-dot text-brand-red"></i> GPS souřadnice</span
+								><i class="fa-solid fa-location-dot text-brand-red"></i> {tx('step5.metadata.gps')}</span
 							>
-							<span class="text-xs font-mono text-white">3 soubory</span>
+							<span class="text-xs font-mono text-white">{tx('step5.metadata.filesCount', { count: results?.beforeBreakdown.gpsLocations ?? 3 })}</span>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-camera text-brand-red"></i> EXIF data</span
+								><i class="fa-solid fa-camera text-brand-red"></i> {tx('step5.metadata.exif')}</span
 							>
-							<span class="text-xs font-mono text-white">52 polí</span>
+							<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.exifFields ?? 52 })}</span>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-tag text-brand-red"></i> XMP/IPTC</span
+								><i class="fa-solid fa-tag text-brand-red"></i> {tx('step5.metadata.xmp')}</span
 							>
-							<span class="text-xs font-mono text-white">19 polí</span>
+							<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.xmpFields ?? 19 })}</span>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-ellipsis text-brand-red"></i> Ostatní</span
+								><i class="fa-solid fa-ellipsis text-brand-red"></i> {tx('step5.metadata.other')}</span
 							>
-							<span class="text-xs font-mono text-white">13 polí</span>
+							<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.otherFields ?? 13 })}</span>
 						</div>
 					</div>
 					<p class="text-xs text-brand-red/80 flex items-center gap-2 mt-1">
-						<i class="fa-solid fa-circle-exclamation"></i> Celkem 87 polí metadat bylo odhalitelných.
+						<i class="fa-solid fa-circle-exclamation"></i> {tx('step5.metadata.totalExposed', { count: results?.fieldsRemoved ?? 87 })}
 					</p>
 				</div>
 				<!-- After -->
@@ -338,9 +362,9 @@
 						</div>
 						<div>
 							<span class="text-xs font-bold uppercase tracking-wider text-brand-green"
-								>Po čištění</span
+								>{tx('step5.metadata.after')}</span
 							>
-							<p class="text-sm font-semibold text-white">Soubory jsou bezpečné ke sdílení</p>
+							<p class="text-sm font-semibold text-white">{tx('step5.metadata.afterDesc')}</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
@@ -348,45 +372,45 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-location-dot text-brand-green"></i> GPS souřadnice</span
+								><i class="fa-solid fa-location-dot text-brand-green"></i> {tx('step5.metadata.gps')}</span
 							>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-								><i class="fa-solid fa-check"></i> Odstraněno</span
+								><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 							>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-camera text-brand-green"></i> EXIF data</span
+								><i class="fa-solid fa-camera text-brand-green"></i> {tx('step5.metadata.exif')}</span
 							>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-								><i class="fa-solid fa-check"></i> Odstraněno</span
+								><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 							>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-tag text-brand-green"></i> XMP/IPTC</span
+								><i class="fa-solid fa-tag text-brand-green"></i> {tx('step5.metadata.xmp')}</span
 							>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-								><i class="fa-solid fa-check"></i> Odstraněno</span
+								><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 							>
 						</div>
 						<div
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2"
-								><i class="fa-solid fa-ellipsis text-brand-green"></i> Ostatní</span
+								><i class="fa-solid fa-ellipsis text-brand-green"></i> {tx('step5.metadata.other')}</span
 							>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-								><i class="fa-solid fa-check"></i> Odstraněno</span
+								><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 							>
 						</div>
 					</div>
 					<p class="text-xs text-brand-green/80 flex items-center gap-2 mt-1">
-						<i class="fa-solid fa-circle-check"></i> Soubory neobsahují žádná citlivá metadata.
+						<i class="fa-solid fa-circle-check"></i> {tx('step5.metadata.allClean')}
 					</p>
 				</div>
 			</div>
@@ -400,7 +424,7 @@
 				onclick={() => (metaAccordionOpen = !metaAccordionOpen)}
 				class="w-full flex items-center justify-between px-5 py-4 min-h-[52px]"
 			>
-				<span class="font-semibold text-base text-white">Přehled metadat</span>
+				<span class="font-semibold text-base text-white">{tx('step5.metadata.title')}</span>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-sm transition-transform"
 					style="transform: {metaAccordionOpen ? 'rotate(180deg)' : ''}"
@@ -417,7 +441,7 @@
 								? 'color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)'
 								: 'color:#94a3b8;background:transparent;border:1px solid transparent'}
 						>
-							<i class="fa-solid fa-triangle-exclamation mr-1"></i> Před čištěním
+							<i class="fa-solid fa-triangle-exclamation mr-1"></i> {tx('step5.metadata.before')}
 						</button>
 						<button
 							onclick={() => (activeMetaTab = 'after')}
@@ -426,14 +450,14 @@
 								? 'color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3)'
 								: 'color:#94a3b8;background:transparent;border:1px solid transparent'}
 						>
-							<i class="fa-solid fa-shield-halved mr-1"></i> Po čištění
+							<i class="fa-solid fa-shield-halved mr-1"></i> {tx('step5.metadata.after')}
 						</button>
 					</div>
 
 					<!-- Before Panel -->
 					{#if activeMetaTab === 'before'}
 						<div class="flex flex-col gap-2">
-							<p class="text-xs text-white font-semibold mb-1">Soubory obsahovaly skrytá data</p>
+							<p class="text-xs text-white font-semibold mb-1">{tx('step5.metadata.beforeDesc')}</p>
 							<div
 								class="flex items-center gap-2 bg-brand-red/10 border border-brand-red/20 rounded-xl px-3 py-2.5 mb-1"
 							>
@@ -441,53 +465,53 @@
 									class="fa-solid fa-circle-exclamation text-brand-red text-sm flex-shrink-0"
 								></i>
 								<p class="text-xs text-brand-red/90 font-medium">
-									Vysoké riziko úniku soukromí! 87 polí metadat bylo odhalitelných.
+									{tx('step5.metadata.highRiskWarning', { count: results?.fieldsRemoved ?? 87 })}
 								</p>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-location-dot text-brand-red"></i> GPS souřadnice</span
+									><i class="fa-solid fa-location-dot text-brand-red"></i> {tx('step5.metadata.gps')}</span
 								>
-								<span class="text-xs font-mono text-white">3 soubory</span>
+								<span class="text-xs font-mono text-white">{tx('step5.metadata.filesCount', { count: results?.beforeBreakdown.gpsLocations ?? 3 })}</span>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-camera text-brand-red"></i> EXIF data</span
+									><i class="fa-solid fa-camera text-brand-red"></i> {tx('step5.metadata.exif')}</span
 								>
-								<span class="text-xs font-mono text-white">52 polí</span>
+								<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.exifFields ?? 52 })}</span>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-tag text-brand-red"></i> XMP/IPTC</span
+									><i class="fa-solid fa-tag text-brand-red"></i> {tx('step5.metadata.xmp')}</span
 								>
-								<span class="text-xs font-mono text-white">19 polí</span>
+								<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.xmpFields ?? 19 })}</span>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-film text-brand-red"></i> ID3 / MP4 atoms</span
+									><i class="fa-solid fa-film text-brand-red"></i> {tx('step5.metadata.id3mp4')}</span
 								>
-								<span class="text-xs font-mono text-white">23 polí</span>
+								<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.id3mp4Fields ?? 23 })}</span>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-ellipsis text-brand-red"></i> Ostatní</span
+									><i class="fa-solid fa-ellipsis text-brand-red"></i> {tx('step5.metadata.other')}</span
 								>
-								<span class="text-xs font-mono text-white">13 polí</span>
+								<span class="text-xs font-mono text-white">{tx('step5.metadata.fieldsCount', { count: results?.beforeBreakdown.otherFields ?? 13 })}</span>
 							</div>
 							<div class="mt-1">
 								<div class="flex justify-between text-[10px] text-text-muted mb-1">
-									<span>Celkové riziko</span>
-									<span class="text-brand-red font-bold">Vysoké</span>
+									<span>{tx('step5.metadata.totalRisk')}</span>
+									<span class="text-brand-red font-bold">{tx('step5.metadata.riskHigh')}</span>
 								</div>
 								<div class="w-full h-2 rounded-full bg-navy-main overflow-hidden">
 									<div
@@ -502,7 +526,7 @@
 					<!-- After Panel -->
 					{#if activeMetaTab === 'after'}
 						<div class="flex flex-col gap-2">
-							<p class="text-xs text-white font-semibold mb-1">Soubory jsou bezpečné ke sdílení</p>
+							<p class="text-xs text-white font-semibold mb-1">{tx('step5.metadata.afterDesc')}</p>
 							<div
 								class="flex items-center gap-2 bg-brand-green/10 border border-brand-green/20 rounded-xl px-3 py-2.5 mb-1"
 							>
@@ -510,63 +534,63 @@
 									class="fa-solid fa-shield-halved text-brand-green text-sm flex-shrink-0"
 								></i>
 								<p class="text-xs text-brand-green/90 font-medium">
-									Všechna citlivá metadata byla úspěšně odstraněna.
+									{tx('step5.metadata.allRemovedSuccess')}
 								</p>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-location-dot text-brand-green"></i> GPS souřadnice</span
+									><i class="fa-solid fa-location-dot text-brand-green"></i> {tx('step5.metadata.gps')}</span
 								>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-									><i class="fa-solid fa-check"></i> Odstraněno</span
+									><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 								>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-camera text-brand-green"></i> EXIF data</span
+									><i class="fa-solid fa-camera text-brand-green"></i> {tx('step5.metadata.exif')}</span
 								>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-									><i class="fa-solid fa-check"></i> Odstraněno</span
+									><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 								>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-tag text-brand-green"></i> XMP/IPTC</span
+									><i class="fa-solid fa-tag text-brand-green"></i> {tx('step5.metadata.xmp')}</span
 								>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-									><i class="fa-solid fa-check"></i> Odstraněno</span
+									><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 								>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-film text-brand-green"></i> ID3 / MP4 atoms</span
+									><i class="fa-solid fa-film text-brand-green"></i> {tx('step5.metadata.id3mp4')}</span
 								>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-									><i class="fa-solid fa-check"></i> Odstraněno</span
+									><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 								>
 							</div>
 							<div
 								class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-navy-main border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2"
-									><i class="fa-solid fa-ellipsis text-brand-green"></i> Ostatní</span
+									><i class="fa-solid fa-ellipsis text-brand-green"></i> {tx('step5.metadata.other')}</span
 								>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1"
-									><i class="fa-solid fa-check"></i> Odstraněno</span
+									><i class="fa-solid fa-check"></i> {tx('step5.metadata.removed')}</span
 								>
 							</div>
 							<div class="mt-1">
 								<div class="flex justify-between text-[10px] text-text-muted mb-1">
-									<span>Celkové riziko</span>
-									<span class="text-brand-green font-bold">Žádné</span>
+									<span>{tx('step5.metadata.totalRisk')}</span>
+									<span class="text-brand-green font-bold">{tx('step5.metadata.riskNone')}</span>
 								</div>
 								<div class="w-full h-2 rounded-full bg-navy-main overflow-hidden">
 									<div class="h-full rounded-full bg-brand-green" style="width: 0%"></div>
@@ -583,168 +607,83 @@
 			class="fade-in-up delay-3 bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 shadow-card flex flex-col gap-4"
 		>
 			<div class="flex items-center justify-between">
-				<h3 class="font-semibold text-base lg:text-lg text-white">Výsledky souborů</h3>
+				<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step5.results.title')}</h3>
 				<span
 					class="text-[10px] font-bold px-2.5 lg:px-3 py-1 rounded-full bg-brand-green/10 text-brand-green border border-brand-green/20 uppercase tracking-wider flex items-center gap-1.5"
 				>
-					<i class="fa-solid fa-circle-check text-[10px]"></i> Vše hotovo
+					<i class="fa-solid fa-circle-check text-[10px]"></i> {tx('step5.results.allDone')}
 				</span>
 			</div>
 
 			<!-- Files Grid -->
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-				<!-- File 1 -->
-				<div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-					<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
-						<div
-							class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-image text-brand-green text-sm"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-sm font-semibold text-white truncate">IMG_4821.jpg</p>
-							<p class="text-[11px] text-text-muted">3.2 MB · JPEG · Canon EOS R5</p>
-						</div>
-						<span
-							class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-							>JPG</span
-						>
-						<div
-							class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-						</div>
-					</div>
-					<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium"
-							>GPS odstraněno</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>EXIF ×8</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>XMP ×4</span
-						>
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
-							>12 polí</span
-						>
-					</div>
-				</div>
-				<!-- File 2 -->
-				<div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-					<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
-						<div
-							class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-image text-brand-green text-sm"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-sm font-semibold text-white truncate">photo_holiday_2024.heic</p>
-							<p class="text-[11px] text-text-muted">8.7 MB · HEIC · iPhone 15 Pro</p>
-						</div>
-						<span
-							class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-							>HEIC</span
-						>
-						<div
-							class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-						</div>
-					</div>
-					<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium"
-							>GPS odstraněno</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>EXIF ×12</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>XMP ×6</span
-						>
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
-							>18 polí</span
-						>
-					</div>
-				</div>
-				<!-- File 3 -->
-				<div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-					<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
-						<div
-							class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-video text-brand-orange text-sm"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-sm font-semibold text-white truncate">video_prague_walk.mp4</p>
-							<p class="text-[11px] text-text-muted">142 MB · MP4 · H.264</p>
-						</div>
-						<span
-							class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-							>MP4</span
-						>
-						<div
-							class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-						</div>
-					</div>
-					<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium"
-							>GPS odstraněno</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>ID3 ×9</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>MP4 atoms ×14</span
-						>
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
-							>43 polí</span
-						>
-					</div>
-				</div>
-				<!-- File 4 -->
-				<div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-					<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
-						<div
-							class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-image text-brand-blue text-sm"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-sm font-semibold text-white truncate">screenshot_map.png</p>
-							<p class="text-[11px] text-text-muted">1.1 MB · PNG</p>
-						</div>
-						<span
-							class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-							>PNG</span
-						>
-						<div
-							class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
-						>
-							<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-						</div>
-					</div>
-					<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>PNG chunks ×5</span
-						>
-						<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
-							>XMP ×9</span
-						>
-						<span
-							class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
-							>14 polí</span
-						>
-					</div>
-				</div>
+				{#if results}
+					{#each results.fileResults as fileResult}
+						{@const file = getFileById(fileResult.fileId)}
+						{#if file}
+							{@const iconStyle = getFileIconStyle(file)}
+							<div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
+								<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
+									<div
+										class="w-9 h-9 rounded-lg {iconStyle.bg} {iconStyle.border} border flex items-center justify-center flex-shrink-0"
+									>
+										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} {iconStyle.text} text-sm"></i>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-semibold text-white truncate">{file.name}</p>
+										<p class="text-[11px] text-text-muted">{file.size} · {file.extension}{file.device ? ` · ${file.device}` : ''}</p>
+									</div>
+									<span
+										class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+										>{file.extension}</span
+									>
+									<div
+										class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
+									>
+										<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+									</div>
+								</div>
+								<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
+									{#if fileResult.gpsRemoved}
+										<span
+											class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium"
+											>{tx('step5.results.gpsRemoved')}</span
+										>
+									{/if}
+									{#if fileResult.exifCount > 0}
+										<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+											>EXIF ×{fileResult.exifCount}</span
+										>
+									{/if}
+									{#if fileResult.xmpCount > 0}
+										<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+											>XMP ×{fileResult.xmpCount}</span
+										>
+									{/if}
+									{#if fileResult.id3Count > 0}
+										<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+											>ID3 ×{fileResult.id3Count}</span
+										>
+									{/if}
+									{#if fileResult.mp4AtomsCount > 0}
+										<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+											>MP4 atoms ×{fileResult.mp4AtomsCount}</span
+										>
+									{/if}
+									{#if fileResult.pngChunksCount > 0}
+										<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+											>PNG chunks ×{fileResult.pngChunksCount}</span
+										>
+									{/if}
+									<span
+										class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
+										>{tx('step5.metadata.fieldsCount', { count: fileResult.totalFields })}</span
+									>
+								</div>
+							</div>
+						{/if}
+					{/each}
+				{/if}
 			</div>
 
 			<!-- Desktop Action Buttons -->
@@ -752,19 +691,19 @@
 				<button
 					class="flex-1 py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-400 transition-all flex items-center justify-center gap-2 shadow-glow-green"
 				>
-					<i class="fa-solid fa-download"></i> Stáhnout vše (ZIP)
+					<i class="fa-solid fa-download"></i> {tx('step5.actions.downloadAll')}
 				</button>
 				<a
 					href="/report"
 					class="px-5 py-3.5 rounded-xl bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-semibold text-sm hover:bg-brand-blue/20 transition-all flex items-center gap-2"
 				>
-					<i class="fa-solid fa-file-lines"></i> Zobrazit report
+					<i class="fa-solid fa-file-lines"></i> {tx('step5.actions.viewReport')}
 				</a>
 				<a
 					href="/reports"
 					class="px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm hover:bg-gray-800 hover:text-white transition-all flex items-center gap-2"
 				>
-					<i class="fa-solid fa-clock-rotate-left"></i> Historie
+					<i class="fa-solid fa-clock-rotate-left"></i> {tx('step5.actions.history')}
 				</a>
 			</div>
 		</div>
@@ -777,27 +716,27 @@
 		<button
 			class="w-full py-4 rounded-xl bg-brand-green text-white font-bold text-sm flex items-center justify-center gap-2 shadow-glow-green active:scale-95 transition-transform"
 		>
-			<i class="fa-solid fa-download"></i> Stáhnout vše (ZIP)
+			<i class="fa-solid fa-download"></i> {tx('step5.actions.downloadAll')}
 		</button>
 		<div class="flex gap-2">
 			<a
 				href="/report"
 				class="flex-1 py-3 rounded-xl bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
 			>
-				<i class="fa-solid fa-file-lines"></i> Zobrazit report
+				<i class="fa-solid fa-file-lines"></i> {tx('step5.actions.viewReport')}
 			</a>
 			<a
 				href="/reports"
 				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
 			>
-				<i class="fa-solid fa-clock-rotate-left"></i> Historie
+				<i class="fa-solid fa-clock-rotate-left"></i> {tx('step5.actions.history')}
 			</a>
 			<a
 				href="/"
 				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
 			>
 				<i class="fa-solid fa-arrow-up-from-bracket text-text-muted"></i>
-				Nové
+				{tx('step5.actions.new')}
 			</a>
 		</div>
 	</div>

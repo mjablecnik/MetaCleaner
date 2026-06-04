@@ -22,7 +22,7 @@
 - [x] 12. [MEDIUM] Extract hardcoded strings from `src/routes/step2/+page.svelte` (Files Loaded) to translation keys — ~65 strings (nav, risk scanner, file list, action buttons)
 - [x] 13. [MEDIUM] Extract hardcoded strings from `src/routes/step3/+page.svelte` (Processing) to translation keys — ~50 strings (nav, status card, file progress, log)
 - [x] 14. [MEDIUM] Extract hardcoded strings from `src/routes/step4/+page.svelte` (Error) to translation keys — ~60 strings (nav, error banner, error detail, error types, log)
-- [ ] 15. [MEDIUM] Extract hardcoded strings from `src/routes/step5/+page.svelte` (Success) to translation keys — ~55 strings (nav, stats, metadata overview, file results, actions)
+- [x] 15. [MEDIUM] Extract hardcoded strings from `src/routes/step5/+page.svelte` (Success) to translation keys — ~55 strings (nav, stats, metadata overview, file results, actions)
 - [ ] 16. [MEDIUM] Extract hardcoded strings from `src/routes/reports/+page.svelte` (Report List) to translation keys — ~40 strings (nav, stats, filters, table headers, toast)
 - [ ] 17. [MEDIUM] Extract hardcoded strings from `src/routes/report/+page.svelte` (Report Detail) to translation keys — ~45 strings (nav, meta info, stats, chart labels)
 
