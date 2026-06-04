@@ -2,6 +2,11 @@
 	import '../layout.css';
 	import { onMount } from 'svelte';
 	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
+	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
+	import { getErrorState, type ErrorState } from '$lib/repositories/processingRepository';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
@@ -14,13 +19,27 @@
 	let bannerVisible = $state(true);
 	let selectedErrorType = $state('cleaning');
 
-	const langOptions = [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	];
+	let langOptions = $state<Language[]>([]);
+	let user = $state<User | null>(null);
+	let uploadedFiles = $state<UploadedFile[]>([]);
+	let errorState = $state<ErrorState | null>(null);
+
 	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale; // reactive dependency
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
+
+	function getFileById(id: string): UploadedFile | undefined {
+		return uploadedFiles.find((f) => f.id === id);
+	}
+
+	function getFileLogStatus(fileId: string): 'success' | 'error' | 'skipped' | undefined {
+		const entry = errorState?.log.find((l) => l.fileId === fileId);
+		return entry?.status as 'success' | 'error' | 'skipped' | undefined;
+	}
 
 	function setLang(lang: string) {
 		switchLocale(lang);
@@ -37,12 +56,16 @@
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
+		getLanguages().then((langs) => { langOptions = langs; });
+		getCurrentUser().then((u) => { user = u; });
+		getUploadedFiles().then((files) => { uploadedFiles = files; });
+		getErrorState().then((es) => { errorState = es; });
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Chyba zpracování</title>
+	<title>{tx('step4.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -54,7 +77,7 @@
 				<div class="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
 					<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 				</div>
-				<span class="text-lg lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+				<span class="text-lg lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 			</a>
 
 			<!-- Desktop right side -->
@@ -64,8 +87,8 @@
 						onclick={() => (langDropdownOpen = !langDropdownOpen)}
 						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 					>
-						<span>{currentLangInfo.flag}</span>
-						<span>{currentLangInfo.label}</span>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
 							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -98,7 +121,7 @@
 						<div class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -106,16 +129,16 @@
 					</button>
 					<div class="lang-dropdown-menu" class:open={userDropdownOpen} style="min-width:200px">
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -132,11 +155,11 @@
 					</button>
 					<div class="lang-dropdown-menu" class:open={hamburgerMenuOpen} style="min-width:220px">
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5 truncate">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5 truncate">{user?.email ?? ''}</p>
 						</div>
 						<div class="px-4 py-2 border-b border-gray-700">
-							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">Jazyk</p>
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">{tx('common.nav.language')}</p>
 							<div class="flex flex-col gap-0.5">
 								{#each langOptions as lang}
 									<div
@@ -157,11 +180,11 @@
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -176,14 +199,14 @@
 		<div class="flex flex-col gap-1 mb-0 lg:mb-2">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 				<div>
-					<h1 class="text-2xl lg:text-3xl font-bold text-white">Čištění metadat</h1>
-					<p class="text-text-muted text-sm mt-1">Nahrajte soubory a odstraňte skrytá metadata lokálně na vašem zařízení.</p>
+					<h1 class="text-2xl lg:text-3xl font-bold text-white">{tx('step1.header.title')}</h1>
+					<p class="text-text-muted text-sm mt-1">{tx('step1.header.description')}</p>
 				</div>
 				<div class="flex items-center gap-2 bg-navy-card border border-red-800/50 rounded-xl px-3 lg:px-4 py-2 lg:py-2.5 self-start sm:self-auto">
 					<div class="w-2 h-2 rounded-full bg-brand-red"></div>
 					<span class="text-[10px] lg:text-xs font-semibold text-brand-red">
-						<span class="hidden lg:inline">Chyba zpracování</span>
-						<span class="inline lg:hidden">Chyba</span>
+						<span class="hidden lg:inline">{tx('step4.badge.errorDesktop')}</span>
+						<span class="inline lg:hidden">{tx('step4.badge.errorMobile')}</span>
 					</span>
 				</div>
 			</div>
@@ -197,18 +220,18 @@
 				</div>
 				<div class="flex-1 min-w-0">
 					<div class="flex items-center gap-2 flex-wrap">
-						<p class="text-sm font-bold text-white">Proces čištění selhal</p>
-						<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/20 text-brand-red border border-brand-red/30 tracking-wider">ERR_CLEANING_FAILED</span>
+						<p class="text-sm font-bold text-white">{tx('step4.error.processFailedTitle')}</p>
+						<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/20 text-brand-red border border-brand-red/30 tracking-wider">{errorState?.errorCode}</span>
 					</div>
 					<p class="text-xs text-text-muted mt-1 leading-relaxed">
-						<span class="hidden lg:inline">Během zpracování souborů došlo k neočekávané chybě. Část souborů nebyla vyčištěna. Zkuste akci opakovat nebo kontaktujte podporu.</span>
-						<span class="inline lg:hidden">Část souborů nebyla vyčištěna. Zkuste akci opakovat.</span>
+						<span class="hidden lg:inline">{tx('step4.error.descriptionDesktop')}</span>
+						<span class="inline lg:hidden">{tx('step4.error.descriptionMobile')}</span>
 					</p>
 				</div>
 				<button
 					onclick={() => (bannerVisible = false)}
 					class="flex-shrink-0 text-text-muted hover:text-white transition-colors mt-0.5 p-1"
-					aria-label="Zavřít"
+					aria-label="close"
 				>
 					<i class="fa-solid fa-xmark text-sm"></i>
 				</button>
@@ -227,23 +250,23 @@
 				</div>
 			</div>
 			<div class="text-center">
-				<p class="font-bold text-white text-sm">Čištění metadat selhalo</p>
+				<p class="font-bold text-white text-sm">{tx('step4.error.cleaningFailed')}</p>
 				<p class="text-text-muted text-xs mt-1 leading-relaxed">
-					Soubor <span class="text-brand-red font-semibold">video_prague_walk.mp4</span> nebylo možné zpracovat.
+					{tx('step4.detail.file')} <span class="text-brand-red font-semibold">{getFileById(errorState?.failedFileId ?? '')?.name ?? ''}</span> {tx('step4.error.couldNotProcess')}.
 				</p>
 			</div>
 			<div class="w-full bg-navy-main/60 rounded-xl p-3 border border-red-900/30">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-xs font-semibold text-text-muted">Celkový průběh</span>
-					<span class="text-xs font-bold text-brand-red">Přerušeno</span>
+					<span class="text-xs font-semibold text-text-muted">{tx('step3.progress.overall')}</span>
+					<span class="text-xs font-bold text-brand-red">{tx('step4.error.interrupted')}</span>
 				</div>
 				<div class="w-full h-2 bg-navy-lighter rounded-full overflow-hidden">
-					<div class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400" style="width:62%"></div>
+					<div class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400" style="width:{errorState ? Math.round(errorState.filesCompleted / errorState.totalFiles * 100) : 0}%"></div>
 				</div>
 				<div class="flex items-center justify-between mt-2">
-					<span class="text-[11px] text-text-muted">2 z 4 souborů dokončeno</span>
+					<span class="text-[11px] text-text-muted">{tx('step3.progress.filesCompleted', { done: errorState?.filesCompleted ?? 0, total: errorState?.totalFiles ?? 0 })}</span>
 					<span class="text-[11px] text-brand-red font-medium flex items-center gap-1">
-						<i class="fa-solid fa-circle-xmark text-[9px]"></i> Selhalo
+						<i class="fa-solid fa-circle-xmark text-[9px]"></i> {tx('step4.error.failedShort')}
 					</span>
 				</div>
 			</div>
@@ -256,133 +279,114 @@
 			<div class="flex flex-col gap-4 lg:gap-5">
 				<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 flex flex-col gap-4 shadow-card">
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-base lg:text-lg text-white">Soubory ke zpracování</h3>
+						<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.files.title')}</h3>
 						<span class="text-[10px] lg:text-xs font-bold px-2.5 lg:px-3 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1.5">
-							<i class="fa-solid fa-circle-xmark text-[10px]"></i> Chyba
+							<i class="fa-solid fa-circle-xmark text-[10px]"></i> {tx('step4.badge.errorMobile')}
 						</span>
 					</div>
 
 					<!-- Overall Progress - Failed (desktop only) -->
 					<div class="hidden lg:block bg-navy-main/60 rounded-xl p-4 border border-red-900/30">
 						<div class="flex items-center justify-between mb-2">
-							<span class="text-xs font-semibold text-text-muted">Celkový průběh</span>
-							<span class="text-xs font-bold text-brand-red">Přerušeno</span>
+							<span class="text-xs font-semibold text-text-muted">{tx('step3.progress.overall')}</span>
+							<span class="text-xs font-bold text-brand-red">{tx('step4.error.interrupted')}</span>
 						</div>
 						<div class="w-full h-2.5 bg-navy-lighter rounded-full overflow-hidden">
-							<div class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400" style="width:62%"></div>
+							<div class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400" style="width:{errorState ? Math.round(errorState.filesCompleted / errorState.totalFiles * 100) : 0}%"></div>
 						</div>
 						<div class="flex items-center justify-between mt-2">
-							<span class="text-[11px] text-text-muted">2 z 4 souborů dokončeno</span>
+							<span class="text-[11px] text-text-muted">{tx('step3.progress.filesCompleted', { done: errorState?.filesCompleted ?? 0, total: errorState?.totalFiles ?? 0 })}</span>
 							<span class="text-[11px] text-brand-red font-medium flex items-center gap-1">
-								<i class="fa-solid fa-circle-xmark text-[9px]"></i> Zpracování selhalo
+								<i class="fa-solid fa-circle-xmark text-[9px]"></i> {tx('step4.error.processingFailed')}
 							</span>
 						</div>
 					</div>
 
 					<!-- File List -->
 					<div class="flex flex-col gap-2 lg:max-h-[320px] lg:overflow-y-auto pr-1">
-						<!-- File 1 - Done -->
-						<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/20 cursor-default">
-							<div class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-								<i class="fa-solid fa-image text-brand-green text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">IMG_4821.jpg</p>
-								<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">3.2 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1">
-										<i class="fa-solid fa-circle-check text-[9px]"></i>
-										<span class="hidden lg:inline">12 polí odstraněno</span>
-										<span class="inline lg:hidden">12 polí</span>
-									</span>
+						{#each uploadedFiles as file}
+							{@const fileStatus = getFileLogStatus(file.id)}
+							{#if fileStatus === 'success'}
+								<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/20 cursor-default">
+									<div class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
+										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-green text-sm"></i>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-white truncate">{file.name}</p>
+										<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
+											<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+											<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+											<span class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1">
+												<i class="fa-solid fa-circle-check text-[9px]"></i>
+												{#if file.hasGps}
+													<span class="hidden lg:inline">{tx('step3.files.gpsAndFieldsRemoved', { count: file.metadataFieldCount })}</span>
+													<span class="inline lg:hidden">{tx('step3.files.gpsAndFieldsRemovedMobile', { count: file.metadataFieldCount })}</span>
+												{:else}
+													{file.metadataFieldCount} {tx('step3.files.fieldsRemoved')}
+												{/if}
+											</span>
+										</div>
+									</div>
+									<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+										<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted">{file.extension}</span>
+										<div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
+											<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+										</div>
+									</div>
 								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted">JPG</span>
-								<div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
-									<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+							{:else if fileStatus === 'error'}
+								<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-red/30 cursor-default" style="background:rgba(239,68,68,0.05)">
+									<div class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
+										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-red text-sm"></i>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-white truncate">{file.name}</p>
+										<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
+											<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+											<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+											<span class="text-[10px] lg:text-[11px] text-brand-red font-medium flex items-center gap-1">
+												<i class="fa-solid fa-circle-xmark text-[9px]"></i>
+												<span class="hidden lg:inline">{tx('step4.error.processingFailed')}</span>
+												<span class="inline lg:hidden">{tx('step4.error.failedShort')}</span>
+											</span>
+										</div>
+									</div>
+									<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+										<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted">{file.extension}</span>
+										<div class="w-6 h-6 rounded-full bg-brand-red/10 border border-brand-red/30 flex items-center justify-center">
+											<i class="fa-solid fa-xmark text-brand-red text-[10px]"></i>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-
-						<!-- File 2 - Done -->
-						<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/20 cursor-default">
-							<div class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-								<i class="fa-solid fa-image text-brand-green text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">photo_holiday_2024.heic</p>
-								<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">8.7 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1">
-										<i class="fa-solid fa-circle-check text-[9px]"></i>
-										<span class="hidden lg:inline">GPS + 18 polí odstraněno</span>
-										<span class="inline lg:hidden">GPS+18</span>
-									</span>
+							{:else}
+								<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-gray-800 cursor-default opacity-50">
+									<div class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
+										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-blue text-sm"></i>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-white truncate">{file.name}</p>
+										<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
+											<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+											<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+											<span class="text-[10px] lg:text-[11px] text-text-muted flex items-center gap-1">
+												<i class="fa-solid fa-ban text-[9px]"></i> {tx('step4.error.skipped')}
+											</span>
+										</div>
+									</div>
+									<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted flex-shrink-0">{file.extension}</span>
 								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted">HEIC</span>
-								<div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
-									<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-								</div>
-							</div>
-						</div>
-
-						<!-- File 3 - Failed -->
-						<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-red/30 cursor-default" style="background:rgba(239,68,68,0.05)">
-							<div class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
-								<i class="fa-solid fa-video text-brand-red text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">video_prague_walk.mp4</p>
-								<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">247 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span class="text-[10px] lg:text-[11px] text-brand-red font-medium flex items-center gap-1">
-										<i class="fa-solid fa-circle-xmark text-[9px]"></i>
-										<span class="hidden lg:inline">Zpracování selhalo</span>
-										<span class="inline lg:hidden">Selhalo</span>
-									</span>
-								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted">MP4</span>
-								<div class="w-6 h-6 rounded-full bg-brand-red/10 border border-brand-red/30 flex items-center justify-center">
-									<i class="fa-solid fa-xmark text-brand-red text-[10px]"></i>
-								</div>
-							</div>
-						</div>
-
-						<!-- File 4 - Skipped -->
-						<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-navy-main/60 border border-gray-800 cursor-default opacity-50">
-							<div class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
-								<i class="fa-solid fa-image text-brand-blue text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">screenshot_map.png</p>
-								<div class="flex items-center gap-1.5 lg:gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">1.1 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span class="text-[10px] lg:text-[11px] text-text-muted flex items-center gap-1">
-										<i class="fa-solid fa-ban text-[9px]"></i> Přeskočeno
-									</span>
-								</div>
-							</div>
-							<span class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted flex-shrink-0">PNG</span>
-						</div>
+							{/if}
+						{/each}
 					</div>
 
 					<!-- Action Buttons -->
 					<div class="flex gap-3 mt-1">
 						<a href="/step3" class="flex-1 py-3.5 rounded-xl bg-brand-green hover:bg-green-400 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-glow-green">
-							<i class="fa-solid fa-rotate-right"></i> Zkusit znovu
+							<i class="fa-solid fa-rotate-right"></i> {tx('step4.actions.tryAgain')}
 						</a>
 						<button class="px-4 lg:px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm hover:bg-gray-800 hover:text-white transition-all flex items-center gap-2">
 							<i class="fa-solid fa-trash"></i>
-							<span class="hidden lg:inline">Vymazat vše</span>
+							<span class="hidden lg:inline">{tx('step4.actions.clearAll')}</span>
 						</button>
 					</div>
 				</div>
@@ -392,9 +396,9 @@
 			<div class="hidden lg:flex flex-col gap-5">
 				<div class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5">
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-lg text-white">Stav zpracování</h3>
+						<h3 class="font-semibold text-lg text-white">{tx('step1.status.title')}</h3>
 						<span class="text-xs font-bold px-3 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1.5">
-							<i class="fa-solid fa-circle-xmark text-[10px]"></i> Chyba
+							<i class="fa-solid fa-circle-xmark text-[10px]"></i> {tx('step4.badge.errorMobile')}
 						</span>
 					</div>
 
@@ -410,9 +414,9 @@
 							</div>
 						</div>
 						<div class="text-center">
-							<p class="font-bold text-white text-base">Čištění metadat selhalo</p>
+							<p class="font-bold text-white text-base">{tx('step4.error.cleaningFailed')}</p>
 							<p class="text-text-muted text-xs mt-1 max-w-[220px] mx-auto leading-relaxed">
-								Soubor <span class="text-brand-red font-semibold">video_prague_walk.mp4</span> nebylo možné zpracovat.
+								{tx('step4.detail.file')} <span class="text-brand-red font-semibold">{getFileById(errorState?.failedFileId ?? '')?.name ?? ''}</span> {tx('step4.error.couldNotProcess')}.
 							</p>
 						</div>
 					</div>
@@ -420,31 +424,31 @@
 					<!-- Error Detail Box -->
 					<div class="bg-navy-main/80 rounded-xl border border-brand-red/20 p-4 flex flex-col gap-3">
 						<div class="flex items-center justify-between">
-							<p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Detail chyby</p>
-							<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/15 text-brand-red border border-brand-red/25 tracking-wider">ERR_CLEANING_FAILED</span>
+							<p class="text-xs font-semibold text-text-muted uppercase tracking-wider">{tx('step4.detail.title')}</p>
+							<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/15 text-brand-red border border-brand-red/25 tracking-wider">{errorState?.errorCode}</span>
 						</div>
 						<div class="flex flex-col gap-2">
 							<div class="flex items-start gap-2.5">
 								<i class="fa-solid fa-circle-info text-text-muted text-xs mt-0.5 flex-shrink-0"></i>
-								<p class="text-xs text-text-muted leading-relaxed">Proces čištění metadat byl přerušen z důvodu interní chyby. Soubor může být poškozený nebo v nepodporovaném formátu.</p>
+								<p class="text-xs text-text-muted leading-relaxed">{tx('step4.detail.description')}</p>
 							</div>
 							<div class="h-px bg-gray-800 my-1"></div>
 							<div class="grid grid-cols-2 gap-2">
 								<div class="flex flex-col gap-0.5">
-									<span class="text-[10px] text-text-muted uppercase tracking-wider">Kód chyby</span>
-									<span class="text-xs font-mono font-semibold text-white">0x0032A</span>
+									<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.errorCode')}</span>
+									<span class="text-xs font-mono font-semibold text-white">{errorState?.errorHexCode}</span>
 								</div>
 								<div class="flex flex-col gap-0.5">
-									<span class="text-[10px] text-text-muted uppercase tracking-wider">Čas výskytu</span>
-									<span class="text-xs font-mono font-semibold text-white">12:04:17</span>
+									<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.errorTime')}</span>
+									<span class="text-xs font-mono font-semibold text-white">{errorState?.errorTime}</span>
 								</div>
 								<div class="flex flex-col gap-0.5">
-									<span class="text-[10px] text-text-muted uppercase tracking-wider">Soubor</span>
-									<span class="text-xs font-mono font-semibold text-white truncate">video_prague_walk.mp4</span>
+									<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.file')}</span>
+									<span class="text-xs font-mono font-semibold text-white truncate">{getFileById(errorState?.failedFileId ?? '')?.name ?? ''}</span>
 								</div>
 								<div class="flex flex-col gap-0.5">
-									<span class="text-[10px] text-text-muted uppercase tracking-wider">Fáze</span>
-									<span class="text-xs font-mono font-semibold text-white">metadata_strip</span>
+									<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.phase')}</span>
+									<span class="text-xs font-mono font-semibold text-white">{errorState?.phase}</span>
 								</div>
 							</div>
 						</div>
@@ -452,13 +456,9 @@
 
 					<!-- Error Type Selector -->
 					<div class="flex flex-col gap-2">
-						<p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Typ chyby</p>
+						<p class="text-xs font-semibold text-text-muted uppercase tracking-wider">{tx('step4.type.title')}</p>
 						<div class="flex flex-col gap-1.5">
-							{#each [
-								{ id: 'cleaning', icon: 'fa-circle-xmark', title: 'Cleaning Process Failed', desc: 'Interní chyba při čištění metadat' },
-								{ id: 'connection', icon: 'fa-wifi', title: 'Connection Error', desc: 'Ztráta spojení se serverem' },
-								{ id: 'timeout', icon: 'fa-clock', title: 'Timeout', desc: 'Operace překročila časový limit' }
-							] as errType}
+							{#each errorState?.errorTypes ?? [] as errType}
 								<button
 									onclick={() => (selectedErrorType = errType.id)}
 									class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all w-full"
@@ -474,8 +474,8 @@
 										></i>
 									</div>
 									<div class="flex-1 min-w-0">
-										<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{errType.title}</p>
-										<p class="text-[10px] text-text-muted">{errType.desc}</p>
+										<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{tx(`step4.type.${errType.id}.title`)}</p>
+										<p class="text-[10px] text-text-muted">{tx(`step4.type.${errType.id}.description`)}</p>
 									</div>
 									<i
 										class="fa-solid text-xs"
@@ -490,24 +490,27 @@
 
 					<!-- Error Log -->
 					<div class="flex flex-col gap-1">
-						<p class="text-xs font-semibold text-text-muted mb-1 uppercase tracking-wider">Log chyby</p>
+						<p class="text-xs font-semibold text-text-muted mb-1 uppercase tracking-wider">{tx('step4.log.title')}</p>
 						<div class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 max-h-[130px] overflow-y-auto font-mono">
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span>
-								<span class="text-[11px] text-brand-green">✓ IMG_4821.jpg — 12 polí odstraněno</span>
-							</div>
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:09</span>
-								<span class="text-[11px] text-brand-green">✓ photo_holiday_2024.heic — GPS + 18 polí odstraněno</span>
-							</div>
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span>
-								<span class="text-[11px] text-brand-red">✗ video_prague_walk.mp4 — ERR_CLEANING_FAILED</span>
-							</div>
-							<div class="flex items-start gap-2 opacity-40">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span>
-								<span class="text-[11px] text-text-muted">screenshot_map.png — přeskočeno</span>
-							</div>
+							{#each errorState?.log ?? [] as logEntry}
+								{@const file = getFileById(logEntry.fileId)}
+								{#if logEntry.status === 'success'}
+									<div class="flex items-start gap-2">
+										<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+										<span class="text-[11px] text-brand-green">✓ {file?.name} — {file?.hasGps ? tx('step3.files.gpsAndFieldsRemoved', { count: file.metadataFieldCount }) : `${file?.metadataFieldCount} ${tx('step3.files.fieldsRemoved')}`}</span>
+									</div>
+								{:else if logEntry.status === 'error'}
+									<div class="flex items-start gap-2">
+										<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+										<span class="text-[11px] text-brand-red">✗ {file?.name} — {logEntry.errorCode}</span>
+									</div>
+								{:else}
+									<div class="flex items-start gap-2 opacity-40">
+										<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+										<span class="text-[11px] text-text-muted">{file?.name} — {tx('step4.error.skipped').toLowerCase()}</span>
+									</div>
+								{/if}
+							{/each}
 						</div>
 					</div>
 				</div>
@@ -522,8 +525,8 @@
 			>
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-circle-info text-brand-red text-sm"></i>
-					<span class="font-semibold text-sm text-white">Detail chyby</span>
-					<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/15 text-brand-red border border-brand-red/25 tracking-wider">ERR_CLEANING_FAILED</span>
+					<span class="font-semibold text-sm text-white">{tx('step4.detail.title')}</span>
+					<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/15 text-brand-red border border-brand-red/25 tracking-wider">{errorState?.errorCode}</span>
 				</div>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
@@ -534,25 +537,25 @@
 				<div class="px-4 pb-4 flex flex-col gap-3">
 					<div class="flex items-start gap-2">
 						<i class="fa-solid fa-circle-info text-text-muted text-xs mt-0.5 flex-shrink-0"></i>
-						<p class="text-xs text-text-muted leading-relaxed">Proces čištění metadat byl přerušen z důvodu interní chyby. Soubor může být poškozený nebo v nepodporovaném formátu.</p>
+						<p class="text-xs text-text-muted leading-relaxed">{tx('step4.detail.description')}</p>
 					</div>
 					<div class="h-px bg-gray-800"></div>
 					<div class="grid grid-cols-2 gap-3 pl-5">
 						<div class="flex flex-col gap-0.5">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Kód chyby</span>
-							<span class="text-xs font-mono font-semibold text-white">0x0032A</span>
+							<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.errorCode')}</span>
+							<span class="text-xs font-mono font-semibold text-white">{errorState?.errorHexCode}</span>
 						</div>
 						<div class="flex flex-col gap-0.5">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Čas výskytu</span>
-							<span class="text-xs font-mono font-semibold text-white">12:04:17</span>
+							<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.errorTime')}</span>
+							<span class="text-xs font-mono font-semibold text-white">{errorState?.errorTime}</span>
 						</div>
 						<div class="flex flex-col gap-0.5">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Soubor</span>
-							<span class="text-xs font-mono font-semibold text-white truncate">video_prague_walk.mp4</span>
+							<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.file')}</span>
+							<span class="text-xs font-mono font-semibold text-white truncate">{getFileById(errorState?.failedFileId ?? '')?.name ?? ''}</span>
 						</div>
 						<div class="flex flex-col gap-0.5">
-							<span class="text-[10px] text-text-muted uppercase tracking-wider">Fáze</span>
-							<span class="text-xs font-mono font-semibold text-white">metadata_strip</span>
+							<span class="text-[10px] text-text-muted uppercase tracking-wider">{tx('step4.detail.phase')}</span>
+							<span class="text-xs font-mono font-semibold text-white">{errorState?.phase}</span>
 						</div>
 					</div>
 				</div>
@@ -567,7 +570,7 @@
 			>
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-tag text-text-muted text-sm"></i>
-					<span class="font-semibold text-sm text-white">Typ chyby</span>
+					<span class="font-semibold text-sm text-white">{tx('step4.type.title')}</span>
 				</div>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
@@ -576,11 +579,7 @@
 			</button>
 			{#if typeAccordionOpen}
 				<div class="px-4 pb-4 flex flex-col gap-2">
-					{#each [
-						{ id: 'cleaning', icon: 'fa-circle-xmark', title: 'Cleaning Process Failed', desc: 'Interní chyba při čištění metadat' },
-						{ id: 'connection', icon: 'fa-wifi', title: 'Connection Error', desc: 'Ztráta spojení se serverem' },
-						{ id: 'timeout', icon: 'fa-clock', title: 'Timeout', desc: 'Operace překročila časový limit' }
-					] as errType}
+					{#each errorState?.errorTypes ?? [] as errType}
 						<button
 							onclick={() => (selectedErrorType = errType.id)}
 							class="flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all w-full"
@@ -596,8 +595,8 @@
 								></i>
 							</div>
 							<div class="flex-1 min-w-0">
-								<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{errType.title}</p>
-								<p class="text-[10px] text-text-muted">{errType.desc}</p>
+								<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{tx(`step4.type.${errType.id}.title`)}</p>
+								<p class="text-[10px] text-text-muted">{tx(`step4.type.${errType.id}.description`)}</p>
 							</div>
 							<i
 								class="fa-solid text-xs"
@@ -619,7 +618,7 @@
 			>
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-terminal text-text-muted text-sm"></i>
-					<span class="font-semibold text-sm text-white">Log chyby</span>
+					<span class="font-semibold text-sm text-white">{tx('step4.log.title')}</span>
 				</div>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
@@ -629,22 +628,25 @@
 			{#if logAccordionOpen}
 				<div class="px-4 pb-4">
 					<div class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 font-mono">
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span>
-							<span class="text-[11px] text-brand-green">✓ IMG_4821.jpg — 12 polí odstraněno</span>
-						</div>
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:09</span>
-							<span class="text-[11px] text-brand-green">✓ photo_holiday_2024.heic — GPS+18 polí</span>
-						</div>
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span>
-							<span class="text-[11px] text-brand-red">✗ video_prague_walk.mp4 — ERR_CLEANING_FAILED</span>
-						</div>
-						<div class="flex items-start gap-2 opacity-40">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span>
-							<span class="text-[11px] text-text-muted">screenshot_map.png — přeskočeno</span>
-						</div>
+						{#each errorState?.log ?? [] as logEntry}
+							{@const file = getFileById(logEntry.fileId)}
+							{#if logEntry.status === 'success'}
+								<div class="flex items-start gap-2">
+									<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+									<span class="text-[11px] text-brand-green">✓ {file?.name} — {file?.hasGps ? tx('step3.files.gpsAndFieldsRemovedMobile', { count: file.metadataFieldCount }) : `${file?.metadataFieldCount} ${tx('step3.files.fieldsRemoved')}`}</span>
+								</div>
+							{:else if logEntry.status === 'error'}
+								<div class="flex items-start gap-2">
+									<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+									<span class="text-[11px] text-brand-red">✗ {file?.name} — {logEntry.errorCode}</span>
+								</div>
+							{:else}
+								<div class="flex items-start gap-2 opacity-40">
+									<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{logEntry.timestamp}</span>
+									<span class="text-[11px] text-text-muted">{file?.name} — {tx('step4.error.skipped').toLowerCase()}</span>
+								</div>
+							{/if}
+						{/each}
 					</div>
 				</div>
 			{/if}
