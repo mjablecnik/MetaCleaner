@@ -2,21 +2,35 @@
 	import { onMount } from 'svelte';
 	import '../layout.css';
 	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
+	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
+	import { getProcessingState, type ProcessingState } from '$lib/repositories/processingRepository';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
 	let logAccordionOpen = $state(false);
 
-	const langOptions = [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	];
-	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+	let langOptions = $state<Language[]>([]);
+	let user = $state<User | null>(null);
+	let uploadedFiles = $state<UploadedFile[]>([]);
+	let processingState = $state<ProcessingState | null>(null);
+	let overallPct = $state(0);
 
-	let overallPct = $state(62);
+	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+	let currentFile = $derived(uploadedFiles.find((f) => f.id === processingState?.currentFileId));
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale; // reactive dependency
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
+
+	function getFileById(id: string): UploadedFile | undefined {
+		return uploadedFiles.find((f) => f.id === id);
+	}
 
 	function setLang(lang: string) {
 		switchLocale(lang);
@@ -31,24 +45,33 @@
 		if (!t.closest('#hamburgerDropdown')) hamburgerMenuOpen = false;
 	}
 
+	let animationInterval: ReturnType<typeof setInterval> | undefined;
+
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
-		const interval = setInterval(() => {
-			if (overallPct >= 75) {
-				clearInterval(interval);
-				return;
-			}
-			overallPct = Math.min(overallPct + 0.5, 75);
-		}, 300);
+		getLanguages().then((langs) => { langOptions = langs; });
+		getCurrentUser().then((u) => { user = u; });
+		getUploadedFiles().then((files) => { uploadedFiles = files; });
+		getProcessingState().then((ps) => {
+			processingState = ps;
+			overallPct = ps.overallProgress;
+			animationInterval = setInterval(() => {
+				if (overallPct >= 75) {
+					clearInterval(animationInterval);
+					return;
+				}
+				overallPct = Math.min(overallPct + 0.5, 75);
+			}, 300);
+		});
 		return () => {
 			document.removeEventListener('click', handleClickOutside);
-			clearInterval(interval);
+			if (animationInterval) clearInterval(animationInterval);
 		};
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Zpracovávám</title>
+	<title>{tx('step3.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -66,7 +89,7 @@
 				>
 					<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 				</div>
-				<span class="text-lg lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+				<span class="text-lg lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 			</a>
 
 			<!-- Desktop right side -->
@@ -77,8 +100,8 @@
 						onclick={() => (langDropdownOpen = !langDropdownOpen)}
 						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 					>
-						<span>{currentLangInfo.flag}</span>
-						<span>{currentLangInfo.label}</span>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
 							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -114,7 +137,7 @@
 						>
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -126,16 +149,16 @@
 						style="min-width:200px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -156,13 +179,15 @@
 						style="min-width:220px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 							<p class="text-sm font-semibold text-white mt-0.5 truncate">
-								jana.novakova@email.cz
+								{user?.email ?? ''}
 							</p>
 						</div>
 						<div class="px-4 py-2 border-b border-gray-700">
-							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">Jazyk</p>
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+								{tx('common.nav.language')}
+							</p>
 							<div class="flex flex-col gap-0.5">
 								{#each langOptions as lang}
 									<div
@@ -183,11 +208,11 @@
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -203,9 +228,9 @@
 		<div class="flex flex-col gap-1 mb-0 lg:mb-2">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 				<div>
-					<h1 class="text-2xl lg:text-3xl font-bold text-white">Čištění metadat</h1>
+					<h1 class="text-2xl lg:text-3xl font-bold text-white">{tx('step1.header.title')}</h1>
 					<p class="text-text-muted text-sm mt-1">
-						Nahrajte soubory a odstraňte skrytá metadata lokálně na vašem zařízení.
+						{tx('step1.header.description')}
 					</p>
 				</div>
 				<!-- Processing badge -->
@@ -214,8 +239,8 @@
 				>
 					<div class="w-2 h-2 rounded-full bg-brand-blue animate-pulse"></div>
 					<span class="text-[10px] lg:text-xs font-semibold text-brand-blue">
-						<span class="hidden lg:inline">Probíhá čištění...</span>
-						<span class="inline lg:hidden">Probíhá...</span>
+						<span class="hidden lg:inline">{tx('step3.badge.inProgressDesktop')}</span>
+						<span class="inline lg:hidden">{tx('step3.badge.inProgressMobile')}</span>
 					</span>
 				</div>
 			</div>
@@ -226,11 +251,11 @@
 			class="lg:hidden bg-navy-card rounded-2xl border border-gray-800 p-4 shadow-card flex flex-col gap-4"
 		>
 			<div class="flex items-center justify-between">
-				<h3 class="font-semibold text-base text-white">Stav zpracování</h3>
+				<h3 class="font-semibold text-base text-white">{tx('step3.status.title')}</h3>
 				<span
 					class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1"
 				>
-					<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i> Probíhá
+					<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i> {tx('step3.status.inProgress')}
 				</span>
 			</div>
 			<div class="flex items-center gap-4">
@@ -248,27 +273,27 @@
 					</div>
 				</div>
 				<div class="flex-1 min-w-0">
-					<p class="font-bold text-white text-sm">Probíhá čištění metadat</p>
+					<p class="font-bold text-white text-sm">{tx('step3.status.cleaningInProgress')}</p>
 					<p class="text-text-muted text-xs mt-0.5">
-						Zpracovávám <span class="text-brand-blue font-semibold">video_prague_walk.mp4</span>
+						{tx('step3.status.processingFile', { filename: currentFile?.name ?? '' })}
 					</p>
 				</div>
 			</div>
 			<!-- Live Stats -->
 			<div class="grid grid-cols-3 gap-2 w-full">
 				<div class="bg-navy-main/60 rounded-xl p-2.5 text-center border border-gray-800">
-					<p class="text-lg font-black text-white">4</p>
-					<p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+					<p class="text-lg font-black text-white">{processingState?.totalFiles ?? 0}</p>
+					<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.files')}</p>
 				</div>
 				<div class="bg-navy-main/60 rounded-xl p-2.5 text-center border border-brand-green/20">
-					<p class="text-lg font-black text-brand-green">30</p>
-					<p class="text-[10px] text-text-muted mt-0.5">Polí smazáno</p>
+					<p class="text-lg font-black text-brand-green">{processingState?.fieldsRemoved ?? 0}</p>
+					<p class="text-[10px] text-text-muted mt-0.5">{tx('step3.stats.fieldsDeleted')}</p>
 				</div>
 				<div class="bg-navy-main/60 rounded-xl p-2.5 text-center border border-gray-800">
 					<p class="text-lg font-black text-brand-blue">
-						2<span class="text-xs font-semibold">/4</span>
+						{processingState?.filesCompleted ?? 0}<span class="text-xs font-semibold">/{processingState?.totalFiles ?? 0}</span>
 					</p>
-					<p class="text-[10px] text-text-muted mt-0.5">Hotovo</p>
+					<p class="text-[10px] text-text-muted mt-0.5">{tx('step3.stats.done')}</p>
 				</div>
 			</div>
 		</div>
@@ -281,21 +306,19 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 flex flex-col gap-4 shadow-card"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-base lg:text-lg text-white">Soubory ke zpracování</h3>
+						<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.files.title')}</h3>
 						<span
 							class="text-[10px] lg:text-xs font-bold px-2.5 lg:px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1.5"
 						>
 							<i class="fa-solid fa-circle-notch spin-slow text-[10px]"></i>
-							Zpracovávám
+							{tx('step3.status.processing')}
 						</span>
 					</div>
 
 					<!-- Overall Progress -->
-					<div
-						class="bg-navy-main/60 rounded-xl p-3 lg:p-4 border border-blue-900/30"
-					>
+					<div class="bg-navy-main/60 rounded-xl p-3 lg:p-4 border border-blue-900/30">
 						<div class="flex items-center justify-between mb-1.5 lg:mb-2">
-							<span class="text-xs font-semibold text-text-muted">Celkový průběh</span>
+							<span class="text-xs font-semibold text-text-muted">{tx('step3.progress.overall')}</span>
 							<span class="text-xs font-bold text-brand-blue">{Math.round(overallPct)}%</span>
 						</div>
 						<div class="w-full h-2.5 bg-navy-lighter rounded-full overflow-hidden">
@@ -305,151 +328,131 @@
 							></div>
 						</div>
 						<div class="flex items-center justify-between mt-1.5 lg:mt-2">
-							<span class="text-[10px] lg:text-[11px] text-text-muted">2 z 4 souborů dokončeno</span>
-							<span class="text-[10px] lg:text-[11px] text-text-muted">~14s zbývá</span>
+							<span class="text-[10px] lg:text-[11px] text-text-muted">
+								{tx('step3.progress.filesCompleted', {
+									done: processingState?.filesCompleted ?? 0,
+									total: processingState?.totalFiles ?? 0
+								})}
+							</span>
+							<span class="text-[10px] lg:text-[11px] text-text-muted">
+								{tx('step3.progress.timeRemaining', { time: `${processingState?.timeRemainingSeconds ?? 0}s` })}
+							</span>
 						</div>
 					</div>
 
 					<!-- File List -->
 					<div class="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
-						<!-- File 1 - Done -->
-						<div
-							class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-green/20 cursor-default"
-							style="background:rgba(10,22,40,0.6)"
-						>
-							<div
-								class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
-							>
-								<i class="fa-solid fa-image text-brand-green text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">IMG_4821.jpg</p>
-								<div class="flex items-center gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">3.2 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span
-										class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1"
+						{#each processingState?.files ?? [] as fileState}
+							{@const file = getFileById(fileState.fileId)}
+							{#if file}
+								{#if fileState.status === 'done'}
+									<div
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-green/20 cursor-default"
+										style="background:rgba(10,22,40,0.6)"
 									>
-										<i class="fa-solid fa-circle-check text-[9px]"></i> 12 polí odstraněno
-									</span>
-								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span
-									class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-									>JPG</span
-								>
-								<div
-									class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center"
-								>
-									<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-								</div>
-							</div>
-						</div>
-
-						<!-- File 2 - Done (GPS) -->
-						<div
-							class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-green/20 cursor-default"
-							style="background:rgba(10,22,40,0.6)"
-						>
-							<div
-								class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
-							>
-								<i class="fa-solid fa-image text-brand-green text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">photo_holiday_2024.heic</p>
-								<div class="flex items-center gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">8.7 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span
-										class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1"
-									>
-										<i class="fa-solid fa-circle-check text-[9px]"></i>
-										<span class="hidden lg:inline">GPS + 18 polí odstraněno</span>
-										<span class="inline lg:hidden">GPS + 18 polí</span>
-									</span>
-								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span
-									class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-									>HEIC</span
-								>
-								<div
-									class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center"
-								>
-									<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-								</div>
-							</div>
-						</div>
-
-						<!-- File 3 - In Progress -->
-						<div
-							class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-blue/30 cursor-default"
-							style="background:rgba(59,130,246,0.05)"
-						>
-							<div
-								class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0"
-							>
-								<i class="fa-solid fa-video text-brand-orange text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">video_prague_walk.mp4</p>
-								<div class="flex flex-col gap-1 mt-1">
-									<div class="flex items-center justify-between">
-										<span
-											class="text-[10px] lg:text-[11px] text-brand-blue font-medium flex items-center gap-1"
-										>
-											<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
-											Zpracovávám...
-										</span>
-										<span class="text-[10px] lg:text-[11px] text-brand-blue font-bold">38%</span>
-									</div>
-									<div class="w-full h-1.5 bg-navy-lighter rounded-full overflow-hidden">
 										<div
-											class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400"
-											style="width:38%"
-										></div>
+											class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
+										>
+											<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-green text-sm"></i>
+										</div>
+										<div class="flex-1 min-w-0">
+											<p class="text-sm font-medium text-white truncate">{file.name}</p>
+											<div class="flex items-center gap-2 mt-0.5">
+												<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+												<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+												<span
+													class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1"
+												>
+													<i class="fa-solid fa-circle-check text-[9px]"></i>
+													{#if fileState.gpsRemoved}
+														<span class="hidden lg:inline">{tx('step3.files.gpsAndFieldsRemoved', { count: fileState.fieldsRemoved ?? 0 })}</span>
+														<span class="inline lg:hidden">{tx('step3.files.gpsAndFieldsRemovedMobile', { count: fileState.fieldsRemoved ?? 0 })}</span>
+													{:else}
+														{fileState.fieldsRemoved ?? 0} {tx('step3.files.fieldsRemoved')}
+													{/if}
+												</span>
+											</div>
+										</div>
+										<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+											<span
+												class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+												>{file.extension}</span
+											>
+											<div
+												class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center"
+											>
+												<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
-								<span
-									class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-									>MP4</span
-								>
-								<i class="fa-solid fa-circle-notch spin-slow text-brand-blue text-sm"></i>
-							</div>
-						</div>
-
-						<!-- File 4 - Waiting -->
-						<div
-							class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default opacity-50"
-							style="background:rgba(10,22,40,0.6)"
-						>
-							<div
-								class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"
-							>
-								<i class="fa-solid fa-image text-brand-blue text-sm"></i>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-white truncate">screenshot_map.png</p>
-								<div class="flex items-center gap-2 mt-0.5">
-									<span class="text-[10px] lg:text-[11px] text-text-muted">1.1 MB</span>
-									<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-									<span
-										class="text-[10px] lg:text-[11px] text-text-muted flex items-center gap-1"
+								{:else if fileState.status === 'in_progress'}
+									<div
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-blue/30 cursor-default"
+										style="background:rgba(59,130,246,0.05)"
 									>
-										<i class="fa-solid fa-clock text-[9px]"></i> Čeká ve frontě
-									</span>
-								</div>
-							</div>
-							<span
-								class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted flex-shrink-0"
-								>PNG</span
-							>
-						</div>
+										<div
+											class="w-9 h-9 rounded-lg {file.type === 'video' ? 'bg-brand-orange/10 border border-brand-orange/20' : 'bg-brand-blue/10 border border-brand-blue/20'} flex items-center justify-center flex-shrink-0"
+										>
+											<i class="fa-solid {file.type === 'video' ? 'fa-video text-brand-orange' : 'fa-image text-brand-blue'} text-sm"></i>
+										</div>
+										<div class="flex-1 min-w-0">
+											<p class="text-sm font-medium text-white truncate">{file.name}</p>
+											<div class="flex flex-col gap-1 mt-1">
+												<div class="flex items-center justify-between">
+													<span
+														class="text-[10px] lg:text-[11px] text-brand-blue font-medium flex items-center gap-1"
+													>
+														<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
+														{tx('step3.files.processing')}
+													</span>
+													<span class="text-[10px] lg:text-[11px] text-brand-blue font-bold">{fileState.progress ?? 0}%</span>
+												</div>
+												<div class="w-full h-1.5 bg-navy-lighter rounded-full overflow-hidden">
+													<div
+														class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400"
+														style="width:{fileState.progress ?? 0}%"
+													></div>
+												</div>
+											</div>
+										</div>
+										<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+											<span
+												class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+												>{file.extension}</span
+											>
+											<i class="fa-solid fa-circle-notch spin-slow text-brand-blue text-sm"></i>
+										</div>
+									</div>
+								{:else}
+									<div
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default opacity-50"
+										style="background:rgba(10,22,40,0.6)"
+									>
+										<div
+											class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"
+										>
+											<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-blue text-sm"></i>
+										</div>
+										<div class="flex-1 min-w-0">
+											<p class="text-sm font-medium text-white truncate">{file.name}</p>
+											<div class="flex items-center gap-2 mt-0.5">
+												<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+												<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+												<span
+													class="text-[10px] lg:text-[11px] text-text-muted flex items-center gap-1"
+												>
+													<i class="fa-solid fa-clock text-[9px]"></i> {tx('step3.files.waitingInQueue')}
+												</span>
+											</div>
+										</div>
+										<span
+											class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted flex-shrink-0"
+											>{file.extension}</span
+										>
+									</div>
+								{/if}
+							{/if}
+						{/each}
 					</div>
 
 					<!-- Action Buttons -->
@@ -458,20 +461,20 @@
 							disabled
 							class="flex-1 py-3.5 lg:py-3.5 rounded-xl bg-brand-green/40 text-white/50 font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+							<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
 						</button>
 						<a
 							href="/step4"
 							class="px-5 py-3.5 rounded-xl bg-brand-red/10 border border-brand-red/30 text-brand-red font-semibold text-sm hover:bg-brand-red/20 transition-all flex items-center gap-2"
 						>
-							<i class="fa-solid fa-stop"></i> Zastavit
+							<i class="fa-solid fa-stop"></i> {tx('step3.actions.stop')}
 						</a>
 					</div>
 					<a
 						href="/step5"
 						class="text-xs text-text-muted hover:text-brand-green transition-colors flex items-center gap-1 mt-1"
 					>
-						<i class="fa-solid fa-arrow-right text-[10px]"></i> nebo přejít na výsledky (demo)
+						<i class="fa-solid fa-arrow-right text-[10px]"></i> {tx('step3.actions.orGoToResults')}
 					</a>
 				</div>
 			</div>
@@ -482,12 +485,12 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-lg text-white">Stav zpracování</h3>
+						<h3 class="font-semibold text-lg text-white">{tx('step3.status.title')}</h3>
 						<span
 							class="text-xs font-bold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1.5"
 						>
 							<i class="fa-solid fa-circle-notch spin-slow text-[10px]"></i>
-							Probíhá
+							{tx('step3.status.inProgress')}
 						</span>
 					</div>
 
@@ -509,70 +512,63 @@
 							</div>
 						</div>
 						<div class="text-center">
-							<p class="font-bold text-white text-base">Probíhá čištění metadat</p>
+							<p class="font-bold text-white text-base">{tx('step3.status.cleaningInProgress')}</p>
 							<p class="text-text-muted text-xs mt-1">
-								Zpracovávám soubor <span class="text-brand-blue font-semibold"
-									>video_prague_walk.mp4</span
-								>
+								{tx('step3.status.processingFileLong', { filename: currentFile?.name ?? '' })}
 							</p>
 						</div>
 					</div>
 
 					<!-- Live Stats -->
 					<div class="grid grid-cols-3 gap-3 w-full">
-						<div
-							class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800"
-						>
-							<p class="text-xl font-black text-white">4</p>
-							<p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+						<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+							<p class="text-xl font-black text-white">{processingState?.totalFiles ?? 0}</p>
+							<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.files')}</p>
 						</div>
-						<div
-							class="bg-navy-main/60 rounded-xl p-3 text-center border border-brand-green/20"
-						>
-							<p class="text-xl font-black text-brand-green">30</p>
-							<p class="text-[10px] text-text-muted mt-0.5">Polí odstraněno</p>
+						<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-brand-green/20">
+							<p class="text-xl font-black text-brand-green">{processingState?.fieldsRemoved ?? 0}</p>
+							<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.fieldsRemoved')}</p>
 						</div>
-						<div
-							class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800"
-						>
+						<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
 							<p class="text-xl font-black text-brand-blue">
-								2<span class="text-sm font-semibold">/4</span>
+								{processingState?.filesCompleted ?? 0}<span class="text-sm font-semibold">/{processingState?.totalFiles ?? 0}</span>
 							</p>
-							<p class="text-[10px] text-text-muted mt-0.5">Hotovo</p>
+							<p class="text-[10px] text-text-muted mt-0.5">{tx('step3.stats.done')}</p>
 						</div>
 					</div>
 
 					<!-- Activity Log -->
 					<div class="flex flex-col gap-1">
 						<p class="text-xs font-semibold text-text-muted mb-1 uppercase tracking-wider">
-							Průběžný log
+							{tx('step3.log.title')}
 						</p>
 						<div
 							class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 max-h-[160px] overflow-y-auto font-mono"
 						>
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span>
-								<span class="text-[11px] text-brand-green"
-									>✓ IMG_4821.jpg — 12 polí odstraněno (EXIF, XMP)</span
-								>
-							</div>
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:03</span>
-								<span class="text-[11px] text-brand-green"
-									>✓ photo_holiday_2024.heic — GPS souřadnice + 18 polí odstraněno</span
-								>
-							</div>
-							<div class="flex items-start gap-2">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:05</span>
-								<span class="text-[11px] text-brand-blue flex items-center gap-1">
-									<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
-									video_prague_walk.mp4 — zpracovávám (38%)...
-								</span>
-							</div>
-							<div class="flex items-start gap-2 opacity-40">
-								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">—</span>
-								<span class="text-[11px] text-text-muted">screenshot_map.png — čeká ve frontě</span>
-							</div>
+							{#each processingState?.log ?? [] as entry}
+								{@const logFile = getFileById(entry.fileId)}
+								{@const logFileState = processingState?.files.find((f) => f.fileId === entry.fileId)}
+								<div class="flex items-start gap-2" class:opacity-40={entry.status === 'waiting'}>
+									<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{entry.timestamp}</span>
+									{#if entry.status === 'success'}
+										<span class="text-[11px] text-brand-green">
+											✓ {logFile?.name ?? ''} —
+											{#if logFileState?.gpsRemoved}
+												{tx('step3.log.gpsSuccess', { count: logFileState.fieldsRemoved ?? 0 })}
+											{:else}
+												{logFileState?.fieldsRemoved ?? 0} {tx('step3.files.fieldsRemoved')} {entry.detail ?? ''}
+											{/if}
+										</span>
+									{:else if entry.status === 'in_progress'}
+										<span class="text-[11px] text-brand-blue flex items-center gap-1">
+											<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
+											{logFile?.name ?? ''} — {tx('step3.log.inProgress', { pct: logFileState?.progress ?? 0 })}
+										</span>
+									{:else}
+										<span class="text-[11px] text-text-muted">{logFile?.name ?? ''} — {tx('step3.log.waiting')}</span>
+									{/if}
+								</div>
+							{/each}
 						</div>
 					</div>
 				</div>
@@ -589,7 +585,7 @@
 			>
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-terminal text-text-muted text-sm"></i>
-					<span class="text-sm font-semibold text-white">Průběžný log</span>
+					<span class="text-sm font-semibold text-white">{tx('step3.log.title')}</span>
 				</div>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
@@ -601,29 +597,30 @@
 					<div
 						class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 font-mono"
 					>
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span>
-							<span class="text-[11px] text-brand-green"
-								>✓ IMG_4821.jpg — 12 polí odstraněno (EXIF, XMP)</span
-							>
-						</div>
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:03</span>
-							<span class="text-[11px] text-brand-green"
-								>✓ photo_holiday_2024.heic — GPS + 18 polí odstraněno</span
-							>
-						</div>
-						<div class="flex items-start gap-2">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:05</span>
-							<span class="text-[11px] text-brand-blue flex items-center gap-1">
-								<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
-								video_prague_walk.mp4 — zpracovávám (38%)...
-							</span>
-						</div>
-						<div class="flex items-start gap-2 opacity-40">
-							<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">—</span>
-							<span class="text-[11px] text-text-muted">screenshot_map.png — čeká ve frontě</span>
-						</div>
+						{#each processingState?.log ?? [] as entry}
+							{@const logFile = getFileById(entry.fileId)}
+							{@const logFileState = processingState?.files.find((f) => f.fileId === entry.fileId)}
+							<div class="flex items-start gap-2" class:opacity-40={entry.status === 'waiting'}>
+								<span class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">{entry.timestamp}</span>
+								{#if entry.status === 'success'}
+									<span class="text-[11px] text-brand-green">
+										✓ {logFile?.name ?? ''} —
+										{#if logFileState?.gpsRemoved}
+											{tx('step3.files.gpsAndFieldsRemoved', { count: logFileState.fieldsRemoved ?? 0 })}
+										{:else}
+											{logFileState?.fieldsRemoved ?? 0} {tx('step3.files.fieldsRemoved')} {entry.detail ?? ''}
+										{/if}
+									</span>
+								{:else if entry.status === 'in_progress'}
+									<span class="text-[11px] text-brand-blue flex items-center gap-1">
+										<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
+										{logFile?.name ?? ''} — {tx('step3.log.inProgress', { pct: logFileState?.progress ?? 0 })}
+									</span>
+								{:else}
+									<span class="text-[11px] text-text-muted">{logFile?.name ?? ''} — {tx('step3.log.waiting')}</span>
+								{/if}
+							</div>
+						{/each}
 					</div>
 				</div>
 			{/if}

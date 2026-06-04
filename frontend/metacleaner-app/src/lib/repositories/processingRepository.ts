@@ -27,6 +27,7 @@ export interface ProcessingLogEntry {
 	timestamp: string;
 	fileId: string;
 	status: LogEntryStatus;
+	detail?: string;
 }
 
 export interface ProcessingState {
@@ -123,7 +124,7 @@ export async function getProcessingState(): Promise<ProcessingState> {
 			{ fileId: 'screenshot-map', status: 'waiting' }
 		],
 		log: [
-			{ timestamp: '12:04:01', fileId: 'img-4821', status: 'success' },
+			{ timestamp: '12:04:01', fileId: 'img-4821', status: 'success', detail: '(EXIF, XMP)' },
 			{ timestamp: '12:04:03', fileId: 'photo-holiday-2024', status: 'success' },
 			{ timestamp: '12:04:05', fileId: 'video-prague-walk', status: 'in_progress' },
 			{ timestamp: '—', fileId: 'screenshot-map', status: 'waiting' }
