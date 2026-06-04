@@ -1,6 +1,10 @@
 <script lang="ts">
 	import '../layout.css';
 	import { onMount } from 'svelte';
+	import { currentLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getReports, getSummaryStats, type Report, type ReportSummaryStats } from '$lib/repositories/reportRepository';
 
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
@@ -10,196 +14,15 @@
 	let toastMessage = $state('');
 	let toastTimer: ReturnType<typeof setTimeout>;
 
-	type Report = {
-		id: string;
-		date: string;
-		time: string;
-		duration: string;
-		fileCount: number;
-		fileTypes: string;
-		type: 'image' | 'video';
-		gps: boolean;
-		fields: number;
-		fieldsColor?: 'orange' | 'white';
-		tags: string[];
-		reportId: string;
-		iconColor: 'green' | 'blue' | 'orange';
-	};
+	let user = $state<User | null>(null);
+	let reports = $state<Report[]>([]);
+	let stats = $state<ReportSummaryStats | null>(null);
 
-	const reports: Report[] = [
-		{
-			id: '#A1',
-			date: '2. 6. 2025',
-			time: '10:22',
-			duration: '28s',
-			fileCount: 4,
-			fileTypes: 'JPG, HEIC, MP4',
-			type: 'image',
-			gps: true,
-			fields: 87,
-			tags: ['GPS', 'EXIF', 'XMP'],
-			reportId: 'MCR-2025-0602-A1',
-			iconColor: 'green'
-		},
-		{
-			id: '#B2',
-			date: '29. 5. 2025',
-			time: '14:05',
-			duration: '12s',
-			fileCount: 2,
-			fileTypes: 'PNG, WEBP',
-			type: 'image',
-			gps: false,
-			fields: 34,
-			tags: ['EXIF', 'XMP'],
-			reportId: 'MCR-2025-0529-B2',
-			iconColor: 'blue'
-		},
-		{
-			id: '#C3',
-			date: '25. 5. 2025',
-			time: '09:17',
-			duration: '1m 42s',
-			fileCount: 1,
-			fileTypes: 'MP4',
-			type: 'video',
-			gps: true,
-			fields: 156,
-			fieldsColor: 'orange',
-			tags: ['GPS', 'EXIF'],
-			reportId: 'MCR-2025-0525-C3',
-			iconColor: 'orange'
-		},
-		{
-			id: '#D4',
-			date: '20. 5. 2025',
-			time: '16:44',
-			duration: '55s',
-			fileCount: 7,
-			fileTypes: 'JPG, HEIC',
-			type: 'image',
-			gps: true,
-			fields: 203,
-			tags: ['GPS', 'EXIF', 'XMP'],
-			reportId: 'MCR-2025-0520-D4',
-			iconColor: 'green'
-		},
-		{
-			id: '#E5',
-			date: '15. 5. 2025',
-			time: '11:30',
-			duration: '18s',
-			fileCount: 3,
-			fileTypes: 'PNG, JPG',
-			type: 'image',
-			gps: false,
-			fields: 45,
-			tags: ['EXIF', 'XMP'],
-			reportId: 'MCR-2025-0515-E5',
-			iconColor: 'blue'
-		},
-		{
-			id: '#F6',
-			date: '10. 5. 2025',
-			time: '08:55',
-			duration: '2m 15s',
-			fileCount: 2,
-			fileTypes: 'MP4, MOV',
-			type: 'video',
-			gps: true,
-			fields: 289,
-			fieldsColor: 'orange',
-			tags: ['GPS', 'EXIF'],
-			reportId: 'MCR-2025-0510-F6',
-			iconColor: 'orange'
-		},
-		{
-			id: '#G7',
-			date: '5. 5. 2025',
-			time: '19:42',
-			duration: '9s',
-			fileCount: 1,
-			fileTypes: 'HEIC',
-			type: 'image',
-			gps: true,
-			fields: 22,
-			tags: ['GPS', 'EXIF'],
-			reportId: 'MCR-2025-0505-G7',
-			iconColor: 'green'
-		},
-		{
-			id: '#H8',
-			date: '28. 4. 2025',
-			time: '14:11',
-			duration: '35s',
-			fileCount: 5,
-			fileTypes: 'JPG',
-			type: 'image',
-			gps: false,
-			fields: 78,
-			tags: ['EXIF', 'XMP'],
-			reportId: 'MCR-2025-0428-H8',
-			iconColor: 'blue'
-		},
-		{
-			id: '#I9',
-			date: '20. 4. 2025',
-			time: '10:05',
-			duration: '1m 8s',
-			fileCount: 3,
-			fileTypes: 'MP4',
-			type: 'video',
-			gps: true,
-			fields: 134,
-			fieldsColor: 'orange',
-			tags: ['GPS', 'EXIF'],
-			reportId: 'MCR-2025-0420-I9',
-			iconColor: 'orange'
-		},
-		{
-			id: '#J10',
-			date: '12. 4. 2025',
-			time: '16:22',
-			duration: '42s',
-			fileCount: 6,
-			fileTypes: 'JPG, PNG',
-			type: 'image',
-			gps: true,
-			fields: 99,
-			tags: ['GPS', 'EXIF', 'XMP'],
-			reportId: 'MCR-2025-0412-J10',
-			iconColor: 'green'
-		},
-		{
-			id: '#K11',
-			date: '3. 4. 2025',
-			time: '09:14',
-			duration: '5s',
-			fileCount: 1,
-			fileTypes: 'PNG',
-			type: 'image',
-			gps: false,
-			fields: 11,
-			tags: ['XMP'],
-			reportId: 'MCR-2025-0403-K11',
-			iconColor: 'blue'
-		},
-		{
-			id: '#L12',
-			date: '25. 3. 2025',
-			time: '17:30',
-			duration: '58s',
-			fileCount: 4,
-			fileTypes: 'HEIC, MP4',
-			type: 'video',
-			gps: true,
-			fields: 170,
-			fieldsColor: 'orange',
-			tags: ['GPS', 'EXIF', 'XMP'],
-			reportId: 'MCR-2025-0325-L12',
-			iconColor: 'orange'
-		}
-	];
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale;
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
 
 	let filteredReports = $derived(
 		reports.filter((r) => {
@@ -220,9 +43,9 @@
 	}
 
 	function fileCountLabel(n: number): string {
-		if (n === 1) return '1 soubor';
-		if (n >= 2 && n <= 4) return `${n} soubory`;
-		return `${n} souborů`;
+		if (n === 1) return tx('reports.fileCount.one');
+		if (n >= 2 && n <= 4) return tx('reports.fileCount.few', { count: n });
+		return tx('reports.fileCount.many', { count: n });
 	}
 
 	function tagStyle(tag: string): string {
@@ -239,7 +62,7 @@
 	}
 
 	function downloadReport(id: string) {
-		toastMessage = 'Stahování: ' + id;
+		toastMessage = tx('reports.toast.downloading') + ' ' + id;
 		showToast = true;
 		clearTimeout(toastTimer);
 		toastTimer = setTimeout(() => {
@@ -255,12 +78,15 @@
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
+		getCurrentUser().then((u) => { user = u; });
+		getReports().then((r) => { reports = r; });
+		getSummaryStats().then((s) => { stats = s; });
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Historie reportů</title>
+	<title>{tx('reports.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -286,7 +112,7 @@
 					>
 						<i class="fa-solid fa-shield-halved text-sm lg:text-xl"></i>
 					</div>
-					<span class="text-base lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+					<span class="text-base lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 				</a>
 			</div>
 
@@ -297,7 +123,7 @@
 					class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-text-muted hover:text-white hover:bg-gray-800 transition-colors"
 				>
 					<i class="fa-solid fa-arrow-left text-xs"></i>
-					<span>Zpět na čištění</span>
+					<span>{tx('reports.nav.backToCleaning')}</span>
 				</a>
 
 				<div id="userDropdown" class="relative inline-block">
@@ -310,7 +136,7 @@
 						>
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -318,16 +144,16 @@
 					</button>
 					<div class="lang-dropdown-menu" class:open={userDropdownOpen} style="min-width:200px">
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -348,16 +174,16 @@
 						style="min-width:220px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5 truncate">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5 truncate">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -381,10 +207,10 @@
 				</div>
 				<div>
 					<h1 class="text-xl lg:text-3xl font-bold text-white leading-tight">
-						Historie reportů
+						{tx('reports.header.title')}
 					</h1>
 					<p class="text-text-muted text-xs lg:text-sm mt-0.5 lg:mt-1">
-						<span class="hidden lg:inline">Log všech čistících operací · </span>12 reportů celkem
+						<span class="hidden lg:inline">{tx('reports.header.subtitle')} · </span>{tx('reports.header.totalReports', { count: stats?.totalReports ?? 0 })}
 					</p>
 				</div>
 			</div>
@@ -394,8 +220,8 @@
 					class="flex items-center gap-2 px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-400 transition-all shadow-glow-green"
 				>
 					<i class="fa-solid fa-plus text-xs"></i>
-					<span class="hidden sm:inline">Nové čištění</span>
-					<span class="inline sm:hidden">Nové</span>
+					<span class="hidden sm:inline">{tx('reports.header.newCleaning')}</span>
+					<span class="inline sm:hidden">{tx('reports.header.newShort')}</span>
 				</a>
 			</div>
 		</div>
@@ -410,8 +236,8 @@
 				>
 					<i class="fa-solid fa-file-lines text-brand-blue text-sm lg:text-base"></i>
 				</div>
-				<p class="text-xl lg:text-2xl font-black text-white">12</p>
-				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">Celkem reportů</p>
+				<p class="text-xl lg:text-2xl font-black text-white">{stats?.totalReports ?? 0}</p>
+				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">{tx('reports.stats.totalReports')}</p>
 			</div>
 			<div
 				class="bg-navy-card rounded-2xl border border-brand-green/20 p-4 lg:p-5 shadow-card flex flex-col gap-1"
@@ -421,10 +247,10 @@
 				>
 					<i class="fa-solid fa-eraser text-brand-green text-sm lg:text-base"></i>
 				</div>
-				<p class="text-xl lg:text-2xl font-black text-brand-green">1 248</p>
+				<p class="text-xl lg:text-2xl font-black text-brand-green">{stats?.fieldsRemoved.toLocaleString() ?? 0}</p>
 				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">
-					<span class="hidden lg:inline">Polí metadat odstraněno</span>
-					<span class="inline lg:hidden">Polí metadat</span>
+					<span class="hidden lg:inline">{tx('reports.stats.fieldsRemoved')}</span>
+					<span class="inline lg:hidden">{tx('reports.stats.fieldsRemovedShort')}</span>
 				</p>
 			</div>
 			<div
@@ -435,8 +261,8 @@
 				>
 					<i class="fa-solid fa-file-circle-check text-brand-orange text-sm lg:text-base"></i>
 				</div>
-				<p class="text-xl lg:text-2xl font-black text-brand-orange">47</p>
-				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">Souborů zpracováno</p>
+				<p class="text-xl lg:text-2xl font-black text-brand-orange">{stats?.filesProcessed ?? 0}</p>
+				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">{tx('reports.stats.filesProcessed')}</p>
 			</div>
 			<div
 				class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-5 shadow-card flex flex-col gap-1"
@@ -446,10 +272,10 @@
 				>
 					<i class="fa-solid fa-location-dot text-brand-red text-sm lg:text-base"></i>
 				</div>
-				<p class="text-xl lg:text-2xl font-black text-brand-red">31</p>
+				<p class="text-xl lg:text-2xl font-black text-brand-red">{stats?.gpsRemoved ?? 0}</p>
 				<p class="text-[11px] lg:text-xs text-text-muted leading-tight">
-					<span class="hidden lg:inline">GPS lokací odstraněno</span>
-					<span class="inline lg:hidden">GPS odstraněno</span>
+					<span class="hidden lg:inline">{tx('reports.stats.gpsRemoved')}</span>
+					<span class="inline lg:hidden">{tx('reports.stats.gpsRemovedShort')}</span>
 				</p>
 			</div>
 		</div>
@@ -463,40 +289,40 @@
 			>
 				<div class="flex items-center gap-2 flex-wrap">
 					<span class="text-xs text-text-muted font-semibold uppercase tracking-wider mr-1"
-						>Filtr:</span
+						>{tx('reports.filter.label')}</span
 					>
 					<button
 						onclick={() => setFilter('all')}
 						class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"
 						class:active={activeFilter === 'all'}
-					>Vše</button>
+					>{tx('reports.filter.all')}</button>
 					<button
 						onclick={() => setFilter('success')}
 						class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"
 						class:active={activeFilter === 'success'}
 					>
-						<i class="fa-solid fa-circle-check text-brand-green mr-1"></i>Úspěšné
+						<i class="fa-solid fa-circle-check text-brand-green mr-1"></i>{tx('reports.filter.successful')}
 					</button>
 					<button
 						onclick={() => setFilter('gps')}
 						class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"
 						class:active={activeFilter === 'gps'}
 					>
-						<i class="fa-solid fa-location-dot text-brand-red mr-1"></i>Obsahovalo GPS
+						<i class="fa-solid fa-location-dot text-brand-red mr-1"></i>{tx('reports.filter.containedGps')}
 					</button>
 					<button
 						onclick={() => setFilter('image')}
 						class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"
 						class:active={activeFilter === 'image'}
 					>
-						<i class="fa-solid fa-image text-brand-blue mr-1"></i>Fotografie
+						<i class="fa-solid fa-image text-brand-blue mr-1"></i>{tx('reports.filter.photos')}
 					</button>
 					<button
 						onclick={() => setFilter('video')}
 						class="filter-btn text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-700 text-text-muted"
 						class:active={activeFilter === 'video'}
 					>
-						<i class="fa-solid fa-video text-brand-orange mr-1"></i>Video
+						<i class="fa-solid fa-video text-brand-orange mr-1"></i>{tx('reports.filter.video')}
 					</button>
 				</div>
 				<div class="relative w-full md:w-64">
@@ -506,7 +332,7 @@
 					<input
 						bind:value={searchQuery}
 						type="text"
-						placeholder="Hledat report..."
+						placeholder={tx('reports.search.placeholder')}
 						class="w-full pl-8 pr-4 py-2 rounded-lg bg-navy-main border border-gray-700 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-blue transition-colors"
 					/>
 				</div>
@@ -521,7 +347,7 @@
 			<input
 				bind:value={searchQuery}
 				type="text"
-				placeholder="Hledat report..."
+				placeholder={tx('reports.search.placeholder')}
 				class="w-full pl-9 pr-4 py-3 rounded-xl bg-navy-card border border-gray-700 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-blue transition-colors"
 			/>
 		</div>
@@ -533,34 +359,34 @@
 					onclick={() => setFilter('all')}
 					class="filter-btn text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 text-text-muted whitespace-nowrap"
 					class:active={activeFilter === 'all'}
-				>Vše</button>
+				>{tx('reports.filter.all')}</button>
 				<button
 					onclick={() => setFilter('success')}
 					class="filter-btn text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 text-text-muted whitespace-nowrap"
 					class:active={activeFilter === 'success'}
 				>
-					<i class="fa-solid fa-circle-check text-brand-green mr-1"></i>Úspěšné
+					<i class="fa-solid fa-circle-check text-brand-green mr-1"></i>{tx('reports.filter.successful')}
 				</button>
 				<button
 					onclick={() => setFilter('gps')}
 					class="filter-btn text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 text-text-muted whitespace-nowrap"
 					class:active={activeFilter === 'gps'}
 				>
-					<i class="fa-solid fa-location-dot text-brand-red mr-1"></i>GPS
+					<i class="fa-solid fa-location-dot text-brand-red mr-1"></i>{tx('reports.filter.containedGpsShort')}
 				</button>
 				<button
 					onclick={() => setFilter('image')}
 					class="filter-btn text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 text-text-muted whitespace-nowrap"
 					class:active={activeFilter === 'image'}
 				>
-					<i class="fa-solid fa-image text-brand-blue mr-1"></i>Foto
+					<i class="fa-solid fa-image text-brand-blue mr-1"></i>{tx('reports.filter.photosShort')}
 				</button>
 				<button
 					onclick={() => setFilter('video')}
 					class="filter-btn text-xs font-semibold px-3 py-2 rounded-lg border border-gray-700 text-text-muted whitespace-nowrap"
 					class:active={activeFilter === 'video'}
 				>
-					<i class="fa-solid fa-video text-brand-orange mr-1"></i>Video
+					<i class="fa-solid fa-video text-brand-orange mr-1"></i>{tx('reports.filter.video')}
 				</button>
 			</div>
 		</div>
@@ -571,10 +397,10 @@
 		>
 			<!-- Table Header -->
 			<div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
-				<h3 class="font-semibold text-base text-white">Seznam reportů</h3>
+				<h3 class="font-semibold text-base text-white">{tx('reports.table.title')}</h3>
 				<div class="flex items-center gap-2">
 					<span class="text-xs text-text-muted"
-						>Zobrazeno {filteredReports.length} z {reports.length}</span
+						>{tx('reports.table.shown', { filtered: filteredReports.length, total: reports.length })}</span
 					>
 				</div>
 			</div>
@@ -583,33 +409,33 @@
 				class="grid grid-cols-12 gap-2 px-6 py-3 border-b border-gray-800/60 bg-navy-main/40"
 			>
 				<div class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
-					ID
+					{tx('reports.table.id')}
 				</div>
 				<div
 					class="col-span-3 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1"
 				>
-					Datum <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
+					{tx('reports.table.date')} <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
 				</div>
 				<div
 					class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1"
 				>
-					Soubory <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
+					{tx('reports.table.files')} <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
 				</div>
 				<div
 					class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold flex items-center gap-1"
 				>
-					Pole <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
+					{tx('reports.table.fields')} <i class="fa-solid fa-sort sort-icon text-gray-600"></i>
 				</div>
 				<div class="col-span-2 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
-					Typy
+					{tx('reports.table.tags')}
 				</div>
 				<div class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold">
-					Status
+					{tx('reports.table.status')}
 				</div>
 				<div
 					class="col-span-1 text-[10px] text-text-muted uppercase tracking-wider font-semibold text-right"
 				>
-					Akce
+					{tx('reports.table.actions')}
 				</div>
 			</div>
 			<!-- Table Body -->
@@ -643,7 +469,7 @@
 								class="text-sm font-bold {r.fieldsColor === 'orange'
 									? 'text-brand-orange'
 									: 'text-white'}">{r.fields}</p>
-							<p class="text-[10px] text-text-muted">polí odstraněno</p>
+							<p class="text-[10px] text-text-muted">{tx('reports.table.fieldsRemoved')}</p>
 						</div>
 						<div class="col-span-2 flex flex-wrap gap-1">
 							{#each r.tags as tag}
@@ -662,14 +488,14 @@
 						<div class="col-span-1 flex items-center justify-end gap-1">
 							<a
 								href="/report"
-								title="Zobrazit report"
+								title={tx('reports.table.viewReport')}
 								class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center hover:bg-brand-blue/20 transition-colors"
 							>
 								<i class="fa-solid fa-eye text-brand-blue text-[10px]"></i>
 							</a>
 							<button
 								onclick={() => downloadReport(r.reportId)}
-								title="Stáhnout PDF"
+								title={tx('reports.table.downloadPdf')}
 								class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center hover:bg-brand-green/20 transition-colors"
 							>
 								<i class="fa-solid fa-download text-brand-green text-[10px]"></i>
@@ -680,7 +506,7 @@
 				{#if filteredReports.length === 0}
 					<div class="px-6 py-12 text-center">
 						<i class="fa-solid fa-search text-text-muted text-2xl mb-3"></i>
-						<p class="text-text-muted text-sm">Žádné reporty neodpovídají vašemu hledání.</p>
+						<p class="text-text-muted text-sm">{tx('reports.table.noResults')}</p>
 					</div>
 				{/if}
 			</div>
@@ -691,8 +517,8 @@
 			class="fade-in-up delay-3 lg:hidden flex flex-col gap-0 bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden"
 		>
 			<div class="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
-				<h3 class="font-semibold text-sm text-white">Seznam reportů</h3>
-				<span class="text-xs text-text-muted">{filteredReports.length} z {reports.length}</span>
+				<h3 class="font-semibold text-sm text-white">{tx('reports.table.title')}</h3>
+				<span class="text-xs text-text-muted">{tx('reports.table.shown', { filtered: filteredReports.length, total: reports.length })}</span>
 			</div>
 			<div>
 				{#each filteredReports as r, i}
@@ -727,7 +553,7 @@
 										<span
 											class="text-[10px] ml-1 {r.fieldsColor === 'orange'
 												? 'text-brand-orange font-bold'
-												: 'text-text-muted'}">{r.fields} polí</span
+												: 'text-text-muted'}">{r.fields} {tx('reports.table.fieldsMobile')}</span
 										>
 									</div>
 								</div>
@@ -752,7 +578,7 @@
 				{#if filteredReports.length === 0}
 					<div class="px-4 py-10 text-center">
 						<i class="fa-solid fa-search text-text-muted text-xl mb-3"></i>
-						<p class="text-text-muted text-sm">Žádné reporty neodpovídají vašemu hledání.</p>
+						<p class="text-text-muted text-sm">{tx('reports.table.noResults')}</p>
 					</div>
 				{/if}
 			</div>
@@ -769,7 +595,7 @@
 			class="flex w-full py-4 rounded-2xl bg-brand-green text-white font-bold text-base shadow-glow-green items-center justify-center gap-2"
 		>
 			<i class="fa-solid fa-plus"></i>
-			<span>Nové čištění</span>
+			<span>{tx('reports.header.newCleaning')}</span>
 		</a>
 	</div>
 </div>
