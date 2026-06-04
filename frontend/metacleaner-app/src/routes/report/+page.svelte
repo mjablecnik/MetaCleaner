@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../layout.css';
 	import { onMount } from 'svelte';
-	import { currentLocale, initLocale } from '$lib/locale.svelte';
+	import { currentLocale, initLocale, switchLocale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import {
 		getReportDetail,
@@ -11,9 +11,13 @@
 		type ReportIconColor
 	} from '$lib/repositories/reportRepository';
 	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
 
+	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
+	let langOptions = $state<Language[]>([]);
+	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
 	let accordionOpen = $state<boolean[]>([]);
 	let reportDetail = $state<ReportDetail | null>(null);
 	let user = $state<User | null>(null);
@@ -22,6 +26,12 @@
 		currentLocale;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
+	}
+
+	function setLang(lang: string) {
+		switchLocale(lang);
+		langDropdownOpen = false;
+		hamburgerMenuOpen = false;
 	}
 
 	function toggleAccordion(index: number) {
@@ -37,6 +47,7 @@
 
 	function handleClickOutside(e: MouseEvent) {
 		const t = e.target as Element;
+		if (!t.closest('#langDropdown')) langDropdownOpen = false;
 		if (!t.closest('#userDropdown')) userDropdownOpen = false;
 		if (!t.closest('#hamburgerDropdown')) hamburgerMenuOpen = false;
 	}
@@ -72,10 +83,11 @@
 	}
 
 	async function loadData() {
-		const [detail, currentUser] = await Promise.all([getReportDetail(), getCurrentUser()]);
+		const [detail, currentUser, langs] = await Promise.all([getReportDetail(), getCurrentUser(), getLanguages()]);
 		accordionOpen = detail.files.map((_, i) => i === 0);
 		reportDetail = detail;
 		user = currentUser;
+		langOptions = langs;
 	}
 
 	onMount(() => {
@@ -127,6 +139,37 @@
 					<span>{tx('report.nav.backToResults')}</span>
 				</a>
 
+				<div id="langDropdown" class="relative inline-block">
+					<button
+						onclick={() => (langDropdownOpen = !langDropdownOpen)}
+						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+					>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
+						<i
+							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
+							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
+						></i>
+					</button>
+					<div class="lang-dropdown-menu" class:open={langDropdownOpen} style="min-width:160px">
+						{#each langOptions as lang}
+							<div
+								class="lang-option"
+								class:active={currentLocale === lang.code}
+								onclick={() => setLang(lang.code)}
+								role="button"
+								tabindex="0"
+							>
+								<span>{lang.flag}</span>
+								{lang.name}
+								{#if currentLocale === lang.code}
+									<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
+								{/if}
+							</div>
+						{/each}
+					</div>
+				</div>
+
 				<div id="userDropdown" class="relative inline-block">
 					<button
 						onclick={() => (userDropdownOpen = !userDropdownOpen)}
@@ -177,6 +220,26 @@
 						<div class="px-4 py-3 border-b border-gray-700">
 							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 							<p class="text-sm font-semibold text-white mt-0.5 truncate">{user?.email ?? ''}</p>
+						</div>
+						<div class="px-4 py-2 border-b border-gray-700">
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">{tx('common.nav.language')}</p>
+							<div class="flex flex-col gap-0.5">
+								{#each langOptions as lang}
+									<div
+										class="lang-option rounded-lg"
+										class:active={currentLocale === lang.code}
+										onclick={() => setLang(lang.code)}
+										role="button"
+										tabindex="0"
+									>
+										<span>{lang.flag}</span>
+										{lang.name}
+										{#if currentLocale === lang.code}
+											<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
+										{/if}
+									</div>
+								{/each}
+							</div>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
