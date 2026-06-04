@@ -436,19 +436,13 @@
 					<div class="flex rounded-xl bg-navy-main/60 p-1 gap-1">
 						<button
 							onclick={() => (activeMetaTab = 'before')}
-							class="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
-							style={activeMetaTab === 'before'
-								? 'color:#ef4444;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3)'
-								: 'color:#94a3b8;background:transparent;border:1px solid transparent'}
+							class="flex-1 py-2 rounded-lg text-xs font-bold transition-all border {activeMetaTab === 'before' ? 'text-brand-red bg-brand-red/10 border-brand-red/30' : 'text-text-muted bg-transparent border-transparent'}"
 						>
 							<i class="fa-solid fa-triangle-exclamation mr-1"></i> {tx('step5.metadata.before')}
 						</button>
 						<button
 							onclick={() => (activeMetaTab = 'after')}
-							class="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
-							style={activeMetaTab === 'after'
-								? 'color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3)'
-								: 'color:#94a3b8;background:transparent;border:1px solid transparent'}
+							class="flex-1 py-2 rounded-lg text-xs font-bold transition-all border {activeMetaTab === 'after' ? 'text-brand-green bg-brand-green/10 border-brand-green/30' : 'text-text-muted bg-transparent border-transparent'}"
 						>
 							<i class="fa-solid fa-shield-halved mr-1"></i> {tx('step5.metadata.after')}
 						</button>
