@@ -195,8 +195,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -245,8 +245,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>

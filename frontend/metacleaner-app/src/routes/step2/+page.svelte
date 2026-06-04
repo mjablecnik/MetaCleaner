@@ -137,8 +137,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -191,8 +191,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -268,16 +268,13 @@
 						</div>
 						<div class="flex items-center gap-1.5">
 							<span
-								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-red/25"
-								style="background:rgba(239,68,68,0.15);color:#ef4444">GPS</span
+								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-red/25 bg-brand-red/15 text-brand-red">GPS</span
 							>
 							<span
-								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25"
-								style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipIdentity')}</span
+								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange">{tx('step2.risk.chipIdentity')}</span
 							>
 							<span
-								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25"
-								style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipDevice')}</span
+								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange">{tx('step2.risk.chipDevice')}</span
 							>
 						</div>
 					</div>
@@ -351,8 +348,7 @@
 					<!-- Before/After -->
 					<div class="grid grid-cols-2 gap-3">
 						<div
-							class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-red/25"
-							style="background:rgba(239,68,68,0.06)"
+							class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-red/25 bg-brand-red/6"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-red"
 								>{tx('step2.risk.now')}</span
@@ -361,8 +357,7 @@
 							<span class="text-[10px] text-text-muted">{tx('step2.risk.score')}</span>
 						</div>
 						<div
-							class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-green/25"
-							style="background:rgba(34,197,94,0.06)"
+							class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-green/25 bg-brand-green/6"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-green"
 								>{tx('step2.risk.afterCleaning')}</span
@@ -399,8 +394,7 @@
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
-						class="dashed-border-anim rounded-xl flex flex-col items-center justify-center gap-2.5 lg:gap-3 cursor-pointer py-5 lg:py-6 relative"
-						style="background:rgba(10,22,40,0.5)"
+						class="dashed-border-anim rounded-xl flex flex-col items-center justify-center gap-2.5 lg:gap-3 cursor-pointer py-5 lg:py-6 relative bg-navy-main/50"
 						onclick={() => document.getElementById('fileInput')?.click()}
 					>
 						<div
@@ -435,12 +429,10 @@
 						>
 							{#each uploadedFiles as file (file.id)}
 								<div
-									class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border cursor-default {file.hasGps ? 'border-red-900/30' : 'border-gray-800'}"
-									style="background:rgba(10,22,40,0.6)"
+									class="group flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border cursor-default bg-navy-main/60 {file.hasGps ? 'border-red-900/30' : 'border-gray-800'}"
 								>
 									<div
-										class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border {file.hasGps ? 'border-brand-red/20' : file.type === 'video' ? 'border-brand-orange/20' : 'border-brand-blue/20'}"
-										style="{file.hasGps ? 'background:rgba(239,68,68,0.1)' : file.type === 'video' ? 'background:rgba(249,115,22,0.1)' : 'background:rgba(59,130,246,0.1)'}"
+										class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border {file.hasGps ? 'border-brand-red/20 bg-brand-red/10' : file.type === 'video' ? 'border-brand-orange/20 bg-brand-orange/10' : 'border-brand-blue/20 bg-brand-blue/10'}"
 									>
 										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} {file.hasGps ? 'text-brand-red' : file.type === 'video' ? 'text-brand-orange' : 'text-brand-blue'} text-sm"></i>
 									</div>
@@ -550,16 +542,13 @@
 							</p>
 							<div class="flex items-center gap-1.5 mt-1">
 								<span
-									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-red/25"
-									style="background:rgba(239,68,68,0.15);color:#ef4444">GPS</span
+									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-red/25 bg-brand-red/15 text-brand-red">GPS</span
 								>
 								<span
-									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25"
-									style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipIdentity')}</span
+									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange">{tx('step2.risk.chipIdentity')}</span
 								>
 								<span
-									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25"
-									style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipDevice')}</span
+									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange">{tx('step2.risk.chipDevice')}</span
 								>
 							</div>
 						</div>
@@ -625,8 +614,7 @@
 					<!-- Before/After preview -->
 					<div class="grid grid-cols-2 gap-3">
 						<div
-							class="flex flex-col items-center gap-2 px-3 py-3 rounded-xl border border-brand-red/25"
-							style="background:rgba(239,68,68,0.08)"
+							class="flex flex-col items-center gap-2 px-3 py-3 rounded-xl border border-brand-red/25 bg-brand-red/8"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-red"
 								>{tx('step2.risk.now')}</span
@@ -635,8 +623,7 @@
 							<span class="text-[10px] text-text-muted">{tx('step2.risk.score')}</span>
 						</div>
 						<div
-							class="flex flex-col items-center gap-2 px-3 py-3 rounded-xl border border-brand-green/25"
-							style="background:rgba(34,197,94,0.08)"
+							class="flex flex-col items-center gap-2 px-3 py-3 rounded-xl border border-brand-green/25 bg-brand-green/8"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-green"
 								>{tx('step2.risk.afterCleaning')}</span
@@ -648,8 +635,7 @@
 
 					<!-- CTA hint -->
 					<div
-						class="flex items-start gap-3 px-4 py-3 rounded-xl border border-brand-green/20"
-						style="background:rgba(34,197,94,0.08)"
+						class="flex items-start gap-3 px-4 py-3 rounded-xl border border-brand-green/20 bg-brand-green/8"
 					>
 						<i class="fa-solid fa-shield-halved text-brand-green text-sm mt-0.5"></i>
 						<p class="text-xs text-text-muted">
@@ -662,8 +648,7 @@
 
 		<!-- Mobile CTA hint -->
 		<div
-			class="lg:hidden flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-green/20"
-			style="background:rgba(34,197,94,0.06)"
+			class="lg:hidden flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-green/20 bg-brand-green/6"
 		>
 			<i class="fa-solid fa-shield-halved text-brand-green text-sm"></i>
 			<p class="text-xs text-text-muted">

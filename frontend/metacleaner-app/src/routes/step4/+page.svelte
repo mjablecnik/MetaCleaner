@@ -136,8 +136,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -182,8 +182,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -335,7 +335,7 @@
 									</div>
 								</div>
 							{:else if fileStatus === 'error'}
-								<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-red/30 cursor-default" style="background:rgba(239,68,68,0.05)">
+								<div class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-red/30 cursor-default bg-brand-red/5">
 									<div class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
 										<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-brand-red text-sm"></i>
 									</div>
@@ -461,27 +461,23 @@
 							{#each errorState?.errorTypes ?? [] as errType}
 								<button
 									onclick={() => (selectedErrorType = errType.id)}
-									class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all w-full"
-									style="border:1px solid {selectedErrorType === errType.id ? 'rgba(239,68,68,0.3)' : 'rgba(55,65,81,1)'}; background:{selectedErrorType === errType.id ? 'rgba(239,68,68,0.1)' : 'rgba(10,22,40,0.6)'}"
+									class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all w-full border {selectedErrorType === errType.id ? 'border-brand-red/30 bg-brand-red/10' : 'border-gray-700 bg-navy-main/60'}"
 								>
 									<div
-										class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-										style="border:1px solid {selectedErrorType === errType.id ? 'rgba(239,68,68,0.25)' : '#374151'}; background:{selectedErrorType === errType.id ? 'rgba(239,68,68,0.15)' : '#1e293b'}"
+										class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 border {selectedErrorType === errType.id ? 'border-brand-red/25 bg-brand-red/15' : 'border-gray-700 bg-navy-lighter'}"
 									>
 										<i
-											class="fa-solid {errType.icon} text-xs"
-											style="color:{selectedErrorType === errType.id ? '#ef4444' : '#94a3b8'}"
+											class="fa-solid {errType.icon} text-xs {selectedErrorType === errType.id ? 'text-brand-red' : 'text-text-muted'}"
 										></i>
 									</div>
 									<div class="flex-1 min-w-0">
-										<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{tx(`step4.type.${errType.id}.title`)}</p>
+										<p class="text-xs font-semibold {selectedErrorType === errType.id ? 'text-text-main' : 'text-text-muted'}">{tx(`step4.type.${errType.id}.title`)}</p>
 										<p class="text-[10px] text-text-muted">{tx(`step4.type.${errType.id}.description`)}</p>
 									</div>
 									<i
-										class="fa-solid text-xs"
+										class="fa-solid text-xs {selectedErrorType === errType.id ? 'text-brand-red' : 'text-gray-700'}"
 										class:fa-circle-dot={selectedErrorType === errType.id}
 										class:fa-circle={selectedErrorType !== errType.id}
-										style="color:{selectedErrorType === errType.id ? '#ef4444' : '#374151'}"
 									></i>
 								</button>
 							{/each}
@@ -582,27 +578,23 @@
 					{#each errorState?.errorTypes ?? [] as errType}
 						<button
 							onclick={() => (selectedErrorType = errType.id)}
-							class="flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all w-full"
-							style="border:1px solid {selectedErrorType === errType.id ? 'rgba(239,68,68,0.3)' : 'rgba(55,65,81,1)'}; background:{selectedErrorType === errType.id ? 'rgba(239,68,68,0.1)' : 'rgba(10,22,40,0.6)'}"
+							class="flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all w-full border {selectedErrorType === errType.id ? 'border-brand-red/30 bg-brand-red/10' : 'border-gray-700 bg-navy-main/60'}"
 						>
 							<div
-								class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-								style="border:1px solid {selectedErrorType === errType.id ? 'rgba(239,68,68,0.25)' : '#374151'}; background:{selectedErrorType === errType.id ? 'rgba(239,68,68,0.15)' : '#1e293b'}"
+								class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 border {selectedErrorType === errType.id ? 'border-brand-red/25 bg-brand-red/15' : 'border-gray-700 bg-navy-lighter'}"
 							>
 								<i
-									class="fa-solid {errType.icon} text-xs"
-									style="color:{selectedErrorType === errType.id ? '#ef4444' : '#94a3b8'}"
+									class="fa-solid {errType.icon} text-xs {selectedErrorType === errType.id ? 'text-brand-red' : 'text-text-muted'}"
 								></i>
 							</div>
 							<div class="flex-1 min-w-0">
-								<p class="text-xs font-semibold" style="color:{selectedErrorType === errType.id ? '#fff' : '#94a3b8'}">{tx(`step4.type.${errType.id}.title`)}</p>
+								<p class="text-xs font-semibold {selectedErrorType === errType.id ? 'text-text-main' : 'text-text-muted'}">{tx(`step4.type.${errType.id}.title`)}</p>
 								<p class="text-[10px] text-text-muted">{tx(`step4.type.${errType.id}.description`)}</p>
 							</div>
 							<i
-								class="fa-solid text-xs"
+								class="fa-solid text-xs {selectedErrorType === errType.id ? 'text-brand-red' : 'text-gray-700'}"
 								class:fa-circle-dot={selectedErrorType === errType.id}
 								class:fa-circle={selectedErrorType !== errType.id}
-								style="color:{selectedErrorType === errType.id ? '#ef4444' : '#374151'}"
 							></i>
 						</button>
 					{/each}

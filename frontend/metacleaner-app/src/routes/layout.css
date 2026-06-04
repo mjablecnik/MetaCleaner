@@ -126,6 +126,15 @@ body {
 	background: var(--color-navy-lighter);
 }
 
+.lang-option.lang-option-danger,
+.lang-option.lang-option-danger:hover {
+	color: var(--color-brand-red);
+}
+
+.mobile-gradient-fade {
+	background: linear-gradient(to top, var(--color-navy-main) 70%, transparent);
+}
+
 .lang-check {
 	margin-left: auto;
 	color: var(--color-brand-blue);

@@ -156,8 +156,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -210,8 +210,8 @@
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
-						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
-							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
+						<div class="lang-option lang-option-danger" role="button" tabindex="0">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
@@ -347,8 +347,7 @@
 							{#if file}
 								{#if fileState.status === 'done'}
 									<div
-										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-green/20 cursor-default"
-										style="background:rgba(10,22,40,0.6)"
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-green/20 cursor-default bg-navy-main/60"
 									>
 										<div
 											class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
@@ -387,8 +386,7 @@
 									</div>
 								{:else if fileState.status === 'in_progress'}
 									<div
-										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-blue/30 cursor-default"
-										style="background:rgba(59,130,246,0.05)"
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-brand-blue/30 cursor-default bg-brand-blue/5"
 									>
 										<div
 											class="w-9 h-9 rounded-lg {file.type === 'video' ? 'bg-brand-orange/10 border border-brand-orange/20' : 'bg-brand-blue/10 border border-brand-blue/20'} flex items-center justify-center flex-shrink-0"
@@ -425,8 +423,7 @@
 									</div>
 								{:else}
 									<div
-										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default opacity-50"
-										style="background:rgba(10,22,40,0.6)"
+										class="flex items-center gap-3 px-3 py-2.5 lg:py-2.5 rounded-xl border border-gray-800 cursor-default opacity-50 bg-navy-main/60"
 									>
 										<div
 											class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"
