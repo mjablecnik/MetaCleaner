@@ -2,19 +2,24 @@
 	import { onMount } from 'svelte';
 	import '../layout.css';
 	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
 
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
 	let riskAccordionOpen = $state(false);
 
-	const langOptions = [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	];
+	let langOptions = $state<Language[]>([]);
+	let user = $state<User | null>(null);
 	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale; // reactive dependency
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
 
 	function setLang(lang: string) {
 		switchLocale(lang);
@@ -31,12 +36,18 @@
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
+		getLanguages().then((langs) => {
+			langOptions = langs;
+		});
+		getCurrentUser().then((u) => {
+			user = u;
+		});
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Soubory načteny</title>
+	<title>{tx('step2.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -54,7 +65,7 @@
 				>
 					<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 				</div>
-				<span class="text-lg lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+				<span class="text-lg lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 			</a>
 
 			<!-- Desktop right side -->
@@ -65,8 +76,8 @@
 						onclick={() => (langDropdownOpen = !langDropdownOpen)}
 						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 					>
-						<span>{currentLangInfo.flag}</span>
-						<span>{currentLangInfo.label}</span>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
 							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -102,7 +113,7 @@
 						>
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -114,16 +125,16 @@
 						style="min-width:200px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -144,13 +155,15 @@
 						style="min-width:220px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 							<p class="text-sm font-semibold text-white mt-0.5 truncate">
-								jana.novakova@email.cz
+								{user?.email ?? ''}
 							</p>
 						</div>
 						<div class="px-4 py-2 border-b border-gray-700">
-							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">Jazyk</p>
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+								{tx('common.nav.language')}
+							</p>
 							<div class="flex flex-col gap-0.5">
 								{#each langOptions as lang}
 									<div
@@ -171,11 +184,11 @@
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -191,9 +204,9 @@
 		<div class="flex flex-col gap-1 mb-0 lg:mb-2">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 				<div>
-					<h1 class="text-2xl lg:text-3xl font-bold text-white">Čištění metadat</h1>
+					<h1 class="text-2xl lg:text-3xl font-bold text-white">{tx('step1.header.title')}</h1>
 					<p class="text-text-muted text-sm mt-1">
-						Nahrajte soubory a odstraňte skrytá metadata lokálně na vašem zařízení.
+						{tx('step1.header.description')}
 					</p>
 				</div>
 				<!-- Ready pill badge -->
@@ -202,8 +215,8 @@
 				>
 					<div class="w-2 h-2 rounded-full bg-brand-orange animate-pulse"></div>
 					<span class="text-[10px] lg:text-xs font-semibold text-text-muted">
-						<span class="hidden lg:inline">Připraveno ke spuštění</span>
-						<span class="inline lg:hidden">Připraveno</span>
+						<span class="hidden lg:inline">{tx('step2.header.readyDesktop')}</span>
+						<span class="inline lg:hidden">{tx('step2.header.readyMobile')}</span>
 					</span>
 				</div>
 			</div>
@@ -240,12 +253,12 @@
 					</div>
 					<div>
 						<div class="flex items-center gap-2 mb-0.5">
-							<span class="text-sm font-bold text-white">Risk Scanner</span>
+							<span class="text-sm font-bold text-white">{tx('step2.risk.title')}</span>
 							<span
 								class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase flex items-center gap-1"
 							>
 								<span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse inline-block"
-								></span>Vysoké riziko
+								></span>{tx('step2.risk.highRisk')}
 							</span>
 						</div>
 						<div class="flex items-center gap-1.5">
@@ -255,11 +268,11 @@
 							>
 							<span
 								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25"
-								style="background:rgba(249,115,22,0.15);color:#f97316">Identita</span
+								style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipIdentity')}</span
 							>
 							<span
 								class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25"
-								style="background:rgba(249,115,22,0.15);color:#f97316">Zařízení</span
+								style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipDevice')}</span
 							>
 						</div>
 					</div>
@@ -272,20 +285,19 @@
 			{#if riskAccordionOpen}
 				<div class="px-4 pb-4 flex flex-col gap-4">
 					<p class="text-xs text-text-muted leading-relaxed">
-						Vaše soubory obsahují citlivá metadata, která mohou odhalit vaši polohu, identitu a
-						zařízení.
+						{tx('step2.risk.description')}
 					</p>
 					<!-- Risk Bars -->
 					<div class="flex flex-col gap-3">
 						<p class="text-[10px] font-bold uppercase tracking-widest text-text-muted">
-							Analýza rizik
+							{tx('step2.risk.analysisTitle')}
 						</p>
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i>GPS souřadnice
+									<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i>{tx('step2.risk.gpsCoordinates')}
 								</span>
-								<span class="text-brand-red font-bold">Kritické</span>
+								<span class="text-brand-red font-bold">{tx('step2.risk.critical')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div
@@ -297,10 +309,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-mobile-screen text-brand-orange text-[10px]"></i>Identita
-									zařízení
+									<i class="fa-solid fa-mobile-screen text-brand-orange text-[10px]"></i>{tx('step2.risk.deviceIdentity')}
 								</span>
-								<span class="text-brand-orange font-bold">Vysoké</span>
+								<span class="text-brand-orange font-bold">{tx('step2.risk.high')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div class="h-2 rounded-full bg-brand-orange" style="width:68%"></div>
@@ -309,9 +320,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-user text-brand-blue text-[10px]"></i>Osobní údaje
+									<i class="fa-solid fa-user text-brand-blue text-[10px]"></i>{tx('step2.risk.personalData')}
 								</span>
-								<span class="text-brand-orange font-bold">Střední</span>
+								<span class="text-brand-orange font-bold">{tx('step2.risk.medium')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div
@@ -323,9 +334,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-clock text-text-muted text-[10px]"></i>Časové razítko
+									<i class="fa-solid fa-clock text-text-muted text-[10px]"></i>{tx('step2.risk.timestamp')}
 								</span>
-								<span class="text-text-muted font-bold">Nízké</span>
+								<span class="text-text-muted font-bold">{tx('step2.risk.low')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div class="h-2 rounded-full bg-gray-500" style="width:22%"></div>
@@ -339,20 +350,20 @@
 							style="background:rgba(239,68,68,0.06)"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-red"
-								>Nyní</span
+								>{tx('step2.risk.now')}</span
 							>
 							<span class="text-2xl font-black text-brand-red">72</span>
-							<span class="text-[10px] text-text-muted">Risk Score</span>
+							<span class="text-[10px] text-text-muted">{tx('step2.risk.score')}</span>
 						</div>
 						<div
 							class="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border border-brand-green/25"
 							style="background:rgba(34,197,94,0.06)"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-green"
-								>Po čištění</span
+								>{tx('step2.risk.afterCleaning')}</span
 							>
 							<span class="text-2xl font-black text-brand-green">100</span>
-							<span class="text-[10px] text-text-muted">Clean Score</span>
+							<span class="text-[10px] text-text-muted">{tx('step2.risk.cleanScore')}</span>
 						</div>
 					</div>
 				</div>
@@ -368,7 +379,7 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 flex flex-col gap-4 shadow-card"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-base lg:text-lg text-white">Nahrát soubory</h3>
+						<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.upload.title')}</h3>
 						<div class="flex gap-1 lg:gap-1.5 flex-wrap justify-end">
 							{#each ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'] as ext}
 								<span
@@ -392,7 +403,7 @@
 						>
 							<i class="fa-solid fa-plus"></i>
 						</div>
-						<p class="text-xs text-text-muted">Přidat další soubory</p>
+						<p class="text-xs text-text-muted">{tx('step2.files.addMore')}</p>
 						<input
 							type="file"
 							id="fileInput"
@@ -406,12 +417,12 @@
 					<div class="flex flex-col gap-2">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-sm font-semibold text-white"
-								>Soubory ke zpracování <span class="text-text-muted font-normal">(4)</span></span
+								>{tx('step1.files.title')} <span class="text-text-muted font-normal">(4)</span></span
 							>
 							<button
 								class="text-xs text-text-muted hover:text-brand-red transition-colors flex items-center gap-1 min-h-[44px] lg:min-h-0 px-2 lg:px-0"
 							>
-								<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>Vymazat vše
+								<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>{tx('step1.files.clearAll')}
 							</button>
 						</div>
 						<div
@@ -437,8 +448,8 @@
 											class="text-[11px] text-brand-orange font-medium flex items-center gap-1"
 										>
 											<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-											<span class="hidden lg:inline">12 polí metadat</span>
-											<span class="inline lg:hidden">12 polí</span>
+											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 12})}</span>
+											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 12})}</span>
 										</span>
 									</div>
 								</div>
@@ -474,7 +485,7 @@
 										<span
 											class="text-[11px] text-brand-red font-medium flex items-center gap-1"
 										>
-											<i class="fa-solid fa-location-dot text-[9px]"></i>GPS nalezeno
+											<i class="fa-solid fa-location-dot text-[9px]"></i>{tx('step2.files.gpsFound')}
 										</span>
 									</div>
 								</div>
@@ -511,8 +522,8 @@
 											class="text-[11px] text-brand-orange font-medium flex items-center gap-1"
 										>
 											<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-											<span class="hidden lg:inline">8 polí metadat</span>
-											<span class="inline lg:hidden">8 polí</span>
+											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 8})}</span>
+											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 8})}</span>
 										</span>
 									</div>
 								</div>
@@ -549,8 +560,8 @@
 											class="text-[11px] text-text-muted flex items-center gap-1"
 										>
 											<i class="fa-solid fa-circle-check text-brand-green text-[9px]"></i>
-											<span class="hidden lg:inline">3 pole metadat</span>
-											<span class="inline lg:hidden">3 pole</span>
+											<span class="hidden lg:inline">{tx('step2.files.metadataFields', {count: 3})}</span>
+											<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', {count: 3})}</span>
 										</span>
 									</div>
 								</div>
@@ -575,12 +586,12 @@
 							href="/step3"
 							class="flex-1 py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-500 transition-all shadow-glow-green flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+							<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
 						</a>
 						<button
 							class="px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-sliders"></i> Možnosti
+							<i class="fa-solid fa-sliders"></i> {tx('step1.actions.options')}
 						</button>
 					</div>
 				</div>
@@ -592,12 +603,12 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-lg text-white">Risk Scanner</h3>
+						<h3 class="font-semibold text-lg text-white">{tx('step2.risk.title')}</h3>
 						<span
 							class="text-xs font-bold px-3 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1.5"
 						>
 							<span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse inline-block"
-							></span>Vysoké riziko
+							></span>{tx('step2.risk.highRisk')}
 						</span>
 					</div>
 
@@ -624,15 +635,14 @@
 							<div class="text-center z-10">
 								<span class="text-3xl font-black text-brand-red leading-none">72</span>
 								<p class="text-[9px] text-text-muted uppercase tracking-wider mt-0.5">
-									Risk Score
+									{tx('step2.risk.score')}
 								</p>
 							</div>
 						</div>
 						<div class="flex flex-col gap-2 flex-1">
-							<p class="text-sm font-bold text-white">Únik osobních dat je pravděpodobný</p>
+							<p class="text-sm font-bold text-white">{tx('step2.risk.leakProbable')}</p>
 							<p class="text-xs text-text-muted leading-relaxed">
-								Vaše soubory obsahují citlivá metadata, která mohou odhalit vaši polohu, identitu a
-								zařízení.
+								{tx('step2.risk.description')}
 							</p>
 							<div class="flex items-center gap-1.5 mt-1">
 								<span
@@ -641,11 +651,11 @@
 								>
 								<span
 									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25"
-									style="background:rgba(249,115,22,0.15);color:#f97316">Identita</span
+									style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipIdentity')}</span
 								>
 								<span
 									class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25"
-									style="background:rgba(249,115,22,0.15);color:#f97316">Zařízení</span
+									style="background:rgba(249,115,22,0.15);color:#f97316">{tx('step2.risk.chipDevice')}</span
 								>
 							</div>
 						</div>
@@ -654,15 +664,14 @@
 					<!-- Risk Breakdown -->
 					<div class="flex flex-col gap-3">
 						<p class="text-xs font-bold uppercase tracking-widest text-text-muted">
-							Analýza rizik
+							{tx('step2.risk.analysisTitle')}
 						</p>
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i>GPS
-									souřadnice
+									<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i>{tx('step2.risk.gpsCoordinates')}
 								</span>
-								<span class="text-brand-red font-bold">Kritické</span>
+								<span class="text-brand-red font-bold">{tx('step2.risk.critical')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div
@@ -674,10 +683,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-mobile-screen text-brand-orange text-[10px]"></i>Identita
-									zařízení
+									<i class="fa-solid fa-mobile-screen text-brand-orange text-[10px]"></i>{tx('step2.risk.deviceIdentity')}
 								</span>
-								<span class="text-brand-orange font-bold">Vysoké</span>
+								<span class="text-brand-orange font-bold">{tx('step2.risk.high')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div class="h-2 rounded-full bg-brand-orange" style="width:68%"></div>
@@ -686,9 +694,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-user text-brand-blue text-[10px]"></i>Osobní údaje
+									<i class="fa-solid fa-user text-brand-blue text-[10px]"></i>{tx('step2.risk.personalData')}
 								</span>
-								<span class="text-brand-orange font-bold">Střední</span>
+								<span class="text-brand-orange font-bold">{tx('step2.risk.medium')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div
@@ -700,9 +708,9 @@
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between text-xs">
 								<span class="flex items-center gap-1.5 text-white font-medium">
-									<i class="fa-solid fa-clock text-text-muted text-[10px]"></i>Časové razítko
+									<i class="fa-solid fa-clock text-text-muted text-[10px]"></i>{tx('step2.risk.timestamp')}
 								</span>
-								<span class="text-text-muted font-bold">Nízké</span>
+								<span class="text-text-muted font-bold">{tx('step2.risk.low')}</span>
 							</div>
 							<div class="w-full bg-navy-lighter rounded-full h-2">
 								<div class="h-2 rounded-full bg-gray-500" style="width:22%"></div>
@@ -717,20 +725,20 @@
 							style="background:rgba(239,68,68,0.08)"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-red"
-								>Nyní</span
+								>{tx('step2.risk.now')}</span
 							>
 							<span class="text-2xl font-black text-brand-red">72</span>
-							<span class="text-[10px] text-text-muted">Risk Score</span>
+							<span class="text-[10px] text-text-muted">{tx('step2.risk.score')}</span>
 						</div>
 						<div
 							class="flex flex-col items-center gap-2 px-3 py-3 rounded-xl border border-brand-green/25"
 							style="background:rgba(34,197,94,0.08)"
 						>
 							<span class="text-[10px] font-bold uppercase tracking-widest text-brand-green"
-								>Po čištění</span
+								>{tx('step2.risk.afterCleaning')}</span
 							>
 							<span class="text-2xl font-black text-brand-green">100</span>
-							<span class="text-[10px] text-text-muted">Clean Score</span>
+							<span class="text-[10px] text-text-muted">{tx('step2.risk.cleanScore')}</span>
 						</div>
 					</div>
 
@@ -741,7 +749,7 @@
 					>
 						<i class="fa-solid fa-shield-halved text-brand-green text-sm mt-0.5"></i>
 						<p class="text-xs text-text-muted">
-							Spusťte čištění a <span class="text-brand-green font-semibold">snižte riziko na 0</span>
+							{tx('step2.risk.reducePre')} <span class="text-brand-green font-semibold">{tx('step2.risk.reduceHighlight')}</span>
 						</p>
 					</div>
 				</div>
@@ -755,7 +763,7 @@
 		>
 			<i class="fa-solid fa-shield-halved text-brand-green text-sm"></i>
 			<p class="text-xs text-text-muted">
-				Spusťte čištění a <span class="text-brand-green font-semibold">snižte riziko na 0</span>
+				{tx('step2.risk.reducePre')} <span class="text-brand-green font-semibold">{tx('step2.risk.reduceHighlight')}</span>
 			</p>
 		</div>
 	</main>
@@ -769,7 +777,7 @@
 				href="/step3"
 				class="flex-1 py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2 active:scale-95 transition-transform"
 			>
-				<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+				<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
 			</a>
 			<button
 				class="px-5 py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center gap-2 active:scale-95 transition-transform"
