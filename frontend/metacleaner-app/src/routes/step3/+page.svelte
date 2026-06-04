@@ -460,12 +460,19 @@
 						>
 							<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
 						</button>
-						<button
+						<a
+							href="/step4"
 							class="px-5 py-3.5 rounded-xl bg-brand-red/10 border border-brand-red/30 text-brand-red font-semibold text-sm hover:bg-brand-red/20 transition-all flex items-center gap-2"
 						>
 							<i class="fa-solid fa-stop"></i> Zastavit
-						</button>
+						</a>
 					</div>
+					<a
+						href="/step5"
+						class="text-xs text-text-muted hover:text-brand-green transition-colors flex items-center gap-1 mt-1"
+					>
+						<i class="fa-solid fa-arrow-right text-[10px]"></i> nebo přejít na výsledky (demo)
+					</a>
 				</div>
 			</div>
 

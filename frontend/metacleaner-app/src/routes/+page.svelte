@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import './layout.css';
 
 	// Dropdown / sheet state
@@ -351,6 +352,7 @@
 					<div class="flex flex-col lg:flex-row gap-2.5 lg:gap-3 mt-1">
 						<button
 							disabled={!hasFiles}
+							onclick={() => hasFiles && goto('/step2')}
 							class="flex-1 py-3.5 lg:py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2
 							{hasFiles
 								? 'bg-brand-green text-white hover:bg-green-500 shadow-glow-green cursor-pointer'

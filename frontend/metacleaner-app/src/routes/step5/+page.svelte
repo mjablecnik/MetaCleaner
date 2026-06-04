@@ -760,6 +760,12 @@
 				>
 					<i class="fa-solid fa-file-lines"></i> Zobrazit report
 				</a>
+				<a
+					href="/reports"
+					class="px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm hover:bg-gray-800 hover:text-white transition-all flex items-center gap-2"
+				>
+					<i class="fa-solid fa-clock-rotate-left"></i> Historie
+				</a>
 			</div>
 		</div>
 	</main>
@@ -781,11 +787,17 @@
 				<i class="fa-solid fa-file-lines"></i> Zobrazit report
 			</a>
 			<a
+				href="/reports"
+				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+			>
+				<i class="fa-solid fa-clock-rotate-left"></i> Historie
+			</a>
+			<a
 				href="/"
 				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
 			>
 				<i class="fa-solid fa-arrow-up-from-bracket text-text-muted"></i>
-				Nahrát nové
+				Nové
 			</a>
 		</div>
 	</div>

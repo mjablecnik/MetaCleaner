@@ -377,9 +377,9 @@
 
 					<!-- Action Buttons -->
 					<div class="flex gap-3 mt-1">
-						<button class="flex-1 py-3.5 rounded-xl bg-brand-green hover:bg-green-400 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-glow-green">
+						<a href="/step3" class="flex-1 py-3.5 rounded-xl bg-brand-green hover:bg-green-400 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-glow-green">
 							<i class="fa-solid fa-rotate-right"></i> Zkusit znovu
-						</button>
+						</a>
 						<button class="px-4 lg:px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm hover:bg-gray-800 hover:text-white transition-all flex items-center gap-2">
 							<i class="fa-solid fa-trash"></i>
 							<span class="hidden lg:inline">Vymazat vše</span>
