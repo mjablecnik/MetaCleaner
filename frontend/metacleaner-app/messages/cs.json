@@ -245,5 +245,14 @@
 	"report.chart.fields": "polí",
 	"report.chart.gpsData": "GPS Data",
 	"report.chart.exifData": "EXIF Data",
-	"report.chart.xmpData": "XMP Data"
+	"report.chart.xmpData": "XMP Data",
+	"report.files.title": "Detailní přehled souborů",
+	"report.files.collapseAll": "Sbalit vše",
+	"report.files.expandAll": "Rozbalit vše",
+	"report.files.safeToShare": "Soubor je bezpečný ke sdílení.",
+	"report.files.metadataFields": "polí metadat",
+	"report.files.more": "dalších",
+	"report.files.removed": "odstraněno",
+	"report.header.generatedDesc": "{date} · {files} souborů · {fields} polí odstraněno",
+	"common.footer.copyright": "© 2025 MetaCleaner. Všechna práva vyhrazena."
 }

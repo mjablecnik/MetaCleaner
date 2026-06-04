@@ -27,6 +27,7 @@ export interface ReportSummaryStats {
 export interface MetadataField {
 	label: string;
 	value: string;
+	moreCount?: number;
 }
 
 export interface FileMetadataSection {
@@ -61,7 +62,6 @@ export interface ChartDataPoint {
 export interface ReportDetail {
 	reportId: string;
 	date: string;
-	generatedDescription: string;
 	filesProcessed: number;
 	fieldsRemoved: number;
 	gpsLocationsRemoved: number;
@@ -260,7 +260,6 @@ export async function getReportDetail(id?: string): Promise<ReportDetail> {
 	return {
 		reportId: '#MCR-2025-0602-A1',
 		date: '2. 6. 2025, 10:22',
-		generatedDescription: '2. června 2025 · 4 soubory · 87 polí odstraněno',
 		filesProcessed: 4,
 		fieldsRemoved: 87,
 		gpsLocationsRemoved: 3,
@@ -295,13 +294,13 @@ export async function getReportDetail(id?: string): Promise<ReportDetail> {
 						{ label: 'Model', value: 'EOS R5' },
 						{ label: 'DateTime', value: '2024:08:14' },
 						{ label: 'Software', value: 'Canon DPP' },
-						{ label: '+ 5 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 5 }
 					],
 					xmpFields: [
 						{ label: 'Creator', value: 'Jana N.' },
 						{ label: 'Rights', value: '© 2024' },
 						{ label: 'Description', value: 'Praha foto' },
-						{ label: '+ 1 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 1 }
 					],
 					totalRemoved: 12
 				}
@@ -330,13 +329,13 @@ export async function getReportDetail(id?: string): Promise<ReportDetail> {
 						{ label: 'Model', value: 'iPhone 15 Pro' },
 						{ label: 'Lens', value: '2.2mm f/2.2' },
 						{ label: 'DateTime', value: '2024:07:22' },
-						{ label: '+ 8 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 8 }
 					],
 					xmpFields: [
 						{ label: 'Subject', value: 'Dovolená' },
 						{ label: 'Rating', value: '5' },
 						{ label: 'Label', value: 'Red' },
-						{ label: '+ 3 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 3 }
 					],
 					totalRemoved: 18
 				}
@@ -365,13 +364,13 @@ export async function getReportDetail(id?: string): Promise<ReportDetail> {
 						{ label: 'Model', value: 'EOS R5' },
 						{ label: 'DateTime', value: '2024:07:20' },
 						{ label: 'Software', value: 'Canon DPP' },
-						{ label: '+ 20 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 20 }
 					],
 					xmpFields: [
 						{ label: 'Creator', value: 'Jana N.' },
 						{ label: 'Rights', value: '© 2024' },
 						{ label: 'Description', value: 'Praha video' },
-						{ label: '+ 10 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 10 }
 					],
 					totalRemoved: 43
 				}
@@ -400,13 +399,13 @@ export async function getReportDetail(id?: string): Promise<ReportDetail> {
 						{ label: 'Model', value: 'EOS R5' },
 						{ label: 'DateTime', value: '2024:08:14' },
 						{ label: 'Software', value: 'Canon DPP' },
-						{ label: '+ 5 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 5 }
 					],
 					xmpFields: [
 						{ label: 'Creator', value: 'Jana N.' },
 						{ label: 'Rights', value: '© 2024' },
 						{ label: 'Description', value: 'Praha foto' },
-						{ label: '+ 1 dalších', value: 'odstraněno' }
+						{ label: '', value: '', moreCount: 1 }
 					],
 					totalRemoved: 14
 				}

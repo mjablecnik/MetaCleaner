@@ -245,5 +245,14 @@
 	"report.chart.fields": "fields",
 	"report.chart.gpsData": "GPS Data",
 	"report.chart.exifData": "EXIF Data",
-	"report.chart.xmpData": "XMP Data"
+	"report.chart.xmpData": "XMP Data",
+	"report.files.title": "Detailed file overview",
+	"report.files.collapseAll": "Collapse all",
+	"report.files.expandAll": "Expand all",
+	"report.files.safeToShare": "File is safe to share.",
+	"report.files.metadataFields": "metadata fields",
+	"report.files.more": "more",
+	"report.files.removed": "removed",
+	"report.header.generatedDesc": "{date} · {files} files · {fields} fields removed",
+	"common.footer.copyright": "© 2025 MetaCleaner. All rights reserved."
 }
