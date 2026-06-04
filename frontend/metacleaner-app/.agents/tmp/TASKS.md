@@ -18,7 +18,7 @@
 
 ## Phase 3 — Extract Static UI Strings to i18n
 
-- [ ] 11. [MEDIUM] Extract hardcoded strings from `src/routes/+page.svelte` (Step 1) to translation keys — ~55 strings (nav, upload zone, status card, options sheet, upgrade sheet)
+- [x] 11. [MEDIUM] Extract hardcoded strings from `src/routes/+page.svelte` (Step 1) to translation keys — ~55 strings (nav, upload zone, status card, options sheet, upgrade sheet)
 - [ ] 12. [MEDIUM] Extract hardcoded strings from `src/routes/step2/+page.svelte` (Files Loaded) to translation keys — ~65 strings (nav, risk scanner, file list, action buttons)
 - [ ] 13. [MEDIUM] Extract hardcoded strings from `src/routes/step3/+page.svelte` (Processing) to translation keys — ~50 strings (nav, status card, file progress, log)
 - [ ] 14. [MEDIUM] Extract hardcoded strings from `src/routes/step4/+page.svelte` (Error) to translation keys — ~60 strings (nav, error banner, error detail, error types, log)

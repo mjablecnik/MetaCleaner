@@ -3,6 +3,9 @@
 	import { goto } from '$app/navigation';
 	import './layout.css';
 	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
+	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
 
 	// Dropdown / sheet state
 	let langDropdownOpen = $state(false);
@@ -15,14 +18,18 @@
 	let uploadedFiles = $state<File[]>([]);
 	let hasFiles = $derived(uploadedFiles.length > 0);
 
-	// Language
-	const langOptions = [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	];
+	// Repository data
+	let langOptions = $state<Language[]>([]);
+	let user = $state<User | null>(null);
+
 	let currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+
+	// Translation helper — reads currentLocale so template expressions re-run on locale switch
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		currentLocale; // reactive dependency
+		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		return fn ? fn(params) : key;
+	}
 
 	function setLang(lang: string) {
 		switchLocale(lang);
@@ -76,12 +83,18 @@
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
+		getLanguages().then((langs) => {
+			langOptions = langs;
+		});
+		getCurrentUser().then((u) => {
+			user = u;
+		});
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Čištění metadat</title>
+	<title>{tx('step1.meta.title')}</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
@@ -99,7 +112,7 @@
 				>
 					<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 				</div>
-				<span class="text-lg lg:text-xl font-bold tracking-tight">MetaCleaner</span>
+				<span class="text-lg lg:text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 			</div>
 
 			<!-- Desktop right side -->
@@ -110,8 +123,8 @@
 						onclick={() => (langDropdownOpen = !langDropdownOpen)}
 						class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 					>
-						<span>{currentLangInfo.flag}</span>
-						<span>{currentLangInfo.label}</span>
+						<span>{currentLangInfo?.flag ?? ''}</span>
+						<span>{currentLangInfo?.label ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"
 							style="transform: {langDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -147,7 +160,7 @@
 						>
 							<i class="fa-solid fa-user text-brand-blue text-xs"></i>
 						</div>
-						<span class="hidden md:block">Jana Nováková</span>
+						<span class="hidden md:block">{user?.name ?? ''}</span>
 						<i
 							class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
 							style="transform: {userDropdownOpen ? 'rotate(180deg)' : 'none'}"
@@ -159,16 +172,16 @@
 						style="min-width:200px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
-							<p class="text-sm font-semibold text-white mt-0.5">jana.novakova@email.cz</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+							<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -189,13 +202,15 @@
 						style="min-width:220px"
 					>
 						<div class="px-4 py-3 border-b border-gray-700">
-							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 							<p class="text-sm font-semibold text-white mt-0.5 truncate">
-								jana.novakova@email.cz
+								{user?.email ?? ''}
 							</p>
 						</div>
 						<div class="px-4 py-2 border-b border-gray-700">
-							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">Jazyk</p>
+							<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+								{tx('common.nav.language')}
+							</p>
 							<div class="flex flex-col gap-0.5">
 								{#each langOptions as lang}
 									<div
@@ -216,11 +231,11 @@
 						</div>
 						<div class="lang-option" role="button" tabindex="0">
 							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
-							<span>Nastavení</span>
+							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div class="lang-option" style="color:#ef4444" role="button" tabindex="0">
 							<i class="fa-solid fa-right-from-bracket text-sm" style="color:#ef4444"></i>
-							<span>Odhlásit se</span>
+							<span>{tx('common.nav.logout')}</span>
 						</div>
 					</div>
 				</div>
@@ -232,9 +247,9 @@
 	<main class="w-full max-w-[1100px] mx-auto px-4 lg:px-6 pb-24 flex flex-col gap-4 lg:gap-6 mt-4 lg:mt-0">
 		<!-- Page Header -->
 		<div class="flex flex-col gap-1 mb-0 lg:mb-2">
-			<h1 class="text-2xl lg:text-3xl font-bold text-white">Čištění metadat</h1>
+			<h1 class="text-2xl lg:text-3xl font-bold text-white">{tx('step1.header.title')}</h1>
 			<p class="text-text-muted text-sm mt-1">
-				Nahrajte soubory a odstraňte skrytá metadata lokálně na vašem zařízení.
+				{tx('step1.header.description')}
 			</p>
 		</div>
 
@@ -247,7 +262,7 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 flex flex-col gap-4 shadow-card"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-base lg:text-lg text-white">Nahrát soubory</h3>
+						<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.upload.title')}</h3>
 						<div class="flex gap-1 lg:gap-1.5 flex-wrap justify-end">
 							{#each ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'] as ext}
 								<span
@@ -274,30 +289,30 @@
 						</div>
 						<div class="text-center">
 							<p class="hidden lg:block font-semibold text-white mb-1">
-								Přetáhněte soubory sem
+								{tx('step1.upload.dropDesktop')}
 							</p>
 							<p class="block lg:hidden font-semibold text-white text-sm mb-0.5">
-								Klepněte pro výběr souborů
+								{tx('step1.upload.dropMobile')}
 							</p>
 							<p class="hidden lg:block text-xs text-text-muted">
-								nebo klikněte pro výběr ze zařízení
+								{tx('step1.upload.orClickDesktop')}
 							</p>
-							<p class="block lg:hidden text-xs text-text-muted">nebo přetáhněte soubory sem</p>
+							<p class="block lg:hidden text-xs text-text-muted">{tx('step1.upload.orDragMobile')}</p>
 						</div>
 						<div class="flex flex-wrap gap-1.5 lg:gap-2 justify-center mt-0 lg:mt-1">
 							<span
 								class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full"
-								>Fotografie</span
+								>{tx('step1.upload.photos')}</span
 							>
 							<span
 								class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full"
-								>Videa</span
+								>{tx('step1.upload.videos')}</span
 							>
 							<span
 								class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full"
 							>
-								<span class="hidden lg:inline">Max 500 MB / soubor</span>
-								<span class="inline lg:hidden">Max 500 MB</span>
+								<span class="hidden lg:inline">{tx('step1.upload.maxSize')}</span>
+								<span class="inline lg:hidden">{tx('step1.upload.maxSizeMobile')}</span>
 							</span>
 						</div>
 						<input
@@ -314,12 +329,12 @@
 					{#if hasFiles}
 						<div class="flex flex-col gap-2">
 							<div class="flex items-center justify-between mb-1">
-								<span class="text-sm font-semibold text-white">Soubory ke zpracování</span>
+								<span class="text-sm font-semibold text-white">{tx('step1.files.title')}</span>
 								<button
 									onclick={clearFiles}
 									class="text-xs text-text-muted hover:text-brand-red transition-colors flex items-center gap-1 min-h-[44px] lg:min-h-0 px-2 lg:px-0"
 								>
-									<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>Vymazat vše
+									<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>{tx('step1.files.clearAll')}
 								</button>
 							</div>
 							<div class="flex flex-col gap-2 max-h-[180px] lg:max-h-[220px] overflow-y-auto pr-1">
@@ -358,13 +373,13 @@
 								? 'bg-brand-green text-white hover:bg-green-500 shadow-glow-green cursor-pointer'
 								: 'bg-gray-700 text-gray-500 cursor-not-allowed opacity-60'}"
 						>
-							<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění
+							<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
 						</button>
 						<button
 							onclick={() => (optionsSheetOpen = true)}
 							class="lg:px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-sliders"></i> Možnosti
+							<i class="fa-solid fa-sliders"></i> {tx('step1.actions.options')}
 						</button>
 					</div>
 				</div>
@@ -377,11 +392,11 @@
 					class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 shadow-card flex flex-col gap-4 lg:gap-5"
 				>
 					<div class="flex items-center justify-between">
-						<h3 class="font-semibold text-base lg:text-lg text-white">Stav zpracování</h3>
+						<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.status.title')}</h3>
 						<span
 							class="text-[10px] lg:text-xs font-bold px-2.5 lg:px-3 py-1 rounded-full bg-navy-lighter text-text-muted uppercase tracking-wider"
 						>
-							Čeká na soubory
+							{tx('step1.status.waitingForFiles')}
 						</span>
 					</div>
 
@@ -394,7 +409,7 @@
 						</div>
 						<div class="text-center">
 							<p class="text-text-muted text-sm">
-								Nahrajte soubory pro zahájení čištění metadat.
+								{tx('step1.status.uploadPrompt')}
 							</p>
 						</div>
 					</div>
@@ -408,13 +423,13 @@
 								<i class="fa-solid fa-gear text-brand-blue text-2xl lg:text-3xl spin-slow"></i>
 							</div>
 							<div class="text-center">
-								<p class="font-semibold text-white text-sm">Zpracovávám soubory…</p>
-								<p class="text-xs text-text-muted mt-0.5 lg:mt-1">Odstraňuji metadata</p>
+								<p class="font-semibold text-white text-sm">{tx('step1.status.processingFiles')}</p>
+								<p class="text-xs text-text-muted mt-0.5 lg:mt-1">{tx('step1.status.removingMetadata')}</p>
 							</div>
 						</div>
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between text-xs text-text-muted mb-1 lg:mb-0">
-								<span>Postup</span><span>0%</span>
+								<span>{tx('step1.status.progress')}</span><span>0%</span>
 							</div>
 							<div class="h-2 lg:h-2 rounded-full bg-navy-lighter overflow-hidden">
 								<div class="progress-bar h-2" style="width:0%"></div>
@@ -431,9 +446,9 @@
 								<i class="fa-solid fa-circle-check text-brand-green text-3xl lg:text-4xl"></i>
 							</div>
 							<div class="text-center">
-								<p class="font-bold text-white text-lg">Hotovo!</p>
+								<p class="font-bold text-white text-lg">{tx('step1.status.done')}</p>
 								<p class="text-xs text-text-muted mt-0.5 lg:mt-1">
-									Všechna metadata byla úspěšně odstraněna.
+									{tx('step1.status.allRemoved')}
 								</p>
 							</div>
 						</div>
@@ -442,30 +457,30 @@
 								class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800"
 							>
 								<p class="text-xl font-black text-white">0</p>
-								<p class="text-[10px] text-text-muted mt-0.5">Souborů</p>
+								<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.files')}</p>
 							</div>
 							<div
 								class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800"
 							>
 								<p class="text-xl font-black text-brand-green">0</p>
-								<p class="text-[10px] text-text-muted mt-0.5">Polí odstraněno</p>
+								<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.fieldsRemoved')}</p>
 							</div>
 							<div
 								class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800"
 							>
 								<p class="text-xl font-black text-brand-blue">0s</p>
-								<p class="text-[10px] text-text-muted mt-0.5">Čas</p>
+								<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.time')}</p>
 							</div>
 						</div>
 						<button
 							class="w-full py-3.5 lg:py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-500 transition-all shadow-glow-green flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-download"></i> Stáhnout vyčištěné soubory
+							<i class="fa-solid fa-download"></i> {tx('step1.actions.download')}
 						</button>
 						<button
 							class="w-full py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
 						>
-							<i class="fa-solid fa-rotate-left"></i> Zpracovat další soubory
+							<i class="fa-solid fa-rotate-left"></i> {tx('step1.actions.processMore')}
 						</button>
 					</div>
 				</div>
@@ -486,7 +501,7 @@
 	<div class="bottom-sheet" class:open={optionsSheetOpen}>
 		<div class="flex flex-col gap-0">
 			<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-800">
-				<h3 class="font-bold text-white text-base">Možnosti čištění</h3>
+				<h3 class="font-bold text-white text-base">{tx('options.title')}</h3>
 				<button
 					onclick={() => (optionsSheetOpen = false)}
 					class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted"
@@ -497,8 +512,8 @@
 			<div class="px-5 py-4 flex flex-col gap-4">
 				<div class="flex items-center justify-between py-2">
 					<div>
-						<p class="text-sm font-semibold text-white">GPS lokace</p>
-						<p class="text-xs text-text-muted mt-0.5">Odstranit souřadnice polohy</p>
+						<p class="text-sm font-semibold text-white">{tx('options.gpsLocation')}</p>
+						<p class="text-xs text-text-muted mt-0.5">{tx('options.gpsDesc')}</p>
 					</div>
 					<div
 						class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1"
@@ -508,8 +523,8 @@
 				</div>
 				<div class="flex items-center justify-between py-2">
 					<div>
-						<p class="text-sm font-semibold text-white">Datum a čas</p>
-						<p class="text-xs text-text-muted mt-0.5">Odstranit časové razítko</p>
+						<p class="text-sm font-semibold text-white">{tx('options.dateTime')}</p>
+						<p class="text-xs text-text-muted mt-0.5">{tx('options.dateTimeDesc')}</p>
 					</div>
 					<div
 						class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1"
@@ -519,8 +534,8 @@
 				</div>
 				<div class="flex items-center justify-between py-2">
 					<div>
-						<p class="text-sm font-semibold text-white">Informace o zařízení</p>
-						<p class="text-xs text-text-muted mt-0.5">Model fotoaparátu, výrobce</p>
+						<p class="text-sm font-semibold text-white">{tx('options.deviceInfo')}</p>
+						<p class="text-xs text-text-muted mt-0.5">{tx('options.deviceInfoDesc')}</p>
 					</div>
 					<div
 						class="w-12 h-6 bg-brand-blue rounded-full relative cursor-pointer flex items-center px-1"
@@ -530,8 +545,8 @@
 				</div>
 				<div class="flex items-center justify-between py-2">
 					<div>
-						<p class="text-sm font-semibold text-white">Komentáře a popisy</p>
-						<p class="text-xs text-text-muted mt-0.5">Textová metadata a tagy</p>
+						<p class="text-sm font-semibold text-white">{tx('options.comments')}</p>
+						<p class="text-xs text-text-muted mt-0.5">{tx('options.commentsDesc')}</p>
 					</div>
 					<div
 						class="w-12 h-6 bg-navy-lighter border border-gray-600 rounded-full relative cursor-pointer flex items-center px-1"
@@ -545,7 +560,7 @@
 					onclick={() => (optionsSheetOpen = false)}
 					class="w-full py-4 rounded-xl bg-brand-blue text-white font-bold text-sm flex items-center justify-center gap-2"
 				>
-					<i class="fa-solid fa-check"></i> Uložit možnosti
+					<i class="fa-solid fa-check"></i> {tx('options.save')}
 				</button>
 			</div>
 		</div>
@@ -564,7 +579,7 @@
 	<div class="bottom-sheet" class:open={upgradeSheetOpen}>
 		<div class="flex flex-col">
 			<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-800">
-				<h3 class="font-bold text-white text-base">Upgrade na Pro</h3>
+				<h3 class="font-bold text-white text-base">{tx('upgrade.title')}</h3>
 				<button
 					onclick={() => (upgradeSheetOpen = false)}
 					class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted"
@@ -581,10 +596,10 @@
 						<i class="fa-solid fa-bolt text-text-muted text-sm"></i>
 					</div>
 					<div class="flex-1">
-						<p class="text-xs font-bold text-text-muted uppercase tracking-wider">Aktuální plán</p>
-						<p class="text-sm font-semibold text-white mt-0.5">Free</p>
+						<p class="text-xs font-bold text-text-muted uppercase tracking-wider">{tx('upgrade.currentPlan')}</p>
+						<p class="text-sm font-semibold text-white mt-0.5">{tx('upgrade.free')}</p>
 					</div>
-					<span class="text-xs text-text-muted bg-navy-lighter px-2 py-1 rounded-full">Aktivní</span>
+					<span class="text-xs text-text-muted bg-navy-lighter px-2 py-1 rounded-full">{tx('upgrade.active')}</span>
 				</div>
 				<!-- Pro Plan Card -->
 				<div
@@ -598,17 +613,22 @@
 								<i class="fa-solid fa-crown text-brand-orange text-sm"></i>
 							</div>
 							<div>
-								<p class="text-sm font-bold text-white">Pro</p>
-								<p class="text-[10px] text-text-muted">Plný přístup</p>
+								<p class="text-sm font-bold text-white">{tx('upgrade.pro')}</p>
+								<p class="text-[10px] text-text-muted">{tx('upgrade.fullAccess')}</p>
 							</div>
 						</div>
 						<div class="text-right">
-							<p class="text-lg font-black text-white">99 Kč</p>
-							<p class="text-[10px] text-text-muted">/ měsíc</p>
+							<p class="text-lg font-black text-white">{tx('upgrade.price')}</p>
+							<p class="text-[10px] text-text-muted">{tx('upgrade.perMonth')}</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
-						{#each ['Neomezený počet souborů', 'Soubory až do 2 GB', 'Dávkové zpracování', 'Prioritní podpora'] as feature}
+						{#each [
+							tx('upgrade.features.unlimitedFiles'),
+							tx('upgrade.features.largeFiles'),
+							tx('upgrade.features.batchProcessing'),
+							tx('upgrade.features.prioritySupport')
+						] as feature}
 							<div class="flex items-center gap-2">
 								<i class="fa-solid fa-check text-brand-green text-xs w-4"></i>
 								<span class="text-xs text-text-muted">{feature}</span>
@@ -619,15 +639,15 @@
 				<!-- Free limits -->
 				<div class="flex flex-col gap-1.5 mb-4">
 					<p class="text-[10px] text-text-muted uppercase tracking-wider font-bold">
-						Limity Free plánu
+						{tx('upgrade.freeLimits')}
 					</p>
 					<div class="flex items-center gap-2">
 						<i class="fa-solid fa-xmark text-brand-red text-xs w-4"></i>
-						<span class="text-xs text-text-muted">Max 10 souborů / den</span>
+						<span class="text-xs text-text-muted">{tx('upgrade.limit.maxFilesDay')}</span>
 					</div>
 					<div class="flex items-center gap-2">
 						<i class="fa-solid fa-xmark text-brand-red text-xs w-4"></i>
-						<span class="text-xs text-text-muted">Max 50 MB na soubor</span>
+						<span class="text-xs text-text-muted">{tx('upgrade.limit.maxFileSize')}</span>
 					</div>
 				</div>
 			</div>
@@ -636,13 +656,13 @@
 					onclick={() => (upgradeSheetOpen = false)}
 					class="w-full py-4 rounded-xl bg-brand-orange text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg"
 				>
-					<i class="fa-solid fa-crown"></i> Přejít na Pro
+					<i class="fa-solid fa-crown"></i> {tx('upgrade.cta')}
 				</button>
 				<button
 					onclick={() => (upgradeSheetOpen = false)}
 					class="w-full py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2"
 				>
-					Zůstat na Free
+					{tx('upgrade.stayFree')}
 				</button>
 			</div>
 		</div>
