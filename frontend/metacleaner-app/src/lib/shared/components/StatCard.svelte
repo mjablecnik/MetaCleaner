@@ -8,6 +8,7 @@
 		iconColor?: Color;
 		value: string | number;
 		label: string;
+		labelMobile?: string;
 		highlight?: boolean;
 		class?: string;
 	}
@@ -17,6 +18,7 @@
 		iconColor = 'blue',
 		value,
 		label,
+		labelMobile,
 		highlight = false,
 		class: extraClass = '',
 	}: Props = $props();
@@ -54,5 +56,12 @@
 <div class={classes}>
 	<IconContainer {icon} color={iconColor} size="md" shape="square" class="mb-1.5 lg:mb-2" />
 	<p class="text-xl lg:text-2xl font-black {valueClass}">{value}</p>
-	<p class="text-[11px] lg:text-xs text-text-muted leading-tight">{label}</p>
+	{#if labelMobile}
+		<p class="text-[11px] lg:text-xs text-text-muted leading-tight">
+			<span class="hidden lg:inline">{label}</span>
+			<span class="lg:hidden">{labelMobile}</span>
+		</p>
+	{:else}
+		<p class="text-[11px] lg:text-xs text-text-muted leading-tight">{label}</p>
+	{/if}
 </div>
