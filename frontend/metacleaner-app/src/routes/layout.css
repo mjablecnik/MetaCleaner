@@ -1,3 +1,251 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+	--color-navy-main: #0a1628;
+	--color-navy-card: #111d33;
+	--color-navy-lighter: #1e293b;
+	--color-brand-green: #22c55e;
+	--color-brand-orange: #f97316;
+	--color-brand-red: #ef4444;
+	--color-brand-blue: #3b82f6;
+	--color-text-main: #ffffff;
+	--color-text-muted: #94a3b8;
+	--font-sans: 'Inter', sans-serif;
+	--shadow-glow-green: 0 0 20px rgba(34, 197, 94, 0.2);
+	--shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.2);
+	--shadow-glow-red: 0 0 30px rgba(239, 68, 68, 0.15);
+	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #0a1628;
+	color: #fff;
+	font-family: 'Inter', sans-serif;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+.dashed-border-anim {
+	background-image: linear-gradient(90deg, #94a3b8 50%, transparent 50%),
+		linear-gradient(90deg, #94a3b8 50%, transparent 50%),
+		linear-gradient(0deg, #94a3b8 50%, transparent 50%),
+		linear-gradient(0deg, #94a3b8 50%, transparent 50%);
+	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+	background-size:
+		15px 2px,
+		15px 2px,
+		2px 15px,
+		2px 15px;
+	background-position:
+		left top,
+		right bottom,
+		left bottom,
+		right top;
+	animation: border-dance 1s infinite linear;
+}
+
+@keyframes border-dance {
+	0% {
+		background-position:
+			left top,
+			right bottom,
+			left bottom,
+			right top;
+	}
+	100% {
+		background-position:
+			left 15px top,
+			right 15px bottom,
+			left bottom 15px,
+			right top 15px;
+	}
+}
+
+.lang-dropdown-menu {
+	display: none;
+	position: absolute;
+	right: 0;
+	top: calc(100% + 8px);
+	background: #111d33;
+	border: 1px solid #374151;
+	border-radius: 10px;
+	min-width: 160px;
+	z-index: 200;
+	overflow: hidden;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.lang-dropdown-menu.open {
+	display: block;
+}
+
+.lang-option {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	color: #94a3b8;
+	transition:
+		background 0.15s,
+		color 0.15s;
+}
+
+.lang-option:hover {
+	background: #1e293b;
+	color: #fff;
+}
+
+.lang-option.active {
+	color: #fff;
+	background: #1e293b;
+}
+
+.lang-check {
+	margin-left: auto;
+	color: #3b82f6;
+}
+
+.progress-bar {
+	background: linear-gradient(90deg, #3b82f6, #22c55e);
+	border-radius: 99px;
+	transition: width 0.4s ease;
+}
+
+@keyframes spin-slow {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spin-slow {
+	animation: spin-slow 1.5s linear infinite;
+}
+
+@keyframes pulse-ring {
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 0.4;
+	}
+	50% {
+		transform: scale(1.12);
+		opacity: 0.15;
+	}
+}
+
+.pulse-ring {
+	animation: pulse-ring 1.8s ease-in-out infinite;
+}
+
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	20% {
+		transform: translateX(-6px);
+	}
+	40% {
+		transform: translateX(6px);
+	}
+	60% {
+		transform: translateX(-4px);
+	}
+	80% {
+		transform: translateX(4px);
+	}
+}
+
+.shake {
+	animation: shake 0.5s ease;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fade-in-up {
+	animation: fadeInUp 0.5s ease forwards;
+}
+
+.delay-1 {
+	animation-delay: 0.1s;
+}
+.delay-2 {
+	animation-delay: 0.2s;
+}
+.delay-3 {
+	animation-delay: 0.3s;
+}
+.delay-4 {
+	animation-delay: 0.4s;
+}
+
+@keyframes checkPop {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	70% {
+		transform: scale(1.2);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.check-pop {
+	animation: checkPop 0.6s ease forwards;
+}
+
+.bottom-sheet {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #111d33;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	border-top: 1px solid #374151;
+	z-index: 300;
+	transform: translateY(100%);
+	transition: transform 0.3s ease;
+	max-height: 80vh;
+	overflow-y: auto;
+}
+
+.bottom-sheet.open {
+	transform: translateY(0);
+}
+
+.sheet-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 299;
+	display: none;
+}
+
+.sheet-overlay.open {
+	display: block;
+}
