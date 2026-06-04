@@ -10,7 +10,7 @@
 
 ## Phase 2 — Create Repository/Data Layer
 
-- [ ] 6. [HIGH] Create `src/lib/repositories/userRepository.ts` — returns current user (name, email)
+- [x] 6. [HIGH] Create `src/lib/repositories/userRepository.ts` — returns current user (name, email)
 - [ ] 7. [HIGH] Create `src/lib/repositories/languageRepository.ts` — returns available language options (code, flag, label, name)
 - [ ] 8. [HIGH] Create `src/lib/repositories/fileRepository.ts` — returns mock uploaded files data (name, size, type, metadata field count, GPS status, device info)
 - [ ] 9. [HIGH] Create `src/lib/repositories/processingRepository.ts` — returns risk analysis, processing state, error state, and success results
