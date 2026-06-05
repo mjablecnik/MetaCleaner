@@ -32,8 +32,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - **Property 8: Error response format consistency**
     - **Validates: Requirements 6.2**
 
-- [ ] 2. Implement data models
-  - [ ] 2.1 Create data models and DTOs (`models.go`)
+- [x] 2. Implement data models
+  - [x] 2.1 Create data models and DTOs (`models.go`)
     - Define all Go structs: Job, FileRecord, MetadataDetail, MetadataField, CleaningResult, ProgressEvent, ReportSummary, ReportDetail, ChartDataPoint, ReportFileDetail
     - Implement `ValidateFileSize(size int64, maxSize int64) bool` function
     - Implement `ValidateFileFormat(extension string) bool` with case-insensitive matching against supported formats list
@@ -45,23 +45,23 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Define supported format constants: image formats (JPEG, PNG, HEIC, HEIF, AVIF, TIFF, DNG, WebP, GIF), video formats (MP4, MOV, AVI, MKV, WebM, WMV, FLV, 3GP, MPEG, OGV, MTS)
     - _Requirements: 1.1, 1.2, 2.2, 2.3, 2.7, 3.5, 4.4, 5.4_
 
-  - [ ]* 2.2 Write property test for file size validation
+  - [x]* 2.2 Write property test for file size validation
     - **Property 1: File size validation**
     - **Validates: Requirements 1.1, 1.3**
 
-  - [ ]* 2.3 Write property test for file format validation
+  - [x]* 2.3 Write property test for file format validation
     - **Property 2: File format validation**
     - **Validates: Requirements 1.2, 1.4**
 
-  - [ ]* 2.4 Write property test for tool selection by file type
+  - [x]* 2.4 Write property test for tool selection by file type
     - **Property 3: Tool selection by file type**
     - **Validates: Requirements 2.2, 2.3**
 
-  - [ ]* 2.5 Write property test for job progress calculation
+  - [x]* 2.5 Write property test for job progress calculation
     - **Property 5: Job progress calculation**
     - **Validates: Requirements 3.5**
 
-  - [ ]* 2.6 Write property test for report summary statistics aggregation
+  - [x]* 2.6 Write property test for report summary statistics aggregation
     - **Property 7: Report summary statistics aggregation**
     - **Validates: Requirements 5.4**
 
