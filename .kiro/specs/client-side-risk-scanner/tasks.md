@@ -36,20 +36,20 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - **Property 5: File queue mutation preserves aggregation invariant** — adding/removing files yields correct max recalculation
     - **Validates: Requirements 5.1, 5.2**
 
-- [ ] 3. Implement format detector and metadata parsers
-  - [ ] 3.1 Create format detector
+- [x] 3. Implement format detector and metadata parsers
+  - [x] 3.1 Create format detector
     - Create `src/lib/scanner/parsers/formatDetector.ts` that determines `FileType` and specific format from file extension
     - Map extensions to formats: `.jpg/.jpeg` → jpeg, `.png` → png, `.heic/.heif` → heic, `.avif` → avif, `.tiff/.tif` → tiff, `.dng` → dng, `.webp` → webp, `.gif` → gif; video: `.mp4/.m4v` → mp4, `.mov` → mov, `.avi` → avi, `.mkv` → mkv, `.webm` → webm, `.wmv` → wmv, `.flv` → flv, `.3gp` → 3gp, `.mpg/.mpeg` → mpeg, `.ogv` → ogv, `.mts/.m2ts` → mts
     - Return `null` format for unsupported extensions
     - _Requirements: 2.2, 2.3, 2.4, 2.5, 2.6, 2.8, 2.9, 2.10, 2.11, 2.12, 2.13, 2.14, 2.15, 2.16, 2.17, 2.18, 2.19, 2.20, 2.21, 2.22_
-  - [ ] 3.2 Create image parser with exifr and ExifReader
+  - [x] 3.2 Create image parser with exifr and ExifReader
     - Create `src/lib/scanner/parsers/imageParser.ts`
     - Use exifr for JPEG, HEIC/HEIF, PNG, AVIF, TIFF, DNG — extract EXIF, XMP, IPTC segments
     - Use ExifReader for WebP, GIF — extract EXIF, XMP, comment blocks
     - Map raw metadata fields to `MetadataField[]` with correct category assignment using constants
     - Apply file size optimization: `file.slice(0, 524288)` for files > 200MB
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.8, 2.9, 2.10, 2.11, 2.12, 7.3_
-  - [ ] 3.3 Create video parser with lazy mediainfo.js WASM loading
+  - [x] 3.3 Create video parser with lazy mediainfo.js WASM loading
     - Create `src/lib/scanner/parsers/videoParser.ts`
     - Implement lazy loading: `mediainfo.js` dynamically imported only on first video file
     - Cache the initialized MediaInfo instance for subsequent video files
@@ -57,13 +57,13 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - Map video metadata to `MetadataField[]` with category assignment
     - Apply file size optimization: `file.slice(0, 2097152)` for files > 200MB
     - _Requirements: 2.5, 2.13, 2.14, 2.15, 2.16, 2.17, 2.18, 2.19, 2.20, 2.21, 2.22, 7.3_
-  - [ ] 3.4 Create metadata parser orchestrator
+  - [x] 3.4 Create metadata parser orchestrator
     - Create `src/lib/scanner/metadataParser.ts` implementing `parseFile(file, options?): Promise<ScanResult>`
     - Route to image or video parser based on format detector result
     - Return empty ScanResult (status 'done', 0 fields, score 0) for unsupported formats
     - Wrap all parser calls in try/catch — return error ScanResult (status 'error') on failure, never throw
     - _Requirements: 2.1, 2.6, 2.7, 7.2_
-  - [ ]* 3.5 Write property tests for parser error handling (Properties 6–8)
+  - [x]* 3.5 Write property tests for parser error handling (Properties 6–8)
     - **Property 6: Unsupported file formats yield empty scan results** — any file with unsupported extension returns done status with 0 fields
     - **Validates: Requirements 2.6**
     - **Property 7: Corrupted files never crash the parser** — any random byte sequence returns valid or error ScanResult, never throws
