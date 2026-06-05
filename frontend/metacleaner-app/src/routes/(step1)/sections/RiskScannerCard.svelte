@@ -19,6 +19,9 @@
 	const score = $derived(risk.overallScore);
 	const severity = $derived(risk.severity);
 	const categories = $derived(risk.categories);
+	const allFilesErrored = $derived(
+		risk.fileCount > 0 && risk.scannedCount === 0 && !risk.isScanning
+	);
 
 	type RingColor = 'red' | 'orange' | 'green' | 'blue';
 	type BarSeverity = 'critical' | 'high' | 'medium' | 'low';
@@ -71,16 +74,26 @@
 		<!-- Header -->
 		<div class="flex items-center justify-between">
 			<h3 class="text-lg font-semibold text-white">{tx('step2.risk.title')}</h3>
-			<span
-				class="flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold tracking-wider uppercase {severityBadgeClass[severity]}"
-			>
+			{#if !allFilesErrored}
 				<span
-					class="inline-block h-1.5 w-1.5 animate-pulse rounded-full {dotColorClass[severity]}"
-				></span>
-				{tx(severityLabelKey[severity])}
-			</span>
+					class="flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold tracking-wider uppercase {severityBadgeClass[severity]}"
+				>
+					<span
+						class="inline-block h-1.5 w-1.5 animate-pulse rounded-full {dotColorClass[severity]}"
+					></span>
+					{tx(severityLabelKey[severity])}
+				</span>
+			{/if}
 		</div>
 
+		<!-- All files error state -->
+		{#if allFilesErrored}
+			<div class="flex flex-col items-center gap-3 py-6 text-center">
+				<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-orange"></i>
+				<p class="text-sm font-semibold text-white">{tx('step2.risk.scanFailed')}</p>
+				<p class="text-xs text-text-muted">{tx('step2.risk.scanFailedDesc')}</p>
+			</div>
+		{:else}
 		<!-- Score Ring + Description -->
 		<div class="flex items-center gap-6">
 			<RiskScoreRing {score} color={ringColorMap[severity]} size="lg" showLabel={true} />
@@ -160,5 +173,6 @@
 				<span class="font-semibold text-brand-green">{tx('step2.risk.reduceHighlight')}</span>
 			</p>
 		</div>
+		{/if}
 	</div>
 </div>

@@ -167,4 +167,76 @@ describe('scannerStore', () => {
 		// All 3 files processed
 		expect(scannerStore.files.every((f) => f.scanResult?.status === 'done')).toBe(true);
 	});
+
+	it('same file added twice gets unique IDs', async () => {
+		parseFileMock.mockResolvedValue(makeCompletedResult('any'));
+		const { addFiles, scannerStore } = await import('../scannerStore.svelte.js');
+
+		const file = makeFakeFile('photo.jpg');
+		addFiles(makeFileList([file]));
+		addFiles(makeFileList([file]));
+
+		expect(scannerStore.files).toHaveLength(2);
+		const ids = scannerStore.files.map((f) => f.id);
+		expect(new Set(ids).size).toBe(2);
+	});
+
+	it('all files error: scannedCount is 0 and isScanning is false', async () => {
+		const { addFiles, scannerStore } = await import('../scannerStore.svelte.js');
+
+		parseFileMock.mockImplementation((_file: File, fileId: string) =>
+			Promise.resolve({
+				fileId,
+				status: 'error' as const,
+				fields: [],
+				hasGps: false,
+				fieldCount: 0,
+				categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+				fileScore: 0,
+				error: 'Parse failed'
+			})
+		);
+
+		const fl = makeFileList([makeFakeFile('broken.jpg'), makeFakeFile('broken2.jpg')]);
+		addFiles(fl);
+		await flush();
+
+		expect(scannerStore.aggregatedRisk.scannedCount).toBe(0);
+		expect(scannerStore.aggregatedRisk.fileCount).toBe(2);
+		expect(scannerStore.isScanning).toBe(false);
+		expect(scannerStore.aggregatedRisk.overallScore).toBe(0);
+	});
+
+	it('file added during active scan is processed after current completes', async () => {
+		const { addFiles, scannerStore } = await import('../scannerStore.svelte.js');
+
+		let resolveFirst!: (r: ScanResult) => void;
+		const firstDone = new Promise<ScanResult>((res) => (resolveFirst = res));
+
+		const calls: string[] = [];
+		parseFileMock.mockImplementationOnce((_file: File, fileId: string) => {
+			calls.push(fileId);
+			return firstDone;
+		});
+		parseFileMock.mockImplementation((_file: File, fileId: string) => {
+			calls.push(fileId);
+			return Promise.resolve(makeCompletedResult(fileId, 5));
+		});
+
+		addFiles(makeFileList([makeFakeFile('first.jpg')]));
+		const firstId = scannerStore.files[0].id;
+
+		// First file is being scanned — add a second file during active scan
+		addFiles(makeFileList([makeFakeFile('second.jpg')]));
+
+		// Only first file is in progress
+		expect(calls).toHaveLength(1);
+
+		resolveFirst(makeCompletedResult(firstId, 10));
+		await flush();
+
+		// Both files processed
+		expect(calls).toHaveLength(2);
+		expect(scannerStore.files.every((f) => f.scanResult?.status === 'done')).toBe(true);
+	});
 });
