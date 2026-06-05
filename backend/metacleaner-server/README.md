@@ -2,16 +2,27 @@
 
 A Go HTTP server that strips hidden metadata (EXIF, GPS, camera info, timestamps, XMP, ID3, MP4 atoms) from uploaded photos and videos. It uses ExifTool for images and FFmpeg for videos, provides real-time WebSocket progress updates, stores job history in Supabase, generates PDF cleaning reports, and runs as a Docker container on Fly.io.
 
+## Description
+
+MetaCleaner Backend solves the privacy problem of hidden metadata in media files. Key features:
+
+- Strips metadata from 20 image/video formats (JPEG, PNG, HEIC, HEIF, AVIF, TIFF, DNG, WebP, GIF, MP4, MOV, AVI, MKV, WebM, WMV, FLV, 3GP, MPEG, OGV, MTS)
+- Real-time WebSocket progress updates during cleaning
+- PDF report generation stored in Supabase Storage
+- Configurable rate limiting on upload endpoint
+- Automatic cleanup of temporary files
+- Health check endpoint with dependency status
+
 ## Prerequisites
 
-- [Go 1.22+](https://golang.org/dl/)
+- [Go 1.23+](https://golang.org/dl/)
 - [Docker](https://docs.docker.com/get-docker/)
 - [ExifTool](https://exiftool.org/) (required for local non-Docker runs)
 - [FFmpeg](https://ffmpeg.org/download.html) (required for local non-Docker runs)
-- [Fly.io CLI](https://fly.io/docs/hands-on/install-flyctl/) (required for cloud deployment only)
-- A [Supabase](https://supabase.com/) project with the database schema applied (see [DOCS.md](DOCS.md#database-migration))
+- [Fly.io CLI](https://fly.io/docs/hands-on/install-flyctl/) (for cloud deployment only)
+- A [Supabase](https://supabase.com/) project with the database schema applied
 
-## Setup
+## Installation / Setup
 
 1. Clone the repository and navigate to the backend directory:
 
@@ -27,43 +38,47 @@ cp .env.example .env
 
 Edit `.env` and set `SUPABASE_URL` and `SUPABASE_API_KEY` to your Supabase project values. All other variables have sensible defaults.
 
-3. Apply the database migration against your Supabase project (run once):
-
-```sql
--- Paste and run scripts/migration.sql in the Supabase SQL editor
-```
-
-See [DOCS.md — Database Migration](DOCS.md#database-migration) for details.
-
-## Local Development (without Docker)
-
-Install Go dependencies:
+3. Install Go dependencies:
 
 ```bash
 go mod download
 ```
 
+4. Apply the database migration against your Supabase project (run once):
+
+Open your Supabase project → SQL Editor → paste contents of `scripts/migration.sql` → Run.
+
+See [DOCS.md — Database Migration](DOCS.md#database-migration) for details.
+
+## Usage / Running
+
+### Local development (without Docker)
+
 Run the server directly (requires ExifTool and FFmpeg in your PATH):
 
 ```bash
-go run .
+go run ./cmd/
 ```
 
-Run the test suite:
+### Run tests
 
 ```bash
-go test ./...
+go test ./tests/ -v
 ```
 
-## Local Docker Usage
+### Local Docker
 
-Build the image and start a container using the provided script:
+Build the image and start a container:
 
 ```bash
 ./start-docker.sh
 ```
 
-This script reads environment variables from `.env`, builds the Docker image, stops any running container with the same name, and starts a fresh one. The server is exposed on the port defined in `.env` (default `8080`).
+Stop the container:
+
+```bash
+docker stop metacleaner-server
+```
 
 Verify the server is healthy:
 
@@ -71,7 +86,9 @@ Verify the server is healthy:
 curl http://localhost:8080/api/health
 ```
 
-## Fly.io Deployment
+## Deployment
+
+### Fly.io
 
 1. Authenticate with Fly.io:
 
@@ -79,13 +96,11 @@ curl http://localhost:8080/api/health
 flyctl auth login
 ```
 
-2. Run the setup script to create the app (if needed) and push secrets from `.env`:
+2. Run the setup script to create the app and push secrets:
 
 ```bash
 ./fly-setup.sh
 ```
-
-The script skips keys already defined in `fly.toml [env]` (non-sensitive config) and sets the rest as Fly.io secrets.
 
 3. Deploy:
 
@@ -93,22 +108,32 @@ The script skips keys already defined in `fly.toml [env]` (non-sensitive config)
 flyctl deploy
 ```
 
-The app is configured in `fly.toml`. Health checks run against `/api/health`.
+Useful commands:
+
+```bash
+fly logs --app metacleaner-server    # View logs
+fly status --app metacleaner-server  # Check status
+fly ssh console --app metacleaner-server  # SSH into container
+```
 
 ## Documentation
 
-Full API reference, environment variables table, project structure, testing guide, and troubleshooting:
+For detailed API reference, architecture diagrams, environment variables, and troubleshooting:
 
-📄 **[DOCS.md](DOCS.md)**
+📄 **[DOCS.md](./DOCS.md)**
 
 ## Author
 
-Martin Jablečník — [martin.jablecnik@gmail.com](mailto:martin.jablecnik@gmail.com)
+👤 **Martin Jablečník**
 
-## Support
+- Website: [www.jablecnik.com](https://www.jablecnik.com)
+- Github: [@mjablecnik](https://github.com/mjablecnik)
 
-Report issues at the project repository. For Supabase-related questions, refer to the [Supabase documentation](https://supabase.com/docs).
+## Show your support
+
+Give a ⭐️ if this project helped you!
 
 ## License
 
-MIT
+Copyright © 2025 Martin Jablečník.
+This project is [MIT](LICENSE) licensed.
