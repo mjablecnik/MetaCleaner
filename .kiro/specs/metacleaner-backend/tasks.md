@@ -186,7 +186,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test job creation with empty fileIds → 400
     - _Requirements: 2.1, 2.5_
 
-- [ ] 9. Checkpoint - Ensure all tests pass
+- [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Implement file download handler
