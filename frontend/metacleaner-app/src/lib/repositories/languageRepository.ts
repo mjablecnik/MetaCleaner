@@ -7,9 +7,9 @@ export interface Language {
 
 export async function getLanguages(): Promise<Language[]> {
 	return [
-		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
-		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
+		{ code: 'cs', flag: '/flags/cs.svg', label: 'CS', name: 'Čeština' },
+		{ code: 'en', flag: '/flags/en.svg', label: 'EN', name: 'English' },
+		{ code: 'de', flag: '/flags/de.svg', label: 'DE', name: 'Deutsch' },
+		{ code: 'sk', flag: '/flags/sk.svg', label: 'SK', name: 'Slovenčina' }
 	];
 }

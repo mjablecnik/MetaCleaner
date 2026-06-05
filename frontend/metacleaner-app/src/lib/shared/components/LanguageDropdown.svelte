@@ -28,7 +28,11 @@
 		onclick={() => (open = !open)}
 		class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
 	>
-		<span>{currentLangInfo?.flag ?? ''}</span>
+		<img
+			src={currentLangInfo?.flag ?? ''}
+			alt={currentLangInfo?.label ?? ''}
+			class="h-4 w-6 rounded-sm object-cover"
+		/>
 		<span>{currentLangInfo?.label ?? ''}</span>
 		<i
 			class="fa-solid fa-chevron-down ml-1 text-xs text-text-muted transition-transform {open
@@ -46,7 +50,7 @@
 				tabindex="0"
 				onkeydown={(e) => e.key === 'Enter' && onSelect(lang.code)}
 			>
-				<span>{lang.flag}</span>
+				<img src={lang.flag} alt={lang.label} class="h-4 w-6 rounded-sm object-cover" />
 				{lang.name}
 				{#if currentLocale === lang.code}
 					<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
