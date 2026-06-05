@@ -6,7 +6,13 @@ import {
 	CATEGORY_WEIGHTS,
 	SEVERITY_THRESHOLDS
 } from './constants.js';
-import type { MetadataField, RiskCategory, ScanResult, AggregatedRisk, SeverityLevel } from './types.js';
+import type {
+	MetadataField,
+	RiskCategory,
+	ScanResult,
+	AggregatedRisk,
+	SeverityLevel
+} from './types.js';
 
 function computeCategoryScore(
 	fields: MetadataField[],

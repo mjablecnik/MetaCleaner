@@ -13,10 +13,14 @@ MetaCleaner helps users protect their privacy by removing hidden metadata (EXIF,
 - **Mobile**: Capacitor (Android)
 - **Build Output**: Static site (`@sveltejs/adapter-static`)
 
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) 22+
+- [Bun](https://bun.sh/) — `curl -fsSL https://bun.sh/install | bash`
+
 ## Setup
 
 ```bash
-cp .env.example .env   # Configure environment
 bun install            # Install dependencies
 ```
 
@@ -27,7 +31,8 @@ bun run dev            # Dev server
 bun run check          # Type check
 bun run lint           # Lint (prettier + eslint)
 bun run format         # Auto-format
-bun run test           # Run tests
+bun run test           # Run server-side tests (no browser required)
+bun run test:browser   # Run browser/Storybook tests (requires Playwright: npx playwright install chromium && npx playwright install-deps chromium)
 bun run storybook      # Storybook dev (port 6006)
 ```
 

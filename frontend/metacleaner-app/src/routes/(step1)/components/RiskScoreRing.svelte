@@ -16,7 +16,10 @@
 
 	function riskScoreLabel(): string {
 		void locale.current;
-		return (m as unknown as Record<string, (() => string) | undefined>)['step2.risk.score']?.() ?? 'Risk Score';
+		return (
+			(m as unknown as Record<string, (() => string) | undefined>)['step2.risk.score']?.() ??
+			'Risk Score'
+		);
 	}
 
 	const clampedScore = $derived(Math.min(100, Math.max(0, score)));

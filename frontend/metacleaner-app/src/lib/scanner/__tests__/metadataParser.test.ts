@@ -1,14 +1,41 @@
 import { describe, it, expect, vi } from 'vitest';
 import * as fc from 'fast-check';
 import { parseFile } from '../metadataParser.js';
-import { FILE_SIZE_THRESHOLD, MAX_IMAGE_HEADER_BYTES, MAX_VIDEO_HEADER_BYTES } from '../constants.js';
+import {
+	FILE_SIZE_THRESHOLD,
+	MAX_IMAGE_HEADER_BYTES,
+	MAX_VIDEO_HEADER_BYTES
+} from '../constants.js';
 
 const UNSUPPORTED_EXTENSIONS = [
-	'.pdf', '.doc', '.docx', '.txt', '.zip', '.rar', '.exe', '.bin',
-	'.csv', '.json', '.xml', '.html', '.css', '.js', '.ts'
+	'.pdf',
+	'.doc',
+	'.docx',
+	'.txt',
+	'.zip',
+	'.rar',
+	'.exe',
+	'.bin',
+	'.csv',
+	'.json',
+	'.xml',
+	'.html',
+	'.css',
+	'.js',
+	'.ts'
 ];
 
-const SUPPORTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.heic', '.avif', '.tiff', '.dng'];
+const SUPPORTED_IMAGE_EXTENSIONS = [
+	'.jpg',
+	'.jpeg',
+	'.png',
+	'.webp',
+	'.gif',
+	'.heic',
+	'.avif',
+	'.tiff',
+	'.dng'
+];
 
 function makeFakeFile(name: string, data: Uint8Array): File {
 	return new File([data.buffer as ArrayBuffer], name);
@@ -67,14 +94,11 @@ describe('Feature: client-side-risk-scanner, Property 7: corrupted files never c
 
 	it('empty file bytes return valid or error ScanResult without throwing', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.constantFrom(...SUPPORTED_IMAGE_EXTENSIONS),
-				async (ext) => {
-					const file = makeFakeFile(`empty${ext}`, new Uint8Array(0));
-					const result = await parseFile(file, 'test-id');
-					expect(['done', 'error']).toContain(result.status);
-				}
-			),
+			fc.asyncProperty(fc.constantFrom(...SUPPORTED_IMAGE_EXTENSIONS), async (ext) => {
+				const file = makeFakeFile(`empty${ext}`, new Uint8Array(0));
+				const result = await parseFile(file, 'test-id');
+				expect(['done', 'error']).toContain(result.status);
+			}),
 			{ numRuns: 20 }
 		);
 	});
@@ -83,7 +107,7 @@ describe('Feature: client-side-risk-scanner, Property 7: corrupted files never c
 // Property 8: Large files read only header segments
 describe('Feature: client-side-risk-scanner, Property 8: large files read only header segments', () => {
 	it('image files larger than 200MB use file.slice for the first 512KB', async () => {
-		const sliceSpy = vi.fn().mockReturnValue(new Blob([new Uint8Array([0xFF, 0xD8, 0xFF, 0xE0])]));
+		const sliceSpy = vi.fn().mockReturnValue(new Blob([new Uint8Array([0xff, 0xd8, 0xff, 0xe0])]));
 		const mockLargeJpeg = {
 			name: 'large-photo.jpg',
 			size: FILE_SIZE_THRESHOLD + 1,
@@ -96,9 +120,11 @@ describe('Feature: client-side-risk-scanner, Property 8: large files read only h
 	});
 
 	it('video files larger than 200MB use file.slice for the first 2MB', async () => {
-		const sliceSpy = vi.fn().mockReturnValue(
-			new Blob([new Uint8Array([0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70])])
-		);
+		const sliceSpy = vi
+			.fn()
+			.mockReturnValue(
+				new Blob([new Uint8Array([0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70])])
+			);
 		const mockLargeMp4 = {
 			name: 'large-video.mp4',
 			size: FILE_SIZE_THRESHOLD + 1,

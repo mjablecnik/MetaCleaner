@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run",
+		"test": "npm run test:unit -- --run --project=server",
+		"test:browser": "npm run test:unit -- --run --project=client --project=storybook",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},

@@ -42,15 +42,12 @@ describe('Feature: client-side-risk-scanner, Property 1: category score computat
 
 		it(`${category}: score equals sum of per-field weights for any subset`, () => {
 			fc.assert(
-				fc.property(
-					fc.subarray(knownKeys, { minLength: 0 }),
-					(subset) => {
-						const fields = makeFields(category, subset);
-						const { categories } = computeFileScore(fields);
-						const expected = Math.min(100, subset.length * weight);
-						expect(categories[category]).toBeCloseTo(expected, 10);
-					}
-				),
+				fc.property(fc.subarray(knownKeys, { minLength: 0 }), (subset) => {
+					const fields = makeFields(category, subset);
+					const { categories } = computeFileScore(fields);
+					const expected = Math.min(100, subset.length * weight);
+					expect(categories[category]).toBeCloseTo(expected, 10);
+				}),
 				{ numRuns: 100 }
 			);
 		});

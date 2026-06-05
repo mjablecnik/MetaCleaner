@@ -6,7 +6,7 @@ import { computeFileScore } from '../riskAnalyzer.js';
 const VIDEO_FIELD_MAP: Record<string, { key: string; category: keyof RiskCategory }> = {
 	// GPS
 	'com.apple.quicktime.location.ISO6709': { key: 'GPSPosition', category: 'gps' },
-	'com_apple_quicktime_location_ISO6709': { key: 'GPSPosition', category: 'gps' },
+	com_apple_quicktime_location_ISO6709: { key: 'GPSPosition', category: 'gps' },
 	location: { key: 'GPSPosition', category: 'gps' },
 	GPS_Coordinate: { key: 'GPSPosition', category: 'gps' },
 	// Device identity
@@ -80,9 +80,7 @@ function extractFieldsFromTrack(track: Record<string, unknown>): MetadataField[]
 		const mapping = VIDEO_FIELD_MAP[rawKey];
 		if (!mapping || seen.has(mapping.key)) continue;
 		const value =
-			typeof rawValue === 'string' || typeof rawValue === 'number'
-				? rawValue
-				: String(rawValue);
+			typeof rawValue === 'string' || typeof rawValue === 'number' ? rawValue : String(rawValue);
 		fields.push({ key: mapping.key, value, category: mapping.category });
 		seen.add(mapping.key);
 	}
@@ -137,8 +135,7 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 	const hasGps = fields.some((f) => f.category === 'gps');
 	const makeField = fields.find((f) => f.key === 'Make');
 	const modelField = fields.find((f) => f.key === 'Model');
-	const device =
-		[makeField?.value, modelField?.value].filter(Boolean).join(' ') || undefined;
+	const device = [makeField?.value, modelField?.value].filter(Boolean).join(' ') || undefined;
 	const { score, categories } = computeFileScore(fields);
 
 	return {

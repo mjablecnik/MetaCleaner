@@ -178,7 +178,11 @@
 											tabindex="0"
 											onkeydown={(e) => e.key === 'Enter' && handleLangSelect(lang.code)}
 										>
-											<img src={lang.flag} alt={lang.label} class="h-4 w-6 rounded-sm object-cover" />
+											<img
+												src={lang.flag}
+												alt={lang.label}
+												class="h-4 w-6 rounded-sm object-cover"
+											/>
 											{lang.name}
 											{#if locale.current === lang.code}
 												<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>

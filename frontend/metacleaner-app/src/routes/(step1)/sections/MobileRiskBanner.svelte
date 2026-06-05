@@ -84,7 +84,9 @@
 				<div class="mb-0.5 flex items-center gap-2">
 					<span class="text-sm font-bold text-white">{tx('step2.risk.title')}</span>
 					<span
-						class="flex items-center gap-1 rounded-full border border-gray-700 bg-navy-lighter px-2 py-0.5 text-[10px] font-bold uppercase {severityTextClass[severity]}"
+						class="flex items-center gap-1 rounded-full border border-gray-700 bg-navy-lighter px-2 py-0.5 text-[10px] font-bold uppercase {severityTextClass[
+							severity
+						]}"
 					>
 						<span
 							class="inline-block h-1.5 w-1.5 animate-pulse rounded-full {dotColorClass[severity]}"

@@ -1,6 +1,26 @@
 export type FileType = 'image' | 'video';
-export type ImageFormat = 'jpeg' | 'png' | 'heic' | 'heif' | 'avif' | 'tiff' | 'dng' | 'webp' | 'gif';
-export type VideoFormat = 'mp4' | 'mov' | 'avi' | 'mkv' | 'webm' | 'wmv' | 'flv' | '3gp' | 'mpeg' | 'ogv' | 'mts';
+export type ImageFormat =
+	| 'jpeg'
+	| 'png'
+	| 'heic'
+	| 'heif'
+	| 'avif'
+	| 'tiff'
+	| 'dng'
+	| 'webp'
+	| 'gif';
+export type VideoFormat =
+	| 'mp4'
+	| 'mov'
+	| 'avi'
+	| 'mkv'
+	| 'webm'
+	| 'wmv'
+	| 'flv'
+	| '3gp'
+	| 'mpeg'
+	| 'ogv'
+	| 'mts';
 export type ScanStatus = 'pending' | 'scanning' | 'done' | 'error';
 export type SeverityLevel = 'critical' | 'high' | 'medium' | 'low';
 

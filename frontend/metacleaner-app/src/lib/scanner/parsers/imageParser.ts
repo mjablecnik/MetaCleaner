@@ -121,7 +121,8 @@ export async function parseImage(
 	fileId: string,
 	format: ImageFormat
 ): Promise<ScanResult> {
-	const input: Blob = file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_IMAGE_HEADER_BYTES) : file;
+	const input: Blob =
+		file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_IMAGE_HEADER_BYTES) : file;
 
 	if (EXIFR_FORMATS.has(format)) {
 		return parseWithExifr(input, fileId);

@@ -1,12 +1,17 @@
 export const GPS_FIELDS = ['GPSLatitude', 'GPSLongitude', 'GPSAltitude', 'GPSPosition'];
 export const DEVICE_FIELDS = ['Make', 'Model', 'SerialNumber', 'Software', 'LensModel'];
 export const PERSONAL_FIELDS = ['Artist', 'Copyright', 'XPAuthor', 'Creator', 'ContactInfo'];
-export const TIMESTAMP_FIELDS = ['DateTimeOriginal', 'DateTimeDigitized', 'GPSDateStamp', 'CreateDate'];
+export const TIMESTAMP_FIELDS = [
+	'DateTimeOriginal',
+	'DateTimeDigitized',
+	'GPSDateStamp',
+	'CreateDate'
+];
 
 export const CATEGORY_WEIGHTS = {
-	gps: 0.40,
+	gps: 0.4,
 	deviceIdentity: 0.25,
-	personalData: 0.20,
+	personalData: 0.2,
 	timestamps: 0.15
 } as const;
 
@@ -18,7 +23,7 @@ export const SEVERITY_THRESHOLDS = {
 } as const;
 
 export const FILE_SIZE_THRESHOLD = 200 * 1024 * 1024; // 200MB
-export const MAX_IMAGE_HEADER_BYTES = 512 * 1024;     // 512KB
+export const MAX_IMAGE_HEADER_BYTES = 512 * 1024; // 512KB
 export const MAX_VIDEO_HEADER_BYTES = 2 * 1024 * 1024; // 2MB
 
 export const IMAGE_EXTENSIONS: Record<string, string> = {

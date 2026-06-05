@@ -86,7 +86,9 @@
 
 <!-- Mobile fixed bottom CTA (shown when hasFiles) -->
 {#if hasFiles}
-	<div class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden">
+	<div
+		class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
+	>
 		<button
 			onclick={() => goto(resolve('/step3'))}
 			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95"
@@ -97,7 +99,9 @@
 	</div>
 {:else}
 	<!-- Disabled Start Cleaning button when no files -->
-	<div class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden">
+	<div
+		class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
+	>
 		<button
 			disabled
 			class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-700 py-4 text-sm font-bold text-gray-500 opacity-60"

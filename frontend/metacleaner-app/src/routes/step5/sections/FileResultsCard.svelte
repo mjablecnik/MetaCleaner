@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { QueuedFile } from '$lib/scanner/types';
-	import type { ProcessingResults, FileMetadataResult } from '$lib/repositories/processingRepository';
+	import type {
+		ProcessingResults,
+		FileMetadataResult
+	} from '$lib/repositories/processingRepository';
 	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';

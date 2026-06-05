@@ -98,7 +98,8 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span
 								class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
@@ -149,7 +150,8 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span
 								class="flex items-center gap-1 text-[10px] font-medium text-brand-red lg:text-[11px]"
@@ -188,7 +190,8 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
 								<i class="fa-solid fa-ban text-[9px]"></i>

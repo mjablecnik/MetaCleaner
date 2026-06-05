@@ -91,9 +91,7 @@ const aggregatedRisk = $derived(
 const hasFiles = $derived(files.length > 0);
 
 const isScanning = $derived(
-	files.some(
-		(f) => f.scanResult?.status === 'pending' || f.scanResult?.status === 'scanning'
-	)
+	files.some((f) => f.scanResult?.status === 'pending' || f.scanResult?.status === 'scanning')
 );
 
 export const scannerStore = {
