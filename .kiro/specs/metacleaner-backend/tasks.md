@@ -6,29 +6,29 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
 
 ## Tasks
 
-- [ ] 1. Initialize project structure and configuration
-  - [ ] 1.1 Initialize Go module and install dependencies
+- [x] 1. Initialize project structure and configuration
+  - [x] 1.1 Initialize Go module and install dependencies
     - Run `go mod init` in `backend/`
     - Add dependencies: `gorilla/websocket`, `signintech/gopdf`, `godotenv`, `flyingmutant/rapid` (for property tests)
     - Create `.env.example` with all required environment variables (PORT, FRONTEND_ORIGIN, MAX_FILE_SIZE, RETENTION_PERIOD, TEMP_STORAGE_PATH, SUPABASE_URL, SUPABASE_API_KEY, RATE_LIMIT_RPM)
     - Create `.dockerignore` excluding `.git/`, `.env`, `tests/`, `*.md`
     - _Requirements: 8.2, 8.5_
 
-  - [ ] 1.2 Implement configuration loading (`config.go`)
+  - [x] 1.2 Implement configuration loading (`config.go`)
     - Define `Config` struct with typed fields: Port (int), FrontendOrigin (string), MaxFileSize (int64), RetentionPeriod (time.Duration), TempStoragePath (string), SupabaseURL (string), SupabaseAPIKey (string), RateLimitRPM (int)
     - Load values from environment variables using `godotenv`
     - Validate required values are present, apply defaults (Port=8080, MaxFileSize=500MB, RetentionPeriod=1h, TempStoragePath=/tmp/metacleaner, RateLimitRPM=10)
     - Exit with non-zero code if critical env vars missing
     - _Requirements: 8.2_
 
-  - [ ] 1.3 Implement error types and response helpers (`errors.go`)
+  - [x] 1.3 Implement error types and response helpers (`errors.go`)
     - Define `ErrorResponse` struct with Error, Message, Timestamp fields
     - Create `NewErrorResponse(code, message string) ErrorResponse` helper that sets timestamp to RFC 3339 format
     - Create `WriteError(w http.ResponseWriter, status int, code, message string)` helper that writes JSON error responses
     - Define error code constants: FILE_TOO_LARGE, UNSUPPORTED_FORMAT, INSUFFICIENT_STORAGE, FILE_NOT_FOUND, FILE_NOT_READY, JOB_NOT_FOUND, REPORT_NOT_FOUND, INVALID_REQUEST, DATABASE_ERROR, RATE_LIMIT_EXCEEDED
     - _Requirements: 6.2_
 
-  - [ ]* 1.4 Write property test for error response format consistency
+  - [x]* 1.4 Write property test for error response format consistency
     - **Property 8: Error response format consistency**
     - **Validates: Requirements 6.2**
 
