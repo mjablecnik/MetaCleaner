@@ -133,7 +133,7 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - All files error: show "Scanning failed" state instead of breakdown
     - File added during active scan: queued and processed after current completes
     - _Requirements: 3.2, 5.4, 7.1_
-  - [ ]* 8.3 Write integration tests for the scan pipeline
+  - [x]* 8.3 Write integration tests for the scan pipeline
     - Test file upload → parse → score update flow
     - Test batch upload processes all files incrementally
     - Test remove file recalculates correctly
