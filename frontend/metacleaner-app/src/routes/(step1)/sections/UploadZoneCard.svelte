@@ -11,7 +11,7 @@
 
 	let { onOpenOptions }: Props = $props();
 
-	const FILE_FORMATS = ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'];
+	const FILE_FORMATS = ['JPG', 'PNG', 'HEIC', 'WEBP', 'GIF', 'AVIF', 'MP4', 'MOV', 'MKV'];
 
 	const isScanning = $derived(scannerStore.isScanning);
 	const scannedCount = $derived(scannerStore.aggregatedRisk.scannedCount);

@@ -61,6 +61,7 @@
 		}
 	]);
 
+	// TODO: placeholder mock UI — replace with real results from cleaning service when backend is ready
 	onMount(() => {
 		getResults().then((r) => {
 			results = r;

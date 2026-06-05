@@ -25,6 +25,7 @@
 
 	const uploadedFiles = $derived(scannerStore.files);
 
+	// TODO: placeholder mock UI — replace with real cleaning service (WebSocket/SSE) when backend is ready
 	function makeMockProcessingState(files: QueuedFile[]): ProcessingState | null {
 		if (!files.length) return null;
 		const processingFiles: ProcessingFileState[] = files.map((f, i) => ({

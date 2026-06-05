@@ -39,6 +39,7 @@
 
 	const failedFileName = $derived(getFileById(errorState?.failedFileId ?? '')?.name ?? '');
 
+	// TODO: placeholder mock UI — replace with real error data from cleaning service when backend is ready
 	onMount(() => {
 		getErrorState().then((es) => {
 			errorState = es;

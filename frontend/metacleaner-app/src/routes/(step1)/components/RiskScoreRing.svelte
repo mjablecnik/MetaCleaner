@@ -62,6 +62,7 @@
 			r="15.9"
 			fill="none"
 			stroke-width="3"
+			pathLength="100"
 			style="stroke: var(--color-navy-lighter)"
 		></circle>
 		<circle
@@ -71,6 +72,7 @@
 			fill="none"
 			stroke-width="3.5"
 			stroke-linecap="round"
+			pathLength="100"
 			stroke-dasharray={dasharray}
 			style="stroke: {strokeVar[color]}; filter: {glowFilter[color]}"
 		></circle>

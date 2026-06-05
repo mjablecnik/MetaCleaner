@@ -67,6 +67,9 @@
 	}
 </script>
 
+<div aria-live="polite" aria-atomic="true" class="sr-only">
+	Risk score: {score} out of 100. Severity: {severity}.
+</div>
 <div
 	class="overflow-hidden rounded-2xl border shadow-card lg:hidden {severityBadgeClass[severity]}"
 >
