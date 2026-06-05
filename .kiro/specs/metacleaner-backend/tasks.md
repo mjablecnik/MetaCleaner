@@ -108,8 +108,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test disk write failure → 507 (Req 1.6)
     - _Requirements: 1.1–1.6_
 
-- [ ] 6. Implement cleaning pipeline
-  - [ ] 6.1 Implement cleaning pipeline orchestration (`pipeline.go`)
+- [x] 6. Implement cleaning pipeline
+  - [x] 6.1 Implement cleaning pipeline orchestration (`pipeline.go`)
     - Create `CleaningPipeline` struct holding config and a progress callback function type
     - Implement `ProcessJob(ctx, job *Job, files []FileRecord, progressFn func(ProgressEvent)) error`
     - Process files sequentially within a job
@@ -118,7 +118,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - On subprocess failure: mark file as "error", record error details, continue to next file
     - _Requirements: 2.1, 2.6_
 
-  - [ ] 6.2 Implement ExifTool subprocess for images
+  - [x] 6.2 Implement ExifTool subprocess for images
     - Run `exiftool -json <file>` to read all metadata fields before cleaning
     - Parse JSON output, categorize fields into GPS/EXIF/XMP categories
     - Run `exiftool -all= -o <cleaned_path> <original_path>` to strip metadata
@@ -126,7 +126,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Handle non-zero exit codes as file-level errors
     - _Requirements: 2.2, 2.4, 2.7_
 
-  - [ ] 6.3 Implement FFmpeg subprocess for videos
+  - [x] 6.3 Implement FFmpeg subprocess for videos
     - Run `ffprobe -v quiet -print_format json -show_format -show_streams <file>` to read metadata (global + per-stream)
     - Parse JSON output, categorize fields into ID3/MP4 atoms categories
     - Run `ffmpeg -i <input> -map_metadata -1 -map_metadata:s -1 -fflags +bitexact -flags:v +bitexact -flags:a +bitexact -c copy <output>` to strip all metadata (global + per-stream) without adding encoder tags
@@ -134,7 +134,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Handle non-zero exit codes as file-level errors
     - _Requirements: 2.3, 2.4, 2.7_
 
-  - [ ] 6.4 Implement metadata field categorization logic
+  - [x] 6.4 Implement metadata field categorization logic
     - Create `CategorizeMetadataField(key string, source string) string` function
     - Categorize ExifTool fields: GPS* → GPS, XMP* → XMP, remainder → EXIF
     - Categorize FFprobe fields: ID3/MP4 atoms based on tag format
@@ -142,11 +142,11 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Ensure sum of categorized fields equals total field count
     - _Requirements: 2.4, 2.7_
 
-  - [ ]* 6.5 Write property test for metadata field categorization
+  - [x]* 6.5 Write property test for metadata field categorization
     - **Property 4: Metadata field categorization**
     - **Validates: Requirements 2.4, 2.7**
 
-  - [ ]* 6.6 Write unit tests for pipeline subprocess failure handling
+  - [x]* 6.6 Write unit tests for pipeline subprocess failure handling
     - Test ExifTool non-zero exit → file marked failed, other files continue
     - Test FFmpeg non-zero exit → file marked failed, other files continue
     - _Requirements: 2.6_
