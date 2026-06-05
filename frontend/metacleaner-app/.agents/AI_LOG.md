@@ -1,5 +1,26 @@
 # AI Log
 
+## 2026-06-05 06:47 — ui-refactor
+- Added theme tokens `--shadow-drop-red`, `--color-navy-lighter-50`, `--color-navy-lighter-60` to `src/routes/layout.css` @theme block
+- Replaced inline `rgba(239,68,68,0.6)` in step2 SVG with `--shadow-drop-red` token
+- Replaced inline `rgba(30,41,59,0.5/0.6)` in reports `<style>` block with `--color-navy-lighter-50`/`--color-navy-lighter-60` tokens
+- Refactored `src/routes/+layout.svelte` to include NavBar with shared state (user, langOptions, locale switching)
+- Removed duplicated NavBar markup and shared state from all 7 pages: `+page.svelte` (Step 1), `step2/+page.svelte`, `step3/+page.svelte`, `step4/+page.svelte`, `step5/+page.svelte`, `reports/+page.svelte`, `report/+page.svelte`
+- Refactored `src/routes/+page.svelte` (Step 1) to compose UploadZoneCard, StatusCard, OptionsSheet, UpgradeSheet from `(step1)/sections/`
+- Refactored `src/routes/step2/+page.svelte` to compose RiskScannerCard, MobileRiskBanner, FileListCard from `step2/sections/`
+- Refactored `src/routes/step3/+page.svelte` to compose ProcessingStatusCard, MobileStatusCard, ProcessingFilesCard, ActivityLogAccordion from `step3/sections/`
+- Refactored `src/routes/step4/+page.svelte` to compose ErrorBanner, ErrorFilesCard, ErrorStateCard, MobileErrorVisual, ErrorDetailAccordion, ErrorTypeAccordion, ErrorLogAccordion from `step4/sections/`
+- Refactored `src/routes/step5/+page.svelte` to compose SuccessHeader, MetadataOverview, FileResultsCard from `step5/sections/`
+- Refactored `src/routes/reports/+page.svelte` to compose SummaryStatsRow, ReportsHeader, FiltersBar, MobileFilters, ReportsTable, ReportsList from sections
+- Refactored `src/routes/report/+page.svelte` to compose ReportDetailHeader, ReportChartCard, FileAccordionList from `report/sections/`
+- Created stories: `FileListItemRisk.stories.svelte`, `RiskBreakdownBar.stories.svelte`, `BeforeAfterScore.stories.svelte` in `src/routes/step2/components/`
+- Created stories: `ErrorDetailBox.stories.svelte`, `ErrorTypeSelector.stories.svelte` in `src/routes/step4/components/`
+- Created stories: `MetadataPanel.stories.svelte` in `src/routes/step5/components/`
+- Created stories: `FilterPill.stories.svelte`, `ReportTableRow.stories.svelte`, `ReportCard.stories.svelte` in `src/routes/reports/components/`
+- Created stories: `ChartBar.stories.svelte`, `MetadataTable.stories.svelte`, `FileAccordionItem.stories.svelte` in `src/routes/report/components/`
+- Verified build passes with zero errors (`npm run build`)
+- Verified Storybook builds with zero errors (`npm run build-storybook`)
+
 ## 2026-06-05 00:50 — ui-refactor
 - Extended `@theme` block in `src/routes/layout.css` with missing tokens (gray-700, border-radius vars, glow shadows)
 - Replaced all inline `style="color:#ef4444"`, `style="background:rgba(...)"`, and `style="border:..."` with Tailwind theme utility classes
