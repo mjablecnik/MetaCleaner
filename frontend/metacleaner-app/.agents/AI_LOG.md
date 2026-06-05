@@ -1,5 +1,35 @@
 # AI Log
 
+## 2026-06-05 11:13 — manual
+
+- Added Android back button handling with Capacitor `@capacitor/app` plugin in `src/routes/+layout.svelte`
+- Created `sync-android.sh` script for Android project deployment and set executable permissions
+- Updated `README.md` with project description and setup instructions
+- Added `@capacitor/app` dependency to `package.json`
+
+## 2026-06-05 10:56 — manual
+
+- Updated language flag representation in `languageRepository.ts` from emoji to SVG image paths
+- Added flag SVG files (`cs.svg`, `de.svg`, `en.svg`, `sk.svg`) to `static/flags/`
+- Updated `LanguageDropdown.svelte`, `MobileHamburgerMenu.svelte`, and `NavBar.svelte` to render SVG flags
+
+## 2026-06-05 10:18 — manual
+
+- Added architectural and convention guidelines in `.kiro/steering/metacleaner-frontend.md`
+- Added `CLAUDE.md` with project context for AI assistants
+- Added `prettier-plugin-tailwindcss` dependency to `package.json`
+
+## 2026-06-05 07:31 — check-build
+
+- Resolved all build and lint errors for clean first-checkout experience
+- Ran prettier on 143 files to fix formatting
+- Fixed 112 ESLint errors: replaced bare `locale.current;` with `void locale.current;` in ~50 files, added keys to all `{#each}` blocks, wrapped hrefs with `resolve()` from `$app/paths`, used `Pathname` type for dynamic hrefs
+- Added `storybook.configs['flat/recommended']` to ESLint config
+- Removed unused snippets, variables, and imports across multiple components and stories
+- Added `tabindex="0"` to `ToggleSwitch` for accessibility compliance
+- Updated `README.md` with bun-based setup and Playwright install steps
+- Created `.agents/MEMORY.md` documenting non-obvious build issues for future agents
+
 ## 2026-06-05 06:47 — ui-refactor
 
 - Added theme tokens `--shadow-drop-red`, `--color-navy-lighter-50`, `--color-navy-lighter-60` to `src/routes/layout.css` @theme block
