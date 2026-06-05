@@ -15,15 +15,15 @@
 	});
 </script>
 
-<Story name="0 Percent">
+<Story name="Empty">
 	<ProgressBar value={0} />
 </Story>
 
-<Story name="50 Percent">
+<Story name="Half">
 	<ProgressBar value={50} />
 </Story>
 
-<Story name="100 Percent">
+<Story name="Full">
 	<ProgressBar value={100} />
 </Story>
 
