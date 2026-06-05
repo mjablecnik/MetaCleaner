@@ -250,7 +250,7 @@
 								stroke-width="3.5"
 								stroke-dasharray="72 28"
 								stroke-linecap="round"
-								style="stroke: var(--color-brand-red); filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
+								style="stroke: var(--color-brand-red); filter: var(--shadow-drop-red)"
 							></circle>
 						</svg>
 						<span class="text-sm font-black text-brand-red z-10">72</span>
@@ -523,7 +523,7 @@
 									stroke-width="3.5"
 									stroke-dasharray="72 28"
 									stroke-linecap="round"
-									style="stroke: var(--color-brand-red); filter: drop-shadow(0 0 6px rgba(239,68,68,0.6))"
+									style="stroke: var(--color-brand-red); filter: var(--shadow-drop-red)"
 								></circle>
 							</svg>
 							<div class="text-center z-10">
