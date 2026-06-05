@@ -39,6 +39,16 @@
 		<!-- Upload-only layout (full width) -->
 		<div class="flex flex-col gap-4 lg:gap-5">
 			<UploadZoneCard onOpenOptions={() => (optionsSheetOpen = true)} />
+			<!-- Disabled Start Cleaning button (desktop, no files) -->
+			<div class="hidden lg:block">
+				<button
+					disabled
+					class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-700 py-3.5 text-sm font-bold text-gray-500 opacity-60"
+				>
+					<i class="fa-solid fa-wand-magic-sparkles"></i>
+					{tx('step1.actions.startCleaning')}
+				</button>
+			</div>
 		</div>
 	{:else}
 		<!-- Unified layout: upload + risk scanner -->

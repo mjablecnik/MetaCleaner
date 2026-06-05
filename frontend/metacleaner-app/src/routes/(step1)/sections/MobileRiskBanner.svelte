@@ -137,14 +137,3 @@
 		</div>
 	{/if}
 </div>
-
-<!-- Mobile CTA hint -->
-<div
-	class="flex items-center gap-3 rounded-xl border border-brand-green/20 bg-brand-green/6 px-4 py-3 lg:hidden"
->
-	<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-	<p class="text-xs text-text-muted">
-		{tx('step2.risk.reducePre')}
-		<span class="font-semibold text-brand-green">{tx('step2.risk.reduceHighlight')}</span>
-	</p>
-</div>

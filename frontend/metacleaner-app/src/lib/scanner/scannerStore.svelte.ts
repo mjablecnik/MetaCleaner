@@ -78,6 +78,7 @@ export function removeFile(fileId: string): void {
 export function clearFiles(): void {
 	files = [];
 	_isProcessing = false;
+	_idCounter = 0;
 }
 
 const aggregatedRisk = $derived(
