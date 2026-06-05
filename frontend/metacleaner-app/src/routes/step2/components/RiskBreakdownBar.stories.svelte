@@ -1,6 +1,6 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import RiskBreakdownBar from './RiskBreakdownBar.svelte';
+	import RiskBreakdownBar from '../../(step1)/components/RiskBreakdownBar.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Step2/RiskBreakdownBar',

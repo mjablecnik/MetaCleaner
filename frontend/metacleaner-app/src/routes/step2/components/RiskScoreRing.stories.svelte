@@ -1,6 +1,6 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import RiskScoreRing from './RiskScoreRing.svelte';
+	import RiskScoreRing from '../../(step1)/components/RiskScoreRing.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Step2/RiskScoreRing',

@@ -1,6 +1,6 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import BeforeAfterScore from './BeforeAfterScore.svelte';
+	import BeforeAfterScore from '../../(step1)/components/BeforeAfterScore.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Step2/BeforeAfterScore',

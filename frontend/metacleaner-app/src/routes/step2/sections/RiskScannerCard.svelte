@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import RiskScoreRing from '../components/RiskScoreRing.svelte';
-	import RiskBreakdownBar from '../components/RiskBreakdownBar.svelte';
-	import BeforeAfterScore from '../components/BeforeAfterScore.svelte';
+	import RiskScoreRing from '../../(step1)/components/RiskScoreRing.svelte';
+	import RiskBreakdownBar from '../../(step1)/components/RiskBreakdownBar.svelte';
+	import BeforeAfterScore from '../../(step1)/components/BeforeAfterScore.svelte';
 
 	interface Props {
 		score?: number;

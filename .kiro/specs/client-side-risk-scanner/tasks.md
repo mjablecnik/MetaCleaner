@@ -92,23 +92,23 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - Test sequential processing of multiple files
     - _Requirements: 3.1, 3.2, 5.1, 5.2, 5.3_
 
-- [ ] 6. Refactor UI — merge upload and risk scanner into unified page
-  - [ ] 6.1 Relocate step2 components to the root route
+- [x] 6. Refactor UI — merge upload and risk scanner into unified page
+  - [x] 6.1 Relocate step2 components to the root route
     - Move `RiskScoreRing.svelte`, `RiskBreakdownBar.svelte`, `BeforeAfterScore.svelte`, `FileListItemRisk.svelte` from `src/routes/step2/components/` to `src/routes/(step1)/components/`
     - Add new `ScanProgressIndicator.svelte` component in `src/routes/(step1)/components/`
     - _Requirements: 1.2, 6.1, 6.2_
-  - [ ] 6.2 Create new sections for the unified page
+  - [x] 6.2 Create new sections for the unified page
     - Create `src/routes/(step1)/sections/RiskScannerCard.svelte` — desktop risk panel connected to `scannerStore`, showing score ring, category breakdown bars, and severity badge
     - Create `src/routes/(step1)/sections/FileListCard.svelte` — scrollable file list with name, size, format badge, metadata field count, GPS indicator, device identifier
     - Create `src/routes/(step1)/sections/MobileRiskBanner.svelte` — compact risk summary shown below 1024px with overall score and severity
     - All sections derive data from `scannerStore` using `$derived` runes
     - _Requirements: 1.2, 1.5, 4.7, 6.1, 6.2, 6.3, 9.1, 9.2, 9.3_
-  - [ ] 6.3 Update UploadZoneCard to integrate with scanner store
+  - [x] 6.3 Update UploadZoneCard to integrate with scanner store
     - Modify `UploadZoneCard.svelte` to call `scannerStore.addFiles()` on file drop/selection
     - Display per-file scanning indicator (pending/scanning/done/error states)
     - Support file removal via `scannerStore.removeFile()`
     - _Requirements: 3.1, 3.3, 5.1, 5.2_
-  - [ ] 6.4 Rewrite the root `+page.svelte` for unified layout
+  - [x] 6.4 Rewrite the root `+page.svelte` for unified layout
     - Update `src/routes/+page.svelte` to render UploadZoneCard + conditionally show risk scanner panel
     - When `scannerStore.hasFiles` is false: show only upload zone (full width)
     - When `scannerStore.hasFiles` is true: show upload zone + risk scanner side-by-side on desktop (≥1024px), stacked on mobile (<1024px)
