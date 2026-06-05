@@ -6,6 +6,7 @@ import { computeAggregatedRisk } from './riskAnalyzer.js';
 let files = $state<QueuedFile[]>([]);
 let _isProcessing = false;
 let _idCounter = 0;
+let lastRejection = $state<{ tooLarge: number; unsupported: number } | null>(null);
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
 
@@ -51,11 +52,20 @@ async function processNext(): Promise<void> {
 
 export function addFiles(fileList: FileList): void {
 	const added: QueuedFile[] = [];
+	let tooLarge = 0;
+	let unsupported = 0;
 
 	for (const file of fileList) {
-		if (file.size > MAX_FILE_SIZE) continue;
-		const id = generateId();
+		if (file.size > MAX_FILE_SIZE) {
+			tooLarge++;
+			continue;
+		}
 		const detected = detectFormat(file);
+		if (!detected) {
+			unsupported++;
+			continue;
+		}
+		const id = generateId();
 		const dotIdx = file.name.lastIndexOf('.');
 
 		added.push({
@@ -64,10 +74,16 @@ export function addFiles(fileList: FileList): void {
 			name: file.name,
 			size: file.size,
 			extension: dotIdx !== -1 ? file.name.slice(dotIdx).toLowerCase() : '',
-			type: detected?.type ?? (file.type.startsWith('video/') ? 'video' : 'image'),
-			format: detected?.format ?? null,
+			type: detected.type,
+			format: detected.format,
 			scanResult: makePendingResult(id)
 		});
+	}
+
+	if (tooLarge > 0 || unsupported > 0) {
+		lastRejection = { tooLarge, unsupported };
+	} else {
+		lastRejection = null;
 	}
 
 	files = [...files, ...added];
@@ -107,7 +123,13 @@ export const scannerStore = {
 	get isScanning() {
 		return isScanning;
 	},
+	get lastRejection() {
+		return lastRejection;
+	},
 	addFiles,
 	removeFile,
-	clearFiles
+	clearFiles,
+	clearRejection() {
+		lastRejection = null;
+	}
 };

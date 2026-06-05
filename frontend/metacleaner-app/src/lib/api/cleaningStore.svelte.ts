@@ -186,11 +186,11 @@ export const cleaningStore = {
 				processingState = {
 					...processingState,
 					files: processingState.files.map((f) =>
-						f.fileId === scannerId ? { ...f, status: 'waiting' } : f
+						f.fileId === scannerId ? { ...f, status: 'error' } : f
 					),
 					log: processingState.log.map((l) =>
 						l.fileId === scannerId
-							? { ...l, timestamp: now(), status: 'in_progress' as const }
+							? { ...l, timestamp: now(), status: 'error' as const }
 							: l
 					)
 				};

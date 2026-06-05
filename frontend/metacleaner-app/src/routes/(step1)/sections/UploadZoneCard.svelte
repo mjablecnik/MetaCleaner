@@ -3,6 +3,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import Card from '$lib/shared/elements/Card.svelte';
 	import DropZone from '../components/DropZone.svelte';
+	import Toast from '$lib/shared/components/Toast.svelte';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 
 	interface Props {
@@ -17,6 +18,10 @@
 	const scannedCount = $derived(scannerStore.aggregatedRisk.scannedCount);
 	const fileCount = $derived(scannerStore.aggregatedRisk.fileCount);
 
+	let showRejectionToast = $state(false);
+	let rejectionMessage = $state('');
+	let toastTimer: ReturnType<typeof setTimeout>;
+
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
 		const fn = (
@@ -24,6 +29,32 @@
 		)[key];
 		return fn ? fn(params) : key;
 	}
+
+	$effect(() => {
+		const rejection = scannerStore.lastRejection;
+		if (!rejection) return;
+
+		const parts: string[] = [];
+		if (rejection.tooLarge > 0) {
+			parts.push(
+				tx('step1.upload.rejectedTooLarge', { count: rejection.tooLarge }) ||
+					`${rejection.tooLarge} file(s) exceeded the 500 MB limit`
+			);
+		}
+		if (rejection.unsupported > 0) {
+			parts.push(
+				tx('step1.upload.rejectedUnsupported', { count: rejection.unsupported }) ||
+					`${rejection.unsupported} file(s) have an unsupported format`
+			);
+		}
+		rejectionMessage = parts.join(' · ');
+		showRejectionToast = true;
+		clearTimeout(toastTimer);
+		toastTimer = setTimeout(() => {
+			showRejectionToast = false;
+			scannerStore.clearRejection();
+		}, 3500);
+	});
 </script>
 
 <Card class="flex flex-col gap-4">
@@ -61,3 +92,5 @@
 		</button>
 	</div>
 </Card>
+
+<Toast message={rejectionMessage} show={showRejectionToast} />

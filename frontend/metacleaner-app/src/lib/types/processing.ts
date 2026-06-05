@@ -1,4 +1,4 @@
-export type FileProcessingStatus = 'done' | 'in_progress' | 'waiting';
+export type FileProcessingStatus = 'done' | 'in_progress' | 'waiting' | 'error';
 
 export interface ProcessingFileState {
 	fileId: string;
@@ -8,7 +8,7 @@ export interface ProcessingFileState {
 	gpsRemoved?: boolean;
 }
 
-export type LogEntryStatus = 'success' | 'in_progress' | 'waiting';
+export type LogEntryStatus = 'success' | 'in_progress' | 'waiting' | 'error';
 
 export interface ProcessingLogEntry {
 	timestamp: string;

@@ -164,12 +164,35 @@
 		</div>
 	</div>
 
-	<MobileStatusCard {processingState} {currentFile} />
+	{#if cleaningStore.phase === 'uploading'}
+		<div class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card lg:p-6">
+			<div class="flex items-center gap-3">
+				<i class="fa-solid fa-circle-notch spin-slow text-brand-orange text-xl"></i>
+				<div>
+					<p class="text-sm font-semibold text-white">{tx('step3.upload.title') || 'Uploading files...'}</p>
+					<p class="mt-0.5 text-xs text-text-muted">
+						{tx('step3.upload.description') || 'Preparing your files for cleaning. This may take a moment for large files.'}
+					</p>
+				</div>
+			</div>
+			<div class="flex flex-col gap-2">
+				{#each uploadedFiles as file (file.id)}
+					<div class="flex items-center gap-3 rounded-lg border border-gray-800 bg-navy-main/60 px-3 py-2">
+						<i class="fa-solid fa-file text-xs text-text-muted"></i>
+						<span class="min-w-0 flex-1 truncate text-xs text-text-muted">{file.name}</span>
+						<i class="fa-solid fa-circle-notch spin-slow text-[10px] text-brand-orange"></i>
+					</div>
+				{/each}
+			</div>
+		</div>
+	{:else}
+		<MobileStatusCard {processingState} {currentFile} />
 
-	<div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
-		<ProcessingFilesCard {processingState} {uploadedFiles} {overallPct} />
-		<ProcessingStatusCard {processingState} {uploadedFiles} {currentFile} />
-	</div>
+		<div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
+			<ProcessingFilesCard {processingState} {uploadedFiles} {overallPct} />
+			<ProcessingStatusCard {processingState} {uploadedFiles} {currentFile} />
+		</div>
 
-	<ActivityLogAccordion {processingState} {uploadedFiles} />
+		<ActivityLogAccordion {processingState} {uploadedFiles} />
+	{/if}
 </main>

@@ -4,7 +4,7 @@
 	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getReports as fetchReportsApi } from '$lib/api/client';
+	import { getReports as fetchReportsApi, getReportPdfUrl } from '$lib/api/client';
 	import type { Report, ReportSummaryStats } from '$lib/repositories/reportRepository';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -78,6 +78,8 @@
 	]);
 
 	function downloadReport(id: string) {
+		const url = getReportPdfUrl(id);
+		window.open(url, '_blank');
 		toastMessage = tx('reports.toast.downloading') + ' ' + id;
 		showToast = true;
 		clearTimeout(toastTimer);

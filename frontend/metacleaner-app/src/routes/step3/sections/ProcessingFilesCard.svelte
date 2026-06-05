@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { QueuedFile } from '$lib/scanner/types';
@@ -94,20 +92,6 @@
 				<i class="fa-solid fa-wand-magic-sparkles"></i>
 				{tx('step1.actions.startCleaning')}
 			</button>
-			<a
-				href={resolve('/step4' as Pathname)}
-				class="flex items-center gap-2 rounded-xl border border-brand-red/30 bg-brand-red/10 px-5 py-3.5 text-sm font-semibold text-brand-red transition-all hover:bg-brand-red/20"
-			>
-				<i class="fa-solid fa-stop"></i>
-				{tx('step3.actions.stop')}
-			</a>
 		</div>
-		<a
-			href={resolve('/step5' as Pathname)}
-			class="mt-1 flex items-center gap-1 text-xs text-text-muted transition-colors hover:text-brand-green"
-		>
-			<i class="fa-solid fa-arrow-right text-[10px]"></i>
-			{tx('step3.actions.orGoToResults')}
-		</a>
 	</div>
 </div>
