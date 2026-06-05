@@ -264,13 +264,13 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test startup cleanup runs immediately
     - _Requirements: 7.1, 7.2_
 
-- [ ] 13. Implement health endpoint and startup validation
-  - [ ] 13.1 Implement health check handler (`handlers.go` — health section)
+- [x] 13. Implement health endpoint and startup validation
+  - [x] 13.1 Implement health check handler (`handlers.go` — health section)
     - Create `handleHealth(w, r)` — check ExifTool availability (`exiftool -ver`), FFmpeg availability (`ffmpeg -version`), Supabase DB connectivity (ping), disk space status
     - Return 200 with JSON: status, exiftool (bool), ffmpeg (bool), database (bool), diskSpace (available, total)
     - _Requirements: 8.1_
 
-  - [ ] 13.2 Implement startup validation (`main.go`)
+  - [x] 13.2 Implement startup validation (`main.go`)
     - On startup: verify ExifTool in PATH (`exiftool -ver`), exit non-zero if missing
     - On startup: verify FFmpeg in PATH (`ffmpeg -version`), exit non-zero if missing
     - On startup: verify Supabase DB connectivity, exit non-zero if unreachable
