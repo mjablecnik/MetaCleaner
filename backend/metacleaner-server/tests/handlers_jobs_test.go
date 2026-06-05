@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"encoding/json"
@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	src "metacleaner-server/src"
 )
 
 // newMockSupabase returns a test HTTP server that simulates Supabase responses.
@@ -36,44 +38,44 @@ func newMockSupabase(t *testing.T, jobID string) *httptest.Server {
 // Test job creation with empty fileIds → 400
 func TestHandleCreateJobEmptyFileIDs(t *testing.T) {
 	cfg := newTestConfig(t)
-	db := NewSupabaseClient(cfg)
-	hub := NewWebSocketHub()
-	pl := NewCleaningPipeline(cfg)
+	db := src.NewSupabaseClient(cfg)
+	hub := src.NewWebSocketHub()
+	pl := src.NewCleaningPipeline(cfg)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(`{"fileIds":[]}`))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	handleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
 
 	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("expected 400, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrInvalidRequest {
-		t.Errorf("expected error %q, got %q", ErrInvalidRequest, resp.Error)
+	if resp.Error != src.ErrInvalidRequest {
+		t.Errorf("expected error %q, got %q", src.ErrInvalidRequest, resp.Error)
 	}
 }
 
 // Test job creation with a missing fileId → 404
 func TestHandleCreateJobMissingFile(t *testing.T) {
 	cfg := newTestConfig(t)
-	db := NewSupabaseClient(cfg)
-	hub := NewWebSocketHub()
-	pl := NewCleaningPipeline(cfg)
+	db := src.NewSupabaseClient(cfg)
+	hub := src.NewWebSocketHub()
+	pl := src.NewCleaningPipeline(cfg)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(`{"fileIds":["f-nonexistent"]}`))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	handleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrFileNotFound {
-		t.Errorf("expected error %q, got %q", ErrFileNotFound, resp.Error)
+	if resp.Error != src.ErrFileNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrFileNotFound, resp.Error)
 	}
 }
 
@@ -95,20 +97,20 @@ func TestHandleCreateJobSuccess(t *testing.T) {
 	defer srv.Close()
 
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
-	hub := NewWebSocketHub()
-	pl := NewCleaningPipeline(cfg)
+	db := src.NewSupabaseClient(cfg)
+	hub := src.NewWebSocketHub()
+	pl := src.NewCleaningPipeline(cfg)
 
 	body := fmt.Sprintf(`{"fileIds":[%q]}`, fileID)
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	handleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
 
 	if rr.Code != http.StatusCreated {
 		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp createJobResponse
+	var resp src.CreateJobResponse
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatalf("failed to decode response: %v", err)
 	}
@@ -133,20 +135,20 @@ func TestHandleGetJobNotFound(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/missing-id", nil)
 	req.SetPathValue("id", "missing-id")
 	rr := httptest.NewRecorder()
-	handleGetJob(db)(rr, req)
+	src.HandleGetJob(db)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrJobNotFound {
-		t.Errorf("expected error %q, got %q", ErrJobNotFound, resp.Error)
+	if resp.Error != src.ErrJobNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrJobNotFound, resp.Error)
 	}
 }
 
@@ -158,17 +160,17 @@ func TestHandleGetJobSuccess(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID, nil)
 	req.SetPathValue("id", jobID)
 	rr := httptest.NewRecorder()
-	handleGetJob(db)(rr, req)
+	src.HandleGetJob(db)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var job Job
+	var job src.Job
 	if err := json.NewDecoder(rr.Body).Decode(&job); err != nil {
 		t.Fatalf("failed to decode response: %v", err)
 	}

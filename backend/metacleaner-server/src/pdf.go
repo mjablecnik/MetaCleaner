@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"fmt"
@@ -54,10 +54,10 @@ func GenerateReportPDF(report *ReportDetail) ([]byte, error) {
 	pdf.AddPage()
 
 	const (
-		margin   = 40.0
-		pageW    = 595.28
-		pageH    = 841.89
-		footerY  = pageH - 25
+		margin  = 40.0
+		pageW   = 595.28
+		pageH   = 841.89
+		footerY = pageH - 25
 	)
 
 	pageNum := 1

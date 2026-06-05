@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"context"
@@ -75,7 +75,7 @@ func (cs *CleanupScheduler) RunCleanup() {
 			}
 
 			path := filepath.Join(dir, entry.Name())
-			fileID := extractFileID(entry.Name())
+			fileID := ExtractFileID(entry.Name())
 			if err := os.Remove(path); err != nil {
 				log.Printf("cleanup: failed to delete %s: %v", path, err)
 			} else {
@@ -85,8 +85,8 @@ func (cs *CleanupScheduler) RunCleanup() {
 	}
 }
 
-// extractFileID parses "f-abcd1234_original.jpg" → "f-abcd1234".
-func extractFileID(filename string) string {
+// ExtractFileID parses "f-abcd1234_original.jpg" → "f-abcd1234".
+func ExtractFileID(filename string) string {
 	base := strings.TrimSuffix(filename, filepath.Ext(filename))
 	if idx := strings.LastIndex(base, "_"); idx >= 0 {
 		return base[:idx]

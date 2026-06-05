@@ -1,10 +1,12 @@
-package main
+package tests
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
+
+	src "metacleaner-server/src"
 )
 
 // writeTestFile creates a file at path with the given modification time.
@@ -18,7 +20,7 @@ func writeTestFile(t *testing.T, path string, modTime time.Time) {
 	}
 }
 
-func setupCleanupDirs(t *testing.T) (string, *CleanupScheduler) {
+func setupCleanupDirs(t *testing.T) (string, *src.CleanupScheduler) {
 	t.Helper()
 	base := t.TempDir()
 	for _, sub := range []string{"uploads", "cleaned"} {
@@ -26,7 +28,7 @@ func setupCleanupDirs(t *testing.T) (string, *CleanupScheduler) {
 			t.Fatalf("mkdir %s: %v", sub, err)
 		}
 	}
-	return base, NewCleanupScheduler(time.Hour, base)
+	return base, src.NewCleanupScheduler(time.Hour, base)
 }
 
 // Test: expired files in both uploads/ and cleaned/ are deleted.
@@ -71,7 +73,7 @@ func TestCleanupRetainsNonExpiredFiles(t *testing.T) {
 
 // Test: cleanup handles missing directories gracefully without panicking.
 func TestCleanupMissingDirectories(t *testing.T) {
-	cs := NewCleanupScheduler(time.Hour, t.TempDir()+"/nonexistent")
+	cs := src.NewCleanupScheduler(time.Hour, t.TempDir()+"/nonexistent")
 	// Should not panic
 	cs.RunCleanup()
 }
@@ -109,9 +111,9 @@ func TestExtractFileID(t *testing.T) {
 		{"multi_under_score.mp4", "multi_under"},
 	}
 	for _, tc := range cases {
-		got := extractFileID(tc.filename)
+		got := src.ExtractFileID(tc.filename)
 		if got != tc.want {
-			t.Errorf("extractFileID(%q) = %q, want %q", tc.filename, got, tc.want)
+			t.Errorf("ExtractFileID(%q) = %q, want %q", tc.filename, got, tc.want)
 		}
 	}
 }

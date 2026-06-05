@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"bytes"
@@ -8,11 +8,13 @@ import (
 	"net/http/httptest"
 	"path/filepath"
 	"testing"
+
+	src "metacleaner-server/src"
 )
 
-func newTestConfig(t *testing.T) Config {
+func newTestConfig(t *testing.T) src.Config {
 	t.Helper()
-	return Config{
+	return src.Config{
 		MaxFileSize:     500 * 1024 * 1024,
 		TempStoragePath: t.TempDir(),
 	}
@@ -35,10 +37,9 @@ func buildUploadRequest(t *testing.T, files map[string][]byte) *http.Request {
 	return req
 }
 
-// Test multi-file upload processing (Req 1.5)
 func TestHandleUploadMultiFile(t *testing.T) {
 	cfg := newTestConfig(t)
-	handler := handleUpload(cfg)
+	handler := src.HandleUpload(cfg)
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"photo.jpg": []byte("fake jpeg content"),
@@ -50,16 +51,16 @@ func TestHandleUploadMultiFile(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp map[string][]UploadedFileInfo
+	var resp map[string][]src.UploadedFileInfo
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatal(err)
 	}
-	files := resp["files"]
-	if len(files) != 2 {
-		t.Fatalf("expected 2 files in response, got %d", len(files))
+	uploadedFiles := resp["files"]
+	if len(uploadedFiles) != 2 {
+		t.Fatalf("expected 2 files in response, got %d", len(uploadedFiles))
 	}
 	uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
-	for _, f := range files {
+	for _, f := range uploadedFiles {
 		if len(f.ID) < 4 {
 			t.Errorf("file ID %q looks too short", f.ID)
 		}
@@ -70,28 +71,26 @@ func TestHandleUploadMultiFile(t *testing.T) {
 	}
 }
 
-// Test oversized file rejection → 413 (Req 1.3)
 func TestHandleUploadFileTooLarge(t *testing.T) {
 	cfg := newTestConfig(t)
-	cfg.MaxFileSize = 10 // 10 bytes max
+	cfg.MaxFileSize = 10
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"big.jpg": bytes.Repeat([]byte("x"), 20),
 	})
 	rr := httptest.NewRecorder()
-	handleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg)(rr, req)
 
 	if rr.Code != http.StatusRequestEntityTooLarge {
 		t.Fatalf("expected 413, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrFileTooLarge {
-		t.Errorf("expected error code %q, got %q", ErrFileTooLarge, resp.Error)
+	if resp.Error != src.ErrFileTooLarge {
+		t.Errorf("expected error code %q, got %q", src.ErrFileTooLarge, resp.Error)
 	}
 }
 
-// Test unsupported format rejection → 415 (Req 1.4)
 func TestHandleUploadUnsupportedFormat(t *testing.T) {
 	cfg := newTestConfig(t)
 
@@ -99,41 +98,38 @@ func TestHandleUploadUnsupportedFormat(t *testing.T) {
 		"document.pdf": []byte("fake pdf content"),
 	})
 	rr := httptest.NewRecorder()
-	handleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg)(rr, req)
 
 	if rr.Code != http.StatusUnsupportedMediaType {
 		t.Fatalf("expected 415, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrUnsupportedFormat {
-		t.Errorf("expected error code %q, got %q", ErrUnsupportedFormat, resp.Error)
+	if resp.Error != src.ErrUnsupportedFormat {
+		t.Errorf("expected error code %q, got %q", src.ErrUnsupportedFormat, resp.Error)
 	}
 }
 
-// Test disk write failure → 507 (Req 1.6)
 func TestHandleUploadDiskWriteFailure(t *testing.T) {
 	cfg := newTestConfig(t)
-	// Point to a path that cannot be created (root-owned directory)
 	cfg.TempStoragePath = "/proc/nonexistent-metacleaner-test"
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"photo.jpg": []byte("fake jpeg content"),
 	})
 	rr := httptest.NewRecorder()
-	handleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg)(rr, req)
 
 	if rr.Code != http.StatusInsufficientStorage {
 		t.Fatalf("expected 507, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrInsufficientStorage {
-		t.Errorf("expected error code %q, got %q", ErrInsufficientStorage, resp.Error)
+	if resp.Error != src.ErrInsufficientStorage {
+		t.Errorf("expected error code %q, got %q", src.ErrInsufficientStorage, resp.Error)
 	}
 }
 
-// Test that valid single file upload returns correct metadata fields
 func TestHandleUploadResponseFields(t *testing.T) {
 	cfg := newTestConfig(t)
 
@@ -141,18 +137,18 @@ func TestHandleUploadResponseFields(t *testing.T) {
 		"IMG_4821.jpg": []byte("fake jpeg data here"),
 	})
 	rr := httptest.NewRecorder()
-	handleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp map[string][]UploadedFileInfo
+	var resp map[string][]src.UploadedFileInfo
 	json.NewDecoder(rr.Body).Decode(&resp)
-	files := resp["files"]
-	if len(files) != 1 {
-		t.Fatalf("expected 1 file, got %d", len(files))
+	uploadedFiles := resp["files"]
+	if len(uploadedFiles) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(uploadedFiles))
 	}
-	f := files[0]
+	f := uploadedFiles[0]
 	if f.Name != "IMG_4821.jpg" {
 		t.Errorf("name mismatch: got %q", f.Name)
 	}

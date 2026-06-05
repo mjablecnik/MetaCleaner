@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"context"
@@ -52,8 +52,8 @@ func canonicalFormat(ext string) string {
 	}
 }
 
-// handleUpload handles POST /api/upload — validates, saves, and returns file metadata.
-func handleUpload(cfg Config) http.HandlerFunc {
+// HandleUpload handles POST /api/upload — validates, saves, and returns file metadata.
+func HandleUpload(cfg Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseMultipartForm(32 * 1024 * 1024); err != nil {
 			WriteError(w, http.StatusRequestEntityTooLarge, ErrFileTooLarge,
@@ -149,15 +149,16 @@ type createJobRequest struct {
 	FileIDs []string `json:"fileIds"`
 }
 
-type createJobResponse struct {
+// CreateJobResponse is the response structure for job creation.
+type CreateJobResponse struct {
 	JobID      string    `json:"jobId"`
 	Status     string    `json:"status"`
 	TotalFiles int       `json:"totalFiles"`
 	CreatedAt  time.Time `json:"createdAt"`
 }
 
-// handleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
-func handleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.HandlerFunc {
+// HandleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
+func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req createJobRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -221,7 +222,7 @@ func handleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(createJobResponse{
+		json.NewEncoder(w).Encode(CreateJobResponse{
 			JobID:      job.ID,
 			Status:     job.Status,
 			TotalFiles: job.TotalFiles,
@@ -278,8 +279,8 @@ func contentTypeForExt(ext string) string {
 	}
 }
 
-// handleFileDownload handles GET /api/files/{id}/download — serves the cleaned file.
-func handleFileDownload(cfg Config) http.HandlerFunc {
+// HandleFileDownload handles GET /api/files/{id}/download — serves the cleaned file.
+func HandleFileDownload(cfg Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileID := r.PathValue("id")
 		if fileID == "" {
@@ -323,8 +324,8 @@ func generateReportID(now time.Time) string {
 	return fmt.Sprintf("MCR-%04d-%02d%02d-%02X", now.Year(), int(now.Month()), now.Day(), b[0])
 }
 
-// buildReport constructs a Report record from completed job and file data.
-func buildReport(job *Job, files []FileRecord) *Report {
+// BuildReport constructs a Report record from completed job and file data.
+func BuildReport(job *Job, files []FileRecord) *Report {
 	now := time.Now().UTC()
 
 	catCounts := map[string]int{"GPS": 0, "EXIF": 0, "XMP": 0, "ID3": 0, "MP4": 0}
@@ -411,7 +412,7 @@ func buildReport(job *Job, files []FileRecord) *Report {
 // createJobReport builds a report record, persists it, notifies clients, and asynchronously
 // generates and uploads the PDF.
 func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
-	report := buildReport(job, files)
+	report := BuildReport(job, files)
 	if err := db.CreateReport(ctx, report); err != nil {
 		return
 	}
@@ -443,8 +444,8 @@ func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub,
 	}()
 }
 
-// handleListReports handles GET /api/reports — returns all reports with summary stats.
-func handleListReports(db *SupabaseClient) http.HandlerFunc {
+// HandleListReports handles GET /api/reports — returns all reports with summary stats.
+func HandleListReports(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		reports, err := db.ListReports(r.Context())
 		if err != nil {
@@ -463,8 +464,8 @@ func handleListReports(db *SupabaseClient) http.HandlerFunc {
 	}
 }
 
-// handleGetReport handles GET /api/reports/{id} — returns full report detail by human-readable ID.
-func handleGetReport(db *SupabaseClient) http.HandlerFunc {
+// HandleGetReport handles GET /api/reports/{id} — returns full report detail by human-readable ID.
+func HandleGetReport(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		reportID := r.PathValue("id")
 		if reportID == "" {
@@ -485,8 +486,8 @@ func handleGetReport(db *SupabaseClient) http.HandlerFunc {
 	}
 }
 
-// handleGetReportPDF handles GET /api/reports/{id}/pdf — redirects to signed PDF download URL.
-func handleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
+// HandleGetReportPDF handles GET /api/reports/{id}/pdf — redirects to signed PDF download URL.
+func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		reportID := r.PathValue("id")
 		if reportID == "" {
@@ -515,8 +516,8 @@ func handleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 	}
 }
 
-// handleGetJob handles GET /api/jobs/{id} — returns current job state.
-func handleGetJob(db *SupabaseClient) http.HandlerFunc {
+// HandleGetJob handles GET /api/jobs/{id} — returns current job state.
+func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
 		if jobID == "" {
@@ -550,8 +551,8 @@ type healthResponse struct {
 	DiskSpace diskSpaceInfo `json:"diskSpace"`
 }
 
-// handleHealth handles GET /api/health — checks tool availability, DB connectivity, and disk space.
-func handleHealth(cfg Config, db *SupabaseClient) http.HandlerFunc {
+// HandleHealth handles GET /api/health — checks tool availability, DB connectivity, and disk space.
+func HandleHealth(cfg Config, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		exiftoolOK := exec.Command("exiftool", "-ver").Run() == nil
 		ffmpegOK := exec.Command("ffmpeg", "-version").Run() == nil

@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"net/http"
@@ -129,31 +129,31 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	rateLimited := rateLimitMiddleware(rl)
 
 	// POST /api/upload — rate limited
-	mux.Handle("POST /api/upload", rateLimited(handleUpload(cfg)))
+	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 
 	// POST /api/jobs
-	mux.Handle("POST /api/jobs", handleCreateJob(cfg, db, hub, pl))
+	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl))
 
 	// GET /api/jobs/{id}
-	mux.Handle("GET /api/jobs/{id}", handleGetJob(db))
+	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))
 
 	// GET /api/jobs/{id}/progress — WebSocket
-	mux.Handle("GET /api/jobs/{id}/progress", handleJobProgress(hub))
+	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub))
 
 	// GET /api/files/{id}/download
-	mux.Handle("GET /api/files/{id}/download", handleFileDownload(cfg))
+	mux.Handle("GET /api/files/{id}/download", HandleFileDownload(cfg))
 
 	// GET /api/reports
-	mux.Handle("GET /api/reports", handleListReports(db))
+	mux.Handle("GET /api/reports", HandleListReports(db))
 
 	// GET /api/reports/{id}
-	mux.Handle("GET /api/reports/{id}", handleGetReport(db))
+	mux.Handle("GET /api/reports/{id}", HandleGetReport(db))
 
 	// GET /api/reports/{id}/pdf
-	mux.Handle("GET /api/reports/{id}/pdf", handleGetReportPDF(db))
+	mux.Handle("GET /api/reports/{id}/pdf", HandleGetReportPDF(db))
 
 	// GET /api/health
-	mux.Handle("GET /api/health", handleHealth(cfg, db))
+	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 
 	cors := corsMiddleware(cfg.FrontendOrigin)
 	return cors(mux)

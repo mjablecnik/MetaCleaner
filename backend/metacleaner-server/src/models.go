@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"strings"
@@ -146,23 +146,23 @@ type ReportFileDetail struct {
 
 // Report is the DB record for a cleaning report
 type Report struct {
-	ID                  string     `json:"id"`
-	JobID               string     `json:"jobId"`
-	ReportID            string     `json:"reportId"`
-	Date                time.Time  `json:"date"`
-	FilesProcessed      int        `json:"filesProcessed"`
-	FieldsRemoved       int        `json:"fieldsRemoved"`
-	GPSLocationsRemoved int        `json:"gpsLocationsRemoved"`
-	TotalTimeSeconds    int        `json:"totalTimeSeconds"`
-	FileTypes           string     `json:"fileTypes"`
-	DominantType        string     `json:"dominantType"`
-	HasGPS              bool       `json:"hasGps"`
-	Tags                []string   `json:"tags"`
-	IconColor           string     `json:"iconColor"`
+	ID                  string           `json:"id"`
+	JobID               string           `json:"jobId"`
+	ReportID            string           `json:"reportId"`
+	Date                time.Time        `json:"date"`
+	FilesProcessed      int              `json:"filesProcessed"`
+	FieldsRemoved       int              `json:"fieldsRemoved"`
+	GPSLocationsRemoved int              `json:"gpsLocationsRemoved"`
+	TotalTimeSeconds    int              `json:"totalTimeSeconds"`
+	FileTypes           string           `json:"fileTypes"`
+	DominantType        string           `json:"dominantType"`
+	HasGPS              bool             `json:"hasGps"`
+	Tags                []string         `json:"tags"`
+	IconColor           string           `json:"iconColor"`
 	ChartData           []ChartDataPoint `json:"chartData"`
-	PDFPath             string     `json:"pdfPath,omitempty"`
-	PDFStatus           string     `json:"pdfStatus"`
-	CreatedAt           time.Time  `json:"createdAt"`
+	PDFPath             string           `json:"pdfPath,omitempty"`
+	PDFStatus           string           `json:"pdfStatus"`
+	CreatedAt           time.Time        `json:"createdAt"`
 }
 
 // ReportsSummaryStats aggregates stats across all reports

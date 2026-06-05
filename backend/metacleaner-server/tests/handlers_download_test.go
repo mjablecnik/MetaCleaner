@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"encoding/json"
@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	src "metacleaner-server/src"
 )
 
 // Test download of a completed (cleaned) file → 200 with correct headers
@@ -26,7 +28,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
 	rr := httptest.NewRecorder()
-	handleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
@@ -58,15 +60,15 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
 	rr := httptest.NewRecorder()
-	handleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg)(rr, req)
 
 	if rr.Code != http.StatusConflict {
 		t.Fatalf("expected 409, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrFileNotReady {
-		t.Errorf("expected error %q, got %q", ErrFileNotReady, resp.Error)
+	if resp.Error != src.ErrFileNotReady {
+		t.Errorf("expected error %q, got %q", src.ErrFileNotReady, resp.Error)
 	}
 }
 
@@ -77,14 +79,14 @@ func TestHandleFileDownloadNotFound(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/files/f-missing/download", nil)
 	req.SetPathValue("id", "f-missing")
 	rr := httptest.NewRecorder()
-	handleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrFileNotFound {
-		t.Errorf("expected error %q, got %q", ErrFileNotFound, resp.Error)
+	if resp.Error != src.ErrFileNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrFileNotFound, resp.Error)
 	}
 }

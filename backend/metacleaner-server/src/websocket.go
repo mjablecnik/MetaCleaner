@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"encoding/json"
@@ -76,9 +76,9 @@ func (h *WebSocketHub) Broadcast(jobID string, event ProgressEvent) {
 	}
 }
 
-// handleJobProgress upgrades the connection to WebSocket and streams events
+// HandleJobProgress upgrades the connection to WebSocket and streams events
 // for the job identified by the {id} path parameter.
-func handleJobProgress(hub *WebSocketHub) http.HandlerFunc {
+func HandleJobProgress(hub *WebSocketHub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
 		if jobID == "" {

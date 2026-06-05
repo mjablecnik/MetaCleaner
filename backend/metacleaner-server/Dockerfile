@@ -7,7 +7,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY src/ ./src/
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o metacleaner-server ./src/
+COPY cmd/ ./cmd/
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o metacleaner-server ./cmd/
 
 # Production stage
 FROM debian:bookworm-slim

@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"context"
@@ -20,7 +20,8 @@ func checkTool(name string, args ...string) error {
 	return nil
 }
 
-func main() {
+// Run is the main entry point for the metacleaner server.
+func Run() {
 	cfg := LoadConfig()
 
 	// Startup: verify ExifTool in PATH.

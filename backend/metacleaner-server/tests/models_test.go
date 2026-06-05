@@ -123,7 +123,7 @@ func TestFileFormatValidation(t *testing.T) {
 		if !testValidateFileFormat(strings.ToUpper(ext)) {
 			t.Errorf("uppercase %q should be valid", strings.ToUpper(ext))
 		}
-		if !testValidateFileFormat("."+ext) {
+		if !testValidateFileFormat("." + ext) {
 			t.Errorf("dotted %q should be valid", "."+ext)
 		}
 	}

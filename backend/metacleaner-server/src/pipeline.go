@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"bytes"
@@ -20,6 +20,11 @@ type CleaningPipeline struct {
 // NewCleaningPipeline creates a pipeline using the given config.
 func NewCleaningPipeline(cfg Config) *CleaningPipeline {
 	return &CleaningPipeline{cfg: cfg}
+}
+
+// Cfg returns the pipeline's configuration (used by tests to access TempStoragePath).
+func (p *CleaningPipeline) Cfg() Config {
+	return p.cfg
 }
 
 // ProcessJob processes all files in the job sequentially, calling progressFn for each event.
@@ -247,8 +252,8 @@ func runFFmpeg(ctx context.Context, originalPath, cleanedPath string) (*Cleaning
 
 // ffprobeOutput is the JSON structure returned by ffprobe.
 type ffprobeOutput struct {
-	Format  ffprobeFormat    `json:"format"`
-	Streams []ffprobeStream  `json:"streams"`
+	Format  ffprobeFormat   `json:"format"`
+	Streams []ffprobeStream `json:"streams"`
 }
 
 type ffprobeFormat struct {

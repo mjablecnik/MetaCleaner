@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"encoding/json"
@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	src "metacleaner-server/src"
 )
 
 // newMockSupabaseReports returns a test server that handles report-related endpoints.
@@ -60,19 +62,19 @@ func TestHandleListReports(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports", nil)
 	rr := httptest.NewRecorder()
-	handleListReports(db)(rr, req)
+	src.HandleListReports(db)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 
 	var resp struct {
-		Reports []ReportSummary     `json:"reports"`
-		Summary ReportsSummaryStats `json:"summary"`
+		Reports []src.ReportSummary     `json:"reports"`
+		Summary src.ReportsSummaryStats `json:"summary"`
 	}
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatalf("decode error: %v", err)
@@ -102,18 +104,18 @@ func TestHandleGetReportSuccess(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AA", nil)
 	req.SetPathValue("id", "MCR-2024-0115-AA")
 	rr := httptest.NewRecorder()
-	handleGetReport(db)(rr, req)
+	src.HandleGetReport(db)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
 
-	var detail ReportDetail
+	var detail src.ReportDetail
 	if err := json.NewDecoder(rr.Body).Decode(&detail); err != nil {
 		t.Fatalf("decode error: %v", err)
 	}
@@ -135,20 +137,20 @@ func TestHandleGetReportNotFound(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-NOTFOUND", nil)
 	req.SetPathValue("id", "MCR-NOTFOUND")
 	rr := httptest.NewRecorder()
-	handleGetReport(db)(rr, req)
+	src.HandleGetReport(db)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrReportNotFound {
-		t.Errorf("expected error %q, got %q", ErrReportNotFound, resp.Error)
+	if resp.Error != src.ErrReportNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrReportNotFound, resp.Error)
 	}
 }
 
@@ -159,12 +161,12 @@ func TestHandleGetReportPDFRedirect(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AA/pdf", nil)
 	req.SetPathValue("id", "MCR-2024-0115-AA")
 	rr := httptest.NewRecorder()
-	handleGetReportPDF(db)(rr, req)
+	src.HandleGetReportPDF(db)(rr, req)
 
 	if rr.Code != http.StatusFound {
 		t.Fatalf("expected 302, got %d: %s", rr.Code, rr.Body.String())
@@ -182,26 +184,26 @@ func TestHandleGetReportPDFNotAvailable(t *testing.T) {
 
 	cfg := newTestConfig(t)
 	cfg.SupabaseURL = srv.URL
-	db := NewSupabaseClient(cfg)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-NOPDF/pdf", nil)
 	req.SetPathValue("id", "MCR-NOPDF")
 	rr := httptest.NewRecorder()
-	handleGetReportPDF(db)(rr, req)
+	src.HandleGetReportPDF(db)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp ErrorResponse
+	var resp src.ErrorResponse
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != ErrReportNotFound {
-		t.Errorf("expected error %q, got %q", ErrReportNotFound, resp.Error)
+	if resp.Error != src.ErrReportNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrReportNotFound, resp.Error)
 	}
 }
 
 // Test that buildReport produces correct fields from job and file data
 func TestBuildReport(t *testing.T) {
-	job := &Job{
+	job := &src.Job{
 		ID:                  "job-123",
 		Status:              "completed",
 		TotalFiles:          2,
@@ -210,16 +212,16 @@ func TestBuildReport(t *testing.T) {
 		GPSLocationsRemoved: 1,
 		TotalTimeSeconds:    5,
 	}
-	files := []FileRecord{
+	files := []src.FileRecord{
 		{
 			ID:       "f1",
 			JobID:    "job-123",
 			FileType: "image",
 			Format:   "jpeg",
 			Status:   "done",
-			MetadataBreakdown: &MetadataDetail{
-				GPSFields:  []MetadataField{{Label: "GPSLatitude", Value: "51.5"}},
-				EXIFFields: []MetadataField{{Label: "Make", Value: "Canon"}},
+			MetadataBreakdown: &src.MetadataDetail{
+				GPSFields:  []src.MetadataField{{Label: "GPSLatitude", Value: "51.5"}},
+				EXIFFields: []src.MetadataField{{Label: "Make", Value: "Canon"}},
 			},
 		},
 		{
@@ -228,13 +230,13 @@ func TestBuildReport(t *testing.T) {
 			FileType: "image",
 			Format:   "png",
 			Status:   "done",
-			MetadataBreakdown: &MetadataDetail{
-				XMPFields: []MetadataField{{Label: "XMPCreator", Value: "Lightroom"}},
+			MetadataBreakdown: &src.MetadataDetail{
+				XMPFields: []src.MetadataField{{Label: "XMPCreator", Value: "Lightroom"}},
 			},
 		},
 	}
 
-	report := buildReport(job, files)
+	report := src.BuildReport(job, files)
 
 	if report.JobID != "job-123" {
 		t.Errorf("expected jobId job-123, got %q", report.JobID)
