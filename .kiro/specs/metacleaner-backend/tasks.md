@@ -371,7 +371,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Troubleshooting (common issues, ExifTool/FFmpeg setup, Supabase connectivity)
     - _Requirements: 6.1, 8.1, 8.2, 8.5_
 
-- [ ] 19. Final checkpoint - Ensure all tests pass
+- [x] 19. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
