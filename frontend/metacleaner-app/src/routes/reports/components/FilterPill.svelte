@@ -13,7 +13,7 @@
 		[
 			'text-xs font-semibold px-3 py-1.5 rounded-lg border whitespace-nowrap transition-all',
 			active ? 'bg-brand-blue text-white border-brand-blue' : 'border-gray-700 text-text-muted',
-			extraClass,
+			extraClass
 		]
 			.filter(Boolean)
 			.join(' ')

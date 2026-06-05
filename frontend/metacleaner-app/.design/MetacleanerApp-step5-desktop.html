@@ -1,549 +1,706 @@
 <html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Results</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							card: '0 4px 6px -1px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 160px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 160px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background .15s, color .15s;
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			.lang-check {
+				margin-left: auto;
+				color: #3b82f6;
+			}
 
-      .lang-check
-      {
-        margin-left: auto;
-        color: #3b82f6;
-      }
+			.file-row {
+				transition: background 0.15s;
+			}
 
-      .file-row
-      {
-        transition: background 0.15s;
-      }
+			.file-row:hover {
+				background: #1e293b;
+			}
 
-      .file-row:hover
-      {
-        background: #1e293b;
-      }
+			@keyframes fadeInUp {
+				from {
+					opacity: 0;
+					transform: translateY(20px);
+				}
 
-      @keyframes fadeInUp
-      {
-        from
-        {
-          opacity: 0;
-          transform: translateY(20px);
-        }
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
 
-        to
-        {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+			.fade-in-up {
+				animation: fadeInUp 0.5s ease forwards;
+			}
 
-      .fade-in-up
-      {
-        animation: fadeInUp 0.5s ease forwards;
-      }
+			.delay-1 {
+				animation-delay: 0.1s;
+				opacity: 0;
+			}
 
-      .delay-1
-      {
-        animation-delay: 0.1s;
-        opacity: 0;
-      }
+			.delay-2 {
+				animation-delay: 0.2s;
+				opacity: 0;
+			}
 
-      .delay-2
-      {
-        animation-delay: 0.2s;
-        opacity: 0;
-      }
+			.delay-3 {
+				animation-delay: 0.3s;
+				opacity: 0;
+			}
 
-      .delay-3
-      {
-        animation-delay: 0.3s;
-        opacity: 0;
-      }
+			.delay-4 {
+				animation-delay: 0.4s;
+				opacity: 0;
+			}
 
-      .delay-4
-      {
-        animation-delay: 0.4s;
-        opacity: 0;
-      }
+			@keyframes checkPop {
+				0% {
+					transform: scale(0);
+					opacity: 0;
+				}
 
-      @keyframes checkPop
-      {
-        0%
-        {
-          transform: scale(0);
-          opacity: 0;
-        }
+				70% {
+					transform: scale(1.2);
+				}
 
-        70%
-        {
-          transform: scale(1.2);
-        }
+				100% {
+					transform: scale(1);
+					opacity: 1;
+				}
+			}
 
-        100%
-        {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
+			.check-pop {
+				animation: checkPop 0.6s ease forwards;
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#userDropdownMenu {
+				min-width: 200px;
+			}
 
-      .check-pop
-      {
-        animation: checkPop 0.6s ease forwards;
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #userDropdownMenu
-      {
-        min-width: 200px;
-      }
+			#injr3 {
+				color: #ef4444;
+			}
 
-      #injr3
-      {
-        color: #ef4444;
-      }
+			#igmxg {
+				color: #ef4444;
+			}
+		</style>
+	</head>
 
-      #igmxg
-      {
-        color: #ef4444;
-      }
-    </style>
-  </head>
+	<body class="flex flex-col items-center">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Results</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<nav
+			id="navbar"
+			class="z-50 mx-auto flex w-full max-w-[1100px] items-center justify-between px-6 py-5"
+		>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-xl"></i>
+				</div>
+				<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
+			</div>
+			<div class="flex items-center gap-3">
+				<div id="langDropdown" class="relative inline-block">
+					<button
+						onclick="toggleLangDropdown()"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+					>
+						<span id="currentLangFlag">🇨🇿</span><span id="currentLangLabel">CS</span
+						><i
+							id="langDropdownChevron"
+							class="fa-solid fa-chevron-down ml-1 text-xs text-text-muted"
+						></i>
+					</button>
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div onclick="setLang('cs', '🇨🇿', 'CS')" class="lang-option active">
+							<span>🇨🇿</span> Čeština
+							<span id="check-cs" class="lang-check"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('en', '🇬🇧', 'EN')" class="lang-option">
+							<span>🇬🇧</span> English
+							<span id="check-en" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('de', '🇩🇪', 'DE')" class="lang-option">
+							<span>🇩🇪</span> Deutsch
+							<span id="check-de" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('sk', '🇸🇰', 'SK')" class="lang-option">
+							<span>🇸🇰</span> Slovenčina
+							<span id="check-sk" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+					</div>
+				</div>
+				<div id="userDropdown" class="relative inline-block">
+					<button
+						onclick="toggleUserDropdown()"
+						class="flex items-center gap-2.5 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+					>
+						<div
+							class="flex h-7 w-7 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
+						>
+							<i class="fa-solid fa-user text-xs text-brand-blue"></i>
+						</div>
+						<span class="hidden md:block">Jana Nováková</span
+						><i
+							id="userDropdownChevron"
+							class="fa-solid fa-chevron-down text-xs text-text-muted"
+						></i>
+					</button>
+					<div id="userDropdownMenu" class="lang-dropdown-menu">
+						<div class="border-b border-gray-700 px-4 py-3">
+							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="mt-0.5 text-sm font-semibold text-white">jana.novakova@email.cz</p>
+						</div>
+						<div class="lang-option">
+							<i class="fa-solid fa-gear text-sm text-text-muted"></i><span>Nastavení</span>
+						</div>
+						<div class="lang-option" id="injr3">
+							<i class="fa-solid fa-right-from-bracket text-sm" id="igmxg"></i
+							><span>Odhlásit se</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<main id="app-main" class="mx-auto flex w-full max-w-[1100px] flex-col gap-6 px-6 pb-24">
+			<!-- Success Header -->
+			<div
+				id="success-header"
+				class="fade-in-up mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+			>
+				<div class="flex items-center gap-4">
+					<div class="relative">
+						<div
+							class="check-pop flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-brand-green/40 bg-brand-green/10"
+						>
+							<i class="fa-solid fa-circle-check text-3xl text-brand-green"></i>
+						</div>
+					</div>
+					<div>
+						<h1 class="text-3xl font-bold text-white">Čištění dokončeno!</h1>
+						<p class="mt-1 text-sm text-text-muted">
+							Všechna metadata byla úspěšně odstraněna ze 4 souborů.
+						</p>
+					</div>
+				</div>
+				<div class="flex items-center gap-3 self-start sm:self-auto">
+					<button
+						class="flex items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-4 py-2.5 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"
+					>
+						<i class="fa-solid fa-arrow-up-from-bracket"></i>
+						<span>Nahrát nové soubory</span>
+					</button>
+					<div
+						class="flex items-center gap-2 rounded-xl border border-brand-green/30 bg-brand-green/10 px-4 py-2.5"
+					>
+						<div class="h-2 w-2 rounded-full bg-brand-green"></div>
+						<span class="text-xs font-semibold text-brand-green">100% Úspěšně dokončeno</span>
+					</div>
+				</div>
+			</div>
+			<!-- Summary Stats Row -->
+			<div id="stats-row" class="fade-in-up grid grid-cols-2 gap-4 delay-1 lg:grid-cols-4">
+				<div
+					class="flex flex-col gap-1 rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card"
+				>
+					<div
+						class="mb-2 flex h-9 w-9 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+					>
+						<i class="fa-solid fa-file-circle-check text-base text-brand-green"></i>
+					</div>
+					<p class="text-2xl font-black text-white">4</p>
+					<p class="text-xs text-text-muted">Souborů zpracováno</p>
+				</div>
+				<div
+					class="flex flex-col gap-1 rounded-2xl border border-brand-green/20 bg-navy-card p-5 shadow-card"
+				>
+					<div
+						class="mb-2 flex h-9 w-9 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+					>
+						<i class="fa-solid fa-eraser text-base text-brand-green"></i>
+					</div>
+					<p class="text-2xl font-black text-brand-green">87</p>
+					<p class="text-xs text-text-muted">Polí metadat odstraněno</p>
+				</div>
+				<div
+					class="flex flex-col gap-1 rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card"
+				>
+					<div
+						class="mb-2 flex h-9 w-9 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
+					>
+						<i class="fa-solid fa-location-dot text-base text-brand-blue"></i>
+					</div>
+					<p class="text-2xl font-black text-brand-blue">3</p>
+					<p class="text-xs text-text-muted">GPS lokací odstraněno</p>
+				</div>
+				<div
+					class="flex flex-col gap-1 rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card"
+				>
+					<div
+						class="mb-2 flex h-9 w-9 items-center justify-center rounded-lg border border-brand-orange/20 bg-brand-orange/10"
+					>
+						<i class="fa-solid fa-clock text-base text-brand-orange"></i>
+					</div>
+					<p class="text-2xl font-black text-white">28s</p>
+					<p class="text-xs text-text-muted">Celková doba čištění</p>
+				</div>
+			</div>
+			<!-- Full Width: Before/After + Metadata Overview -->
+			<div
+				id="before-after-card"
+				class="fade-in-up flex w-full flex-col gap-6 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card delay-2"
+			>
+				<h3 class="text-lg font-semibold text-white">Přehled metadat</h3>
+				<!-- Before/After Grid -->
+				<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+					<!-- Before -->
+					<div
+						id="meta-before-card"
+						class="flex flex-col gap-4 rounded-2xl border border-brand-red/40 bg-navy-main/60 p-6"
+					>
+						<div class="mb-2 flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-red/20 text-brand-red"
+							>
+								<i class="fa-solid fa-triangle-exclamation"></i>
+							</div>
+							<div>
+								<span class="text-xs font-bold tracking-wider text-brand-red uppercase"
+									>Před čištěním</span
+								>
+								<p class="text-sm font-semibold text-white">Soubory obsahovaly skrytá data</p>
+							</div>
+						</div>
+						<div class="flex flex-col gap-2">
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-location-dot text-brand-red"></i> GPS souřadnice</span
+								>
+								<span class="font-mono text-xs text-white">3 soubory</span>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-camera text-brand-red"></i> EXIF data</span
+								>
+								<span class="font-mono text-xs text-white">52 polí</span>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-tag text-brand-red"></i> XMP/IPTC</span
+								>
+								<span class="font-mono text-xs text-white">19 polí</span>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-ellipsis text-brand-red"></i> Ostatní</span
+								>
+								<span class="font-mono text-xs text-white">13 polí</span>
+							</div>
+						</div>
+						<p class="mt-1 flex items-center gap-2 text-xs text-brand-red/80">
+							<i class="fa-solid fa-circle-exclamation"></i> Celkem 87 polí metadat bylo
+							odhalitelných.
+						</p>
+					</div>
+					<!-- After -->
+					<div
+						id="meta-after-card"
+						class="flex flex-col gap-4 rounded-2xl border border-brand-green/40 bg-navy-main/60 p-6"
+					>
+						<div class="mb-2 flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-green/20 text-brand-green"
+							>
+								<i class="fa-solid fa-shield-halved"></i>
+							</div>
+							<div>
+								<span class="text-xs font-bold tracking-wider text-brand-green uppercase"
+									>Po čištění</span
+								>
+								<p class="text-sm font-semibold text-white">Soubory jsou bezpečné ke sdílení</p>
+							</div>
+						</div>
+						<div class="flex flex-col gap-2">
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-location-dot text-brand-green"></i> GPS souřadnice</span
+								>
+								<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
+									><i class="fa-solid fa-check"></i> Odstraněno</span
+								>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-camera text-brand-green"></i> EXIF data</span
+								>
+								<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
+									><i class="fa-solid fa-check"></i> Odstraněno</span
+								>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-tag text-brand-green"></i> XMP/IPTC</span
+								>
+								<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
+									><i class="fa-solid fa-check"></i> Odstraněno</span
+								>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
+							>
+								<span class="flex items-center gap-2 text-xs text-text-muted"
+									><i class="fa-solid fa-ellipsis text-brand-green"></i> Ostatní</span
+								>
+								<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
+									><i class="fa-solid fa-check"></i> Odstraněno</span
+								>
+							</div>
+						</div>
+						<p class="mt-1 flex items-center gap-2 text-xs text-brand-green/80">
+							<i class="fa-solid fa-circle-check"></i> Soubory neobsahují žádná citlivá metadata.
+						</p>
+					</div>
+				</div>
+			</div>
+			<!-- Full Width: File Results -->
+			<div
+				id="files-result-card"
+				class="fade-in-up flex w-full flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card delay-3"
+			>
+				<div class="flex items-center justify-between">
+					<h3 class="text-lg font-semibold text-white">Výsledky souborů</h3>
+					<span
+						class="flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-brand-green/10 px-3 py-1 text-xs font-bold tracking-wider text-brand-green uppercase"
+					>
+						<i class="fa-solid fa-circle-check text-[10px]"></i> Vše hotovo
+					</span>
+				</div>
 
-  <body class="flex flex-col items-center">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <nav id="navbar"
-      class="w-full max-w-[1100px] mx-auto px-6 py-5 flex justify-between items-center z-50">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
-          class="text-xl font-bold tracking-tight">MetaCleaner</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <div id="langDropdown" class="relative inline-block"><button
-            onclick="toggleLangDropdown()"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
-              id="currentLangFlag">🇨🇿</span><span
-              id="currentLangLabel">CS</span><i id="langDropdownChevron"
-              class="fa-solid fa-chevron-down text-text-muted text-xs ml-1"></i></button>
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div onclick="setLang('cs','🇨🇿','CS')" class="lang-option active">
-              <span>🇨🇿</span> Čeština <span id="check-cs"
-                class="lang-check"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('en','🇬🇧','EN')" class="lang-option">
-              <span>🇬🇧</span> English <span id="check-en"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('de','🇩🇪','DE')" class="lang-option">
-              <span>🇩🇪</span> Deutsch <span id="check-de"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('sk','🇸🇰','SK')" class="lang-option">
-              <span>🇸🇰</span> Slovenčina <span id="check-sk"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-          </div>
-        </div>
-        <div id="userDropdown" class="relative inline-block"><button
-            onclick="toggleUserDropdown()"
-            class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
-            <div
-              class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
-              <i class="fa-solid fa-user text-brand-blue text-xs"></i></div>
-            <span class="hidden md:block">Jana Nováková</span><i
-              id="userDropdownChevron"
-              class="fa-solid fa-chevron-down text-text-muted text-xs"></i>
-          </button>
-          <div id="userDropdownMenu" class="lang-dropdown-menu">
-            <div class="px-4 py-3 border-b border-gray-700">
-              <p class="text-xs text-text-muted">Přihlášen jako</p>
-              <p class="text-sm font-semibold text-white mt-0.5">
-                jana.novakova@email.cz</p>
-            </div>
-            <div class="lang-option"><i
-                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
-            </div>
-            <div class="lang-option" id="injr3"><i
-                class="fa-solid fa-right-from-bracket text-sm"
-                id="igmxg"></i><span>Odhlásit se</span></div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <main id="app-main"
-      class="w-full max-w-[1100px] mx-auto px-6 pb-24 flex flex-col gap-6">
-      <!-- Success Header -->
-      <div id="success-header"
-        class="fade-in-up flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <div
-              class="w-14 h-14 rounded-2xl bg-brand-green/10 border-2 border-brand-green/40 flex items-center justify-center check-pop">
-              <i class="fa-solid fa-circle-check text-brand-green text-3xl"></i>
-            </div>
-          </div>
-          <div>
-            <h1 class="text-3xl font-bold text-white">Čištění dokončeno!</h1>
-            <p class="text-text-muted text-sm mt-1">Všechna metadata byla
-              úspěšně odstraněna ze 4 souborů.</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 self-start sm:self-auto">
-          <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-semibold text-sm hover:bg-brand-blue/20 transition-all">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-            <span>Nahrát nové soubory</span>
-          </button>
-          <div class="flex items-center gap-2 bg-brand-green/10 border border-brand-green/30 rounded-xl px-4 py-2.5">
-            <div class="w-2 h-2 rounded-full bg-brand-green"></div>
-            <span class="text-xs font-semibold text-brand-green">100% Úspěšně
-            dokončeno</span>
-          </div>
-        </div>
-      </div><!-- Summary Stats Row -->
-      <div id="stats-row"
-        class="fade-in-up delay-1 grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
-          <div
-            class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center mb-2">
-            <i
-              class="fa-solid fa-file-circle-check text-brand-green text-base"></i>
-          </div>
-          <p class="text-2xl font-black text-white">4</p>
-          <p class="text-xs text-text-muted">Souborů zpracováno</p>
-        </div>
-        <div
-          class="bg-navy-card rounded-2xl border border-brand-green/20 p-5 shadow-card flex flex-col gap-1">
-          <div
-            class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center mb-2">
-            <i class="fa-solid fa-eraser text-brand-green text-base"></i></div>
-          <p class="text-2xl font-black text-brand-green">87</p>
-          <p class="text-xs text-text-muted">Polí metadat odstraněno</p>
-        </div>
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
-          <div
-            class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center mb-2">
-            <i class="fa-solid fa-location-dot text-brand-blue text-base"></i>
-          </div>
-          <p class="text-2xl font-black text-brand-blue">3</p>
-          <p class="text-xs text-text-muted">GPS lokací odstraněno</p>
-        </div>
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 p-5 shadow-card flex flex-col gap-1">
-          <div
-            class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center mb-2">
-            <i class="fa-solid fa-clock text-brand-orange text-base"></i></div>
-          <p class="text-2xl font-black text-white">28s</p>
-          <p class="text-xs text-text-muted">Celková doba čištění</p>
-        </div>
-      </div><!-- Full Width: Before/After + Metadata Overview -->
-      <div id="before-after-card" class="fade-in-up delay-2 bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-6 w-full">
-        <h3 class="font-semibold text-lg text-white">Přehled metadat</h3>
-        <!-- Before/After Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Before -->
-          <div id="meta-before-card" class="bg-navy-main/60 rounded-2xl border border-brand-red/40 p-6 flex flex-col gap-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 rounded-full bg-brand-red/20 flex items-center justify-center text-brand-red">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-              </div>
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-red">Před čištěním</span>
-                <p class="text-sm font-semibold text-white">Soubory obsahovaly skrytá data</p>
-              </div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-red"></i> GPS souřadnice</span>
-                <span class="text-xs font-mono text-white">3 soubory</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-camera text-brand-red"></i> EXIF data</span>
-                <span class="text-xs font-mono text-white">52 polí</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-tag text-brand-red"></i> XMP/IPTC</span>
-                <span class="text-xs font-mono text-white">19 polí</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-ellipsis text-brand-red"></i> Ostatní</span>
-                <span class="text-xs font-mono text-white">13 polí</span>
-              </div>
-            </div>
-            <p class="text-xs text-brand-red/80 flex items-center gap-2 mt-1">
-              <i class="fa-solid fa-circle-exclamation"></i> Celkem 87 polí metadat bylo odhalitelných.
-            </p>
-          </div>
-          <!-- After -->
-          <div id="meta-after-card" class="bg-navy-main/60 rounded-2xl border border-brand-green/40 p-6 flex flex-col gap-4">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="w-10 h-10 rounded-full bg-brand-green/20 flex items-center justify-center text-brand-green">
-                <i class="fa-solid fa-shield-halved"></i>
-              </div>
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-brand-green">Po čištění</span>
-                <p class="text-sm font-semibold text-white">Soubory jsou bezpečné ke sdílení</p>
-              </div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-green"></i> GPS souřadnice</span>
-                <span class="text-xs font-mono text-brand-green flex items-center gap-1"><i class="fa-solid fa-check"></i> Odstraněno</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-camera text-brand-green"></i> EXIF data</span>
-                <span class="text-xs font-mono text-brand-green flex items-center gap-1"><i class="fa-solid fa-check"></i> Odstraněno</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-tag text-brand-green"></i> XMP/IPTC</span>
-                <span class="text-xs font-mono text-brand-green flex items-center gap-1"><i class="fa-solid fa-check"></i> Odstraněno</span>
-              </div>
-              <div class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-card border border-gray-800">
-                <span class="text-xs text-text-muted flex items-center gap-2"><i class="fa-solid fa-ellipsis text-brand-green"></i> Ostatní</span>
-                <span class="text-xs font-mono text-brand-green flex items-center gap-1"><i class="fa-solid fa-check"></i> Odstraněno</span>
-              </div>
-            </div>
-            <p class="text-xs text-brand-green/80 flex items-center gap-2 mt-1">
-              <i class="fa-solid fa-circle-check"></i> Soubory neobsahují žádná citlivá metadata.
-            </p>
-          </div>
-        </div>
-      </div><!-- Full Width: File Results -->
-      <div id="files-result-card" class="fade-in-up delay-3 bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-4 w-full">
-        <div class="flex items-center justify-between">
-          <h3 class="font-semibold text-lg text-white">Výsledky souborů</h3>
-          <span class="text-xs font-bold px-3 py-1 rounded-full bg-brand-green/10 text-brand-green border border-brand-green/20 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-circle-check text-[10px]"></i> Vše hotovo
-          </span>
-        </div>
+				<!-- Files Grid -->
+				<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+					<!-- File 1 -->
+					<div
+						class="file-row overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
+					>
+						<div class="flex items-center gap-3 px-4 py-3">
+							<div
+								class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-image text-sm text-brand-green"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-semibold text-white">IMG_4821.jpg</p>
+								<p class="text-[11px] text-text-muted">3.2 MB · JPEG · Canon EOS R5</p>
+							</div>
+							<span
+								class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>JPG</span
+							>
+							<div
+								class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+						<div class="flex flex-wrap gap-1.5 px-4 pb-3">
+							<span
+								class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
+								>GPS odstraněno</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>EXIF ×8</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>XMP ×4</span
+							>
+							<span
+								class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
+								>12 polí</span
+							>
+						</div>
+					</div>
+					<!-- File 2 -->
+					<div
+						class="file-row overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
+					>
+						<div class="flex items-center gap-3 px-4 py-3">
+							<div
+								class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-image text-sm text-brand-green"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-semibold text-white">photo_holiday_2024.heic</p>
+								<p class="text-[11px] text-text-muted">8.7 MB · HEIC · iPhone 15 Pro</p>
+							</div>
+							<span
+								class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>HEIC</span
+							>
+							<div
+								class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+						<div class="flex flex-wrap gap-1.5 px-4 pb-3">
+							<span
+								class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
+								>GPS odstraněno</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>EXIF ×12</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>XMP ×6</span
+							>
+							<span
+								class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
+								>18 polí</span
+							>
+						</div>
+					</div>
+					<!-- File 3 -->
+					<div
+						class="file-row overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
+					>
+						<div class="flex items-center gap-3 px-4 py-3">
+							<div
+								class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-orange/20 bg-brand-orange/10"
+							>
+								<i class="fa-solid fa-video text-sm text-brand-orange"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-semibold text-white">video_prague_walk.mp4</p>
+								<p class="text-[11px] text-text-muted">142 MB · MP4 · H.264</p>
+							</div>
+							<span
+								class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>MP4</span
+							>
+							<div
+								class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+						<div class="flex flex-wrap gap-1.5 px-4 pb-3">
+							<span
+								class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
+								>GPS odstraněno</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>ID3 ×9</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>MP4 atoms ×14</span
+							>
+							<span
+								class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
+								>43 polí</span
+							>
+						</div>
+					</div>
+					<!-- File 4 -->
+					<div
+						class="file-row overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
+					>
+						<div class="flex items-center gap-3 px-4 py-3">
+							<div
+								class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
+							>
+								<i class="fa-solid fa-image text-sm text-brand-blue"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-sm font-semibold text-white">screenshot_map.png</p>
+								<p class="text-[11px] text-text-muted">1.1 MB · PNG</p>
+							</div>
+							<span
+								class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>PNG</span
+							>
+							<div
+								class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+						<div class="flex flex-wrap gap-1.5 px-4 pb-3">
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>PNG chunks ×5</span
+							>
+							<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+								>XMP ×9</span
+							>
+							<span
+								class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
+								>14 polí</span
+							>
+						</div>
+					</div>
+				</div>
 
-        <!-- Files Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <!-- File 1 -->
-          <div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-            <div class="flex items-center gap-3 px-4 py-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-image text-brand-green text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-white truncate">IMG_4821.jpg</p>
-                <p class="text-[11px] text-text-muted">3.2 MB · JPEG · Canon EOS R5</p>
-              </div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">JPG</span>
-              <div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-            <div class="px-4 pb-3 flex flex-wrap gap-1.5">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium">GPS odstraněno</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">EXIF ×8</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">XMP ×4</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium">12 polí</span>
-            </div>
-          </div>
-          <!-- File 2 -->
-          <div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-            <div class="flex items-center gap-3 px-4 py-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-image text-brand-green text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-white truncate">photo_holiday_2024.heic</p>
-                <p class="text-[11px] text-text-muted">8.7 MB · HEIC · iPhone 15 Pro</p>
-              </div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">HEIC</span>
-              <div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-            <div class="px-4 pb-3 flex flex-wrap gap-1.5">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium">GPS odstraněno</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">EXIF ×12</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">XMP ×6</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium">18 polí</span>
-            </div>
-          </div>
-          <!-- File 3 -->
-          <div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-            <div class="flex items-center gap-3 px-4 py-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-video text-brand-orange text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-white truncate">video_prague_walk.mp4</p>
-                <p class="text-[11px] text-text-muted">142 MB · MP4 · H.264</p>
-              </div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">MP4</span>
-              <div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-            <div class="px-4 pb-3 flex flex-wrap gap-1.5">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium">GPS odstraněno</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">ID3 ×9</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">MP4 atoms ×14</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium">43 polí</span>
-            </div>
-          </div>
-          <!-- File 4 -->
-          <div class="file-row rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-            <div class="flex items-center gap-3 px-4 py-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-image text-brand-blue text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-white truncate">screenshot_map.png</p>
-                <p class="text-[11px] text-text-muted">1.1 MB · PNG</p>
-              </div>
-              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted">PNG</span>
-              <div class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-            <div class="px-4 pb-3 flex flex-wrap gap-1.5">
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">PNG chunks ×5</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted">XMP ×9</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium">14 polí</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex gap-3 mt-1">
-          <button class="flex-1 py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-400 transition-all flex items-center justify-center gap-2 shadow-glow-green">
-            <i class="fa-solid fa-download"></i> Stáhnout vše (ZIP)
-          </button>
-          <button onclick="toggleReport()" class="px-5 py-3.5 rounded-xl bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-semibold text-sm hover:bg-brand-blue/20 transition-all flex items-center gap-2">
-            <i class="fa-solid fa-file-lines"></i> Zobrazit report
-          </button>
-        </div>
-      </div>
-    </main>
-  </body>
-
+				<!-- Action Buttons -->
+				<div class="mt-1 flex gap-3">
+					<button
+						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
+					>
+						<i class="fa-solid fa-download"></i> Stáhnout vše (ZIP)
+					</button>
+					<button
+						onclick="toggleReport()"
+						class="flex items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-5 py-3.5 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"
+					>
+						<i class="fa-solid fa-file-lines"></i> Zobrazit report
+					</button>
+				</div>
+			</div>
+		</main>
+	</body>
 </html>

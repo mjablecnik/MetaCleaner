@@ -18,38 +18,36 @@
 		red: 'var(--color-brand-red)',
 		orange: 'var(--color-brand-orange)',
 		green: 'var(--color-brand-green)',
-		blue: 'var(--color-brand-blue)',
+		blue: 'var(--color-brand-blue)'
 	};
 
 	const glowFilter: Record<Color, string> = {
 		red: 'var(--shadow-drop-red)',
 		orange: 'drop-shadow(0 0 6px rgba(249,115,22,0.6))',
 		green: 'drop-shadow(0 0 6px rgba(34,197,94,0.6))',
-		blue: 'drop-shadow(0 0 6px rgba(59,130,246,0.6))',
+		blue: 'drop-shadow(0 0 6px rgba(59,130,246,0.6))'
 	};
 
 	const textColorClass: Record<Color, string> = {
 		red: 'text-brand-red',
 		orange: 'text-brand-orange',
 		green: 'text-brand-green',
-		blue: 'text-brand-blue',
+		blue: 'text-brand-blue'
 	};
 
 	const containerSizeClass: Record<Size, string> = {
 		sm: 'w-12 h-12',
-		lg: 'w-28 h-28',
+		lg: 'w-28 h-28'
 	};
 
 	const scoreTextClass: Record<Size, string> = {
 		sm: 'text-sm font-black leading-none',
-		lg: 'text-3xl font-black leading-none',
+		lg: 'text-3xl font-black leading-none'
 	};
 </script>
 
-<div
-	class="relative flex-shrink-0 flex items-center justify-center {containerSizeClass[size]}"
->
-	<svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
+<div class="relative flex flex-shrink-0 items-center justify-center {containerSizeClass[size]}">
+	<svg viewBox="0 0 36 36" class="absolute inset-0 h-full w-full -rotate-90">
 		<circle
 			cx="18"
 			cy="18"
@@ -69,12 +67,10 @@
 			style="stroke: {strokeVar[color]}; filter: {glowFilter[color]}"
 		></circle>
 	</svg>
-	<div class="text-center z-10">
+	<div class="z-10 text-center">
 		<span class="{scoreTextClass[size]} {textColorClass[color]}">{clampedScore}</span>
 		{#if showLabel}
-			<p class="text-[9px] text-text-muted uppercase tracking-wider mt-0.5">
-				RISK SCORE
-			</p>
+			<p class="mt-0.5 text-[9px] tracking-wider text-text-muted uppercase">RISK SCORE</p>
 		{/if}
 	</div>
 </div>

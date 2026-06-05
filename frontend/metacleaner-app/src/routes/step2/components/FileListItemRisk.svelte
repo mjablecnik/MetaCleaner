@@ -11,8 +11,10 @@
 	const { file, onRemove }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -36,45 +38,54 @@
 </script>
 
 <div
-	class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-default bg-navy-main/60 {rowBorderClass}"
+	class="group flex cursor-default items-center gap-3 rounded-xl border bg-navy-main/60 px-3 py-2.5 {rowBorderClass}"
 >
 	<div
-		class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border {iconContainerClass}"
+		class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass}"
 	>
 		<i class="fa-solid {fileIcon} {iconClass} text-sm"></i>
 	</div>
-	<div class="flex-1 min-w-0">
-		<p class="text-sm font-medium text-white truncate">{file.name}</p>
-		<div class="flex items-center gap-2 mt-0.5">
+	<div class="min-w-0 flex-1">
+		<p class="truncate text-sm font-medium text-white">{file.name}</p>
+		<div class="mt-0.5 flex items-center gap-2">
 			<span class="text-[11px] text-text-muted">{file.size}</span>
-			<span class="w-1 h-1 rounded-full bg-gray-600"></span>
+			<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 			{#if file.hasGps}
-				<span class="text-[11px] text-brand-red font-medium flex items-center gap-1">
+				<span class="flex items-center gap-1 text-[11px] font-medium text-brand-red">
 					<i class="fa-solid fa-location-dot text-[9px]"></i>{tx('step2.files.gpsFound')}
 				</span>
 			{:else if file.metadataFieldCount > 5}
-				<span class="text-[11px] text-brand-orange font-medium flex items-center gap-1">
+				<span class="flex items-center gap-1 text-[11px] font-medium text-brand-orange">
 					<i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
-					<span class="hidden lg:inline">{tx('step2.files.metadataFields', { count: file.metadataFieldCount })}</span>
-					<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', { count: file.metadataFieldCount })}</span>
+					<span class="hidden lg:inline"
+						>{tx('step2.files.metadataFields', { count: file.metadataFieldCount })}</span
+					>
+					<span class="inline lg:hidden"
+						>{tx('step2.files.metadataFieldsMobile', { count: file.metadataFieldCount })}</span
+					>
 				</span>
 			{:else}
-				<span class="text-[11px] text-text-muted flex items-center gap-1">
-					<i class="fa-solid fa-circle-check text-brand-green text-[9px]"></i>
-					<span class="hidden lg:inline">{tx('step2.files.metadataFields', { count: file.metadataFieldCount })}</span>
-					<span class="inline lg:hidden">{tx('step2.files.metadataFieldsMobile', { count: file.metadataFieldCount })}</span>
+				<span class="flex items-center gap-1 text-[11px] text-text-muted">
+					<i class="fa-solid fa-circle-check text-[9px] text-brand-green"></i>
+					<span class="hidden lg:inline"
+						>{tx('step2.files.metadataFields', { count: file.metadataFieldCount })}</span
+					>
+					<span class="inline lg:hidden"
+						>{tx('step2.files.metadataFieldsMobile', { count: file.metadataFieldCount })}</span
+					>
 				</span>
 			{/if}
 		</div>
 	</div>
 	<div class="flex items-center gap-2">
 		<span
-			class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-		>{file.extension}</span>
+			class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
+			>{file.extension}</span
+		>
 		<button
 			onclick={onRemove}
 			aria-label="Remove file"
-			class="text-gray-600 hover:text-brand-red transition-colors opacity-0 group-hover:opacity-100"
+			class="text-gray-600 opacity-0 transition-colors group-hover:opacity-100 hover:text-brand-red"
 		>
 			<i class="fa-solid fa-xmark text-sm"></i>
 		</button>

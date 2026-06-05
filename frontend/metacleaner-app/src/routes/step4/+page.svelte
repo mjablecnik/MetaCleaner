@@ -18,8 +18,10 @@
 	let errorState = $state<ErrorState | null>(null);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -30,8 +32,12 @@
 	const failedFileName = $derived(getFileById(errorState?.failedFileId ?? '')?.name ?? '');
 
 	onMount(() => {
-		getUploadedFiles().then((files) => { uploadedFiles = files; });
-		getErrorState().then((es) => { errorState = es; });
+		getUploadedFiles().then((files) => {
+			uploadedFiles = files;
+		});
+		getErrorState().then((es) => {
+			errorState = es;
+		});
 	});
 </script>
 
@@ -39,18 +45,21 @@
 	<title>{tx('step4.meta.title')}</title>
 </svelte:head>
 
-<main class="w-full max-w-[1100px] mx-auto px-4 lg:px-6 pb-24 flex flex-col gap-4 lg:gap-6 mt-4 lg:mt-0">
-
+<main
+	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-24 lg:mt-0 lg:gap-6 lg:px-6"
+>
 	<!-- Page Header -->
-	<div class="flex flex-col gap-1 mb-0 lg:mb-2">
-		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+	<div class="mb-0 flex flex-col gap-1 lg:mb-2">
+		<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 			<div>
-				<h1 class="text-2xl lg:text-3xl font-bold text-white">{tx('step1.header.title')}</h1>
-				<p class="text-text-muted text-sm mt-1">{tx('step1.header.description')}</p>
+				<h1 class="text-2xl font-bold text-white lg:text-3xl">{tx('step1.header.title')}</h1>
+				<p class="mt-1 text-sm text-text-muted">{tx('step1.header.description')}</p>
 			</div>
-			<div class="flex items-center gap-2 bg-navy-card border border-red-800/50 rounded-xl px-3 lg:px-4 py-2 lg:py-2.5 self-start sm:self-auto">
-				<div class="w-2 h-2 rounded-full bg-brand-red"></div>
-				<span class="text-[10px] lg:text-xs font-semibold text-brand-red">
+			<div
+				class="flex items-center gap-2 self-start rounded-xl border border-red-800/50 bg-navy-card px-3 py-2 sm:self-auto lg:px-4 lg:py-2.5"
+			>
+				<div class="h-2 w-2 rounded-full bg-brand-red"></div>
+				<span class="text-[10px] font-semibold text-brand-red lg:text-xs">
 					<span class="hidden lg:inline">{tx('step4.badge.errorDesktop')}</span>
 					<span class="inline lg:hidden">{tx('step4.badge.errorMobile')}</span>
 				</span>
@@ -62,7 +71,7 @@
 
 	<MobileErrorVisual {errorState} {failedFileName} />
 
-	<div class="grid grid-cols-1 lg:grid-cols-[55%_43%] gap-4 lg:gap-6">
+	<div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
 		<ErrorFilesCard {errorState} {uploadedFiles} />
 		<ErrorStateCard
 			{errorState}
@@ -76,5 +85,4 @@
 	<ErrorDetailAccordion {errorState} {failedFileName} />
 	<ErrorTypeAccordion {errorState} bind:selectedErrorType />
 	<ErrorLogAccordion {errorState} {getFileById} />
-
 </main>

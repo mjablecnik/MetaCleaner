@@ -12,8 +12,10 @@
 	let { open, onClose, onUpgrade }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -21,35 +23,40 @@
 		tx('upgrade.features.unlimitedFiles'),
 		tx('upgrade.features.largeFiles'),
 		tx('upgrade.features.batchProcessing'),
-		tx('upgrade.features.prioritySupport'),
+		tx('upgrade.features.prioritySupport')
 	]);
 
-	const freeLimits = $derived([
-		tx('upgrade.limit.maxFilesDay'),
-		tx('upgrade.limit.maxFileSize'),
-	]);
+	const freeLimits = $derived([tx('upgrade.limit.maxFilesDay'), tx('upgrade.limit.maxFileSize')]);
 </script>
 
 <BottomSheet {open} title={tx('upgrade.title')} {onClose}>
-	<div class="px-5 pt-4 pb-2 flex flex-col gap-0">
+	<div class="flex flex-col gap-0 px-5 pt-4 pb-2">
 		<!-- Current Plan -->
-		<div class="bg-navy-main/60 rounded-xl p-3.5 border border-gray-700 flex items-center gap-3 mb-4">
-			<div class="w-9 h-9 rounded-lg bg-navy-lighter flex items-center justify-center">
-				<i class="fa-solid fa-bolt text-text-muted text-sm"></i>
+		<div
+			class="mb-4 flex items-center gap-3 rounded-xl border border-gray-700 bg-navy-main/60 p-3.5"
+		>
+			<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter">
+				<i class="fa-solid fa-bolt text-sm text-text-muted"></i>
 			</div>
 			<div class="flex-1">
-				<p class="text-xs font-bold text-text-muted uppercase tracking-wider">{tx('upgrade.currentPlan')}</p>
-				<p class="text-sm font-semibold text-white mt-0.5">{tx('upgrade.free')}</p>
+				<p class="text-xs font-bold tracking-wider text-text-muted uppercase">
+					{tx('upgrade.currentPlan')}
+				</p>
+				<p class="mt-0.5 text-sm font-semibold text-white">{tx('upgrade.free')}</p>
 			</div>
-			<span class="text-xs text-text-muted bg-navy-lighter px-2 py-1 rounded-full">{tx('upgrade.active')}</span>
+			<span class="rounded-full bg-navy-lighter px-2 py-1 text-xs text-text-muted"
+				>{tx('upgrade.active')}</span
+			>
 		</div>
 
 		<!-- Pro Plan Card -->
-		<div class="bg-gradient-to-br from-brand-orange/10 to-brand-orange/5 rounded-xl p-4 border border-brand-orange/40 flex flex-col gap-3 mb-4">
+		<div
+			class="mb-4 flex flex-col gap-3 rounded-xl border border-brand-orange/40 bg-gradient-to-br from-brand-orange/10 to-brand-orange/5 p-4"
+		>
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-2">
-					<div class="w-9 h-9 rounded-lg bg-brand-orange/20 flex items-center justify-center">
-						<i class="fa-solid fa-crown text-brand-orange text-sm"></i>
+					<div class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-orange/20">
+						<i class="fa-solid fa-crown text-sm text-brand-orange"></i>
 					</div>
 					<div>
 						<p class="text-sm font-bold text-white">{tx('upgrade.pro')}</p>
@@ -62,9 +69,9 @@
 				</div>
 			</div>
 			<div class="flex flex-col gap-2">
-				{#each proFeatures as feature}
+				{#each proFeatures as feature (feature)}
 					<div class="flex items-center gap-2">
-						<i class="fa-solid fa-check text-brand-green text-xs w-4"></i>
+						<i class="fa-solid fa-check w-4 text-xs text-brand-green"></i>
 						<span class="text-xs text-text-muted">{feature}</span>
 					</div>
 				{/each}
@@ -72,30 +79,30 @@
 		</div>
 
 		<!-- Free Plan Limits -->
-		<div class="flex flex-col gap-1.5 mb-4">
-			<p class="text-[10px] text-text-muted uppercase tracking-wider font-bold">
+		<div class="mb-4 flex flex-col gap-1.5">
+			<p class="text-[10px] font-bold tracking-wider text-text-muted uppercase">
 				{tx('upgrade.freeLimits')}
 			</p>
-			{#each freeLimits as limit}
+			{#each freeLimits as limit (limit)}
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-xmark text-brand-red text-xs w-4"></i>
+					<i class="fa-solid fa-xmark w-4 text-xs text-brand-red"></i>
 					<span class="text-xs text-text-muted">{limit}</span>
 				</div>
 			{/each}
 		</div>
 	</div>
 
-	<div class="px-5 pb-6 pt-2 flex flex-col gap-2">
+	<div class="flex flex-col gap-2 px-5 pt-2 pb-6">
 		<button
 			onclick={onUpgrade ?? onClose}
-			class="w-full py-4 rounded-xl bg-brand-orange text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg"
+			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-orange py-4 text-sm font-bold text-white shadow-lg"
 		>
 			<i class="fa-solid fa-crown"></i>
 			{tx('upgrade.cta')}
 		</button>
 		<button
 			onclick={onClose}
-			class="w-full py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2"
+			class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-text-muted"
 		>
 			{tx('upgrade.stayFree')}
 		</button>

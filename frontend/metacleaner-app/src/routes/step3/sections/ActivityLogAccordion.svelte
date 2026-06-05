@@ -14,8 +14,10 @@
 	const { processingState, uploadedFiles }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -27,7 +29,7 @@
 		(processingState?.log ?? []).map((entry) => {
 			const logFile = getFileById(entry.fileId);
 			const logFileState = processingState?.files.find((f) => f.fileId === entry.fileId);
-			let text = '';
+			let text: string;
 			if (entry.status === 'success') {
 				if (logFileState?.gpsRemoved) {
 					text = `✓ ${logFile?.name ?? ''} — ${tx('step3.log.gpsSuccess', { count: logFileState.fieldsRemoved ?? 0 })}`;
@@ -44,10 +46,6 @@
 	);
 </script>
 
-<AccordionCard
-	title={tx('step3.log.title')}
-	icon="fa-solid fa-terminal"
-	class="lg:hidden"
->
+<AccordionCard title={tx('step3.log.title')} icon="fa-solid fa-terminal" class="lg:hidden">
 	<ActivityLog entries={logEntries} />
 </AccordionCard>

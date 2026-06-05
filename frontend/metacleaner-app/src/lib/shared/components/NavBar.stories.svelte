@@ -9,10 +9,10 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
+				values: [{ name: 'dark', value: '#0a1628' }]
 			},
-			layout: 'fullscreen',
-		},
+			layout: 'fullscreen'
+		}
 	});
 
 	const mockUser = { name: 'Jana Nováková', email: 'jana.novakova@email.cz' };
@@ -21,7 +21,7 @@
 		{ code: 'en', flag: '🇬🇧', label: 'EN', name: 'English' },
 		{ code: 'cs', flag: '🇨🇿', label: 'CS', name: 'Čeština' },
 		{ code: 'de', flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' },
+		{ code: 'sk', flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
 	];
 </script>
 

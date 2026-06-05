@@ -10,9 +10,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const imageWithGps = {
@@ -23,7 +23,7 @@
 		type: 'image',
 		metadataFieldCount: 18,
 		hasGps: true,
-		device: 'iPhone 15 Pro',
+		device: 'iPhone 15 Pro'
 	} satisfies UploadedFile;
 
 	const imageWithGpsResult = {
@@ -34,7 +34,7 @@
 		id3Count: 0,
 		mp4AtomsCount: 0,
 		pngChunksCount: 0,
-		totalFields: 18,
+		totalFields: 18
 	};
 
 	const videoFile = {
@@ -45,7 +45,7 @@
 		type: 'video',
 		metadataFieldCount: 43,
 		hasGps: false,
-		device: 'H.264',
+		device: 'H.264'
 	} satisfies UploadedFile;
 
 	const videoResult = {
@@ -56,7 +56,7 @@
 		id3Count: 9,
 		mp4AtomsCount: 14,
 		pngChunksCount: 0,
-		totalFields: 43,
+		totalFields: 43
 	};
 
 	const imageNoGps = {
@@ -67,7 +67,7 @@
 		type: 'image',
 		metadataFieldCount: 12,
 		hasGps: false,
-		device: 'Canon EOS R5',
+		device: 'Canon EOS R5'
 	} satisfies UploadedFile;
 
 	const imageNoGpsResult = {
@@ -78,7 +78,7 @@
 		id3Count: 0,
 		mp4AtomsCount: 0,
 		pngChunksCount: 0,
-		totalFields: 12,
+		totalFields: 12
 	};
 </script>
 

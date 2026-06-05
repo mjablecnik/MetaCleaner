@@ -60,27 +60,27 @@
 </script>
 
 <div
-	class="group flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-default {rowBorderClass} {rowBgClass}"
+	class="group flex cursor-default items-center gap-3 rounded-xl border px-3 py-2.5 {rowBorderClass} {rowBgClass}"
 	class:opacity-50={status === 'muted'}
 >
 	<div
-		class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 border {iconBgClass} {iconBorderClass}"
+		class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconBgClass} {iconBorderClass}"
 	>
 		<i class="fa-solid {fileIcon} {iconColorClass} text-sm"></i>
 	</div>
-	<div class="flex-1 min-w-0">
-		<p class="text-sm font-medium text-white truncate">{file.name}</p>
-		<div class="flex items-center gap-2 mt-0.5">
-			<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
+	<div class="min-w-0 flex-1">
+		<p class="truncate text-sm font-medium text-white">{file.name}</p>
+		<div class="mt-0.5 flex items-center gap-2">
+			<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
 			{#if statusInfo}
-				<span class="w-1 h-1 rounded-full bg-gray-600 flex-shrink-0"></span>
+				<span class="h-1 w-1 flex-shrink-0 rounded-full bg-gray-600"></span>
 				{@render statusInfo()}
 			{/if}
 		</div>
 	</div>
-	<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+	<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 		<span
-			class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+			class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
 		>
 			{file.extension}
 		</span>
@@ -90,7 +90,7 @@
 			<button
 				onclick={onRemove}
 				aria-label="Remove file"
-				class="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted hover:text-white hover:bg-gray-700 transition-all"
+				class="flex h-6 w-6 items-center justify-center rounded-full bg-navy-lighter text-text-muted opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-700 hover:text-white"
 			>
 				<i class="fa-solid fa-xmark text-xs"></i>
 			</button>

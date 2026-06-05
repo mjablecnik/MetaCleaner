@@ -17,11 +17,11 @@
 		langOptions,
 		open = $bindable(false),
 		onSelect,
-		wrapperId = 'hamburgerDropdown',
+		wrapperId = 'hamburgerDropdown'
 	}: Props = $props();
 
 	function tx(key: string): string {
-		locale.current; // reactive dependency
+		void locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -32,26 +32,26 @@
 	}
 </script>
 
-<div id={wrapperId} class="flex lg:hidden items-center gap-2">
+<div id={wrapperId} class="flex items-center gap-2 lg:hidden">
 	<div class="relative inline-block">
 		<button
 			type="button"
 			onclick={() => (open = !open)}
-			class="flex items-center justify-center w-11 h-11 rounded-lg bg-navy-lighter border border-gray-700 text-white"
+			class="flex h-11 w-11 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
 		>
 			<i class="fa-solid {open ? 'fa-xmark' : 'fa-bars'} text-base"></i>
 		</button>
 		<div class="lang-dropdown-menu" class:open style="min-width:220px">
-			<div class="px-4 py-3 border-b border-gray-700">
+			<div class="border-b border-gray-700 px-4 py-3">
 				<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
-				<p class="text-sm font-semibold text-white mt-0.5 truncate">{user?.email ?? ''}</p>
+				<p class="mt-0.5 truncate text-sm font-semibold text-white">{user?.email ?? ''}</p>
 			</div>
-			<div class="px-4 py-2 border-b border-gray-700">
-				<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+			<div class="border-b border-gray-700 px-4 py-2">
+				<p class="mb-1 text-[10px] tracking-wider text-text-muted uppercase">
 					{tx('common.nav.language')}
 				</p>
 				<div class="flex flex-col gap-0.5">
-					{#each langOptions as lang}
+					{#each langOptions as lang (lang.code)}
 						<div
 							class="lang-option rounded-lg"
 							class:active={locale.current === lang.code}
@@ -75,7 +75,7 @@
 				tabindex="0"
 				onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
 			>
-				<i class="fa-solid fa-gear text-text-muted text-sm"></i>
+				<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 				<span>{tx('common.nav.settings')}</span>
 			</div>
 			<div

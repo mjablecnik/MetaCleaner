@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { UploadedFile } from '$lib/repositories/fileRepository';
@@ -14,22 +15,27 @@
 	const { files = [], onClearAll, onRemoveFile, onOptions }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
 <div class="flex flex-col gap-4 lg:gap-5">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 lg:p-6 flex flex-col gap-4 shadow-card">
+	<div
+		class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card lg:p-6"
+	>
 		<!-- Header -->
 		<div class="flex items-center justify-between">
-			<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.upload.title')}</h3>
-			<div class="flex gap-1 lg:gap-1.5 flex-wrap justify-end">
-				{#each ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'] as ext}
+			<h3 class="text-base font-semibold text-white lg:text-lg">{tx('step1.upload.title')}</h3>
+			<div class="flex flex-wrap justify-end gap-1 lg:gap-1.5">
+				{#each ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'] as ext (ext)}
 					<span
-						class="px-1.5 lg:px-2 py-0.5 lg:py-1 rounded bg-navy-lighter text-[9px] lg:text-[10px] font-bold text-white uppercase"
-					>{ext}</span>
+						class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-white uppercase lg:px-2 lg:py-1 lg:text-[10px]"
+						>{ext}</span
+					>
 				{/each}
 			</div>
 		</div>
@@ -38,11 +44,11 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="dashed-border-anim rounded-xl flex flex-col items-center justify-center gap-2.5 lg:gap-3 cursor-pointer py-5 lg:py-6 relative bg-navy-main/50"
+			class="dashed-border-anim relative flex cursor-pointer flex-col items-center justify-center gap-2.5 rounded-xl bg-navy-main/50 py-5 lg:gap-3 lg:py-6"
 			onclick={() => document.getElementById('fileInputStep2')?.click()}
 		>
 			<div
-				class="w-10 h-10 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-lg shadow-glow-blue"
+				class="flex h-10 w-10 items-center justify-center rounded-full bg-navy-lighter text-lg text-brand-blue shadow-glow-blue"
 			>
 				<i class="fa-solid fa-plus"></i>
 			</div>
@@ -52,19 +58,19 @@
 
 		<!-- File List -->
 		<div class="flex flex-col gap-2">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-sm font-semibold text-white">
 					{tx('step1.files.title')}
-					<span class="text-text-muted font-normal">({files.length})</span>
+					<span class="font-normal text-text-muted">({files.length})</span>
 				</span>
 				<button
 					onclick={onClearAll}
-					class="text-xs text-text-muted hover:text-brand-red transition-colors flex items-center gap-1 min-h-[44px] lg:min-h-0 px-2 lg:px-0"
+					class="flex min-h-[44px] items-center gap-1 px-2 text-xs text-text-muted transition-colors hover:text-brand-red lg:min-h-0 lg:px-0"
 				>
 					<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>{tx('step1.files.clearAll')}
 				</button>
 			</div>
-			<div class="flex flex-col gap-2 max-h-[260px] lg:max-h-[240px] overflow-y-auto pr-1">
+			<div class="flex max-h-[260px] flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[240px]">
 				{#each files as file (file.id)}
 					<FileListItemRisk {file} onRemove={() => onRemoveFile?.(file.id)} />
 				{/each}
@@ -72,17 +78,17 @@
 		</div>
 
 		<!-- Desktop Action Buttons -->
-		<div class="hidden lg:flex gap-3 mt-1">
+		<div class="mt-1 hidden gap-3 lg:flex">
 			<a
-				href="/step3"
-				class="flex-1 py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-500 transition-all shadow-glow-green flex items-center justify-center gap-2"
+				href={resolve('/step3')}
+				class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500"
 			>
 				<i class="fa-solid fa-wand-magic-sparkles"></i>
 				{tx('step1.actions.startCleaning')}
 			</a>
 			<button
 				onclick={onOptions}
-				class="px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+				class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter px-5 py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800"
 			>
 				<i class="fa-solid fa-sliders"></i>
 				{tx('step1.actions.options')}
@@ -93,19 +99,20 @@
 
 <!-- Mobile Fixed Bottom CTA -->
 <div
-	class="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4 z-50 border-t border-gray-800 bg-navy-main"
+	class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
 >
 	<div class="flex gap-3">
 		<a
-			href="/step3"
-			class="flex-1 py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2 active:scale-95 transition-transform"
+			href={resolve('/step3')}
+			class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95"
 		>
-			<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
+			<i class="fa-solid fa-wand-magic-sparkles"></i>
+			{tx('step1.actions.startCleaning')}
 		</a>
 		<button
 			onclick={onOptions}
 			aria-label={tx('step1.actions.options')}
-			class="px-5 py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center gap-2 active:scale-95 transition-transform"
+			class="flex items-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter px-5 py-4 text-sm font-semibold text-white transition-transform active:scale-95"
 		>
 			<i class="fa-solid fa-sliders"></i>
 		</button>

@@ -23,89 +23,99 @@
 		fieldsRemovedCount = 0,
 		processingTime = '0s',
 		onDownload,
-		onProcessMore,
+		onProcessMore
 	}: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
 <Card class="flex flex-col gap-4 lg:gap-5">
 	<div class="flex items-center justify-between">
-		<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.status.title')}</h3>
-		<span class="text-[10px] lg:text-xs font-bold px-2.5 lg:px-3 py-1 rounded-full bg-navy-lighter text-text-muted uppercase tracking-wider">
+		<h3 class="text-base font-semibold text-white lg:text-lg">{tx('step1.status.title')}</h3>
+		<span
+			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] font-bold tracking-wider text-text-muted uppercase lg:px-3 lg:text-xs"
+		>
 			{tx('step1.status.waitingForFiles')}
 		</span>
 	</div>
 
 	{#if status === 'idle'}
-		<div class="flex flex-col items-center justify-center py-6 lg:py-8 gap-3 lg:gap-4">
-			<div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-navy-lighter flex items-center justify-center">
-				<i class="fa-solid fa-shield-halved text-3xl lg:text-4xl text-gray-700"></i>
+		<div class="flex flex-col items-center justify-center gap-3 py-6 lg:gap-4 lg:py-8">
+			<div
+				class="flex h-16 w-16 items-center justify-center rounded-full bg-navy-lighter lg:h-20 lg:w-20"
+			>
+				<i class="fa-solid fa-shield-halved text-3xl text-gray-700 lg:text-4xl"></i>
 			</div>
 			<div class="text-center">
-				<p class="text-text-muted text-sm">{tx('step1.status.uploadPrompt')}</p>
+				<p class="text-sm text-text-muted">{tx('step1.status.uploadPrompt')}</p>
 			</div>
 		</div>
-
 	{:else if status === 'processing'}
 		<div class="flex flex-col gap-4 lg:gap-5">
-			<div class="flex flex-col items-center gap-3 lg:gap-4 py-3 lg:py-4">
-				<div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-brand-blue/10 border-2 border-brand-blue/30 flex items-center justify-center relative">
-					<i class="fa-solid fa-gear text-brand-blue text-2xl lg:text-3xl spin-slow"></i>
+			<div class="flex flex-col items-center gap-3 py-3 lg:gap-4 lg:py-4">
+				<div
+					class="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-brand-blue/30 bg-brand-blue/10 lg:h-20 lg:w-20"
+				>
+					<i class="fa-solid fa-gear spin-slow text-2xl text-brand-blue lg:text-3xl"></i>
 				</div>
 				<div class="text-center">
-					<p class="font-semibold text-white text-sm">{tx('step1.status.processingFiles')}</p>
-					<p class="text-xs text-text-muted mt-0.5 lg:mt-1">{tx('step1.status.removingMetadata')}</p>
+					<p class="text-sm font-semibold text-white">{tx('step1.status.processingFiles')}</p>
+					<p class="mt-0.5 text-xs text-text-muted lg:mt-1">
+						{tx('step1.status.removingMetadata')}
+					</p>
 				</div>
 			</div>
 			<div class="flex flex-col gap-2">
-				<div class="flex justify-between text-xs text-text-muted mb-1 lg:mb-0">
+				<div class="mb-1 flex justify-between text-xs text-text-muted lg:mb-0">
 					<span>{tx('step1.status.progress')}</span>
 					<span>{progress}%</span>
 				</div>
 				<ProgressBar value={progress} color="blue" />
 			</div>
 		</div>
-
 	{:else if status === 'done'}
 		<div class="flex flex-col gap-3 lg:gap-4">
 			<div class="flex flex-col items-center gap-3 py-3 lg:py-4">
-				<div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-brand-green/10 border-2 border-brand-green/30 flex items-center justify-center">
-					<i class="fa-solid fa-circle-check text-brand-green text-3xl lg:text-4xl"></i>
+				<div
+					class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-brand-green/30 bg-brand-green/10 lg:h-20 lg:w-20"
+				>
+					<i class="fa-solid fa-circle-check text-3xl text-brand-green lg:text-4xl"></i>
 				</div>
 				<div class="text-center">
-					<p class="font-bold text-white text-lg">{tx('step1.status.done')}</p>
-					<p class="text-xs text-text-muted mt-0.5 lg:mt-1">{tx('step1.status.allRemoved')}</p>
+					<p class="text-lg font-bold text-white">{tx('step1.status.done')}</p>
+					<p class="mt-0.5 text-xs text-text-muted lg:mt-1">{tx('step1.status.allRemoved')}</p>
 				</div>
 			</div>
 			<div class="grid grid-cols-3 gap-2 lg:gap-3">
-				<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+				<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 text-center">
 					<p class="text-xl font-black text-white">{filesCount}</p>
-					<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.files')}</p>
+					<p class="mt-0.5 text-[10px] text-text-muted">{tx('common.stats.files')}</p>
 				</div>
-				<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+				<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 text-center">
 					<p class="text-xl font-black text-brand-green">{fieldsRemovedCount}</p>
-					<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.fieldsRemoved')}</p>
+					<p class="mt-0.5 text-[10px] text-text-muted">{tx('common.stats.fieldsRemoved')}</p>
 				</div>
-				<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+				<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 text-center">
 					<p class="text-xl font-black text-brand-blue">{processingTime}</p>
-					<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.time')}</p>
+					<p class="mt-0.5 text-[10px] text-text-muted">{tx('common.stats.time')}</p>
 				</div>
 			</div>
 			<button
 				onclick={onDownload}
-				class="w-full py-3.5 rounded-xl bg-brand-green text-white font-bold text-sm hover:bg-green-500 transition-all shadow-glow-green flex items-center justify-center gap-2"
+				class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500"
 			>
 				<i class="fa-solid fa-download"></i>
 				{tx('step1.actions.download')}
 			</button>
 			<button
 				onclick={onProcessMore}
-				class="w-full py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+				class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800"
 			>
 				<i class="fa-solid fa-rotate-left"></i>
 				{tx('step1.actions.processMore')}

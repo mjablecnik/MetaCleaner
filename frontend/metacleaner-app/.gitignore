@@ -33,3 +33,6 @@ project.inlang/cache/
 storybook-static
 
 old-code
+
+# Agent temp files
+.agents/tmp/

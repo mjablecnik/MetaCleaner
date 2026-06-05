@@ -16,63 +16,65 @@
 	let accordionOpen = $state(false);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
 <div
-	class="lg:hidden bg-navy-card rounded-2xl border border-brand-red/30 shadow-card overflow-hidden"
+	class="overflow-hidden rounded-2xl border border-brand-red/30 bg-navy-card shadow-card lg:hidden"
 >
 	<button
 		type="button"
 		onclick={() => (accordionOpen = !accordionOpen)}
-		class="w-full flex items-center justify-between px-4 py-3.5"
+		class="flex w-full items-center justify-between px-4 py-3.5"
 	>
 		<div class="flex items-center gap-3">
 			<RiskScoreRing {score} color="red" size="sm" />
 			<div>
-				<div class="flex items-center gap-2 mb-0.5">
+				<div class="mb-0.5 flex items-center gap-2">
 					<span class="text-sm font-bold text-white">{tx('step2.risk.title')}</span>
 					<span
-						class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase flex items-center gap-1"
+						class="flex items-center gap-1 rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-bold text-brand-red uppercase"
 					>
-						<span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse inline-block"></span>
+						<span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-red"></span>
 						{tx('step2.risk.highRisk')}
 					</span>
 				</div>
 				<div class="flex items-center gap-1.5">
 					<span
-						class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-red/25 bg-brand-red/15 text-brand-red"
+						class="rounded border border-brand-red/25 bg-brand-red/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-red"
 						>GPS</span
 					>
 					<span
-						class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange"
+						class="rounded border border-brand-orange/25 bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange"
 						>{tx('step2.risk.chipIdentity')}</span
 					>
 					<span
-						class="px-1.5 py-0.5 rounded text-[9px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange"
+						class="rounded border border-brand-orange/25 bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange"
 						>{tx('step2.risk.chipDevice')}</span
 					>
 				</div>
 			</div>
 		</div>
 		<i
-			class="fa-solid fa-chevron-down text-text-muted text-sm transition-transform flex-shrink-0 ml-2 {accordionOpen
+			class="fa-solid fa-chevron-down ml-2 flex-shrink-0 text-sm text-text-muted transition-transform {accordionOpen
 				? 'rotate-180'
 				: ''}"
 		></i>
 	</button>
 
 	{#if accordionOpen}
-		<div class="px-4 pb-4 flex flex-col gap-4">
-			<p class="text-xs text-text-muted leading-relaxed">
+		<div class="flex flex-col gap-4 px-4 pb-4">
+			<p class="text-xs leading-relaxed text-text-muted">
 				{tx('step2.risk.description')}
 			</p>
 
 			<div class="flex flex-col gap-3">
-				<p class="text-[10px] font-bold uppercase tracking-widest text-text-muted">
+				<p class="text-[10px] font-bold tracking-widest text-text-muted uppercase">
 					{tx('step2.risk.analysisTitle')}
 				</p>
 				<RiskBreakdownBar
@@ -112,10 +114,11 @@
 
 <!-- Mobile CTA hint -->
 <div
-	class="lg:hidden flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-green/20 bg-brand-green/6"
+	class="flex items-center gap-3 rounded-xl border border-brand-green/20 bg-brand-green/6 px-4 py-3 lg:hidden"
 >
-	<i class="fa-solid fa-shield-halved text-brand-green text-sm"></i>
+	<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
 	<p class="text-xs text-text-muted">
-		{tx('step2.risk.reducePre')} <span class="text-brand-green font-semibold">{tx('step2.risk.reduceHighlight')}</span>
+		{tx('step2.risk.reducePre')}
+		<span class="font-semibold text-brand-green">{tx('step2.risk.reduceHighlight')}</span>
 	</p>
 </div>

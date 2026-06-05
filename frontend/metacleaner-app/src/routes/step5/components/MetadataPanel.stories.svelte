@@ -9,9 +9,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const richBreakdown = {
@@ -19,7 +19,7 @@
 		exifFields: 47,
 		xmpFields: 12,
 		id3mp4Fields: 8,
-		otherFields: 5,
+		otherFields: 5
 	};
 
 	const emptyBreakdown = {
@@ -27,7 +27,7 @@
 		exifFields: 0,
 		xmpFields: 0,
 		id3mp4Fields: 0,
-		otherFields: 0,
+		otherFields: 0
 	};
 </script>
 
@@ -44,7 +44,7 @@
 </Story>
 
 <Story name="Before and After — Side by Side">
-	<div class="w-full max-w-2xl p-4 grid grid-cols-2 gap-4">
+	<div class="grid w-full max-w-2xl grid-cols-2 gap-4 p-4">
 		<MetadataPanel type="before" breakdown={richBreakdown} totalFieldsRemoved={75} />
 		<MetadataPanel type="after" breakdown={richBreakdown} totalFieldsRemoved={75} />
 	</div>

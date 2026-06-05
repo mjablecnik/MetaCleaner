@@ -4,24 +4,24 @@
 
 @theme {
 	/* ─── Background / surface colors ──────────────────────────────────── */
-	--color-navy-main: #0a1628;    /* page background */
-	--color-navy-card: #111d33;    /* card backgrounds, dropdowns */
+	--color-navy-main: #0a1628; /* page background */
+	--color-navy-card: #111d33; /* card backgrounds, dropdowns */
 	--color-navy-lighter: #1e293b; /* badges, inputs, lighter surfaces */
 	--color-navy-lighter-50: rgba(30, 41, 59, 0.5); /* semi-transparent lighter surface */
 	--color-navy-lighter-60: rgba(30, 41, 59, 0.6); /* semi-transparent lighter surface, stronger */
 
 	/* ─── Brand / semantic colors ───────────────────────────────────────── */
-	--color-brand-green: #22c55e;  /* success states, CTA buttons */
+	--color-brand-green: #22c55e; /* success states, CTA buttons */
 	--color-brand-orange: #f97316; /* warnings, upgrade, video indicators */
-	--color-brand-red: #ef4444;    /* errors, GPS risk, critical states */
-	--color-brand-blue: #3b82f6;   /* primary actions, processing, links */
+	--color-brand-red: #ef4444; /* errors, GPS risk, critical states */
+	--color-brand-blue: #3b82f6; /* primary actions, processing, links */
 
 	/* ─── Text colors ────────────────────────────────────────────────────── */
-	--color-text-main: #ffffff;    /* primary text */
-	--color-text-muted: #94a3b8;   /* secondary / muted text */
+	--color-text-main: #ffffff; /* primary text */
+	--color-text-muted: #94a3b8; /* secondary / muted text */
 
 	/* ─── Border colors ──────────────────────────────────────────────────── */
-	--color-gray-700: #374151;     /* borders, dividers */
+	--color-gray-700: #374151; /* borders, dividers */
 
 	/* ─── Typography ─────────────────────────────────────────────────────── */
 	--font-sans: 'Inter', sans-serif;
@@ -35,8 +35,8 @@
 	--shadow-drop-red: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); /* red glow for error SVGs */
 
 	/* ─── Border radii (non-standard values not covered by Tailwind defaults) */
-	--radius-dropdown: 10px;       /* language / user dropdowns */
-	--radius-sheet: 20px;          /* bottom sheet top corners */
+	--radius-dropdown: 10px; /* language / user dropdowns */
+	--radius-sheet: 20px; /* bottom sheet top corners */
 }
 
 body {
@@ -52,7 +52,8 @@ body {
 }
 
 .dashed-border-anim {
-	background-image: linear-gradient(90deg, var(--color-text-muted) 50%, transparent 50%),
+	background-image:
+		linear-gradient(90deg, var(--color-text-muted) 50%, transparent 50%),
 		linear-gradient(90deg, var(--color-text-muted) 50%, transparent 50%),
 		linear-gradient(0deg, var(--color-text-muted) 50%, transparent 50%),
 		linear-gradient(0deg, var(--color-text-muted) 50%, transparent 50%);

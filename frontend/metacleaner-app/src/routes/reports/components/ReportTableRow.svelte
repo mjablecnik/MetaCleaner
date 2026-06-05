@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Report } from '$lib/repositories/reportRepository';
@@ -11,8 +12,10 @@
 	const { report, onDownload }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -40,9 +43,11 @@
 	);
 </script>
 
-<div class="report-row grid grid-cols-12 gap-2 px-6 py-4 border-b border-gray-800/40 items-center last:border-0">
+<div
+	class="report-row grid grid-cols-12 items-center gap-2 border-b border-gray-800/40 px-6 py-4 last:border-0"
+>
 	<div class="col-span-1">
-		<span class="text-[10px] font-mono text-text-muted">{report.id}</span>
+		<span class="font-mono text-[10px] text-text-muted">{report.id}</span>
 	</div>
 
 	<div class="col-span-3">
@@ -51,7 +56,11 @@
 	</div>
 
 	<div class="col-span-2 flex items-center gap-2">
-		<div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 {iconStyle(report.iconColor)}">
+		<div
+			class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg {iconStyle(
+				report.iconColor
+			)}"
+		>
 			<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-file-lines'} text-[10px]"></i>
 		</div>
 		<div>
@@ -66,32 +75,34 @@
 	</div>
 
 	<div class="col-span-2 flex flex-wrap gap-1">
-		{#each report.tags as tag}
-			<span class="text-[9px] px-1.5 py-0.5 rounded border font-semibold {tagStyle(tag)}">{tag}</span>
+		{#each report.tags as tag (tag)}
+			<span class="rounded border px-1.5 py-0.5 text-[9px] font-semibold {tagStyle(tag)}"
+				>{tag}</span
+			>
 		{/each}
 	</div>
 
 	<div class="col-span-1">
 		<div class="flex items-center gap-1.5">
-			<div class="w-2 h-2 rounded-full bg-brand-green flex-shrink-0"></div>
-			<span class="text-[10px] text-brand-green font-semibold hidden lg:block">OK</span>
+			<div class="h-2 w-2 flex-shrink-0 rounded-full bg-brand-green"></div>
+			<span class="hidden text-[10px] font-semibold text-brand-green lg:block">OK</span>
 		</div>
 	</div>
 
 	<div class="col-span-1 flex items-center justify-end gap-1">
 		<a
-			href="/report"
+			href={resolve('/report')}
 			title={tx('reports.table.viewReport')}
-			class="w-7 h-7 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center hover:bg-brand-blue/20 transition-colors"
+			class="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 transition-colors hover:bg-brand-blue/20"
 		>
-			<i class="fa-solid fa-eye text-brand-blue text-[10px]"></i>
+			<i class="fa-solid fa-eye text-[10px] text-brand-blue"></i>
 		</a>
 		<button
 			onclick={() => onDownload(report.reportId)}
 			title={tx('reports.table.downloadPdf')}
-			class="w-7 h-7 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center hover:bg-brand-green/20 transition-colors"
+			class="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10 transition-colors hover:bg-brand-green/20"
 		>
-			<i class="fa-solid fa-download text-brand-green text-[10px]"></i>
+			<i class="fa-solid fa-download text-[10px] text-brand-green"></i>
 		</button>
 	</div>
 </div>

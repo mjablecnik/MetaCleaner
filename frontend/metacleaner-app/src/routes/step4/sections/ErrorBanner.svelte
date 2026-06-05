@@ -12,30 +12,39 @@
 	const { errorState, visible, onDismiss }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
 {#if visible}
-	<div class="w-full bg-brand-red/10 border border-brand-red/30 rounded-2xl px-4 lg:px-5 py-3.5 lg:py-4 flex items-start gap-3 lg:gap-4 shadow-glow-red">
-		<div class="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-brand-red/15 border border-brand-red/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-			<i class="fa-solid fa-triangle-exclamation text-brand-red text-base lg:text-lg"></i>
+	<div
+		class="flex w-full items-start gap-3 rounded-2xl border border-brand-red/30 bg-brand-red/10 px-4 py-3.5 shadow-glow-red lg:gap-4 lg:px-5 lg:py-4"
+	>
+		<div
+			class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border border-brand-red/30 bg-brand-red/15 lg:h-10 lg:w-10"
+		>
+			<i class="fa-solid fa-triangle-exclamation text-base text-brand-red lg:text-lg"></i>
 		</div>
-		<div class="flex-1 min-w-0">
-			<div class="flex items-center gap-2 flex-wrap">
+		<div class="min-w-0 flex-1">
+			<div class="flex flex-wrap items-center gap-2">
 				<p class="text-sm font-bold text-white">{tx('step4.error.processFailedTitle')}</p>
-				<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/20 text-brand-red border border-brand-red/30 tracking-wider">{errorState?.errorCode}</span>
+				<span
+					class="rounded border border-brand-red/30 bg-brand-red/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+					>{errorState?.errorCode}</span
+				>
 			</div>
-			<p class="text-xs text-text-muted mt-1 leading-relaxed">
+			<p class="mt-1 text-xs leading-relaxed text-text-muted">
 				<span class="hidden lg:inline">{tx('step4.error.descriptionDesktop')}</span>
 				<span class="inline lg:hidden">{tx('step4.error.descriptionMobile')}</span>
 			</p>
 		</div>
 		<button
 			onclick={onDismiss}
-			class="flex-shrink-0 text-text-muted hover:text-white transition-colors mt-0.5 p-1"
+			class="mt-0.5 flex-shrink-0 p-1 text-text-muted transition-colors hover:text-white"
 			aria-label="close"
 		>
 			<i class="fa-solid fa-xmark text-sm"></i>

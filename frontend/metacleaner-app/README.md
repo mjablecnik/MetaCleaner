@@ -1,42 +1,93 @@
-# sv
+# metacleaner-app
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A SvelteKit 5 + Tailwind CSS 4 frontend app for metadata cleaning, with Storybook, Paraglide i18n, and Capacitor support.
 
-## Creating a project
+## Tech Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Framework**: SvelteKit 2 with Svelte 5 (runes mode)
+- **Language**: TypeScript
+- **Package Manager**: bun
+- **Styling**: Tailwind CSS 4
+- **i18n**: Paraglide JS (en, cs)
+- **Testing**: Vitest (server tests) + Vitest Browser with Playwright (component tests)
+- **Stories**: Storybook 10
+- **Build output**: Static site via `@sveltejs/adapter-static`
+
+## Prerequisites
+
+- Node.js 22+
+- [bun](https://bun.sh) (or npm/pnpm/yarn as fallback)
+
+## Setup
+
+Install dependencies:
 
 ```sh
-# create a new project
-npx sv create my-app
+bun install
+# or: npm install
 ```
 
-To recreate this project with the same configuration:
+For component tests (browser), install Playwright browsers:
 
 ```sh
-# recreate this project
-bun x sv@0.15.3 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:auto" paraglide="languageTags:en, cs+demo:no" mcp="ide:claude-code,other+setup:remote" storybook --install bun metacleaner-app
+npx playwright install chromium
+# On Linux, also install system dependencies:
+npx playwright install-deps chromium
 ```
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Start the development server:
 
 ```sh
-npm run dev
+bun run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# or open in browser automatically
+bun run dev -- --open
 ```
 
 ## Building
 
-To create a production version of your app:
-
 ```sh
-npm run build
+bun run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+bun run preview
+```
+
+## Testing
+
+Run all tests:
+
+```sh
+bun test
+```
+
+Run only server-side unit tests (no browser required):
+
+```sh
+bun run test:unit -- --run --project=server
+```
+
+Run Storybook:
+
+```sh
+bun run storybook
+```
+
+## Linting & Formatting
+
+```sh
+bun run lint      # prettier check + eslint
+bun run format    # auto-format with prettier
+bun run check     # TypeScript type check
+```
+
+## Recreating this project
+
+```sh
+bun x sv@0.15.3 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:auto" paraglide="languageTags:en, cs+demo:no" mcp="ide:claude-code,other+setup:remote" storybook --install bun metacleaner-app
+```

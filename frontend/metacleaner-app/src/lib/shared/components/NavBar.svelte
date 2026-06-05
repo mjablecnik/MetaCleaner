@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale, switchLocale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Language } from '$lib/repositories/languageRepository';
@@ -38,7 +40,7 @@
 		mobileStyle = 'hamburger',
 		compact = false,
 		reducedDesktopPadding = false,
-		noPrint = false,
+		noPrint = false
 	}: Props = $props();
 
 	let langDropdownOpen = $state(false);
@@ -46,7 +48,7 @@
 	let hamburgerMenuOpen = $state(false);
 
 	function tx(key: string): string {
-		locale.current; // reactive dependency
+		void locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -72,8 +74,8 @@
 
 {#snippet logoContent()}
 	<div
-		class="rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue
-			{compact ? 'w-8 h-8 lg:w-10 lg:h-10' : 'w-9 h-9 lg:w-10 lg:h-10'}"
+		class="flex items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue
+			{compact ? 'h-8 w-8 lg:h-10 lg:w-10' : 'h-9 w-9 lg:h-10 lg:w-10'}"
 	>
 		<i class="fa-solid fa-shield-halved {compact ? 'text-sm lg:text-xl' : 'text-base lg:text-xl'}"
 		></i>
@@ -84,26 +86,26 @@
 {/snippet}
 
 <nav
-	class="w-full sticky lg:static top-0 bg-navy-main border-b border-gray-800/50 lg:border-0 z-50"
+	class="sticky top-0 z-50 w-full border-b border-gray-800/50 bg-navy-main lg:static lg:border-0"
 	class:no-print={noPrint}
 >
 	<div
-		class="max-w-[1100px] mx-auto px-4 lg:px-6 flex justify-between items-center
+		class="mx-auto flex max-w-[1100px] items-center justify-between px-4 lg:px-6
 			{reducedDesktopPadding ? 'py-4 lg:py-5' : 'py-4 lg:py-6'}"
 	>
 		<!-- Logo area -->
 		<div class="flex items-center {showBackButton ? 'gap-2 lg:gap-3' : 'gap-2.5 lg:gap-3'}">
 			{#if showBackButton}
 				<a
-					href={backHref}
-					class="flex lg:hidden items-center justify-center rounded-lg bg-navy-lighter border border-gray-700 text-text-muted
-						{compact ? 'w-8 h-8' : 'w-9 h-9'}"
+					href={resolve(backHref as Pathname)}
+					class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
+						{compact ? 'h-8 w-8' : 'h-9 w-9'}"
 				>
 					<i class="fa-solid fa-arrow-left {compact ? 'text-xs' : 'text-sm'}"></i>
 				</a>
 			{/if}
 			{#if logoHref}
-				<a href={logoHref} class="flex items-center gap-2 lg:gap-3">
+				<a href={resolve(logoHref as Pathname)} class="flex items-center gap-2 lg:gap-3">
 					{@render logoContent()}
 				</a>
 			{:else}
@@ -114,11 +116,11 @@
 		</div>
 
 		<!-- Desktop right side -->
-		<div class="hidden lg:flex items-center gap-3">
+		<div class="hidden items-center gap-3 lg:flex">
 			{#if showBackButton}
 				<a
-					href={backHref}
-					class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-text-muted hover:text-white hover:bg-gray-800 transition-colors"
+					href={resolve(backHref as Pathname)}
+					class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-text-muted transition-colors hover:bg-gray-800 hover:text-white"
 				>
 					<i class="fa-solid fa-arrow-left text-xs"></i>
 					<span>{backLabel}</span>
@@ -133,11 +135,7 @@
 					wrapperId="nav-langDropdown"
 				/>
 			{/if}
-			<UserDropdown
-				{user}
-				bind:open={userDropdownOpen}
-				wrapperId="nav-userDropdown"
-			/>
+			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" />
 		</div>
 
 		<!-- Mobile menu -->
@@ -156,22 +154,22 @@
 					<button
 						type="button"
 						onclick={() => (hamburgerMenuOpen = !hamburgerMenuOpen)}
-						class="w-10 h-10 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center"
+						class="flex h-10 w-10 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
 					>
-						<i class="fa-solid fa-user text-brand-blue text-sm"></i>
+						<i class="fa-solid fa-user text-sm text-brand-blue"></i>
 					</button>
 					<div class="lang-dropdown-menu" class:open={hamburgerMenuOpen} style="min-width:220px">
-						<div class="px-4 py-3 border-b border-gray-700">
+						<div class="border-b border-gray-700 px-4 py-3">
 							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
-							<p class="text-sm font-semibold text-white mt-0.5 truncate">{user?.email ?? ''}</p>
+							<p class="mt-0.5 truncate text-sm font-semibold text-white">{user?.email ?? ''}</p>
 						</div>
 						{#if showLangDropdown}
-							<div class="px-4 py-2 border-b border-gray-700">
-								<p class="text-[10px] text-text-muted uppercase tracking-wider mb-1">
+							<div class="border-b border-gray-700 px-4 py-2">
+								<p class="mb-1 text-[10px] tracking-wider text-text-muted uppercase">
 									{tx('common.nav.language')}
 								</p>
 								<div class="flex flex-col gap-0.5">
-									{#each langOptions as lang}
+									{#each langOptions as lang (lang.code)}
 										<div
 											class="lang-option rounded-lg"
 											class:active={locale.current === lang.code}
@@ -196,7 +194,7 @@
 							tabindex="0"
 							onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
 						>
-							<i class="fa-solid fa-gear text-text-muted text-sm"></i>
+							<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 							<span>{tx('common.nav.settings')}</span>
 						</div>
 						<div

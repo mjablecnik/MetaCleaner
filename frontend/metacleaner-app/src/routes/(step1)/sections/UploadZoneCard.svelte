@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import Card from '$lib/shared/elements/Card.svelte';
@@ -22,8 +23,10 @@
 	const hasFiles = $derived(files.length > 0);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -41,7 +44,7 @@
 			extension: ext,
 			type: file.type.startsWith('video/') ? 'video' : 'image',
 			metadataFieldCount: 0,
-			hasGps: false,
+			hasGps: false
 		};
 	}
 
@@ -50,10 +53,12 @@
 
 <Card class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
-		<h3 class="font-semibold text-base lg:text-lg text-white">{tx('step1.upload.title')}</h3>
-		<div class="flex gap-1 lg:gap-1.5 flex-wrap justify-end">
-			{#each FILE_FORMATS as ext}
-				<span class="px-1.5 lg:px-2 py-0.5 lg:py-1 rounded bg-navy-lighter text-[9px] lg:text-[10px] font-bold text-white uppercase">
+		<h3 class="text-base font-semibold text-white lg:text-lg">{tx('step1.upload.title')}</h3>
+		<div class="flex flex-wrap justify-end gap-1 lg:gap-1.5">
+			{#each FILE_FORMATS as ext (ext)}
+				<span
+					class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-white uppercase lg:px-2 lg:py-1 lg:text-[10px]"
+				>
 					{ext}
 				</span>
 			{/each}
@@ -64,38 +69,38 @@
 
 	{#if hasFiles}
 		<div class="flex flex-col gap-2">
-			<div class="flex items-center justify-between mb-1">
+			<div class="mb-1 flex items-center justify-between">
 				<span class="text-sm font-semibold text-white">{tx('step1.files.title')}</span>
 				<button
 					onclick={onClearFiles}
-					class="text-xs text-text-muted hover:text-brand-red transition-colors flex items-center gap-1 min-h-[44px] lg:min-h-0 px-2 lg:px-0"
+					class="flex min-h-[44px] items-center gap-1 px-2 text-xs text-text-muted transition-colors hover:text-brand-red lg:min-h-0 lg:px-0"
 				>
 					<i class="fa-solid fa-trash mr-1 lg:mr-0"></i>{tx('step1.files.clearAll')}
 				</button>
 			</div>
-			<div class="flex flex-col gap-2 max-h-[180px] lg:max-h-[220px] overflow-y-auto pr-1">
-				{#each uploadedFiles as file, i}
+			<div class="flex max-h-[180px] flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[220px]">
+				{#each uploadedFiles as file, i (file.id)}
 					<FileListItem {file} onRemove={() => onRemoveFile(i)} />
 				{/each}
 			</div>
 		</div>
 	{/if}
 
-	<div class="flex flex-col lg:flex-row gap-2.5 lg:gap-3 mt-1">
+	<div class="mt-1 flex flex-col gap-2.5 lg:flex-row lg:gap-3">
 		<button
 			disabled={!hasFiles}
-			onclick={() => hasFiles && goto('/step2')}
-			class="flex-1 py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2
+			onclick={() => hasFiles && goto(resolve('/step2'))}
+			class="flex flex-1 items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition-all
 				{hasFiles
-					? 'bg-brand-green text-white hover:bg-green-500 shadow-glow-green cursor-pointer'
-					: 'bg-gray-700 text-gray-500 cursor-not-allowed opacity-60'}"
+				? 'cursor-pointer bg-brand-green text-white shadow-glow-green hover:bg-green-500'
+				: 'cursor-not-allowed bg-gray-700 text-gray-500 opacity-60'}"
 		>
 			<i class="fa-solid fa-wand-magic-sparkles"></i>
 			{tx('step1.actions.startCleaning')}
 		</button>
 		<button
 			onclick={onOpenOptions}
-			class="lg:px-5 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+			class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 lg:px-5"
 		>
 			<i class="fa-solid fa-sliders"></i>
 			{tx('step1.actions.options')}

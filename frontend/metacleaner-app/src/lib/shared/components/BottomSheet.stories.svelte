@@ -9,10 +9,10 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
+				values: [{ name: 'dark', value: '#0a1628' }]
 			},
-			layout: 'fullscreen',
-		},
+			layout: 'fullscreen'
+		}
 	});
 </script>
 
@@ -22,27 +22,27 @@
 
 <Story name="Open With Content">
 	<BottomSheet open={true} title="Options" onClose={() => {}}>
-		<div class="p-5 flex flex-col gap-4">
+		<div class="flex flex-col gap-4 p-5">
 			<div class="flex items-center justify-between">
 				<div>
-					<p class="text-white font-medium text-sm">Remove GPS data</p>
-					<p class="text-text-muted text-xs mt-0.5">Strip location metadata from all files</p>
+					<p class="text-sm font-medium text-white">Remove GPS data</p>
+					<p class="mt-0.5 text-xs text-text-muted">Strip location metadata from all files</p>
 				</div>
-				<div class="w-10 h-6 rounded-full bg-brand-green"></div>
+				<div class="h-6 w-10 rounded-full bg-brand-green"></div>
 			</div>
 			<div class="flex items-center justify-between">
 				<div>
-					<p class="text-white font-medium text-sm">Remove EXIF data</p>
-					<p class="text-text-muted text-xs mt-0.5">Strip camera and device metadata</p>
+					<p class="text-sm font-medium text-white">Remove EXIF data</p>
+					<p class="mt-0.5 text-xs text-text-muted">Strip camera and device metadata</p>
 				</div>
-				<div class="w-10 h-6 rounded-full bg-brand-green"></div>
+				<div class="h-6 w-10 rounded-full bg-brand-green"></div>
 			</div>
 			<div class="flex items-center justify-between">
 				<div>
-					<p class="text-white font-medium text-sm">Remove author info</p>
-					<p class="text-text-muted text-xs mt-0.5">Remove creator and software fields</p>
+					<p class="text-sm font-medium text-white">Remove author info</p>
+					<p class="mt-0.5 text-xs text-text-muted">Remove creator and software fields</p>
 				</div>
-				<div class="w-10 h-6 rounded-full bg-navy-lighter border border-gray-700"></div>
+				<div class="h-6 w-10 rounded-full border border-gray-700 bg-navy-lighter"></div>
 			</div>
 		</div>
 	</BottomSheet>
@@ -51,7 +51,7 @@
 <Story name="Open Empty">
 	<BottomSheet open={true} title="Upgrade Plan" onClose={() => {}}>
 		<div class="p-5">
-			<p class="text-text-muted text-sm">Sheet content goes here.</p>
+			<p class="text-sm text-text-muted">Sheet content goes here.</p>
 		</div>
 	</BottomSheet>
 </Story>

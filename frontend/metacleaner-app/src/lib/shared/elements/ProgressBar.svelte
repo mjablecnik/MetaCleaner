@@ -14,7 +14,7 @@
 	const heightMap: Record<Height, string> = {
 		xs: 'h-1.5',
 		sm: 'h-2',
-		md: 'h-2.5',
+		md: 'h-2.5'
 	};
 
 	const fillMap: Record<Color, string> = {
@@ -22,14 +22,14 @@
 		green: 'bg-brand-green',
 		red: 'bg-gradient-to-r from-brand-red to-red-400',
 		orange: 'bg-gradient-to-r from-brand-orange to-yellow-400',
-		gray: 'bg-gray-500',
+		gray: 'bg-gray-500'
 	};
 
 	const clampedValue = $derived(Math.min(100, Math.max(0, value)));
 </script>
 
 <div
-	class="w-full bg-navy-lighter rounded-full overflow-hidden {heightMap[height]} {extraClass}"
+	class="w-full overflow-hidden rounded-full bg-navy-lighter {heightMap[height]} {extraClass}"
 	role="progressbar"
 	aria-valuenow={clampedValue}
 	aria-valuemin={0}

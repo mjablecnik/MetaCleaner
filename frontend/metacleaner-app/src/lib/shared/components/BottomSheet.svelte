@@ -16,12 +16,12 @@
 <div class="sheet-overlay" class:open onclick={onClose}></div>
 
 <div class="bottom-sheet" class:open>
-	<div class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-700">
-		<h3 class="font-bold text-white text-base">{title}</h3>
+	<div class="flex items-center justify-between border-b border-gray-700 px-5 pt-5 pb-4">
+		<h3 class="text-base font-bold text-white">{title}</h3>
 		<button
 			type="button"
 			onclick={onClose}
-			class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-lighter text-text-muted hover:text-white transition-colors"
+			class="flex h-10 w-10 items-center justify-center rounded-full bg-navy-lighter text-text-muted transition-colors hover:text-white"
 		>
 			<i class="fa-solid fa-xmark"></i>
 		</button>

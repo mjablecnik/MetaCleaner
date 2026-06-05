@@ -21,8 +21,10 @@
 	let allOpen = $derived(accordionOpen.length > 0 && accordionOpen.every((v) => v));
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -36,19 +38,21 @@
 	}
 </script>
 
-<div class="fade-in-up delay-3 lg:bg-navy-card lg:rounded-2xl lg:border lg:border-gray-800 lg:p-6 lg:shadow-card flex flex-col gap-3 lg:gap-4">
+<div
+	class="fade-in-up flex flex-col gap-3 delay-3 lg:gap-4 lg:rounded-2xl lg:border lg:border-gray-800 lg:bg-navy-card lg:p-6 lg:shadow-card"
+>
 	<div class="flex items-center justify-between">
-		<h3 class="font-semibold text-base lg:text-lg text-white">{tx('report.files.title')}</h3>
+		<h3 class="text-base font-semibold text-white lg:text-lg">{tx('report.files.title')}</h3>
 		<button
 			onclick={toggleAll}
-			class="text-xs text-brand-blue font-semibold flex items-center gap-1 py-2 px-3 rounded-lg bg-brand-blue/10 border border-brand-blue/20 hover:bg-brand-blue/20 transition-colors"
+			class="flex items-center gap-1 rounded-lg border border-brand-blue/20 bg-brand-blue/10 px-3 py-2 text-xs font-semibold text-brand-blue transition-colors hover:bg-brand-blue/20"
 		>
 			<i class="fa-solid fa-list text-[10px]"></i>
 			{allOpen ? tx('report.files.collapseAll') : tx('report.files.expandAll')}
 		</button>
 	</div>
 
-	{#each files as file, i}
+	{#each files as file, i (file.name)}
 		<FileAccordionItem {file} open={accordionOpen[i]} onToggle={() => toggleAccordion(i)} />
 	{/each}
 </div>

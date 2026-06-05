@@ -10,9 +10,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const imageFile = {
@@ -23,7 +23,7 @@
 		type: 'image',
 		metadataFieldCount: 12,
 		hasGps: false,
-		device: 'Canon EOS R5',
+		device: 'Canon EOS R5'
 	} satisfies UploadedFile;
 
 	const imageFileWithGps = {
@@ -34,7 +34,7 @@
 		type: 'image',
 		metadataFieldCount: 18,
 		hasGps: true,
-		device: 'iPhone 15 Pro',
+		device: 'iPhone 15 Pro'
 	} satisfies UploadedFile;
 
 	const videoFile = {
@@ -45,7 +45,7 @@
 		type: 'video',
 		metadataFieldCount: 8,
 		hasGps: false,
-		device: 'H.264',
+		device: 'H.264'
 	} satisfies UploadedFile;
 </script>
 
@@ -57,7 +57,12 @@
 
 <Story name="Done — image with GPS removed">
 	<div class="w-full max-w-md p-4">
-		<FileItemProcessing file={imageFileWithGps} status="done" fieldsRemoved={18} gpsRemoved={true} />
+		<FileItemProcessing
+			file={imageFileWithGps}
+			status="done"
+			fieldsRemoved={18}
+			gpsRemoved={true}
+		/>
 	</div>
 </Story>
 

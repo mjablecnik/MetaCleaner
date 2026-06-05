@@ -14,8 +14,10 @@
 	let { errorState, getFileById, open = $bindable(true) }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -31,30 +33,27 @@
 				return {
 					timestamp: logEntry.timestamp,
 					text: `✗ ${file?.name} — ${logEntry.errorCode}`,
-					status: 'error' as const,
+					status: 'error' as const
 				};
 			} else {
 				return {
 					timestamp: logEntry.timestamp,
 					text: `${file?.name} — ${tx('step4.error.skipped').toLowerCase()}`,
-					status: 'skipped' as const,
+					status: 'skipped' as const
 				};
 			}
 		})
 	);
 </script>
 
-<div class="lg:hidden bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
-	<button
-		onclick={() => (open = !open)}
-		class="w-full flex items-center justify-between px-4 py-4"
-	>
+<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card lg:hidden">
+	<button onclick={() => (open = !open)} class="flex w-full items-center justify-between px-4 py-4">
 		<div class="flex items-center gap-2">
-			<i class="fa-solid fa-terminal text-text-muted text-sm"></i>
-			<span class="font-semibold text-sm text-white">{tx('step4.log.title')}</span>
+			<i class="fa-solid fa-terminal text-sm text-text-muted"></i>
+			<span class="text-sm font-semibold text-white">{tx('step4.log.title')}</span>
 		</div>
 		<i
-			class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"
+			class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform"
 			style="transform: {open ? 'rotate(180deg)' : ''}"
 		></i>
 	</button>

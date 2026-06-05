@@ -10,9 +10,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const imageFile = {
@@ -34,14 +34,14 @@
 				{ label: 'Make', value: 'Apple' },
 				{ label: 'Model', value: 'iPhone 14 Pro' },
 				{ label: 'Software', value: 'iOS 16.5' },
-				{ label: 'DateTime', value: '2024:03:15 14:32:01' },
+				{ label: 'DateTime', value: '2024:03:15 14:32:01' }
 			],
 			xmpFields: [
 				{ label: 'Creator', value: 'John Doe' },
-				{ label: 'Rights', value: 'All rights reserved' },
+				{ label: 'Rights', value: 'All rights reserved' }
 			],
-			totalRemoved: 12,
-		},
+			totalRemoved: 12
+		}
 	} satisfies ReportFileDetail;
 
 	const imageFileWithGps = {
@@ -61,7 +61,7 @@
 			gpsFields: [
 				{ label: 'GPS Latitude', value: '48.8566° N' },
 				{ label: 'GPS Longitude', value: '2.3522° E' },
-				{ label: 'GPS Altitude', value: '35 m' },
+				{ label: 'GPS Altitude', value: '35 m' }
 			],
 			exifFields: [
 				{ label: 'Make', value: 'Apple' },
@@ -69,14 +69,14 @@
 				{ label: 'ExposureTime', value: '1/120' },
 				{ label: 'FNumber', value: 'f/1.8' },
 				{ label: 'ISO', value: '64' },
-				{ moreCount: 8, label: '', value: '' },
+				{ moreCount: 8, label: '', value: '' }
 			],
 			xmpFields: [
 				{ label: 'Creator', value: 'Jane Smith' },
-				{ label: 'Description', value: 'City walk photo' },
+				{ label: 'Description', value: 'City walk photo' }
 			],
-			totalRemoved: 43,
-		},
+			totalRemoved: 43
+		}
 	} satisfies ReportFileDetail;
 
 	const videoFile = {
@@ -97,15 +97,15 @@
 			exifFields: [
 				{ label: 'Make', value: 'Samsung' },
 				{ label: 'Model', value: 'Galaxy S23' },
-				{ label: 'Software', value: 'Android 13' },
+				{ label: 'Software', value: 'Android 13' }
 			],
 			xmpFields: [
 				{ label: 'Creator', value: 'Bob Johnson' },
 				{ label: 'Duration', value: '00:03:42' },
-				{ label: 'Rating', value: '5' },
+				{ label: 'Rating', value: '5' }
 			],
-			totalRemoved: 18,
-		},
+			totalRemoved: 18
+		}
 	} satisfies ReportFileDetail;
 </script>
 

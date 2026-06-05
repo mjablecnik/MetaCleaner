@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import type { Snippet } from 'svelte';
 
 	type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
@@ -9,7 +11,7 @@
 		size?: Size;
 		disabled?: boolean;
 		fullWidth?: boolean;
-		href?: string;
+		href?: Pathname;
 		type?: 'button' | 'submit' | 'reset';
 		children?: Snippet;
 		class?: string;
@@ -25,23 +27,21 @@
 		type = 'button',
 		children,
 		class: extraClass = '',
-		onclick,
+		onclick
 	}: Props = $props();
 
 	const sizeMap: Record<Size, string> = {
 		sm: 'px-3 py-2 text-xs rounded-lg',
 		md: 'px-4 py-3 text-sm rounded-xl',
-		lg: 'px-5 py-3.5 text-sm rounded-xl',
+		lg: 'px-5 py-3.5 text-sm rounded-xl'
 	};
 
 	const variantMap: Record<Variant, string> = {
-		primary:
-			'bg-brand-green text-white font-bold hover:bg-green-500 shadow-glow-green',
-		secondary:
-			'bg-navy-lighter border border-gray-700 text-white font-semibold hover:bg-gray-800',
+		primary: 'bg-brand-green text-white font-bold hover:bg-green-500 shadow-glow-green',
+		secondary: 'bg-navy-lighter border border-gray-700 text-white font-semibold hover:bg-gray-800',
 		danger:
 			'bg-brand-red/10 border border-brand-red/30 text-brand-red font-semibold hover:bg-brand-red/20',
-		ghost: 'text-text-muted font-semibold hover:text-white',
+		ghost: 'text-text-muted font-semibold hover:text-white'
 	};
 
 	const classes = $derived(
@@ -51,7 +51,7 @@
 			variantMap[variant],
 			disabled && 'opacity-60 cursor-not-allowed pointer-events-none',
 			fullWidth && 'w-full',
-			extraClass,
+			extraClass
 		]
 			.filter(Boolean)
 			.join(' ')
@@ -59,7 +59,7 @@
 </script>
 
 {#if href && !disabled}
-	<a {href} class={classes}>
+	<a href={resolve(href)} class={classes}>
 		{@render children?.()}
 	</a>
 {:else}

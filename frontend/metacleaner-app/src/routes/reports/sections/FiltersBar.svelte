@@ -12,16 +12,20 @@
 	let { activeFilter, searchQuery = $bindable(''), onFilterChange }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
-<div class="fade-in-up delay-2 hidden lg:block bg-navy-card rounded-2xl border border-gray-800 p-4 shadow-card">
-	<div class="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
-		<div class="flex items-center gap-2 flex-wrap">
-			<span class="text-xs text-text-muted font-semibold uppercase tracking-wider mr-1">
+<div
+	class="fade-in-up hidden rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card delay-2 lg:block"
+>
+	<div class="flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
+		<div class="flex flex-wrap items-center gap-2">
+			<span class="mr-1 text-xs font-semibold tracking-wider text-text-muted uppercase">
 				{tx('reports.filter.label')}
 			</span>
 			<FilterPill
@@ -55,12 +59,14 @@
 			/>
 		</div>
 		<div class="relative w-full md:w-64">
-			<i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"></i>
+			<i
+				class="fa-solid fa-magnifying-glass absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+			></i>
 			<input
 				bind:value={searchQuery}
 				type="text"
 				placeholder={tx('reports.search.placeholder')}
-				class="w-full pl-8 pr-4 py-2 rounded-lg bg-navy-main border border-gray-700 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-blue transition-colors"
+				class="w-full rounded-lg border border-gray-700 bg-navy-main py-2 pr-4 pl-8 text-sm text-white placeholder-text-muted transition-colors focus:border-brand-blue focus:outline-none"
 			/>
 		</div>
 	</div>

@@ -9,10 +9,10 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
+				values: [{ name: 'dark', value: '#0a1628' }]
 			},
-			layout: 'fullscreen',
-		},
+			layout: 'fullscreen'
+		}
 	});
 </script>
 
@@ -23,8 +23,12 @@
 </Story>
 
 <Story name="Hidden">
-	<div style="min-height: 200px; position: relative; display: flex; align-items: center; justify-content: center;">
-		<span style="color: #94a3b8; font-size: 0.875rem;">Toast is hidden (show=false) — nothing rendered</span>
+	<div
+		style="min-height: 200px; position: relative; display: flex; align-items: center; justify-content: center;"
+	>
+		<span style="color: #94a3b8; font-size: 0.875rem;"
+			>Toast is hidden (show=false) — nothing rendered</span
+		>
 		<Toast message="Report downloaded successfully" show={false} />
 	</div>
 </Story>
@@ -37,6 +41,10 @@
 
 <Story name="Error Icon">
 	<div style="min-height: 200px; position: relative;">
-		<Toast message="Download failed. Please try again." show={true} icon="fa-solid fa-circle-xmark" />
+		<Toast
+			message="Download failed. Please try again."
+			show={true}
+			icon="fa-solid fa-circle-xmark"
+		/>
 	</div>
 </Story>

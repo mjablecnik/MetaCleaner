@@ -15,8 +15,10 @@
 	const { processingState, uploadedFiles, currentFile }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -28,7 +30,7 @@
 		(processingState?.log ?? []).map((entry) => {
 			const logFile = getFileById(entry.fileId);
 			const logFileState = processingState?.files.find((f) => f.fileId === entry.fileId);
-			let text = '';
+			let text: string;
 			if (entry.status === 'success') {
 				if (logFileState?.gpsRemoved) {
 					text = `✓ ${logFile?.name ?? ''} — ${tx('step3.log.gpsSuccess', { count: logFileState.fieldsRemoved ?? 0 })}`;
@@ -45,12 +47,12 @@
 	);
 </script>
 
-<div class="hidden lg:flex flex-col gap-5">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5">
+<div class="hidden flex-col gap-5 lg:flex">
+	<div class="flex flex-col gap-5 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card">
 		<div class="flex items-center justify-between">
-			<h3 class="font-semibold text-lg text-white">{tx('step3.status.title')}</h3>
+			<h3 class="text-lg font-semibold text-white">{tx('step3.status.title')}</h3>
 			<span
-				class="text-xs font-bold px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue border border-brand-blue/20 uppercase tracking-wider flex items-center gap-1.5"
+				class="flex items-center gap-1.5 rounded-full border border-brand-blue/20 bg-brand-blue/10 px-3 py-1 text-xs font-bold tracking-wider text-brand-blue uppercase"
 			>
 				<i class="fa-solid fa-circle-notch spin-slow text-[10px]"></i>
 				{tx('step3.status.inProgress')}
@@ -58,37 +60,39 @@
 		</div>
 
 		<!-- Animated Processing Visual -->
-		<div class="flex flex-col items-center justify-center py-4 gap-4">
+		<div class="flex flex-col items-center justify-center gap-4 py-4">
 			<ProcessingVisual size="lg" />
 			<div class="text-center">
-				<p class="font-bold text-white text-base">{tx('step3.status.cleaningInProgress')}</p>
-				<p class="text-text-muted text-xs mt-1">
+				<p class="text-base font-bold text-white">{tx('step3.status.cleaningInProgress')}</p>
+				<p class="mt-1 text-xs text-text-muted">
 					{tx('step3.status.processingFileLong', { filename: currentFile?.name ?? '' })}
 				</p>
 			</div>
 		</div>
 
 		<!-- Live Stats -->
-		<div class="grid grid-cols-3 gap-3 w-full">
-			<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+		<div class="grid w-full grid-cols-3 gap-3">
+			<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 text-center">
 				<p class="text-xl font-black text-white">{processingState?.totalFiles ?? 0}</p>
-				<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.files')}</p>
+				<p class="mt-0.5 text-[10px] text-text-muted">{tx('common.stats.files')}</p>
 			</div>
-			<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-brand-green/20">
+			<div class="rounded-xl border border-brand-green/20 bg-navy-main/60 p-3 text-center">
 				<p class="text-xl font-black text-brand-green">{processingState?.fieldsRemoved ?? 0}</p>
-				<p class="text-[10px] text-text-muted mt-0.5">{tx('common.stats.fieldsRemoved')}</p>
+				<p class="mt-0.5 text-[10px] text-text-muted">{tx('common.stats.fieldsRemoved')}</p>
 			</div>
-			<div class="bg-navy-main/60 rounded-xl p-3 text-center border border-gray-800">
+			<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 text-center">
 				<p class="text-xl font-black text-brand-blue">
-					{processingState?.filesCompleted ?? 0}<span class="text-sm font-semibold">/{processingState?.totalFiles ?? 0}</span>
+					{processingState?.filesCompleted ?? 0}<span class="text-sm font-semibold"
+						>/{processingState?.totalFiles ?? 0}</span
+					>
 				</p>
-				<p class="text-[10px] text-text-muted mt-0.5">{tx('step3.stats.done')}</p>
+				<p class="mt-0.5 text-[10px] text-text-muted">{tx('step3.stats.done')}</p>
 			</div>
 		</div>
 
 		<!-- Activity Log -->
 		<div class="flex flex-col gap-1">
-			<p class="text-xs font-semibold text-text-muted mb-1 uppercase tracking-wider">
+			<p class="mb-1 text-xs font-semibold tracking-wider text-text-muted uppercase">
 				{tx('step3.log.title')}
 			</p>
 			<ActivityLog entries={logEntries} class="max-h-[160px]" />

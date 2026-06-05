@@ -14,7 +14,7 @@
 		borderColor = 'default',
 		padding = 'p-4 lg:p-6',
 		class: extraClass = '',
-		children,
+		children
 	}: Props = $props();
 
 	const borderMap: Record<BorderColor, string> = {
@@ -22,16 +22,11 @@
 		red: 'border-brand-red/30',
 		blue: 'border-brand-blue/30',
 		green: 'border-brand-green/30',
-		orange: 'border-brand-orange/30',
+		orange: 'border-brand-orange/30'
 	};
 
 	const classes = $derived(
-		[
-			'bg-navy-card rounded-2xl border shadow-card',
-			borderMap[borderColor],
-			padding,
-			extraClass,
-		]
+		['bg-navy-card rounded-2xl border shadow-card', borderMap[borderColor], padding, extraClass]
 			.filter(Boolean)
 			.join(' ')
 	);

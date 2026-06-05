@@ -15,7 +15,7 @@
 	let langOptions = $state<Language[]>([]);
 
 	function tx(key: string): string {
-		locale.current;
+		void locale.current;
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -30,7 +30,7 @@
 				showLangDropdown: false,
 				showBackButton: true,
 				backHref: '/step5',
-				backLabel: tx('reports.nav.backToCleaning'),
+				backLabel: tx('reports.nav.backToCleaning')
 			};
 		}
 		if (path === '/report') {
@@ -43,7 +43,7 @@
 				backHref: '/step5',
 				backLabel: tx('report.nav.backToResults'),
 				reducedDesktopPadding: true,
-				noPrint: true,
+				noPrint: true
 			};
 		}
 		if (path !== '/') {
@@ -63,7 +63,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="flex flex-col min-h-screen bg-navy-main text-white font-sans">
+<div class="flex min-h-screen flex-col bg-navy-main font-sans text-white">
 	<NavBar {user} {langOptions} {...navProps} />
 	{@render children()}
 </div>

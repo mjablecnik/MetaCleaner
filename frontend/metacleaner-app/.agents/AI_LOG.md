@@ -1,6 +1,7 @@
 # AI Log
 
 ## 2026-06-05 06:47 — ui-refactor
+
 - Added theme tokens `--shadow-drop-red`, `--color-navy-lighter-50`, `--color-navy-lighter-60` to `src/routes/layout.css` @theme block
 - Replaced inline `rgba(239,68,68,0.6)` in step2 SVG with `--shadow-drop-red` token
 - Replaced inline `rgba(30,41,59,0.5/0.6)` in reports `<style>` block with `--color-navy-lighter-50`/`--color-navy-lighter-60` tokens
@@ -22,6 +23,7 @@
 - Verified Storybook builds with zero errors (`npm run build-storybook`)
 
 ## 2026-06-05 00:50 — ui-refactor
+
 - Extended `@theme` block in `src/routes/layout.css` with missing tokens (gray-700, border-radius vars, glow shadows)
 - Replaced all inline `style="color:#ef4444"`, `style="background:rgba(...)"`, and `style="border:..."` with Tailwind theme utility classes
 - Replaced hardcoded hex colors in `<style>` blocks and SVG attributes with CSS custom properties from theme
@@ -40,6 +42,7 @@
 - Created stories for page-specific components: DropZone, RiskScoreRing, ProcessingVisual, ErrorVisual, FileItemProcessing, FileResultItem
 
 ## 2026-06-04 16:26 — data-refactor
+
 - Extracted ~200 i18n keys per locale from 7 pages (step1–step5, reports, report) into `messages/en.json` and `messages/cs.json` using Paraglide
 - Created translation files: `messages/en.json` (200+ keys), `messages/cs.json` (200+ keys)
 - Created repositories: `userRepository.ts`, `languageRepository.ts`, `fileRepository.ts`, `processingRepository.ts`, `reportRepository.ts` in `src/lib/repositories/`
@@ -55,6 +58,7 @@
 - Added language switcher to report page nav bar
 
 ## 2026-06-04 12:26 — design-to-code
+
 - Created Step 1 — Upload (Idle State) page from `MetacleanerApp-step1-desktop.html` / `MetacleanerApp-step1-mobile.html`
 - Created Step 2 — Files Loaded (Risk Scanner) page from `MetacleanerApp-step2-desktop.html` / `MetacleanerApp-step2-mobile.html`
 - Created Step 3 — Processing page from `MetacleanerApp-step3-desktop.html` / `MetacleanerApp-step3-mobile.html`

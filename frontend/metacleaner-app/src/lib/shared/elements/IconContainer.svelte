@@ -23,7 +23,7 @@
 		variant = 'tinted',
 		icon,
 		class: extraClass = '',
-		children,
+		children
 	}: Props = $props();
 
 	const sizeMap: Record<Size, string> = {
@@ -32,12 +32,12 @@
 		md: 'w-8 h-8 lg:w-9 lg:h-9 text-sm',
 		lg: 'w-9 h-9 lg:w-10 lg:h-10 text-sm lg:text-base',
 		xl: 'w-10 h-10 lg:w-12 lg:h-12 text-base lg:text-lg',
-		'2xl': 'w-12 h-12 lg:w-14 lg:h-14 text-lg lg:text-xl',
+		'2xl': 'w-12 h-12 lg:w-14 lg:h-14 text-lg lg:text-xl'
 	};
 
 	const shapeMap: Record<Shape, string> = {
 		square: 'rounded-xl',
-		circle: 'rounded-full',
+		circle: 'rounded-full'
 	};
 
 	const tintedColorMap: Record<Color, string> = {
@@ -45,7 +45,7 @@
 		green: 'bg-brand-green/10 border border-brand-green/20 text-brand-green',
 		red: 'bg-brand-red/10 border border-brand-red/20 text-brand-red',
 		orange: 'bg-brand-orange/10 border border-brand-orange/20 text-brand-orange',
-		muted: 'bg-navy-lighter border border-gray-700 text-white',
+		muted: 'bg-navy-lighter border border-gray-700 text-white'
 	};
 
 	const solidColorMap: Record<Color, string> = {
@@ -53,7 +53,7 @@
 		green: 'bg-brand-green text-white shadow-glow-green',
 		red: 'bg-brand-red text-white shadow-glow-red',
 		orange: 'bg-brand-orange text-white',
-		muted: 'bg-navy-lighter border border-gray-700 text-white',
+		muted: 'bg-navy-lighter border border-gray-700 text-white'
 	};
 
 	const classes = $derived(
@@ -62,7 +62,7 @@
 			sizeMap[size],
 			shapeMap[shape],
 			variant === 'solid' ? solidColorMap[color] : tintedColorMap[color],
-			extraClass,
+			extraClass
 		]
 			.filter(Boolean)
 			.join(' ')

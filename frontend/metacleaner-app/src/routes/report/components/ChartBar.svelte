@@ -13,8 +13,10 @@
 	let { label, value, maxValue, color, icon }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -31,15 +33,15 @@
 </script>
 
 <div>
-	<div class="flex justify-between mb-1">
-		<span class="text-xs text-text-muted flex items-center gap-1 lg:gap-1.5">
+	<div class="mb-1 flex justify-between">
+		<span class="flex items-center gap-1 text-xs text-text-muted lg:gap-1.5">
 			<i class="fa-solid {icon} {classes.text} text-[10px]"></i>{label}
 		</span>
 		<span class="text-xs font-bold {classes.text}"
 			>{value} {tx('report.chart.fields')} · {percentage}%</span
 		>
 	</div>
-	<div class="w-full h-2 rounded-full bg-navy-main/80">
+	<div class="h-2 w-full rounded-full bg-navy-main/80">
 		<div class="h-2 rounded-full {classes.bar}" style="width:{percentage}%"></div>
 	</div>
 </div>

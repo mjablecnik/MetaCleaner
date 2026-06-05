@@ -11,12 +11,12 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
 		},
 		args: {
-			onFiles: fn(),
-		},
+			onFiles: fn()
+		}
 	});
 </script>
 

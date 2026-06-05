@@ -14,21 +14,23 @@
 	const { score = 72, beforeScore = 72, afterScore = 100 }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
-<div class="hidden lg:flex flex-col gap-5">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 p-6 shadow-card flex flex-col gap-5">
+<div class="hidden flex-col gap-5 lg:flex">
+	<div class="flex flex-col gap-5 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card">
 		<!-- Header -->
 		<div class="flex items-center justify-between">
-			<h3 class="font-semibold text-lg text-white">{tx('step2.risk.title')}</h3>
+			<h3 class="text-lg font-semibold text-white">{tx('step2.risk.title')}</h3>
 			<span
-				class="text-xs font-bold px-3 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1.5"
+				class="flex items-center gap-1.5 rounded-full border border-brand-red/20 bg-brand-red/10 px-3 py-1 text-xs font-bold tracking-wider text-brand-red uppercase"
 			>
-				<span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse inline-block"></span>
+				<span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-red"></span>
 				{tx('step2.risk.highRisk')}
 			</span>
 		</div>
@@ -36,28 +38,31 @@
 		<!-- Score Ring + Description -->
 		<div class="flex items-center gap-6">
 			<RiskScoreRing {score} color="red" size="lg" showLabel={true} />
-			<div class="flex flex-col gap-2 flex-1">
+			<div class="flex flex-1 flex-col gap-2">
 				<p class="text-sm font-bold text-white">{tx('step2.risk.leakProbable')}</p>
-				<p class="text-xs text-text-muted leading-relaxed">
+				<p class="text-xs leading-relaxed text-text-muted">
 					{tx('step2.risk.description')}
 				</p>
-				<div class="flex items-center gap-1.5 mt-1">
+				<div class="mt-1 flex items-center gap-1.5">
 					<span
-						class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-red/25 bg-brand-red/15 text-brand-red"
-					>GPS</span>
+						class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold text-brand-red"
+						>GPS</span
+					>
 					<span
-						class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange"
-					>{tx('step2.risk.chipIdentity')}</span>
+						class="rounded border border-brand-orange/25 bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold text-brand-orange"
+						>{tx('step2.risk.chipIdentity')}</span
+					>
 					<span
-						class="px-2 py-0.5 rounded text-[10px] font-bold border border-brand-orange/25 bg-brand-orange/15 text-brand-orange"
-					>{tx('step2.risk.chipDevice')}</span>
+						class="rounded border border-brand-orange/25 bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold text-brand-orange"
+						>{tx('step2.risk.chipDevice')}</span
+					>
 				</div>
 			</div>
 		</div>
 
 		<!-- Risk Breakdown -->
 		<div class="flex flex-col gap-3">
-			<p class="text-xs font-bold uppercase tracking-widest text-text-muted">
+			<p class="text-xs font-bold tracking-widest text-text-muted uppercase">
 				{tx('step2.risk.analysisTitle')}
 			</p>
 			<RiskBreakdownBar
@@ -95,12 +100,12 @@
 
 		<!-- CTA hint -->
 		<div
-			class="flex items-start gap-3 px-4 py-3 rounded-xl border border-brand-green/20 bg-brand-green/8"
+			class="flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/8 px-4 py-3"
 		>
-			<i class="fa-solid fa-shield-halved text-brand-green text-sm mt-0.5"></i>
+			<i class="fa-solid fa-shield-halved mt-0.5 text-sm text-brand-green"></i>
 			<p class="text-xs text-text-muted">
 				{tx('step2.risk.reducePre')}
-				<span class="text-brand-green font-semibold">{tx('step2.risk.reduceHighlight')}</span>
+				<span class="font-semibold text-brand-green">{tx('step2.risk.reduceHighlight')}</span>
 			</p>
 		</div>
 	</div>

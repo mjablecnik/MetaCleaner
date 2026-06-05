@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Report } from '$lib/repositories/reportRepository';
@@ -11,8 +12,10 @@
 	const { report, onDownload }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -40,45 +43,51 @@
 	);
 </script>
 
-<div class="report-card px-4 py-3 border-b border-gray-800/50 last:border-0">
+<div class="report-card border-b border-gray-800/50 px-4 py-3 last:border-0">
 	<div class="flex items-start justify-between gap-2">
-		<div class="flex items-start gap-3 flex-1 min-w-0">
+		<div class="flex min-w-0 flex-1 items-start gap-3">
 			<div
-				class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 {iconStyle(report.iconColor)} border"
+				class="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl {iconStyle(
+					report.iconColor
+				)} border"
 			>
 				<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-image'} text-sm"></i>
 			</div>
-			<div class="flex-1 min-w-0">
-				<div class="flex items-center gap-2 flex-wrap">
+			<div class="min-w-0 flex-1">
+				<div class="flex flex-wrap items-center gap-2">
 					<span class="text-sm font-bold text-white">{report.date}</span>
-					<span class="text-[10px] font-mono text-text-muted">{report.id}</span>
-					<div class="w-2 h-2 rounded-full bg-brand-green flex-shrink-0"></div>
+					<span class="font-mono text-[10px] text-text-muted">{report.id}</span>
+					<div class="h-2 w-2 flex-shrink-0 rounded-full bg-brand-green"></div>
 				</div>
-				<p class="text-xs text-text-muted mt-0.5">
+				<p class="mt-0.5 text-xs text-text-muted">
 					{report.time} · {report.duration} · {fileCountLabel(report.fileCount)} · {report.fileTypes}
 				</p>
-				<div class="flex items-center gap-1.5 mt-2 flex-wrap">
-					{#each report.tags as tag}
-						<span class="text-[10px] px-1.5 py-0.5 rounded border font-semibold {tagStyle(tag)}">{tag}</span>
+				<div class="mt-2 flex flex-wrap items-center gap-1.5">
+					{#each report.tags as tag (tag)}
+						<span class="rounded border px-1.5 py-0.5 text-[10px] font-semibold {tagStyle(tag)}"
+							>{tag}</span
+						>
 					{/each}
-					<span class="text-[10px] ml-1 {fieldsTextClass}">{report.fields} {tx('reports.table.fieldsMobile')}</span>
+					<span class="ml-1 text-[10px] {fieldsTextClass}"
+						>{report.fields} {tx('reports.table.fieldsMobile')}</span
+					>
 				</div>
 			</div>
 		</div>
-		<div class="flex flex-col gap-1.5 flex-shrink-0">
+		<div class="flex flex-shrink-0 flex-col gap-1.5">
 			<a
-				href="/report"
+				href={resolve('/report')}
 				title={tx('reports.table.viewReport')}
-				class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center"
+				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
 			>
-				<i class="fa-solid fa-eye text-brand-blue text-xs"></i>
+				<i class="fa-solid fa-eye text-xs text-brand-blue"></i>
 			</a>
 			<button
 				onclick={() => onDownload(report.reportId)}
 				title={tx('reports.table.downloadPdf')}
-				class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center"
+				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
 			>
-				<i class="fa-solid fa-download text-brand-green text-xs"></i>
+				<i class="fa-solid fa-download text-xs text-brand-green"></i>
 			</button>
 		</div>
 	</div>

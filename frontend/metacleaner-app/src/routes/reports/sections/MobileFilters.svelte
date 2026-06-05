@@ -12,20 +12,24 @@
 	let { activeFilter, searchQuery = $bindable(''), onFilterChange }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
 <!-- Search — Mobile -->
-<div class="fade-in-up delay-2 lg:hidden relative">
-	<i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"></i>
+<div class="fade-in-up relative delay-2 lg:hidden">
+	<i
+		class="fa-solid fa-magnifying-glass absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+	></i>
 	<input
 		bind:value={searchQuery}
 		type="text"
 		placeholder={tx('reports.search.placeholder')}
-		class="w-full pl-9 pr-4 py-3 rounded-xl bg-navy-card border border-gray-700 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-blue transition-colors"
+		class="w-full rounded-xl border border-gray-700 bg-navy-card py-3 pr-4 pl-9 text-sm text-white placeholder-text-muted transition-colors focus:border-brand-blue focus:outline-none"
 	/>
 </div>
 

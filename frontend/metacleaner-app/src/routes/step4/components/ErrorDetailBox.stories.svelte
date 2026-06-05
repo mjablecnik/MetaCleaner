@@ -9,9 +9,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 </script>
 
@@ -27,7 +27,7 @@
 				filesCompleted: 2,
 				totalFiles: 5,
 				errorTypes: [],
-				log: [],
+				log: []
 			}}
 			failedFileName="vacation_photo.jpg"
 		/>
@@ -46,7 +46,7 @@
 				filesCompleted: 0,
 				totalFiles: 3,
 				errorTypes: [],
-				log: [],
+				log: []
 			}}
 			failedFileName="contract_document.pdf"
 		/>
@@ -54,7 +54,7 @@
 </Story>
 
 <Story name="Multiple Errors — Batch Processing">
-	<div class="w-full max-w-sm p-4 flex flex-col gap-3">
+	<div class="flex w-full max-w-sm flex-col gap-3 p-4">
 		<ErrorDetailBox
 			errorState={{
 				errorCode: 'EXIF_PARSE_FAILURE',
@@ -65,7 +65,7 @@
 				filesCompleted: 2,
 				totalFiles: 5,
 				errorTypes: [],
-				log: [],
+				log: []
 			}}
 			failedFileName="vacation_photo.jpg"
 		/>
@@ -79,7 +79,7 @@
 				filesCompleted: 3,
 				totalFiles: 5,
 				errorTypes: [],
-				log: [],
+				log: []
 			}}
 			failedFileName="portrait_2024.png"
 		/>
@@ -93,7 +93,7 @@
 				filesCompleted: 4,
 				totalFiles: 5,
 				errorTypes: [],
-				log: [],
+				log: []
 			}}
 			failedFileName="recording.mp3"
 		/>

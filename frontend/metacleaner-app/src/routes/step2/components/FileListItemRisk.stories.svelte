@@ -11,9 +11,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const lowRiskImage = {
@@ -24,7 +24,7 @@
 		type: 'image',
 		metadataFieldCount: 3,
 		hasGps: false,
-		device: 'Canon EOS R5',
+		device: 'Canon EOS R5'
 	} satisfies UploadedFile;
 
 	const mediumRiskVideo = {
@@ -35,7 +35,7 @@
 		type: 'video',
 		metadataFieldCount: 43,
 		hasGps: false,
-		device: 'H.264',
+		device: 'H.264'
 	} satisfies UploadedFile;
 
 	const highRiskImage = {
@@ -46,7 +46,7 @@
 		type: 'image',
 		metadataFieldCount: 18,
 		hasGps: true,
-		device: 'iPhone 15 Pro',
+		device: 'iPhone 15 Pro'
 	} satisfies UploadedFile;
 </script>
 

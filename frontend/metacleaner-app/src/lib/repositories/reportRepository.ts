@@ -256,7 +256,7 @@ export async function getSummaryStats(): Promise<ReportSummaryStats> {
 	};
 }
 
-export async function getReportDetail(id?: string): Promise<ReportDetail> {
+export async function getReportDetail(): Promise<ReportDetail> {
 	return {
 		reportId: '#MCR-2025-0602-A1',
 		date: '2. 6. 2025, 10:22',

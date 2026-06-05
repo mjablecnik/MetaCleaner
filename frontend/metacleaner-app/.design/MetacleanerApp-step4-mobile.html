@@ -1,586 +1,683 @@
 <html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>App</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							'glow-red': '0 0 30px rgba(239,68,68,0.15)',
+							card: '0 4px 6px -1px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'glow-red': '0 0 30px rgba(239,68,68,0.15)',
-              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 160px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 160px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background .15s, color .15s;
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			.lang-check {
+				margin-left: auto;
+				color: #3b82f6;
+			}
 
-      .lang-check
-      {
-        margin-left: auto;
-        color: #3b82f6;
-      }
+			@keyframes pulse-ring {
+				0%,
+				100% {
+					opacity: 0.4;
+					transform: scale(1);
+				}
 
-      @keyframes pulse-ring
-      {
+				50% {
+					opacity: 0.8;
+					transform: scale(1.08);
+				}
+			}
 
-        0%,
-        100%
-        {
-          opacity: .4;
-          transform: scale(1)
-        }
+			.pulse-ring {
+				animation: pulse-ring 1.8s ease-in-out infinite;
+			}
 
-        50%
-        {
-          opacity: .8;
-          transform: scale(1.08)
-        }
-      }
+			@keyframes shake {
+				0%,
+				100% {
+					transform: translateX(0);
+				}
 
-      .pulse-ring
-      {
-        animation: pulse-ring 1.8s ease-in-out infinite;
-      }
+				20% {
+					transform: translateX(-4px);
+				}
 
-      @keyframes shake
-      {
+				40% {
+					transform: translateX(4px);
+				}
 
-        0%,
-        100%
-        {
-          transform: translateX(0)
-        }
+				60% {
+					transform: translateX(-3px);
+				}
 
-        20%
-        {
-          transform: translateX(-4px)
-        }
+				80% {
+					transform: translateX(3px);
+				}
+			}
 
-        40%
-        {
-          transform: translateX(4px)
-        }
+			.shake {
+				animation: shake 0.5s ease-in-out;
+			}
 
-        60%
-        {
-          transform: translateX(-3px)
-        }
+			.accordion-content {
+				display: none;
+			}
 
-        80%
-        {
-          transform: translateX(3px)
-        }
-      }
+			.accordion-content.open {
+				display: block;
+			}
 
-      .shake
-      {
-        animation: shake 0.5s ease-in-out;
-      }
+			#iv2bhw {
+				width: 62%;
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#iv2bhw {
+				width: 62%;
+			}
 
-      .accordion-content
-      {
-        display: none;
-      }
+			#userDropdownMenu {
+				min-width: 200px;
+			}
+		</style>
+	</head>
 
-      .accordion-content.open
-      {
-        display: block;
-      }
-
-      #iv2bhw
-      {
-        width: 62%;
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #iv2bhw
-      {
-        width: 62%;
-      }
-
-      #userDropdownMenu
-      {
-        min-width: 200px;
-      }
-    </style>
-  </head>
-
-  <body class="flex flex-col items-center bg-navy-main min-w-0">
-    <!-- NAVBAR -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <nav id="navbar"
-      class="w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800/60">
-      <div class="flex items-center gap-2.5">
-        <div
-          class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="fa-solid fa-shield-halved text-sm"></i></div><span
-          class="text-base font-bold tracking-tight">MetaCleaner</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div id="langDropdown" class="relative inline-block"><button
-            onclick="toggleLangDropdown()"
-            class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-xs font-semibold text-white"><span
-              id="currentLangFlag">🇨🇿</span><span
-              id="currentLangLabel">CS</span><i id="langDropdownChevron"
-              class="fa-solid fa-chevron-down text-text-muted text-[10px]"></i></button>
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div onclick="setLang('cs','🇨🇿','CS')" class="lang-option active">
-              <span>🇨🇿</span> Čeština <span id="check-cs"
-                class="lang-check"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('en','🇬🇧','EN')" class="lang-option">
-              <span>🇬🇧</span> English <span id="check-en"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('de','🇩🇪','DE')" class="lang-option">
-              <span>🇩🇪</span> Deutsch <span id="check-de"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div onclick="setLang('sk','🇸🇰','SK')" class="lang-option">
-              <span>🇸🇰</span> Slovenčina <span id="check-sk"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-          </div>
-        </div>
-        <div id="userDropdown" class="relative inline-block"><button
-            onclick="toggleUserDropdown()"
-            class="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-navy-lighter border border-gray-700">
-            <div
-              class="w-6 h-6 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center">
-              <i class="fa-solid fa-user text-brand-blue text-[10px]"></i></div>
-            <i id="userDropdownChevron"
-              class="fa-solid fa-chevron-down text-text-muted text-[10px]"></i>
-          </button>
-          <div id="userDropdownMenu" class="lang-dropdown-menu">
-            <div class="px-4 py-3 border-b border-gray-700">
-              <p class="text-xs text-text-muted">Přihlášen jako</p>
-              <p class="text-sm font-semibold text-white mt-0.5">
-                jana.novakova@email.cz</p>
-            </div>
-            <div class="lang-option"><i
-                class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span>
-            </div>
-            <div class="lang-option text-brand-red"><i
-                class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i><span>Odhlásit
-                se</span></div>
-          </div>
-        </div>
-      </div>
-    </nav><!-- MAIN -->
-    <main id="app-main"
-      class="w-full max-w-[480px] px-4 pb-8 flex flex-col gap-4 mt-4">
-      <!-- Page Header -->
-      <div id="app-header" class="flex items-center justify-between">
-        <div>
-          <h1 class="text-xl font-bold text-white">Čištění metadat</h1>
-          <p class="text-text-muted text-xs mt-0.5">Odstraňte skrytá metadata
-            lokálně.</p>
-        </div>
-        <div
-          class="flex items-center gap-1.5 bg-navy-card border border-red-800/50 rounded-xl px-3 py-2">
-          <div class="w-2 h-2 rounded-full bg-brand-red"></div><span
-            class="text-xs font-semibold text-brand-red">Chyba</span>
-        </div>
-      </div><!-- Error Banner -->
-      <div id="error-banner"
-        class="w-full bg-brand-red/10 border border-brand-red/30 rounded-2xl px-4 py-3.5 flex items-start gap-3 shadow-glow-red">
-        <div
-          class="w-9 h-9 rounded-xl bg-brand-red/15 border border-brand-red/30 flex items-center justify-center flex-shrink-0">
-          <i class="fa-solid fa-triangle-exclamation text-brand-red"></i></div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <p class="text-sm font-bold text-white">Proces čištění selhal</p>
-            <span
-              class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/20 text-brand-red border border-brand-red/30 tracking-wider">ERR_CLEANING_FAILED</span>
-          </div>
-          <p class="text-xs text-text-muted mt-1 leading-relaxed">Část souborů
-            nebyla vyčištěna. Zkuste akci opakovat.</p>
-        </div><button onclick="dismissBanner()"
-          class="flex-shrink-0 text-text-muted hover:text-white transition-colors mt-0.5 p-1"><i
-            class="fa-solid fa-xmark text-sm"></i></button>
-      </div><!-- Error Visual -->
-      <div id="error-visual-card"
-        class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col items-center gap-3 shadow-card">
-        <div class="relative flex items-center justify-center mt-1">
-          <div
-            class="pulse-ring absolute w-20 h-20 rounded-full border-2 border-brand-red/20">
-          </div>
-          <div
-            class="w-16 h-16 rounded-full bg-brand-red/10 border-2 border-brand-red/40 flex items-center justify-center shake">
-            <i
-              class="fa-solid fa-triangle-exclamation text-brand-red text-3xl"></i>
-          </div>
-          <div
-            class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-brand-red flex items-center justify-center">
-            <i class="fa-solid fa-xmark text-white text-[9px]"></i></div>
-        </div>
-        <div class="text-center">
-          <p class="font-bold text-white text-sm">Čištění metadat selhalo</p>
-          <p class="text-text-muted text-xs mt-1 leading-relaxed">Soubor <span
-              class="text-brand-red font-semibold">video_prague_walk.mp4</span>
-            nebylo možné zpracovat.</p>
-        </div><!-- Progress -->
-        <div
-          class="w-full bg-navy-main/60 rounded-xl p-3 border border-red-900/30">
-          <div class="flex items-center justify-between mb-2"><span
-              class="text-xs font-semibold text-text-muted">Celkový
-              průběh</span><span
-              class="text-xs font-bold text-brand-red">Přerušeno</span></div>
-          <div class="w-full h-2 bg-navy-lighter rounded-full overflow-hidden">
-            <div id="iv2bhw"
-              class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400">
-            </div>
-          </div>
-          <div class="flex items-center justify-between mt-2"><span
-              class="text-[11px] text-text-muted">2 z 4 souborů
-              dokončeno</span><span
-              class="text-[11px] text-brand-red font-medium flex items-center gap-1"><i
-                class="fa-solid fa-circle-xmark text-[9px]"></i> Selhalo</span>
-          </div>
-        </div>
-      </div><!-- File List Card -->
-      <div id="upload-zone-card"
-        class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex flex-col gap-3 shadow-card">
-        <div class="flex items-center justify-between">
-          <h3 class="font-semibold text-sm text-white">Soubory ke zpracování
-          </h3><span
-            class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1"><i
-              class="fa-solid fa-circle-xmark text-[9px]"></i> Chyba</span>
-        </div>
-        <div id="file-items" class="flex flex-col gap-2">
-          <!-- File 1 -->
-          <div
-            class="flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-brand-green/20">
-            <div
-              class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-image text-brand-green text-sm"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-white truncate">IMG_4821.jpg
-              </p>
-              <div class="flex items-center gap-1.5 mt-0.5"><span
-                  class="text-[11px] text-text-muted">3.2 MB</span><span
-                  class="w-1 h-1 rounded-full bg-gray-600"></span><span
-                  class="text-[11px] text-brand-green font-medium flex items-center gap-1"><i
-                    class="fa-solid fa-circle-check text-[9px]"></i> 12
-                  polí</span></div>
-            </div>
-            <div class="flex items-center gap-1.5"><span
-                class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">JPG</span>
-              <div
-                class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-          </div><!-- File 2 -->
-          <div
-            class="flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-brand-green/20">
-            <div
-              class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-image text-brand-green text-sm"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-white truncate">
-                photo_holiday_2024.heic</p>
-              <div class="flex items-center gap-1.5 mt-0.5"><span
-                  class="text-[11px] text-text-muted">8.7 MB</span><span
-                  class="w-1 h-1 rounded-full bg-gray-600"></span><span
-                  class="text-[11px] text-brand-green font-medium flex items-center gap-1"><i
-                    class="fa-solid fa-circle-check text-[9px]"></i>
-                  GPS+18</span></div>
-            </div>
-            <div class="flex items-center gap-1.5"><span
-                class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">HEIC</span>
-              <div
-                class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center">
-                <i class="fa-solid fa-check text-brand-green text-[10px]"></i>
-              </div>
-            </div>
-          </div><!-- File 3 - Failed -->
-          <div
-            class="flex items-center gap-3 px-3 py-3 rounded-xl bg-brand-red/5 border border-brand-red/30">
-            <div
-              class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-video text-brand-red text-sm"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-white truncate">
-                video_prague_walk.mp4</p>
-              <div class="flex items-center gap-1.5 mt-0.5"><span
-                  class="text-[11px] text-text-muted">247 MB</span><span
-                  class="w-1 h-1 rounded-full bg-gray-600"></span><span
-                  class="text-[11px] text-brand-red font-medium flex items-center gap-1"><i
-                    class="fa-solid fa-circle-xmark text-[9px]"></i>
-                  Selhalo</span></div>
-            </div>
-            <div class="flex items-center gap-1.5"><span
-                class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">MP4</span>
-              <div
-                class="w-6 h-6 rounded-full bg-brand-red/10 border border-brand-red/30 flex items-center justify-center">
-                <i class="fa-solid fa-xmark text-brand-red text-[10px]"></i>
-              </div>
-            </div>
-          </div><!-- File 4 - Skipped -->
-          <div
-            class="flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800 opacity-50">
-            <div
-              class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-image text-brand-blue text-sm"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-white truncate">
-                screenshot_map.png</p>
-              <div class="flex items-center gap-1.5 mt-0.5"><span
-                  class="text-[11px] text-text-muted">1.1 MB</span><span
-                  class="w-1 h-1 rounded-full bg-gray-600"></span><span
-                  class="text-[11px] text-text-muted flex items-center gap-1"><i
-                    class="fa-solid fa-ban text-[9px]"></i> Přeskočeno</span>
-              </div>
-            </div><span
-              class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-navy-lighter text-text-muted">PNG</span>
-          </div>
-        </div><!-- Action Buttons -->
-        <div class="flex gap-3 mt-1"><button
-            class="flex-1 py-3.5 rounded-xl bg-brand-green hover:bg-green-400 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-glow-green"><i
-              class="fa-solid fa-rotate-right"></i> Zkusit znovu
-          </button><button
-            class="px-4 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-text-muted font-semibold text-sm hover:bg-gray-800 hover:text-white transition-all flex items-center gap-2"><i
-              class="fa-solid fa-trash"></i></button></div>
-      </div><!-- Error Detail Accordion -->
-      <div id="error-detail-accordion"
-        class="bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
-        <button onclick="toggleAccordion('detail-body','detail-chevron')"
-          class="w-full flex items-center justify-between px-4 py-4">
-          <div class="flex items-center gap-2"><i
-              class="fa-solid fa-circle-info text-brand-red text-sm"></i><span
-              class="font-semibold text-sm text-white">Detail chyby</span><span
-              class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-brand-red/15 text-brand-red border border-brand-red/25 tracking-wider">ERR_CLEANING_FAILED</span>
-          </div><i id="detail-chevron"
-            class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"></i>
-        </button>
-        <div id="detail-body"
-          class="accordion-content open px-4 pb-4 flex flex-col gap-3">
-          <div class="flex items-start gap-2"><i
-              class="fa-solid fa-circle-info text-text-muted text-xs mt-0.5 flex-shrink-0"></i>
-            <p class="text-xs text-text-muted leading-relaxed h-[60px]"
-              id="idyxnd">Proces čištění metadat byl přerušen z důvodu interní
-              chyby. Soubor může být poškozený nebo v nepodporovaném formátu.
-            </p>
-          </div>
-          <div class="h-px bg-gray-800"></div>
-          <div class="grid grid-cols-2 gap-3 h-[78px] p-0 pt-[5px] pl-[21px]"
-            id="iqmix1">
-            <div class="flex flex-col gap-0.5"><span
-                class="text-[10px] text-text-muted uppercase tracking-wider">Kód
-                chyby</span><span
-                class="text-xs font-mono font-semibold text-white">0x0032A</span>
-            </div>
-            <div class="flex flex-col gap-0.5"><span
-                class="text-[10px] text-text-muted uppercase tracking-wider">Čas
-                výskytu</span><span
-                class="text-xs font-mono font-semibold text-white">12:04:17</span>
-            </div>
-            <div class="flex flex-col gap-0.5"><span
-                class="text-[10px] text-text-muted uppercase tracking-wider">Soubor</span><span
-                class="text-xs font-mono font-semibold text-white truncate">video_prague_walk.mp4</span>
-            </div>
-            <div class="flex flex-col gap-0.5"><span
-                class="text-[10px] text-text-muted uppercase tracking-wider">Fáze</span><span
-                class="text-xs font-mono font-semibold text-white">metadata_strip</span>
-            </div>
-          </div>
-        </div>
-      </div><!-- Error Type Accordion -->
-      <div id="error-type-accordion"
-        class="bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
-        <button onclick="toggleAccordion('type-body','type-chevron')"
-          class="w-full flex items-center justify-between px-4 py-4">
-          <div class="flex items-center gap-2"><i
-              class="fa-solid fa-tag text-text-muted text-sm"></i><span
-              class="font-semibold text-sm text-white">Typ chyby</span></div><i
-            id="type-chevron"
-            class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform rotate-180"></i>
-        </button>
-        <div id="type-body"
-          class="accordion-content open px-4 pb-4 flex flex-col gap-2"><button
-            onclick="setErrorType('cleaning')"
-            class="error-type-btn flex items-center gap-3 px-3 py-3 rounded-xl bg-brand-red/10 border border-brand-red/30 text-left transition-all active-error-type w-full">
-            <div
-              class="w-7 h-7 rounded-lg bg-brand-red/15 border border-brand-red/25 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-circle-xmark text-brand-red text-xs"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs font-semibold text-white">Cleaning Process
-                Failed</p>
-              <p class="text-[10px] text-text-muted">Interní chyba při čištění
-                metadat</p>
-            </div><i class="fa-solid fa-circle-dot text-brand-red text-xs"></i>
-          </button><button onclick="setErrorType('connection')"
-            class="error-type-btn flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800 text-left transition-all w-full">
-            <div
-              class="w-7 h-7 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-wifi text-text-muted text-xs"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs font-semibold text-text-muted">Connection Error
-              </p>
-              <p class="text-[10px] text-text-muted">Ztráta spojení se serverem
-              </p>
-            </div><i class="fa-solid fa-circle text-gray-700 text-xs"></i>
-          </button><button onclick="setErrorType('timeout')"
-            class="error-type-btn flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800 text-left transition-all w-full">
-            <div
-              class="w-7 h-7 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center flex-shrink-0">
-              <i class="fa-solid fa-clock text-text-muted text-xs"></i></div>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs font-semibold text-text-muted">Timeout</p>
-              <p class="text-[10px] text-text-muted">Operace překročila časový
-                limit</p>
-            </div><i class="fa-solid fa-circle text-gray-700 text-xs"></i>
-          </button></div>
-      </div><!-- Error Log Accordion -->
-      <div id="error-log-accordion"
-        class="bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
-        <button onclick="toggleAccordion('log-body','log-chevron')"
-          class="w-full flex items-center justify-between px-4 py-4">
-          <div class="flex items-center gap-2"><i
-              class="fa-solid fa-terminal text-text-muted text-sm"></i><span
-              class="font-semibold text-sm text-white">Log chyby</span></div><i
-            id="log-chevron"
-            class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform rotate-180"></i>
-        </button>
-        <div id="log-body" class="accordion-content open px-4 pb-4">
-          <div
-            class="bg-navy-main/80 rounded-xl border border-gray-800 p-3 flex flex-col gap-1.5 font-mono">
-            <div class="flex items-start gap-2"><span
-                class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:01</span><span
-                class="text-[11px] text-brand-green">✓ IMG_4821.jpg — 12 polí
-                odstraněno</span></div>
-            <div class="flex items-start gap-2"><span
-                class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:09</span><span
-                class="text-[11px] text-brand-green">✓ photo_holiday_2024.heic —
-                GPS+18 polí</span></div>
-            <div class="flex items-start gap-2"><span
-                class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span><span
-                class="text-[11px] text-brand-red">✗ video_prague_walk.mp4 —
-                ERR_CLEANING_FAILED</span></div>
-            <div class="flex items-start gap-2"><span
-                class="text-[10px] text-text-muted mt-0.5 flex-shrink-0">12:04:17</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </body>
-
+	<body class="flex min-w-0 flex-col items-center bg-navy-main">
+		<!-- NAVBAR -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>App</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<nav
+			id="navbar"
+			class="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-800/60 bg-navy-main px-4 py-4"
+		>
+			<div class="flex items-center gap-2.5">
+				<div
+					class="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-sm"></i>
+				</div>
+				<span class="text-base font-bold tracking-tight">MetaCleaner</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div id="langDropdown" class="relative inline-block">
+					<button
+						onclick="toggleLangDropdown()"
+						class="flex items-center gap-1.5 rounded-lg border border-gray-700 bg-navy-lighter px-2.5 py-2 text-xs font-semibold text-white"
+					>
+						<span id="currentLangFlag">🇨🇿</span><span id="currentLangLabel">CS</span
+						><i
+							id="langDropdownChevron"
+							class="fa-solid fa-chevron-down text-[10px] text-text-muted"
+						></i>
+					</button>
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div onclick="setLang('cs', '🇨🇿', 'CS')" class="lang-option active">
+							<span>🇨🇿</span> Čeština
+							<span id="check-cs" class="lang-check"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('en', '🇬🇧', 'EN')" class="lang-option">
+							<span>🇬🇧</span> English
+							<span id="check-en" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('de', '🇩🇪', 'DE')" class="lang-option">
+							<span>🇩🇪</span> Deutsch
+							<span id="check-de" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div onclick="setLang('sk', '🇸🇰', 'SK')" class="lang-option">
+							<span>🇸🇰</span> Slovenčina
+							<span id="check-sk" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+					</div>
+				</div>
+				<div id="userDropdown" class="relative inline-block">
+					<button
+						onclick="toggleUserDropdown()"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-2.5 py-2"
+					>
+						<div
+							class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
+						>
+							<i class="fa-solid fa-user text-[10px] text-brand-blue"></i>
+						</div>
+						<i
+							id="userDropdownChevron"
+							class="fa-solid fa-chevron-down text-[10px] text-text-muted"
+						></i>
+					</button>
+					<div id="userDropdownMenu" class="lang-dropdown-menu">
+						<div class="border-b border-gray-700 px-4 py-3">
+							<p class="text-xs text-text-muted">Přihlášen jako</p>
+							<p class="mt-0.5 text-sm font-semibold text-white">jana.novakova@email.cz</p>
+						</div>
+						<div class="lang-option">
+							<i class="fa-solid fa-gear text-sm text-text-muted"></i><span>Nastavení</span>
+						</div>
+						<div class="lang-option text-brand-red">
+							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i
+							><span>Odhlásit se</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<!-- MAIN -->
+		<main id="app-main" class="mt-4 flex w-full max-w-[480px] flex-col gap-4 px-4 pb-8">
+			<!-- Page Header -->
+			<div id="app-header" class="flex items-center justify-between">
+				<div>
+					<h1 class="text-xl font-bold text-white">Čištění metadat</h1>
+					<p class="mt-0.5 text-xs text-text-muted">Odstraňte skrytá metadata lokálně.</p>
+				</div>
+				<div
+					class="flex items-center gap-1.5 rounded-xl border border-red-800/50 bg-navy-card px-3 py-2"
+				>
+					<div class="h-2 w-2 rounded-full bg-brand-red"></div>
+					<span class="text-xs font-semibold text-brand-red">Chyba</span>
+				</div>
+			</div>
+			<!-- Error Banner -->
+			<div
+				id="error-banner"
+				class="flex w-full items-start gap-3 rounded-2xl border border-brand-red/30 bg-brand-red/10 px-4 py-3.5 shadow-glow-red"
+			>
+				<div
+					class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border border-brand-red/30 bg-brand-red/15"
+				>
+					<i class="fa-solid fa-triangle-exclamation text-brand-red"></i>
+				</div>
+				<div class="min-w-0 flex-1">
+					<div class="flex flex-wrap items-center gap-2">
+						<p class="text-sm font-bold text-white">Proces čištění selhal</p>
+						<span
+							class="rounded border border-brand-red/30 bg-brand-red/20 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+							>ERR_CLEANING_FAILED</span
+						>
+					</div>
+					<p class="mt-1 text-xs leading-relaxed text-text-muted">
+						Část souborů nebyla vyčištěna. Zkuste akci opakovat.
+					</p>
+				</div>
+				<button
+					onclick="dismissBanner()"
+					class="mt-0.5 flex-shrink-0 p-1 text-text-muted transition-colors hover:text-white"
+				>
+					<i class="fa-solid fa-xmark text-sm"></i>
+				</button>
+			</div>
+			<!-- Error Visual -->
+			<div
+				id="error-visual-card"
+				class="flex flex-col items-center gap-3 rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card"
+			>
+				<div class="relative mt-1 flex items-center justify-center">
+					<div
+						class="pulse-ring absolute h-20 w-20 rounded-full border-2 border-brand-red/20"
+					></div>
+					<div
+						class="shake flex h-16 w-16 items-center justify-center rounded-full border-2 border-brand-red/40 bg-brand-red/10"
+					>
+						<i class="fa-solid fa-triangle-exclamation text-3xl text-brand-red"></i>
+					</div>
+					<div
+						class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-red"
+					>
+						<i class="fa-solid fa-xmark text-[9px] text-white"></i>
+					</div>
+				</div>
+				<div class="text-center">
+					<p class="text-sm font-bold text-white">Čištění metadat selhalo</p>
+					<p class="mt-1 text-xs leading-relaxed text-text-muted">
+						Soubor <span class="font-semibold text-brand-red">video_prague_walk.mp4</span> nebylo
+						možné zpracovat.
+					</p>
+				</div>
+				<!-- Progress -->
+				<div class="w-full rounded-xl border border-red-900/30 bg-navy-main/60 p-3">
+					<div class="mb-2 flex items-center justify-between">
+						<span class="text-xs font-semibold text-text-muted">Celkový průběh</span
+						><span class="text-xs font-bold text-brand-red">Přerušeno</span>
+					</div>
+					<div class="h-2 w-full overflow-hidden rounded-full bg-navy-lighter">
+						<div
+							id="iv2bhw"
+							class="h-full rounded-full bg-gradient-to-r from-brand-red to-red-400"
+						></div>
+					</div>
+					<div class="mt-2 flex items-center justify-between">
+						<span class="text-[11px] text-text-muted">2 z 4 souborů dokončeno</span
+						><span class="flex items-center gap-1 text-[11px] font-medium text-brand-red"
+							><i class="fa-solid fa-circle-xmark text-[9px]"></i> Selhalo</span
+						>
+					</div>
+				</div>
+			</div>
+			<!-- File List Card -->
+			<div
+				id="upload-zone-card"
+				class="flex flex-col gap-3 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card"
+			>
+				<div class="flex items-center justify-between">
+					<h3 class="text-sm font-semibold text-white">Soubory ke zpracování</h3>
+					<span
+						class="flex items-center gap-1 rounded-full border border-brand-red/20 bg-brand-red/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+						><i class="fa-solid fa-circle-xmark text-[9px]"></i> Chyba</span
+					>
+				</div>
+				<div id="file-items" class="flex flex-col gap-2">
+					<!-- File 1 -->
+					<div
+						class="flex items-center gap-3 rounded-xl border border-brand-green/20 bg-navy-main/60 px-3 py-3"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+						>
+							<i class="fa-solid fa-image text-sm text-brand-green"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="truncate text-sm font-medium text-white">IMG_4821.jpg</p>
+							<div class="mt-0.5 flex items-center gap-1.5">
+								<span class="text-[11px] text-text-muted">3.2 MB</span
+								><span class="h-1 w-1 rounded-full bg-gray-600"></span
+								><span class="flex items-center gap-1 text-[11px] font-medium text-brand-green"
+									><i class="fa-solid fa-circle-check text-[9px]"></i> 12 polí</span
+								>
+							</div>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<span
+								class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>JPG</span
+							>
+							<div
+								class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+					</div>
+					<!-- File 2 -->
+					<div
+						class="flex items-center gap-3 rounded-xl border border-brand-green/20 bg-navy-main/60 px-3 py-3"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
+						>
+							<i class="fa-solid fa-image text-sm text-brand-green"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="truncate text-sm font-medium text-white">photo_holiday_2024.heic</p>
+							<div class="mt-0.5 flex items-center gap-1.5">
+								<span class="text-[11px] text-text-muted">8.7 MB</span
+								><span class="h-1 w-1 rounded-full bg-gray-600"></span
+								><span class="flex items-center gap-1 text-[11px] font-medium text-brand-green"
+									><i class="fa-solid fa-circle-check text-[9px]"></i> GPS+18</span
+								>
+							</div>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<span
+								class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>HEIC</span
+							>
+							<div
+								class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
+							</div>
+						</div>
+					</div>
+					<!-- File 3 - Failed -->
+					<div
+						class="flex items-center gap-3 rounded-xl border border-brand-red/30 bg-brand-red/5 px-3 py-3"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-red/20 bg-brand-red/10"
+						>
+							<i class="fa-solid fa-video text-sm text-brand-red"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="truncate text-sm font-medium text-white">video_prague_walk.mp4</p>
+							<div class="mt-0.5 flex items-center gap-1.5">
+								<span class="text-[11px] text-text-muted">247 MB</span
+								><span class="h-1 w-1 rounded-full bg-gray-600"></span
+								><span class="flex items-center gap-1 text-[11px] font-medium text-brand-red"
+									><i class="fa-solid fa-circle-xmark text-[9px]"></i> Selhalo</span
+								>
+							</div>
+						</div>
+						<div class="flex items-center gap-1.5">
+							<span
+								class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+								>MP4</span
+							>
+							<div
+								class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-red/30 bg-brand-red/10"
+							>
+								<i class="fa-solid fa-xmark text-[10px] text-brand-red"></i>
+							</div>
+						</div>
+					</div>
+					<!-- File 4 - Skipped -->
+					<div
+						class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-main/60 px-3 py-3 opacity-50"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
+						>
+							<i class="fa-solid fa-image text-sm text-brand-blue"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="truncate text-sm font-medium text-white">screenshot_map.png</p>
+							<div class="mt-0.5 flex items-center gap-1.5">
+								<span class="text-[11px] text-text-muted">1.1 MB</span
+								><span class="h-1 w-1 rounded-full bg-gray-600"></span
+								><span class="flex items-center gap-1 text-[11px] text-text-muted"
+									><i class="fa-solid fa-ban text-[9px]"></i> Přeskočeno</span
+								>
+							</div>
+						</div>
+						<span
+							class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted uppercase"
+							>PNG</span
+						>
+					</div>
+				</div>
+				<!-- Action Buttons -->
+				<div class="mt-1 flex gap-3">
+					<button
+						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
+					>
+						<i class="fa-solid fa-rotate-right"></i> Zkusit znovu</button
+					><button
+						class="flex items-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter px-4 py-3.5 text-sm font-semibold text-text-muted transition-all hover:bg-gray-800 hover:text-white"
+					>
+						<i class="fa-solid fa-trash"></i>
+					</button>
+				</div>
+			</div>
+			<!-- Error Detail Accordion -->
+			<div
+				id="error-detail-accordion"
+				class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card"
+			>
+				<button
+					onclick="toggleAccordion('detail-body', 'detail-chevron')"
+					class="flex w-full items-center justify-between px-4 py-4"
+				>
+					<div class="flex items-center gap-2">
+						<i class="fa-solid fa-circle-info text-sm text-brand-red"></i
+						><span class="text-sm font-semibold text-white">Detail chyby</span
+						><span
+							class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+							>ERR_CLEANING_FAILED</span
+						>
+					</div>
+					<i
+						id="detail-chevron"
+						class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform"
+					></i>
+				</button>
+				<div id="detail-body" class="accordion-content open flex flex-col gap-3 px-4 pb-4">
+					<div class="flex items-start gap-2">
+						<i class="fa-solid fa-circle-info mt-0.5 flex-shrink-0 text-xs text-text-muted"></i>
+						<p class="h-[60px] text-xs leading-relaxed text-text-muted" id="idyxnd">
+							Proces čištění metadat byl přerušen z důvodu interní chyby. Soubor může být poškozený
+							nebo v nepodporovaném formátu.
+						</p>
+					</div>
+					<div class="h-px bg-gray-800"></div>
+					<div class="grid h-[78px] grid-cols-2 gap-3 p-0 pt-[5px] pl-[21px]" id="iqmix1">
+						<div class="flex flex-col gap-0.5">
+							<span class="text-[10px] tracking-wider text-text-muted uppercase">Kód chyby</span
+							><span class="font-mono text-xs font-semibold text-white">0x0032A</span>
+						</div>
+						<div class="flex flex-col gap-0.5">
+							<span class="text-[10px] tracking-wider text-text-muted uppercase">Čas výskytu</span
+							><span class="font-mono text-xs font-semibold text-white">12:04:17</span>
+						</div>
+						<div class="flex flex-col gap-0.5">
+							<span class="text-[10px] tracking-wider text-text-muted uppercase">Soubor</span
+							><span class="truncate font-mono text-xs font-semibold text-white"
+								>video_prague_walk.mp4</span
+							>
+						</div>
+						<div class="flex flex-col gap-0.5">
+							<span class="text-[10px] tracking-wider text-text-muted uppercase">Fáze</span
+							><span class="font-mono text-xs font-semibold text-white">metadata_strip</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Error Type Accordion -->
+			<div
+				id="error-type-accordion"
+				class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card"
+			>
+				<button
+					onclick="toggleAccordion('type-body', 'type-chevron')"
+					class="flex w-full items-center justify-between px-4 py-4"
+				>
+					<div class="flex items-center gap-2">
+						<i class="fa-solid fa-tag text-sm text-text-muted"></i
+						><span class="text-sm font-semibold text-white">Typ chyby</span>
+					</div>
+					<i
+						id="type-chevron"
+						class="fa-solid fa-chevron-down rotate-180 text-xs text-text-muted transition-transform"
+					></i>
+				</button>
+				<div id="type-body" class="accordion-content open flex flex-col gap-2 px-4 pb-4">
+					<button
+						onclick="setErrorType('cleaning')"
+						class="error-type-btn active-error-type flex w-full items-center gap-3 rounded-xl border border-brand-red/30 bg-brand-red/10 px-3 py-3 text-left transition-all"
+					>
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-brand-red/25 bg-brand-red/15"
+						>
+							<i class="fa-solid fa-circle-xmark text-xs text-brand-red"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="text-xs font-semibold text-white">Cleaning Process Failed</p>
+							<p class="text-[10px] text-text-muted">Interní chyba při čištění metadat</p>
+						</div>
+						<i class="fa-solid fa-circle-dot text-xs text-brand-red"></i></button
+					><button
+						onclick="setErrorType('connection')"
+						class="error-type-btn flex w-full items-center gap-3 rounded-xl border border-gray-800 bg-navy-main/60 px-3 py-3 text-left transition-all"
+					>
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter"
+						>
+							<i class="fa-solid fa-wifi text-xs text-text-muted"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="text-xs font-semibold text-text-muted">Connection Error</p>
+							<p class="text-[10px] text-text-muted">Ztráta spojení se serverem</p>
+						</div>
+						<i class="fa-solid fa-circle text-xs text-gray-700"></i></button
+					><button
+						onclick="setErrorType('timeout')"
+						class="error-type-btn flex w-full items-center gap-3 rounded-xl border border-gray-800 bg-navy-main/60 px-3 py-3 text-left transition-all"
+					>
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter"
+						>
+							<i class="fa-solid fa-clock text-xs text-text-muted"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<p class="text-xs font-semibold text-text-muted">Timeout</p>
+							<p class="text-[10px] text-text-muted">Operace překročila časový limit</p>
+						</div>
+						<i class="fa-solid fa-circle text-xs text-gray-700"></i>
+					</button>
+				</div>
+			</div>
+			<!-- Error Log Accordion -->
+			<div
+				id="error-log-accordion"
+				class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card"
+			>
+				<button
+					onclick="toggleAccordion('log-body', 'log-chevron')"
+					class="flex w-full items-center justify-between px-4 py-4"
+				>
+					<div class="flex items-center gap-2">
+						<i class="fa-solid fa-terminal text-sm text-text-muted"></i
+						><span class="text-sm font-semibold text-white">Log chyby</span>
+					</div>
+					<i
+						id="log-chevron"
+						class="fa-solid fa-chevron-down rotate-180 text-xs text-text-muted transition-transform"
+					></i>
+				</button>
+				<div id="log-body" class="accordion-content open px-4 pb-4">
+					<div
+						class="flex flex-col gap-1.5 rounded-xl border border-gray-800 bg-navy-main/80 p-3 font-mono"
+					>
+						<div class="flex items-start gap-2">
+							<span class="mt-0.5 flex-shrink-0 text-[10px] text-text-muted">12:04:01</span
+							><span class="text-[11px] text-brand-green">✓ IMG_4821.jpg — 12 polí odstraněno</span>
+						</div>
+						<div class="flex items-start gap-2">
+							<span class="mt-0.5 flex-shrink-0 text-[10px] text-text-muted">12:04:09</span
+							><span class="text-[11px] text-brand-green"
+								>✓ photo_holiday_2024.heic — GPS+18 polí</span
+							>
+						</div>
+						<div class="flex items-start gap-2">
+							<span class="mt-0.5 flex-shrink-0 text-[10px] text-text-muted">12:04:17</span
+							><span class="text-[11px] text-brand-red"
+								>✗ video_prague_walk.mp4 — ERR_CLEANING_FAILED</span
+							>
+						</div>
+						<div class="flex items-start gap-2">
+							<span class="mt-0.5 flex-shrink-0 text-[10px] text-text-muted">12:04:17</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
 </html>

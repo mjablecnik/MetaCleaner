@@ -12,7 +12,7 @@
 	let fileInputId = 'dropzone-file-input';
 
 	function tx(key: string): string {
-		locale.current;
+		void locale.current;
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -46,7 +46,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="dashed-border-anim rounded-xl flex flex-col items-center justify-center gap-3 lg:gap-4 cursor-pointer transition-colors py-8 lg:py-12 relative
+	class="dashed-border-anim relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl py-8 transition-colors lg:gap-4 lg:py-12
 		{isDragOver ? 'bg-navy-lighter' : 'bg-navy-main/50 hover:bg-navy-main/80'}"
 	onclick={() => document.getElementById(fileInputId)?.click()}
 	ondrop={handleDrop}
@@ -54,30 +54,36 @@
 	ondragleave={handleDragLeave}
 >
 	<div
-		class="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-xl lg:text-2xl shadow-glow-blue"
+		class="flex h-14 w-14 items-center justify-center rounded-full bg-navy-lighter text-xl text-brand-blue shadow-glow-blue lg:h-16 lg:w-16 lg:text-2xl"
 	>
 		<i class="fa-solid fa-file-arrow-up"></i>
 	</div>
 	<div class="text-center">
-		<p class="hidden lg:block font-semibold text-white mb-1">
+		<p class="mb-1 hidden font-semibold text-white lg:block">
 			{tx('step1.upload.dropDesktop')}
 		</p>
-		<p class="block lg:hidden font-semibold text-white text-sm mb-0.5">
+		<p class="mb-0.5 block text-sm font-semibold text-white lg:hidden">
 			{tx('step1.upload.dropMobile')}
 		</p>
-		<p class="hidden lg:block text-xs text-text-muted">
+		<p class="hidden text-xs text-text-muted lg:block">
 			{tx('step1.upload.orClickDesktop')}
 		</p>
-		<p class="block lg:hidden text-xs text-text-muted">{tx('step1.upload.orDragMobile')}</p>
+		<p class="block text-xs text-text-muted lg:hidden">{tx('step1.upload.orDragMobile')}</p>
 	</div>
-	<div class="flex flex-wrap gap-1.5 lg:gap-2 justify-center mt-0 lg:mt-1">
-		<span class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full">
+	<div class="mt-0 flex flex-wrap justify-center gap-1.5 lg:mt-1 lg:gap-2">
+		<span
+			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+		>
 			{tx('step1.upload.photos')}
 		</span>
-		<span class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full">
+		<span
+			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+		>
 			{tx('step1.upload.videos')}
 		</span>
-		<span class="text-[10px] lg:text-[11px] text-text-muted bg-navy-lighter px-2.5 lg:px-3 py-1 rounded-full">
+		<span
+			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+		>
 			<span class="hidden lg:inline">{tx('step1.upload.maxSize')}</span>
 			<span class="inline lg:hidden">{tx('step1.upload.maxSizeMobile')}</span>
 		</span>

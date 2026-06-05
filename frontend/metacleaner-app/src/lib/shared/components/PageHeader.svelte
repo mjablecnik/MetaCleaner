@@ -10,17 +10,17 @@
 	let { title, description, badge }: Props = $props();
 </script>
 
-<div class="flex flex-col gap-1 mb-0 lg:mb-2">
+<div class="mb-0 flex flex-col gap-1 lg:mb-2">
 	{#if badge}
-		<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+		<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 			<div>
-				<h1 class="text-2xl lg:text-3xl font-bold text-white">{title}</h1>
-				<p class="text-text-muted text-sm mt-1">{description}</p>
+				<h1 class="text-2xl font-bold text-white lg:text-3xl">{title}</h1>
+				<p class="mt-1 text-sm text-text-muted">{description}</p>
 			</div>
 			{@render badge()}
 		</div>
 	{:else}
-		<h1 class="text-2xl lg:text-3xl font-bold text-white">{title}</h1>
-		<p class="text-text-muted text-sm mt-1">{description}</p>
+		<h1 class="text-2xl font-bold text-white lg:text-3xl">{title}</h1>
+		<p class="mt-1 text-sm text-text-muted">{description}</p>
 	{/if}
 </div>

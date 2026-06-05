@@ -20,70 +20,75 @@
 	);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 </script>
 
-<div class="file-result-item rounded-xl border border-brand-green/20 bg-navy-main/60 overflow-hidden">
-	<div class="flex items-center gap-3 px-3 lg:px-4 py-3">
+<div
+	class="file-result-item overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
+>
+	<div class="flex items-center gap-3 px-3 py-3 lg:px-4">
 		<div
-			class="w-9 h-9 rounded-lg {iconStyle.bg} {iconStyle.border} border flex items-center justify-center flex-shrink-0"
+			class="h-9 w-9 rounded-lg {iconStyle.bg} {iconStyle.border} flex flex-shrink-0 items-center justify-center border"
 		>
 			<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} {iconStyle.text} text-sm"
 			></i>
 		</div>
-		<div class="flex-1 min-w-0">
-			<p class="text-sm font-semibold text-white truncate">{file.name}</p>
+		<div class="min-w-0 flex-1">
+			<p class="truncate text-sm font-semibold text-white">{file.name}</p>
 			<p class="text-[11px] text-text-muted">
 				{file.size} · {file.extension}{file.device ? ` · ${file.device}` : ''}
 			</p>
 		</div>
-		<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
+		<span
+			class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
 			>{file.extension}</span
 		>
 		<div
-			class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center flex-shrink-0"
+			class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
 		>
-			<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+			<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
 		</div>
 	</div>
-	<div class="px-3 lg:px-4 pb-3 flex flex-wrap gap-1.5">
+	<div class="flex flex-wrap gap-1.5 px-3 pb-3 lg:px-4">
 		{#if result.gpsRemoved}
 			<span
-				class="text-[10px] px-2 py-0.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium"
+				class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
 			>
 				{tx('step5.results.gpsRemoved')}
 			</span>
 		{/if}
 		{#if result.exifCount > 0}
-			<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
 				>EXIF ×{result.exifCount}</span
 			>
 		{/if}
 		{#if result.xmpCount > 0}
-			<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
 				>XMP ×{result.xmpCount}</span
 			>
 		{/if}
 		{#if result.id3Count > 0}
-			<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
 				>ID3 ×{result.id3Count}</span
 			>
 		{/if}
 		{#if result.mp4AtomsCount > 0}
-			<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
 				>MP4 atoms ×{result.mp4AtomsCount}</span
 			>
 		{/if}
 		{#if result.pngChunksCount > 0}
-			<span class="text-[10px] px-2 py-0.5 rounded-full bg-navy-lighter text-text-muted"
+			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
 				>PNG chunks ×{result.pngChunksCount}</span
 			>
 		{/if}
 		<span
-			class="text-[10px] px-2 py-0.5 rounded-full bg-brand-green/10 border border-brand-green/20 text-brand-green font-medium"
+			class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
 		>
 			{tx('step5.metadata.fieldsCount', { count: result.totalFields })}
 		</span>

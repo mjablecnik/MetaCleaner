@@ -20,7 +20,7 @@
 		borderColor = 'default',
 		headerContent,
 		children,
-		class: extraClass = '',
+		class: extraClass = ''
 	}: Props = $props();
 
 	const borderMap: Record<BorderColor, string> = {
@@ -28,27 +28,29 @@
 		red: 'border-brand-red/30',
 		blue: 'border-brand-blue/30',
 		green: 'border-brand-green/30',
-		orange: 'border-brand-orange/30',
+		orange: 'border-brand-orange/30'
 	};
 </script>
 
 <div
-	class="bg-navy-card rounded-2xl border shadow-card overflow-hidden {borderMap[borderColor]} {extraClass}"
+	class="overflow-hidden rounded-2xl border bg-navy-card shadow-card {borderMap[
+		borderColor
+	]} {extraClass}"
 >
 	<button
 		type="button"
 		onclick={() => (open = !open)}
-		class="w-full flex items-center justify-between px-4 py-3.5"
+		class="flex w-full items-center justify-between px-4 py-3.5"
 	>
-		<div class="flex items-center gap-2 min-w-0">
+		<div class="flex min-w-0 items-center gap-2">
 			{#if icon}
-				<i class="{icon} text-text-muted text-sm flex-shrink-0"></i>
+				<i class="{icon} flex-shrink-0 text-sm text-text-muted"></i>
 			{/if}
 			<span class="text-sm font-semibold text-white">{title}</span>
 			{@render headerContent?.()}
 		</div>
 		<i
-			class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform flex-shrink-0 ml-2 {open
+			class="fa-solid fa-chevron-down ml-2 flex-shrink-0 text-xs text-text-muted transition-transform {open
 				? 'rotate-180'
 				: ''}"
 		></i>

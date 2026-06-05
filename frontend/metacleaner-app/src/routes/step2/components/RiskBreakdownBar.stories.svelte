@@ -9,9 +9,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 </script>
 
@@ -64,7 +64,7 @@
 </Story>
 
 <Story name="Multiple Categories">
-	<div class="w-full max-w-md p-4 flex flex-col gap-3">
+	<div class="flex w-full max-w-md flex-col gap-3 p-4">
 		<RiskBreakdownBar
 			icon="fa-solid fa-location-dot"
 			label="GPS Location"

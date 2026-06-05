@@ -15,35 +15,35 @@
 		color = 'muted',
 		border = true,
 		shape = 'rounded-full',
-		class: extraClass = '',
+		class: extraClass = ''
 	}: Props = $props();
 
 	const colorMap: Record<Color, { text: string; bg: string; border: string }> = {
 		blue: {
 			text: 'text-brand-blue',
 			bg: 'bg-brand-blue/10',
-			border: 'border-brand-blue/20',
+			border: 'border-brand-blue/20'
 		},
 		green: {
 			text: 'text-brand-green',
 			bg: 'bg-brand-green/10',
-			border: 'border-brand-green/20',
+			border: 'border-brand-green/20'
 		},
 		red: {
 			text: 'text-brand-red',
 			bg: 'bg-brand-red/10',
-			border: 'border-brand-red/20',
+			border: 'border-brand-red/20'
 		},
 		orange: {
 			text: 'text-brand-orange',
 			bg: 'bg-brand-orange/10',
-			border: 'border-brand-orange/20',
+			border: 'border-brand-orange/20'
 		},
 		muted: {
 			text: 'text-text-muted',
 			bg: 'bg-navy-lighter',
-			border: 'border-gray-700',
-		},
+			border: 'border-gray-700'
+		}
 	};
 
 	const c = $derived(colorMap[color]);
@@ -58,7 +58,7 @@
 			c.text,
 			c.bg,
 			border && c.border,
-			extraClass,
+			extraClass
 		]
 			.filter(Boolean)
 			.join(' ')

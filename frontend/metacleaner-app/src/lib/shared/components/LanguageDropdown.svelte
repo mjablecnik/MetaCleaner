@@ -14,28 +14,30 @@
 		currentLocale,
 		open = $bindable(false),
 		onSelect,
-		wrapperId = 'langDropdown',
+		wrapperId = 'langDropdown'
 	}: Props = $props();
 
-	const currentLangInfo = $derived(langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]);
+	const currentLangInfo = $derived(
+		langOptions.find((l) => l.code === currentLocale) ?? langOptions[0]
+	);
 </script>
 
 <div id={wrapperId} class="relative inline-block">
 	<button
 		type="button"
 		onclick={() => (open = !open)}
-		class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+		class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
 	>
 		<span>{currentLangInfo?.flag ?? ''}</span>
 		<span>{currentLangInfo?.label ?? ''}</span>
 		<i
-			class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform {open
+			class="fa-solid fa-chevron-down ml-1 text-xs text-text-muted transition-transform {open
 				? 'rotate-180'
 				: ''}"
 		></i>
 	</button>
 	<div class="lang-dropdown-menu" class:open style="min-width:160px">
-		{#each langOptions as lang}
+		{#each langOptions as lang (lang.code)}
 			<div
 				class="lang-option"
 				class:active={currentLocale === lang.code}

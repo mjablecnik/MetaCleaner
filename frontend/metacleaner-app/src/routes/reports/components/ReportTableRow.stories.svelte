@@ -10,9 +10,9 @@
 		parameters: {
 			backgrounds: {
 				default: 'dark',
-				values: [{ name: 'dark', value: '#0a1628' }],
-			},
-		},
+				values: [{ name: 'dark', value: '#0a1628' }]
+			}
+		}
 	});
 
 	const imageReport = {
@@ -27,7 +27,7 @@
 		fields: 87,
 		tags: ['EXIF', 'XMP'],
 		reportId: 'MCR-2025-0602-A1',
-		iconColor: 'green',
+		iconColor: 'green'
 	} satisfies Report;
 
 	const videoReport = {
@@ -42,7 +42,7 @@
 		fields: 43,
 		tags: ['XMP'],
 		reportId: 'MCR-2025-0529-B2',
-		iconColor: 'orange',
+		iconColor: 'orange'
 	} satisfies Report;
 
 	const gpsReport = {
@@ -57,7 +57,7 @@
 		fields: 124,
 		tags: ['GPS', 'EXIF', 'XMP'],
 		reportId: 'MCR-2025-0515-C3',
-		iconColor: 'blue',
+		iconColor: 'blue'
 	} satisfies Report;
 
 	const highFieldsReport = {
@@ -73,36 +73,36 @@
 		fieldsColor: 'orange',
 		tags: ['GPS', 'EXIF', 'XMP'],
 		reportId: 'MCR-2025-0401-D4',
-		iconColor: 'green',
+		iconColor: 'green'
 	} satisfies Report;
 </script>
 
 <Story name="Image type">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden min-w-[700px]">
+	<div class="min-w-[700px] overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
 		<ReportTableRow report={imageReport} onDownload={() => {}} />
 	</div>
 </Story>
 
 <Story name="Video type">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden min-w-[700px]">
+	<div class="min-w-[700px] overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
 		<ReportTableRow report={videoReport} onDownload={() => {}} />
 	</div>
 </Story>
 
 <Story name="With GPS tag">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden min-w-[700px]">
+	<div class="min-w-[700px] overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
 		<ReportTableRow report={gpsReport} onDownload={() => {}} />
 	</div>
 </Story>
 
 <Story name="High field count — orange highlight">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden min-w-[700px]">
+	<div class="min-w-[700px] overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
 		<ReportTableRow report={highFieldsReport} onDownload={() => {}} />
 	</div>
 </Story>
 
 <Story name="Multiple rows">
-	<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden min-w-[700px]">
+	<div class="min-w-[700px] overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
 		<ReportTableRow report={imageReport} onDownload={() => {}} />
 		<ReportTableRow report={videoReport} onDownload={() => {}} />
 		<ReportTableRow report={gpsReport} onDownload={() => {}} />

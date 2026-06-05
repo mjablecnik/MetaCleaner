@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getReports, getSummaryStats, type Report, type ReportSummaryStats } from '$lib/repositories/reportRepository';
+	import {
+		getReports,
+		getSummaryStats,
+		type Report,
+		type ReportSummaryStats
+	} from '$lib/repositories/reportRepository';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import ReportsHeader from './sections/ReportsHeader.svelte';
@@ -21,8 +27,10 @@
 	let stats = $state<ReportSummaryStats | null>(null);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -45,7 +53,7 @@
 			icon: 'fa-solid fa-file-lines',
 			iconColor: 'blue' as const,
 			value: stats?.totalReports ?? 0,
-			label: tx('reports.stats.totalReports'),
+			label: tx('reports.stats.totalReports')
 		},
 		{
 			icon: 'fa-solid fa-eraser',
@@ -53,21 +61,21 @@
 			value: stats?.fieldsRemoved?.toLocaleString() ?? 0,
 			label: tx('reports.stats.fieldsRemoved'),
 			labelMobile: tx('reports.stats.fieldsRemovedShort'),
-			highlight: true,
+			highlight: true
 		},
 		{
 			icon: 'fa-solid fa-file-circle-check',
 			iconColor: 'orange' as const,
 			value: stats?.filesProcessed ?? 0,
-			label: tx('reports.stats.filesProcessed'),
+			label: tx('reports.stats.filesProcessed')
 		},
 		{
 			icon: 'fa-solid fa-location-dot',
 			iconColor: 'red' as const,
 			value: stats?.gpsRemoved ?? 0,
 			label: tx('reports.stats.gpsRemoved'),
-			labelMobile: tx('reports.stats.gpsRemovedShort'),
-		},
+			labelMobile: tx('reports.stats.gpsRemovedShort')
+		}
 	]);
 
 	function downloadReport(id: string) {
@@ -80,8 +88,12 @@
 	}
 
 	onMount(() => {
-		getReports().then((r) => { reports = r; });
-		getSummaryStats().then((s) => { stats = s; });
+		getReports().then((r) => {
+			reports = r;
+		});
+		getSummaryStats().then((s) => {
+			stats = s;
+		});
 	});
 </script>
 
@@ -89,7 +101,9 @@
 	<title>{tx('reports.meta.title')}</title>
 </svelte:head>
 
-<main class="w-full max-w-[1100px] mx-auto px-4 lg:px-6 pb-28 lg:pb-24 flex flex-col gap-4 lg:gap-6 mt-4 lg:mt-0">
+<main
+	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-28 lg:mt-0 lg:gap-6 lg:px-6 lg:pb-24"
+>
 	<ReportsHeader totalReports={stats?.totalReports ?? 0} />
 	<SummaryStatsRow stats={summaryStats} class="fade-in-up delay-1" />
 	<FiltersBar {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
@@ -98,10 +112,10 @@
 	<ReportsList reports={filteredReports} totalCount={reports.length} onDownload={downloadReport} />
 </main>
 
-<div class="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4 z-40 mobile-gradient-fade">
+<div class="mobile-gradient-fade fixed right-0 bottom-0 left-0 z-40 px-4 py-4 lg:hidden">
 	<a
-		href="/"
-		class="flex w-full py-4 rounded-2xl bg-brand-green text-white font-bold text-base shadow-glow-green items-center justify-center gap-2"
+		href={resolve('/')}
+		class="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-green py-4 text-base font-bold text-white shadow-glow-green"
 	>
 		<i class="fa-solid fa-plus"></i>
 		<span>{tx('reports.header.newCleaning')}</span>

@@ -5,8 +5,7 @@ export const locale = $state({ current: 'en' });
 export function initLocale(): void {
 	if (typeof localStorage === 'undefined') return;
 	const stored = localStorage.getItem('PARAGLIDE_LOCALE');
-	const value =
-		stored && (locales as readonly string[]).includes(stored) ? stored : getLocale();
+	const value = stored && (locales as readonly string[]).includes(stored) ? stored : getLocale();
 	paraglideSetLocale(value as 'en' | 'cs', { reload: false });
 	locale.current = value;
 }

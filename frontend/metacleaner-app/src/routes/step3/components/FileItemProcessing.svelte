@@ -15,8 +15,10 @@
 	const { file, status, progress = 0, fieldsRemoved = 0, gpsRemoved = false }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
 		return fn ? fn(params) : key;
 	}
 
@@ -26,60 +28,72 @@
 
 {#if status === 'done'}
 	<div
-		class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-green/20 cursor-default bg-navy-main/60"
+		class="flex cursor-default items-center gap-3 rounded-xl border border-brand-green/20 bg-navy-main/60 px-3 py-2.5"
 	>
 		<div
-			class="w-9 h-9 rounded-lg bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"
+			class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
 		>
-			<i class="fa-solid {fileIcon} text-brand-green text-sm"></i>
+			<i class="fa-solid {fileIcon} text-sm text-brand-green"></i>
 		</div>
-		<div class="flex-1 min-w-0">
-			<p class="text-sm font-medium text-white truncate">{file.name}</p>
-			<div class="flex items-center gap-2 mt-0.5">
-				<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
-				<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-				<span class="text-[10px] lg:text-[11px] text-brand-green font-medium flex items-center gap-1">
+		<div class="min-w-0 flex-1">
+			<p class="truncate text-sm font-medium text-white">{file.name}</p>
+			<div class="mt-0.5 flex items-center gap-2">
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
+				<span
+					class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
+				>
 					<i class="fa-solid fa-circle-check text-[9px]"></i>
 					{#if gpsRemoved}
-						<span class="hidden lg:inline">{tx('step3.files.gpsAndFieldsRemoved', { count: fieldsRemoved })}</span>
-						<span class="inline lg:hidden">{tx('step3.files.gpsAndFieldsRemovedMobile', { count: fieldsRemoved })}</span>
+						<span class="hidden lg:inline"
+							>{tx('step3.files.gpsAndFieldsRemoved', { count: fieldsRemoved })}</span
+						>
+						<span class="inline lg:hidden"
+							>{tx('step3.files.gpsAndFieldsRemovedMobile', { count: fieldsRemoved })}</span
+						>
 					{:else}
 						{fieldsRemoved} {tx('step3.files.fieldsRemoved')}
 					{/if}
 				</span>
 			</div>
 		</div>
-		<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+		<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 			<span
-				class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-			>{file.extension}</span>
-			<div
-				class="w-6 h-6 rounded-full bg-brand-green/10 border border-brand-green/30 flex items-center justify-center"
+				class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
+				>{file.extension}</span
 			>
-				<i class="fa-solid fa-check text-brand-green text-[10px]"></i>
+			<div
+				class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
+			>
+				<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
 			</div>
 		</div>
 	</div>
 {:else if status === 'in_progress'}
 	<div
-		class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-brand-blue/30 cursor-default bg-brand-blue/5"
+		class="flex cursor-default items-center gap-3 rounded-xl border border-brand-blue/30 bg-brand-blue/5 px-3 py-2.5"
 	>
 		<div
-			class="w-9 h-9 rounded-lg {isVideo ? 'bg-brand-orange/10 border border-brand-orange/20' : 'bg-brand-blue/10 border border-brand-blue/20'} flex items-center justify-center flex-shrink-0"
+			class="h-9 w-9 rounded-lg {isVideo
+				? 'border border-brand-orange/20 bg-brand-orange/10'
+				: 'border border-brand-blue/20 bg-brand-blue/10'} flex flex-shrink-0 items-center justify-center"
 		>
-			<i class="fa-solid {fileIcon} {isVideo ? 'text-brand-orange' : 'text-brand-blue'} text-sm"></i>
+			<i class="fa-solid {fileIcon} {isVideo ? 'text-brand-orange' : 'text-brand-blue'} text-sm"
+			></i>
 		</div>
-		<div class="flex-1 min-w-0">
-			<p class="text-sm font-medium text-white truncate">{file.name}</p>
-			<div class="flex flex-col gap-1 mt-1">
+		<div class="min-w-0 flex-1">
+			<p class="truncate text-sm font-medium text-white">{file.name}</p>
+			<div class="mt-1 flex flex-col gap-1">
 				<div class="flex items-center justify-between">
-					<span class="text-[10px] lg:text-[11px] text-brand-blue font-medium flex items-center gap-1">
+					<span
+						class="flex items-center gap-1 text-[10px] font-medium text-brand-blue lg:text-[11px]"
+					>
 						<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
 						{tx('step3.files.processing')}
 					</span>
-					<span class="text-[10px] lg:text-[11px] text-brand-blue font-bold">{progress}%</span>
+					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{progress}%</span>
 				</div>
-				<div class="w-full h-1.5 bg-navy-lighter rounded-full overflow-hidden">
+				<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-lighter">
 					<div
 						class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400"
 						style="width:{progress}%"
@@ -87,34 +101,37 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex items-center gap-1.5 lg:gap-2 flex-shrink-0">
+		<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 			<span
-				class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted"
-			>{file.extension}</span>
-			<i class="fa-solid fa-circle-notch spin-slow text-brand-blue text-sm"></i>
+				class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
+				>{file.extension}</span
+			>
+			<i class="fa-solid fa-circle-notch spin-slow text-sm text-brand-blue"></i>
 		</div>
 	</div>
 {:else}
 	<div
-		class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-800 cursor-default opacity-50 bg-navy-main/60"
+		class="flex cursor-default items-center gap-3 rounded-xl border border-gray-800 bg-navy-main/60 px-3 py-2.5 opacity-50"
 	>
 		<div
-			class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"
+			class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
 		>
-			<i class="fa-solid {fileIcon} text-brand-blue text-sm"></i>
+			<i class="fa-solid {fileIcon} text-sm text-brand-blue"></i>
 		</div>
-		<div class="flex-1 min-w-0">
-			<p class="text-sm font-medium text-white truncate">{file.name}</p>
-			<div class="flex items-center gap-2 mt-0.5">
-				<span class="text-[10px] lg:text-[11px] text-text-muted">{file.size}</span>
-				<span class="w-1 h-1 rounded-full bg-gray-600"></span>
-				<span class="text-[10px] lg:text-[11px] text-text-muted flex items-center gap-1">
-					<i class="fa-solid fa-clock text-[9px]"></i> {tx('step3.files.waitingInQueue')}
+		<div class="min-w-0 flex-1">
+			<p class="truncate text-sm font-medium text-white">{file.name}</p>
+			<div class="mt-0.5 flex items-center gap-2">
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
+				<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
+					<i class="fa-solid fa-clock text-[9px]"></i>
+					{tx('step3.files.waitingInQueue')}
 				</span>
 			</div>
 		</div>
 		<span
-			class="text-[9px] lg:text-[10px] font-bold uppercase px-1.5 lg:px-2 py-0.5 rounded bg-navy-lighter text-text-muted flex-shrink-0"
-		>{file.extension}</span>
+			class="flex-shrink-0 rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
+			>{file.extension}</span
+		>
 	</div>
 {/if}

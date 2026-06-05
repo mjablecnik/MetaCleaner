@@ -10,15 +10,10 @@
 		wrapperId?: string;
 	}
 
-	let {
-		user,
-		open = $bindable(false),
-		onToggle,
-		wrapperId = 'userDropdown',
-	}: Props = $props();
+	let { user, open = $bindable(false), onToggle, wrapperId = 'userDropdown' }: Props = $props();
 
 	function tx(key: string): string {
-		locale.current; // reactive dependency
+		void locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -33,24 +28,24 @@
 	<button
 		type="button"
 		onclick={handleToggle}
-		class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+		class="flex items-center gap-2.5 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
 	>
 		<div
-			class="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center"
+			class="flex h-7 w-7 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
 		>
-			<i class="fa-solid fa-user text-brand-blue text-xs"></i>
+			<i class="fa-solid fa-user text-xs text-brand-blue"></i>
 		</div>
 		<span class="hidden md:block">{user?.name ?? ''}</span>
 		<i
-			class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform {open
+			class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform {open
 				? 'rotate-180'
 				: ''}"
 		></i>
 	</button>
 	<div class="lang-dropdown-menu" class:open style="min-width:200px">
-		<div class="px-4 py-3 border-b border-gray-700">
+		<div class="border-b border-gray-700 px-4 py-3">
 			<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
-			<p class="text-sm font-semibold text-white mt-0.5">{user?.email ?? ''}</p>
+			<p class="mt-0.5 text-sm font-semibold text-white">{user?.email ?? ''}</p>
 		</div>
 		<div
 			class="lang-option"
@@ -58,7 +53,7 @@
 			tabindex="0"
 			onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
 		>
-			<i class="fa-solid fa-gear text-text-muted text-sm"></i>
+			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 			<span>{tx('common.nav.settings')}</span>
 		</div>
 		<div

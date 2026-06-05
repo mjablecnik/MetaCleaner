@@ -20,8 +20,8 @@
 	const { stats, class: extraClass = '' }: Props = $props();
 </script>
 
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 {extraClass}">
-	{#each stats as stat}
+<div class="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4 {extraClass}">
+	{#each stats as stat (stat.label)}
 		<StatCard
 			icon={stat.icon}
 			iconColor={stat.iconColor}
