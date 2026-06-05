@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BottomSheet from '$lib/shared/components/BottomSheet.svelte';
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
@@ -12,7 +12,7 @@
 	let { open, onClose, onUpgrade }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
 	}

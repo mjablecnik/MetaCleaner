@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
@@ -12,7 +12,7 @@
 	let fileInputId = 'dropzone-file-input';
 
 	function tx(key: string): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}

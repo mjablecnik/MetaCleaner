@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
@@ -21,7 +21,7 @@
 	}: Props = $props();
 
 	function tx(key: string): string {
-		currentLocale; // reactive dependency
+		locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -54,7 +54,7 @@
 					{#each langOptions as lang}
 						<div
 							class="lang-option rounded-lg"
-							class:active={currentLocale === lang.code}
+							class:active={locale.current === lang.code}
 							onclick={() => handleSelect(lang.code)}
 							role="button"
 							tabindex="0"
@@ -62,7 +62,7 @@
 						>
 							<span>{lang.flag}</span>
 							{lang.name}
-							{#if currentLocale === lang.code}
+							{#if locale.current === lang.code}
 								<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
 							{/if}
 						</div>

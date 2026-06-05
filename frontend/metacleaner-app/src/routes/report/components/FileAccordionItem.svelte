@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { ReportFileDetail, ReportIconColor } from '$lib/repositories/reportRepository';
 	import MetadataTable from './MetadataTable.svelte';
@@ -13,7 +13,7 @@
 	let { file, open, onToggle }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
 	}

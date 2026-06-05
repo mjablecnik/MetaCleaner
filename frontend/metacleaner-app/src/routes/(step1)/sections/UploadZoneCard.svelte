@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import Card from '$lib/shared/elements/Card.svelte';
 	import FileListItem from '$lib/shared/components/FileListItem.svelte';
@@ -22,7 +22,7 @@
 	const hasFiles = $derived(files.length > 0);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
 	}

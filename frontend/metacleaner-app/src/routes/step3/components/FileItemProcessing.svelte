@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { UploadedFile } from '$lib/repositories/fileRepository';
 	import type { FileProcessingStatus } from '$lib/repositories/processingRepository';
@@ -15,7 +15,7 @@
 	const { file, status, progress = 0, fieldsRemoved = 0, gpsRemoved = false }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
 	}

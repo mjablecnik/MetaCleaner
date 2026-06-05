@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { MetadataBreakdown, ProcessingResults } from '$lib/repositories/processingRepository';
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import MetadataPanel from '../components/MetadataPanel.svelte';
 
@@ -25,7 +25,7 @@
 	const totalFieldsRemoved = $derived(results?.fieldsRemoved ?? 87);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
-		currentLocale;
+		locale.current;
 		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
 		return fn ? fn(params) : key;
 	}

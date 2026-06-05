@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { currentLocale, switchLocale } from '$lib/locale.svelte';
+	import { locale, switchLocale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
@@ -46,7 +46,7 @@
 	let hamburgerMenuOpen = $state(false);
 
 	function tx(key: string): string {
-		currentLocale; // reactive dependency
+		locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
@@ -127,7 +127,7 @@
 			{#if showLangDropdown}
 				<LanguageDropdown
 					{langOptions}
-					currentLocale={currentLocale}
+					currentLocale={locale.current}
 					bind:open={langDropdownOpen}
 					onSelect={handleLangSelect}
 					wrapperId="nav-langDropdown"
@@ -174,7 +174,7 @@
 									{#each langOptions as lang}
 										<div
 											class="lang-option rounded-lg"
-											class:active={currentLocale === lang.code}
+											class:active={locale.current === lang.code}
 											onclick={() => handleLangSelect(lang.code)}
 											role="button"
 											tabindex="0"
@@ -182,7 +182,7 @@
 										>
 											<span>{lang.flag}</span>
 											{lang.name}
-											{#if currentLocale === lang.code}
+											{#if locale.current === lang.code}
 												<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
 											{/if}
 										</div>

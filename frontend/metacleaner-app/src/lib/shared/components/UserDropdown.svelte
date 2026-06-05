@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale } from '$lib/locale.svelte';
+	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { User } from '$lib/repositories/userRepository';
 
@@ -18,7 +18,7 @@
 	}: Props = $props();
 
 	function tx(key: string): string {
-		currentLocale; // reactive dependency
+		locale.current; // reactive dependency
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
