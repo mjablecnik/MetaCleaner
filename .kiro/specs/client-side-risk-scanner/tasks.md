@@ -6,25 +6,25 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
 
 ## Tasks
 
-- [ ] 1. Install dependencies and set up scanner module structure
-  - [ ] 1.1 Install required packages (exifr, exifreader, mediainfo.js, fast-check)
+- [x] 1. Install dependencies and set up scanner module structure
+  - [x] 1.1 Install required packages (exifr, exifreader, mediainfo.js, fast-check)
     - Run `bun add exifr exifreader mediainfo.js` and `bun add -d fast-check`
     - _Requirements: 2.1, 2.2, 2.8_
-  - [ ] 1.2 Create scanner module directory and type definitions
+  - [x] 1.2 Create scanner module directory and type definitions
     - Create `src/lib/scanner/types.ts` with all interfaces: `FileType`, `ImageFormat`, `VideoFormat`, `ScanStatus`, `SeverityLevel`, `RiskCategory`, `MetadataField`, `ScanResult`, `QueuedFile`, `AggregatedRisk`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
-  - [ ] 1.3 Create constants file with field mappings and scoring weights
+  - [x] 1.3 Create constants file with field mappings and scoring weights
     - Create `src/lib/scanner/constants.ts` with `GPS_FIELDS`, `DEVICE_FIELDS`, `PERSONAL_FIELDS`, `TIMESTAMP_FIELDS`, category weights (GPS 0.40, Device 0.25, Personal 0.20, Timestamps 0.15), severity thresholds, and supported format extension lists
     - _Requirements: 4.2, 4.3, 4.4, 4.5, 4.7_
 
-- [ ] 2. Implement risk analyzer (pure scoring logic)
-  - [ ] 2.1 Implement `riskAnalyzer.ts` with scoring functions
+- [x] 2. Implement risk analyzer (pure scoring logic)
+  - [x] 2.1 Implement `riskAnalyzer.ts` with scoring functions
     - Create `src/lib/scanner/riskAnalyzer.ts` implementing `computeFileScore(fields)`, `computeAggregatedRisk(results)`, and `classifySeverity(score)`
     - Per-file score formula: `(gps * 0.40) + (deviceIdentity * 0.25) + (personalData * 0.20) + (timestamps * 0.15)`
     - Aggregated score: `max(fileScores)` for non-empty arrays, 0 for empty
     - Severity levels: critical (75–100), high (50–74), medium (25–49), low (0–24)
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
-  - [ ]* 2.2 Write property tests for risk analyzer (Properties 1–5)
+  - [x] 2.2 Write property tests for risk analyzer (Properties 1–5)
     - **Property 1: Category score computation is correct** — for any subset of category fields present, computed score equals sum of per-field weights, clamped [0, 100]
     - **Validates: Requirements 4.2, 4.3, 4.4, 4.5**
     - **Property 2: Per-file risk score is bounded** — for any valid metadata fields (including empty), per-file score is in [0, 100]
