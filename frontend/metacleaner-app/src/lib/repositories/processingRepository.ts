@@ -146,19 +146,19 @@ export async function getErrorState(): Promise<ErrorState> {
 				id: 'cleaning',
 				icon: 'fa-circle-xmark',
 				title: 'Cleaning Process Failed',
-				description: 'Interní chyba při čištění metadat'
+				description: 'Internal error during metadata cleaning'
 			},
 			{
 				id: 'connection',
 				icon: 'fa-wifi',
 				title: 'Connection Error',
-				description: 'Ztráta spojení se serverem'
+				description: 'Lost connection to the server'
 			},
 			{
 				id: 'timeout',
 				icon: 'fa-clock',
 				title: 'Timeout',
-				description: 'Operace překročila časový limit'
+				description: 'Operation exceeded the time limit'
 			}
 		],
 		log: [

@@ -3,12 +3,8 @@
 	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import {
-		getReports,
-		getSummaryStats,
-		type Report,
-		type ReportSummaryStats
-	} from '$lib/repositories/reportRepository';
+	import { getReports as fetchReportsApi } from '$lib/api/client';
+	import type { Report, ReportSummaryStats } from '$lib/repositories/reportRepository';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import ReportsHeader from './sections/ReportsHeader.svelte';
@@ -22,6 +18,8 @@
 	let showToast = $state(false);
 	let toastMessage = $state('');
 	let toastTimer: ReturnType<typeof setTimeout>;
+	let isLoading = $state(true);
+	let loadError = $state<string | null>(null);
 
 	let reports = $state<Report[]>([]);
 	let stats = $state<ReportSummaryStats | null>(null);
@@ -88,12 +86,35 @@
 	}
 
 	onMount(() => {
-		getReports().then((r) => {
-			reports = r;
-		});
-		getSummaryStats().then((s) => {
-			stats = s;
-		});
+		fetchReportsApi()
+			.then((data) => {
+				stats = {
+					totalReports: data.summary.totalReports,
+					fieldsRemoved: data.summary.fieldsRemoved,
+					filesProcessed: data.summary.filesProcessed,
+					gpsRemoved: data.summary.gpsRemoved
+				};
+				reports = data.reports.map((r) => ({
+					id: r.id,
+					date: r.date,
+					time: r.time ?? '',
+					duration: r.duration,
+					fileCount: r.fileCount,
+					fileTypes: r.fileTypes,
+					type: r.type,
+					gps: r.gps,
+					fields: r.fields,
+					tags: r.tags,
+					reportId: r.reportId,
+					iconColor: r.iconColor
+				}));
+			})
+			.catch((err) => {
+				loadError = err instanceof Error ? err.message : 'Failed to load reports';
+			})
+			.finally(() => {
+				isLoading = false;
+			});
 	});
 </script>
 
@@ -105,11 +126,29 @@
 	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-28 lg:mt-0 lg:gap-6 lg:px-6 lg:pb-24"
 >
 	<ReportsHeader totalReports={stats?.totalReports ?? 0} />
-	<SummaryStatsRow stats={summaryStats} class="fade-in-up delay-1" />
-	<FiltersBar {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
-	<MobileFilters {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
-	<ReportsTable reports={filteredReports} totalCount={reports.length} onDownload={downloadReport} />
-	<ReportsList reports={filteredReports} totalCount={reports.length} onDownload={downloadReport} />
+
+	{#if isLoading}
+		<div class="flex items-center justify-center py-12">
+			<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+		</div>
+	{:else if loadError}
+		<div
+			class="rounded-xl border border-red-800/50 bg-brand-red/10 p-4 text-center text-sm text-brand-red"
+		>
+			<i class="fa-solid fa-triangle-exclamation mr-2"></i>
+			{loadError}
+		</div>
+	{:else}
+		<SummaryStatsRow stats={summaryStats} class="fade-in-up delay-1" />
+		<FiltersBar {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
+		<MobileFilters {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
+		<ReportsTable
+			reports={filteredReports}
+			totalCount={reports.length}
+			onDownload={downloadReport}
+		/>
+		<ReportsList reports={filteredReports} totalCount={reports.length} onDownload={downloadReport} />
+	{/if}
 </main>
 
 <div class="mobile-gradient-fade fixed right-0 bottom-0 left-0 z-40 px-4 py-4 lg:hidden">

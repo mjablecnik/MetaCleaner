@@ -89,6 +89,7 @@
 	"step2.risk.reduceHighlight": "reduce risk to 0",
 	"step2.risk.chipIdentity": "Identity",
 	"step2.risk.chipDevice": "Device",
+	"step2.risk.chipPersonal": "Personal",
 	"step2.files.addMore": "Add more files",
 	"step2.files.metadataFields": "{count} metadata fields",
 	"step2.files.metadataFieldsMobile": "{count} fields",

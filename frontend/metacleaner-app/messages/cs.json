@@ -89,6 +89,7 @@
 	"step2.risk.reduceHighlight": "snižte riziko na 0",
 	"step2.risk.chipIdentity": "Identita",
 	"step2.risk.chipDevice": "Zařízení",
+	"step2.risk.chipPersonal": "Osobní",
 	"step2.files.addMore": "Přidat další soubory",
 	"step2.files.metadataFields": "{count} polí metadat",
 	"step2.files.metadataFieldsMobile": "{count} polí",

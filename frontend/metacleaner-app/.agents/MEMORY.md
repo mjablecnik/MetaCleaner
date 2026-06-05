@@ -1,5 +1,23 @@
 # Memory
 
+## PUBLIC_API_URL requires .env file for svelte-check to pass
+
+- Problem: After adding `import { PUBLIC_API_URL } from '$env/static/public'`, svelte-check reports "Module '$env/static/public' has no exported member 'PUBLIC_API_URL'" even when the .env file exists, because the SvelteKit ambient types are stale.
+- Solution: Run `npx svelte-kit sync` to regenerate `.svelte-kit/ambient.d.ts` which picks up new PUBLIC_ vars from .env. Also create both `.env` (for local dev, gitignored) and `.env.example` (committed, for documentation).
+- Source: code-review-fix, 2026-06-05
+
+## resolve() from $app/paths rejects dynamic route strings — cast to Pathname
+
+- Problem: `resolve('/report/' + report.id)` or `resolve(\`/report/${id}\`)` fails TypeScript because `resolve()` is typed to accept only known static route strings (the `Pathname` union). Dynamic interpolated strings produce type error "Argument of type '[never]' is not assignable to parameter of type 'never'".
+- Solution: Cast the dynamic string: `resolve(\`/report/${id}\` as Pathname)` where `Pathname` is imported from `'$app/types'`.
+- Source: code-review-fix, 2026-06-05
+
+## SvelteKit [id] route alongside static /report route — both valid
+
+- Problem: Having both `/routes/report/+page.svelte` (static `/report` route) and `/routes/report/[id]/+page.svelte` (dynamic `/report/abc` route) causes no conflict in SvelteKit. Components in `/routes/report/components/` and `/routes/report/sections/` are importable from both routes.
+- Solution: Keep the components in place; add `[id]` subdirectory with its own `+page.svelte`; redirect the static `/report` page to `/reports` using browser check.
+- Source: code-review-fix, 2026-06-05
+
 ## Playwright browser tests fail without system libraries
 
 - Problem: `npm test` / `bun test` fails with `libnspr4.so: cannot open shared object file`. Chromium headless shell requires system libraries not installed by default.
@@ -77,3 +95,21 @@
 - Problem: `step4/+page.svelte` and `step5/+page.svelte` used `getUploadedFiles()` (mock fileRepository) returning `UploadedFile` (size: string, extension: 'JPG'). All child components (`ErrorFilesCard`, `ErrorLogAccordion`, `ErrorStateCard`, `FileResultsCard`, `FileResultItem`) used `UploadedFile`.
 - Solution: Replace `UploadedFile` with `QueuedFile` throughout. Key field mapping: `file.size` (number) → `formatSize(file.size)`, `file.extension` ('.jpg') → `file.extension.replace('.', '').toUpperCase()`, `file.hasGps` → `file.scanResult?.hasGps ?? false`, `file.metadataFieldCount` → `file.scanResult?.fieldCount ?? 0`, `file.device` → `file.scanResult?.device`. For step5's `FileResultsCard`, switch from ID-based result lookup to index-based pairing since mock result IDs don't match real file IDs.
 - Source: code-review-fix, 2026-06-05
+
+## No backend integration exists — entire processing pipeline is mock
+
+- Problem: Steps 3/4/5 use hardcoded mock data from `processingRepository.ts`. No HTTP client, no WebSocket connection, no API calls. The backend spec defines 9 REST endpoints and a WebSocket protocol — none are called.
+- Solution: Create an API client module (`src/lib/api/client.ts`) that implements upload, job creation, WebSocket progress, file download, and report fetching. Wire each step to the real data flow.
+- Source: code-review, 2026-06-05T17:02:02.923+00:00
+
+## Step2 is just a redirect — risk review page not implemented
+
+- Problem: `step2/+page.svelte` only does `goto('/')`. The spec defines step2 as "Risk analysis review" — a distinct page. The "Start Cleaning" button on step1 navigates directly to `/step3`, skipping step2.
+- Solution: Either implement step2 as a full review page with confirm CTA, or formally merge it with step1 (which already shows RiskScannerCard) and remove the dead route + empty directories.
+- Source: code-review, 2026-06-05T17:02:02.923+00:00
+
+## processingRepository.ts contains hardcoded Czech text
+
+- Problem: `getErrorState()` mock data has Czech `description` strings in errorTypes: "Interní chyba při čištění metadat", "Ztráta spojení se serverem", "Operace překročila časový limit". Violates i18n and code language standards.
+- Solution: Replace with English placeholders or i18n keys. When rendered in components, use `tx()` to look up the localized version.
+- Source: code-review, 2026-06-05T17:02:02.923+00:00

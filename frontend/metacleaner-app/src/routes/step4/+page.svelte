@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
@@ -7,7 +6,8 @@
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import type { QueuedFile } from '$lib/scanner/types';
-	import { getErrorState, type ErrorState } from '$lib/repositories/processingRepository';
+	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
+	import type { ErrorState } from '$lib/repositories/processingRepository';
 	import ErrorBanner from './sections/ErrorBanner.svelte';
 	import MobileErrorVisual from './sections/MobileErrorVisual.svelte';
 	import ErrorFilesCard from './sections/ErrorFilesCard.svelte';
@@ -23,7 +23,9 @@
 	let bannerVisible = $state(true);
 	let selectedErrorType = $state('cleaning');
 	const uploadedFiles = $derived(scannerStore.files);
-	let errorState = $state<ErrorState | null>(null);
+
+	// Use real error state from cleaning store, fall back to upload error message
+	const errorState = $derived<ErrorState | null>(cleaningStore.errorState);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -38,13 +40,6 @@
 	}
 
 	const failedFileName = $derived(getFileById(errorState?.failedFileId ?? '')?.name ?? '');
-
-	// TODO: placeholder mock UI — replace with real error data from cleaning service when backend is ready
-	onMount(() => {
-		getErrorState().then((es) => {
-			errorState = es;
-		});
-	});
 </script>
 
 <svelte:head>
@@ -72,6 +67,13 @@
 			</div>
 		</div>
 	</div>
+
+	{#if cleaningStore.uploadError && !errorState}
+		<div class="rounded-xl border border-red-800/50 bg-brand-red/10 p-4 text-sm text-brand-red">
+			<i class="fa-solid fa-triangle-exclamation mr-2"></i>
+			{cleaningStore.uploadError}
+		</div>
+	{/if}
 
 	<ErrorBanner {errorState} visible={bannerVisible} onDismiss={() => (bannerVisible = false)} />
 

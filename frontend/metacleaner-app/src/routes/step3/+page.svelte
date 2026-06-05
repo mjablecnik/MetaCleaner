@@ -6,12 +6,8 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import type { QueuedFile } from '$lib/scanner/types';
-	import type {
-		ProcessingState,
-		ProcessingFileState,
-		ProcessingLogEntry
-	} from '$lib/repositories/processingRepository';
+	import { uploadFiles, createJob, connectJobProgress } from '$lib/api/client';
+	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import MobileStatusCard from './sections/MobileStatusCard.svelte';
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
 	import ProcessingStatusCard from './sections/ProcessingStatusCard.svelte';
@@ -21,37 +17,11 @@
 		if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true });
 	});
 
-	let overallPct = $state(10);
-
 	const uploadedFiles = $derived(scannerStore.files);
 
-	// TODO: placeholder mock UI — replace with real cleaning service (WebSocket/SSE) when backend is ready
-	function makeMockProcessingState(files: QueuedFile[]): ProcessingState | null {
-		if (!files.length) return null;
-		const processingFiles: ProcessingFileState[] = files.map((f, i) => ({
-			fileId: f.id,
-			status: i === 0 ? 'in_progress' : 'waiting',
-			progress: i === 0 ? 38 : undefined
-		}));
-		const log: ProcessingLogEntry[] = files.map((f) => ({
-			timestamp: '—',
-			fileId: f.id,
-			status: 'waiting' as const
-		}));
-		return {
-			overallProgress: 10,
-			filesCompleted: 0,
-			totalFiles: files.length,
-			fieldsRemoved: 0,
-			timeRemainingSeconds: files.length * 8,
-			currentFileId: files[0].id,
-			files: processingFiles,
-			log
-		};
-	}
-
-	const processingState = $derived(makeMockProcessingState(uploadedFiles));
-
+	// Mirror cleaning store state into local reactive bindings for child components
+	const processingState = $derived(cleaningStore.processingState);
+	const overallPct = $derived(cleaningStore.overallPct);
 	const currentFile = $derived(uploadedFiles.find((f) => f.id === processingState?.currentFileId));
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -62,18 +32,68 @@
 		return fn ? fn(params) : key;
 	}
 
-	let animationInterval: ReturnType<typeof setInterval> | undefined;
-
 	onMount(() => {
-		animationInterval = setInterval(() => {
-			if (overallPct >= 75) {
-				clearInterval(animationInterval);
+		let ws: WebSocket | null = null;
+
+		async function startCleaning() {
+			const files = scannerStore.files;
+			if (!files.length) return;
+
+			cleaningStore.startUpload(files);
+
+			let serverFiles;
+			try {
+				serverFiles = await uploadFiles(files.map((f) => f.file));
+			} catch (err) {
+				cleaningStore.setUploadError(err instanceof Error ? err.message : 'Upload failed');
+				goto(resolve('/step4' as Pathname), { replaceState: false });
 				return;
 			}
-			overallPct = Math.min(overallPct + 0.5, 75);
-		}, 300);
+
+			cleaningStore.setFileMappings(serverFiles, files);
+
+			let jobResp;
+			try {
+				jobResp = await createJob(serverFiles.map((f) => f.id));
+			} catch (err) {
+				cleaningStore.setUploadError(err instanceof Error ? err.message : 'Job creation failed');
+				goto(resolve('/step4' as Pathname), { replaceState: false });
+				return;
+			}
+
+			cleaningStore.initJob(jobResp.jobId);
+
+			ws = connectJobProgress(
+				jobResp.jobId,
+				(event) => {
+					cleaningStore.handleWsEvent(event);
+
+					if (event.type === 'job_complete') {
+						goto(resolve('/step5' as Pathname), { replaceState: false });
+					} else if (event.type === 'file_error') {
+						// A single file error does not necessarily terminate the job — wait for job_complete
+					}
+				},
+				() => {
+					// WebSocket closed before job_complete — check if we completed
+					if (cleaningStore.phase !== 'completed') {
+						cleaningStore.setError('ERR_WS_CLOSED', 'Connection closed unexpectedly', null);
+						goto(resolve('/step4' as Pathname), { replaceState: false });
+					}
+				},
+				() => {
+					if (cleaningStore.phase !== 'completed') {
+						cleaningStore.setError('ERR_WS_ERROR', 'WebSocket error', null);
+						goto(resolve('/step4' as Pathname), { replaceState: false });
+					}
+				}
+			);
+		}
+
+		void startCleaning();
+
 		return () => {
-			if (animationInterval) clearInterval(animationInterval);
+			ws?.close();
 		};
 	});
 </script>
@@ -97,11 +117,18 @@
 			<div
 				class="flex items-center gap-2 self-start rounded-xl border border-blue-800/50 bg-navy-card px-3 py-2 sm:self-auto lg:px-4 lg:py-2.5"
 			>
-				<div class="h-2 w-2 animate-pulse rounded-full bg-brand-blue"></div>
-				<span class="text-[10px] font-semibold text-brand-blue lg:text-xs">
-					<span class="hidden lg:inline">{tx('step3.badge.inProgressDesktop')}</span>
-					<span class="inline lg:hidden">{tx('step3.badge.inProgressMobile')}</span>
-				</span>
+				{#if cleaningStore.phase === 'uploading'}
+					<div class="h-2 w-2 animate-pulse rounded-full bg-brand-orange"></div>
+					<span class="text-[10px] font-semibold text-brand-orange lg:text-xs">
+						{tx('step3.badge.uploading') || 'Uploading...'}
+					</span>
+				{:else}
+					<div class="h-2 w-2 animate-pulse rounded-full bg-brand-blue"></div>
+					<span class="text-[10px] font-semibold text-brand-blue lg:text-xs">
+						<span class="hidden lg:inline">{tx('step3.badge.inProgressDesktop')}</span>
+						<span class="inline lg:hidden">{tx('step3.badge.inProgressMobile')}</span>
+					</span>
+				{/if}
 			</div>
 		</div>
 	</div>

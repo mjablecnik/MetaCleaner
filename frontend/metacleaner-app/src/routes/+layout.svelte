@@ -34,7 +34,7 @@
 				backLabel: tx('reports.nav.backToCleaning')
 			};
 		}
-		if (path === '/report') {
+		if (path.startsWith('/report/') || path === '/report') {
 			return {
 				logoHref: '/' as string | undefined,
 				compact: true,

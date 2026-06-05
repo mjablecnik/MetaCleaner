@@ -5,8 +5,11 @@
 		FileMetadataResult
 	} from '$lib/repositories/processingRepository';
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
+	import { downloadFile } from '$lib/api/client';
 	import FileResultItem from '../components/FileResultItem.svelte';
 
 	interface Props {
@@ -27,6 +30,35 @@
 			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
 		)[key];
 		return fn ? fn(params) : key;
+	}
+
+	const reportId = $derived(cleaningStore.reportId);
+	const reportHref = $derived(
+		reportId ? resolve(`/report/${reportId}` as Pathname) : resolve('/reports')
+	);
+
+	async function downloadSingleFile(file: QueuedFile) {
+		const serverId = cleaningStore.fileMappings.find((m) => m.scannerFile.id === file.id)?.serverId;
+
+		if (!serverId) return;
+
+		try {
+			const { blob, filename } = await downloadFile(serverId);
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(url);
+		} catch {
+			// Download failed — silently ignore (backend may be unavailable)
+		}
+	}
+
+	async function downloadAll() {
+		for (const file of uploadedFiles) {
+			await downloadSingleFile(file);
+		}
 	}
 </script>
 
@@ -55,13 +87,14 @@
 	<!-- Desktop Action Buttons -->
 	<div class="mt-1 hidden gap-3 lg:flex">
 		<button
+			onclick={downloadAll}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
 		>
 			<i class="fa-solid fa-download"></i>
 			{tx('step5.actions.downloadAll')}
 		</button>
 		<a
-			href={resolve('/report')}
+			href={reportHref}
 			class="flex items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-5 py-3.5 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"
 		>
 			<i class="fa-solid fa-file-lines"></i>
@@ -82,6 +115,7 @@
 	class="fixed right-0 bottom-0 left-0 z-50 flex flex-col gap-2 border-t border-gray-800 bg-navy-main/95 px-4 py-3 backdrop-blur lg:hidden"
 >
 	<button
+		onclick={downloadAll}
 		class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95"
 	>
 		<i class="fa-solid fa-download"></i>
@@ -89,7 +123,7 @@
 	</button>
 	<div class="flex gap-2">
 		<a
-			href={resolve('/report')}
+			href={reportHref}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 py-3 text-sm font-semibold text-brand-blue transition-transform active:scale-95"
 		>
 			<i class="fa-solid fa-file-lines"></i>

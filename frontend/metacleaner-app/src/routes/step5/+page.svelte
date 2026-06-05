@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import { getResults, type ProcessingResults } from '$lib/repositories/processingRepository';
+	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import SummaryStatsRow, { type Stat } from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import SuccessHeader from './sections/SuccessHeader.svelte';
 	import MetadataOverview from './sections/MetadataOverview.svelte';
@@ -17,7 +16,7 @@
 	});
 
 	const uploadedFiles = $derived(scannerStore.files);
-	let results = $state<ProcessingResults | null>(null);
+	const results = $derived(cleaningStore.results);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -28,6 +27,7 @@
 	}
 
 	function startOver(): void {
+		cleaningStore.reset();
 		scannerStore.clearFiles();
 		goto(resolve('/' as Pathname), { replaceState: true });
 	}
@@ -42,31 +42,24 @@
 		{
 			icon: 'fa-solid fa-eraser',
 			iconColor: 'green',
-			value: results?.fieldsRemoved ?? 87,
+			value: results?.fieldsRemoved ?? 0,
 			label: tx('step5.stats.fieldsRemoved'),
 			highlight: true
 		},
 		{
 			icon: 'fa-solid fa-location-dot',
 			iconColor: 'blue',
-			value: results?.gpsLocationsRemoved ?? 3,
+			value: results?.gpsLocationsRemoved ?? 0,
 			label: tx('step5.stats.gpsRemoved'),
 			highlight: true
 		},
 		{
 			icon: 'fa-solid fa-clock',
 			iconColor: 'orange',
-			value: `${results?.totalTimeSeconds ?? 28}s`,
+			value: `${results?.totalTimeSeconds ?? 0}s`,
 			label: tx('step5.stats.totalTime')
 		}
 	]);
-
-	// TODO: placeholder mock UI — replace with real results from cleaning service when backend is ready
-	onMount(() => {
-		getResults().then((r) => {
-			results = r;
-		});
-	});
 </script>
 
 <svelte:head>

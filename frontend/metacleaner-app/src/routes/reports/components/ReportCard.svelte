@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { Report } from '$lib/repositories/reportRepository';
@@ -76,7 +77,7 @@
 		</div>
 		<div class="flex flex-shrink-0 flex-col gap-1.5">
 			<a
-				href={resolve('/report')}
+				href={resolve(`/report/${report.id}` as Pathname)}
 				title={tx('reports.table.viewReport')}
 				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
 			>

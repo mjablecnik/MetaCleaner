@@ -124,7 +124,7 @@
 							{#if categories.personalData > 0}
 								<span
 									class="rounded border border-brand-orange/25 bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold text-brand-orange"
-									>{tx('step2.risk.chipIdentity')}</span
+									>{tx('step2.risk.chipPersonal')}</span
 								>
 							{/if}
 						</div>
