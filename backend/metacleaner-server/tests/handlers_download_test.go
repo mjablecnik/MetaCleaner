@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 // Test download of a completed (cleaned) file → 200 with correct headers

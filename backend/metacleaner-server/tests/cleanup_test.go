@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 // writeTestFile creates a file at path with the given modification time.

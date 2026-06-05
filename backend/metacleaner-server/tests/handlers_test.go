@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 func newTestConfig(t *testing.T) src.Config {

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 // newMockSupabaseReports returns a test server that handles report-related endpoints.

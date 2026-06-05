@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 // newMockSupabase returns a test HTTP server that simulates Supabase responses.

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	src "metacleaner-server/src"
+	src "metacleaner-server/source"
 )
 
 func writeFakeExec(t *testing.T, dir, name string, script string) string {
