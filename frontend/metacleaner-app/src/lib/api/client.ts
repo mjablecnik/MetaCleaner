@@ -134,6 +134,25 @@ export async function uploadFiles(files: File[]): Promise<ApiFileRecord[]> {
 	return data.files as ApiFileRecord[];
 }
 
+export interface ApiJobStatusResponse {
+	jobId: string;
+	status: string;
+	totalFiles: number;
+	filesCompleted: number;
+	fieldsRemoved: number;
+	totalTimeSeconds?: number;
+	createdAt: string;
+	completedAt?: string;
+}
+
+export async function getJobStatus(jobId: string): Promise<ApiJobStatusResponse> {
+	const response = await fetch(`${BASE}/api/jobs/${encodeURIComponent(jobId)}`);
+	if (!response.ok) {
+		throw new Error(`Failed to get job status: ${response.status}`);
+	}
+	return response.json();
+}
+
 export async function createJob(fileIds: string[]): Promise<ApiJobResponse> {
 	const response = await fetch(`${BASE}/api/jobs`, {
 		method: 'POST',

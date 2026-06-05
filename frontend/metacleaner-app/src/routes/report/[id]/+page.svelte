@@ -6,14 +6,12 @@
 	import { getReportDetail } from '$lib/api/client';
 	import type { ReportDetail, ReportFileDetail } from '$lib/repositories/reportRepository';
 	import type { ApiReportDetail } from '$lib/api/client';
-	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
 	import ReportChartCard from '../sections/ReportChartCard.svelte';
 	import FileAccordionList from '../sections/FileAccordionList.svelte';
 
 	let reportDetail = $state<ReportDetail | null>(null);
-	let user = $state<User | null>(null);
 	let isLoading = $state(true);
 	let loadError = $state<string | null>(null);
 
@@ -90,10 +88,9 @@
 	]);
 
 	onMount(() => {
-		Promise.all([getReportDetail(reportId ?? ''), getCurrentUser()])
-			.then(([apiDetail, currentUser]) => {
+		getReportDetail(reportId ?? '')
+			.then((apiDetail) => {
 				reportDetail = mapApiToReportDetail(apiDetail);
-				user = currentUser;
 			})
 			.catch((err) => {
 				loadError = err instanceof Error ? err.message : 'Failed to load report';
@@ -127,7 +124,7 @@
 			<p class="text-xs text-text-muted">{loadError}</p>
 		</div>
 	{:else}
-		<ReportDetailHeader {reportDetail} userEmail={user?.email ?? ''} />
+		<ReportDetailHeader {reportDetail} userEmail="" />
 		<SummaryStatsRow {stats} class="fade-in-up delay-1" />
 		<ReportChartCard {reportDetail} />
 		<FileAccordionList files={reportDetail?.files ?? []} />

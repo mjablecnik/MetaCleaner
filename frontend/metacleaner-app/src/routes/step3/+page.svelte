@@ -6,7 +6,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import { uploadFiles, createJob, connectJobProgress } from '$lib/api/client';
+	import { uploadFiles, createJob, connectJobProgress, getJobStatus } from '$lib/api/client';
 	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import MobileStatusCard from './sections/MobileStatusCard.svelte';
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
@@ -34,6 +34,37 @@
 
 	onMount(() => {
 		let ws: WebSocket | null = null;
+		let pollingTimer: ReturnType<typeof setInterval> | null = null;
+
+		function startPolling(jid: string) {
+			let pollCount = 0;
+			const MAX_POLLS = 10;
+			pollingTimer = setInterval(async () => {
+				pollCount++;
+				try {
+					const status = await getJobStatus(jid);
+					if (status.status === 'completed') {
+						clearInterval(pollingTimer!);
+						pollingTimer = null;
+						if (cleaningStore.phase !== 'completed') {
+							goto(resolve('/step5' as Pathname), { replaceState: false });
+						}
+					} else if (status.status === 'failed' || pollCount >= MAX_POLLS) {
+						clearInterval(pollingTimer!);
+						pollingTimer = null;
+						cleaningStore.setError('ERR_JOB_FAILED', 'Job processing failed', null);
+						goto(resolve('/step4' as Pathname), { replaceState: false });
+					}
+				} catch {
+					if (pollCount >= MAX_POLLS) {
+						clearInterval(pollingTimer!);
+						pollingTimer = null;
+						cleaningStore.setError('ERR_WS_CLOSED', 'Connection lost', null);
+						goto(resolve('/step4' as Pathname), { replaceState: false });
+					}
+				}
+			}, 3000);
+		}
 
 		async function startCleaning() {
 			const files = scannerStore.files;
@@ -75,16 +106,15 @@
 					}
 				},
 				() => {
-					// WebSocket closed before job_complete — check if we completed
+					// WS closed before job_complete — poll GET /api/jobs/{id} instead of immediate error
 					if (cleaningStore.phase !== 'completed') {
-						cleaningStore.setError('ERR_WS_CLOSED', 'Connection closed unexpectedly', null);
-						goto(resolve('/step4' as Pathname), { replaceState: false });
+						startPolling(jobResp.jobId);
 					}
 				},
 				() => {
+					// WS error — poll for job status instead of immediate error
 					if (cleaningStore.phase !== 'completed') {
-						cleaningStore.setError('ERR_WS_ERROR', 'WebSocket error', null);
-						goto(resolve('/step4' as Pathname), { replaceState: false });
+						startPolling(jobResp.jobId);
 					}
 				}
 			);
@@ -94,6 +124,7 @@
 
 		return () => {
 			ws?.close();
+			if (pollingTimer) clearInterval(pollingTimer);
 		};
 	});
 </script>

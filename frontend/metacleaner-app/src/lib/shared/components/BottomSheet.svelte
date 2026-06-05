@@ -21,6 +21,7 @@
 		<button
 			type="button"
 			onclick={onClose}
+			aria-label="Close"
 			class="flex h-10 w-10 items-center justify-center rounded-full bg-navy-lighter text-text-muted transition-colors hover:text-white"
 		>
 			<i class="fa-solid fa-xmark"></i>

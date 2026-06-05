@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
@@ -67,7 +68,7 @@
 				<!-- Start Cleaning button (mobile fixed bottom / inline on desktop) -->
 				<div class="hidden lg:block">
 					<button
-						onclick={() => goto(resolve('/step3'))}
+						onclick={() => goto(resolve('/step3' as Pathname))}
 						class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500"
 					>
 						<i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -90,7 +91,7 @@
 		class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
 	>
 		<button
-			onclick={() => goto(resolve('/step3'))}
+			onclick={() => goto(resolve('/step3' as Pathname))}
 			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95"
 		>
 			<i class="fa-solid fa-wand-magic-sparkles"></i>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { ErrorState } from '$lib/repositories/processingRepository';
@@ -211,7 +212,7 @@
 	<!-- Action Buttons -->
 	<div class="mt-1 flex gap-3">
 		<a
-			href={resolve('/step3')}
+			href={resolve('/step3' as Pathname)}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
 		>
 			<i class="fa-solid fa-rotate-right"></i>

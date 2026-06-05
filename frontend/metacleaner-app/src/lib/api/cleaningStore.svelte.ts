@@ -5,8 +5,9 @@ import type {
 	ProcessingLogEntry,
 	ErrorState,
 	ErrorType,
-	ProcessingResults
-} from '$lib/repositories/processingRepository';
+	ProcessingResults,
+	FileMetadataResult
+} from '$lib/types/processing';
 import type { WsProgressEvent } from './client';
 
 export type CleaningPhase = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
@@ -32,6 +33,9 @@ let errorState = $state<ErrorState | null>(null);
 // Completion state (step5)
 let results = $state<ProcessingResults | null>(null);
 let reportId = $state<string | null>(null);
+
+// Accumulates per-file results from file_complete WS events
+let pendingFileResults = $state<FileMetadataResult[]>([]);
 
 function getScannerFile(serverId: string): QueuedFile | undefined {
 	return fileMappings.find((m) => m.serverId === serverId)?.scannerFile;
@@ -84,6 +88,7 @@ export const cleaningStore = {
 		errorState = null;
 		results = null;
 		reportId = null;
+		pendingFileResults = [];
 		void queuedFiles; // used externally to determine files
 	},
 
@@ -144,6 +149,19 @@ export const cleaningStore = {
 		} else if (event.type === 'file_complete' && event.fileId) {
 			const scannerId = getScannerId(event.fileId);
 			if (scannerId) {
+				pendingFileResults = [
+					...pendingFileResults,
+					{
+						fileId: scannerId,
+						gpsRemoved: event.gpsRemoved ?? false,
+						exifCount: 0,
+						xmpCount: 0,
+						id3Count: 0,
+						mp4AtomsCount: 0,
+						pngChunksCount: 0,
+						totalFields: event.fieldsRemoved ?? 0
+					}
+				];
 				processingState = {
 					...processingState,
 					files: processingState.files.map((f) =>
@@ -198,9 +216,9 @@ export const cleaningStore = {
 				fieldsRemoved: event.fieldsRemoved ?? processingState.fieldsRemoved,
 				gpsLocationsRemoved: event.gpsLocationsRemoved ?? 0,
 				totalTimeSeconds: event.totalTimeSeconds ?? 0,
-				fileResults: [],
+				fileResults: pendingFileResults,
 				beforeBreakdown: {
-					gpsLocations: 0,
+					gpsLocations: event.gpsLocationsRemoved ?? 0,
 					exifFields: 0,
 					xmpFields: 0,
 					id3mp4Fields: 0,
@@ -273,5 +291,6 @@ export const cleaningStore = {
 		errorState = null;
 		results = null;
 		reportId = null;
+		pendingFileResults = [];
 	}
 };

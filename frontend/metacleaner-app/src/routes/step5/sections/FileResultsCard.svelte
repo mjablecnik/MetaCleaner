@@ -130,7 +130,7 @@
 			{tx('step5.actions.viewReport')}
 		</a>
 		<a
-			href={resolve('/reports')}
+			href={resolve('/reports' as Pathname)}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3 text-sm font-semibold text-text-muted transition-transform active:scale-95"
 		>
 			<i class="fa-solid fa-clock-rotate-left"></i>

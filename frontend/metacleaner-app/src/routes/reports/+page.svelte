@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getReports as fetchReportsApi } from '$lib/api/client';
@@ -153,7 +154,7 @@
 
 <div class="mobile-gradient-fade fixed right-0 bottom-0 left-0 z-40 px-4 py-4 lg:hidden">
 	<a
-		href={resolve('/')}
+		href={resolve('/' as Pathname)}
 		class="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-green py-4 text-base font-bold text-white shadow-glow-green"
 	>
 		<i class="fa-solid fa-plus"></i>

@@ -98,6 +98,7 @@
 			{#if showBackButton}
 				<a
 					href={resolve(backHref as Pathname)}
+					aria-label="Go back"
 					class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
 						{compact ? 'h-8 w-8' : 'h-9 w-9'}"
 				>
@@ -154,6 +155,7 @@
 					<button
 						type="button"
 						onclick={() => (hamburgerMenuOpen = !hamburgerMenuOpen)}
+						aria-label="User menu"
 						class="flex h-10 w-10 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
 					>
 						<i class="fa-solid fa-user text-sm text-brand-blue"></i>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 
@@ -43,7 +44,7 @@
 	</div>
 	<div class="flex items-center gap-3">
 		<a
-			href={resolve('/')}
+			href={resolve('/' as Pathname)}
 			class="hidden items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-4 py-2.5 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue/20 lg:flex"
 		>
 			<i class="fa-solid fa-arrow-up-from-bracket"></i>

@@ -37,6 +37,7 @@
 		<button
 			type="button"
 			onclick={() => (open = !open)}
+			aria-label={open ? 'Close menu' : 'Open menu'}
 			class="flex h-11 w-11 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
 		>
 			<i class="fa-solid {open ? 'fa-xmark' : 'fa-bars'} text-base"></i>
