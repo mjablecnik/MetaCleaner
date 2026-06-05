@@ -1,6 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
+# Detect available package manager
+if command -v bun &> /dev/null; then
+  RUN_CMD="bun"
+  EXEC_CMD="bunx"
+else
+  RUN_CMD="npm"
+  EXEC_CMD="npx"
+fi
+
 echo "=== MetaCleaner Android Sync ==="
 
 # Step 1: Build the SvelteKit app
