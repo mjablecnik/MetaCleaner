@@ -121,13 +121,13 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
 - [x] 7. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Wire scanning pipeline end-to-end and handle edge cases
-  - [ ] 8.1 Implement scan progress indicator and file status states
+- [x] 8. Wire scanning pipeline end-to-end and handle edge cases
+  - [x] 8.1 Implement scan progress indicator and file status states
     - Create `ScanProgressIndicator.svelte` showing pending/scanning/done/error per file
     - Files with `status: 'error'` display warning icon and "Could not scan" message
     - Error files contribute 0 to aggregated score
     - _Requirements: 3.3, 2.7_
-  - [ ] 8.2 Handle edge cases in scanner store
+  - [x] 8.2 Handle edge cases in scanner store
     - Same file added twice: allowed (unique IDs)
     - Large batch (50+ files): sequential processing with progress
     - All files error: show "Scanning failed" state instead of breakdown
@@ -140,7 +140,7 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - Test clear files resets UI state
     - _Requirements: 3.1, 3.2, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 9. Final checkpoint — Ensure all tests pass
+- [x] 9. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
