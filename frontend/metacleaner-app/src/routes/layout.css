@@ -278,3 +278,9 @@ body {
 .sheet-overlay.open {
 	display: block;
 }
+
+@media print {
+	.no-print {
+		display: none !important;
+	}
+}

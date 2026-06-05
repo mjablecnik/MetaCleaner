@@ -10,7 +10,13 @@
 
 	let { files }: Props = $props();
 
-	let accordionOpen = $state<boolean[]>(files.map((_, i) => i === 0));
+	let accordionOpen = $state<boolean[]>([]);
+
+	$effect(() => {
+		if (files.length > 0 && accordionOpen.length === 0) {
+			accordionOpen = files.map((_, i) => i === 0);
+		}
+	});
 
 	let allOpen = $derived(accordionOpen.length > 0 && accordionOpen.every((v) => v));
 
