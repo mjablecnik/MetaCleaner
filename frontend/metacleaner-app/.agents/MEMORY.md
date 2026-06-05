@@ -1,5 +1,10 @@
 # Memory
 
+## $state<Date> triggers svelte/prefer-svelte-reactivity lint error
+- Problem: Storing `new Date()` in `$state<Date | null>` triggers ESLint error `svelte/prefer-svelte-reactivity` — Svelte's lint rule requires `SvelteDate` from `svelte/reactivity` instead of the native `Date` class for reactive state.
+- Solution: Store the timestamp as `$state<number | null>` using `Date.now()` instead of `new Date()`. This avoids the reactive wrapper requirement while still allowing comparison arithmetic.
+- Source: code-review-fix, 2026-06-05
+
 ## PUBLIC_API_URL requires .env file for svelte-check to pass
 
 - Problem: After adding `import { PUBLIC_API_URL } from '$env/static/public'`, svelte-check reports "Module '$env/static/public' has no exported member 'PUBLIC_API_URL'" even when the .env file exists, because the SvelteKit ambient types are stale.
@@ -113,3 +118,36 @@
 - Problem: `getErrorState()` mock data has Czech `description` strings in errorTypes: "Interní chyba při čištění metadat", "Ztráta spojení se serverem", "Operace překročila časový limit". Violates i18n and code language standards.
 - Solution: Replace with English placeholders or i18n keys. When rendered in components, use `tx()` to look up the localized version.
 - Source: code-review, 2026-06-05T17:02:02.923+00:00
+
+## cleaningStore file_error handler maps to wrong statuses
+- Problem: The `file_error` WebSocket event handler in `cleaningStore.svelte.ts` sets the failed file's status to `'waiting'` and log entry to `'in_progress'` instead of error-indicating values. The `FileProcessingStatus` type doesn't include `'error'`.
+- Solution: Extend `FileProcessingStatus` to `'done' | 'in_progress' | 'waiting' | 'error'`. In the `file_error` handler, set file status to `'error'` and log status to a failure indicator.
+- Source: code-review, 2026-06-05T17:25:48.603+00:00
+
+## step5 FileResultsCard gets empty fileResults from cleaningStore
+- Problem: `cleaningStore.results.fileResults` is always `[]` because the `job_complete` WS event doesn't contain per-file breakdown. The store's `handleWsEvent` for `job_complete` sets `fileResults: []`. The `FileResultsCard` then uses index-based lookup against an empty array.
+- Solution: Accumulate per-file results during `file_complete` events (fieldsRemoved, gpsRemoved) in a temporary array, then assign to `results.fileResults` when `job_complete` fires. Or fetch full report via GET /api/reports/{id} after completion.
+- Source: code-review, 2026-06-05T17:25:48.603+00:00
+
+## WebSocket disconnect immediately treated as fatal error
+- Problem: When WebSocket closes or errors during processing, step3 immediately navigates to step4 (error page). Backend continues processing (Req 3.6), so the job may complete successfully.
+- Solution: On WS close/error, attempt reconnect or fall back to polling `GET /api/jobs/{id}` every 2-3s. Only treat as error if polling confirms job failure or times out.
+- Source: code-review, 2026-06-05T17:25:48.603+00:00
+
+## PUBLIC_API_URL empty in Docker production build
+
+- Problem: `$env/static/public` resolves `PUBLIC_API_URL` at build time. The Dockerfile never copies `.env` into the build stage, so the variable bakes as empty string. The fallback `|| 'http://localhost:8080'` then points to nginx (the container itself) not the backend.
+- Solution: Switch to `$env/dynamic/public` for runtime resolution, or add `ARG PUBLIC_API_URL` to the Dockerfile build stage and inject via `--build-arg`, or use relative URLs with nginx proxy.
+- Source: code-review, 2026-06-05T17:46:39.061+00:00
+
+## Missing i18n keys for step3 upload phase and report detail page
+
+- Problem: Keys `step3.badge.uploading`, `step3.upload.title`, `step3.upload.description`, `common.loading`, `common.error`, `common.footer.copyright` are used in templates but don't exist in en.json/cs.json. Code uses `|| 'English fallback'` which breaks i18n for Czech users.
+- Solution: Add all missing keys to both `messages/en.json` and `messages/cs.json`.
+- Source: code-review, 2026-06-05T17:46:39.061+00:00
+
+## WebSocket polling fallback too aggressive — 30s timeout for long operations
+
+- Problem: When WS disconnects, step3 polls `GET /api/jobs/{id}` with `MAX_POLLS = 10` at 3s intervals (30s total). Large file batches (500MB × multiple files) can take several minutes on the backend.
+- Solution: Increase `MAX_POLLS` to 100+ (5+ minutes) or use exponential backoff. Also attempt WS reconnection before falling back to polling.
+- Source: code-review, 2026-06-05T17:46:39.061+00:00
