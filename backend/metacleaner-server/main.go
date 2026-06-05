@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func checkTool(name string, args ...string) error {
@@ -57,14 +59,42 @@ func main() {
 	scheduler.Start(schedulerCtx)
 	log.Println("startup: cleanup scheduler started")
 
-	// TODO(task-14): wire router, WebSocketHub, CleaningPipeline and start HTTP server.
-	log.Printf("startup: server ready (HTTP not yet wired — see task 14)")
+	// Initialize WebSocketHub and CleaningPipeline.
+	hub := NewWebSocketHub()
+	pl := NewCleaningPipeline(cfg)
+
+	// Build router.
+	router := NewRouter(cfg, db, hub, pl)
+
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.Port),
+		Handler:      router,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 300 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+
+	// Start server in background.
+	go func() {
+		log.Printf("startup: HTTP server listening on :%d", cfg.Port)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("server: %v", err)
+		}
+	}()
 
 	// Block until SIGINT/SIGTERM.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("shutdown: signal received")
+
+	// Graceful shutdown with 30s timeout.
+	shutdownCtx, cancelShutdown := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancelShutdown()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		log.Printf("shutdown: HTTP server error: %v", err)
+	}
+
 	cancelScheduler()
 	log.Println("shutdown: complete")
 }

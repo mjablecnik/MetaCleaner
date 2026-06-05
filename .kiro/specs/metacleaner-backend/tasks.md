@@ -278,8 +278,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Start cleanup scheduler
     - _Requirements: 8.3, 8.4_
 
-- [ ] 14. Implement CORS middleware and router setup
-  - [ ] 14.1 Implement CORS middleware, rate limiter, and HTTP router (`router.go`)
+- [x] 14. Implement CORS middleware and router setup
+  - [x] 14.1 Implement CORS middleware, rate limiter, and HTTP router (`router.go`)
     - Create CORS middleware allowing requests from configured FrontendOrigin
     - Set Access-Control-Allow-Origin, Allow-Methods, Allow-Headers, Allow-Credentials headers
     - Handle OPTIONS preflight requests
@@ -299,7 +299,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Ensure all responses use Content-Type: application/json (except file downloads and WebSocket)
     - _Requirements: 6.1, 6.3, 6.4, 6.5, 12.1, 12.2, 12.3_
 
-  - [ ] 14.2 Implement main entry point (`main.go`)
+  - [x] 14.2 Implement main entry point (`main.go`)
     - Load config from env
     - Run startup validations (ExifTool, FFmpeg, Supabase)
     - Initialize SupabaseClient, WebSocketHub, CleaningPipeline, CleanupScheduler
