@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import FileResultItem from './FileResultItem.svelte';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 
 	const { Story } = defineMeta({
 		title: 'Step5/FileResultItem',
@@ -15,16 +15,36 @@
 		}
 	});
 
-	const imageWithGps = {
+	const makeFile = (overrides: Partial<QueuedFile>): QueuedFile => ({
+		id: 'file-1',
+		file: new File([], 'file'),
+		name: 'file.jpg',
+		size: 1024 * 1024,
+		extension: '.jpg',
+		type: 'image',
+		format: 'jpeg',
+		scanResult: null,
+		...overrides
+	});
+
+	const imageWithGps = makeFile({
 		id: 'photo-holiday-2024',
 		name: 'photo_holiday_2024.heic',
-		size: '8.7 MB',
-		extension: 'HEIC',
+		size: 8.7 * 1024 * 1024,
+		extension: '.heic',
 		type: 'image',
-		metadataFieldCount: 18,
-		hasGps: true,
-		device: 'iPhone 15 Pro'
-	} satisfies UploadedFile;
+		format: 'heic',
+		scanResult: {
+			fileId: 'photo-holiday-2024',
+			status: 'done',
+			fields: [],
+			hasGps: true,
+			device: 'iPhone 15 Pro',
+			fieldCount: 18,
+			categoryScores: { gps: 100, deviceIdentity: 60, personalData: 0, timestamps: 50 },
+			fileScore: 72
+		}
+	});
 
 	const imageWithGpsResult = {
 		fileId: 'photo-holiday-2024',
@@ -37,16 +57,24 @@
 		totalFields: 18
 	};
 
-	const videoFile = {
+	const videoFile = makeFile({
 		id: 'video-prague-walk',
 		name: 'video_prague_walk.mp4',
-		size: '142.5 MB',
-		extension: 'MP4',
+		size: 142.5 * 1024 * 1024,
+		extension: '.mp4',
 		type: 'video',
-		metadataFieldCount: 43,
-		hasGps: false,
-		device: 'H.264'
-	} satisfies UploadedFile;
+		format: 'mp4',
+		scanResult: {
+			fileId: 'video-prague-walk',
+			status: 'done',
+			fields: [],
+			hasGps: false,
+			device: 'H.264',
+			fieldCount: 43,
+			categoryScores: { gps: 0, deviceIdentity: 40, personalData: 0, timestamps: 25 },
+			fileScore: 16
+		}
+	});
 
 	const videoResult = {
 		fileId: 'video-prague-walk',
@@ -59,16 +87,24 @@
 		totalFields: 43
 	};
 
-	const imageNoGps = {
+	const imageNoGps = makeFile({
 		id: 'img-4821',
 		name: 'IMG_4821.jpg',
-		size: '3.2 MB',
-		extension: 'JPG',
+		size: 3.2 * 1024 * 1024,
+		extension: '.jpg',
 		type: 'image',
-		metadataFieldCount: 12,
-		hasGps: false,
-		device: 'Canon EOS R5'
-	} satisfies UploadedFile;
+		format: 'jpeg',
+		scanResult: {
+			fileId: 'img-4821',
+			status: 'done',
+			fields: [],
+			hasGps: false,
+			device: 'Canon EOS R5',
+			fieldCount: 12,
+			categoryScores: { gps: 0, deviceIdentity: 80, personalData: 0, timestamps: 50 },
+			fileScore: 27
+		}
+	});
 
 	const imageNoGpsResult = {
 		fileId: 'img-4821',

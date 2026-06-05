@@ -1,20 +1,28 @@
 <script lang="ts">
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import type { FileMetadataResult } from '$lib/repositories/processingRepository';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
-		file: UploadedFile;
-		result: FileMetadataResult;
+		file: QueuedFile;
+		result: FileMetadataResult | undefined;
 	}
 
 	const { file, result }: Props = $props();
 
+	function formatSize(bytes: number): string {
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+	}
+
+	const extLabel = $derived(file.extension.replace('.', '').toUpperCase() || 'FILE');
+	const device = $derived(file.scanResult?.device);
+
 	const iconStyle = $derived(
 		file.type === 'video'
 			? { bg: 'bg-brand-orange/10', text: 'text-brand-orange', border: 'border-brand-orange/20' }
-			: file.extension === 'PNG'
+			: file.extension === '.png'
 				? { bg: 'bg-brand-blue/10', text: 'text-brand-blue', border: 'border-brand-blue/20' }
 				: { bg: 'bg-brand-green/10', text: 'text-brand-green', border: 'border-brand-green/20' }
 	);
@@ -41,12 +49,12 @@
 		<div class="min-w-0 flex-1">
 			<p class="truncate text-sm font-semibold text-white">{file.name}</p>
 			<p class="text-[11px] text-text-muted">
-				{file.size} · {file.extension}{file.device ? ` · ${file.device}` : ''}
+				{formatSize(file.size)} · {extLabel}{device ? ` · ${device}` : ''}
 			</p>
 		</div>
 		<span
 			class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
-			>{file.extension}</span
+			>{extLabel}</span
 		>
 		<div
 			class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
@@ -55,43 +63,45 @@
 		</div>
 	</div>
 	<div class="flex flex-wrap gap-1.5 px-3 pb-3 lg:px-4">
-		{#if result.gpsRemoved}
+		{#if result}
+			{#if result.gpsRemoved}
+				<span
+					class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
+				>
+					{tx('step5.results.gpsRemoved')}
+				</span>
+			{/if}
+			{#if result.exifCount > 0}
+				<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+					>EXIF ×{result.exifCount}</span
+				>
+			{/if}
+			{#if result.xmpCount > 0}
+				<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+					>XMP ×{result.xmpCount}</span
+				>
+			{/if}
+			{#if result.id3Count > 0}
+				<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+					>ID3 ×{result.id3Count}</span
+				>
+			{/if}
+			{#if result.mp4AtomsCount > 0}
+				<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+					>MP4 atoms ×{result.mp4AtomsCount}</span
+				>
+			{/if}
+			{#if result.pngChunksCount > 0}
+				<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
+					>PNG chunks ×{result.pngChunksCount}</span
+				>
+			{/if}
 			<span
-				class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
+				class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
 			>
-				{tx('step5.results.gpsRemoved')}
+				{tx('step5.metadata.fieldsCount', { count: result.totalFields })}
 			</span>
 		{/if}
-		{#if result.exifCount > 0}
-			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
-				>EXIF ×{result.exifCount}</span
-			>
-		{/if}
-		{#if result.xmpCount > 0}
-			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
-				>XMP ×{result.xmpCount}</span
-			>
-		{/if}
-		{#if result.id3Count > 0}
-			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
-				>ID3 ×{result.id3Count}</span
-			>
-		{/if}
-		{#if result.mp4AtomsCount > 0}
-			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
-				>MP4 atoms ×{result.mp4AtomsCount}</span
-			>
-		{/if}
-		{#if result.pngChunksCount > 0}
-			<span class="rounded-full bg-navy-lighter px-2 py-0.5 text-[10px] text-text-muted"
-				>PNG chunks ×{result.pngChunksCount}</span
-			>
-		{/if}
-		<span
-			class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
-		>
-			{tx('step5.metadata.fieldsCount', { count: result.totalFields })}
-		</span>
 	</div>
 </div>
 

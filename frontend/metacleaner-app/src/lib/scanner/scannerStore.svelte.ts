@@ -7,6 +7,8 @@ let files = $state<QueuedFile[]>([]);
 let _isProcessing = false;
 let _idCounter = 0;
 
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
+
 function generateId(): string {
 	return `file-${Date.now()}-${++_idCounter}`;
 }
@@ -51,6 +53,7 @@ export function addFiles(fileList: FileList): void {
 	const added: QueuedFile[] = [];
 
 	for (const file of fileList) {
+		if (file.size > MAX_FILE_SIZE) continue;
 		const id = generateId();
 		const detected = detectFormat(file);
 		const dotIdx = file.name.lastIndexOf('.');

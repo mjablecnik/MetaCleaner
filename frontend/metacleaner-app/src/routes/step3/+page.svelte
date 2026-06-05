@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
@@ -13,6 +16,10 @@
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
 	import ProcessingStatusCard from './sections/ProcessingStatusCard.svelte';
 	import ActivityLogAccordion from './sections/ActivityLogAccordion.svelte';
+
+	$effect(() => {
+		if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true });
+	});
 
 	let overallPct = $state(10);
 

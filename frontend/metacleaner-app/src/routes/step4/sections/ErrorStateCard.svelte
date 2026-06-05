@@ -3,7 +3,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import ActivityLog, { type ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
 	import type { ErrorState } from '$lib/repositories/processingRepository';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import ErrorVisual from '../components/ErrorVisual.svelte';
 	import ErrorDetailBox from '../components/ErrorDetailBox.svelte';
 	import ErrorTypeSelector from '../components/ErrorTypeSelector.svelte';
@@ -13,7 +13,7 @@
 		failedFileName: string;
 		selectedErrorType: string;
 		onSelectType: (id: string) => void;
-		getFileById: (id: string) => UploadedFile | undefined;
+		getFileById: (id: string) => QueuedFile | undefined;
 	}
 
 	const { errorState, failedFileName, selectedErrorType, onSelectType, getFileById }: Props =
@@ -30,10 +30,12 @@
 	const logEntries = $derived<ActivityLogEntry[]>(
 		(errorState?.log ?? []).map((logEntry) => {
 			const file = getFileById(logEntry.fileId);
+			const hasGps = file?.scanResult?.hasGps ?? false;
+			const fieldCount = file?.scanResult?.fieldCount ?? 0;
 			if (logEntry.status === 'success') {
-				const text = file?.hasGps
-					? `✓ ${file?.name} — ${tx('step3.files.gpsAndFieldsRemoved', { count: file.metadataFieldCount })}`
-					: `✓ ${file?.name} — ${file?.metadataFieldCount} ${tx('step3.files.fieldsRemoved')}`;
+				const text = hasGps
+					? `✓ ${file?.name} — ${tx('step3.files.gpsAndFieldsRemoved', { count: fieldCount })}`
+					: `✓ ${file?.name} — ${fieldCount} ${tx('step3.files.fieldsRemoved')}`;
 				return { timestamp: logEntry.timestamp, text, status: 'success' as const };
 			} else if (logEntry.status === 'error') {
 				return {

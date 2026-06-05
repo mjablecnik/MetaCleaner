@@ -69,12 +69,8 @@ export function computeAggregatedRisk(results: ScanResult[]): AggregatedRisk {
 	const overallScore = Math.max(...results.map((r) => r.fileScore));
 	const severity = classifySeverity(overallScore);
 
-	const categories: RiskCategory = {
-		gps: Math.max(...results.map((r) => r.categoryScores.gps)),
-		deviceIdentity: Math.max(...results.map((r) => r.categoryScores.deviceIdentity)),
-		personalData: Math.max(...results.map((r) => r.categoryScores.personalData)),
-		timestamps: Math.max(...results.map((r) => r.categoryScores.timestamps))
-	};
+	const maxFile = results.reduce((a, b) => (a.fileScore > b.fileScore ? a : b));
+	const categories: RiskCategory = maxFile.categoryScores;
 
 	return { overallScore, severity, categories, fileCount, scannedCount, isScanning };
 }

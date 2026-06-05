@@ -3,11 +3,11 @@
 	import * as m from '$lib/paraglide/messages';
 	import ActivityLog, { type ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
 	import type { ErrorState } from '$lib/repositories/processingRepository';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 
 	interface Props {
 		errorState: ErrorState | null;
-		getFileById: (id: string) => UploadedFile | undefined;
+		getFileById: (id: string) => QueuedFile | undefined;
 		open?: boolean;
 	}
 
@@ -24,10 +24,12 @@
 	const logEntries = $derived<ActivityLogEntry[]>(
 		(errorState?.log ?? []).map((logEntry) => {
 			const file = getFileById(logEntry.fileId);
+			const hasGps = file?.scanResult?.hasGps ?? false;
+			const fieldCount = file?.scanResult?.fieldCount ?? 0;
 			if (logEntry.status === 'success') {
-				const text = file?.hasGps
-					? `✓ ${file?.name} — ${tx('step3.files.gpsAndFieldsRemovedMobile', { count: file.metadataFieldCount })}`
-					: `✓ ${file?.name} — ${file?.metadataFieldCount} ${tx('step3.files.fieldsRemoved')}`;
+				const text = hasGps
+					? `✓ ${file?.name} — ${tx('step3.files.gpsAndFieldsRemovedMobile', { count: fieldCount })}`
+					: `✓ ${file?.name} — ${fieldCount} ${tx('step3.files.fieldsRemoved')}`;
 				return { timestamp: logEntry.timestamp, text, status: 'success' as const };
 			} else if (logEntry.status === 'error') {
 				return {

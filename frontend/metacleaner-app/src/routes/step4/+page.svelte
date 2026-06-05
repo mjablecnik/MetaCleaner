@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
+	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import { getErrorState, type ErrorState } from '$lib/repositories/processingRepository';
 	import ErrorBanner from './sections/ErrorBanner.svelte';
 	import MobileErrorVisual from './sections/MobileErrorVisual.svelte';
@@ -12,9 +16,13 @@
 	import ErrorTypeAccordion from './sections/ErrorTypeAccordion.svelte';
 	import ErrorLogAccordion from './sections/ErrorLogAccordion.svelte';
 
+	$effect(() => {
+		if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true });
+	});
+
 	let bannerVisible = $state(true);
 	let selectedErrorType = $state('cleaning');
-	let uploadedFiles = $state<UploadedFile[]>([]);
+	const uploadedFiles = $derived(scannerStore.files);
 	let errorState = $state<ErrorState | null>(null);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -25,16 +33,13 @@
 		return fn ? fn(params) : key;
 	}
 
-	function getFileById(id: string): UploadedFile | undefined {
+	function getFileById(id: string): QueuedFile | undefined {
 		return uploadedFiles.find((f) => f.id === id);
 	}
 
 	const failedFileName = $derived(getFileById(errorState?.failedFileId ?? '')?.name ?? '');
 
 	onMount(() => {
-		getUploadedFiles().then((files) => {
-			uploadedFiles = files;
-		});
 		getErrorState().then((es) => {
 			errorState = es;
 		});

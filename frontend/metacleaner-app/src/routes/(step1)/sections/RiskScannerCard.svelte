@@ -102,22 +102,24 @@
 				<p class="text-xs leading-relaxed text-text-muted">
 					{tx('step2.risk.description')}
 				</p>
-				{#if categories.gps > 0}
+				{#if categories.gps > 0 || categories.deviceIdentity > 0 || categories.personalData > 0}
 					<div class="mt-1 flex items-center gap-1.5">
-						<span
-							class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold text-brand-red"
-							>GPS</span
-						>
+						{#if categories.gps > 0}
+							<span
+								class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold text-brand-red"
+								>GPS</span
+							>
+						{/if}
 						{#if categories.deviceIdentity > 0}
 							<span
 								class="rounded border border-brand-orange/25 bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold text-brand-orange"
-								>{tx('step2.risk.chipIdentity')}</span
+								>{tx('step2.risk.chipDevice')}</span
 							>
 						{/if}
 						{#if categories.personalData > 0}
 							<span
 								class="rounded border border-brand-orange/25 bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold text-brand-orange"
-								>{tx('step2.risk.chipDevice')}</span
+								>{tx('step2.risk.chipIdentity')}</span
 							>
 						{/if}
 					</div>

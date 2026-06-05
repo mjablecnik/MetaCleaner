@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
-	import type { ProcessingResults } from '$lib/repositories/processingRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
+	import type { ProcessingResults, FileMetadataResult } from '$lib/repositories/processingRepository';
 	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
@@ -8,13 +8,14 @@
 
 	interface Props {
 		results: ProcessingResults | null;
-		uploadedFiles: UploadedFile[];
+		uploadedFiles: QueuedFile[];
+		onStartOver: () => void;
 	}
 
-	const { results, uploadedFiles }: Props = $props();
+	const { results, uploadedFiles, onStartOver }: Props = $props();
 
-	function getFileById(id: string): UploadedFile | undefined {
-		return uploadedFiles.find((f) => f.id === id);
+	function getMockResult(index: number): FileMetadataResult | undefined {
+		return results?.fileResults[index];
 	}
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -42,14 +43,10 @@
 
 	<!-- Files Grid -->
 	<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-		{#if results}
-			{#each results.fileResults as fileResult (fileResult.fileId)}
-				{@const file = getFileById(fileResult.fileId)}
-				{#if file}
-					<FileResultItem {file} result={fileResult} />
-				{/if}
-			{/each}
-		{/if}
+		{#each uploadedFiles as file, i (file.id)}
+			{@const mockResult = getMockResult(i)}
+			<FileResultItem {file} result={mockResult} />
+		{/each}
 	</div>
 
 	<!-- Desktop Action Buttons -->
@@ -67,13 +64,13 @@
 			<i class="fa-solid fa-file-lines"></i>
 			{tx('step5.actions.viewReport')}
 		</a>
-		<a
-			href={resolve('/reports')}
+		<button
+			onclick={onStartOver}
 			class="flex items-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter px-5 py-3.5 text-sm font-semibold text-text-muted transition-all hover:bg-gray-800 hover:text-white"
 		>
-			<i class="fa-solid fa-clock-rotate-left"></i>
-			{tx('step5.actions.history')}
-		</a>
+			<i class="fa-solid fa-arrow-up-from-bracket"></i>
+			{tx('step5.actions.new')}
+		</button>
 	</div>
 </div>
 
@@ -102,12 +99,12 @@
 			<i class="fa-solid fa-clock-rotate-left"></i>
 			{tx('step5.actions.history')}
 		</a>
-		<a
-			href={resolve('/')}
+		<button
+			onclick={onStartOver}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3 text-sm font-semibold text-white transition-transform active:scale-95"
 		>
 			<i class="fa-solid fa-arrow-up-from-bracket text-text-muted"></i>
 			{tx('step5.actions.new')}
-		</a>
+		</button>
 	</div>
 </div>

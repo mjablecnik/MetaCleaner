@@ -1,15 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
+	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { getResults, type ProcessingResults } from '$lib/repositories/processingRepository';
 	import SummaryStatsRow, { type Stat } from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import SuccessHeader from './sections/SuccessHeader.svelte';
 	import MetadataOverview from './sections/MetadataOverview.svelte';
 	import FileResultsCard from './sections/FileResultsCard.svelte';
 
-	let uploadedFiles = $state<UploadedFile[]>([]);
+	$effect(() => {
+		if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true });
+	});
+
+	const uploadedFiles = $derived(scannerStore.files);
 	let results = $state<ProcessingResults | null>(null);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -20,11 +27,16 @@
 		return fn ? fn(params) : key;
 	}
 
+	function startOver(): void {
+		scannerStore.clearFiles();
+		goto(resolve('/' as Pathname), { replaceState: true });
+	}
+
 	const stats: Stat[] = $derived([
 		{
 			icon: 'fa-solid fa-file-circle-check',
 			iconColor: 'green',
-			value: results?.filesProcessed ?? 4,
+			value: results?.filesProcessed ?? uploadedFiles.length,
 			label: tx('step5.stats.filesProcessed')
 		},
 		{
@@ -50,9 +62,6 @@
 	]);
 
 	onMount(() => {
-		getUploadedFiles().then((files) => {
-			uploadedFiles = files;
-		});
 		getResults().then((r) => {
 			results = r;
 		});
@@ -66,8 +75,8 @@
 <main
 	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-8 lg:mt-0 lg:gap-6 lg:px-6 lg:pb-24"
 >
-	<SuccessHeader filesProcessed={results?.filesProcessed ?? 4} />
+	<SuccessHeader filesProcessed={results?.filesProcessed ?? uploadedFiles.length} />
 	<SummaryStatsRow {stats} class="fade-in-up delay-1" />
 	<MetadataOverview {results} />
-	<FileResultsCard {results} {uploadedFiles} />
+	<FileResultsCard {results} {uploadedFiles} onStartOver={startOver} />
 </main>

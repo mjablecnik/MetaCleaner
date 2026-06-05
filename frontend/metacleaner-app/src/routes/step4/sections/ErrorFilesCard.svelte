@@ -3,11 +3,11 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { ErrorState } from '$lib/repositories/processingRepository';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 
 	interface Props {
 		errorState: ErrorState | null;
-		uploadedFiles: UploadedFile[];
+		uploadedFiles: QueuedFile[];
 	}
 
 	const { errorState, uploadedFiles }: Props = $props();
@@ -18,6 +18,15 @@
 			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
 		)[key];
 		return fn ? fn(params) : key;
+	}
+
+	function formatSize(bytes: number): string {
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+	}
+
+	function extLabel(ext: string): string {
+		return ext.replace('.', '').toUpperCase() || 'FILE';
 	}
 
 	function getFileLogStatus(fileId: string): 'success' | 'error' | 'skipped' | undefined {
@@ -89,25 +98,25 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span
 								class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
 							>
 								<i class="fa-solid fa-circle-check text-[9px]"></i>
-								{#if file.hasGps}
+								{#if file.scanResult?.hasGps}
 									<span class="hidden lg:inline"
 										>{tx('step3.files.gpsAndFieldsRemoved', {
-											count: file.metadataFieldCount
+											count: file.scanResult?.fieldCount ?? 0
 										})}</span
 									>
 									<span class="inline lg:hidden"
 										>{tx('step3.files.gpsAndFieldsRemovedMobile', {
-											count: file.metadataFieldCount
+											count: file.scanResult?.fieldCount ?? 0
 										})}</span
 									>
 								{:else}
-									{file.metadataFieldCount} {tx('step3.files.fieldsRemoved')}
+									{file.scanResult?.fieldCount ?? 0} {tx('step3.files.fieldsRemoved')}
 								{/if}
 							</span>
 						</div>
@@ -115,7 +124,7 @@
 					<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 						<span
 							class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-							>{file.extension}</span
+							>{extLabel(file.extension)}</span
 						>
 						<div
 							class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
@@ -140,7 +149,7 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span
 								class="flex items-center gap-1 text-[10px] font-medium text-brand-red lg:text-[11px]"
@@ -154,7 +163,7 @@
 					<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 						<span
 							class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-							>{file.extension}</span
+							>{extLabel(file.extension)}</span
 						>
 						<div
 							class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-red/30 bg-brand-red/10"
@@ -179,7 +188,7 @@
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-medium text-white">{file.name}</p>
 						<div class="mt-0.5 flex items-center gap-1.5 lg:gap-2">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
 								<i class="fa-solid fa-ban text-[9px]"></i>
@@ -189,7 +198,7 @@
 					</div>
 					<span
 						class="flex-shrink-0 rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-						>{file.extension}</span
+						>{extLabel(file.extension)}</span
 					>
 				</div>
 			{/if}
