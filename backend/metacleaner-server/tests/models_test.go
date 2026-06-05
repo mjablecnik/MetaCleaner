@@ -197,6 +197,46 @@ func TestJobProgressZeroTotal(t *testing.T) {
 	}
 }
 
+// Property 6: File expiration check
+func TestFileExpirationCheck(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		// Generate a retention period between 1 second and 24 hours
+		retentionSecs := rapid.Int64Range(1, 86400).Draw(t, "retentionSecs")
+		retention := time.Duration(retentionSecs) * time.Second
+
+		// Generate an age between 0 and 2x the retention period
+		ageSecs := rapid.Int64Range(0, retentionSecs*2).Draw(t, "ageSecs")
+		createdAt := time.Now().Add(-time.Duration(ageSecs) * time.Second)
+
+		result := testIsFileExpired(createdAt, retention)
+
+		// Files older than retention period must be expired
+		if ageSecs > retentionSecs && !result {
+			t.Fatalf("file with age=%ds, retention=%ds should be expired", ageSecs, retentionSecs)
+		}
+		// Files not yet at retention period must not be expired
+		// (use ageSecs < retentionSecs-1 to avoid flakiness at boundary)
+		if ageSecs < retentionSecs-1 && result {
+			t.Fatalf("file with age=%ds, retention=%ds should not be expired", ageSecs, retentionSecs)
+		}
+	})
+}
+
+// Property 6b: zero-age file is never expired
+func TestFileExpirationZeroAge(t *testing.T) {
+	if testIsFileExpired(time.Now(), time.Hour) {
+		t.Fatal("just-created file should not be expired")
+	}
+}
+
+// Property 6c: file created before retention period is always expired
+func TestFileExpirationAlwaysExpiredOldFile(t *testing.T) {
+	createdAt := time.Now().Add(-2 * time.Hour)
+	if !testIsFileExpired(createdAt, time.Hour) {
+		t.Fatal("2-hour-old file with 1-hour retention should be expired")
+	}
+}
+
 // Property 7: Report summary statistics aggregation
 func TestReportSummaryAggregation(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {

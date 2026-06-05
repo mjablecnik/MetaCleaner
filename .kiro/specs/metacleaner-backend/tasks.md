@@ -244,8 +244,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test PDF download when PDF failed → 404
     - _Requirements: 5.4, 5.5, 5.6, 5.7_
 
-- [ ] 12. Implement cleanup scheduler
-  - [ ] 12.1 Implement periodic temp file cleanup (`cleanup.go`)
+- [x] 12. Implement cleanup scheduler
+  - [x] 12.1 Implement periodic temp file cleanup (`cleanup.go`)
     - Create `CleanupScheduler` struct with config (retention period, temp path) and ticker (every 5 minutes)
     - Implement `Start(ctx context.Context)` — launch background goroutine with ticker
     - Implement `RunCleanup()` — scan uploads/ and cleaned/ directories, delete files older than retention period
@@ -254,11 +254,11 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Only clean local temp files (not Supabase Storage PDFs)
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 4.4, 4.5_
 
-  - [ ]* 12.2 Write property test for file expiration check
+  - [x]* 12.2 Write property test for file expiration check
     - **Property 6: File expiration check**
     - **Validates: Requirements 4.4**
 
-  - [ ]* 12.3 Write unit tests for cleanup scheduler
+  - [x]* 12.3 Write unit tests for cleanup scheduler
     - Test expired files are deleted
     - Test non-expired files are retained
     - Test startup cleanup runs immediately
