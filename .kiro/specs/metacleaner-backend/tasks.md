@@ -151,8 +151,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test FFmpeg non-zero exit → file marked failed, other files continue
     - _Requirements: 2.6_
 
-- [ ] 7. Implement WebSocket progress handler
-  - [ ] 7.1 Implement WebSocket hub and progress broadcasting (`websocket.go`)
+- [x] 7. Implement WebSocket progress handler
+  - [x] 7.1 Implement WebSocket hub and progress broadcasting (`websocket.go`)
     - Create `WebSocketHub` struct with map of jobID → slice of connections (sync.Mutex protected)
     - Implement `Register(jobID string, conn *websocket.Conn)`
     - Implement `Unregister(jobID string, conn *websocket.Conn)`
