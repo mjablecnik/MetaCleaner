@@ -46,7 +46,7 @@
 		<div class="flex items-center gap-2 rounded-lg bg-navy-lighter px-3 py-2">
 			<span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-brand-blue"></span>
 			<span class="text-xs text-text-muted">
-				Scanning {scannedCount}/{fileCount} files...
+				{tx('step1.scan.progress', { scanned: scannedCount, total: fileCount })}
 			</span>
 		</div>
 	{/if}
