@@ -308,7 +308,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Handle graceful shutdown on SIGINT/SIGTERM
     - _Requirements: 8.2, 8.3, 8.4_
 
-- [ ] 15. Checkpoint - Ensure all tests pass
+- [x] 15. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 16. Create database migration script
