@@ -36,11 +36,7 @@ function makeErrorResult(fileId: string, error: unknown): ScanResult {
 	};
 }
 
-export async function parseFile(
-	file: File,
-	fileId: string,
-	_options?: Partial<ParseOptions>
-): Promise<ScanResult> {
+export async function parseFile(file: File, fileId: string): Promise<ScanResult> {
 	const detected = detectFormat(file);
 
 	if (!detected) {

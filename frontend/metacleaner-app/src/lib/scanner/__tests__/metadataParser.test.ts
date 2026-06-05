@@ -9,7 +9,6 @@ const UNSUPPORTED_EXTENSIONS = [
 ];
 
 const SUPPORTED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.heic', '.avif', '.tiff', '.dng'];
-const SUPPORTED_VIDEO_EXTENSIONS = ['.mp4', '.mov', '.avi', '.mkv', '.webm'];
 
 function makeFakeFile(name: string, data: Uint8Array): File {
 	return new File([data.buffer as ArrayBuffer], name);

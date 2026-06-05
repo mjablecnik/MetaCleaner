@@ -71,7 +71,7 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - **Property 8: Large files read only header segments** — files > 200MB read at most 512KB (images) or 2MB (videos)
     - **Validates: Requirements 7.3**
 
-- [ ] 4. Checkpoint — Ensure all tests pass
+- [x] 4. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement scanner store (reactive state management)
