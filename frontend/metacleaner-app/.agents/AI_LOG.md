@@ -1,5 +1,10 @@
 # AI Log
 
+## 2026-06-05 15:09 — from-brief
+- Brief: BRIEF.md
+- Added package manager detection logic to `sync-android.sh` (checks `command -v bun`, sets `RUN_CMD`/`EXEC_CMD` variables to bun/bunx or npm/npx)
+- Replaced hardcoded `bun run build` with `$RUN_CMD run build` and `bunx cap sync android` with `$EXEC_CMD cap sync android` in `sync-android.sh`
+
 ## 2026-06-05 14:28 — check-build
 
 - Fixed formatting in 17 files (scanner module, Svelte components, agents docs) via prettier
