@@ -226,6 +226,92 @@ func handleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 	}
 }
 
+// contentTypeForExt returns the MIME type for a given file extension (without dot).
+func contentTypeForExt(ext string) string {
+	switch strings.ToLower(ext) {
+	case "jpg", "jpeg":
+		return "image/jpeg"
+	case "png":
+		return "image/png"
+	case "heic":
+		return "image/heic"
+	case "heif":
+		return "image/heif"
+	case "avif":
+		return "image/avif"
+	case "tiff", "tif":
+		return "image/tiff"
+	case "dng":
+		return "image/dng"
+	case "webp":
+		return "image/webp"
+	case "gif":
+		return "image/gif"
+	case "mp4":
+		return "video/mp4"
+	case "mov":
+		return "video/quicktime"
+	case "avi":
+		return "video/x-msvideo"
+	case "mkv":
+		return "video/x-matroska"
+	case "webm":
+		return "video/webm"
+	case "wmv":
+		return "video/x-ms-wmv"
+	case "flv":
+		return "video/x-flv"
+	case "3gp":
+		return "video/3gpp"
+	case "mpeg", "mpg":
+		return "video/mpeg"
+	case "ogv":
+		return "video/ogg"
+	case "mts":
+		return "video/MP2T"
+	default:
+		return "application/octet-stream"
+	}
+}
+
+// handleFileDownload handles GET /api/files/{id}/download — serves the cleaned file.
+func handleFileDownload(cfg Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fileID := r.PathValue("id")
+		if fileID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing file ID")
+			return
+		}
+
+		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
+		uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
+
+		// Look for the cleaned file.
+		cleanedMatches, _ := filepath.Glob(filepath.Join(cleanedDir, fileID+"_cleaned.*"))
+		if len(cleanedMatches) > 0 {
+			// File is ready — serve it.
+			cleanedPath := cleanedMatches[0]
+			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
+			originalName := fileID + "_cleaned." + ext
+
+			w.Header().Set("Content-Type", contentTypeForExt(ext))
+			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="cleaned_%s"`, originalName))
+			http.ServeFile(w, r, cleanedPath)
+			return
+		}
+
+		// Cleaned file doesn't exist — check if original is still present (in progress).
+		originalMatches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
+		if len(originalMatches) > 0 {
+			WriteError(w, http.StatusConflict, ErrFileNotReady, "File is not ready for download yet")
+			return
+		}
+
+		// Neither file found — expired or never existed.
+		WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+	}
+}
+
 // handleGetJob handles GET /api/jobs/{id} — returns current job state.
 func handleGetJob(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

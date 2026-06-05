@@ -189,8 +189,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
 - [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Implement file download handler
-  - [ ] 10.1 Implement download handler (`handlers.go` — files section)
+- [x] 10. Implement file download handler
+  - [x] 10.1 Implement download handler (`handlers.go` — files section)
     - Create `handleFileDownload(w, r)` — extract fileId from URL path
     - Check file exists in temp storage cleaned directory
     - Check file processing status (query Supabase or in-memory state)
@@ -199,7 +199,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - If completed → serve file with Content-Type based on format and Content-Disposition: attachment header
     - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ]* 10.2 Write unit tests for download handler
+  - [x]* 10.2 Write unit tests for download handler
     - Test download completed file → 200 with correct headers
     - Test download in-progress file → 409
     - Test download expired/missing file → 404
