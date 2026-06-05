@@ -118,7 +118,7 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - Remove the now-obsolete StatusCard from the layout
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 8.1, 8.2, 8.3, 8.4, 9.1, 9.2_
 
-- [ ] 7. Checkpoint — Ensure all tests pass
+- [x] 7. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Wire scanning pipeline end-to-end and handle edge cases
