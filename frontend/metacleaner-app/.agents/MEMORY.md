@@ -57,5 +57,10 @@
 
 ## No route guards on step3/step4/step5 — accessible without files
 - Problem: Users can navigate directly to `/step3`, `/step4`, `/step5` via URL with no files in scannerStore. Pages render empty/broken state or mock data.
-- Solution: Add a reactive guard at the top of each step page that redirects to `/` when `scannerStore.hasFiles` is false: `if (!scannerStore.hasFiles) goto(resolve('/'), { replaceState: true });`
-- Source: code-review, 2026-06-05T12:54:53.811+00:00
+- Solution: Use `$effect(() => { if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true }); });` at the top of each step's `<script>` block. Using `$effect` (not bare script) ensures it runs only in the browser, avoids SSR issues, and reacts to reactive changes.
+- Source: code-review-fix, 2026-06-05
+
+## step4/step5 UploadedFile → QueuedFile migration pattern
+- Problem: `step4/+page.svelte` and `step5/+page.svelte` used `getUploadedFiles()` (mock fileRepository) returning `UploadedFile` (size: string, extension: 'JPG'). All child components (`ErrorFilesCard`, `ErrorLogAccordion`, `ErrorStateCard`, `FileResultsCard`, `FileResultItem`) used `UploadedFile`.
+- Solution: Replace `UploadedFile` with `QueuedFile` throughout. Key field mapping: `file.size` (number) → `formatSize(file.size)`, `file.extension` ('.jpg') → `file.extension.replace('.', '').toUpperCase()`, `file.hasGps` → `file.scanResult?.hasGps ?? false`, `file.metadataFieldCount` → `file.scanResult?.fieldCount ?? 0`, `file.device` → `file.scanResult?.device`. For step5's `FileResultsCard`, switch from ID-based result lookup to index-based pairing since mock result IDs don't match real file IDs.
+- Source: code-review-fix, 2026-06-05
