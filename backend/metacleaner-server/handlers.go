@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 )
@@ -213,6 +214,7 @@ func handleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 			_ = pl.ProcessJob(ctx, job, files, progressFn)
 			_ = db.UpdateJob(ctx, job)
+			createJobReport(ctx, db, hub, job, files)
 		}()
 
 		w.Header().Set("Content-Type", "application/json")
@@ -309,6 +311,205 @@ func handleFileDownload(cfg Config) http.HandlerFunc {
 
 		// Neither file found — expired or never existed.
 		WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+	}
+}
+
+// generateReportID returns a human-readable report ID in MCR-YYYY-MMDD-XX format.
+func generateReportID(now time.Time) string {
+	b := make([]byte, 1)
+	rand.Read(b) //nolint:errcheck
+	return fmt.Sprintf("MCR-%04d-%02d%02d-%02X", now.Year(), int(now.Month()), now.Day(), b[0])
+}
+
+// buildReport constructs a Report record from completed job and file data.
+func buildReport(job *Job, files []FileRecord) *Report {
+	now := time.Now().UTC()
+
+	catCounts := map[string]int{"GPS": 0, "EXIF": 0, "XMP": 0, "ID3": 0, "MP4": 0}
+	typeCounts := map[string]int{}
+	formatCounts := map[string]int{}
+
+	for _, f := range files {
+		if f.Status != "done" {
+			continue
+		}
+		typeCounts[f.FileType]++
+		if f.Format != "" {
+			formatCounts[f.Format]++
+		}
+		if md := f.MetadataBreakdown; md != nil {
+			catCounts["GPS"] += len(md.GPSFields)
+			catCounts["EXIF"] += len(md.EXIFFields)
+			catCounts["XMP"] += len(md.XMPFields)
+			catCounts["ID3"] += len(md.ID3Fields)
+			catCounts["MP4"] += len(md.MP4Atoms)
+		}
+	}
+
+	dominantType := "image"
+	if typeCounts["video"] > typeCounts["image"] {
+		dominantType = "video"
+	}
+
+	formats := make([]string, 0, len(formatCounts))
+	for f := range formatCounts {
+		formats = append(formats, strings.ToUpper(f))
+	}
+	sort.Strings(formats)
+	fileTypesStr := strings.Join(formats, ", ")
+
+	catOrder := []string{"GPS", "EXIF", "XMP", "ID3", "MP4"}
+	tags := []string{}
+	for _, cat := range catOrder {
+		if catCounts[cat] > 0 {
+			tags = append(tags, cat)
+		}
+	}
+
+	iconColor := "green"
+	if dominantType == "video" {
+		iconColor = "blue"
+	}
+
+	total := 0
+	for _, v := range catCounts {
+		total += v
+	}
+	chartData := make([]ChartDataPoint, 0, len(catOrder))
+	for _, cat := range catOrder {
+		fields := catCounts[cat]
+		if fields == 0 {
+			continue
+		}
+		pct := 0
+		if total > 0 {
+			pct = (fields * 100) / total
+		}
+		chartData = append(chartData, ChartDataPoint{Label: cat, Fields: fields, Percentage: pct})
+	}
+
+	return &Report{
+		JobID:               job.ID,
+		ReportID:            generateReportID(now),
+		Date:                now,
+		FilesProcessed:      job.FilesCompleted,
+		FieldsRemoved:       job.FieldsRemoved,
+		GPSLocationsRemoved: job.GPSLocationsRemoved,
+		TotalTimeSeconds:    job.TotalTimeSeconds,
+		FileTypes:           fileTypesStr,
+		DominantType:        dominantType,
+		HasGPS:              job.GPSLocationsRemoved > 0,
+		Tags:                tags,
+		IconColor:           iconColor,
+		ChartData:           chartData,
+		PDFStatus:           "pending",
+	}
+}
+
+// createJobReport builds a report record, persists it, notifies clients, and asynchronously
+// generates and uploads the PDF.
+func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
+	report := buildReport(job, files)
+	if err := db.CreateReport(ctx, report); err != nil {
+		return
+	}
+
+	hub.Broadcast(job.ID, ProgressEvent{
+		Type:     "report_ready",
+		JobID:    job.ID,
+		ReportID: report.ReportID,
+	})
+
+	go func() {
+		pdfCtx := context.Background()
+		detail, err := db.GetReport(pdfCtx, report.ID)
+		if err != nil || detail == nil {
+			_ = db.UpdateReportPDF(pdfCtx, report.ID, "", "failed")
+			return
+		}
+		pdfBytes, err := GenerateReportPDF(detail)
+		if err != nil {
+			_ = db.UpdateReportPDF(pdfCtx, report.ID, "", "failed")
+			return
+		}
+		pdfPath, err := db.UploadPDF(pdfCtx, report.ID, pdfBytes)
+		if err != nil {
+			_ = db.UpdateReportPDF(pdfCtx, report.ID, "", "failed")
+			return
+		}
+		_ = db.UpdateReportPDF(pdfCtx, report.ID, pdfPath, "uploaded")
+	}()
+}
+
+// handleListReports handles GET /api/reports — returns all reports with summary stats.
+func handleListReports(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reports, err := db.ListReports(r.Context())
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch reports")
+			return
+		}
+		if reports == nil {
+			reports = []ReportSummary{}
+		}
+		stats := CalculateReportSummary(reports)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"reports": reports,
+			"summary": stats,
+		})
+	}
+}
+
+// handleGetReport handles GET /api/reports/{id} — returns full report detail by human-readable ID.
+func handleGetReport(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reportID := r.PathValue("id")
+		if reportID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
+			return
+		}
+		_, detail, err := db.GetReportByHumanID(r.Context(), reportID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
+			return
+		}
+		if detail == nil {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "Report not found")
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(detail)
+	}
+}
+
+// handleGetReportPDF handles GET /api/reports/{id}/pdf — redirects to signed PDF download URL.
+func handleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reportID := r.PathValue("id")
+		if reportID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
+			return
+		}
+		report, _, err := db.GetReportByHumanID(r.Context(), reportID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
+			return
+		}
+		if report == nil {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "Report not found")
+			return
+		}
+		if report.PDFStatus != "uploaded" || report.PDFPath == "" {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "PDF not available for this report")
+			return
+		}
+		signedURL, err := db.GetPDFSignedURL(r.Context(), report.PDFPath)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to generate PDF URL")
+			return
+		}
+		http.Redirect(w, r, signedURL, http.StatusFound)
 	}
 }
 

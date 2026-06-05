@@ -321,24 +321,13 @@ func (c *SupabaseClient) UpdateReportPDF(ctx context.Context, reportID, pdfPath,
 	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
 }
 
-// GetReport fetches a report by its UUID and builds a ReportDetail including per-file data.
-func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*ReportDetail, error) {
-	var rows []dbReport
-	url := c.restURL("cleaning_reports?id=eq." + reportID)
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
-		return nil, err
-	}
-	if len(rows) == 0 {
-		return nil, nil
-	}
-	r := rows[0]
-
+// buildReportDetail assembles a ReportDetail from a dbReport row plus its file records.
+func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*ReportDetail, error) {
 	var chartData []ChartDataPoint
 	if len(r.ChartData) > 0 {
 		_ = json.Unmarshal(r.ChartData, &chartData)
 	}
 
-	// Fetch associated file records via the job.
 	fileRecords, err := c.GetFileRecords(ctx, r.JobID)
 	if err != nil {
 		return nil, fmt.Errorf("get file records: %w", err)
@@ -348,7 +337,7 @@ func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*Repor
 	for _, f := range fileRecords {
 		if f.Status == "done" || f.Status == "error" {
 			sizeMB := fmt.Sprintf("%.1f", float64(f.FileSizeBytes)/(1024*1024))
-			detail := ReportFileDetail{
+			fileDetails = append(fileDetails, ReportFileDetail{
 				Name:          f.FileName,
 				Extension:     f.FileExtension,
 				SizeMB:        sizeMB,
@@ -359,12 +348,11 @@ func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*Repor
 				HasGPS:        f.GPSRemoved,
 				FieldsRemoved: f.FieldsRemoved,
 				Metadata:      f.MetadataBreakdown,
-			}
-			fileDetails = append(fileDetails, detail)
+			})
 		}
 	}
 
-	detail := &ReportDetail{
+	return &ReportDetail{
 		ReportID:            r.ReportID,
 		Date:                r.Date.UTC().Format(time.RFC3339),
 		FilesProcessed:      r.FilesProcessed,
@@ -373,8 +361,65 @@ func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*Repor
 		TotalTimeSeconds:    r.TotalTimeSeconds,
 		ChartData:           chartData,
 		Files:               fileDetails,
+	}, nil
+}
+
+// dbRowToReport converts a dbReport row to a Report struct (includes PDFPath/PDFStatus).
+func dbRowToReport(r dbReport) *Report {
+	report := &Report{
+		ID:                  r.ID,
+		JobID:               r.JobID,
+		ReportID:            r.ReportID,
+		Date:                r.Date,
+		FilesProcessed:      r.FilesProcessed,
+		FieldsRemoved:       r.FieldsRemoved,
+		GPSLocationsRemoved: r.GPSLocationsRemoved,
+		TotalTimeSeconds:    r.TotalTimeSeconds,
+		FileTypes:           r.FileTypes,
+		DominantType:        r.DominantType,
+		HasGPS:              r.HasGPS,
+		Tags:                r.Tags,
+		IconColor:           r.IconColor,
+		PDFPath:             r.PDFPath,
+		PDFStatus:           r.PDFStatus,
 	}
-	return detail, nil
+	if r.CreatedAt != nil {
+		report.CreatedAt = *r.CreatedAt
+	}
+	return report
+}
+
+// GetReport fetches a report by its UUID and builds a ReportDetail including per-file data.
+func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*ReportDetail, error) {
+	var rows []dbReport
+	url := c.restURL("cleaning_reports?id=eq." + reportID)
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil
+	}
+	return c.buildReportDetail(ctx, rows[0])
+}
+
+// GetReportByHumanID fetches a report by its human-readable MCR-... ID.
+// Returns both the raw Report (with PDFPath/PDFStatus) and the full ReportDetail.
+func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID string) (*Report, *ReportDetail, error) {
+	var rows []dbReport
+	url := c.restURL("cleaning_reports?report_id=eq." + humanID)
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return nil, nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil, nil
+	}
+	r := rows[0]
+	report := dbRowToReport(r)
+	detail, err := c.buildReportDetail(ctx, r)
+	if err != nil {
+		return report, nil, err
+	}
+	return report, detail, nil
 }
 
 // ListReports returns all reports ordered by date descending.

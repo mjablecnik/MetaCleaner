@@ -205,15 +205,15 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Test download expired/missing file → 404
     - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 11. Implement report generation and PDF creation
-  - [ ] 11.1 Implement report creation after job completion
+- [x] 11. Implement report generation and PDF creation
+  - [x] 11.1 Implement report creation after job completion
     - After pipeline finishes all files: create report record in Supabase DB
     - Generate human-readable report ID (MCR-YYYY-MMDD-XX format)
     - Populate: job_id, date, files_processed, fields_removed, gps_locations_removed, total_time_seconds, file_types, dominant_type, has_gps, tags, icon_color, chart_data
     - Set pdf_status to "pending"
     - _Requirements: 5.1_
 
-  - [ ] 11.2 Implement PDF report generation (`pdf.go`)
+  - [x] 11.2 Implement PDF report generation (`pdf.go`)
     - Create `GenerateReportPDF(report *ReportDetail) ([]byte, error)` function using signintech/gopdf
     - Header: "MetaCleaner Report" + report ID + date
     - Summary section: files processed, fields removed, GPS locations removed, total time
@@ -223,20 +223,20 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Return PDF as byte slice
     - _Requirements: 5.2_
 
-  - [ ] 11.3 Implement PDF upload to Supabase Storage
+  - [x] 11.3 Implement PDF upload to Supabase Storage
     - After PDF generation: upload bytes to Supabase Storage bucket `cleaning-reports`
     - On success: update report record with pdf_path and pdf_status="uploaded"
     - On failure: retry once, then mark pdf_status="failed" and log error
     - Report record is saved regardless of PDF success/failure
     - _Requirements: 5.2, 5.3, 5.7, 10.3, 10.6_
 
-  - [ ] 11.4 Implement reports list and detail endpoints (`handlers.go` — reports section)
+  - [x] 11.4 Implement reports list and detail endpoints (`handlers.go` — reports section)
     - Create `handleListReports(w, r)` — query all reports from Supabase, compute summary stats (totalReports, fieldsRemoved, filesProcessed, gpsRemoved), return ordered by date DESC
     - Create `handleGetReport(w, r)` — get full report detail with per-file breakdown, return 404 if not found
     - Create `handleGetReportPDF(w, r)` — get signed URL from Supabase Storage, redirect (302) to it, return 404 if report or PDF not found
     - _Requirements: 5.4, 5.5, 5.6, 10.4_
 
-  - [ ]* 11.5 Write unit tests for report endpoints
+  - [x]* 11.5 Write unit tests for report endpoints
     - Test list reports returns summary stats
     - Test report detail with valid ID
     - Test report detail with invalid ID → 404
