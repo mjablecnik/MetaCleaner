@@ -311,8 +311,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
 - [x] 15. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Create database migration script
-  - [ ] 16.1 Create SQL migration script (`scripts/migration.sql`)
+- [x] 16. Create database migration script
+  - [x] 16.1 Create SQL migration script (`scripts/migration.sql`)
     - Create `cleaning_jobs` table with UUID PK, status, file counts, timestamps
     - Create `job_files` table with UUID PK, FK to cleaning_jobs, file metadata, status, metadata_breakdown JSONB
     - Create `cleaning_reports` table with UUID PK, FK to cleaning_jobs, report_id (unique human-readable), PDF path/status, chart_data JSONB, tags array
