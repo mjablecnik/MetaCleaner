@@ -74,8 +74,8 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
 - [x] 4. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement scanner store (reactive state management)
-  - [ ] 5.1 Create scanner store with Svelte 5 runes
+- [x] 5. Implement scanner store (reactive state management)
+  - [x] 5.1 Create scanner store with Svelte 5 runes
     - Create `src/lib/scanner/scannerStore.svelte.ts`
     - Use `$state` for `files: QueuedFile[]` and scanning status
     - Use `$derived` for `aggregatedRisk`, `hasFiles`, `isScanning`
@@ -85,7 +85,7 @@ This plan merges the file upload (step1) and risk analysis (step2) into a single
     - Process files sequentially (one at a time) to avoid UI thread blocking
     - On each file scan completion, update the file's `scanResult` and recompute `aggregatedRisk`
     - _Requirements: 3.1, 3.2, 3.4, 5.1, 5.2, 5.3, 7.1, 7.2_
-  - [ ]* 5.2 Write unit tests for scanner store
+  - [x]* 5.2 Write unit tests for scanner store
     - Test addFiles triggers scanning and updates state
     - Test removeFile recalculates aggregated risk correctly
     - Test clearFiles resets all state to initial values
