@@ -65,8 +65,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - **Property 7: Report summary statistics aggregation**
     - **Validates: Requirements 5.4**
 
-- [ ] 3. Implement Supabase client
-  - [ ] 3.1 Implement Supabase DB and Storage client (`supabase.go`)
+- [x] 3. Implement Supabase client
+  - [x] 3.1 Implement Supabase DB and Storage client (`supabase.go`)
     - Create `SupabaseClient` struct holding HTTP client, base URL, and API key
     - Implement `NewSupabaseClient(cfg Config) *SupabaseClient`
     - Implement `Ping(ctx) error` for health check (simple query to verify connectivity)
@@ -85,7 +85,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Include retry logic for Storage uploads (retry once on failure)
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement file upload handler
