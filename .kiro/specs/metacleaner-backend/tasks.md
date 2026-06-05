@@ -88,8 +88,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
 - [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement file upload handler
-  - [ ] 5.1 Implement upload handler and temp storage (`handlers.go` — upload section)
+- [x] 5. Implement file upload handler
+  - [x] 5.1 Implement upload handler and temp storage (`handlers.go` — upload section)
     - Create `handleUpload(w http.ResponseWriter, r *http.Request)` handler
     - Parse multipart form data with configurable max size
     - For each file: validate size (≤ MaxFileSize), validate format (extension check), generate unique file ID (UUID-based `f-{short}`)
@@ -101,7 +101,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Process each file independently in multi-file uploads
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
 
-  - [ ]* 5.2 Write unit tests for upload handler
+  - [x]* 5.2 Write unit tests for upload handler
     - Test multi-file upload processing (Req 1.5)
     - Test oversized file rejection → 413 (Req 1.3)
     - Test unsupported format rejection → 415 (Req 1.4)
