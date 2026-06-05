@@ -321,8 +321,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Add comments describing each table's purpose
     - _Requirements: 11.1, 11.2, 11.3_
 
-- [ ] 17. Create deployment files
-  - [ ] 17.1 Create Dockerfile
+- [x] 17. Create deployment files
+  - [x] 17.1 Create Dockerfile
     - Multi-stage build: Go 1.22+ builder stage, minimal production stage (debian-slim with ExifTool + FFmpeg installed)
     - Builder: copy go.mod/go.sum first, run `go mod download`, then copy source and build
     - Production: install exiftool and ffmpeg via apt, copy binary from builder
@@ -330,21 +330,21 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - CMD runs the Go binary
     - _Requirements: 9.1_
 
-  - [ ] 17.2 Create start-docker.sh
+  - [x] 17.2 Create start-docker.sh
     - Parse APP_NAME from fly.toml
     - Build Docker image
     - Stop and remove existing container with same name
     - Run container with `--env-file .env` and port mapping
     - _Requirements: 9.2_
 
-  - [ ] 17.3 Create fly.toml
+  - [x] 17.3 Create fly.toml
     - Define app name, primary region
     - Set port mapping (internal_port matching configured PORT)
     - Add [env] section with non-sensitive config (PORT, TEMP_STORAGE_PATH, RETENTION_PERIOD, MAX_FILE_SIZE)
     - Configure health check on /api/health
     - _Requirements: 9.3_
 
-  - [ ] 17.4 Create fly-setup.sh
+  - [x] 17.4 Create fly-setup.sh
     - Parse APP_NAME from fly.toml
     - Check if app exists (fly apps list), create only if missing
     - Read .env, skip comments/empty lines/empty values
