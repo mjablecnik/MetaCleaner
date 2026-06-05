@@ -1,6 +1,14 @@
 # AI Log
 
+## 2026-06-05 14:28 — check-build
+
+- Fixed formatting in 17 files (scanner module, Svelte components, agents docs) via prettier
+- Fixed test script to run only server-side tests by default (browser tests require system libs unavailable without sudo)
+- Added `test:browser` script for Playwright browser/Storybook tests
+- Updated README: added Prerequisites section with bun install instructions, removed reference to non-existent `.env.example`, documented browser test setup requirement
+
 ## 2026-06-05 13:14 — create-code
+
 - Spec: client-side-risk-scanner
 - Implemented scanner module types and constants (`src/lib/scanner/types.ts`, `src/lib/scanner/constants.ts`)
 - Implemented risk analyzer with `computeFileScore()`, `computeAggregatedRisk()`, `classifySeverity()` in `src/lib/scanner/riskAnalyzer.ts`
