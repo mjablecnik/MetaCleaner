@@ -163,8 +163,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Close connection after sending job_complete event
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 8. Implement job creation and orchestration
-  - [ ] 8.1 Implement job creation handler (`handlers.go` — jobs section)
+- [x] 8. Implement job creation and orchestration
+  - [x] 8.1 Implement job creation handler (`handlers.go` — jobs section)
     - Create `handleCreateJob(w, r)` — parse JSON body with fileIds array
     - Validate fileIds not empty (400 if empty)
     - Verify each fileId exists in temp storage (404 if any missing)
@@ -174,13 +174,13 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Return 201 with jobId, status, totalFiles, createdAt
     - _Requirements: 2.1, 2.5_
 
-  - [ ] 8.2 Implement job status handler (`handlers.go` — jobs section)
+  - [x] 8.2 Implement job status handler (`handlers.go` — jobs section)
     - Create `handleGetJob(w, r)` — get job by ID from Supabase
     - Return current job state: status, totalFiles, filesCompleted, fieldsRemoved, times
     - Return 404 if job not found
     - _Requirements: 6.1_
 
-  - [ ]* 8.3 Write unit tests for job creation
+  - [x]* 8.3 Write unit tests for job creation
     - Test job creation with valid fileIds → 201
     - Test job creation with missing fileIds → 404
     - Test job creation with empty fileIds → 400

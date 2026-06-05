@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -10,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // UploadedFileInfo is the metadata returned for each accepted file on upload.
@@ -137,5 +139,111 @@ func handleUpload(cfg Config) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string][]UploadedFileInfo{"files": accepted})
+	}
+}
+
+type createJobRequest struct {
+	FileIDs []string `json:"fileIds"`
+}
+
+type createJobResponse struct {
+	JobID      string    `json:"jobId"`
+	Status     string    `json:"status"`
+	TotalFiles int       `json:"totalFiles"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
+// handleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
+func handleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req createJobRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid request body")
+			return
+		}
+		if len(req.FileIDs) == 0 {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "fileIds must not be empty")
+			return
+		}
+
+		uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
+		files := make([]FileRecord, 0, len(req.FileIDs))
+
+		for _, fileID := range req.FileIDs {
+			matches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
+			if len(matches) == 0 {
+				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
+				return
+			}
+			info, err := os.Stat(matches[0])
+			if err != nil {
+				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not accessible", fileID))
+				return
+			}
+			ext := filepath.Ext(matches[0])
+			files = append(files, FileRecord{
+				ID:            fileID,
+				FileName:      fileID + ext,
+				FileExtension: ext,
+				FileSizeBytes: info.Size(),
+				FileType:      GetFileType(ext),
+				Format:        canonicalFormat(ext),
+				Status:        "pending",
+			})
+		}
+
+		job := &Job{
+			Status:     "processing",
+			TotalFiles: len(files),
+		}
+		if err := db.CreateJob(r.Context(), job); err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to create job")
+			return
+		}
+		for i := range files {
+			files[i].JobID = job.ID
+		}
+		if err := db.CreateFileRecords(r.Context(), files); err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to create file records")
+			return
+		}
+
+		go func() {
+			ctx := context.Background()
+			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
+			_ = pl.ProcessJob(ctx, job, files, progressFn)
+			_ = db.UpdateJob(ctx, job)
+		}()
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(createJobResponse{
+			JobID:      job.ID,
+			Status:     job.Status,
+			TotalFiles: job.TotalFiles,
+			CreatedAt:  job.CreatedAt,
+		})
+	}
+}
+
+// handleGetJob handles GET /api/jobs/{id} — returns current job state.
+func handleGetJob(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		jobID := r.PathValue("id")
+		if jobID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+			return
+		}
+		job, err := db.GetJob(r.Context(), jobID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch job")
+			return
+		}
+		if job == nil {
+			WriteError(w, http.StatusNotFound, ErrJobNotFound, "Job not found")
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(job)
 	}
 }
