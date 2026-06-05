@@ -1,6 +1,7 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import FileAccordionItem from './FileAccordionItem.svelte';
+	import type { ReportFileDetail } from '$lib/repositories/reportRepository';
 
 	const { Story } = defineMeta({
 		title: 'Report/FileAccordionItem',
@@ -41,7 +42,7 @@
 			],
 			totalRemoved: 12,
 		},
-	};
+	} satisfies ReportFileDetail;
 
 	const imageFileWithGps = {
 		name: 'city_walk.heic',
@@ -76,7 +77,7 @@
 			],
 			totalRemoved: 43,
 		},
-	};
+	} satisfies ReportFileDetail;
 
 	const videoFile = {
 		name: 'family_reunion.mp4',
@@ -105,7 +106,7 @@
 			],
 			totalRemoved: 18,
 		},
-	};
+	} satisfies ReportFileDetail;
 </script>
 
 <Story name="Collapsed — image, no GPS">

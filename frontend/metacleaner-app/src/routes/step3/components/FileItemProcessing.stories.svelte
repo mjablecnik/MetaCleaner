@@ -1,6 +1,7 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import FileItemProcessing from './FileItemProcessing.svelte';
+	import type { UploadedFile } from '$lib/repositories/fileRepository';
 
 	const { Story } = defineMeta({
 		title: 'Step3/FileItemProcessing',
@@ -23,7 +24,7 @@
 		metadataFieldCount: 12,
 		hasGps: false,
 		device: 'Canon EOS R5',
-	};
+	} satisfies UploadedFile;
 
 	const imageFileWithGps = {
 		id: 'photo-holiday-2024',
@@ -34,7 +35,7 @@
 		metadataFieldCount: 18,
 		hasGps: true,
 		device: 'iPhone 15 Pro',
-	};
+	} satisfies UploadedFile;
 
 	const videoFile = {
 		id: 'video-prague-walk',
@@ -45,7 +46,7 @@
 		metadataFieldCount: 8,
 		hasGps: false,
 		device: 'H.264',
-	};
+	} satisfies UploadedFile;
 </script>
 
 <Story name="Done — image, no GPS">

@@ -1,7 +1,8 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import { fn } from 'storybook/test';
 	import FileListItemRisk from './FileListItemRisk.svelte';
+	import type { UploadedFile } from '$lib/repositories/fileRepository';
 
 	const { Story } = defineMeta({
 		title: 'Step2/FileListItemRisk',
@@ -24,7 +25,7 @@
 		metadataFieldCount: 3,
 		hasGps: false,
 		device: 'Canon EOS R5',
-	};
+	} satisfies UploadedFile;
 
 	const mediumRiskVideo = {
 		id: 'video-prague-walk',
@@ -35,7 +36,7 @@
 		metadataFieldCount: 43,
 		hasGps: false,
 		device: 'H.264',
-	};
+	} satisfies UploadedFile;
 
 	const highRiskImage = {
 		id: 'photo-holiday-2024',
@@ -46,7 +47,7 @@
 		metadataFieldCount: 18,
 		hasGps: true,
 		device: 'iPhone 15 Pro',
-	};
+	} satisfies UploadedFile;
 </script>
 
 <Story name="Low Risk — few fields, no GPS">

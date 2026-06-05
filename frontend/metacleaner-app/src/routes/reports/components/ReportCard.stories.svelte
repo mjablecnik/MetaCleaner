@@ -1,6 +1,7 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import ReportCard from './ReportCard.svelte';
+	import type { Report } from '$lib/repositories/reportRepository';
 
 	const { Story } = defineMeta({
 		title: 'Reports/ReportCard',
@@ -27,7 +28,7 @@
 		tags: ['EXIF', 'XMP'],
 		reportId: 'MCR-2025-0602-A1',
 		iconColor: 'green',
-	};
+	} satisfies Report;
 
 	const videoReport = {
 		id: '#B2',
@@ -42,7 +43,7 @@
 		tags: ['XMP'],
 		reportId: 'MCR-2025-0529-B2',
 		iconColor: 'orange',
-	};
+	} satisfies Report;
 
 	const withTagsReport = {
 		id: '#C3',
@@ -57,7 +58,7 @@
 		tags: ['GPS', 'EXIF', 'XMP'],
 		reportId: 'MCR-2025-0515-C3',
 		iconColor: 'blue',
-	};
+	} satisfies Report;
 
 	const highFieldsReport = {
 		id: '#D4',
@@ -73,7 +74,7 @@
 		tags: ['GPS', 'EXIF', 'XMP'],
 		reportId: 'MCR-2025-0401-D4',
 		iconColor: 'green',
-	};
+	} satisfies Report;
 </script>
 
 <Story name="Image type">

@@ -4,7 +4,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
 	import { getResults, type ProcessingResults } from '$lib/repositories/processingRepository';
-	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
+	import SummaryStatsRow, { type Stat } from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import SuccessHeader from './sections/SuccessHeader.svelte';
 	import MetadataOverview from './sections/MetadataOverview.svelte';
 	import FileResultsCard from './sections/FileResultsCard.svelte';
@@ -18,7 +18,7 @@
 		return fn ? fn(params) : key;
 	}
 
-	const stats = $derived([
+	const stats: Stat[] = $derived([
 		{
 			icon: 'fa-solid fa-file-circle-check',
 			iconColor: 'green',
