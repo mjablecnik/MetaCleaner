@@ -109,3 +109,13 @@
 		</div>
 	{/if}
 </div>
+
+<!-- Mobile CTA hint -->
+<div
+	class="lg:hidden flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-green/20 bg-brand-green/6"
+>
+	<i class="fa-solid fa-shield-halved text-brand-green text-sm"></i>
+	<p class="text-xs text-text-muted">
+		{tx('step2.risk.reducePre')} <span class="text-brand-green font-semibold">{tx('step2.risk.reduceHighlight')}</span>
+	</p>
+</div>

@@ -90,3 +90,24 @@
 		</div>
 	</div>
 </div>
+
+<!-- Mobile Fixed Bottom CTA -->
+<div
+	class="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4 z-50 border-t border-gray-800 bg-navy-main"
+>
+	<div class="flex gap-3">
+		<a
+			href="/step3"
+			class="flex-1 py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2 active:scale-95 transition-transform"
+		>
+			<i class="fa-solid fa-wand-magic-sparkles"></i> {tx('step1.actions.startCleaning')}
+		</a>
+		<button
+			onclick={onOptions}
+			aria-label={tx('step1.actions.options')}
+			class="px-5 py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center gap-2 active:scale-95 transition-transform"
+		>
+			<i class="fa-solid fa-sliders"></i>
+		</button>
+	</div>
+</div>
