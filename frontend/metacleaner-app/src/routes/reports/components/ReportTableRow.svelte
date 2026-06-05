@@ -3,7 +3,7 @@
 	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { Report } from '$lib/repositories/reportRepository';
+	import type { Report } from '$lib/types/report';
 
 	interface Props {
 		report: Report;

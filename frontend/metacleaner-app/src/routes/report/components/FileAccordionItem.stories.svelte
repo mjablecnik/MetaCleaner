@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import FileAccordionItem from './FileAccordionItem.svelte';
-	import type { ReportFileDetail } from '$lib/repositories/reportRepository';
+	import type { ReportFileDetail } from '$lib/types/report';
 
 	const { Story } = defineMeta({
 		title: 'Report/FileAccordionItem',

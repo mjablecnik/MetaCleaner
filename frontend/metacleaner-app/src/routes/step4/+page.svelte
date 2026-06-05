@@ -7,7 +7,7 @@
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import type { QueuedFile } from '$lib/scanner/types';
 	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
-	import type { ErrorState } from '$lib/repositories/processingRepository';
+	import type { ErrorState } from '$lib/types/processing';
 	import ErrorBanner from './sections/ErrorBanner.svelte';
 	import MobileErrorVisual from './sections/MobileErrorVisual.svelte';
 	import ErrorFilesCard from './sections/ErrorFilesCard.svelte';

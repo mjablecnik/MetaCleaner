@@ -2,7 +2,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import ActivityLog, { type ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
-	import type { ErrorState } from '$lib/repositories/processingRepository';
+	import type { ErrorState } from '$lib/types/processing';
 	import type { QueuedFile } from '$lib/scanner/types';
 	import ErrorVisual from '../components/ErrorVisual.svelte';
 	import ErrorDetailBox from '../components/ErrorDetailBox.svelte';

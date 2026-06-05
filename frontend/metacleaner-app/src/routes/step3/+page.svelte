@@ -6,7 +6,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import { uploadFiles, createJob, connectJobProgress, getJobStatus, getReportDetail } from '$lib/api/client';
+	import { uploadFiles, createJob, connectJobProgress, getJobStatus, getReportDetail, withRetry } from '$lib/api/client';
 	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import MobileStatusCard from './sections/MobileStatusCard.svelte';
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
@@ -74,7 +74,7 @@
 
 			let serverFiles;
 			try {
-				serverFiles = await uploadFiles(files.map((f) => f.file));
+				serverFiles = await withRetry(() => uploadFiles(files.map((f) => f.file)));
 			} catch (err) {
 				cleaningStore.setUploadError(err instanceof Error ? err.message : 'Upload failed');
 				goto(resolve('/step4' as Pathname), { replaceState: false });
@@ -85,7 +85,7 @@
 
 			let jobResp;
 			try {
-				jobResp = await createJob(serverFiles.map((f) => f.id));
+				jobResp = await withRetry(() => createJob(serverFiles.map((f) => f.id)));
 			} catch (err) {
 				cleaningStore.setUploadError(err instanceof Error ? err.message : 'Job creation failed');
 				goto(resolve('/step4' as Pathname), { replaceState: false });

@@ -4,7 +4,7 @@
 	import type {
 		ProcessingResults,
 		FileMetadataResult
-	} from '$lib/repositories/processingRepository';
+	} from '$lib/types/processing';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';

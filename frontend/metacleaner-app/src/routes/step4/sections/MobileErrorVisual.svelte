@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { ErrorState } from '$lib/repositories/processingRepository';
+	import type { ErrorState } from '$lib/types/processing';
 	import ErrorVisual from '../components/ErrorVisual.svelte';
 
 	interface Props {

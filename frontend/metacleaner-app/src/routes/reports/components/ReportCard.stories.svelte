@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import ReportCard from './ReportCard.svelte';
-	import type { Report } from '$lib/repositories/reportRepository';
+	import type { Report } from '$lib/types/report';
 
 	const { Story } = defineMeta({
 		title: 'Reports/ReportCard',

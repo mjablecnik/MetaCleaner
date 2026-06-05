@@ -191,6 +191,7 @@ export const cleaningStore = {
 			if (scannerId) {
 				processingState = {
 					...processingState,
+					filesCompleted: processingState.filesCompleted + 1,
 					files: processingState.files.map((f) =>
 						f.fileId === scannerId ? { ...f, status: 'error' } : f
 					),

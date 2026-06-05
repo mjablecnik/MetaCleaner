@@ -117,6 +117,25 @@ export interface WsProgressEvent {
 	gpsLocationsRemoved?: number;
 }
 
+export async function withRetry<T>(
+	fn: () => Promise<T>,
+	maxAttempts = 3,
+	delayMs = 1000
+): Promise<T> {
+	let lastErr: unknown;
+	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			return await fn();
+		} catch (err) {
+			lastErr = err;
+			if (attempt < maxAttempts) {
+				await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
+			}
+		}
+	}
+	throw lastErr;
+}
+
 export async function uploadFiles(files: File[]): Promise<ApiFileRecord[]> {
 	const formData = new FormData();
 	for (const file of files) {

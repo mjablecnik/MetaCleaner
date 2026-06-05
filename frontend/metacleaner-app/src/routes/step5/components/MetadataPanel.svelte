@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MetadataBreakdown } from '$lib/repositories/processingRepository';
+	import type { MetadataBreakdown } from '$lib/types/processing';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 

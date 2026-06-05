@@ -4,7 +4,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getReportDetail } from '$lib/api/client';
-	import type { ReportDetail, ReportFileDetail } from '$lib/repositories/reportRepository';
+	import type { ReportDetail, ReportFileDetail } from '$lib/types/report';
 	import type { ApiReportDetail } from '$lib/api/client';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';

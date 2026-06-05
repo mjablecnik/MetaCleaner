@@ -2,7 +2,7 @@
 	import type {
 		MetadataBreakdown,
 		ProcessingResults
-	} from '$lib/repositories/processingRepository';
+	} from '$lib/types/processing';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import MetadataPanel from '../components/MetadataPanel.svelte';

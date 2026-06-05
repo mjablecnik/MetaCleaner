@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { ReportFileDetail } from '$lib/repositories/reportRepository';
+	import type { ReportFileDetail } from '$lib/types/report';
 	import FileAccordionItem from '../components/FileAccordionItem.svelte';
 
 	interface Props {

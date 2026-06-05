@@ -2,7 +2,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { QueuedFile } from '$lib/scanner/types';
-	import type { ProcessingState } from '$lib/repositories/processingRepository';
+	import type { ProcessingState } from '$lib/types/processing';
 	import FileItemProcessing from '../components/FileItemProcessing.svelte';
 
 	interface Props {

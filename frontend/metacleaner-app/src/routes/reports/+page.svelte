@@ -6,7 +6,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { getReports as fetchReportsApi, getReportPdfUrl } from '$lib/api/client';
 	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
-	import type { Report, ReportSummaryStats } from '$lib/repositories/reportRepository';
+	import type { Report, ReportSummaryStats } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import ReportsHeader from './sections/ReportsHeader.svelte';

@@ -4,7 +4,7 @@
 	import AccordionCard from '$lib/shared/elements/AccordionCard.svelte';
 	import ActivityLog, { type ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
 	import type { QueuedFile } from '$lib/scanner/types';
-	import type { ProcessingState } from '$lib/repositories/processingRepository';
+	import type { ProcessingState } from '$lib/types/processing';
 
 	interface Props {
 		processingState: ProcessingState | null;
