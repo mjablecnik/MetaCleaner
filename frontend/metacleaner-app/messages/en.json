@@ -98,6 +98,9 @@
 	"step2.risk.scanFailed": "Scanning failed",
 	"step2.risk.scanFailedDesc": "Could not analyze the uploaded files. Remove them and try again.",
 	"step3.meta.title": "MetaCleaner — Processing",
+	"step3.badge.uploading": "Uploading...",
+	"step3.upload.title": "Uploading files...",
+	"step3.upload.description": "Preparing your files for cleaning. This may take a moment for large files.",
 	"step3.badge.inProgressDesktop": "Cleaning in progress...",
 	"step3.badge.inProgressMobile": "In progress...",
 	"step3.status.title": "Processing status",
@@ -261,5 +264,7 @@
 	"report.files.more": "more",
 	"report.files.removed": "removed",
 	"report.header.generatedDesc": "{date} · {files} files · {fields} fields removed",
+	"common.loading": "Loading...",
+	"common.error": "An error occurred. Please try again.",
 	"common.footer.copyright": "© 2025 MetaCleaner. All rights reserved."
 }

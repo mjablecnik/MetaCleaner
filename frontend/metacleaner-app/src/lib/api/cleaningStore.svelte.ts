@@ -6,9 +6,10 @@ import type {
 	ErrorState,
 	ErrorType,
 	ProcessingResults,
-	FileMetadataResult
+	FileMetadataResult,
+	MetadataBreakdown
 } from '$lib/types/processing';
-import type { WsProgressEvent } from './client';
+import type { WsProgressEvent, ApiChartDataPoint } from './client';
 
 export type CleaningPhase = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
 
@@ -33,6 +34,7 @@ let errorState = $state<ErrorState | null>(null);
 // Completion state (step5)
 let results = $state<ProcessingResults | null>(null);
 let reportId = $state<string | null>(null);
+let completedAtMs = $state<number | null>(null);
 
 // Accumulates per-file results from file_complete WS events
 let pendingFileResults = $state<FileMetadataResult[]>([]);
@@ -74,6 +76,9 @@ export const cleaningStore = {
 	get reportId() {
 		return reportId;
 	},
+	get completedAtMs() {
+		return completedAtMs;
+	},
 	get fileMappings() {
 		return fileMappings;
 	},
@@ -88,6 +93,7 @@ export const cleaningStore = {
 		errorState = null;
 		results = null;
 		reportId = null;
+		completedAtMs = null;
 		pendingFileResults = [];
 		void queuedFiles; // used externally to determine files
 	},
@@ -211,6 +217,7 @@ export const cleaningStore = {
 		} else if (event.type === 'job_complete') {
 			overallPct = 100;
 			reportId = event.reportId ?? null;
+			completedAtMs = Date.now();
 			results = {
 				filesProcessed: event.filesCompleted ?? processingState.totalFiles,
 				fieldsRemoved: event.fieldsRemoved ?? processingState.fieldsRemoved,
@@ -227,6 +234,26 @@ export const cleaningStore = {
 			};
 			phase = 'completed';
 		}
+	},
+
+	setReportBreakdown(chartData: ApiChartDataPoint[]) {
+		if (!results) return;
+		const breakdown: MetadataBreakdown = {
+			gpsLocations: results.beforeBreakdown.gpsLocations,
+			exifFields: 0,
+			xmpFields: 0,
+			id3mp4Fields: 0,
+			otherFields: 0
+		};
+		for (const point of chartData) {
+			const label = point.label.toUpperCase();
+			if (label === 'GPS') breakdown.gpsLocations = point.fields;
+			else if (label === 'EXIF') breakdown.exifFields = point.fields;
+			else if (label === 'XMP') breakdown.xmpFields = point.fields;
+			else if (label.includes('ID3') || label.includes('MP4')) breakdown.id3mp4Fields = point.fields;
+			else breakdown.otherFields += point.fields;
+		}
+		results = { ...results, beforeBreakdown: breakdown };
 	},
 
 	setError(errCode: string, message: string, failedServerId: string | null) {
@@ -291,6 +318,7 @@ export const cleaningStore = {
 		errorState = null;
 		results = null;
 		reportId = null;
+		completedAtMs = null;
 		pendingFileResults = [];
 	}
 };

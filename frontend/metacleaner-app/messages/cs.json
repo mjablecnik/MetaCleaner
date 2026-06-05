@@ -98,6 +98,9 @@
 	"step2.risk.scanFailed": "Skenování selhalo",
 	"step2.risk.scanFailedDesc": "Soubory se nepodařilo analyzovat. Odeberte je a zkuste znovu.",
 	"step3.meta.title": "MetaCleaner — Zpracovávám",
+	"step3.badge.uploading": "Nahrávám...",
+	"step3.upload.title": "Nahrávám soubory...",
+	"step3.upload.description": "Připravuji soubory k čištění. U větších souborů to může chvíli trvat.",
 	"step3.badge.inProgressDesktop": "Probíhá čištění...",
 	"step3.badge.inProgressMobile": "Probíhá...",
 	"step3.status.title": "Stav zpracování",
@@ -261,5 +264,7 @@
 	"report.files.more": "dalších",
 	"report.files.removed": "odstraněno",
 	"report.header.generatedDesc": "{date} · {files} souborů · {fields} polí odstraněno",
+	"common.loading": "Načítám...",
+	"common.error": "Došlo k chybě. Zkuste to prosím znovu.",
 	"common.footer.copyright": "© 2025 MetaCleaner. Všechna práva vyhrazena."
 }

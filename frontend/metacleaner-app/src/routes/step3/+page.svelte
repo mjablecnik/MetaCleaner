@@ -6,7 +6,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import { uploadFiles, createJob, connectJobProgress, getJobStatus } from '$lib/api/client';
+	import { uploadFiles, createJob, connectJobProgress, getJobStatus, getReportDetail } from '$lib/api/client';
 	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import MobileStatusCard from './sections/MobileStatusCard.svelte';
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
@@ -38,7 +38,7 @@
 
 		function startPolling(jid: string) {
 			let pollCount = 0;
-			const MAX_POLLS = 10;
+			const MAX_POLLS = 100;
 			pollingTimer = setInterval(async () => {
 				pollCount++;
 				try {
@@ -100,6 +100,13 @@
 					cleaningStore.handleWsEvent(event);
 
 					if (event.type === 'job_complete') {
+						if (event.reportId) {
+							getReportDetail(event.reportId)
+								.then((detail) => cleaningStore.setReportBreakdown(detail.chartData))
+								.catch(() => {
+									// silently ignore — breakdown stays zeroed
+								});
+						}
 						goto(resolve('/step5' as Pathname), { replaceState: false });
 					} else if (event.type === 'file_error') {
 						// A single file error does not necessarily terminate the job — wait for job_complete
@@ -151,7 +158,7 @@
 				{#if cleaningStore.phase === 'uploading'}
 					<div class="h-2 w-2 animate-pulse rounded-full bg-brand-orange"></div>
 					<span class="text-[10px] font-semibold text-brand-orange lg:text-xs">
-						{tx('step3.badge.uploading') || 'Uploading...'}
+						{tx('step3.badge.uploading')}
 					</span>
 				{:else}
 					<div class="h-2 w-2 animate-pulse rounded-full bg-brand-blue"></div>
@@ -169,9 +176,9 @@
 			<div class="flex items-center gap-3">
 				<i class="fa-solid fa-circle-notch spin-slow text-brand-orange text-xl"></i>
 				<div>
-					<p class="text-sm font-semibold text-white">{tx('step3.upload.title') || 'Uploading files...'}</p>
+					<p class="text-sm font-semibold text-white">{tx('step3.upload.title')}</p>
 					<p class="mt-0.5 text-xs text-text-muted">
-						{tx('step3.upload.description') || 'Preparing your files for cleaning. This may take a moment for large files.'}
+						{tx('step3.upload.description')}
 					</p>
 				</div>
 			</div>

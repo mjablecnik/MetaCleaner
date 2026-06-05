@@ -187,9 +187,17 @@ export function connectJobProgress(
 	return ws;
 }
 
+export class FileExpiredError extends Error {
+	constructor() {
+		super('FILE_EXPIRED');
+		this.name = 'FileExpiredError';
+	}
+}
+
 export async function downloadFile(fileId: string): Promise<{ blob: Blob; filename: string }> {
 	const response = await fetch(`${BASE}/api/files/${fileId}/download`);
 	if (!response.ok) {
+		if (response.status === 404) throw new FileExpiredError();
 		throw new Error(`Download failed: ${response.status}`);
 	}
 	const disposition = response.headers.get('Content-Disposition') ?? '';

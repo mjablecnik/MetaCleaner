@@ -30,7 +30,7 @@
 				mobileStyle: 'avatar' as const,
 				showLangDropdown: false,
 				showBackButton: true,
-				backHref: '/step5',
+				backHref: '/',
 				backLabel: tx('reports.nav.backToCleaning')
 			};
 		}
@@ -41,7 +41,7 @@
 				mobileStyle: 'avatar' as const,
 				showLangDropdown: true,
 				showBackButton: true,
-				backHref: '/step5',
+				backHref: '/reports',
 				backLabel: tx('report.nav.backToResults'),
 				reducedDesktopPadding: true,
 				noPrint: true

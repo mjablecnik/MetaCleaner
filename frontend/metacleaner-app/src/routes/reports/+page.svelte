@@ -5,6 +5,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { getReports as fetchReportsApi, getReportPdfUrl } from '$lib/api/client';
+	import { cleaningStore } from '$lib/api/cleaningStore.svelte';
 	import type { Report, ReportSummaryStats } from '$lib/repositories/reportRepository';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -88,29 +89,58 @@
 		}, 2500);
 	}
 
+	function mapReports(data: Awaited<ReturnType<typeof fetchReportsApi>>): {
+		stats: ReportSummaryStats;
+		reports: Report[];
+	} {
+		return {
+			stats: {
+				totalReports: data.summary.totalReports,
+				fieldsRemoved: data.summary.fieldsRemoved,
+				filesProcessed: data.summary.filesProcessed,
+				gpsRemoved: data.summary.gpsRemoved
+			},
+			reports: data.reports.map((r) => ({
+				id: r.id,
+				date: r.date,
+				time: r.time ?? '',
+				duration: r.duration,
+				fileCount: r.fileCount,
+				fileTypes: r.fileTypes,
+				type: r.type,
+				gps: r.gps,
+				fields: r.fields,
+				tags: r.tags,
+				reportId: r.reportId,
+				iconColor: r.iconColor
+			}))
+		};
+	}
+
 	onMount(() => {
+		const expectedReportId = cleaningStore.reportId;
+		let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
 		fetchReportsApi()
 			.then((data) => {
-				stats = {
-					totalReports: data.summary.totalReports,
-					fieldsRemoved: data.summary.fieldsRemoved,
-					filesProcessed: data.summary.filesProcessed,
-					gpsRemoved: data.summary.gpsRemoved
-				};
-				reports = data.reports.map((r) => ({
-					id: r.id,
-					date: r.date,
-					time: r.time ?? '',
-					duration: r.duration,
-					fileCount: r.fileCount,
-					fileTypes: r.fileTypes,
-					type: r.type,
-					gps: r.gps,
-					fields: r.fields,
-					tags: r.tags,
-					reportId: r.reportId,
-					iconColor: r.iconColor
-				}));
+				const mapped = mapReports(data);
+				stats = mapped.stats;
+				reports = mapped.reports;
+
+				// If we just completed a job, retry once if the new report isn't in the list yet
+				if (expectedReportId && !mapped.reports.some((r) => r.id === expectedReportId || r.reportId === expectedReportId)) {
+					retryTimer = setTimeout(() => {
+						fetchReportsApi()
+							.then((d) => {
+								const m = mapReports(d);
+								stats = m.stats;
+								reports = m.reports;
+							})
+							.catch(() => {
+								// keep initial data on retry failure
+							});
+					}, 2000);
+				}
 			})
 			.catch((err) => {
 				loadError = err instanceof Error ? err.message : 'Failed to load reports';
@@ -118,6 +148,10 @@
 			.finally(() => {
 				isLoading = false;
 			});
+
+		return () => {
+			if (retryTimer) clearTimeout(retryTimer);
+		};
 	});
 </script>
 

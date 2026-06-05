@@ -2,6 +2,9 @@
 FROM oven/bun:1 AS build
 WORKDIR /app
 
+ARG PUBLIC_API_URL=http://localhost:8080
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
