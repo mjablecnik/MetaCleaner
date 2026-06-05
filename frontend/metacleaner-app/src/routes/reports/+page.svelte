@@ -616,13 +616,13 @@
 		transition: background 0.15s;
 	}
 	.report-row:hover {
-		background: rgba(30, 41, 59, 0.5);
+		background: var(--color-navy-lighter-50);
 	}
 	.report-card {
 		transition: background 0.15s;
 	}
 	.report-card:active {
-		background: rgba(30, 41, 59, 0.6);
+		background: var(--color-navy-lighter-60);
 	}
 	.filter-btn {
 		transition: all 0.15s;
