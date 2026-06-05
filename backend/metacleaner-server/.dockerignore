@@ -1,4 +1,10 @@
 .git/
 .env
 tests/
+scripts/
 *.md
+.gitignore
+.env.example
+fly-setup.sh
+start-docker.sh
+fly.toml
