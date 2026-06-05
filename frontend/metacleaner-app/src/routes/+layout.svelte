@@ -5,6 +5,7 @@
 	import { initLocale, locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { page } from '$app/state';
+	import { App } from '@capacitor/app';
 	import NavBar from '$lib/shared/components/NavBar.svelte';
 	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
 	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
@@ -57,6 +58,14 @@
 		Promise.all([getLanguages(), getCurrentUser()]).then(([langs, u]) => {
 			langOptions = langs;
 			user = u;
+		});
+
+		// Handle Android hardware back button
+		App.addListener('backButton', ({ canGoBack }) => {
+			if (canGoBack) {
+				window.history.back();
+			}
+			// If can't go back, do nothing (don't close the app)
 		});
 	});
 </script>
