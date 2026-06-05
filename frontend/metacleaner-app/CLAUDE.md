@@ -4,6 +4,14 @@
 - **Package Manager**: bun
 - **Add-ons**: prettier, eslint, vitest, tailwindcss, sveltekit-adapter, paraglide, mcp, storybook
 
+## Architecture & Conventions
+
+See the detailed steering file for architecture, patterns, and conventions:
+
+📄 **[.kiro/steering/metacleaner-frontend.md](../../.kiro/steering/metacleaner-frontend.md)**
+
+Covers: component hierarchy, Svelte 5 runes patterns, i18n, styling theme, data layer, route structure, and coding standards.
+
 ---
 
 You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
