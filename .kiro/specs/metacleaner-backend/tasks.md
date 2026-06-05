@@ -352,8 +352,8 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Set remaining keys as Fly.io secrets
     - _Requirements: 9.4_
 
-- [ ] 18. Create documentation
-  - [ ] 18.1 Create README.md
+- [x] 18. Create documentation
+  - [x] 18.1 Create README.md
     - Project name and description
     - Prerequisites (Go 1.22+, Docker, ExifTool, FFmpeg, Fly.io CLI)
     - Installation/setup instructions
@@ -363,7 +363,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Author section, support section, license
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-  - [ ] 18.2 Create DOCS.md
+  - [x] 18.2 Create DOCS.md
     - Environment variables table (all keys from .env.example)
     - Project structure directory tree with descriptions
     - API documentation (all endpoints, request/response formats, WebSocket protocol)
