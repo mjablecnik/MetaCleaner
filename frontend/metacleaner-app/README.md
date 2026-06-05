@@ -1,93 +1,86 @@
-# metacleaner-app
+# MetaCleaner App
 
-A SvelteKit 5 + Tailwind CSS 4 frontend app for metadata cleaning, with Storybook, Paraglide i18n, and Capacitor support.
+MetaCleaner helps users protect their privacy by removing hidden metadata (EXIF, GPS, camera info, timestamps) from photos and videos before sharing them online. Users upload files, review identified privacy risks, choose what to clean, and download safe copies — all through a guided step-by-step wizard.
 
 ## Tech Stack
 
-- **Framework**: SvelteKit 2 with Svelte 5 (runes mode)
-- **Language**: TypeScript
+- **Framework**: SvelteKit 2 + Svelte 5 (runes mode)
+- **Language**: TypeScript (strict)
 - **Package Manager**: bun
 - **Styling**: Tailwind CSS 4
 - **i18n**: Paraglide JS (en, cs)
-- **Testing**: Vitest (server tests) + Vitest Browser with Playwright (component tests)
-- **Stories**: Storybook 10
-- **Build output**: Static site via `@sveltejs/adapter-static`
-
-## Prerequisites
-
-- Node.js 22+
-- [bun](https://bun.sh) (or npm/pnpm/yarn as fallback)
+- **Testing**: Vitest + Storybook 10
+- **Mobile**: Capacitor (Android)
+- **Build Output**: Static site (`@sveltejs/adapter-static`)
 
 ## Setup
 
-Install dependencies:
-
-```sh
-bun install
-# or: npm install
+```bash
+cp .env.example .env   # Configure environment
+bun install            # Install dependencies
 ```
 
-For component tests (browser), install Playwright browsers:
+## Development
 
-```sh
-npx playwright install chromium
-# On Linux, also install system dependencies:
-npx playwright install-deps chromium
+```bash
+bun run dev            # Dev server
+bun run check          # Type check
+bun run lint           # Lint (prettier + eslint)
+bun run format         # Auto-format
+bun run test           # Run tests
+bun run storybook      # Storybook dev (port 6006)
 ```
 
-## Developing
+## Local Docker
 
-Start the development server:
-
-```sh
-bun run dev
-
-# or open in browser automatically
-bun run dev -- --open
+```bash
+./start-docker.sh      # Build image & run container on port 8080
+docker stop metacleaner-app   # Stop container
 ```
 
-## Building
+## Android (Capacitor)
 
-```sh
-bun run build
+```bash
+./sync-android.sh                    # Build app + sync web assets to Android project
+bunx cap open android                # Open in Android Studio
+bunx cap run android                 # Run on device/emulator
 ```
 
-Preview the production build:
+For live reload during development:
 
-```sh
-bun run preview
+```bash
+bunx cap run android --livereload --external
 ```
 
-## Testing
+> Requires Android Studio and Android SDK installed.
 
-Run all tests:
+## Fly.io Deployment
 
-```sh
-bun test
+```bash
+./fly-setup.sh         # Create app & set secrets from .env
+fly deploy             # Deploy
+fly logs --app metacleaner-app   # View logs
+fly status --app metacleaner-app # Check status
 ```
 
-Run only server-side unit tests (no browser required):
+## Project Structure
 
-```sh
-bun run test:unit -- --run --project=server
 ```
-
-Run Storybook:
-
-```sh
-bun run storybook
-```
-
-## Linting & Formatting
-
-```sh
-bun run lint      # prettier check + eslint
-bun run format    # auto-format with prettier
-bun run check     # TypeScript type check
-```
-
-## Recreating this project
-
-```sh
-bun x sv@0.15.3 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:auto" paraglide="languageTags:en, cs+demo:no" mcp="ide:claude-code,other+setup:remote" storybook --install bun metacleaner-app
+src/
+├── lib/
+│   ├── shared/
+│   │   ├── elements/      # Low-level UI primitives (Button, Card, Badge…)
+│   │   ├── components/    # Composed UI (NavBar, Toast, FileListItem…)
+│   │   └── sections/      # Shared page sections
+│   ├── repositories/      # Data layer (mock → API)
+│   └── paraglide/         # Generated i18n
+├── routes/
+│   ├── (step1)/           # File upload
+│   ├── step2/             # Risk analysis
+│   ├── step3/             # Processing
+│   ├── step4/             # Error handling
+│   ├── step5/             # Results
+│   ├── reports/           # Report history
+│   └── report/            # Single report detail
+messages/                  # i18n message files (en.json, cs.json)
 ```
