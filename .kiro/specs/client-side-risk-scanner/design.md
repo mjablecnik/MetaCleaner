@@ -206,10 +206,10 @@ The scoring system uses a weighted field-presence model:
 
 | Category | Fields Checked | Weight per Field |
 |----------|---------------|-----------------|
-| GPS | latitude, longitude, altitude | 33 each (presence = full score) |
-| Device Identity | make, model, serial, software | 25 each |
-| Personal Data | author, copyright, IPTC contact, XMP creator | 25 each |
-| Timestamps | originalDateTime, digitizedDateTime, gpsTimestamp | 33 each |
+| GPS | latitude, longitude, altitude, position | 25 each |
+| Device Identity | make, model, serial, software, lens model | 20 each |
+| Personal Data | author, copyright, XP author, creator, contact info | 20 each |
+| Timestamps | originalDateTime, digitizedDateTime, gpsTimestamp, createDate | 25 each |
 
 **Per-File Score:**
 ```

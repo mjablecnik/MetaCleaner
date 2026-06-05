@@ -41,14 +41,22 @@
 		}
 		input.value = '';
 	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			document.getElementById(fileInputId)?.click();
+		}
+	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
+	role="button"
+	tabindex="0"
 	class="dashed-border-anim relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl py-8 transition-colors lg:gap-4 lg:py-12
 		{isDragOver ? 'bg-navy-lighter' : 'bg-navy-main/50 hover:bg-navy-main/80'}"
 	onclick={() => document.getElementById(fileInputId)?.click()}
+	onkeydown={handleKeydown}
 	ondrop={handleDrop}
 	ondragover={handleDragOver}
 	ondragleave={handleDragLeave}
