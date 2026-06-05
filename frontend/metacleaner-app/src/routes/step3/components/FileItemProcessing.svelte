@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import type { FileProcessingStatus } from '$lib/repositories/processingRepository';
 
 	interface Props {
-		file: UploadedFile;
+		file: QueuedFile;
 		status: FileProcessingStatus;
 		progress?: number;
 		fieldsRemoved?: number;
@@ -22,8 +22,15 @@
 		return fn ? fn(params) : key;
 	}
 
+	function formatSize(bytes: number): string {
+		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+		return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+	}
+
 	const isVideo = $derived(file.type === 'video');
 	const fileIcon = $derived(isVideo ? 'fa-video' : 'fa-image');
+	const sizeLabel = $derived(formatSize(file.size));
+	const ext = $derived(file.extension.replace('.', '').toUpperCase() || 'FILE');
 </script>
 
 {#if status === 'done'}
@@ -38,7 +45,7 @@
 		<div class="min-w-0 flex-1">
 			<p class="truncate text-sm font-medium text-white">{file.name}</p>
 			<div class="mt-0.5 flex items-center gap-2">
-				<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{sizeLabel}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span
 					class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
@@ -60,7 +67,7 @@
 		<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 			<span
 				class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-				>{file.extension}</span
+				>{ext}</span
 			>
 			<div
 				class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
@@ -104,7 +111,7 @@
 		<div class="flex flex-shrink-0 items-center gap-1.5 lg:gap-2">
 			<span
 				class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-				>{file.extension}</span
+				>{ext}</span
 			>
 			<i class="fa-solid fa-circle-notch spin-slow text-sm text-brand-blue"></i>
 		</div>
@@ -121,7 +128,7 @@
 		<div class="min-w-0 flex-1">
 			<p class="truncate text-sm font-medium text-white">{file.name}</p>
 			<div class="mt-0.5 flex items-center gap-2">
-				<span class="text-[10px] text-text-muted lg:text-[11px]">{file.size}</span>
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{sizeLabel}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
 					<i class="fa-solid fa-clock text-[9px]"></i>
@@ -131,7 +138,7 @@
 		</div>
 		<span
 			class="flex-shrink-0 rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
-			>{file.extension}</span
+			>{ext}</span
 		>
 	</div>
 {/if}

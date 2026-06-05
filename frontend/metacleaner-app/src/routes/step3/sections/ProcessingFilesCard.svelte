@@ -2,13 +2,13 @@
 	import { resolve } from '$app/paths';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import type { ProcessingState } from '$lib/repositories/processingRepository';
 	import FileItemProcessing from '../components/FileItemProcessing.svelte';
 
 	interface Props {
 		processingState: ProcessingState | null;
-		uploadedFiles: UploadedFile[];
+		uploadedFiles: QueuedFile[];
 		overallPct: number;
 	}
 
@@ -22,7 +22,7 @@
 		return fn ? fn(params) : key;
 	}
 
-	function getFileById(id: string): UploadedFile | undefined {
+	function getFileById(id: string): QueuedFile | undefined {
 		return uploadedFiles.find((f) => f.id === id);
 	}
 </script>

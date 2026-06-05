@@ -2,14 +2,14 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import ActivityLog, { type ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import type { ProcessingState } from '$lib/repositories/processingRepository';
 	import ProcessingVisual from '../components/ProcessingVisual.svelte';
 
 	interface Props {
 		processingState: ProcessingState | null;
-		uploadedFiles: UploadedFile[];
-		currentFile: UploadedFile | undefined;
+		uploadedFiles: QueuedFile[];
+		currentFile: QueuedFile | undefined;
 	}
 
 	const { processingState, uploadedFiles, currentFile }: Props = $props();
@@ -22,7 +22,7 @@
 		return fn ? fn(params) : key;
 	}
 
-	function getFileById(id: string): UploadedFile | undefined {
+	function getFileById(id: string): QueuedFile | undefined {
 		return uploadedFiles.find((f) => f.id === id);
 	}
 

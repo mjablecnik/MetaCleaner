@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 	import type { ProcessingState } from '$lib/repositories/processingRepository';
 	import ProcessingVisual from '../components/ProcessingVisual.svelte';
 
 	interface Props {
 		processingState: ProcessingState | null;
-		currentFile: UploadedFile | undefined;
+		currentFile: QueuedFile | undefined;
 	}
 
 	const { processingState, currentFile }: Props = $props();

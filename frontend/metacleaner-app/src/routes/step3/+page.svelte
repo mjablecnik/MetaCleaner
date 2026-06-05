@@ -2,18 +2,49 @@
 	import { onMount } from 'svelte';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getUploadedFiles, type UploadedFile } from '$lib/repositories/fileRepository';
-	import { getProcessingState, type ProcessingState } from '$lib/repositories/processingRepository';
+	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
+	import type { QueuedFile } from '$lib/scanner/types';
+	import type {
+		ProcessingState,
+		ProcessingFileState,
+		ProcessingLogEntry
+	} from '$lib/repositories/processingRepository';
 	import MobileStatusCard from './sections/MobileStatusCard.svelte';
 	import ProcessingFilesCard from './sections/ProcessingFilesCard.svelte';
 	import ProcessingStatusCard from './sections/ProcessingStatusCard.svelte';
 	import ActivityLogAccordion from './sections/ActivityLogAccordion.svelte';
 
-	let uploadedFiles = $state<UploadedFile[]>([]);
-	let processingState = $state<ProcessingState | null>(null);
-	let overallPct = $state(0);
+	let overallPct = $state(10);
 
-	let currentFile = $derived(uploadedFiles.find((f) => f.id === processingState?.currentFileId));
+	const uploadedFiles = $derived(scannerStore.files);
+
+	function makeMockProcessingState(files: QueuedFile[]): ProcessingState | null {
+		if (!files.length) return null;
+		const processingFiles: ProcessingFileState[] = files.map((f, i) => ({
+			fileId: f.id,
+			status: i === 0 ? 'in_progress' : 'waiting',
+			progress: i === 0 ? 38 : undefined
+		}));
+		const log: ProcessingLogEntry[] = files.map((f) => ({
+			timestamp: '—',
+			fileId: f.id,
+			status: 'waiting' as const
+		}));
+		return {
+			overallProgress: 10,
+			filesCompleted: 0,
+			totalFiles: files.length,
+			fieldsRemoved: 0,
+			timeRemainingSeconds: files.length * 8,
+			currentFileId: files[0].id,
+			files: processingFiles,
+			log
+		};
+	}
+
+	const processingState = $derived(makeMockProcessingState(uploadedFiles));
+
+	const currentFile = $derived(uploadedFiles.find((f) => f.id === processingState?.currentFileId));
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -26,20 +57,13 @@
 	let animationInterval: ReturnType<typeof setInterval> | undefined;
 
 	onMount(() => {
-		getUploadedFiles().then((files) => {
-			uploadedFiles = files;
-		});
-		getProcessingState().then((ps) => {
-			processingState = ps;
-			overallPct = ps.overallProgress;
-			animationInterval = setInterval(() => {
-				if (overallPct >= 75) {
-					clearInterval(animationInterval);
-					return;
-				}
-				overallPct = Math.min(overallPct + 0.5, 75);
-			}, 300);
-		});
+		animationInterval = setInterval(() => {
+			if (overallPct >= 75) {
+				clearInterval(animationInterval);
+				return;
+			}
+			overallPct = Math.min(overallPct + 0.5, 75);
+		}, 300);
 		return () => {
 			if (animationInterval) clearInterval(animationInterval);
 		};

@@ -1,7 +1,7 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import FileItemProcessing from './FileItemProcessing.svelte';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+	import type { QueuedFile } from '$lib/scanner/types';
 
 	const { Story } = defineMeta({
 		title: 'Step3/FileItemProcessing',
@@ -17,36 +17,36 @@
 
 	const imageFile = {
 		id: 'img-4821',
+		file: new File([], 'IMG_4821.jpg', { type: 'image/jpeg' }),
 		name: 'IMG_4821.jpg',
-		size: '3.2 MB',
-		extension: 'JPG',
+		size: 3355443,
+		extension: '.jpg',
 		type: 'image',
-		metadataFieldCount: 12,
-		hasGps: false,
-		device: 'Canon EOS R5'
-	} satisfies UploadedFile;
+		format: 'jpeg',
+		scanResult: null
+	} satisfies QueuedFile;
 
 	const imageFileWithGps = {
 		id: 'photo-holiday-2024',
+		file: new File([], 'photo_holiday_2024.heic', { type: 'image/heic' }),
 		name: 'photo_holiday_2024.heic',
-		size: '8.7 MB',
-		extension: 'HEIC',
+		size: 9122611,
+		extension: '.heic',
 		type: 'image',
-		metadataFieldCount: 18,
-		hasGps: true,
-		device: 'iPhone 15 Pro'
-	} satisfies UploadedFile;
+		format: 'heic',
+		scanResult: null
+	} satisfies QueuedFile;
 
 	const videoFile = {
 		id: 'video-prague-walk',
+		file: new File([], 'video_prague_walk.mp4', { type: 'video/mp4' }),
 		name: 'video_prague_walk.mp4',
-		size: '142.5 MB',
-		extension: 'MP4',
+		size: 149373952,
+		extension: '.mp4',
 		type: 'video',
-		metadataFieldCount: 8,
-		hasGps: false,
-		device: 'H.264'
-	} satisfies UploadedFile;
+		format: 'mp4',
+		scanResult: null
+	} satisfies QueuedFile;
 </script>
 
 <Story name="Done — image, no GPS">
