@@ -1,11 +1,17 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { UploadedFile } from '$lib/repositories/fileRepository';
+
+	interface FileItem {
+		name: string;
+		size: string | number;
+		extension: string;
+		type: 'image' | 'video';
+	}
 
 	type Status = 'default' | 'success' | 'error' | 'muted';
 
 	interface Props {
-		file: UploadedFile;
+		file: FileItem;
 		status?: Status;
 		onRemove?: () => void;
 		statusInfo?: Snippet;
