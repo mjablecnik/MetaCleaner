@@ -7,6 +7,8 @@
 	--color-navy-main: #0a1628;    /* page background */
 	--color-navy-card: #111d33;    /* card backgrounds, dropdowns */
 	--color-navy-lighter: #1e293b; /* badges, inputs, lighter surfaces */
+	--color-navy-lighter-50: rgba(30, 41, 59, 0.5); /* semi-transparent lighter surface */
+	--color-navy-lighter-60: rgba(30, 41, 59, 0.6); /* semi-transparent lighter surface, stronger */
 
 	/* ─── Brand / semantic colors ───────────────────────────────────────── */
 	--color-brand-green: #22c55e;  /* success states, CTA buttons */
@@ -30,6 +32,7 @@
 	--shadow-glow-red: 0 0 30px rgba(239, 68, 68, 0.15);
 	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 	--shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.5); /* dropdowns, popovers */
+	--shadow-drop-red: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); /* red glow for error SVGs */
 
 	/* ─── Border radii (non-standard values not covered by Tailwind defaults) */
 	--radius-dropdown: 10px;       /* language / user dropdowns */
