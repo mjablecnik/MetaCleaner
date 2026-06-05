@@ -1,5 +1,34 @@
 # AI Log
 
+## 2026-06-05 18:07 — create-code
+- Spec: metacleaner-backend
+- Implemented Go backend service in `backend/metacleaner-server/`
+- Implemented configuration loading (`config.go`) with env var parsing and defaults
+- Implemented error types and JSON response helpers (`errors.go`)
+- Implemented data models, DTOs, file validation, tool selection (`models.go`)
+- Implemented Supabase client with PostgREST CRUD and Storage upload (`supabase.go`)
+- Implemented file upload handler with multipart parsing and temp storage (`handlers.go`)
+- Implemented metadata cleaning pipeline using ExifTool/FFmpeg subprocesses (`pipeline.go`)
+- Implemented WebSocket progress handler for real-time job updates (`websocket.go`)
+- Implemented job creation and orchestration endpoint (`handlers.go`)
+- Implemented file download handler with expiration checks (`handlers.go`)
+- Implemented report generation and PDF creation (`pdf.go`, `handlers.go`)
+- Implemented cleanup scheduler for expired temp files (`cleanup.go`)
+- Implemented health endpoint and startup validation (`main.go`)
+- Implemented CORS middleware, rate limiter, and HTTP router (`router.go`)
+- Implemented SQL database migration script (`scripts/migration.sql`)
+- Implemented Dockerfile, `fly.toml`, `start-docker.sh`, `fly-setup.sh` for deployment
+- Created `README.md` and `DOCS.md` documentation
+- Created property tests for error response format (`tests/errors_test.go`)
+- Created property tests for file size/format validation, tool selection, job progress, report summary (`tests/models_test.go`)
+- Created pipeline unit tests (`pipeline_test.go`, `tests/pipeline_test.go`)
+- Created upload handler tests (`handlers_test.go`)
+- Created job handler tests (`handlers_jobs_test.go`)
+- Created download handler tests (`handlers_download_test.go`)
+- Created report handler tests (`handlers_reports_test.go`)
+- Created cleanup scheduler tests (`cleanup_test.go`)
+- Code review identified: PUBLIC_API_URL baked empty at Docker build time, no file download expiration UX, step2 page not implemented, missing i18n keys, aggressive WebSocket polling timeout
+
 ## 2026-06-05 15:09 — from-brief
 - Brief: BRIEF.md
 - Added package manager detection logic to `sync-android.sh` (checks `command -v bun`, sets `RUN_CMD`/`EXEC_CMD` variables to bun/bunx or npm/npx)
