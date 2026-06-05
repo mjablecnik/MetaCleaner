@@ -1,5 +1,30 @@
 # AI Log
 
+## 2026-06-05 13:14 — create-code
+- Spec: client-side-risk-scanner
+- Implemented scanner module types and constants (`src/lib/scanner/types.ts`, `src/lib/scanner/constants.ts`)
+- Implemented risk analyzer with `computeFileScore()`, `computeAggregatedRisk()`, `classifySeverity()` in `src/lib/scanner/riskAnalyzer.ts`
+- Implemented format detector (`src/lib/scanner/parsers/formatDetector.ts`) supporting 8 image + 11 video formats
+- Implemented image parser (`src/lib/scanner/parsers/imageParser.ts`) using exifr (JPEG/HEIC/PNG/AVIF/TIFF/DNG) and ExifReader (WebP/GIF)
+- Implemented video parser (`src/lib/scanner/parsers/videoParser.ts`) with lazy mediainfo.js WASM loading
+- Implemented metadata parser orchestrator (`src/lib/scanner/metadataParser.ts`) with error handling and large file optimization
+- Implemented reactive scanner store (`src/lib/scanner/scannerStore.svelte.ts`) with Svelte 5 runes, sequential file processing, and aggregated risk computation
+- Created unified upload + risk scanner page at `/` route (`src/routes/+page.svelte`) — merged step1 and step2 into single page
+- Created `RiskScannerCard.svelte`, `FileListCard.svelte`, `MobileRiskBanner.svelte` sections in `src/routes/(step1)/sections/`
+- Relocated `RiskScoreRing.svelte`, `RiskBreakdownBar.svelte`, `BeforeAfterScore.svelte`, `FileListItemRisk.svelte` to `src/routes/(step1)/components/`
+- Created `ScanProgressIndicator.svelte` component for per-file scanning state display
+- Updated `UploadZoneCard.svelte` to integrate with scannerStore (`addFiles`, `removeFile`)
+- Connected step3 to scannerStore for file queue handoff
+- Created property-based tests (fast-check) for risk analyzer: `src/lib/scanner/__tests__/riskAnalyzer.test.ts` (Properties 1–5)
+- Created parser tests: `src/lib/scanner/__tests__/metadataParser.test.ts` (Properties 6–8)
+- Created scanner store unit tests: `src/lib/scanner/__tests__/scannerStore.test.ts`
+- Created integration tests: `src/lib/scanner/__tests__/scanPipeline.test.ts`
+- Fixed CRITICAL code review findings: route guard, error handling improvements
+- Fixed HIGH code review findings: step3 scannerStore connection, mobile remove button
+- Fixed MEDIUM code review findings: lint errors, unused params/imports, QueuedFile migration patterns
+- Updated `MEMORY.md` with route guard and QueuedFile migration patterns
+- All 40 server tests pass, clean build and lint
+
 ## 2026-06-05 11:13 — manual
 
 - Added Android back button handling with Capacitor `@capacitor/app` plugin in `src/routes/+layout.svelte`
