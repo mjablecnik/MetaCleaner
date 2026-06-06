@@ -78,7 +78,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Implement exit code determination: error→2, high/critical risk→1, success→0
     - _Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 2.4, 3.1, 3.2, 5.1, 5.2, 5.3, 6.3, 6.4, 10.1, 10.2, 10.3_
 
-  - [ ]* 4.2 Write property test for scan formatter category grouping (Property 1)
+  - [x]* 4.2 Write property test for scan formatter category grouping (Property 1)
     - **Property 1: Scan formatter groups fields by category**
     - Generate arrays of MetadataField with mixed categories, verify output has distinct sections per category and each field under correct section
     - **Validates: Requirements 1.1**

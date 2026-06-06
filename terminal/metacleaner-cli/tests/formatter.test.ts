@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
 import {
   computeAggregatedSummary,
   determineExitCode,
@@ -9,7 +10,7 @@ import {
   formatSummary,
 } from '../src/formatter.js';
 import type { FileResult } from '../src/types.js';
-import type { ScanResult } from 'metacleaner-app/src/lib/scanner/types.js';
+import type { ScanResult, MetadataField } from 'metacleaner-app/src/lib/scanner/types.js';
 
 function makeScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
   return {
@@ -227,6 +228,80 @@ describe('formatCleanResult', () => {
     expect(output).toContain('7');
     expect(output).toContain('yes');
     expect(output).toContain('test_cleaned.jpg');
+  });
+});
+
+// Feature: metadata-inspect-cli, Property 1: Scan formatter groups fields by category
+describe('formatScanResult category grouping (Property 1)', () => {
+  const CATEGORIES = ['gps', 'deviceIdentity', 'personalData', 'timestamps'] as const;
+  const CATEGORY_LABELS: Record<string, string> = {
+    gps: 'GPS Location',
+    deviceIdentity: 'Device Identity',
+    personalData: 'Personal Data',
+    timestamps: 'Timestamps',
+  };
+
+  const metadataFieldArb: fc.Arbitrary<MetadataField> = fc.record({
+    key: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\n')),
+    value: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\n')),
+    category: fc.constantFrom(...CATEGORIES),
+  });
+
+  it('output contains a section header for each category present in fields', () => {
+    fc.assert(
+      fc.property(
+        fc.array(metadataFieldArb, { minLength: 1, maxLength: 20 }),
+        (fields) => {
+          const result = makeFileResult({
+            scanResult: makeScanResult({ fields, fieldCount: fields.length }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          const presentCategories = [...new Set(fields.map(f => f.category))];
+          for (const cat of presentCategories) {
+            expect(output).toContain(CATEGORY_LABELS[cat]);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('each field key appears in the output under its category section', () => {
+    fc.assert(
+      fc.property(
+        fc.array(metadataFieldArb, { minLength: 1, maxLength: 10 }),
+        (fields) => {
+          const result = makeFileResult({
+            scanResult: makeScanResult({ fields, fieldCount: fields.length }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          for (const field of fields) {
+            expect(output).toContain(field.key);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('absent categories produce no section header in the output', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...CATEGORIES),
+        (onlyCategory) => {
+          const fields: MetadataField[] = [{ key: 'SomeKey', value: 'val', category: onlyCategory }];
+          const result = makeFileResult({
+            scanResult: makeScanResult({ fields, fieldCount: 1 }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          const absentCategories = CATEGORIES.filter(c => c !== onlyCategory);
+          for (const cat of absentCategories) {
+            expect(output).not.toContain(CATEGORY_LABELS[cat]);
+          }
+        }
+      ),
+      { numRuns: 100 }
+    );
   });
 });
 
