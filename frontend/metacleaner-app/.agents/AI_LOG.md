@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-05 23:30 — manual
+- Updated `.agents/MEMORY.md` with code review findings on WebSocket and state handling issues
+- Documented `$state<Date>` lint error workaround (use `$state<number>` with `Date.now()` instead)
+- Documented `cleaningStore` file_error handler mapping to wrong statuses
+- Documented step5 `FileResultsCard` receiving empty `fileResults` from cleaningStore
+- Documented WebSocket disconnect being immediately treated as fatal error instead of attempting reconnect/polling
+- Documented `PUBLIC_API_URL` baking as empty in Docker production builds
+- Documented missing i18n keys for step3 upload phase and report detail page
+- Documented WebSocket polling fallback 30s timeout being too aggressive for large file batches
+
 ## 2026-06-05 18:07 — create-code
 - Spec: metacleaner-backend
 - Implemented Go backend service in `backend/metacleaner-server/`
