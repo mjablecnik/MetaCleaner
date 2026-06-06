@@ -70,7 +70,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure GPS-warning files show red border accent
     - _Requirements: 5.4, 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7_
 
-- [ ] 4. Checkpoint — Ensure shared components compile
+- [x] 4. Checkpoint — Ensure shared components compile
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Step 1 — Idle State Section
