@@ -334,7 +334,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Click "Zpět na čištění", verify navigation back to `/` in idle state
     - _Requirements: 23.1, 23.3, 27.5_
 
-  - [ ]* 17.8 Write E2E test for Reports page (desktop table + mobile cards)
+  - [x]* 17.8 Write E2E test for Reports page (desktop table + mobile cards)
     - Desktop: verify table headers, row data, filter buttons
     - Mobile: verify card layout, scrollable filters, fixed bottom CTA
     - _Requirements: 13.3, 13.4, 14.1, 14.2, 27.2_

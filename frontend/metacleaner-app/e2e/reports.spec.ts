@@ -49,9 +49,42 @@ test.describe('Reports page', () => {
 			await expect(page.getByText('EXIF').first()).toBeVisible();
 		});
 
+		// Requirement 13.4 — table column headers
+		test('reports table has column headers: Date, Files, Fields, Tags, Status, Actions', async ({
+			page
+		}) => {
+			await navigateToReports(page);
+			const tableBlock = page.locator('.hidden.lg\\:block').filter({ hasText: 'Report list' });
+			await expect(tableBlock.getByText('Date', { exact: true })).toBeVisible();
+			await expect(tableBlock.getByText('Files', { exact: true })).toBeVisible();
+			await expect(tableBlock.getByText('Fields', { exact: true })).toBeVisible();
+			await expect(tableBlock.getByText('Tags', { exact: true })).toBeVisible();
+			await expect(tableBlock.getByText('Status', { exact: true })).toBeVisible();
+			await expect(tableBlock.getByText('Actions', { exact: true })).toBeVisible();
+		});
+
+		// Requirement 13.3 — filter bar with all filter buttons
 		test('filter pills section is visible on desktop', async ({ page }) => {
 			await navigateToReports(page);
 			await expect(page.getByText('Filter:')).toBeVisible();
+		});
+
+		test('filter bar has All, Successful, Contained GPS, Photos, Video buttons', async ({
+			page
+		}) => {
+			await navigateToReports(page);
+			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
+			await expect(filtersBar.getByRole('button', { name: 'All' })).toBeVisible();
+			await expect(filtersBar.getByRole('button', { name: 'Successful' })).toBeVisible();
+			await expect(filtersBar.getByRole('button', { name: 'Contained GPS' })).toBeVisible();
+			await expect(filtersBar.getByRole('button', { name: 'Photos' })).toBeVisible();
+			await expect(filtersBar.getByRole('button', { name: 'Video' })).toBeVisible();
+		});
+
+		test('search input is present in filter bar', async ({ page }) => {
+			await navigateToReports(page);
+			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
+			await expect(filtersBar.getByPlaceholder('Search report...')).toBeVisible();
 		});
 
 		test('Photos filter keeps image reports visible', async ({ page }) => {
@@ -66,6 +99,24 @@ test.describe('Reports page', () => {
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Video' }).click();
 			await expect(page.getByText('No reports match your search.')).toBeVisible();
+		});
+
+		test('GPS filter keeps GPS reports visible', async ({ page }) => {
+			await navigateToReports(page);
+			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
+			await filtersBar.getByRole('button', { name: 'Contained GPS' }).click();
+			// Mock report has gps: true — should remain visible
+			await expect(page.getByText('2026-01-15')).toBeVisible();
+		});
+
+		test('All filter button resets active filter', async ({ page }) => {
+			await navigateToReports(page);
+			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
+			// Apply Video filter (shows 0 results), then All to reset
+			await filtersBar.getByRole('button', { name: 'Video' }).click();
+			await expect(page.getByText('No reports match your search.')).toBeVisible();
+			await filtersBar.getByRole('button', { name: 'All' }).click();
+			await expect(page.getByText('2026-01-15')).toBeVisible();
 		});
 
 		test('view report link in table row has correct href', async ({ page }) => {
@@ -121,11 +172,36 @@ test.describe('Reports page', () => {
 			await expect(reportsList).toBeVisible();
 		});
 
+		// Requirement 14.2 — mobile card layout details
 		test('report card displays report data', async ({ page }) => {
 			await navigateToReports(page);
 			await expect(page.getByText('2026-01-15')).toBeVisible();
 		});
 
+		test('report card shows time, duration, file count, and file types', async ({ page }) => {
+			await navigateToReports(page);
+			// "10:30 · 12s · 3 files · JPEG, PNG" rendered as a single <p> in ReportCard
+			const card = page.locator('.report-card').first();
+			await expect(card.getByText(/10:30/)).toBeVisible();
+			await expect(card.getByText(/12s/)).toBeVisible();
+			await expect(card.getByText(/JPEG, PNG/)).toBeVisible();
+		});
+
+		test('report card shows metadata type badges (GPS, EXIF)', async ({ page }) => {
+			await navigateToReports(page);
+			const card = page.locator('.report-card').first();
+			await expect(card.getByText('GPS')).toBeVisible();
+			await expect(card.getByText('EXIF')).toBeVisible();
+		});
+
+		test('report card shows action buttons (view + download)', async ({ page }) => {
+			await navigateToReports(page);
+			const card = page.locator('.report-card').first();
+			await expect(card.locator('a[title="View report"]')).toBeVisible();
+			await expect(card.locator('button[title="Download PDF"]')).toBeVisible();
+		});
+
+		// Requirement 14.3 — fixed bottom CTA
 		test('reports table is hidden on mobile', async ({ page }) => {
 			await navigateToReports(page);
 			const table = page.locator('.hidden.lg\\:block').filter({ hasText: 'Report list' });
@@ -155,10 +231,26 @@ test.describe('Reports page', () => {
 			expect(href).toContain('rpt-001');
 		});
 
+		// Requirement 14.1 — scrollable filter pills
 		test('filter pills visible on mobile', async ({ page }) => {
 			await navigateToReports(page);
 			const mobileFilters = page.locator('.lg\\:hidden').filter({ hasText: 'Photos' }).first();
 			await expect(mobileFilters).toBeVisible();
+		});
+
+		test('mobile filter scroll container exists and contains filter buttons', async ({ page }) => {
+			await navigateToReports(page);
+			const scrollArea = page.locator('.filters-scroll');
+			await expect(scrollArea).toBeVisible();
+			// All, Photos, Video buttons must be inside the scroll area
+			await expect(scrollArea.getByRole('button', { name: 'All' })).toBeVisible();
+			await expect(scrollArea.getByRole('button', { name: 'Photos' })).toBeVisible();
+			await expect(scrollArea.getByRole('button', { name: 'Video' })).toBeVisible();
+		});
+
+		test('mobile search input is visible', async ({ page }) => {
+			await navigateToReports(page);
+			await expect(page.locator('.lg\\:hidden input[type="text"]').first()).toBeVisible();
 		});
 
 		test('Photos filter on mobile keeps image reports visible', async ({ page }) => {
