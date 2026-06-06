@@ -339,7 +339,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Mobile: verify card layout, scrollable filters, fixed bottom CTA
     - _Requirements: 13.3, 13.4, 14.1, 14.2, 27.2_
 
-  - [ ]* 17.9 Write E2E test for mobile hamburger menu on all pages
+  - [x]* 17.9 Write E2E test for mobile hamburger menu on all pages
     - Open/close hamburger on main page, reports, and report detail
     - Verify language options, icon animation bars↔xmark
     - _Requirements: 3.1, 3.2, 3.3, 27.3_
