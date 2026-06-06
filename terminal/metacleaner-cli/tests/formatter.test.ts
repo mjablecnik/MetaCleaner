@@ -808,6 +808,106 @@ describe('formatCompareResult property tests (Property 7)', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 8: JSON output round-trip
+describe('formatScanResult JSON round-trip (Property 8)', () => {
+  const CATEGORIES = ['gps', 'deviceIdentity', 'personalData', 'timestamps'] as const;
+
+  const metadataFieldArb: fc.Arbitrary<MetadataField> = fc.record({
+    key: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
+    value: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
+    category: fc.constantFrom(...CATEGORIES),
+  });
+
+  const scanResultArb: fc.Arbitrary<import('metacleaner-app/src/lib/scanner/types.js').ScanResult> = fc
+    .array(metadataFieldArb, { minLength: 0, maxLength: 10 })
+    .chain(fields =>
+      fc.record({
+        fileId: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
+        status: fc.constant('done' as const),
+        fields: fc.constant(fields),
+        hasGps: fc.boolean(),
+        fieldCount: fc.constant(fields.length),
+        categoryScores: fc.constant({ gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }),
+        fileScore: fc.integer({ min: 0, max: 100 }),
+      })
+    );
+
+  it('parsed JSON has same fileName as the original FileResult', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.fileName).toBe(result.fileName);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('parsed JSON has same fileScore as the original ScanResult', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.scanResult.fileScore).toBe(scanResult.fileScore);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('parsed JSON has same hasGps as the original ScanResult', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.scanResult.hasGps).toBe(scanResult.hasGps);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('parsed JSON fields array has same length as original', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.scanResult.fields.length).toBe(scanResult.fields.length);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('parsed JSON fields preserve key, value, and category for each field', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        for (let i = 0; i < scanResult.fields.length; i++) {
+          expect(parsed.scanResult.fields[i].key).toBe(scanResult.fields[i].key);
+          expect(parsed.scanResult.fields[i].value).toBe(scanResult.fields[i].value);
+          expect(parsed.scanResult.fields[i].category).toBe(scanResult.fields[i].category);
+        }
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output is always valid JSON for any ScanResult', () => {
+    fc.assert(
+      fc.property(scanResultArb, (scanResult) => {
+        const result = makeFileResult({ scanResult });
+        const output = formatScanResult(result, { json: true, verbose: false, quiet: false });
+        expect(() => JSON.parse(output)).not.toThrow();
+      }),
+      { numRuns: 200 }
+    );
+  });
+});
+
 describe('formatSummary', () => {
   it('json mode includes results array and summary object', () => {
     const results = [makeFileResult({ scanResult: makeScanResult({ fileScore: 30 }) })];

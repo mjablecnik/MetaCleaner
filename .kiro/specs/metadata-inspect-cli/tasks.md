@@ -113,7 +113,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate CompareResult with before/after ScanResults, verify output includes score change, GPS change, device change, field count change
     - **Validates: Requirements 3.1, 3.2**
 
-  - [ ]* 4.9 Write property test for JSON round-trip (Property 8)
+  - [x]* 4.9 Write property test for JSON round-trip (Property 8)
     - **Property 8: JSON output round-trip**
     - Generate valid ScanResult, format as JSON, parse back, verify structural equivalence
     - **Validates: Requirements 5.2**
