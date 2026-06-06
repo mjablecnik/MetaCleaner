@@ -6,14 +6,20 @@
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 
-	interface Props {
-		onOpenOptions: () => void;
-	}
+	const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.heic', '.heif', '.mp4', '.mov']);
+	const ALLOWED_MIMES = new Set([
+		'image/jpeg',
+		'image/png',
+		'image/heic',
+		'image/heif',
+		'video/mp4',
+		'video/quicktime'
+	]);
+	const MAX_FILE_SIZE = 500 * 1024 * 1024;
 
-	let { onOpenOptions }: Props = $props();
+	const FILE_FORMATS = ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'];
 
-	const FILE_FORMATS = ['JPG', 'PNG', 'HEIC', 'WEBP', 'GIF', 'AVIF', 'MP4', 'MOV', 'MKV'];
-
+	const hasFiles = $derived(scannerStore.hasFiles);
 	const isScanning = $derived(scannerStore.isScanning);
 	const scannedCount = $derived(scannerStore.aggregatedRisk.scannedCount);
 	const fileCount = $derived(scannerStore.aggregatedRisk.fileCount);
@@ -30,31 +36,55 @@
 		return fn ? fn(params) : key;
 	}
 
-	$effect(() => {
-		const rejection = scannerStore.lastRejection;
-		if (!rejection) return;
+	function isAllowedFile(file: File): boolean {
+		const dotIdx = file.name.lastIndexOf('.');
+		const ext = dotIdx !== -1 ? file.name.slice(dotIdx).toLowerCase() : '';
+		return ALLOWED_EXTENSIONS.has(ext) || ALLOWED_MIMES.has(file.type);
+	}
 
-		const parts: string[] = [];
-		if (rejection.tooLarge > 0) {
-			parts.push(
-				tx('step1.upload.rejectedTooLarge', { count: rejection.tooLarge }) ||
-					`${rejection.tooLarge} file(s) exceeded the 500 MB limit`
-			);
+	function handleFiles(fileList: FileList) {
+		const valid: File[] = [];
+		let tooLarge = 0;
+		let unsupported = 0;
+
+		for (const file of fileList) {
+			if (file.size > MAX_FILE_SIZE) {
+				tooLarge++;
+				continue;
+			}
+			if (!isAllowedFile(file)) {
+				unsupported++;
+				continue;
+			}
+			valid.push(file);
 		}
-		if (rejection.unsupported > 0) {
-			parts.push(
-				tx('step1.upload.rejectedUnsupported', { count: rejection.unsupported }) ||
-					`${rejection.unsupported} file(s) have an unsupported format`
-			);
+
+		if (tooLarge > 0 || unsupported > 0) {
+			const parts: string[] = [];
+			if (tooLarge > 0) {
+				parts.push(
+					tx('step1.upload.rejectedTooLarge', { count: tooLarge }) ||
+						`${tooLarge} file(s) exceeded the 500 MB limit`
+				);
+			}
+			if (unsupported > 0) {
+				parts.push(
+					tx('step1.upload.rejectedUnsupported', { count: unsupported }) ||
+						`${unsupported} file(s) have an unsupported format`
+				);
+			}
+			rejectionMessage = parts.join(' · ');
+			showRejectionToast = true;
+			clearTimeout(toastTimer);
+			toastTimer = setTimeout(() => {
+				showRejectionToast = false;
+			}, 3500);
 		}
-		rejectionMessage = parts.join(' · ');
-		showRejectionToast = true;
-		clearTimeout(toastTimer);
-		toastTimer = setTimeout(() => {
-			showRejectionToast = false;
-			scannerStore.clearRejection();
-		}, 3500);
-	});
+
+		if (valid.length > 0) {
+			scannerStore.addFiles(valid);
+		}
+	}
 </script>
 
 <Card class="flex flex-col gap-4">
@@ -71,7 +101,7 @@
 		</div>
 	</div>
 
-	<DropZone onFiles={(fl) => scannerStore.addFiles(fl)} />
+	<DropZone compact={hasFiles} onFiles={handleFiles} />
 
 	{#if isScanning}
 		<div class="flex items-center gap-2 rounded-lg bg-navy-lighter px-3 py-2">
@@ -81,16 +111,6 @@
 			</span>
 		</div>
 	{/if}
-
-	<div class="mt-1 flex flex-col gap-2.5 lg:flex-row lg:gap-3">
-		<button
-			onclick={onOpenOptions}
-			class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 lg:px-5"
-		>
-			<i class="fa-solid fa-sliders"></i>
-			{tx('step1.actions.options')}
-		</button>
-	</div>
 </Card>
 
 <Toast message={rejectionMessage} show={showRejectionToast} />

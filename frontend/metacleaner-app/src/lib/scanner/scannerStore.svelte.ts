@@ -62,7 +62,7 @@ async function processNext(): Promise<void> {
 	void processNext();
 }
 
-export function addFiles(fileList: FileList): void {
+export function addFiles(fileList: FileList | File[]): void {
 	const added: QueuedFile[] = [];
 	let tooLarge = 0;
 	let unsupported = 0;

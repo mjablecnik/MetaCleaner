@@ -9,11 +9,6 @@
 	import RiskScannerCard from './(step1)/sections/RiskScannerCard.svelte';
 	import FileListCard from './(step1)/sections/FileListCard.svelte';
 	import MobileRiskBanner from './(step1)/sections/MobileRiskBanner.svelte';
-	import OptionsSheet from './(step1)/sections/OptionsSheet.svelte';
-	import UpgradeSheet from './(step1)/sections/UpgradeSheet.svelte';
-
-	let optionsSheetOpen = $state(false);
-	let upgradeSheetOpen = $state(false);
 
 	const hasFiles = $derived(scannerStore.hasFiles);
 
@@ -39,7 +34,7 @@
 	{#if !hasFiles}
 		<!-- Upload-only layout (full width) -->
 		<div class="flex flex-col gap-4 lg:gap-5">
-			<UploadZoneCard onOpenOptions={() => (optionsSheetOpen = true)} />
+			<UploadZoneCard />
 			<!-- Disabled Start Cleaning button (desktop, no files) -->
 			<div class="hidden lg:block">
 				<button
@@ -56,7 +51,7 @@
 		<div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
 			<!-- Left column -->
 			<div class="flex flex-col gap-4 lg:gap-5">
-				<UploadZoneCard onOpenOptions={() => (optionsSheetOpen = true)} />
+				<UploadZoneCard />
 
 				<!-- Mobile risk banner (between upload zone and file list) -->
 				<div class="lg:hidden">
@@ -113,6 +108,3 @@
 	</div>
 {/if}
 
-<OptionsSheet open={optionsSheetOpen} onClose={() => (optionsSheetOpen = false)} />
-
-<UpgradeSheet open={upgradeSheetOpen} onClose={() => (upgradeSheetOpen = false)} />

@@ -4,9 +4,11 @@
 
 	interface Props {
 		onFiles: (files: FileList) => void;
+		/** Compact "add more" mode — shows plus icon with short label instead of full upload prompt. */
+		compact?: boolean;
 	}
 
-	let { onFiles }: Props = $props();
+	let { onFiles, compact = false }: Props = $props();
 
 	let isDragOver = $state(false);
 	let fileInputId = 'dropzone-file-input';
@@ -53,7 +55,8 @@
 <div
 	role="button"
 	tabindex="0"
-	class="dashed-border-anim relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl py-8 transition-colors lg:gap-4 lg:py-12
+	class="dashed-border-anim relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl transition-colors
+		{compact ? 'py-6' : 'py-8 lg:gap-4 lg:py-12'}
 		{isDragOver ? 'bg-navy-lighter' : 'bg-navy-main/50 hover:bg-navy-main/80'}"
 	onclick={() => document.getElementById(fileInputId)?.click()}
 	onkeydown={handleKeydown}
@@ -61,46 +64,55 @@
 	ondragover={handleDragOver}
 	ondragleave={handleDragLeave}
 >
-	<div
-		class="flex h-14 w-14 items-center justify-center rounded-full bg-navy-lighter text-xl text-brand-blue shadow-glow-blue lg:h-16 lg:w-16 lg:text-2xl"
-	>
-		<i class="fa-solid fa-file-arrow-up"></i>
-	</div>
-	<div class="text-center">
-		<p class="mb-1 hidden font-semibold text-white lg:block">
-			{tx('step1.upload.dropDesktop')}
-		</p>
-		<p class="mb-0.5 block text-sm font-semibold text-white lg:hidden">
-			{tx('step1.upload.dropMobile')}
-		</p>
-		<p class="hidden text-xs text-text-muted lg:block">
-			{tx('step1.upload.orClickDesktop')}
-		</p>
-		<p class="block text-xs text-text-muted lg:hidden">{tx('step1.upload.orDragMobile')}</p>
-	</div>
-	<div class="mt-0 flex flex-wrap justify-center gap-1.5 lg:mt-1 lg:gap-2">
-		<span
-			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+	{#if compact}
+		<div
+			class="flex h-10 w-10 items-center justify-center rounded-full bg-navy-lighter text-lg text-brand-blue shadow-glow-blue"
 		>
-			{tx('step1.upload.photos')}
-		</span>
-		<span
-			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+			<i class="fa-solid fa-plus"></i>
+		</div>
+		<p class="text-xs text-text-muted">{tx('step2.files.addMore')}</p>
+	{:else}
+		<div
+			class="flex h-14 w-14 items-center justify-center rounded-full bg-navy-lighter text-xl text-brand-blue shadow-glow-blue lg:h-16 lg:w-16 lg:text-2xl"
 		>
-			{tx('step1.upload.videos')}
-		</span>
-		<span
-			class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
-		>
-			<span class="hidden lg:inline">{tx('step1.upload.maxSize')}</span>
-			<span class="inline lg:hidden">{tx('step1.upload.maxSizeMobile')}</span>
-		</span>
-	</div>
+			<i class="fa-solid fa-file-arrow-up"></i>
+		</div>
+		<div class="text-center">
+			<p class="mb-1 hidden font-semibold text-white lg:block">
+				{tx('step1.upload.dropDesktop')}
+			</p>
+			<p class="mb-0.5 block text-sm font-semibold text-white lg:hidden">
+				{tx('step1.upload.dropMobile')}
+			</p>
+			<p class="hidden text-xs text-text-muted lg:block">
+				{tx('step1.upload.orClickDesktop')}
+			</p>
+			<p class="block text-xs text-text-muted lg:hidden">{tx('step1.upload.orDragMobile')}</p>
+		</div>
+		<div class="mt-0 flex flex-wrap justify-center gap-1.5 lg:mt-1 lg:gap-2">
+			<span
+				class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+			>
+				{tx('step1.upload.photos')}
+			</span>
+			<span
+				class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+			>
+				{tx('step1.upload.videos')}
+			</span>
+			<span
+				class="rounded-full bg-navy-lighter px-2.5 py-1 text-[10px] text-text-muted lg:px-3 lg:text-[11px]"
+			>
+				<span class="hidden lg:inline">{tx('step1.upload.maxSize')}</span>
+				<span class="inline lg:hidden">{tx('step1.upload.maxSizeMobile')}</span>
+			</span>
+		</div>
+	{/if}
 	<input
 		type="file"
 		id={fileInputId}
 		multiple
-		accept="image/*,video/*"
+		accept=".jpg,.jpeg,.png,.heic,.heif,.mp4,.mov"
 		onchange={handleFileInput}
 		class="hidden"
 	/>

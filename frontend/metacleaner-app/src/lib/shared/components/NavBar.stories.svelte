@@ -43,10 +43,6 @@
 	<NavBar user={mockUser} langOptions={mockLangOptions} showLangDropdown={false} />
 </Story>
 
-<Story name="Avatar Mobile Style">
-	<NavBar user={mockUser} langOptions={mockLangOptions} mobileStyle="avatar" />
-</Story>
-
 <Story name="Compact">
 	<NavBar user={mockUser} langOptions={mockLangOptions} compact={true} />
 </Story>

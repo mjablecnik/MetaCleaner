@@ -27,7 +27,6 @@
 			return {
 				logoHref: '/' as string | undefined,
 				compact: true,
-				mobileStyle: 'avatar' as const,
 				showLangDropdown: false,
 				showBackButton: true,
 				backHref: '/',
@@ -38,7 +37,6 @@
 			return {
 				logoHref: '/' as string | undefined,
 				compact: true,
-				mobileStyle: 'avatar' as const,
 				showLangDropdown: true,
 				showBackButton: true,
 				backHref: '/reports',

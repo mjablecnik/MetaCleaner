@@ -35,8 +35,8 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
 - [x] 2. Checkpoint — Ensure infrastructure compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Shared Components — NavBar and Elements
-  - [ ] 3.1 Update NavBar for hamburger menu on ALL mobile pages
+- [x] 3. Shared Components — NavBar and Elements
+  - [x] 3.1 Update NavBar for hamburger menu on ALL mobile pages
     - Remove `mobileStyle` prop — hamburger menu is always shown on mobile
     - Add `showBackButton`, `backHref`, `backLabel` props for Reports/Report pages
     - Add `noPrint` class support for print styling
@@ -44,17 +44,17 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure mobile shows: logo (smaller h-9), hamburger button (right side), sticky top-0 with border-bottom
     - _Requirements: 3.1, 3.2, 3.3, 20.1, 20.2, 20.3_
 
-  - [ ] 3.2 Update MobileHamburgerMenu content
+  - [x] 3.2 Update MobileHamburgerMenu content
     - Ensure expanded menu contains: user info section, language options (CZ, EN, DE, SK) with checkmarks, settings option, logout option
     - Ensure hamburger icon animates to X (xmark) when open
     - _Requirements: 3.2, 3.3_
 
-  - [ ] 3.3 Create `MobileBottomCta` shared component
+  - [x] 3.3 Create `MobileBottomCta` shared component
     - Create `src/lib/shared/components/MobileBottomCta.svelte` — fixed bottom bar with `children` snippet, border-top, navy-main background
     - Only visible on mobile (`lg:hidden`), always fixed at bottom with z-50
     - _Requirements: 6.3, 8.2, 12.3, 14.3_
 
-  - [ ] 3.4 Update `UploadZoneCard` for dual states and validation
+  - [x] 3.4 Update `UploadZoneCard` for dual states and validation
     - Full drop zone state: file-arrow-up icon, "Přetáhněte soubory sem" primary text, "nebo klikněte pro výběr ze zařízení" secondary text, category pills (Fotografie, Videa, Max 500 MB / soubor), format badges (JPG, PNG, HEIC, MP4, MOV) in header
     - Compact "add more" state: shrinks to a plus icon with "Přidat další soubory" when files present
     - Mobile text variants ("Klepněte pro výběr souborů" / "nebo přetáhněte soubory sem")
@@ -63,7 +63,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Remove any "Možnosti" (Options) button references
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 4.2, 4.3, 18.1, 18.2, 18.3_
 
-  - [ ] 3.5 Update `FileListCard` with remove buttons and state indicators
+  - [x] 3.5 Update `FileListCard` with remove buttons and state indicators
     - Add per-file remove button (X icon): visible on hover (desktop), always visible (mobile)
     - Implement 5 file row states: completed (green border/check), in-progress (blue border/spinner/progress), waiting (gray/50% opacity/clock), failed (red border/X), skipped (gray/ban icon)
     - Wire remove action to scannerStore — removing last file transitions to idle

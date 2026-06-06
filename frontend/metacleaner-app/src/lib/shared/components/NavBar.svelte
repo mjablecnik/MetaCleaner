@@ -19,8 +19,6 @@
 		showLangDropdown?: boolean;
 		/** If provided, the logo is wrapped in an <a> tag with this href. */
 		logoHref?: string;
-		/** 'hamburger' = bars icon (steps 1-5), 'avatar' = user circle (reports pages). */
-		mobileStyle?: 'hamburger' | 'avatar';
 		/** Compact mode: smaller mobile logo and icon sizes (reports pages). */
 		compact?: boolean;
 		/** Reduced desktop vertical padding — py-5 instead of py-6 (report detail page). */
@@ -37,7 +35,6 @@
 		backLabel = '',
 		showLangDropdown = true,
 		logoHref,
-		mobileStyle = 'hamburger',
 		compact = false,
 		reducedDesktopPadding = false,
 		noPrint = false
@@ -139,82 +136,13 @@
 			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" />
 		</div>
 
-		<!-- Mobile menu -->
-		{#if mobileStyle === 'hamburger'}
-			<MobileHamburgerMenu
-				{user}
-				{langOptions}
-				bind:open={hamburgerMenuOpen}
-				onSelect={handleLangSelect}
-				wrapperId="nav-hamburgerDropdown"
-			/>
-		{:else}
-			<!-- Avatar-style mobile menu (reports pages) -->
-			<div id="nav-hamburgerDropdown" class="flex lg:hidden">
-				<div class="relative inline-block">
-					<button
-						type="button"
-						onclick={() => (hamburgerMenuOpen = !hamburgerMenuOpen)}
-						aria-label="User menu"
-						class="flex h-10 w-10 items-center justify-center rounded-full border border-brand-blue/40 bg-brand-blue/20"
-					>
-						<i class="fa-solid fa-user text-sm text-brand-blue"></i>
-					</button>
-					<div class="lang-dropdown-menu" class:open={hamburgerMenuOpen} style="min-width:220px">
-						<div class="border-b border-gray-700 px-4 py-3">
-							<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
-							<p class="mt-0.5 truncate text-sm font-semibold text-white">{user?.email ?? ''}</p>
-						</div>
-						{#if showLangDropdown}
-							<div class="border-b border-gray-700 px-4 py-2">
-								<p class="mb-1 text-[10px] tracking-wider text-text-muted uppercase">
-									{tx('common.nav.language')}
-								</p>
-								<div class="flex flex-col gap-0.5">
-									{#each langOptions as lang (lang.code)}
-										<div
-											class="lang-option rounded-lg"
-											class:active={locale.current === lang.code}
-											onclick={() => handleLangSelect(lang.code)}
-											role="button"
-											tabindex="0"
-											onkeydown={(e) => e.key === 'Enter' && handleLangSelect(lang.code)}
-										>
-											<img
-												src={lang.flag}
-												alt={lang.label}
-												class="h-4 w-6 rounded-sm object-cover"
-											/>
-											{lang.name}
-											{#if locale.current === lang.code}
-												<span class="lang-check"><i class="fa-solid fa-check text-xs"></i></span>
-											{/if}
-										</div>
-									{/each}
-								</div>
-							</div>
-						{/if}
-						<div
-							class="lang-option"
-							role="button"
-							tabindex="0"
-							onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-						>
-							<i class="fa-solid fa-gear text-sm text-text-muted"></i>
-							<span>{tx('common.nav.settings')}</span>
-						</div>
-						<div
-							class="lang-option lang-option-danger"
-							role="button"
-							tabindex="0"
-							onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
-						>
-							<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
-							<span>{tx('common.nav.logout')}</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		{/if}
+		<!-- Mobile hamburger menu (always shown on mobile) -->
+		<MobileHamburgerMenu
+			{user}
+			{langOptions}
+			bind:open={hamburgerMenuOpen}
+			onSelect={handleLangSelect}
+			wrapperId="nav-hamburgerDropdown"
+		/>
 	</div>
 </nav>
