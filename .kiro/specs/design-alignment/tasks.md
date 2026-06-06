@@ -217,8 +217,8 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Use mock report data generated from processed files
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 16.1, 16.2, 16.3, 20.2, 23.1, 23.2, 23.3_
 
-- [ ] 13. Client-Side Risk Scanner Integration
-  - [ ] 13.1 Wire scannerStore to file upload flow
+- [x] 13. Client-Side Risk Scanner Integration
+  - [x] 13.1 Wire scannerStore to file upload flow
     - Ensure `UploadZoneCard` calls `scannerStore.addFiles()` when files are selected/dropped
     - Ensure file removal calls `scannerStore.removeFile()`
     - Verify metadata extraction triggers automatically on file add (within 100ms)
