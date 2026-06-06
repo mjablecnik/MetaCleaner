@@ -6,25 +6,25 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
 
 ## Tasks
 
-- [ ] 1. Set up project structure and workspace configuration
-  - [ ] 1.1 Create root-level Bun workspace configuration
+- [x] 1. Set up project structure and workspace configuration
+  - [x] 1.1 Create root-level Bun workspace configuration
     - Add `workspaces` field to root `package.json` linking `terminal/metacleaner-cli` and `frontend/metacleaner-app`
     - If no root `package.json` exists, create one with workspace definition
     - _Requirements: 1.2 (workspace link for scanner reuse)_
 
-  - [ ] 1.2 Create CLI package.json and tsconfig.json
+  - [x] 1.2 Create CLI package.json and tsconfig.json
     - Create `terminal/metacleaner-cli/package.json` with name `metacleaner-cli`, bin entry point, and dependencies on `metacleaner-app` (workspace link)
     - Add devDependencies: `vitest`, `fast-check`, `typescript`
     - Create `terminal/metacleaner-cli/tsconfig.json` with strict mode, Bun types, path aliases to frontend scanner
     - _Requirements: 1.2_
 
-  - [ ] 1.3 Create types.ts with CLI-specific interfaces
+  - [x] 1.3 Create types.ts with CLI-specific interfaces
     - Define `CLIOptions`, `CommandResult`, `FileResult`, `CleanResult`, `CompareResult`, `AggregatedSummary`, `UploadedFile`, `JobResponse`, `JobStatus` interfaces
     - `CLIOptions` must include `timeout: number` (default 60) and command type must include `'version'`
     - Import and re-export necessary types from frontend scanner (`ScanResult`, `MetadataField`, `RiskCategory`, `SeverityLevel`, `FileType`)
     - _Requirements: 1.1, 1.3, 1.6, 2.4, 3.1, 6.7, 6.8, 9.1, 10.1_
 
-  - [ ] 1.4 Create .env.example and README.md
+  - [x] 1.4 Create .env.example and README.md
     - Create `.env.example` with `METACLEANER_SERVER_URL=http://localhost:8080`
     - Create `README.md` with project description, prerequisites (Bun), setup, usage examples for all commands and flags
     - _Requirements: 2.2, 4.1, 4.2_

@@ -1,0 +1,8 @@
+{
+  "name": "metacleaner-workspace",
+  "private": true,
+  "workspaces": [
+    "frontend/metacleaner-app",
+    "terminal/metacleaner-cli"
+  ]
+}
