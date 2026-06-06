@@ -109,22 +109,22 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Chevron rotation animation on expand/collapse
     - _Requirements: 6.2_
 
-- [ ] 7. Step 3 — Processing State Section
-  - [ ] 7.1 Create `Step3Processing` section component
+- [x] 7. Step 3 — Processing State Section
+  - [x] 7.1 Create `Step3Processing` section component
     - Create `src/routes/sections/Step3Processing/Step3Processing.svelte`
     - Desktop: "Probíhá čištění..." badge in header, two-column layout
     - Mobile: "Probíhá..." badge, single-column stacked layout
     - Start mock cleaning service on mount, update progress reactively
     - _Requirements: 7.1, 7.2, 7.3, 8.1, 8.2_
 
-  - [ ] 7.2 Create `ProcessingFilesCard` component
+  - [x] 7.2 Create `ProcessingFilesCard` component
     - "Soubory ke zpracování" header with "Zpracovávám" spinning badge
     - Overall progress bar with percentage and time remaining
     - Per-file status rows (completed/in-progress/waiting/failed states)
     - Red "Zastavit" button — cancels processing and transitions to `files-ready`
     - _Requirements: 7.2, 7.3_
 
-  - [ ] 7.3 Create `ProcessingStatusCard` component (desktop)
+  - [x] 7.3 Create `ProcessingStatusCard` component (desktop)
     - "Stav zpracování" header with "Probíhá" spinning badge
     - Animated processing visual: pulsing ring, shield icon, spinning notch badge
     - Current file label
@@ -132,7 +132,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - "Průběžný log" section with timestamped entries
     - _Requirements: 7.3_
 
-  - [ ] 7.4 Create mobile processing components
+  - [x] 7.4 Create mobile processing components
     - Mobile status card: compact animated icon with file label, live stats grid
     - Activity log accordion: collapsed by default, chevron toggle, timestamped entries
     - _Requirements: 8.2, 8.3_
