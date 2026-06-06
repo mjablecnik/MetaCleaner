@@ -207,7 +207,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Gracefully degrade to scan-only if server unreachable
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 6.7, 6.8, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ]* 8.5 Write unit tests for command handlers
+  - [x]* 8.5 Write unit tests for command handlers
     - Test scan command with valid files, invalid files, mixed batch
     - Test clean command with mock server responses
     - Test clean command timeout behavior (exit code 2, timeout message)
