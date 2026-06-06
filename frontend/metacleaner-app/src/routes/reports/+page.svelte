@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import { appState } from '$lib/stores/appState.svelte';
 	import { mockCleaningService } from '$lib/services/mockCleaningService';
 	import type { Report, ReportSummaryStats } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
@@ -32,6 +34,14 @@
 		)[key];
 		return fn ? fn(params) : key;
 	}
+
+	// Reset app state when navigating back to the main cleaning page so the user
+	// sees the idle state rather than the previous success/error result.
+	beforeNavigate(({ to }) => {
+		if (to?.url.pathname === '/') {
+			appState.reset();
+		}
+	});
 
 	const filteredReports = $derived(
 		reports.filter((r) => {

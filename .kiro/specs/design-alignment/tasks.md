@@ -329,7 +329,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Test mobile error accordions expand/collapse independently
     - _Requirements: 9.3, 10.3, 27.3, 27.5_
 
-  - [ ]* 17.7 Write E2E test for Report navigation from Step 5
+  - [x]* 17.7 Write E2E test for Report navigation from Step 5
     - Click "Zobrazit report", verify navigation to `/report` with data
     - Click "Zpět na čištění", verify navigation back to `/` in idle state
     - _Requirements: 23.1, 23.3, 27.5_
