@@ -170,26 +170,26 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
 - [x] 9. Checkpoint — Ensure Steps 1–4 compile and state transitions work
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Step 5 — Success State Section
-  - [ ] 10.1 Create `Step5Success` section component
+- [x] 10. Step 5 — Success State Section
+  - [x] 10.1 Create `Step5Success` section component
     - Create `src/routes/sections/Step5Success/Step5Success.svelte`
     - Desktop: full-width layout with SuccessHeader, stat cards row, MetadataOverview, FileResultsCard
     - Mobile: SuccessHeader (smaller icon), 2×2 stat grid, collapsible MetadataOverview accordion, stacked file results, fixed bottom CTA bar
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 12.1, 12.2, 12.3_
 
-  - [ ] 10.2 Create `SuccessHeader` component
+  - [x] 10.2 Create `SuccessHeader` component
     - Animated check icon with `checkPop` animation
     - "Čištění dokončeno!" title, metadata removal count subtitle
     - "Nahrát nové soubory" button (transitions to idle)
     - "100% Úspěšně dokončeno" badge
     - _Requirements: 11.1_
 
-  - [ ] 10.3 Create `MetadataOverview` component
+  - [x] 10.3 Create `MetadataOverview` component
     - Desktop: two-column Before/After grid — "Před čištěním" (red border, warning icon, GPS/EXIF/XMP/Other counts) and "Po čištění" (green border, shield icon, "Odstraněno" with check marks)
     - Mobile: tab buttons ("Před čištěním" / "Po čištění") switching panels inside an accordion (open by default)
     - _Requirements: 11.3, 12.2_
 
-  - [ ] 10.4 Create `FileResultsCard` component
+  - [x] 10.4 Create `FileResultsCard` component
     - Desktop: 2-column grid of file result items (icon, name, size, type badge, check, metadata chips)
     - Mobile: stacked single-column list
     - Action buttons: "Stáhnout vše (ZIP)" + "Zobrazit report" (navigates to `/report`)
