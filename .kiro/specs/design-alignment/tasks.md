@@ -308,7 +308,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Upload >500MB file, verify error toast and file not added
     - _Requirements: 18.1, 18.2, 27.5_
 
-  - [ ]* 17.3 Write E2E test for file removal and last-file transition
+  - [x]* 17.3 Write E2E test for file removal and last-file transition
     - Remove files one by one, verify list updates
     - Remove last file, verify idle state returns
     - _Requirements: 19.6, 19.7, 27.5_
