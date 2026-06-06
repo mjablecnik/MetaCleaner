@@ -170,22 +170,22 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Test error handling for connection refused, server errors
     - _Requirements: 2.1, 2.2, 2.5, 2.6, 6.7, 6.8_
 
-- [ ] 8. Implement command router and command handlers
-  - [ ] 8.1 Implement commands.ts command router
+- [x] 8. Implement command router and command handlers
+  - [x] 8.1 Implement commands.ts command router
     - Implement `executeCommand(options: CLIOptions): Promise<CommandResult>`
     - Route to scan, clean, compare, help, or version handler based on `options.command`
     - Handle `--version`: read version from package.json, print, return exit code 0
     - Handle unknown commands by showing help and returning exit code 2
     - _Requirements: 4.3, 9.1_
 
-  - [ ] 8.2 Implement scan command handler
+  - [x] 8.2 Implement scan command handler
     - Call `scanFiles()` with provided file paths
     - Format results using formatter with current format options
     - Output to stdout, errors to stderr
     - Compute exit code from results (risk detection)
     - _Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8_
 
-  - [ ] 8.3 Implement clean command handler
+  - [x] 8.3 Implement clean command handler
     - Check server health first (fail fast with clear message)
     - Create progress indicator (suppressed in --quiet/--json modes)
     - Upload files via server client
@@ -196,7 +196,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Handle server unreachable as fatal error for this command
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 6.7, 6.8, 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 8.4 Implement compare command handler
+  - [x] 8.4 Implement compare command handler
     - Scan original file(s) using scanner
     - Create progress indicator (suppressed in --quiet/--json modes)
     - Upload and clean via server (same flow as clean command) with timeout and progress
