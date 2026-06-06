@@ -366,6 +366,84 @@ describe('formatScanResult score and severity display (Property 2)', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 3: Scan formatter includes conditional metadata when present
+describe('formatScanResult conditional metadata display (Property 3)', () => {
+  it('GPS latitude and longitude values appear in output when hasGps is true and GPS fields present', () => {
+    fc.assert(
+      fc.property(
+        fc.float({ min: -90, max: 90, noNaN: true }),
+        fc.float({ min: -180, max: 180, noNaN: true }),
+        (lat, lon) => {
+          const latStr = lat.toFixed(4);
+          const lonStr = lon.toFixed(4);
+          const result = makeFileResult({
+            scanResult: makeScanResult({
+              hasGps: true,
+              fields: [
+                { key: 'GPSLatitude', value: latStr, category: 'gps' },
+                { key: 'GPSLongitude', value: lonStr, category: 'gps' },
+              ],
+            }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain(latStr);
+          expect(output).toContain(lonStr);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('no GPS line appears in output when hasGps is false', () => {
+    fc.assert(
+      fc.property(
+        fc.float({ min: -90, max: 90, noNaN: true }),
+        fc.float({ min: -180, max: 180, noNaN: true }),
+        (lat, lon) => {
+          const latStr = lat.toFixed(4);
+          const lonStr = lon.toFixed(4);
+          const result = makeFileResult({
+            scanResult: makeScanResult({
+              hasGps: false,
+              fields: [
+                { key: 'GPSLatitude', value: latStr, category: 'gps' },
+                { key: 'GPSLongitude', value: lonStr, category: 'gps' },
+              ],
+            }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).not.toContain('📍 GPS:');
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('device string appears in output when device is defined', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1, maxLength: 40 }).filter(s => !s.includes('\n')),
+        (device) => {
+          const result = makeFileResult({
+            scanResult: makeScanResult({ device }),
+          });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain(device);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('no device line appears in output when device is undefined', () => {
+    const result = makeFileResult({
+      scanResult: makeScanResult({ device: undefined }),
+    });
+    const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+    expect(output).not.toContain('📱 Device:');
+  });
+});
+
 describe('formatSummary', () => {
   it('json mode includes results array and summary object', () => {
     const results = [makeFileResult({ scanResult: makeScanResult({ fileScore: 30 }) })];
