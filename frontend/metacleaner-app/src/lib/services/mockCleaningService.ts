@@ -64,6 +64,29 @@ class MockCleaningService implements CleaningService {
 		const jobId = `mock-job-${++_jobCounter}-${Date.now()}`;
 		let cancelled = false;
 
+		// Error trigger: files named "error-*.xxx" simulate a cleaning failure
+		const errorTriggerFile = files.find((f) => f.name.startsWith('error-'));
+		if (errorTriggerFile) {
+			setTimeout(() => {
+				if (cancelled) return;
+				callbacks.onFileStart(errorTriggerFile.id, errorTriggerFile.name);
+				callbacks.onProgress(10, 0, files.length, 0, 5);
+				setTimeout(() => {
+					if (cancelled) return;
+					callbacks.onError({
+						code: 'ERR-0x4A2',
+						hexCode: '0x4A2',
+						message: 'Metadata cleaning failed unexpectedly',
+						fileId: errorTriggerFile.id,
+						fileName: errorTriggerFile.name,
+						phase: 'metadata-extraction',
+						timestamp: new Date().toISOString()
+					});
+				}, 300);
+			}, 400);
+			return { jobId, cancel() { cancelled = true; } };
+		}
+
 		const fieldCounts = files.map((f) => generateFieldCount(f));
 		const gpsFlags = files.map((f) => hasGps(f));
 		const totalFiles = files.length;

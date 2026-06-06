@@ -323,7 +323,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Click "Zastavit" during processing, verify returns to files-ready with files intact
     - _Requirements: 7.3, 27.5_
 
-  - [ ]* 17.6 Write E2E test for Step 4 error flow
+  - [x]* 17.6 Write E2E test for Step 4 error flow
     - Trigger error via mock service, verify error state renders
     - Test "Zkusit znovu" returns to files-ready
     - Test mobile error accordions expand/collapse independently
