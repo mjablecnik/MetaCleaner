@@ -1,5 +1,34 @@
 # AI Log
 
+## 2026-06-06 20:47 — create-code
+- Spec: design-alignment
+- Implemented SPA state machine (`src/lib/stores/appState.svelte.ts`) with `idle`, `files-ready`, `processing`, `error`, `success` states and reactive transitions
+- Implemented mock cleaning service layer (`src/lib/services/mockCleaningService.ts`) with simulated delays, progress updates, error scenarios, and mock report generation
+- Added CSS animations to `layout.css`: `fadeInUp`, `spin-slow`, `pulse-ring`, `checkPop`, `shake`, `border-dance`
+- Updated `NavBar` — removed `mobileStyle` prop, added `showBackButton`/`backHref`/`backLabel` props, hamburger menu always on mobile
+- Created `MobileBottomCta` shared component (`src/lib/shared/components/MobileBottomCta.svelte`)
+- Updated `UploadZoneCard` — dual state (full drop zone / compact "add more"), file type/size validation (max 500 MB), drag-over highlight
+- Updated `FileListCard` — per-file remove button, 5 file row states (completed/in-progress/waiting/failed/skipped)
+- Created Step 1 idle section (`src/routes/sections/Step1Idle/`) with `StatusCardIdle`
+- Created Step 2 files-ready section (`src/routes/sections/Step2FilesReady/`) with `RiskScannerCard`, `MobileRiskBanner`
+- Created Step 3 processing section (`src/routes/sections/Step3Processing/`) with `ProcessingFilesCard`, `ProcessingStatusCard`, mobile components
+- Created Step 4 error section (`src/routes/sections/Step4Error/`) with `ErrorBanner`, `ErrorFilesCard`, `ErrorStateCard`, mobile accordions
+- Created Step 5 success section (`src/routes/sections/Step5Success/`) with `SuccessHeader`, `MetadataOverview`, `FileResultsCard`
+- Rewrote `src/routes/+page.svelte` as SPA state dispatcher (no route navigation for state transitions)
+- Updated `/reports` page — desktop table layout, mobile card layout, filter/search bar, stat cards
+- Updated `/report` page — chart section, per-file accordion with GPS/EXIF/XMP tables, PDF download/print buttons
+- Wired `scannerStore` to file upload flow in `UploadZoneCard`
+- Deleted old step routes (`step2/`, `step3/`, `step4/`, `step5/`) and removed dead code
+- Added all new i18n keys to `messages/en.json` and `messages/cs.json`
+- Created component tests (Vitest): NavBar, UploadZoneCard, FileListCard, Step3Processing, Step4Error, Step5Success, appState store transitions (`src/lib/stores/__tests__/appState.test.ts`)
+- Created E2E tests (Playwright): step1→step2 transition, file validation, file removal, full flow step2→3→5, cancel (Zastavit), error flow, report navigation, reports page, mobile hamburger menu, updated existing E2E tests (272 passing)
+- Fixed CRITICAL code review: removed dead `src/lib/api/client.ts` (247 lines), replaced hardcoded English strings in Step4Error log with `tx()` calls
+- Fixed HIGH code review: wired `step2.meta.title` i18n key to page title, replaced hardcoded error fallbacks with `tx('common.error')`
+- Fixed MEDIUM code review: removed duplicate file size validation from `scannerStore` (UploadZoneCard is single source of truth), removed unused `BottomSheet` and `FileListItem` components, added `.dockerignore`, added empty file list guard in `Step3Processing` onMount, added onMount cleanup return in `Step3Processing`, translated `step2.risk.score` to Czech
+- Fixed LOW code review: replaced `?? 'Risk Score'` fallback in `RiskScoreRing` with `tx()` pattern, added download error toast in `Step5Success`, documented error-* filename convention in README, added code comment on `BeforeAfterScore afterScore={0}` in `RiskScannerCard`
+- Updated `mockCleaningService.ts` with improved mock data generation
+- Updated `MEMORY.md` with code review patterns and conventions
+
 ## 2026-06-06 09:02 — ui-tests
 
 - No changes needed — all tests up to date
