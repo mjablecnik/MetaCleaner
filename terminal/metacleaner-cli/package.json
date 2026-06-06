@@ -1,6 +1,7 @@
 {
   "name": "metacleaner-cli",
   "version": "0.1.0",
+  "description": "CLI tool for inspecting and cleaning file metadata using the MetaCleaner ecosystem",
   "private": true,
   "type": "module",
   "bin": {

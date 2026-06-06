@@ -81,3 +81,7 @@ bun test
 # or
 bunx vitest --run
 ```
+
+## Infrastructure Note
+
+This is a developer CLI utility tool, not a long-running backend service. Standard backend service deployment files (`fly.toml`, `start-docker.sh`, `fly-setup.sh`) do not apply here and are intentionally omitted. The tool is executed locally via Bun and does not require Fly.io deployment.
