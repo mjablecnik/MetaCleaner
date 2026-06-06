@@ -54,7 +54,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Handle errors: file not found, unsupported format — report error per file, continue with remaining
     - _Requirements: 1.1, 1.2, 1.7, 1.8, 7.1, 7.2, 7.3_
 
-  - [ ]* 3.2 Write property test for extension detection (Property 11)
+  - [x]* 3.2 Write property test for extension detection (Property 11)
     - **Property 11: Extension detection correctness**
     - For any file extension in IMAGE_EXTENSIONS or VIDEO_EXTENSIONS, verify correct file type and format string returned
     - **Validates: Requirements 7.1**
