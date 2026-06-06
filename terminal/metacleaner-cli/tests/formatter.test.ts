@@ -444,6 +444,100 @@ describe('formatScanResult conditional metadata display (Property 3)', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 4: Aggregation summary correctness
+describe('computeAggregatedSummary property tests (Property 4)', () => {
+  const successResultArb: fc.Arbitrary<FileResult> = fc.record({
+    filePath: fc.constant('/tmp/test.jpg'),
+    fileName: fc.constant('test.jpg'),
+    fileSize: fc.constant(1024),
+    format: fc.constant('jpeg'),
+    scanResult: fc.record({
+      fileId: fc.constant('test-id'),
+      status: fc.constant('done' as const),
+      fields: fc.constant([]),
+      hasGps: fc.boolean(),
+      fieldCount: fc.constant(0),
+      categoryScores: fc.constant({ gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }),
+      fileScore: fc.integer({ min: 0, max: 100 }),
+    }),
+  });
+
+  const errorResultArb: fc.Arbitrary<FileResult> = fc.record({
+    filePath: fc.constant('/tmp/test.jpg'),
+    fileName: fc.constant('test.jpg'),
+    fileSize: fc.constant(1024),
+    format: fc.constant('jpeg'),
+    error: fc.constant('some error'),
+  });
+
+  it('totalFiles equals the length of the input array', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fc.oneof(successResultArb, errorResultArb), { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const summary = computeAggregatedSummary(results);
+          expect(summary.totalFiles).toBe(results.length);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('maxRiskScore equals the maximum fileScore among successful results', () => {
+    fc.assert(
+      fc.property(
+        fc.array(successResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const summary = computeAggregatedSummary(results);
+          const expectedMax = Math.max(...results.map(r => r.scanResult!.fileScore));
+          expect(summary.maxRiskScore).toBe(expectedMax);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('gpsFileCount equals the count of successful results with hasGps=true', () => {
+    fc.assert(
+      fc.property(
+        fc.array(successResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const summary = computeAggregatedSummary(results);
+          const expectedGpsCount = results.filter(r => r.scanResult?.hasGps).length;
+          expect(summary.gpsFileCount).toBe(expectedGpsCount);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('maxRiskScore is 0 when all results are errors', () => {
+    fc.assert(
+      fc.property(
+        fc.array(errorResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const summary = computeAggregatedSummary(results);
+          expect(summary.maxRiskScore).toBe(0);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('gpsFileCount is 0 when all results are errors', () => {
+    fc.assert(
+      fc.property(
+        fc.array(errorResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const summary = computeAggregatedSummary(results);
+          expect(summary.gpsFileCount).toBe(0);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+});
+
 describe('formatSummary', () => {
   it('json mode includes results array and summary object', () => {
     const results = [makeFileResult({ scanResult: makeScanResult({ fileScore: 30 }) })];

@@ -88,12 +88,12 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate ScanResult with fileScore 0–100, verify output contains numeric score and correct severity label
     - **Validates: Requirements 1.3**
 
-  - [ ]* 4.4 Write property test for conditional metadata display (Property 3)
+  - [x]* 4.4 Write property test for conditional metadata display (Property 3)
     - **Property 3: Scan formatter includes conditional metadata when present**
     - Generate ScanResult with hasGps=true and GPS fields, verify GPS values in output; generate with device defined, verify device string in output
     - **Validates: Requirements 1.4, 1.5**
 
-  - [ ]* 4.5 Write property test for aggregation summary (Property 4)
+  - [x]* 4.5 Write property test for aggregation summary (Property 4)
     - **Property 4: Aggregation summary correctness**
     - Generate non-empty arrays of FileResult, verify maxRiskScore = max(fileScores), gpsFileCount = count(hasGps), totalFiles = array.length
     - **Validates: Requirements 1.6**
