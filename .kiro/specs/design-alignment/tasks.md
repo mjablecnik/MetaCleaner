@@ -73,15 +73,15 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
 - [x] 4. Checkpoint — Ensure shared components compile
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Step 1 — Idle State Section
-  - [ ] 5.1 Create `Step1Idle` section component
+- [x] 5. Step 1 — Idle State Section
+  - [x] 5.1 Create `Step1Idle` section component
     - Create `src/routes/sections/Step1Idle/Step1Idle.svelte`
     - Desktop: two-column grid (55%/43%) with UploadZoneCard left, StatusCardIdle right
     - Mobile: single column with UploadZoneCard followed by StatusCardIdle
     - Disabled "Spustit čištění" button at bottom (desktop inline, mobile in MobileBottomCta)
     - _Requirements: 1.1, 1.2, 2.3, 4.1, 4.3_
 
-  - [ ] 5.2 Create `StatusCardIdle` component
+  - [x] 5.2 Create `StatusCardIdle` component
     - Create `src/routes/sections/Step1Idle/StatusCardIdle.svelte`
     - Card with shield icon in rounded circle, "Čeká na soubory" badge, descriptive text prompting file upload
     - _Requirements: 1.2_
