@@ -71,6 +71,12 @@
 
 	onMount(() => {
 		const files = scannerStore.files;
+
+		if (files.length === 0) {
+			appState.transitionTo('idle');
+			return;
+		}
+
 		totalFiles = files.length;
 
 		for (const file of files) {

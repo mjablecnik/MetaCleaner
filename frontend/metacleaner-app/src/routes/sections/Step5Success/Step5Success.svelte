@@ -8,6 +8,7 @@
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
 	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import SuccessHeader from './SuccessHeader.svelte';
 	import MetadataOverview from './MetadataOverview.svelte';
@@ -158,3 +159,32 @@
 {/if}
 
 <Toast message={tx('common.downloadError')} show={showDownloadError} />
+
+<!-- Mobile fixed bottom CTA bar — download, view report, upload new -->
+<MobileBottomCta>
+	<div class="flex flex-col gap-2">
+		<button
+			onclick={handleDownload}
+			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-navy-main"
+		>
+			<i class="fa-solid fa-download"></i>
+			{tx('step5.actions.downloadAll')}
+		</button>
+		<div class="grid grid-cols-2 gap-2">
+			<button
+				onclick={handleViewReport}
+				class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-card py-3 text-xs font-semibold text-white"
+			>
+				<i class="fa-solid fa-file-lines"></i>
+				{tx('step5.actions.viewReport')}
+			</button>
+			<button
+				onclick={handleUploadNew}
+				class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-card py-3 text-xs font-semibold text-white"
+			>
+				<i class="fa-solid fa-arrow-up-from-bracket"></i>
+				{tx('step5.actions.uploadNew')}
+			</button>
+		</div>
+	</div>
+</MobileBottomCta>

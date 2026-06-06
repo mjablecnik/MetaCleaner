@@ -11,7 +11,6 @@ RUN bun install --frozen-lockfile
 COPY svelte.config.js vite.config.ts tsconfig.json ./
 COPY project.inlang ./project.inlang
 COPY messages ./messages
-COPY .storybook ./.storybook
 COPY static ./static
 COPY src ./src
 

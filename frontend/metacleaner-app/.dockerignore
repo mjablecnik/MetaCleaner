@@ -13,3 +13,10 @@ storybook-static/
 Thumbs.db
 .vscode/
 .idea/
+e2e/
+.agents/
+.design/
+test-results/
+CLAUDE.md
+.mcp.json
+.storybook/

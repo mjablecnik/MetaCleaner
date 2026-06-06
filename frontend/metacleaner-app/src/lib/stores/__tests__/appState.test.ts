@@ -13,6 +13,15 @@ vi.mock('$lib/scanner/scannerStore.svelte.js', () => ({
 	}
 }));
 
+// Mock cleaningResultsStore before importing appState
+const mockClearResults = vi.fn();
+
+vi.mock('$lib/stores/cleaningResultsStore.svelte.js', () => ({
+	cleaningResultsStore: {
+		clear: mockClearResults
+	}
+}));
+
 async function importFresh() {
 	return import('../appState.svelte.js');
 }
@@ -21,6 +30,7 @@ describe('appState store', () => {
 	beforeEach(async () => {
 		_mockHasFiles = false;
 		mockClearFiles.mockClear();
+		mockClearResults.mockClear();
 		// Reset to idle by calling transitionTo
 		const { appState } = await importFresh();
 		appState.transitionTo('idle');
@@ -83,13 +93,14 @@ describe('appState store', () => {
 		expect(appState.current).toBe('files-ready');
 	});
 
-	it('reset() calls scannerStore.clearFiles and returns to idle', async () => {
+	it('reset() calls scannerStore.clearFiles, cleaningResultsStore.clear, and returns to idle', async () => {
 		const { appState } = await importFresh();
 		appState.transitionTo('processing');
 		expect(appState.current).toBe('processing');
 
 		appState.reset();
 		expect(mockClearFiles).toHaveBeenCalledOnce();
+		expect(mockClearResults).toHaveBeenCalledOnce();
 		expect(appState.current).toBe('idle');
 	});
 
