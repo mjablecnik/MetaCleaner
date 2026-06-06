@@ -1103,3 +1103,137 @@ describe('formatSummary', () => {
     expect(output).toContain('2');
   });
 });
+
+// Feature: metadata-inspect-cli, Property 12: Exit code determination from results
+describe('determineExitCode property tests (Property 12)', () => {
+  const successResultArb = (score: fc.Arbitrary<number>): fc.Arbitrary<FileResult> =>
+    fc.record({
+      filePath: fc.constant('/tmp/test.jpg'),
+      fileName: fc.constant('test.jpg'),
+      fileSize: fc.constant(1024),
+      format: fc.constant('jpeg'),
+      scanResult: fc.record({
+        fileId: fc.constant('test-id'),
+        status: fc.constant('done' as const),
+        fields: fc.constant([]),
+        hasGps: fc.constant(false),
+        fieldCount: fc.constant(0),
+        categoryScores: fc.constant({ gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }),
+        fileScore: score,
+      }),
+    });
+
+  const errorResultArb: fc.Arbitrary<FileResult> = fc.record({
+    filePath: fc.constant('/tmp/error.jpg'),
+    fileName: fc.constant('error.jpg'),
+    fileSize: fc.constant(0),
+    format: fc.constant('jpeg'),
+    error: fc.string({ minLength: 1, maxLength: 20 }),
+  });
+
+  const lowRiskResultArb = successResultArb(fc.integer({ min: 0, max: 49 }));
+  const highRiskResultArb = successResultArb(fc.integer({ min: 50, max: 100 }));
+
+  it('returns 2 when at least one result has an error', () => {
+    fc.assert(
+      fc.property(
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        errorResultArb,
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        (before, errorResult, after) => {
+          const results = [...before, errorResult, ...after];
+          expect(determineExitCode(results)).toBe(2);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('returns 2 when mix of errors and high-risk results', () => {
+    fc.assert(
+      fc.property(
+        fc.array(highRiskResultArb, { minLength: 0, maxLength: 5 }),
+        errorResultArb,
+        (highRiskResults, errorResult) => {
+          const results = [...highRiskResults, errorResult];
+          expect(determineExitCode(results)).toBe(2);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('returns 1 when no errors but at least one fileScore >= 50', () => {
+    fc.assert(
+      fc.property(
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        highRiskResultArb,
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        (before, highResult, after) => {
+          const results = [...before, highResult, ...after];
+          expect(determineExitCode(results)).toBe(1);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('returns 0 when no errors and all fileScores < 50', () => {
+    fc.assert(
+      fc.property(
+        fc.array(lowRiskResultArb, { minLength: 1, maxLength: 10 }),
+        (results) => {
+          expect(determineExitCode(results)).toBe(0);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('returns 0 for empty array', () => {
+    expect(determineExitCode([])).toBe(0);
+  });
+
+  it('error takes priority: returns 2 even when fileScore >= 50 is present', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 50, max: 100 }),
+        fc.string({ minLength: 1, maxLength: 20 }),
+        (highScore, errMsg) => {
+          const results: FileResult[] = [
+            makeFileResult({ scanResult: makeScanResult({ fileScore: highScore }) }),
+            makeFileResult({ error: errMsg }),
+          ];
+          expect(determineExitCode(results)).toBe(2);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('boundary: fileScore of exactly 50 triggers exit code 1', () => {
+    fc.assert(
+      fc.property(
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        (others) => {
+          const results = [...others, makeFileResult({ scanResult: makeScanResult({ fileScore: 50 }) })];
+          expect(determineExitCode(results)).toBe(1);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('boundary: fileScore of exactly 49 does not trigger exit code 1 (returns 0 with no errors)', () => {
+    fc.assert(
+      fc.property(
+        fc.array(lowRiskResultArb, { minLength: 0, maxLength: 5 }),
+        (others) => {
+          const results = [...others, makeFileResult({ scanResult: makeScanResult({ fileScore: 49 }) })];
+          expect(determineExitCode(results)).toBe(0);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+});

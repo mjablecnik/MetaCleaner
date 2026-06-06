@@ -128,7 +128,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate ScanResult, verify quiet mode produces exactly one line with file name, score, and severity label
     - **Validates: Requirements 6.4**
 
-  - [ ]* 4.12 Write property test for exit code determination (Property 12)
+  - [x]* 4.12 Write property test for exit code determination (Property 12)
     - **Property 12: Exit code determination from results**
     - Generate arrays of FileResult: if any error → 2, else if any fileScore ≥ 50 → 1, else → 0
     - **Validates: Requirements 10.1, 10.2, 10.3**
