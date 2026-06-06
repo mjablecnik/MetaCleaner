@@ -10,7 +10,7 @@ import {
   formatSummary,
 } from '../src/formatter.js';
 import { classifySeverity } from 'metacleaner-app/src/lib/scanner/riskAnalyzer.js';
-import type { FileResult } from '../src/types.js';
+import type { FileResult, CleanResult } from '../src/types.js';
 import type { ScanResult, MetadataField } from 'metacleaner-app/src/lib/scanner/types.js';
 
 function makeScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
@@ -592,6 +592,102 @@ describe('computeAggregatedSummary property tests (Property 4)', () => {
         }
       ),
       { numRuns: 50 }
+    );
+  });
+});
+
+// Feature: metadata-inspect-cli, Property 6: Clean formatter includes all required information
+describe('formatCleanResult property tests (Property 6)', () => {
+  const cleanResultArb: fc.Arbitrary<CleanResult> = fc.record({
+    fieldsRemoved: fc.integer({ min: 0, max: 100 }),
+    gpsStripped: fc.boolean(),
+    originalSize: fc.integer({ min: 1, max: 1023 }),
+    cleanedSize: fc.integer({ min: 0, max: 1023 }),
+    cleanedFilePath: fc.stringMatching(/^[a-zA-Z0-9_-]{1,20}_cleaned\.[a-z]{2,4}$/).filter(s => !s.includes('\n')),
+  });
+
+  it('output contains fieldsRemoved count in human mode', () => {
+    fc.assert(
+      fc.property(cleanResultArb, (clean) => {
+        const result = makeFileResult({ cleanResult: clean });
+        const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(String(clean.fieldsRemoved));
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains "yes" when gpsStripped is true', () => {
+    fc.assert(
+      fc.property(
+        cleanResultArb.filter(c => c.gpsStripped),
+        (clean) => {
+          const result = makeFileResult({ cleanResult: clean });
+          const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain('yes');
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains "no" when gpsStripped is false', () => {
+    fc.assert(
+      fc.property(
+        cleanResultArb.filter(c => !c.gpsStripped),
+        (clean) => {
+          const result = makeFileResult({ cleanResult: clean });
+          const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain('no');
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains original size in bytes when size < 1024', () => {
+    fc.assert(
+      fc.property(cleanResultArb, (clean) => {
+        const result = makeFileResult({ cleanResult: clean });
+        const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(`${clean.originalSize} B`);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains cleaned size in bytes when size < 1024', () => {
+    fc.assert(
+      fc.property(cleanResultArb, (clean) => {
+        const result = makeFileResult({ cleanResult: clean });
+        const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(`${clean.cleanedSize} B`);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains cleanedFilePath in human mode', () => {
+    fc.assert(
+      fc.property(cleanResultArb, (clean) => {
+        const result = makeFileResult({ cleanResult: clean });
+        const output = formatCleanResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(clean.cleanedFilePath);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('JSON mode produces valid JSON containing fieldsRemoved and gpsStripped', () => {
+    fc.assert(
+      fc.property(cleanResultArb, (clean) => {
+        const result = makeFileResult({ cleanResult: clean });
+        const output = formatCleanResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.cleanResult.fieldsRemoved).toBe(clean.fieldsRemoved);
+        expect(parsed.cleanResult.gpsStripped).toBe(clean.gpsStripped);
+      }),
+      { numRuns: 100 }
     );
   });
 });
