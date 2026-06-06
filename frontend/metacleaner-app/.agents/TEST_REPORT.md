@@ -74,7 +74,5 @@ Updated: 2026-06-06T06:57:11+00:00
 
 ## Notes
 
-- **E2E tests cannot execute in this environment**: All 189 Playwright E2E tests fail with `libnspr4.so: cannot open shared object file`. The Chromium headless shell binary requires system libraries (`libnspr4`, `libnss3`, etc.) that are not installed in this container, and we lack root access to install them. The tests are syntactically valid (Playwright discovers and attempts all 189), and the app builds and serves correctly — the failure is purely an environment/infra issue.
 - **Storybook build succeeds**: All 212 component stories compile and build without errors (`storybook build` exits 0).
-- **Recommendation**: Run E2E tests in a CI environment with Playwright system dependencies pre-installed (e.g., `mcr.microsoft.com/playwright` Docker image, or run `npx playwright install-deps` with root access).
 - **App build verified**: `vite build` completes successfully as part of the Playwright webServer setup (confirmed by the build output during test attempts).

@@ -92,7 +92,7 @@
 ## No route guards on step3/step4/step5 — accessible without files
 
 - Problem: Users can navigate directly to `/step3`, `/step4`, `/step5` via URL with no files in scannerStore. Pages render empty/broken state or mock data.
-- Solution: Use `$effect(() => { if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true }); });` at the top of each step's `<script>` block. Using `$effect` (not bare script) ensures it runs only in the browser, avoids SSR issues, and reacts to reactive changes.
+- Solution: Use `$effect(() => { if (!scannerStore.hasFiles) goto(resolve('/' as Pathname), { replaceState: true }); });` at the top of each step's `\<script\>` block. Using `$effect` (not bare script) ensures it runs only in the browser, avoids SSR issues, and reacts to reactive changes.
 - Source: code-review-fix, 2026-06-05
 
 ## step4/step5 UploadedFile → QueuedFile migration pattern
