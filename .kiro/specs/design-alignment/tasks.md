@@ -167,7 +167,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Mobile error visual card: pulsing ring with shaking triangle, failed file info, red progress bar
     - _Requirements: 10.2, 10.3_
 
-- [ ] 9. Checkpoint — Ensure Steps 1–4 compile and state transitions work
+- [x] 9. Checkpoint — Ensure Steps 1–4 compile and state transitions work
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Step 5 — Success State Section
