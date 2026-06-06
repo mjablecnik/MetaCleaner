@@ -217,7 +217,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Test graceful degradation when server unreachable
     - _Requirements: 1.7, 1.8, 2.5, 3.4, 6.7, 6.8, 9.1_
 
-- [ ] 9. Final checkpoint - Ensure all tests pass
+- [x] 9. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
