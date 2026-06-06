@@ -143,7 +143,7 @@
 					{#if result && result.totalFields > 0}
 						<span
 							class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-medium text-brand-green"
-							>{result.totalFields} polí</span
+							>{tx('step5.results.fieldsCount', { count: result.totalFields })}</span
 						>
 					{/if}
 				</div>

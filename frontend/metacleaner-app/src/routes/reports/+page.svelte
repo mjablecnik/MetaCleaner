@@ -104,7 +104,7 @@
 				reports = data.reports;
 			})
 			.catch((err) => {
-				loadError = err instanceof Error ? err.message : 'Failed to load reports';
+				loadError = err instanceof Error ? err.message : tx('common.error');
 			})
 			.finally(() => {
 				isLoading = false;

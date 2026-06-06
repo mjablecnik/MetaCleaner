@@ -22,7 +22,9 @@
 				? 'step4.meta.title'
 				: state === 'success'
 					? 'step5.meta.title'
-					: 'step1.meta.title'
+					: state === 'files-ready'
+						? 'step2.meta.title'
+						: 'step1.meta.title'
 	);
 </script>
 

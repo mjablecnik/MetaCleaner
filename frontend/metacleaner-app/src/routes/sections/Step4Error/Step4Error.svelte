@@ -14,10 +14,12 @@
 	import ErrorTypeAccordion from './ErrorTypeAccordion.svelte';
 	import ErrorLogAccordion from './ErrorLogAccordion.svelte';
 
-	function tx(key: string): string {
+	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
+		return fn ? fn(params) : key;
 	}
 
 	let bannerVisible = $state(true);
@@ -51,8 +53,8 @@
 			.map((item) => {
 				if (item.status === 'done') {
 					const text = item.gpsRemoved
-						? `✓ ${item.file.name} — GPS + ${item.fieldsRemoved} fields`
-						: `✓ ${item.file.name} — ${item.fieldsRemoved} fields removed`;
+						? `✓ ${item.file.name} — ${tx('step3.files.gpsAndFieldsRemoved', { count: item.fieldsRemoved })}`
+						: `✓ ${item.file.name} — ${item.fieldsRemoved} ${tx('step3.files.fieldsRemoved')}`;
 					return { text, isError: false };
 				} else {
 					const code = errorCode ?? 'ERR';

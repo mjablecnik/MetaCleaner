@@ -56,7 +56,7 @@
 				reportDetail = detail;
 			})
 			.catch((err) => {
-				loadError = err instanceof Error ? err.message : 'Failed to load report';
+				loadError = err instanceof Error ? err.message : tx('common.error');
 			})
 			.finally(() => {
 				isLoading = false;
