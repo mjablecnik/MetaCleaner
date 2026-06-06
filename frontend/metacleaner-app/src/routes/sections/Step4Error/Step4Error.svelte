@@ -69,9 +69,7 @@
 
 	const doneCount = $derived(filesWithState.filter((f) => f.status === 'done').length);
 	const totalFiles = $derived(scannerStore.files.length);
-	const overallProgress = $derived(
-		totalFiles > 0 ? Math.round((doneCount / totalFiles) * 100) : 0
-	);
+	const overallProgress = $derived(totalFiles > 0 ? Math.round((doneCount / totalFiles) * 100) : 0);
 
 	const logEntries = $derived(computeLogEntries(filesWithState, cleaningResultsStore.error?.code));
 

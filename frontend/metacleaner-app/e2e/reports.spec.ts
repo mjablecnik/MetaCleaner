@@ -91,7 +91,10 @@ test.describe('Reports page', () => {
 		test('new cleaning link navigates to /', async ({ page }) => {
 			await mockReportsApi(page);
 			await page.goto('/reports');
-			await page.getByRole('link', { name: /new cleaning/i }).first().click();
+			await page
+				.getByRole('link', { name: /new cleaning/i })
+				.first()
+				.click();
 			await page.waitForURL('**/');
 			await expect(page).toHaveURL(/\/$/);
 		});

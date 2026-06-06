@@ -245,7 +245,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure no dead imports, unused variables, or orphaned files remain
     - _Requirements: 22.2, 22.3, 22.4_
 
-- [ ] 15. Checkpoint — Full app compiles, no dead code
+- [x] 15. Checkpoint — Full app compiles, no dead code
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 16. Component Tests (Vitest)

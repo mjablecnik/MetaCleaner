@@ -14,7 +14,12 @@ async function mockJobsApiFailed(page: Page) {
 			await route.fulfill({
 				status: 200,
 				contentType: 'application/json',
-				body: JSON.stringify({ jobId: 'job-fail', status: 'processing', totalFiles: 1, createdAt: '2026-01-15T10:30:00Z' })
+				body: JSON.stringify({
+					jobId: 'job-fail',
+					status: 'processing',
+					totalFiles: 1,
+					createdAt: '2026-01-15T10:30:00Z'
+				})
 			});
 		} else {
 			await route.continue();
@@ -25,7 +30,12 @@ async function mockJobsApiFailed(page: Page) {
 			await route.fulfill({
 				status: 200,
 				contentType: 'application/json',
-				body: JSON.stringify({ jobId: 'job-fail', status: 'failed', totalFiles: 1, filesCompleted: 0 })
+				body: JSON.stringify({
+					jobId: 'job-fail',
+					status: 'failed',
+					totalFiles: 1,
+					filesCompleted: 0
+				})
 			});
 		} else {
 			await route.continue();
@@ -36,7 +46,14 @@ async function mockJobsApiFailed(page: Page) {
 // WebSocket that closes immediately after one progress event, triggering polling fallback
 async function mockWebSocketClose(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
-		ws.send(JSON.stringify({ type: 'job_progress', overallProgress: 10, filesCompleted: 0, totalFiles: 1 }));
+		ws.send(
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 10,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
+		);
 		ws.close();
 	});
 }
@@ -92,7 +109,9 @@ test.describe('Step 4 — Error', () => {
 		test('shows Files to process heading with uploaded file', async ({ page }) => {
 			await navigateToStep4(page);
 
-			await expect(page.getByRole('heading', { level: 3, name: /files to process/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: /files to process/i })
+			).toBeVisible();
 			await expect(page.getByText('photo.jpg')).toBeVisible();
 		});
 
@@ -114,7 +133,9 @@ test.describe('Step 4 — Error', () => {
 			await navigateToStep4(page);
 
 			// ErrorStateCard is desktop-only (hidden lg:flex wrapper)
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' })
+			).toBeVisible();
 			await expect(page.getByText('Metadata cleaning failed')).toBeVisible();
 		});
 
@@ -163,7 +184,9 @@ test.describe('Step 4 — Error', () => {
 		test('shows Files to process with uploaded file on mobile', async ({ page }) => {
 			await navigateToStep4(page);
 
-			await expect(page.getByRole('heading', { level: 3, name: /files to process/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: /files to process/i })
+			).toBeVisible();
 			await expect(page.getByText('photo.jpg')).toBeVisible();
 		});
 

@@ -25,11 +25,21 @@
 </script>
 
 <Story name="Closed">
-	<MobileHamburgerMenu user={mockUser} langOptions={mockLangOptions} open={false} onSelect={() => {}} />
+	<MobileHamburgerMenu
+		user={mockUser}
+		langOptions={mockLangOptions}
+		open={false}
+		onSelect={() => {}}
+	/>
 </Story>
 
 <Story name="Open">
-	<MobileHamburgerMenu user={mockUser} langOptions={mockLangOptions} open={true} onSelect={() => {}} />
+	<MobileHamburgerMenu
+		user={mockUser}
+		langOptions={mockLangOptions}
+		open={true}
+		onSelect={() => {}}
+	/>
 </Story>
 
 <Story name="Open With Language Options">

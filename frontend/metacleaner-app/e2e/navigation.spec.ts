@@ -46,7 +46,12 @@ async function mockJobsApiFailedPolling(page: Page) {
 async function mockWebSocketClose(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 		ws.send(
-			JSON.stringify({ type: 'job_progress', overallProgress: 10, filesCompleted: 0, totalFiles: 1 })
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 10,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
 		);
 		ws.close();
 	});
@@ -80,7 +85,12 @@ test.describe('Navigation — full wizard flow', () => {
 
 		await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 			ws.send(
-				JSON.stringify({ type: 'job_progress', overallProgress: 0, filesCompleted: 0, totalFiles: 1 })
+				JSON.stringify({
+					type: 'job_progress',
+					overallProgress: 0,
+					filesCompleted: 0,
+					totalFiles: 1
+				})
 			);
 		});
 
@@ -152,7 +162,9 @@ test.describe('Navigation — full wizard flow', () => {
 		await goToStep3FromStep2(page);
 		await page.waitForURL('**/step5', { timeout: 10000 });
 
-		const reportLink = page.locator('.hidden.lg\\:flex').getByRole('link', { name: /view report/i });
+		const reportLink = page
+			.locator('.hidden.lg\\:flex')
+			.getByRole('link', { name: /view report/i });
 		await reportLink.click();
 
 		await page.waitForURL('**/report/**');
@@ -195,7 +207,10 @@ test.describe('Navigation — full wizard flow', () => {
 		await mockReportsApi(page);
 		await page.goto('/reports');
 
-		await page.getByRole('link', { name: /new cleaning/i }).first().click();
+		await page
+			.getByRole('link', { name: /new cleaning/i })
+			.first()
+			.click();
 
 		await page.waitForURL('**/');
 		await expect(page).toHaveURL(/\/$/);
@@ -262,7 +277,12 @@ test.describe('Navigation — mobile wizard flow', () => {
 
 		await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 			ws.send(
-				JSON.stringify({ type: 'job_progress', overallProgress: 0, filesCompleted: 0, totalFiles: 1 })
+				JSON.stringify({
+					type: 'job_progress',
+					overallProgress: 0,
+					filesCompleted: 0,
+					totalFiles: 1
+				})
 			);
 		});
 

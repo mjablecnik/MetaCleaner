@@ -187,7 +187,8 @@
 		class="flex items-center gap-1.5 rounded-xl border border-blue-800/50 bg-navy-card px-3 py-2 lg:hidden"
 	>
 		<div class="h-2 w-2 animate-pulse rounded-full bg-brand-blue"></div>
-		<span class="text-[11px] font-semibold text-brand-blue">{tx('step3.badge.inProgressMobile')}</span
+		<span class="text-[11px] font-semibold text-brand-blue"
+			>{tx('step3.badge.inProgressMobile')}</span
 		>
 	</div>
 </div>
@@ -205,7 +206,6 @@
 		{overallProgress}
 		{filesCompleted}
 		{totalFiles}
-		{fieldsRemoved}
 		{timeRemainingSeconds}
 		onStop={stop}
 	/>

@@ -45,7 +45,8 @@
 					iconColor: f.iconColor,
 					hasGps: f.hasGps,
 					fieldsRemoved: f.fieldsRemoved,
-					barWidthPercent: api.fieldsRemoved > 0 ? Math.round((f.fieldsRemoved / api.fieldsRemoved) * 100) : 0,
+					barWidthPercent:
+						api.fieldsRemoved > 0 ? Math.round((f.fieldsRemoved / api.fieldsRemoved) * 100) : 0,
 					barGradientFrom: f.type === 'video' ? 'brand-orange' : 'brand-green',
 					barGradientTo: f.type === 'video' ? 'orange-400' : 'green-400',
 					metadata: {
@@ -120,7 +121,9 @@
 			class="flex flex-col items-center gap-4 rounded-2xl border border-red-800/50 bg-brand-red/10 p-8 text-center"
 		>
 			<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
-			<p class="text-sm font-semibold text-white">{tx('common.error') || 'Failed to load report'}</p>
+			<p class="text-sm font-semibold text-white">
+				{tx('common.error') || 'Failed to load report'}
+			</p>
 			<p class="text-xs text-text-muted">{loadError}</p>
 		</div>
 	{:else}

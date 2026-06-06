@@ -64,9 +64,7 @@ test.describe('Report Detail page', () => {
 
 		test('shows per-file breakdown in chart card', async ({ page }) => {
 			await navigateToReportDetail(page);
-			await expect(
-				page.getByRole('heading', { name: /fields removed per file/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { name: /fields removed per file/i })).toBeVisible();
 		});
 
 		test('shows file name in per-file breakdown', async ({ page }) => {
@@ -76,9 +74,7 @@ test.describe('Report Detail page', () => {
 
 		test('shows file accordion list heading', async ({ page }) => {
 			await navigateToReportDetail(page);
-			await expect(
-				page.getByRole('heading', { name: /detailed file overview/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
 		});
 
 		test('first file accordion item is open by default', async ({ page }) => {
@@ -142,9 +138,9 @@ test.describe('Report Detail page', () => {
 			});
 
 			await page.goto('/report/rpt-001');
-			await expect(
-				page.getByText(/an error occurred|failed to load/i)
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(/an error occurred|failed to load/i)).toBeVisible({
+				timeout: 8000
+			});
 		});
 	});
 
@@ -213,9 +209,9 @@ test.describe('Report Detail page', () => {
 			});
 
 			await page.goto('/report/rpt-001');
-			await expect(
-				page.getByText(/an error occurred|failed to load/i)
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(/an error occurred|failed to load/i)).toBeVisible({
+				timeout: 8000
+			});
 		});
 	});
 

@@ -78,17 +78,22 @@
 	<!-- Files grid: 2 columns desktop, 1 column mobile -->
 	<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
 		{#each displayData as { file, result } (file.id)}
-			<div class="overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60 transition-colors hover:bg-navy-lighter">
+			<div
+				class="overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60 transition-colors hover:bg-navy-lighter"
+			>
 				<div class="flex items-center gap-3 px-4 py-3">
 					<div
-						class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {getFileIconBorder(file)}"
+						class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {getFileIconBorder(
+							file
+						)}"
 					>
 						<i class="fa-solid {getFileIcon(file)} text-sm {getFileIconColor(file)}"></i>
 					</div>
 					<div class="min-w-0 flex-1">
 						<p class="truncate text-sm font-semibold text-white">{file.name}</p>
 						<p class="text-[11px] text-text-muted">
-							{formatSize(file.size)} · {getExtBadge(file)}{result?.gpsRemoved && file.scanResult?.device
+							{formatSize(file.size)} · {getExtBadge(file)}{result?.gpsRemoved &&
+							file.scanResult?.device
 								? ` · ${file.scanResult.device}`
 								: ''}
 						</p>

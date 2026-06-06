@@ -19,10 +19,7 @@
 </script>
 
 <div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card">
-	<button
-		onclick={() => (open = !open)}
-		class="flex w-full items-center justify-between px-4 py-4"
-	>
+	<button onclick={() => (open = !open)} class="flex w-full items-center justify-between px-4 py-4">
 		<div class="flex items-center gap-2">
 			<i class="fa-solid fa-terminal text-sm text-text-muted"></i>
 			<span class="text-sm font-semibold text-white">{tx('step4.log.title')}</span>

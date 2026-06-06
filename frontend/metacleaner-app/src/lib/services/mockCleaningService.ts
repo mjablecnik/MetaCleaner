@@ -3,8 +3,7 @@ import type {
 	CleaningOptions,
 	AnalysisResult,
 	CleaningJob,
-	CleaningCallbacks,
-	CleaningError
+	CleaningCallbacks
 } from './cleaningService.js';
 import type { QueuedFile } from '$lib/scanner/types.js';
 import type { ProcessingResults } from '$lib/types/processing.js';
@@ -40,12 +39,6 @@ function hasGps(file: QueuedFile): boolean {
 	return file.type === 'image' && Math.random() < 0.4;
 }
 
-function formatTime(seconds: number): string {
-	const m = Math.floor(seconds / 60);
-	const s = seconds % 60;
-	return m > 0 ? `${m}m ${s}s` : `${s}s`;
-}
-
 class MockCleaningService implements CleaningService {
 	async analyzeFiles(files: QueuedFile[]): Promise<AnalysisResult> {
 		await new Promise((r) => setTimeout(r, 300));
@@ -73,7 +66,6 @@ class MockCleaningService implements CleaningService {
 
 		const fieldCounts = files.map((f) => generateFieldCount(f));
 		const gpsFlags = files.map((f) => hasGps(f));
-		const totalFields = fieldCounts.reduce((a, b) => a + b, 0);
 		const totalFiles = files.length;
 		const estimatedTotalMs = totalFiles * FILE_DELAY_MS;
 
@@ -124,10 +116,8 @@ class MockCleaningService implements CleaningService {
 				callbacks.onFileComplete(file.id, targetFields, fileHasGps);
 
 				// Build file result
-				const gpsCount = fileHasGps ? randomInt(2, 8) : 0;
 				const exifCount = Math.floor(targetFields * 0.6);
 				const xmpCount = Math.floor(targetFields * 0.25);
-				const remaining = targetFields - gpsCount - exifCount - xmpCount;
 				fileResults.push({
 					fileId: file.id,
 					gpsRemoved: fileHasGps,
@@ -152,10 +142,7 @@ class MockCleaningService implements CleaningService {
 
 			const totalTimeSeconds = Math.ceil((Date.now() - startTime) / 1000);
 			const totalGpsRemoved = gpsFlags.filter(Boolean).length;
-			const gpsFields = fileResults.reduce(
-				(a, r) => a + (r.gpsRemoved ? randomInt(2, 8) : 0),
-				0
-			);
+			const gpsFields = fileResults.reduce((a, r) => a + (r.gpsRemoved ? randomInt(2, 8) : 0), 0);
 			const exifFields = fileResults.reduce((a, r) => a + r.exifCount, 0);
 			const xmpFields = fileResults.reduce((a, r) => a + r.xmpCount, 0);
 			const otherFields = totalFieldsRemoved - gpsFields - exifFields - xmpFields;
@@ -170,10 +157,7 @@ class MockCleaningService implements CleaningService {
 					gpsLocations: gpsFields,
 					exifFields,
 					xmpFields,
-					id3mp4Fields: fileResults.reduce(
-						(a, r) => a + r.id3Count + r.mp4AtomsCount,
-						0
-					),
+					id3mp4Fields: fileResults.reduce((a, r) => a + r.id3Count + r.mp4AtomsCount, 0),
 					otherFields: Math.max(0, otherFields)
 				}
 			};
@@ -263,13 +247,14 @@ function _generateMockReportDetail(): ReportDetail {
 			barGradientFrom: '#22c55e',
 			barGradientTo: '#16a34a',
 			metadata: {
-				gpsFields: i < 5
-					? [
-							{ label: 'GPS Latitude', value: '50.0755° N' },
-							{ label: 'GPS Longitude', value: '14.4378° E' },
-							{ label: 'GPS Altitude', value: '285 m' }
-						]
-					: [],
+				gpsFields:
+					i < 5
+						? [
+								{ label: 'GPS Latitude', value: '50.0755° N' },
+								{ label: 'GPS Longitude', value: '14.4378° E' },
+								{ label: 'GPS Altitude', value: '285 m' }
+							]
+						: [],
 				exifFields: [
 					{ label: 'Make', value: 'Apple' },
 					{ label: 'Model', value: 'iPhone 15 Pro' },

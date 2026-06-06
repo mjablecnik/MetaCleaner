@@ -43,7 +43,9 @@ test.describe('Step 5 — Results', () => {
 		test('renders success header with title and badge', async ({ page }) => {
 			await navigateToStep5(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 			await expect(page.getByText('100% Successfully completed')).toBeVisible();
 		});
 
@@ -131,7 +133,9 @@ test.describe('Step 5 — Results', () => {
 		test('renders success header with title and badge on mobile', async ({ page }) => {
 			await navigateToStep5(page, 'mobile');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 			await expect(page.getByText('100% Successfully completed')).toBeVisible();
 		});
 

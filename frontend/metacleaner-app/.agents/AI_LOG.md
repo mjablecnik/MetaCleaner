@@ -1,9 +1,11 @@
 # AI Log
 
 ## 2026-06-06 09:02 — ui-tests
+
 - No changes needed — all tests up to date
 
 ## 2026-06-06 07:16 — ui-tests
+
 - Removed orphaned Storybook demo stories: `src/stories/Button.stories.svelte`, `src/stories/Header.stories.svelte`, `src/stories/Page.stories.svelte`
 - Removed orphaned Storybook demo components and assets from `src/stories/`
 - Created Storybook story for `MobileHamburgerMenu` component (states: Closed, Open, WithBackButton, OpenWithBackButton, NoUser)
@@ -23,6 +25,7 @@
 - All 212 Storybook stories pass; 189 E2E tests created but cannot run in current environment (missing Chromium system libs)
 
 ## 2026-06-05 23:30 — manual
+
 - Updated `.agents/MEMORY.md` with code review findings on WebSocket and state handling issues
 - Documented `$state<Date>` lint error workaround (use `$state<number>` with `Date.now()` instead)
 - Documented `cleaningStore` file_error handler mapping to wrong statuses
@@ -33,6 +36,7 @@
 - Documented WebSocket polling fallback 30s timeout being too aggressive for large file batches
 
 ## 2026-06-05 18:07 — create-code
+
 - Spec: metacleaner-backend
 - Implemented Go backend service in `backend/metacleaner-server/`
 - Implemented configuration loading (`config.go`) with env var parsing and defaults
@@ -62,6 +66,7 @@
 - Code review identified: PUBLIC_API_URL baked empty at Docker build time, no file download expiration UX, step2 page not implemented, missing i18n keys, aggressive WebSocket polling timeout
 
 ## 2026-06-05 15:09 — from-brief
+
 - Brief: BRIEF.md
 - Added package manager detection logic to `sync-android.sh` (checks `command -v bun`, sets `RUN_CMD`/`EXEC_CMD` variables to bun/bunx or npm/npx)
 - Replaced hardcoded `bun run build` with `$RUN_CMD run build` and `bunx cap sync android` with `$EXEC_CMD cap sync android` in `sync-android.sh`

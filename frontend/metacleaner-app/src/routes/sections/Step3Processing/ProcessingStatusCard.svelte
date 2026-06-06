@@ -12,7 +12,8 @@
 		logEntries: ActivityLogEntry[];
 	}
 
-	const { currentFileName, totalFiles, fieldsRemoved, filesCompleted, logEntries }: Props = $props();
+	const { currentFileName, totalFiles, fieldsRemoved, filesCompleted, logEntries }: Props =
+		$props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -54,7 +55,9 @@
 			<p class="text-base font-bold text-white">{tx('step3.status.cleaningInProgress')}</p>
 			{#if currentFileName}
 				<p class="mt-1 text-xs text-text-muted">
-					{tx('step3.status.processingFileLong', { filename: '' })}<span class="font-semibold text-brand-blue">{currentFileName}</span>
+					{tx('step3.status.processingFileLong', { filename: '' })}<span
+						class="font-semibold text-brand-blue">{currentFileName}</span
+					>
 				</p>
 			{/if}
 		</div>

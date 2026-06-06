@@ -1,6 +1,7 @@
 # Memory
 
 ## $state<Date> triggers svelte/prefer-svelte-reactivity lint error
+
 - Problem: Storing `new Date()` in `$state<Date | null>` triggers ESLint error `svelte/prefer-svelte-reactivity` — Svelte's lint rule requires `SvelteDate` from `svelte/reactivity` instead of the native `Date` class for reactive state.
 - Solution: Store the timestamp as `$state<number | null>` using `Date.now()` instead of `new Date()`. This avoids the reactive wrapper requirement while still allowing comparison arithmetic.
 - Source: code-review-fix, 2026-06-05
@@ -8,12 +9,12 @@
 ## PUBLIC_API_URL requires .env file for svelte-check to pass
 
 - Problem: After adding `import { PUBLIC_API_URL } from '$env/static/public'`, svelte-check reports "Module '$env/static/public' has no exported member 'PUBLIC_API_URL'" even when the .env file exists, because the SvelteKit ambient types are stale.
-- Solution: Run `npx svelte-kit sync` to regenerate `.svelte-kit/ambient.d.ts` which picks up new PUBLIC_ vars from .env. Also create both `.env` (for local dev, gitignored) and `.env.example` (committed, for documentation).
+- Solution: Run `npx svelte-kit sync` to regenerate `.svelte-kit/ambient.d.ts` which picks up new PUBLIC\_ vars from .env. Also create both `.env` (for local dev, gitignored) and `.env.example` (committed, for documentation).
 - Source: code-review-fix, 2026-06-05
 
 ## resolve() from $app/paths rejects dynamic route strings — cast to Pathname
 
-- Problem: `resolve('/report/' + report.id)` or `resolve(\`/report/${id}\`)` fails TypeScript because `resolve()` is typed to accept only known static route strings (the `Pathname` union). Dynamic interpolated strings produce type error "Argument of type '[never]' is not assignable to parameter of type 'never'".
+- Problem: `resolve('/report/' + report.id)` or `resolve(\`/report/${id}\`)`fails TypeScript because`resolve()`is typed to accept only known static route strings (the`Pathname` union). Dynamic interpolated strings produce type error "Argument of type '[never]' is not assignable to parameter of type 'never'".
 - Solution: Cast the dynamic string: `resolve(\`/report/${id}\` as Pathname)` where `Pathname` is imported from `'$app/types'`.
 - Source: code-review-fix, 2026-06-05
 
@@ -120,16 +121,19 @@
 - Source: code-review, 2026-06-05T17:02:02.923+00:00
 
 ## cleaningStore file_error handler maps to wrong statuses
+
 - Problem: The `file_error` WebSocket event handler in `cleaningStore.svelte.ts` sets the failed file's status to `'waiting'` and log entry to `'in_progress'` instead of error-indicating values. The `FileProcessingStatus` type doesn't include `'error'`.
 - Solution: Extend `FileProcessingStatus` to `'done' | 'in_progress' | 'waiting' | 'error'`. In the `file_error` handler, set file status to `'error'` and log status to a failure indicator.
 - Source: code-review, 2026-06-05T17:25:48.603+00:00
 
 ## step5 FileResultsCard gets empty fileResults from cleaningStore
+
 - Problem: `cleaningStore.results.fileResults` is always `[]` because the `job_complete` WS event doesn't contain per-file breakdown. The store's `handleWsEvent` for `job_complete` sets `fileResults: []`. The `FileResultsCard` then uses index-based lookup against an empty array.
 - Solution: Accumulate per-file results during `file_complete` events (fieldsRemoved, gpsRemoved) in a temporary array, then assign to `results.fileResults` when `job_complete` fires. Or fetch full report via GET /api/reports/{id} after completion.
 - Source: code-review, 2026-06-05T17:25:48.603+00:00
 
 ## WebSocket disconnect immediately treated as fatal error
+
 - Problem: When WebSocket closes or errors during processing, step3 immediately navigates to step4 (error page). Backend continues processing (Req 3.6), so the job may complete successfully.
 - Solution: On WS close/error, attempt reconnect or fall back to polling `GET /api/jobs/{id}` every 2-3s. Only treat as error if polling confirms job failure or times out.
 - Source: code-review, 2026-06-05T17:25:48.603+00:00

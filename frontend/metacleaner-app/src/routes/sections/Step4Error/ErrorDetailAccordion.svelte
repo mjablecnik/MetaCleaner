@@ -19,10 +19,7 @@
 </script>
 
 <div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card">
-	<button
-		onclick={() => (open = !open)}
-		class="flex w-full items-center justify-between px-4 py-4"
-	>
+	<button onclick={() => (open = !open)} class="flex w-full items-center justify-between px-4 py-4">
 		<div class="flex items-center gap-2">
 			<i class="fa-solid fa-circle-info text-sm text-brand-red"></i>
 			<span class="text-sm font-semibold text-white">{tx('step4.detail.title')}</span>
@@ -63,7 +60,8 @@
 						<span class="text-[10px] tracking-wider text-text-muted uppercase"
 							>{tx('step4.detail.file')}</span
 						>
-						<span class="truncate font-mono text-xs font-semibold text-white">{error.fileName}</span>
+						<span class="truncate font-mono text-xs font-semibold text-white">{error.fileName}</span
+						>
 					</div>
 				{/if}
 				<div class="flex flex-col gap-0.5">

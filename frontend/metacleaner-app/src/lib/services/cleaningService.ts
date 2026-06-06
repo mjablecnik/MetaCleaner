@@ -62,6 +62,9 @@ export interface CleaningService {
 		callbacks: CleaningCallbacks
 	): CleaningJob;
 	downloadResults(jobId: string): Promise<Blob>;
-	getReports(): Promise<{ summary: import('$lib/types/report.js').ReportSummaryStats; reports: Report[] }>;
+	getReports(): Promise<{
+		summary: import('$lib/types/report.js').ReportSummaryStats;
+		reports: Report[];
+	}>;
 	getReportDetail(reportId: string): Promise<ReportDetail>;
 }

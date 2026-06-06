@@ -97,14 +97,21 @@
 	<div class="flex flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[320px]">
 		{#each filesWithState as { file, status, fieldsRemoved, gpsRemoved } (file.id)}
 			<div
-				class="flex cursor-default items-center gap-3 rounded-xl border px-3 py-3 lg:py-2.5 {rowBorderClass(status)}"
+				class="flex cursor-default items-center gap-3 rounded-xl border px-3 py-3 lg:py-2.5 {rowBorderClass(
+					status
+				)}"
 			>
 				<!-- File icon -->
 				<div
-					class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass(status, file.type)}"
+					class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass(
+						status,
+						file.type
+					)}"
 				>
 					<i
-						class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-sm {iconColorClass(status, file.type)}"
+						class="fa-solid {file.type === 'video'
+							? 'fa-video'
+							: 'fa-image'} text-sm {iconColorClass(status, file.type)}"
 					></i>
 				</div>
 

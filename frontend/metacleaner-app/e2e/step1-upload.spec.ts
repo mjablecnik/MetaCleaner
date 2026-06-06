@@ -15,9 +15,7 @@ test.describe('Step 1 — Upload', () => {
 			await page.goto('/');
 
 			await expect(page.getByRole('heading', { level: 1 })).toContainText('Metadata Cleaning');
-			await expect(
-				page.getByRole('heading', { level: 3, name: /upload files/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { level: 3, name: /upload files/i })).toBeVisible();
 			// Drop zone has role=button; desktop text is "Drag files here"
 			await expect(page.getByRole('button', { name: /drag files here/i })).toBeVisible();
 		});

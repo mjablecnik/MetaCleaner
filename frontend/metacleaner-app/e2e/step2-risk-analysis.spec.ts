@@ -31,9 +31,7 @@ test.describe('Step 2 — Risk Analysis', () => {
 		test('shows risk description text', async ({ page }) => {
 			await navigateToStep2(page);
 
-			await expect(
-				page.getByText('Your files contain sensitive metadata')
-			).toBeVisible();
+			await expect(page.getByText('Your files contain sensitive metadata')).toBeVisible();
 		});
 
 		test('shows risk breakdown bars', async ({ page }) => {

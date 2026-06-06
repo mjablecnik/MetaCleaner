@@ -18,7 +18,6 @@
 		overallProgress: number;
 		filesCompleted: number;
 		totalFiles: number;
-		fieldsRemoved: number;
 		timeRemainingSeconds: number;
 		onStop: () => void;
 	}
@@ -28,7 +27,6 @@
 		overallProgress,
 		filesCompleted,
 		totalFiles,
-		fieldsRemoved,
 		timeRemainingSeconds,
 		onStop
 	}: Props = $props();
@@ -61,7 +59,8 @@
 
 	function iconContainerClass(status: string, fileType: string): string {
 		if (status === 'done') return 'border-brand-green/20 bg-brand-green/10';
-		if (status === 'in_progress' && fileType === 'video') return 'border-brand-orange/20 bg-brand-orange/10';
+		if (status === 'in_progress' && fileType === 'video')
+			return 'border-brand-orange/20 bg-brand-orange/10';
 		if (status === 'error') return 'border-brand-red/20 bg-brand-red/10';
 		return 'border-brand-blue/20 bg-brand-blue/10';
 	}
@@ -74,7 +73,9 @@
 	}
 </script>
 
-<div class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card lg:p-6">
+<div
+	class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card lg:p-6"
+>
 	<!-- Header -->
 	<div class="flex items-center justify-between">
 		<h3 class="text-base font-semibold text-white lg:text-lg">{tx('step3.status.title')}</h3>
@@ -114,14 +115,21 @@
 	<div class="flex max-h-[280px] flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[320px]">
 		{#each processedFiles as { file, state } (file.id)}
 			<div
-				class="flex cursor-default items-center gap-3 rounded-xl border px-3 py-2.5 lg:py-3 {rowBorderClass(state.status)}"
+				class="flex cursor-default items-center gap-3 rounded-xl border px-3 py-2.5 lg:py-3 {rowBorderClass(
+					state.status
+				)}"
 			>
 				<!-- File icon -->
 				<div
-					class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass(state.status, file.type)}"
+					class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass(
+						state.status,
+						file.type
+					)}"
 				>
 					<i
-						class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-sm {iconColorClass(state.status, file.type)}"
+						class="fa-solid {file.type === 'video'
+							? 'fa-video'
+							: 'fa-image'} text-sm {iconColorClass(state.status, file.type)}"
 					></i>
 				</div>
 
@@ -131,9 +139,12 @@
 
 					{#if state.status === 'done'}
 						<div class="mt-0.5 flex flex-wrap items-center gap-1.5">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
-							<span class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]">
+							<span
+								class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
+							>
 								<i class="fa-solid fa-circle-check text-[8px] lg:text-[9px]"></i>
 								{#if state.gpsRemoved}
 									{tx('step3.files.gpsAndFieldsRemovedMobile', { count: state.fieldsRemoved })}
@@ -145,11 +156,15 @@
 					{:else if state.status === 'in_progress'}
 						<div class="mt-1 flex flex-col gap-1">
 							<div class="flex items-center justify-between">
-								<span class="flex items-center gap-1 text-[10px] font-medium text-brand-blue lg:text-[11px]">
+								<span
+									class="flex items-center gap-1 text-[10px] font-medium text-brand-blue lg:text-[11px]"
+								>
 									<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
 									{tx('step3.files.processing')}
 								</span>
-								<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state.progress}%</span>
+								<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]"
+									>{state.progress}%</span
+								>
 							</div>
 							<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-lighter">
 								<div
@@ -160,14 +175,16 @@
 						</div>
 					{:else if state.status === 'error'}
 						<div class="mt-0.5 flex items-center gap-1.5">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span class="text-[10px] text-brand-red lg:text-[11px]">Chyba zpracování</span>
 						</div>
 					{:else}
 						<!-- waiting -->
 						<div class="mt-0.5 flex items-center gap-1.5">
-							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
+							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 							<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
 								<i class="fa-solid fa-clock text-[8px] lg:text-[9px]"></i>

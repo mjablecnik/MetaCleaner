@@ -30,9 +30,7 @@
 	<h3 class="text-lg font-semibold text-white">{tx('step5.metadata.title')}</h3>
 	<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 		<!-- Before -->
-		<div
-			class="flex flex-col gap-4 rounded-2xl border border-brand-red/40 bg-navy-main/60 p-6"
-		>
+		<div class="flex flex-col gap-4 rounded-2xl border border-brand-red/40 bg-navy-main/60 p-6">
 			<div class="mb-2 flex items-center gap-3">
 				<div
 					class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-red/20 text-brand-red"
@@ -114,9 +112,7 @@
 		</div>
 
 		<!-- After -->
-		<div
-			class="flex flex-col gap-4 rounded-2xl border border-brand-green/40 bg-navy-main/60 p-6"
-		>
+		<div class="flex flex-col gap-4 rounded-2xl border border-brand-green/40 bg-navy-main/60 p-6">
 			<div class="mb-2 flex items-center gap-3">
 				<div
 					class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-green/20 text-brand-green"
@@ -226,8 +222,8 @@
 				<button
 					onclick={() => (activeTab = 'before')}
 					class={activeTab === 'before'
-						? 'flex-1 rounded-lg py-2 text-xs font-bold transition-all border border-brand-red/30 bg-brand-red/10 text-brand-red'
-						: 'flex-1 rounded-lg py-2 text-xs font-bold transition-all bg-transparent text-text-muted'}
+						? 'flex-1 rounded-lg border border-brand-red/30 bg-brand-red/10 py-2 text-xs font-bold text-brand-red transition-all'
+						: 'flex-1 rounded-lg bg-transparent py-2 text-xs font-bold text-text-muted transition-all'}
 				>
 					<i class="fa-solid fa-triangle-exclamation mr-1"></i>
 					{tx('step5.metadata.before')}
@@ -235,8 +231,8 @@
 				<button
 					onclick={() => (activeTab = 'after')}
 					class={activeTab === 'after'
-						? 'flex-1 rounded-lg py-2 text-xs font-bold transition-all border border-brand-green/30 bg-brand-green/10 text-brand-green'
-						: 'flex-1 rounded-lg py-2 text-xs font-bold transition-all bg-transparent text-text-muted'}
+						? 'flex-1 rounded-lg border border-brand-green/30 bg-brand-green/10 py-2 text-xs font-bold text-brand-green transition-all'
+						: 'flex-1 rounded-lg bg-transparent py-2 text-xs font-bold text-text-muted transition-all'}
 				>
 					<i class="fa-solid fa-shield-halved mr-1"></i>
 					{tx('step5.metadata.after')}

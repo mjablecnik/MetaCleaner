@@ -52,7 +52,12 @@ async function mockJobsApiFailedStatus(page: Page) {
 async function mockWebSocketStalled(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 		ws.send(
-			JSON.stringify({ type: 'job_progress', overallProgress: 33, filesCompleted: 0, totalFiles: 1 })
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 33,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
 		);
 		// No job_complete sent — page remains on step3
 	});
@@ -62,7 +67,12 @@ async function mockWebSocketStalled(page: Page) {
 async function mockWebSocketClose(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 		ws.send(
-			JSON.stringify({ type: 'job_progress', overallProgress: 10, filesCompleted: 0, totalFiles: 1 })
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 10,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
 		);
 		ws.close();
 	});
@@ -126,7 +136,9 @@ test.describe('Step 3 — Processing', () => {
 			await navigateToStep3(page, 'desktop');
 
 			// ProcessingStatusCard is only visible on lg+ (hidden lg:flex wrapper)
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' })
+			).toBeVisible();
 			await expect(page.getByText('Metadata cleaning in progress')).toBeVisible();
 		});
 

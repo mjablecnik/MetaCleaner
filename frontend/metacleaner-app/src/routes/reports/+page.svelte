@@ -131,7 +131,11 @@
 			totalCount={reports.length}
 			onDownload={downloadReport}
 		/>
-		<ReportsList reports={filteredReports} totalCount={reports.length} onDownload={downloadReport} />
+		<ReportsList
+			reports={filteredReports}
+			totalCount={reports.length}
+			onDownload={downloadReport}
+		/>
 	{/if}
 </main>
 

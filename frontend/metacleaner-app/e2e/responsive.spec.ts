@@ -18,7 +18,12 @@ const TEST_FILE = {
 async function mockWebSocketStalled(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 		ws.send(
-			JSON.stringify({ type: 'job_progress', overallProgress: 33, filesCompleted: 0, totalFiles: 1 })
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 33,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
 		);
 	});
 }
@@ -77,7 +82,12 @@ async function mockJobsApiFailed(page: Page) {
 async function mockWebSocketClose(page: Page) {
 	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
 		ws.send(
-			JSON.stringify({ type: 'job_progress', overallProgress: 10, filesCompleted: 0, totalFiles: 1 })
+			JSON.stringify({
+				type: 'job_progress',
+				overallProgress: 10,
+				filesCompleted: 0,
+				totalFiles: 1
+			})
 		);
 		ws.close();
 	});
@@ -223,7 +233,9 @@ test.describe('Responsive — Step 3 (Processing)', () => {
 			await uploadAndGoToStep2(page);
 			await clickCleanAndGoToStep3(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' })
+			).toBeVisible();
 		});
 
 		test('desktop shows "Fields removed" label', async ({ page }) => {
@@ -284,7 +296,9 @@ test.describe('Responsive — Step 4 (Error)', () => {
 			await mockWebSocketClose(page);
 			await navigateToStep4(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' })
+			).toBeVisible();
 		});
 
 		test('error detail accordion is hidden on desktop', async ({ page }) => {
@@ -312,7 +326,9 @@ test.describe('Responsive — Step 5 (Results)', () => {
 			await mockDownloadApi(page);
 			await navigateToStep5(page, 'mobile');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 		});
 
 		test('summary stats are visible on mobile', async ({ page }) => {
@@ -337,7 +353,9 @@ test.describe('Responsive — Step 5 (Results)', () => {
 			await mockDownloadApi(page);
 			await navigateToStep5(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 		});
 
 		test('summary stats are visible on desktop', async ({ page }) => {
@@ -447,9 +465,7 @@ test.describe('Responsive — Report Detail', () => {
 			await expect(
 				page.getByRole('heading', { name: /distribution of removed metadata/i })
 			).toBeVisible();
-			await expect(
-				page.getByRole('heading', { name: /detailed file overview/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
 		});
 
 		test('download PDF button is not visible on mobile', async ({ page }) => {
@@ -475,9 +491,7 @@ test.describe('Responsive — Report Detail', () => {
 			await expect(
 				page.getByRole('heading', { name: /distribution of removed metadata/i })
 			).toBeVisible();
-			await expect(
-				page.getByRole('heading', { name: /detailed file overview/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
 		});
 
 		test('download PDF button is visible on desktop', async ({ page }) => {
