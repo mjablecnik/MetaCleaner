@@ -65,8 +65,8 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Test error handling for unsupported extensions
     - _Requirements: 1.7, 1.8, 7.1_
 
-- [ ] 4. Implement output formatter
-  - [ ] 4.1 Implement formatter.ts with all format modes
+- [x] 4. Implement output formatter
+  - [x] 4.1 Implement formatter.ts with all format modes
     - Implement `formatScanResult(result, options)`: human-readable with emoji indicators, fields grouped by category, score + severity display
     - Implement `formatCleanResult(result, options)`: show fields removed, GPS stripped status, size change
     - Implement `formatCompareResult(result, options)`: before/after diff with score change, GPS change, device change, field count change
