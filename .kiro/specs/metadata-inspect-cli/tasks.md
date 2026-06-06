@@ -59,7 +59,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - For any file extension in IMAGE_EXTENSIONS or VIDEO_EXTENSIONS, verify correct file type and format string returned
     - **Validates: Requirements 7.1**
 
-  - [ ]* 3.3 Write unit tests for file adapter
+  - [x]* 3.3 Write unit tests for file adapter
     - Test `createFileFromPath` with existing and non-existing files
     - Test format detection for all supported extensions
     - Test error handling for unsupported extensions
