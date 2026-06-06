@@ -226,20 +226,20 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure UI updates within 200ms of re-computation
     - _Requirements: 24.1, 24.2, 24.3, 24.4, 24.5, 24.6, 24.7, 24.8_
 
-- [ ] 14. Route Cleanup — Delete Old Step Routes
-  - [ ] 14.1 Delete `src/routes/step2/` directory and all its contents
+- [x] 14. Route Cleanup — Delete Old Step Routes
+  - [x] 14.1 Delete `src/routes/step2/` directory and all its contents
     - _Requirements: 22.1_
 
-  - [ ] 14.2 Delete `src/routes/step3/` directory and all its contents
+  - [x] 14.2 Delete `src/routes/step3/` directory and all its contents
     - _Requirements: 22.1_
 
-  - [ ] 14.3 Delete `src/routes/step4/` directory and all its contents
+  - [x] 14.3 Delete `src/routes/step4/` directory and all its contents
     - _Requirements: 22.1_
 
-  - [ ] 14.4 Delete `src/routes/step5/` directory and all its contents
+  - [x] 14.4 Delete `src/routes/step5/` directory and all its contents
     - _Requirements: 22.1_
 
-  - [ ] 14.5 Remove dead code and unused imports
+  - [x] 14.5 Remove dead code and unused imports
     - Remove components, stores, utilities exclusively used by old step routes
     - Remove any hardcoded mock file data from repositories
     - Ensure no dead imports, unused variables, or orphaned files remain
