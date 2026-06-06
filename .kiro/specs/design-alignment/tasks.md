@@ -248,43 +248,43 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
 - [x] 15. Checkpoint — Full app compiles, no dead code
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Component Tests (Vitest)
-  - [ ]* 16.1 Write component tests for NavBar (hamburger menu on mobile, dropdowns on desktop, back button)
+- [x] 16. Component Tests (Vitest)
+  - [x]* 16.1 Write component tests for NavBar (hamburger menu on mobile, dropdowns on desktop, back button)
     - Test hamburger renders on mobile, language+user dropdowns on desktop
     - Test back button renders when `showBackButton` prop is true
     - _Requirements: 20.1, 20.2, 20.3, 26.1, 26.4_
 
-  - [ ]* 16.2 Write component tests for UploadZoneCard (full/compact states, drag-over, validation)
+  - [x]* 16.2 Write component tests for UploadZoneCard (full/compact states, drag-over, validation)
     - Test full drop zone when no files, compact "add more" when files present
     - Test drag-over highlight class applied
     - Test invalid file type rejection with toast
     - Test file size > 500 MB rejection with toast
     - _Requirements: 2.1, 2.4, 2.5, 18.1, 18.2, 18.3, 26.4_
 
-  - [ ]* 16.3 Write component tests for FileListCard (file states, remove, last-file transition)
+  - [x]* 16.3 Write component tests for FileListCard (file states, remove, last-file transition)
     - Test each of 5 file row states renders correctly
     - Test remove button visibility (hover on desktop, always on mobile)
     - Test removing last file transitions appState to idle
     - _Requirements: 19.1–19.7, 26.4_
 
-  - [ ]* 16.4 Write component tests for Step3Processing (progress, cancel)
+  - [x]* 16.4 Write component tests for Step3Processing (progress, cancel)
     - Test "Zastavit" button transitions back to files-ready state
     - Test progress bar updates, per-file status indicators
     - _Requirements: 7.2, 7.3, 26.4_
 
-  - [ ]* 16.5 Write component tests for Step4Error (banner, retry, clear)
+  - [x]* 16.5 Write component tests for Step4Error (banner, retry, clear)
     - Test error banner renders with code and description
     - Test "Zkusit znovu" transitions to files-ready
     - Test "Vymazat vše" transitions to idle
     - _Requirements: 9.2, 9.3, 26.4_
 
-  - [ ]* 16.6 Write component tests for Step5Success (animation classes, tabs, navigation)
+  - [x]* 16.6 Write component tests for Step5Success (animation classes, tabs, navigation)
     - Test checkPop animation class on success icon
     - Test MetadataOverview desktop shows two columns, mobile shows tabs
     - Test "Zobrazit report" triggers navigation to `/report`
     - _Requirements: 11.1, 11.3, 12.2, 23.1, 26.4_
 
-  - [ ]* 16.7 Write component tests for appState store transitions
+  - [x]* 16.7 Write component tests for appState store transitions
     - Test idle→files-ready on file upload
     - Test files-ready→processing on start cleaning
     - Test processing→files-ready on cancel (Zastavit)
@@ -292,7 +292,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Test error→files-ready (retry) and error→idle (clear all)
     - _Requirements: 26.4_
 
-  - [ ]* 16.8 Update existing component tests for design-aligned markup
+  - [x]* 16.8 Update existing component tests for design-aligned markup
     - Update all tests referencing changed text, CSS classes, DOM structure
     - Ensure `bun run test` passes without failures
     - _Requirements: 26.1, 26.2, 26.3_
