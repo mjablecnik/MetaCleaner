@@ -161,7 +161,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Handle connection errors, non-2xx responses, and timeouts
     - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6, 6.7, 6.8_
 
-  - [ ]* 7.2 Write unit tests for server client
+  - [x]* 7.2 Write unit tests for server client
     - Mock fetch responses for each endpoint
     - Test health check success and failure
     - Test upload request construction (multipart form data)
