@@ -1,3 +1,4 @@
+import './polyfills.js';
 import type { CLIOptions, CommandResult } from './types.js';
 import { executeCommand } from './commands.js';
 

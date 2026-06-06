@@ -46,8 +46,8 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Include --version flag in help output
     - _Requirements: 4.1, 4.2, 4.3, 9.2_
 
-- [ ] 3. Implement file adapter and scanner module
-  - [ ] 3.1 Implement scanner.ts file adapter
+- [x] 3. Implement file adapter and scanner module
+  - [x] 3.1 Implement scanner.ts file adapter
     - Implement `createFileFromPath(filePath)`: read file from disk using Bun APIs, create a `File`-compatible object with correct name, size, type, and `arrayBuffer()` method
     - Implement `scanFile(filePath)`: detect format from extension using `IMAGE_EXTENSIONS`/`VIDEO_EXTENSIONS` from frontend constants, create File object, call frontend `parseFile()`, return `ScanResult`
     - Implement `scanFiles(filePaths)`: iterate files, collect `FileResult[]`, continue on individual failures
