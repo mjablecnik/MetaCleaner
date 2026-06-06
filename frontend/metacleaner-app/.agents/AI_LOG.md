@@ -1,5 +1,24 @@
 # AI Log
 
+## 2026-06-06 07:16 — ui-tests
+- Removed orphaned Storybook demo stories: `src/stories/Button.stories.svelte`, `src/stories/Header.stories.svelte`, `src/stories/Page.stories.svelte`
+- Removed orphaned Storybook demo components and assets from `src/stories/`
+- Created Storybook story for `MobileHamburgerMenu` component (states: Closed, Open, WithBackButton, OpenWithBackButton, NoUser)
+- Created Storybook story for `FileListItemRisk` component (states: LowRisk, MediumRisk, HighRisk, +3 more)
+- Created Storybook story for `ScanProgressIndicator` component (states: Idle, Scanning, Complete, Error)
+- Set up Playwright E2E framework with `playwright.config.ts` and `e2e/` directory
+- Created `e2e/helpers/mock-api.ts` with route handler utilities for mocking API endpoints
+- Created E2E test `e2e/step1-upload.spec.ts` for Step 1 upload page
+- Created E2E test `e2e/step2-risk-analysis.spec.ts` for Step 2 risk analysis page
+- Created E2E test `e2e/step3-processing.spec.ts` for Step 3 processing page
+- Created E2E test `e2e/step4-error.spec.ts` for Step 4 error page
+- Created E2E test `e2e/step5-results.spec.ts` for Step 5 results page
+- Created E2E test `e2e/reports.spec.ts` for Reports page
+- Created E2E test `e2e/report-detail.spec.ts` for Report Detail page
+- Created E2E test `e2e/navigation.spec.ts` for cross-page navigation flows
+- Created E2E test `e2e/responsive.spec.ts` for responsive layout verification
+- All 212 Storybook stories pass; 189 E2E tests created but cannot run in current environment (missing Chromium system libs)
+
 ## 2026-06-05 23:30 — manual
 - Updated `.agents/MEMORY.md` with code review findings on WebSocket and state handling issues
 - Documented `$state<Date>` lint error workaround (use `$state<number>` with `Date.now()` instead)
