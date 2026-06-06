@@ -1,26 +1,16 @@
 import exifr from 'exifr';
 import ExifReader from 'exifreader';
-import type { MetadataField, RiskCategory, ScanResult } from '../types.js';
+import type { MetadataField, ScanResult } from '../types.js';
 import type { ImageFormat } from '../types.js';
 import {
-	GPS_FIELDS,
-	DEVICE_FIELDS,
-	PERSONAL_FIELDS,
-	TIMESTAMP_FIELDS,
 	FILE_SIZE_THRESHOLD,
-	MAX_IMAGE_HEADER_BYTES
+	MAX_IMAGE_HEADER_BYTES,
+	categorizeField
 } from '../constants.js';
 import { computeFileScore } from '../riskAnalyzer.js';
 
 const EXIFR_FORMATS = new Set<ImageFormat>(['jpeg', 'png', 'heic', 'heif', 'avif', 'tiff', 'dng']);
 const EXIFREADER_FORMATS = new Set<ImageFormat>(['webp', 'gif']);
-
-const FIELD_CATEGORY_MAP: Record<string, keyof RiskCategory> = Object.fromEntries([
-	...GPS_FIELDS.map((k) => [k, 'gps' as const]),
-	...DEVICE_FIELDS.map((k) => [k, 'deviceIdentity' as const]),
-	...PERSONAL_FIELDS.map((k) => [k, 'personalData' as const]),
-	...TIMESTAMP_FIELDS.map((k) => [k, 'timestamps' as const])
-]);
 
 function makeEmptyResult(fileId: string): ScanResult {
 	return {
@@ -37,7 +27,7 @@ function makeEmptyResult(fileId: string): ScanResult {
 function rawToFields(raw: Record<string, unknown>): MetadataField[] {
 	const fields: MetadataField[] = [];
 	for (const [key, value] of Object.entries(raw)) {
-		const category = FIELD_CATEGORY_MAP[key];
+		const category = categorizeField(key);
 		if (!category || value === null || value === undefined) continue;
 		const normalized =
 			typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'

@@ -1,3 +1,94 @@
+// --- Pattern-based field categorization ---
+
+// Prefixes/patterns that identify GPS-related metadata
+const GPS_PATTERNS = [/^GPS/i];
+
+// Exact keys and patterns for device identity
+const DEVICE_EXACT = new Set([
+	'Make',
+	'Model',
+	'LensMake',
+	'LensModel',
+	'Software',
+	'HostComputer',
+	'UniqueCameraModel',
+	'CameraModelName'
+]);
+const DEVICE_PATTERNS = [/serial/i, /^Device/i, /^Lens(?!Info)/i, /BodySerialNumber/i];
+
+// Exact keys and patterns for personal/identifiable data
+const PERSONAL_EXACT = new Set([
+	'Artist',
+	'Copyright',
+	'Creator',
+	'XPAuthor',
+	'XPComment',
+	'XPKeywords',
+	'XPSubject',
+	'OwnerName',
+	'CameraOwnerName',
+	'ImageDescription',
+	'UserComment',
+	'ProfileCopyright',
+	'ContactInfo',
+	'PersonInImage'
+]);
+const PERSONAL_PATTERNS = [/^Owner/i, /^By-line/i];
+
+// Exact keys and patterns for timestamps
+const TIMESTAMP_EXACT = new Set([
+	'DateTimeOriginal',
+	'DateTimeDigitized',
+	'CreateDate',
+	'ModifyDate',
+	'DateTime',
+	'GPSDateStamp',
+	'GPSTimeStamp',
+	'OffsetTimeOriginal',
+	'OffsetTimeDigitized',
+	'OffsetTime',
+	'SubSecTimeOriginal',
+	'SubSecTimeDigitized',
+	'SubSecTime',
+	'SubSecDateTimeOriginal'
+]);
+const TIMESTAMP_PATTERNS = [/^SubSec/i];
+
+export type FieldCategory = 'gps' | 'deviceIdentity' | 'personalData' | 'timestamps';
+
+/**
+ * Categorizes a metadata field key using pattern matching.
+ * Returns the risk category or null if the field is not privacy-relevant.
+ */
+export function categorizeField(key: string): FieldCategory | null {
+	// GPS — anything starting with GPS prefix
+	for (const pattern of GPS_PATTERNS) {
+		if (pattern.test(key)) return 'gps';
+	}
+
+	// Device identity — exact match or pattern
+	if (DEVICE_EXACT.has(key)) return 'deviceIdentity';
+	for (const pattern of DEVICE_PATTERNS) {
+		if (pattern.test(key)) return 'deviceIdentity';
+	}
+
+	// Personal data — exact match or pattern
+	if (PERSONAL_EXACT.has(key)) return 'personalData';
+	for (const pattern of PERSONAL_PATTERNS) {
+		if (pattern.test(key)) return 'personalData';
+	}
+
+	// Timestamps — exact match or pattern
+	if (TIMESTAMP_EXACT.has(key)) return 'timestamps';
+	for (const pattern of TIMESTAMP_PATTERNS) {
+		if (pattern.test(key)) return 'timestamps';
+	}
+
+	return null;
+}
+
+// Reference lists used by riskAnalyzer to compute category saturation scores.
+// These represent the "most common" fields per category for scoring purposes.
 export const GPS_FIELDS = ['GPSLatitude', 'GPSLongitude', 'GPSAltitude', 'GPSPosition'];
 export const DEVICE_FIELDS = ['Make', 'Model', 'SerialNumber', 'Software', 'LensModel'];
 export const PERSONAL_FIELDS = ['Artist', 'Copyright', 'XPAuthor', 'Creator', 'ContactInfo'];

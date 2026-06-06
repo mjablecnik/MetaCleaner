@@ -14,14 +14,30 @@ import type {
 	SeverityLevel
 } from './types.js';
 
+/**
+ * Computes category score based on how many fields from the reference list are present,
+ * plus a bonus for any additional fields found in the category via pattern matching.
+ */
 function computeCategoryScore(
 	fields: MetadataField[],
 	category: keyof RiskCategory,
-	knownKeys: string[]
+	referenceKeys: string[]
 ): number {
-	const presentKeys = new Set(fields.filter((f) => f.category === category).map((f) => f.key));
-	const matchCount = knownKeys.filter((k) => presentKeys.has(k)).length;
-	return Math.min(100, (matchCount / knownKeys.length) * 100);
+	const categoryFields = fields.filter((f) => f.category === category);
+	if (categoryFields.length === 0) return 0;
+
+	// Count how many reference keys are present
+	const presentKeys = new Set(categoryFields.map((f) => f.key));
+	const referenceMatches = referenceKeys.filter((k) => presentKeys.has(k)).length;
+
+	// Base score from reference keys
+	const baseScore = (referenceMatches / referenceKeys.length) * 100;
+
+	// Bonus for additional fields found via pattern matching (not in reference list)
+	const extraFields = categoryFields.length - referenceMatches;
+	const bonus = Math.min(20, extraFields * 5);
+
+	return Math.min(100, baseScore + bonus);
 }
 
 export function computeFileScore(fields: MetadataField[]): {
