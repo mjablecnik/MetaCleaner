@@ -29,8 +29,8 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Create `README.md` with project description, prerequisites (Bun), setup, usage examples for all commands and flags
     - _Requirements: 2.2, 4.1, 4.2_
 
-- [ ] 2. Implement CLI entry point and argument parsing
-  - [ ] 2.1 Implement index.ts entry point
+- [x] 2. Implement CLI entry point and argument parsing
+  - [x] 2.1 Implement index.ts entry point
     - Parse `process.argv` to extract command (scan/clean/compare/help/version), file paths, and flags (--server, --json, --verbose, --quiet, --output, --timeout, --version)
     - Handle `--version` flag: read version from package.json, print to stdout, exit 0
     - Handle `--timeout` flag: parse integer value, default to 60 seconds
@@ -39,7 +39,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Set process exit code from `CommandResult.exitCode`
     - _Requirements: 4.1, 4.3, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 9.1, 10.1, 10.2, 10.3_
 
-  - [ ] 2.2 Implement help command output
+  - [x] 2.2 Implement help command output
     - Display usage info with all commands (scan, clean, compare, help) and all global flags (--server, --json, --verbose, --quiet, --output, --timeout, --version)
     - Include usage examples for each command
     - Show help when no arguments provided or unknown command given
