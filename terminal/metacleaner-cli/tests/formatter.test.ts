@@ -908,6 +908,95 @@ describe('formatScanResult JSON round-trip (Property 8)', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 9: JSON multi-file output structure
+describe('formatSummary JSON multi-file structure (Property 9)', () => {
+  const successResultArb: fc.Arbitrary<FileResult> = fc.record({
+    filePath: fc.constant('/tmp/test.jpg'),
+    fileName: fc.constant('test.jpg'),
+    fileSize: fc.constant(1024),
+    format: fc.constant('jpeg'),
+    scanResult: fc.record({
+      fileId: fc.constant('test-id'),
+      status: fc.constant('done' as const),
+      fields: fc.constant([]),
+      hasGps: fc.boolean(),
+      fieldCount: fc.constant(0),
+      categoryScores: fc.constant({ gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }),
+      fileScore: fc.integer({ min: 0, max: 100 }),
+    }),
+  });
+
+  const errorResultArb: fc.Arbitrary<FileResult> = fc.record({
+    filePath: fc.constant('/tmp/error.jpg'),
+    fileName: fc.constant('error.jpg'),
+    fileSize: fc.constant(0),
+    format: fc.constant('jpeg'),
+    error: fc.constant('file not found'),
+  });
+
+  const fileResultArb = fc.oneof(successResultArb, errorResultArb);
+
+  it('JSON output has a results array with length equal to input array length', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fileResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const output = formatSummary(results, { json: true, verbose: false, quiet: false });
+          const parsed = JSON.parse(output);
+          expect(Array.isArray(parsed.results)).toBe(true);
+          expect(parsed.results.length).toBe(results.length);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('JSON output summary.totalFiles equals the input array length', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fileResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const output = formatSummary(results, { json: true, verbose: false, quiet: false });
+          const parsed = JSON.parse(output);
+          expect(parsed.summary).toBeDefined();
+          expect(parsed.summary.totalFiles).toBe(results.length);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('JSON output is always valid JSON for any non-empty array of FileResult', () => {
+    fc.assert(
+      fc.property(
+        fc.array(fileResultArb, { minLength: 1, maxLength: 20 }),
+        (results) => {
+          const output = formatSummary(results, { json: true, verbose: false, quiet: false });
+          expect(() => JSON.parse(output)).not.toThrow();
+        }
+      ),
+      { numRuns: 200 }
+    );
+  });
+
+  it('JSON results array length equals N for every N from 1 to 10', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 1, max: 10 }).chain(n =>
+          fc.tuple(fc.constant(n), fc.array(fileResultArb, { minLength: n, maxLength: n }))
+        ),
+        ([n, results]) => {
+          const output = formatSummary(results, { json: true, verbose: false, quiet: false });
+          const parsed = JSON.parse(output);
+          expect(parsed.results.length).toBe(n);
+          expect(parsed.summary.totalFiles).toBe(n);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+});
+
 describe('formatSummary', () => {
   it('json mode includes results array and summary object', () => {
     const results = [makeFileResult({ scanResult: makeScanResult({ fileScore: 30 }) })];

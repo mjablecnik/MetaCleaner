@@ -118,7 +118,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate valid ScanResult, format as JSON, parse back, verify structural equivalence
     - **Validates: Requirements 5.2**
 
-  - [ ]* 4.10 Write property test for JSON multi-file structure (Property 9)
+  - [x]* 4.10 Write property test for JSON multi-file structure (Property 9)
     - **Property 9: JSON multi-file output structure**
     - Generate arrays of N FileResult (N≥1), verify JSON output has results array of length N and summary.totalFiles = N
     - **Validates: Requirements 5.3**
