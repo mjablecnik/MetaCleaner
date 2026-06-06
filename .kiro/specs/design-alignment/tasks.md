@@ -86,15 +86,15 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Card with shield icon in rounded circle, "Čeká na soubory" badge, descriptive text prompting file upload
     - _Requirements: 1.2_
 
-- [ ] 6. Step 2 — Files-Ready State Section
-  - [ ] 6.1 Create `Step2FilesReady` section component
+- [x] 6. Step 2 — Files-Ready State Section
+  - [x] 6.1 Create `Step2FilesReady` section component
     - Create `src/routes/sections/Step2FilesReady/Step2FilesReady.svelte`
     - Desktop: two-column grid (55%/43%) with left (compact UploadZoneCard + FileListCard + enabled "Spustit čištění" button) and right (RiskScannerCard)
     - Mobile: compact UploadZoneCard, MobileRiskBanner (collapsible accordion), FileListCard, CTA hint card, fixed bottom "Spustit čištění" button
     - Wire "Spustit čištění" button to transition `appState` → `processing`
     - _Requirements: 1.3, 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3_
 
-  - [ ] 6.2 Update `RiskScannerCard` to match design mockup
+  - [x] 6.2 Update `RiskScannerCard` to match design mockup
     - Show "Risk Scanner" title with severity badge ("Vysoké riziko" etc.)
     - SVG score ring displaying aggregated risk score from scannerStore
     - Severity description with category chips
@@ -103,7 +103,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - CTA hint text at bottom
     - _Requirements: 5.3, 24.5_
 
-  - [ ] 6.3 Update `MobileRiskBanner` as collapsible accordion
+  - [x] 6.3 Update `MobileRiskBanner` as collapsible accordion
     - Collapsed header: SVG score circle, "Risk Scanner" title, severity badge, category chips
     - Expanded body: risk breakdown bars, before/after scores
     - Chevron rotation animation on expand/collapse

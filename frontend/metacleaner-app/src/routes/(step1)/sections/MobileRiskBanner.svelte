@@ -4,6 +4,7 @@
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import RiskScoreRing from '../components/RiskScoreRing.svelte';
 	import RiskBreakdownBar from '../components/RiskBreakdownBar.svelte';
+	import BeforeAfterScore from '../components/BeforeAfterScore.svelte';
 	import type { SeverityLevel } from '$lib/scanner/types';
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -94,7 +95,27 @@
 						{tx(severityLabelKey[severity])}
 					</span>
 				</div>
-				<p class="text-[11px] text-text-muted">{tx('step2.risk.description')}</p>
+				<!-- Category chips -->
+				<div class="flex items-center gap-1.5">
+					{#if categories.gps > 0}
+						<span
+							class="rounded border border-brand-red/25 bg-brand-red/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-red"
+							>GPS</span
+						>
+					{/if}
+					{#if categories.deviceIdentity > 0}
+						<span
+							class="rounded border border-brand-orange/25 bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange"
+							>{tx('step2.risk.chipDevice')}</span
+						>
+					{/if}
+					{#if categories.personalData > 0}
+						<span
+							class="rounded border border-brand-orange/25 bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange"
+							>{tx('step2.risk.chipPersonal')}</span
+						>
+					{/if}
+				</div>
 			</div>
 		</div>
 		<i
@@ -106,6 +127,7 @@
 
 	{#if accordionOpen}
 		<div class="flex flex-col gap-4 px-4 pb-4">
+			<p class="text-xs leading-relaxed text-text-muted">{tx('step2.risk.description')}</p>
 			<div class="flex flex-col gap-3">
 				<p class="text-[10px] font-bold tracking-widest text-text-muted uppercase">
 					{tx('step2.risk.analysisTitle')}
@@ -139,6 +161,7 @@
 					value={categories.timestamps}
 				/>
 			</div>
+			<BeforeAfterScore beforeScore={score} afterScore={0} />
 		</div>
 	{/if}
 </div>
