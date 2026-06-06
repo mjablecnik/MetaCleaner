@@ -997,6 +997,86 @@ describe('formatSummary JSON multi-file structure (Property 9)', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 10: Quiet mode single-line format
+describe('formatScanResult quiet mode property tests (Property 10)', () => {
+  it('quiet mode produces exactly one line for any valid ScanResult', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: true });
+          expect(output.split('\n').length).toBe(1);
+        }
+      ),
+      { numRuns: 200 }
+    );
+  });
+
+  it('quiet mode output contains the file name', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        fc.stringMatching(/^[a-zA-Z0-9_-]{1,20}$/).map(n => `${n}.jpg`),
+        (fileScore, fileName) => {
+          const result = makeFileResult({ fileName, scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: true });
+          expect(output).toContain(fileName);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('quiet mode output contains the numeric score', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: true });
+          expect(output).toContain(String(fileScore));
+        }
+      ),
+      { numRuns: 200 }
+    );
+  });
+
+  it('quiet mode output contains the correct severity label', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const expectedSeverity = classifySeverity(fileScore);
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: true });
+          expect(output).toContain(expectedSeverity);
+        }
+      ),
+      { numRuns: 200 }
+    );
+  });
+
+  it('quiet mode output contains all three parts: file name, score, severity — in one line', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const expectedSeverity = classifySeverity(fileScore);
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: true });
+          const lines = output.split('\n');
+          expect(lines.length).toBe(1);
+          expect(lines[0]).toContain(result.fileName);
+          expect(lines[0]).toContain(String(fileScore));
+          expect(lines[0]).toContain(expectedSeverity);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+});
+
 describe('formatSummary', () => {
   it('json mode includes results array and summary object', () => {
     const results = [makeFileResult({ scanResult: makeScanResult({ fileScore: 30 }) })];

@@ -123,7 +123,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate arrays of N FileResult (N≥1), verify JSON output has results array of length N and summary.totalFiles = N
     - **Validates: Requirements 5.3**
 
-  - [ ]* 4.11 Write property test for quiet mode format (Property 10)
+  - [x]* 4.11 Write property test for quiet mode format (Property 10)
     - **Property 10: Quiet mode single-line format**
     - Generate ScanResult, verify quiet mode produces exactly one line with file name, score, and severity label
     - **Validates: Requirements 6.4**
