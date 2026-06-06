@@ -197,7 +197,8 @@ test.describe('Report Detail page', () => {
 
 		test('back link in navbar navigates to /reports on mobile', async ({ page }) => {
 			await navigateToReportDetail(page);
-			const backLink = page.getByRole('link', { name: /back to results/i }).first();
+			// Mobile NavBar back button uses aria-label="Go back" (text not visible on mobile)
+			const backLink = page.getByRole('link', { name: /go back/i }).first();
 			await backLink.click();
 			await page.waitForURL('**/reports');
 			await expect(page).toHaveURL(/\/reports/);

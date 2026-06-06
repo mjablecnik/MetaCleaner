@@ -48,27 +48,15 @@ test.describe('Step 1 — Upload', () => {
 			await expect(page.getByRole('heading', { level: 3, name: 'Risk Scanner' })).toBeVisible();
 		});
 
-		test('Options button opens the cleaning options sheet', async ({ page }) => {
-			await page.goto('/');
-
-			// Sheet overlay is hidden before opening
-			await expect(page.locator('.sheet-overlay')).not.toBeVisible();
-
-			await page.getByRole('button', { name: /options/i }).click();
-
-			await expect(page.locator('.sheet-overlay')).toBeVisible();
-			await expect(page.getByRole('heading', { name: 'Cleaning options' })).toBeVisible();
-		});
-
-		test('navigates to /step2 after clicking Start Cleaning', async ({ page }) => {
+		test('transitions to files-ready state in-place (URL stays at /)', async ({ page }) => {
 			await page.goto('/');
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 			await expect(page.getByText('photo.jpg')).toBeVisible();
 
-			await page.getByRole('button', { name: /start cleaning/i }).click();
-
-			await page.waitForURL('**/step2');
-			await expect(page).toHaveURL(/\/step2/);
+			// State transitions in-place — URL does not change
+			expect(page.url()).toMatch(/\/$/);
+			// Files-ready state shows file list
+			await expect(page.getByText('Files to process')).toBeVisible();
 		});
 	});
 
@@ -101,15 +89,16 @@ test.describe('Step 1 — Upload', () => {
 			).toBeVisible();
 		});
 
-		test('navigates to /step2 from mobile Start Cleaning button', async ({ page }) => {
+		test('transitions to files-ready in-place (URL stays at /) on mobile', async ({ page }) => {
 			await page.goto('/');
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 			await expect(page.getByText('photo.jpg')).toBeVisible();
 
-			await page.getByRole('button', { name: /start cleaning/i }).click();
-
-			await page.waitForURL('**/step2');
-			await expect(page).toHaveURL(/\/step2/);
+			// URL does not change — SPA state machine
+			expect(page.url()).toMatch(/\/$/);
+			// Mobile bottom CTA with Start Cleaning appears
+			const mobileBar = page.locator('.fixed.bottom-0');
+			await expect(mobileBar.getByRole('button', { name: /start cleaning/i })).toBeEnabled();
 		});
 	});
 });

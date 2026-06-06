@@ -344,7 +344,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Verify language options, icon animation bars↔xmark
     - _Requirements: 3.1, 3.2, 3.3, 27.3_
 
-  - [ ]* 17.10 Update existing E2E tests for design-aligned flows
+  - [x]* 17.10 Update existing E2E tests for design-aligned flows
     - Update selectors, text matchers, assertions for new markup
     - Ensure `bun run test:e2e` passes without failures
     - _Requirements: 27.1, 27.4_

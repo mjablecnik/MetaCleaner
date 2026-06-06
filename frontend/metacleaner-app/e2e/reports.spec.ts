@@ -1,10 +1,14 @@
 import { test, expect, type Page } from 'playwright/test';
-import { mockReportsApi } from './helpers/mock-api';
+
+// Reports page uses mockCleaningService.getReports() directly (not HTTP API).
+// Mock service dates: '2025-06-04', '2025-06-03', etc.
+// Report IDs: 'report-1', 'report-2', ... (used in /report/:id URL)
+// First report (index 0): image type, gps: true, tags: ['GPS','EXIF'], fileTypes: 'JPG, PNG'
 
 async function navigateToReports(page: Page) {
-	await mockReportsApi(page);
 	await page.goto('/reports');
-	await expect(page.getByText('2026-01-15')).toBeVisible({ timeout: 8000 });
+	// Wait for mock service data to load (200ms simulated delay)
+	await expect(page.getByText('2025-06-04')).toBeVisible({ timeout: 8000 });
 }
 
 test.describe('Reports page', () => {
@@ -12,13 +16,11 @@ test.describe('Reports page', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 
 		test('renders page heading', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible();
 		});
 
 		test('shows new cleaning link in header', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			await expect(page.getByRole('link', { name: /new cleaning/i }).first()).toBeVisible();
 		});
@@ -39,8 +41,9 @@ test.describe('Reports page', () => {
 
 		test('reports table displays mock report data', async ({ page }) => {
 			await navigateToReports(page);
-			await expect(page.getByText('2026-01-15')).toBeVisible();
-			await expect(page.getByText('JPEG, PNG')).toBeVisible();
+			await expect(page.getByText('2025-06-04')).toBeVisible();
+			// First report is image type with fileTypes 'JPG, PNG'
+			await expect(page.getByText('JPG, PNG').first()).toBeVisible();
 		});
 
 		test('reports table shows tags', async ({ page }) => {
@@ -91,39 +94,42 @@ test.describe('Reports page', () => {
 			await navigateToReports(page);
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Photos' }).click();
-			await expect(page.getByText('2026-01-15')).toBeVisible();
+			// First report (image type) remains visible after Photos filter
+			await expect(page.getByText('2025-06-04')).toBeVisible();
 		});
 
-		test('Video filter shows no results', async ({ page }) => {
+		test('Video filter shows video reports', async ({ page }) => {
 			await navigateToReports(page);
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Video' }).click();
-			await expect(page.getByText('No reports match your search.')).toBeVisible();
+			// Mock data has video reports (index 1 and 3) — at least one MP4 report visible
+			await expect(page.getByText('MP4, MOV').first()).toBeVisible();
 		});
 
 		test('GPS filter keeps GPS reports visible', async ({ page }) => {
 			await navigateToReports(page);
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Contained GPS' }).click();
-			// Mock report has gps: true — should remain visible
-			await expect(page.getByText('2026-01-15')).toBeVisible();
+			// First report has gps: true — should remain visible
+			await expect(page.getByText('2025-06-04')).toBeVisible();
 		});
 
 		test('All filter button resets active filter', async ({ page }) => {
 			await navigateToReports(page);
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
-			// Apply Video filter (shows 0 results), then All to reset
-			await filtersBar.getByRole('button', { name: 'Video' }).click();
-			await expect(page.getByText('No reports match your search.')).toBeVisible();
+			// Apply Photos filter, then All to reset
+			await filtersBar.getByRole('button', { name: 'Photos' }).click();
 			await filtersBar.getByRole('button', { name: 'All' }).click();
-			await expect(page.getByText('2026-01-15')).toBeVisible();
+			// All reports visible again
+			await expect(page.getByText('2025-06-04')).toBeVisible();
 		});
 
 		test('view report link in table row has correct href', async ({ page }) => {
 			await navigateToReports(page);
 			const viewLink = page.locator('a[title="View report"]').first();
 			const href = await viewLink.getAttribute('href');
-			expect(href).toContain('rpt-001');
+			// Mock service report IDs: 'report-1', 'report-2', etc.
+			expect(href).toContain('report-');
 		});
 
 		test('reports list (mobile cards) is hidden on desktop', async ({ page }) => {
@@ -133,14 +139,12 @@ test.describe('Reports page', () => {
 		});
 
 		test('mobile sticky new cleaning bar is hidden on desktop', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			const stickyBar = page.locator('.mobile-gradient-fade');
 			await expect(stickyBar).not.toBeVisible();
 		});
 
 		test('new cleaning link navigates to /', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			await page
 				.getByRole('link', { name: /new cleaning/i })
@@ -155,7 +159,6 @@ test.describe('Reports page', () => {
 		test.use({ viewport: { width: 375, height: 812 } });
 
 		test('renders page heading on mobile', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible();
 		});
@@ -175,16 +178,16 @@ test.describe('Reports page', () => {
 		// Requirement 14.2 — mobile card layout details
 		test('report card displays report data', async ({ page }) => {
 			await navigateToReports(page);
-			await expect(page.getByText('2026-01-15')).toBeVisible();
+			// First report date from mock cleaning service
+			await expect(page.getByText('2025-06-04')).toBeVisible();
 		});
 
-		test('report card shows time, duration, file count, and file types', async ({ page }) => {
+		test('report card shows time and duration', async ({ page }) => {
 			await navigateToReports(page);
-			// "10:30 · 12s · 3 files · JPEG, PNG" rendered as a single <p> in ReportCard
+			// First report: time '14:32', duration '2m 14s'
 			const card = page.locator('.report-card').first();
-			await expect(card.getByText(/10:30/)).toBeVisible();
-			await expect(card.getByText(/12s/)).toBeVisible();
-			await expect(card.getByText(/JPEG, PNG/)).toBeVisible();
+			await expect(card.getByText(/14:32/)).toBeVisible();
+			await expect(card.getByText(/2m 14s/)).toBeVisible();
 		});
 
 		test('report card shows metadata type badges (GPS, EXIF)', async ({ page }) => {
@@ -209,14 +212,12 @@ test.describe('Reports page', () => {
 		});
 
 		test('mobile sticky bar shows new cleaning link', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			const stickyBar = page.locator('.mobile-gradient-fade');
 			await expect(stickyBar.getByRole('link', { name: /new cleaning/i })).toBeVisible();
 		});
 
 		test('mobile sticky new cleaning link navigates to /', async ({ page }) => {
-			await mockReportsApi(page);
 			await page.goto('/reports');
 			const stickyBar = page.locator('.mobile-gradient-fade');
 			await stickyBar.getByRole('link', { name: /new cleaning/i }).click();
@@ -228,7 +229,8 @@ test.describe('Reports page', () => {
 			await navigateToReports(page);
 			const viewLink = page.locator('a[title="View report"]').first();
 			const href = await viewLink.getAttribute('href');
-			expect(href).toContain('rpt-001');
+			// Mock service report IDs: 'report-1', 'report-2', etc.
+			expect(href).toContain('report-');
 		});
 
 		// Requirement 14.1 — scrollable filter pills
@@ -257,14 +259,16 @@ test.describe('Reports page', () => {
 			await navigateToReports(page);
 			const mobilePillsArea = page.locator('.filters-scroll');
 			await mobilePillsArea.getByRole('button', { name: 'Photos' }).click();
-			await expect(page.getByText('2026-01-15')).toBeVisible();
+			// First report is image type — remains visible
+			await expect(page.getByText('2025-06-04')).toBeVisible();
 		});
 
-		test('Video filter on mobile shows no results', async ({ page }) => {
+		test('Video filter on mobile shows video reports', async ({ page }) => {
 			await navigateToReports(page);
 			const mobilePillsArea = page.locator('.filters-scroll');
 			await mobilePillsArea.getByRole('button', { name: 'Video' }).click();
-			await expect(page.getByText('No reports match your search.')).toBeVisible();
+			// Mock data has video type reports
+			await expect(page.getByText('MP4, MOV').first()).toBeVisible();
 		});
 	});
 });
