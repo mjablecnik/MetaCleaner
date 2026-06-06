@@ -202,15 +202,15 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - No route navigation for state transitions — only content area re-renders
     - _Requirements: 1.3, 22.1_
 
-- [ ] 12. Reports and Report Detail Pages
-  - [ ] 12.1 Update `/reports` page to match desktop table and mobile card layout
+- [x] 12. Reports and Report Detail Pages
+  - [x] 12.1 Update `/reports` page to match desktop table and mobile card layout
     - Desktop: page header (history icon, "Historie reportů", subtitle, "Nové čištění" button), 4 stat cards row, filter/search bar, reports table with columns (ID, Datum, Soubory, Pole, Typy, Status, Akce)
     - Mobile: compact header, 2×2 stat grid, search input, scrollable filter buttons, card-based report list, fixed bottom "Nové čištění" CTA
     - Use mock data from mockCleaningService
     - NavBar with back button ("Zpět na čištění")
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 14.1, 14.2, 14.3, 20.2_
 
-  - [ ] 12.2 Update `/report` page to match design
+  - [x] 12.2 Update `/report` page to match design
     - Desktop: NavBar with back button, report header (file-lines icon, title, date/file/field subtitle, PDF download + Print buttons), meta info bar (4 columns), stat cards, two-column chart section, per-file accordion section with GPS/EXIF/XMP tables (red strikethrough for removed values)
     - Mobile: compact header, 2×2 meta grid, 2×2 stat cards, metadata distribution card, per-file breakdown, file accordions
     - NavBar with "Zpět na výsledky" back button
