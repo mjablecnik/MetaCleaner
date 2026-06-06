@@ -137,24 +137,24 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Activity log accordion: collapsed by default, chevron toggle, timestamped entries
     - _Requirements: 8.2, 8.3_
 
-- [ ] 8. Step 4 — Error State Section
-  - [ ] 8.1 Create `Step4Error` section component
+- [x] 8. Step 4 — Error State Section
+  - [x] 8.1 Create `Step4Error` section component
     - Create `src/routes/sections/Step4Error/Step4Error.svelte`
     - Desktop: "Chyba zpracování" badge, full-width error banner, two-column layout (ErrorFilesCard left, ErrorStateCard right)
     - Mobile: "Chyba" badge, compact error banner, error visual card, files card, accordion sections
     - _Requirements: 9.1, 9.2, 10.1_
 
-  - [ ] 8.2 Create `ErrorBanner` component
+  - [x] 8.2 Create `ErrorBanner` component
     - Full-width banner: warning triangle icon, "Proces čištění selhal" title, error code badge, description text, dismiss X button
     - _Requirements: 9.2_
 
-  - [ ] 8.3 Create `ErrorFilesCard` component
+  - [x] 8.3 Create `ErrorFilesCard` component
     - Overall red progress bar with "Přerušeno" label
     - Per-file status rows (completed/failed/skipped states)
     - Action buttons: "Zkusit znovu" (transitions to files-ready) + "Vymazat vše" (transitions to idle)
     - _Requirements: 9.3_
 
-  - [ ] 8.4 Create `ErrorStateCard` component (desktop)
+  - [x] 8.4 Create `ErrorStateCard` component (desktop)
     - Animated error visual: pulsing ring, shaking triangle icon, red X badge
     - Failed file name display
     - Error detail box: grid with error code, time, file, phase
@@ -162,7 +162,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Log section with timestamped entries
     - _Requirements: 9.4_
 
-  - [ ] 8.5 Create mobile error accordions
+  - [x] 8.5 Create mobile error accordions
     - `ErrorDetailAccordion`, `ErrorTypeAccordion`, `ErrorLogAccordion` — independently expandable/collapsible with chevron rotation
     - Mobile error visual card: pulsing ring with shaking triangle, failed file info, red progress bar
     - _Requirements: 10.2, 10.3_
