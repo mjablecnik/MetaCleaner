@@ -302,7 +302,11 @@ describe('formatScanResult category grouping (Property 1)', () => {
 
   const metadataFieldArb: fc.Arbitrary<MetadataField> = fc.record({
     key: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\n')),
-    value: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\n')),
+    value: fc.oneof(
+      fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\n')),
+      fc.integer({ min: -999, max: 999 }),
+      fc.boolean(),
+    ),
     category: fc.constantFrom(...CATEGORIES),
   });
 
@@ -814,7 +818,11 @@ describe('formatScanResult JSON round-trip (Property 8)', () => {
 
   const metadataFieldArb: fc.Arbitrary<MetadataField> = fc.record({
     key: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
-    value: fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
+    value: fc.oneof(
+      fc.string({ minLength: 1, maxLength: 20 }).filter(s => !s.includes('\0')),
+      fc.integer({ min: -999, max: 999 }),
+      fc.boolean(),
+    ),
     category: fc.constantFrom(...CATEGORIES),
   });
 

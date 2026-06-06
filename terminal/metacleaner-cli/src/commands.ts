@@ -8,6 +8,10 @@ import { rm } from 'fs/promises';
 import type { CLIOptions, CommandResult, FileResult, CleanResult, CompareResult, SeverityLevel } from './types.js';
 import { scanFiles } from './scanner.js';
 import {
+  IMAGE_EXTENSIONS,
+  VIDEO_EXTENSIONS,
+} from 'metacleaner-app/src/lib/scanner/constants.js';
+import {
   formatScanResult,
   formatCleanResult,
   formatCompareResult,
@@ -53,7 +57,7 @@ GLOBAL FLAGS:
   --json               Output results in JSON format
   --verbose            Show additional details including raw parser output
   --quiet              Output only risk score and severity per file (one line per file)
-  --output <path>      Output directory or file path for cleaned files
+  --output <path>      Output directory or file path for cleaned files (default: current working directory)
   --timeout <seconds>  Maximum server polling wait time in seconds (default: 60)
   --version            Print the version string and exit
 
@@ -147,8 +151,34 @@ async function executeClean(options: CLIOptions): Promise<CommandResult> {
 
   for (const filePath of options.files) {
     const fileName = filePath.split('/').pop() ?? filePath;
-    const fileSize = existsSync(filePath) ? statSync(filePath).size : 0;
-    const format = extname(filePath).toLowerCase().slice(1);
+
+    if (!existsSync(filePath)) {
+      results.push({
+        filePath,
+        fileName,
+        fileSize: 0,
+        format: '',
+        error: `File not found: ${filePath}`,
+      });
+      continue;
+    }
+
+    const ext = extname(filePath).toLowerCase();
+    const format = IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext] ?? '';
+
+    if (!format) {
+      const fileSize = statSync(filePath).size;
+      results.push({
+        filePath,
+        fileName,
+        fileSize,
+        format: '',
+        error: `Unsupported file format: ${ext || '(no extension)'}`,
+      });
+      continue;
+    }
+
+    const fileSize = statSync(filePath).size;
 
     try {
       const uploaded = await uploadFiles(options.server, [filePath]);
@@ -265,7 +295,8 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
 
       if (status.status === 'failed') throw new Error('Server cleaning job failed');
 
-      const tempPath = join(tmpdir(), `metacleaner_${Date.now()}_${fileName}`);
+      const tempExt = extname(filePath);
+      const tempPath = join(tmpdir(), `metacleaner_${Date.now()}${tempExt}`);
       await downloadFile(options.server, fileId, tempPath);
 
       const [afterResult] = await scanFiles([tempPath]);

@@ -9,13 +9,28 @@ import {
 } from 'metacleaner-app/src/lib/scanner/constants.js';
 import type { FileResult } from './types.js';
 
+const MIME_TYPE_OVERRIDES: Record<string, string> = {
+  '.dng': 'image/x-adobe-dng',
+  '.mov': 'video/quicktime',
+  '.avi': 'video/x-msvideo',
+  '.mkv': 'video/x-matroska',
+  '.wmv': 'video/x-ms-wmv',
+  '.flv': 'video/x-flv',
+  '.3gp': 'video/3gpp',
+  '.ogv': 'video/ogg',
+  '.mts': 'video/mp2t',
+  '.m2ts': 'video/mp2t',
+};
+
 export async function createFileFromPath(filePath: string): Promise<File> {
   const buf = await Bun.file(filePath).arrayBuffer();
   const fileName = filePath.split('/').pop() ?? filePath;
   const ext = extname(fileName).toLowerCase();
   const isImage = ext in IMAGE_EXTENSIONS;
   const isVideo = ext in VIDEO_EXTENSIONS;
-  const mimeType = isImage ? `image/${IMAGE_EXTENSIONS[ext]}` : isVideo ? `video/${VIDEO_EXTENSIONS[ext]}` : 'application/octet-stream';
+  const mimeType =
+    MIME_TYPE_OVERRIDES[ext] ??
+    (isImage ? `image/${IMAGE_EXTENSIONS[ext]}` : isVideo ? `video/${VIDEO_EXTENSIONS[ext]}` : 'application/octet-stream');
 
   return new File([buf], fileName, { type: mimeType });
 }
