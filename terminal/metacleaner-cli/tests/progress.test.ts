@@ -56,4 +56,21 @@ describe('createProgressIndicator', () => {
     stderrSpy.mockRestore();
     stdoutSpy.mockRestore();
   });
+
+  it('stop() clears the spinner output by writing a blank line to stderr', () => {
+    const writes: string[] = [];
+    const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation((chunk) => {
+      writes.push(String(chunk));
+      return true;
+    });
+    const indicator = createProgressIndicator({ quiet: false, json: false });
+    indicator.start('Working');
+    writes.length = 0; // reset after start writes
+    indicator.stop();
+    // stop() should write a clear sequence (spaces + carriage returns) to erase the line
+    expect(stderrSpy).toHaveBeenCalled();
+    const clearOutput = writes.join('');
+    expect(clearOutput).toMatch(/\r/); // must use carriage return to overwrite in-place
+    stderrSpy.mockRestore();
+  });
 });

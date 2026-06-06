@@ -141,7 +141,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Clear spinner line before printing results
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [ ]* 5.2 Write unit tests for progress indicator
+  - [x]* 5.2 Write unit tests for progress indicator
     - Test that createProgressIndicator returns no-op when quiet=true
     - Test that createProgressIndicator returns no-op when json=true
     - Test that active indicator writes to stderr (not stdout)
