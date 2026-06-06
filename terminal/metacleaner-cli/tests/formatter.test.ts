@@ -9,6 +9,7 @@ import {
   formatCompareResult,
   formatSummary,
 } from '../src/formatter.js';
+import { classifySeverity } from 'metacleaner-app/src/lib/scanner/riskAnalyzer.js';
 import type { FileResult } from '../src/types.js';
 import type { ScanResult, MetadataField } from 'metacleaner-app/src/lib/scanner/types.js';
 
@@ -301,6 +302,66 @@ describe('formatScanResult category grouping (Property 1)', () => {
         }
       ),
       { numRuns: 100 }
+    );
+  });
+});
+
+// Feature: metadata-inspect-cli, Property 2: Scan formatter includes score and severity
+describe('formatScanResult score and severity display (Property 2)', () => {
+  it('human mode output contains the numeric score', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain(String(fileScore));
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('human mode output contains the correct severity label for the score', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 100 }),
+        (fileScore) => {
+          const expectedSeverity = classifySeverity(fileScore);
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain(expectedSeverity);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('score and severity are consistent (high score → critical/high label)', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 75, max: 100 }),
+        (fileScore) => {
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain('critical');
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('low score produces low severity label', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 24 }),
+        (fileScore) => {
+          const result = makeFileResult({ scanResult: makeScanResult({ fileScore }) });
+          const output = formatScanResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain('low');
+        }
+      ),
+      { numRuns: 50 }
     );
   });
 });

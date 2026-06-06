@@ -83,7 +83,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate arrays of MetadataField with mixed categories, verify output has distinct sections per category and each field under correct section
     - **Validates: Requirements 1.1**
 
-  - [ ]* 4.3 Write property test for score and severity display (Property 2)
+  - [x]* 4.3 Write property test for score and severity display (Property 2)
     - **Property 2: Scan formatter includes score and severity**
     - Generate ScanResult with fileScore 0–100, verify output contains numeric score and correct severity label
     - **Validates: Requirements 1.3**
