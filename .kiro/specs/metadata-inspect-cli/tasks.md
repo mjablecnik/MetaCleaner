@@ -103,12 +103,12 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate file names with extensions, verify default output path equals `<name>_cleaned.<ext>`
     - **Validates: Requirements 2.3**
 
-  - [ ]* 4.7 Write property test for clean formatter (Property 6)
+  - [x]* 4.7 Write property test for clean formatter (Property 6)
     - **Property 6: Clean formatter includes all required information**
     - Generate CleanResult objects, verify output contains fieldsRemoved, GPS stripped status, original and cleaned sizes
     - **Validates: Requirements 2.4**
 
-  - [ ]* 4.8 Write property test for compare formatter (Property 7)
+  - [x]* 4.8 Write property test for compare formatter (Property 7)
     - **Property 7: Compare formatter includes all comparison data**
     - Generate CompareResult with before/after ScanResults, verify output includes score change, GPS change, device change, field count change
     - **Validates: Requirements 3.1, 3.2**

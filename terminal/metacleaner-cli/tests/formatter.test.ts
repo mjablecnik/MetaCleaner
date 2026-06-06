@@ -10,7 +10,7 @@ import {
   formatSummary,
 } from '../src/formatter.js';
 import { classifySeverity } from 'metacleaner-app/src/lib/scanner/riskAnalyzer.js';
-import type { FileResult, CleanResult } from '../src/types.js';
+import type { FileResult, CleanResult, CompareResult } from '../src/types.js';
 import type { ScanResult, MetadataField } from 'metacleaner-app/src/lib/scanner/types.js';
 
 function makeScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
@@ -686,6 +686,122 @@ describe('formatCleanResult property tests (Property 6)', () => {
         const parsed = JSON.parse(output);
         expect(parsed.cleanResult.fieldsRemoved).toBe(clean.fieldsRemoved);
         expect(parsed.cleanResult.gpsStripped).toBe(clean.gpsStripped);
+      }),
+      { numRuns: 100 }
+    );
+  });
+});
+
+// Feature: metadata-inspect-cli, Property 7: Compare formatter includes all comparison data
+describe('formatCompareResult property tests (Property 7)', () => {
+  const SEVERITY_LEVELS = ['low', 'medium', 'high', 'critical'] as const;
+
+  const scanResultForCmpArb: fc.Arbitrary<import('metacleaner-app/src/lib/scanner/types.js').ScanResult> = fc.record({
+    fileId: fc.constant('test-id'),
+    status: fc.constant('done' as const),
+    fields: fc.constant([]),
+    hasGps: fc.boolean(),
+    fieldCount: fc.integer({ min: 0, max: 50 }),
+    categoryScores: fc.constant({ gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }),
+    fileScore: fc.integer({ min: 0, max: 100 }),
+  });
+
+  const compareResultArb: fc.Arbitrary<CompareResult> = fc.record({
+    before: scanResultForCmpArb,
+    after: scanResultForCmpArb,
+    fieldsRemovedCount: fc.integer({ min: 0, max: 50 }),
+    scoreBefore: fc.integer({ min: 0, max: 100 }),
+    scoreAfter: fc.integer({ min: 0, max: 100 }),
+    severityBefore: fc.constantFrom(...SEVERITY_LEVELS),
+    severityAfter: fc.constantFrom(...SEVERITY_LEVELS),
+    gpsRemovedInCleaning: fc.boolean(),
+  });
+
+  it('output contains scoreBefore and scoreAfter values in human mode', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(String(cmp.scoreBefore));
+        expect(output).toContain(String(cmp.scoreAfter));
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains severityBefore and severityAfter labels in human mode', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(cmp.severityBefore);
+        expect(output).toContain(cmp.severityAfter);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains field count change (before and after fieldCount) in human mode', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: false, verbose: false, quiet: false });
+        expect(output).toContain(String(cmp.before.fieldCount));
+        expect(output).toContain(String(cmp.after.fieldCount));
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains GPS presence labels (present/absent) in human mode', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: false, verbose: false, quiet: false });
+        const beforeGps = cmp.before.hasGps ? 'present' : 'absent';
+        const afterGps = cmp.after.hasGps ? 'present' : 'absent';
+        expect(output).toContain(beforeGps);
+        expect(output).toContain(afterGps);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output contains "(removed)" when gpsRemovedInCleaning is true', () => {
+    fc.assert(
+      fc.property(
+        compareResultArb.filter(c => c.gpsRemovedInCleaning),
+        (cmp) => {
+          const result = makeFileResult({ compareResult: cmp });
+          const output = formatCompareResult(result, { json: false, verbose: false, quiet: false });
+          expect(output).toContain('(removed)');
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('quiet mode shows scoreBefore and scoreAfter', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: false, verbose: false, quiet: true });
+        expect(output).toContain(String(cmp.scoreBefore));
+        expect(output).toContain(String(cmp.scoreAfter));
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('JSON mode produces valid JSON containing scoreBefore, scoreAfter, and gpsRemovedInCleaning', () => {
+    fc.assert(
+      fc.property(compareResultArb, (cmp) => {
+        const result = makeFileResult({ compareResult: cmp });
+        const output = formatCompareResult(result, { json: true, verbose: false, quiet: false });
+        const parsed = JSON.parse(output);
+        expect(parsed.compareResult.scoreBefore).toBe(cmp.scoreBefore);
+        expect(parsed.compareResult.scoreAfter).toBe(cmp.scoreAfter);
+        expect(parsed.compareResult.gpsRemovedInCleaning).toBe(cmp.gpsRemovedInCleaning);
       }),
       { numRuns: 100 }
     );
