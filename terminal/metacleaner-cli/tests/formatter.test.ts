@@ -138,6 +138,64 @@ describe('getDefaultOutputPath', () => {
   });
 });
 
+// Feature: metadata-inspect-cli, Property 5: Default cleaned file path naming
+describe('getDefaultOutputPath property tests (Property 5)', () => {
+  const safeNameArb = fc.stringMatching(/^[a-zA-Z0-9_-]{1,20}$/);
+  const extArb = fc.stringMatching(/^[a-zA-Z0-9]{1,5}$/);
+
+  it('output equals <name>_cleaned.<ext> for name.ext inputs', () => {
+    fc.assert(
+      fc.property(safeNameArb, extArb, (name, ext) => {
+        const input = `${name}.${ext}`;
+        const result = getDefaultOutputPath(input);
+        expect(result).toBe(`${name}_cleaned.${ext}`);
+      }),
+      { numRuns: 200 }
+    );
+  });
+
+  it('output equals <name>_cleaned for inputs with no extension', () => {
+    fc.assert(
+      fc.property(safeNameArb, (name) => {
+        const result = getDefaultOutputPath(name);
+        expect(result).toBe(`${name}_cleaned`);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output has no directory separators regardless of input path', () => {
+    fc.assert(
+      fc.property(safeNameArb, extArb, safeNameArb, (dir, ext, name) => {
+        const input = `/${dir}/${name}.${ext}`;
+        const result = getDefaultOutputPath(input);
+        expect(result).not.toContain('/');
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output always ends with _cleaned when no extension present', () => {
+    fc.assert(
+      fc.property(safeNameArb, (name) => {
+        const result = getDefaultOutputPath(name);
+        expect(result.endsWith('_cleaned')).toBe(true);
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output always contains _cleaned as a substring', () => {
+    fc.assert(
+      fc.property(safeNameArb, extArb, (name, ext) => {
+        const result = getDefaultOutputPath(`${name}.${ext}`);
+        expect(result).toContain('_cleaned');
+      }),
+      { numRuns: 100 }
+    );
+  });
+});
+
 describe('formatScanResult', () => {
   it('quiet mode outputs single line with filename, score, severity', () => {
     const result = makeFileResult({ scanResult: makeScanResult({ fileScore: 20 }) });

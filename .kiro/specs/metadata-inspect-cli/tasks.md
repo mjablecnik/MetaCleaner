@@ -98,7 +98,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate non-empty arrays of FileResult, verify maxRiskScore = max(fileScores), gpsFileCount = count(hasGps), totalFiles = array.length
     - **Validates: Requirements 1.6**
 
-  - [ ]* 4.6 Write property test for default cleaned file path (Property 5)
+  - [x]* 4.6 Write property test for default cleaned file path (Property 5)
     - **Property 5: Default cleaned file path naming**
     - Generate file names with extensions, verify default output path equals `<name>_cleaned.<ext>`
     - **Validates: Requirements 2.3**
