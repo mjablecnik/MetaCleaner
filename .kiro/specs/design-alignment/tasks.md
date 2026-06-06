@@ -319,7 +319,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Verify URL remains `/` throughout
     - _Requirements: 27.1, 27.2, 27.5_
 
-  - [ ]* 17.5 Write E2E test for Step 3 cancel (Zastavit)
+  - [x]* 17.5 Write E2E test for Step 3 cancel (Zastavit)
     - Click "Zastavit" during processing, verify returns to files-ready with files intact
     - _Requirements: 7.3, 27.5_
 
