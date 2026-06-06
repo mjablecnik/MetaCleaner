@@ -6,24 +6,24 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
 
 ## Tasks
 
-- [ ] 1. Infrastructure — App State Machine and Service Layer
-  - [ ] 1.1 Create the `appState` store with state machine transitions
+- [x] 1. Infrastructure — App State Machine and Service Layer
+  - [x] 1.1 Create the `appState` store with state machine transitions
     - Create `src/lib/stores/appState.svelte.ts` with `AppState` type (`'idle' | 'files-ready' | 'processing' | 'error' | 'success'`)
     - Implement `$state`, `$derived` helpers (`isProcessing`, `hasFiles`), and `transitionTo()` / `reset()` actions
     - Wire `scannerStore.files.length > 0` to auto-transition between `idle` ↔ `files-ready`
     - _Requirements: 1.3, 5.1, 7.3, 19.7, 21.2_
 
-  - [ ] 1.2 Create the mock cleaning service layer
+  - [x] 1.2 Create the mock cleaning service layer
     - Create `src/lib/services/cleaningService.ts` with the `CleaningService` interface (analyzeFiles, startCleaning, getJobStatus, downloadResults)
     - Create `src/lib/services/mockCleaningService.ts` implementing the interface with simulated delays, progress updates, error scenarios, and mock report generation
     - _Requirements: 21.4, 21.5, 21.7_
 
-  - [ ] 1.3 Add all new i18n message keys
+  - [x] 1.3 Add all new i18n message keys
     - Add keys to `messages/en.json` and `messages/cs.json` for all new text: step1 status card, step3 processing badges/buttons, step4 error texts, step5 success texts, reports page headers, report detail texts, common actions (Zastavit, Zkusit znovu, Vymazat vše, etc.)
     - Ensure dynamic values use Paraglide interpolation parameters
     - _Requirements: 25.1, 25.2, 25.3, 25.4_
 
-  - [ ] 1.4 Add CSS animations to `layout.css`
+  - [x] 1.4 Add CSS animations to `layout.css`
     - Add `fadeInUp` keyframe and utility class with stagger delay variants (0.1s–0.4s)
     - Add `spin-slow` (2s linear infinite) for processing spinners
     - Add `pulse-ring` (scale 1→1.08, opacity 0.4→0.8) for processing/error ring

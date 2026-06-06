@@ -160,7 +160,7 @@ body {
 }
 
 .spin-slow {
-	animation: spin-slow 1.5s linear infinite;
+	animation: spin-slow 2s linear infinite;
 }
 
 @keyframes pulse-ring {
@@ -170,8 +170,8 @@ body {
 		opacity: 0.4;
 	}
 	50% {
-		transform: scale(1.12);
-		opacity: 0.15;
+		transform: scale(1.08);
+		opacity: 0.8;
 	}
 }
 
@@ -185,10 +185,10 @@ body {
 		transform: translateX(0);
 	}
 	20% {
-		transform: translateX(-6px);
+		transform: translateX(-4px);
 	}
 	40% {
-		transform: translateX(6px);
+		transform: translateX(4px);
 	}
 	60% {
 		transform: translateX(-4px);

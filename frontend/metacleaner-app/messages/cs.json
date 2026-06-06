@@ -266,5 +266,17 @@
 	"report.header.generatedDesc": "{date} · {files} souborů · {fields} polí odstraněno",
 	"common.loading": "Načítám...",
 	"common.error": "Došlo k chybě. Zkuste to prosím znovu.",
-	"common.footer.copyright": "© 2025 MetaCleaner. Všechna práva vyhrazena."
+	"common.footer.copyright": "© 2025 MetaCleaner. Všechna práva vyhrazena.",
+	"step1.upload.dropPrimary": "Přetáhněte soubory sem",
+	"step1.upload.dropSecondary": "nebo klikněte pro výběr ze zařízení",
+	"step1.status.waiting": "Čeká na soubory",
+	"step3.processing.badge": "Probíhá čištění...",
+	"step3.processing.status": "Probíhá",
+	"common.startCleaning": "Spustit čištění",
+	"common.stop": "Zastavit",
+	"common.retry": "Zkusit znovu",
+	"common.clearAll": "Vymazat vše",
+	"common.downloadZip": "Stáhnout vše (ZIP)",
+	"common.viewReport": "Zobrazit report",
+	"common.uploadNew": "Nahrát nové soubory"
 }
