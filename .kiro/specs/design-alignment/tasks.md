@@ -32,7 +32,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Add `border-dance` (animated dashed border movement) for drop zone
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6_
 
-- [ ] 2. Checkpoint — Ensure infrastructure compiles
+- [x] 2. Checkpoint — Ensure infrastructure compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Shared Components — NavBar and Elements

@@ -26,6 +26,18 @@ function makePendingResult(fileId: string): ScanResult {
 	};
 }
 
+function makeUnsupportedResult(fileId: string): ScanResult {
+	return {
+		fileId,
+		status: 'done',
+		fields: [],
+		hasGps: false,
+		fieldCount: 0,
+		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+		fileScore: 0
+	};
+}
+
 function updateFileScanResult(fileId: string, scanResult: ScanResult): void {
 	const idx = files.findIndex((f) => f.id === fileId);
 	if (idx !== -1) {
@@ -61,12 +73,23 @@ export function addFiles(fileList: FileList): void {
 			continue;
 		}
 		const detected = detectFormat(file);
-		if (!detected) {
-			unsupported++;
-			continue;
-		}
 		const id = generateId();
 		const dotIdx = file.name.lastIndexOf('.');
+
+		if (!detected) {
+			unsupported++;
+			added.push({
+				id,
+				file,
+				name: file.name,
+				size: file.size,
+				extension: dotIdx !== -1 ? file.name.slice(dotIdx).toLowerCase() : '',
+				type: 'unknown',
+				format: null,
+				scanResult: makeUnsupportedResult(id)
+			});
+			continue;
+		}
 
 		added.push({
 			id,

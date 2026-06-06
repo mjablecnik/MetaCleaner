@@ -1,4 +1,4 @@
-export type FileType = 'image' | 'video';
+export type FileType = 'image' | 'video' | 'unknown';
 export type ImageFormat =
 	| 'jpeg'
 	| 'png'
