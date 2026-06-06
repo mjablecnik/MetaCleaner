@@ -313,7 +313,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Remove last file, verify idle state returns
     - _Requirements: 19.6, 19.7, 27.5_
 
-  - [ ]* 17.4 Write E2E test for Step 2 → Step 3 → Step 5 complete flow
+  - [x]* 17.4 Write E2E test for Step 2 → Step 3 → Step 5 complete flow
     - Click "Spustit čištění", verify processing state on same page
     - Wait for completion, verify success state renders
     - Verify URL remains `/` throughout
