@@ -72,7 +72,7 @@
 <div aria-live="polite" aria-atomic="true" class="sr-only">
 	Risk score: {score} out of 100. Severity: {severity}.
 </div>
-<div class="hidden flex-col gap-5 lg:flex">
+<div class="flex flex-col gap-5">
 	<div class="flex flex-col gap-5 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card">
 		<!-- Header -->
 		<div class="flex items-center justify-between">

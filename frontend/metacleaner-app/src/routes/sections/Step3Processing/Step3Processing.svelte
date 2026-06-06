@@ -156,7 +156,7 @@
 				},
 				onComplete(results) {
 					overallProgress = 100;
-					cleaningResultsStore.setResults(results);
+					cleaningResultsStore.setResults(results, job?.jobId);
 					appState.transitionTo('success');
 				},
 				onError(error) {
@@ -165,6 +165,9 @@
 				}
 			}
 		);
+		return () => {
+			job?.cancel();
+		};
 	});
 
 	function stop() {

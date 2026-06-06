@@ -15,10 +15,19 @@
 	}
 
 	const state = $derived(appState.current);
+	const metaTitleKey = $derived(
+		state === 'processing'
+			? 'step3.meta.title'
+			: state === 'error'
+				? 'step4.meta.title'
+				: state === 'success'
+					? 'step5.meta.title'
+					: 'step1.meta.title'
+	);
 </script>
 
 <svelte:head>
-	<title>{tx('step1.meta.title')}</title>
+	<title>{tx(metaTitleKey)}</title>
 </svelte:head>
 
 <main

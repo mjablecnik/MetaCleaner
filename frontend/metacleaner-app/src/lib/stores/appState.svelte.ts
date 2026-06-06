@@ -1,4 +1,5 @@
 import { scannerStore } from '$lib/scanner/scannerStore.svelte.js';
+import { cleaningResultsStore } from './cleaningResultsStore.svelte.js';
 
 export type AppState = 'idle' | 'files-ready' | 'processing' | 'error' | 'success';
 
@@ -21,6 +22,7 @@ function transitionTo(state: AppState): void {
 
 function reset(): void {
 	scannerStore.clearFiles();
+	cleaningResultsStore.clear();
 	_explicitState = 'idle';
 }
 

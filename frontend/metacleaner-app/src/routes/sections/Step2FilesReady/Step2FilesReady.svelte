@@ -2,6 +2,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { appState } from '$lib/stores/appState.svelte';
+	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import UploadZoneCard from '../../(step1)/sections/UploadZoneCard.svelte';
 	import FileListCard from '../../(step1)/sections/FileListCard.svelte';
@@ -15,7 +16,7 @@
 	}
 
 	function startCleaning() {
-		appState.transitionTo('processing');
+		if (scannerStore.hasFiles) appState.transitionTo('processing');
 	}
 </script>
 

@@ -8,9 +8,13 @@
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
 	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import Toast from '$lib/shared/components/Toast.svelte';
 	import SuccessHeader from './SuccessHeader.svelte';
 	import MetadataOverview from './MetadataOverview.svelte';
 	import FileResultsCard from './FileResultsCard.svelte';
+
+	let showDownloadError = $state(false);
+	let downloadErrorTimer: ReturnType<typeof setTimeout>;
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -54,12 +58,17 @@
 			a.click();
 			URL.revokeObjectURL(url);
 		} catch {
-			// download failed silently
+			showDownloadError = true;
+			clearTimeout(downloadErrorTimer);
+			downloadErrorTimer = setTimeout(() => {
+				showDownloadError = false;
+			}, 3000);
 		}
 	}
 
 	function handleViewReport(): void {
-		void goto(resolve('/report' as Pathname));
+		const id = cleaningResultsStore.reportId ?? 'mock-report';
+		void goto(resolve(`/report/${id}` as Pathname));
 	}
 </script>
 
@@ -147,3 +156,5 @@
 		onViewReport={handleViewReport}
 	/>
 {/if}
+
+<Toast message={tx('common.downloadError')} show={showDownloadError} />

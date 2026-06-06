@@ -3,9 +3,8 @@
 	import { page } from '$app/state';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { getReportDetail } from '$lib/api/client';
-	import type { ReportDetail, ReportFileDetail } from '$lib/types/report';
-	import type { ApiReportDetail } from '$lib/api/client';
+	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import type { ReportDetail } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
 	import ReportChartCard from '../sections/ReportChartCard.svelte';
@@ -23,41 +22,6 @@
 			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
 		)[key];
 		return fn ? fn(params) : key;
-	}
-
-	function mapApiToReportDetail(api: ApiReportDetail): ReportDetail {
-		return {
-			reportId: api.reportId,
-			date: api.date,
-			filesProcessed: api.filesProcessed,
-			fieldsRemoved: api.fieldsRemoved,
-			gpsLocationsRemoved: api.gpsLocationsRemoved,
-			totalTimeSeconds: api.totalTimeSeconds,
-			chartData: api.chartData,
-			files: api.files.map(
-				(f): ReportFileDetail => ({
-					name: f.name,
-					extension: f.extension,
-					sizeMB: f.sizeMB,
-					format: f.format,
-					device: f.device,
-					type: f.type,
-					iconColor: f.iconColor,
-					hasGps: f.hasGps,
-					fieldsRemoved: f.fieldsRemoved,
-					barWidthPercent:
-						api.fieldsRemoved > 0 ? Math.round((f.fieldsRemoved / api.fieldsRemoved) * 100) : 0,
-					barGradientFrom: f.type === 'video' ? 'brand-orange' : 'brand-green',
-					barGradientTo: f.type === 'video' ? 'orange-400' : 'green-400',
-					metadata: {
-						gpsFields: f.metadata.gpsFields,
-						exifFields: f.metadata.exifFields,
-						xmpFields: f.metadata.xmpFields,
-						totalRemoved: f.metadata.totalRemoved
-					}
-				})
-			)
-		};
 	}
 
 	const stats = $derived([
@@ -89,12 +53,13 @@
 	]);
 
 	onMount(() => {
-		getReportDetail(reportId ?? '')
-			.then((apiDetail) => {
-				reportDetail = mapApiToReportDetail(apiDetail);
+		mockCleaningService
+			.getReportDetail(reportId ?? '')
+			.then((detail) => {
+				reportDetail = detail;
 			})
 			.catch((err) => {
-				loadError = err instanceof Error ? err.message : 'Failed to load report';
+				loadError = err instanceof Error ? err.message : String(err);
 			})
 			.finally(() => {
 				isLoading = false;
@@ -113,7 +78,7 @@
 		<div class="flex items-center justify-center py-20">
 			<div class="flex flex-col items-center gap-3">
 				<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
-				<p class="text-sm text-text-muted">{tx('common.loading') || 'Loading report...'}</p>
+				<p class="text-sm text-text-muted">{tx('common.loading')}</p>
 			</div>
 		</div>
 	{:else if loadError}
@@ -122,7 +87,7 @@
 		>
 			<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
 			<p class="text-sm font-semibold text-white">
-				{tx('common.error') || 'Failed to load report'}
+				{tx('common.error')}
 			</p>
 			<p class="text-xs text-text-muted">{loadError}</p>
 		</div>

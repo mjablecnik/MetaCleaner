@@ -178,7 +178,7 @@
 							<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span
 							>
 							<span class="h-1 w-1 rounded-full bg-gray-600"></span>
-							<span class="text-[10px] text-brand-red lg:text-[11px]">Chyba zpracování</span>
+							<span class="text-[10px] text-brand-red lg:text-[11px]">{tx('step4.error.processingFailed')}</span>
 						</div>
 					{:else}
 						<!-- waiting -->

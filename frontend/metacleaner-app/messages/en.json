@@ -266,6 +266,7 @@
 	"report.header.generatedDesc": "{date} · {files} files · {fields} fields removed",
 	"common.loading": "Loading...",
 	"common.error": "An error occurred. Please try again.",
+	"common.downloadError": "Download failed. Please try again.",
 	"common.footer.copyright": "© 2025 MetaCleaner. All rights reserved.",
 	"step1.upload.dropPrimary": "Drag files here",
 	"step1.upload.dropSecondary": "or click to select from device",
