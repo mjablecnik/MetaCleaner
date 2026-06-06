@@ -34,5 +34,8 @@ storybook-static
 
 old-code
 
+# Test results
+test-results/
+
 # Agent temp files
 .agents/tmp/
