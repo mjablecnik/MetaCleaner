@@ -58,8 +58,8 @@ async function parseWithExifr(input: Blob, fileId: string): Promise<ScanResult> 
 		icc: false,
 		jfif: false,
 		ihdr: false,
-		translateKeys: false,
-		reviveValues: false,
+		translateKeys: true,
+		reviveValues: true,
 		sanitize: true,
 		mergeOutput: true
 	});
