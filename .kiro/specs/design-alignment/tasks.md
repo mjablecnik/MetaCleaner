@@ -303,7 +303,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Mobile: verify risk banner and file list appear
     - _Requirements: 27.1, 27.2_
 
-  - [ ]* 17.2 Write E2E test for file validation (reject invalid type/size)
+  - [x]* 17.2 Write E2E test for file validation (reject invalid type/size)
     - Upload unsupported file type, verify error toast and file not added
     - Upload >500MB file, verify error toast and file not added
     - _Requirements: 18.1, 18.2, 27.5_
