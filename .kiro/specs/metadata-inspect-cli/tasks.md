@@ -133,8 +133,8 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Generate arrays of FileResult: if any error → 2, else if any fileScore ≥ 50 → 1, else → 0
     - **Validates: Requirements 10.1, 10.2, 10.3**
 
-- [ ] 5. Implement progress indicator module
-  - [ ] 5.1 Implement progress.ts spinner
+- [x] 5. Implement progress indicator module
+  - [x] 5.1 Implement progress.ts spinner
     - Implement `ProgressIndicator` interface with `start(message)`, `update(message)`, `stop()` methods
     - Implement `createProgressIndicator(options)` factory that returns a no-op indicator when `options.quiet` or `options.json` is true
     - Render character-based spinner (⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏) with elapsed time on stderr
@@ -148,7 +148,7 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
     - Test that stop() clears the spinner output
     - _Requirements: 8.2, 8.3, 8.4_
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Implement server client
