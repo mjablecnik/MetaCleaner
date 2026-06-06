@@ -109,13 +109,13 @@ test.describe('Step 3 cancel — Zastavit / Stop', () => {
 			await enterProcessingState(page, 'mobile');
 
 			// Verify processing state is active on mobile
-			await expect(page.getByText('In progress...')).toBeVisible();
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 
 			// Click the Stop button
 			await page.getByRole('button', { name: /stop/i }).click();
 
 			// Processing badge is gone
-			await expect(page.getByText('In progress...')).not.toBeVisible();
+			await expect(page.getByText('In progress...', { exact: true })).not.toBeVisible();
 
 			// Files are still intact
 			await expect(page.getByText('photo.jpg')).toBeVisible();
@@ -125,7 +125,7 @@ test.describe('Step 3 cancel — Zastavit / Stop', () => {
 			await page.goto('/');
 			await enterProcessingState(page, 'mobile');
 
-			await expect(page.getByText('In progress...')).toBeVisible();
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			await page.getByRole('button', { name: /stop/i }).click();
 
 			expect(page.url()).toMatch(/\/$/);
@@ -135,7 +135,7 @@ test.describe('Step 3 cancel — Zastavit / Stop', () => {
 			await page.goto('/');
 			await enterProcessingState(page, 'mobile');
 
-			await expect(page.getByText('In progress...')).toBeVisible();
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			await page.getByRole('button', { name: /stop/i }).click();
 
 			// Mobile bottom CTA with Start Cleaning should be visible again in files-ready state
@@ -147,7 +147,7 @@ test.describe('Step 3 cancel — Zastavit / Stop', () => {
 			await page.goto('/');
 			await enterProcessingState(page, 'mobile');
 
-			await expect(page.getByText('In progress...')).toBeVisible();
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			await page.getByRole('button', { name: /stop/i }).click();
 
 			// Should be in files-ready, not idle

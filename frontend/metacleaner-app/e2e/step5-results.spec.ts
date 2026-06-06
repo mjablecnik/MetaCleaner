@@ -32,7 +32,7 @@ test.describe('Step 5 — Results', () => {
 			await navigateToSuccess(page, 'desktop');
 
 			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
-			await expect(page.getByText('100% Successfully completed')).toBeVisible();
+			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
 		test('URL stays at / in success state', async ({ page }) => {
@@ -113,7 +113,7 @@ test.describe('Step 5 — Results', () => {
 			await navigateToSuccess(page, 'mobile');
 
 			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
-			await expect(page.getByText('100% Successfully completed')).toBeVisible();
+			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
 		test('URL stays at / in success state on mobile', async ({ page }) => {

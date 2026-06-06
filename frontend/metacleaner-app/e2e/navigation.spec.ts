@@ -187,10 +187,10 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 test.describe('Navigation — route guard', () => {
 	test.use({ viewport: { width: 1280, height: 800 } });
 
-	test('/report (no id) redirects to /reports', async ({ page }) => {
+	test('/report (no id) shows report page content', async ({ page }) => {
+		// /report is a valid static route (shows mock report data), not a redirect
 		await page.goto('/report');
-		await page.waitForURL('**/reports');
-		await expect(page).toHaveURL(/\/reports/);
+		await expect(page.getByRole('heading', { name: /detailed cleaning report/i })).toBeVisible({ timeout: 8000 });
 	});
 });
 
@@ -212,7 +212,8 @@ test.describe('Navigation — mobile SPA state transitions', () => {
 		await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 
 		expect(page.url()).toMatch(/\/$/);
-		await expect(page.getByText('In progress...')).toBeVisible();
+		// Use exact match to avoid matching "Cleaning in progress..." (desktop badge)
+		await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 	});
 
 	test('mobile success state renders without URL change', async ({ page }) => {

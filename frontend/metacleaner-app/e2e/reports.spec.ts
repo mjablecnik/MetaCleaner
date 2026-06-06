@@ -8,7 +8,8 @@ import { test, expect, type Page } from 'playwright/test';
 async function navigateToReports(page: Page) {
 	await page.goto('/reports');
 	// Wait for mock service data to load (200ms simulated delay)
-	await expect(page.getByText('2025-06-04')).toBeVisible({ timeout: 8000 });
+	// SummaryStatsRow "Total reports" is visible on all viewports once data loads
+	await expect(page.getByText('Total reports')).toBeVisible({ timeout: 8000 });
 }
 
 test.describe('Reports page', () => {
@@ -41,7 +42,7 @@ test.describe('Reports page', () => {
 
 		test('reports table displays mock report data', async ({ page }) => {
 			await navigateToReports(page);
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			await expect(page.getByText('2025-06-04').first()).toBeVisible();
 			// First report is image type with fileTypes 'JPG, PNG'
 			await expect(page.getByText('JPG, PNG').first()).toBeVisible();
 		});
@@ -95,7 +96,7 @@ test.describe('Reports page', () => {
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Photos' }).click();
 			// First report (image type) remains visible after Photos filter
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			await expect(page.getByText('2025-06-04').first()).toBeVisible();
 		});
 
 		test('Video filter shows video reports', async ({ page }) => {
@@ -111,7 +112,7 @@ test.describe('Reports page', () => {
 			const filtersBar = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await filtersBar.getByRole('button', { name: 'Contained GPS' }).click();
 			// First report has gps: true — should remain visible
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			await expect(page.getByText('2025-06-04').first()).toBeVisible();
 		});
 
 		test('All filter button resets active filter', async ({ page }) => {
@@ -121,7 +122,7 @@ test.describe('Reports page', () => {
 			await filtersBar.getByRole('button', { name: 'Photos' }).click();
 			await filtersBar.getByRole('button', { name: 'All' }).click();
 			// All reports visible again
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			await expect(page.getByText('2025-06-04').first()).toBeVisible();
 		});
 
 		test('view report link in table row has correct href', async ({ page }) => {
@@ -178,8 +179,8 @@ test.describe('Reports page', () => {
 		// Requirement 14.2 — mobile card layout details
 		test('report card displays report data', async ({ page }) => {
 			await navigateToReports(page);
-			// First report date from mock cleaning service
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			// Date is in the mobile card (desktop table is hidden on 375px) — scope to .report-card
+			await expect(page.locator('.report-card').first().getByText('2025-06-04')).toBeVisible();
 		});
 
 		test('report card shows time and duration', async ({ page }) => {
@@ -259,16 +260,16 @@ test.describe('Reports page', () => {
 			await navigateToReports(page);
 			const mobilePillsArea = page.locator('.filters-scroll');
 			await mobilePillsArea.getByRole('button', { name: 'Photos' }).click();
-			// First report is image type — remains visible
-			await expect(page.getByText('2025-06-04')).toBeVisible();
+			// First report is image type — scope to mobile card (desktop table is hidden on 375px)
+			await expect(page.locator('.report-card').first().getByText('2025-06-04')).toBeVisible();
 		});
 
 		test('Video filter on mobile shows video reports', async ({ page }) => {
 			await navigateToReports(page);
 			const mobilePillsArea = page.locator('.filters-scroll');
 			await mobilePillsArea.getByRole('button', { name: 'Video' }).click();
-			// Mock data has video type reports
-			await expect(page.getByText('MP4, MOV').first()).toBeVisible();
+			// Mock data has video type reports — scope to .report-card (desktop table is hidden on 375px)
+			await expect(page.locator('.report-card').first().getByText('MP4, MOV')).toBeVisible();
 		});
 	});
 });

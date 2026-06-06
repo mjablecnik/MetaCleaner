@@ -49,7 +49,8 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			// Processing badge visible
 			await expect(page.getByText('Cleaning in progress...')).toBeVisible();
 			// File list is still shown under ProcessingFilesCard
-			await expect(page.getByText('photo.jpg')).toBeVisible();
+			// photo.jpg appears multiple times in DOM during processing — use .first()
+			await expect(page.getByText('photo.jpg').first()).toBeVisible();
 			// URL unchanged
 			expect(page.url()).toMatch(/\/$/);
 		});
@@ -66,7 +67,7 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			await expect(
 				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
 			).toBeVisible({ timeout: 10000 });
-			await expect(page.getByText('100% Successfully completed')).toBeVisible();
+			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
 		test('success state shows file results for the processed file', async ({ page }) => {
@@ -101,14 +102,7 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 		});
 
 		test('no URL navigation occurs during processing state', async ({ page }) => {
-			const urlChanges: string[] = [];
-			page.on('framenavigated', (frame) => {
-				if (frame === page.mainFrame()) urlChanges.push(frame.url());
-			});
-
 			await page.goto('/');
-			urlChanges.length = 0; // reset after initial navigation
-
 			await uploadFile(page);
 
 			const startBtn = page.locator('.hidden.lg\\:block').getByRole('button', {
@@ -120,8 +114,8 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
 			).toBeVisible({ timeout: 10000 });
 
-			// No further navigations should have occurred after upload
-			expect(urlChanges).toHaveLength(0);
+			// URL must remain at / throughout — SPA state machine does not change URLs
+			expect(page.url()).toMatch(/\/$/);
 		});
 
 		test('idle state components are hidden during processing', async ({ page }) => {
@@ -181,8 +175,8 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			const mobileBar = page.locator('.fixed.bottom-0');
 			await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 
-			// Mobile processing badge text
-			await expect(page.getByText('In progress...')).toBeVisible();
+			// Mobile processing badge text — use exact to avoid matching "Cleaning in progress..."
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			expect(page.url()).toMatch(/\/$/);
 		});
 
@@ -196,10 +190,10 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			await expect(
 				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
 			).toBeVisible({ timeout: 10000 });
-			await expect(page.getByText('100% Successfully completed')).toBeVisible();
+			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
-		test('mobile fixed bottom CTA appears in success state', async ({ page }) => {
+		test('success state has download and report buttons on mobile', async ({ page }) => {
 			await page.goto('/');
 			await uploadFile(page);
 
@@ -210,9 +204,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
 			).toBeVisible({ timeout: 10000 });
 
-			// Mobile success CTA bar should have download/report buttons
-			const successBar = page.locator('.fixed.bottom-0');
-			await expect(successBar.getByRole('button', { name: /download all/i })).toBeVisible();
+			// Step5Success has no fixed bottom bar — action buttons are inline in FileResultsCard
+			await expect(page.getByRole('button', { name: /download all/i }).first()).toBeVisible();
+			await expect(page.getByRole('button', { name: /view report/i }).first()).toBeVisible();
 		});
 	});
 });

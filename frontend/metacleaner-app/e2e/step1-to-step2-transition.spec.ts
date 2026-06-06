@@ -57,13 +57,13 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 
 		test('UploadZoneCard switches to compact state after files added', async ({ page }) => {
 			await page.goto('/');
-			// Full drop zone visible in idle state
-			await expect(page.getByText('Drag files here')).toBeVisible();
+			// Full drop zone visible in idle state — use exact match (mobile also has "or drag files here")
+			await expect(page.getByText('Drag files here', { exact: true })).toBeVisible();
 
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 
 			// Full drop zone text is gone; compact "add more" state is shown
-			await expect(page.getByText('Drag files here')).not.toBeVisible();
+			await expect(page.getByText('Drag files here', { exact: true })).not.toBeVisible();
 		});
 
 		test('risk breakdown bars are visible in RiskScannerCard on desktop', async ({ page }) => {
@@ -71,10 +71,12 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 
 			// Risk breakdown categories (from en.json step2.risk.* keys)
-			await expect(page.getByText('GPS coordinates')).toBeVisible();
-			await expect(page.getByText('Device identity')).toBeVisible();
-			await expect(page.getByText('Personal data')).toBeVisible();
-			await expect(page.getByText('Timestamp')).toBeVisible();
+			// Use .first() since bars appear both in RiskScannerCard and potentially MobileRiskBanner DOM
+			await expect(page.getByText('GPS coordinates').first()).toBeVisible();
+			await expect(page.getByText('Device identity').first()).toBeVisible();
+			// Use exact match: "Personal data leak probable" also contains "Personal data"
+			await expect(page.getByText('Personal data', { exact: true }).first()).toBeVisible();
+			await expect(page.getByText('Timestamp').first()).toBeVisible();
 		});
 
 		test('adding a second file keeps the URL at / and shows both files', async ({ page }) => {
@@ -151,11 +153,13 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 			// Expand the accordion
 			await bannerToggle.click();
 			// Risk breakdown rows appear inside expanded body
-			await expect(page.getByText('GPS coordinates')).toBeVisible();
+			// Use .first(): RiskScannerCard (hidden on mobile) also has GPS coordinates in DOM
+			await expect(page.getByText('GPS coordinates').first()).toBeVisible();
 
-			// Collapse again
+			// Collapse again — MobileRiskBanner body is removed from DOM ({#if accordionOpen})
 			await bannerToggle.click();
-			await expect(page.getByText('GPS coordinates')).not.toBeVisible();
+			// After collapse, only the hidden RiskScannerCard's GPS element remains — not visible
+			await expect(page.getByText('GPS coordinates').first()).not.toBeVisible();
 		});
 
 		test('RiskScannerCard sidebar is hidden on mobile', async ({ page }) => {
@@ -163,7 +167,8 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 
 			// RiskScannerCard is inside a .hidden.lg\\:flex wrapper — not visible on 375px
-			const desktopSidebar = page.locator('.hidden.lg\\:flex').filter({ hasText: 'Risk Scanner' });
+			// Use .first() because both the Step2FilesReady wrapper and RiskScannerCard's inner div have hidden+lg:flex
+			const desktopSidebar = page.locator('.hidden.lg\\:flex').filter({ hasText: 'Risk Scanner' }).first();
 			await expect(desktopSidebar).not.toBeVisible();
 		});
 	});

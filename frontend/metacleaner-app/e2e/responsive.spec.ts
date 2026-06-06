@@ -39,7 +39,8 @@ async function navigateToProcessing(page: Page, viewport: 'desktop' | 'mobile') 
 	if (viewport === 'desktop') {
 		await expect(page.getByText('Cleaning in progress...')).toBeVisible();
 	} else {
-		await expect(page.getByText('In progress...')).toBeVisible();
+		// Use exact match to avoid matching "Cleaning in progress..." (desktop badge)
+		await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 	}
 }
 
@@ -104,7 +105,8 @@ test.describe('Responsive — Step 2 (Files Ready)', () => {
 
 		test('risk scanner card is visible on mobile', async ({ page }) => {
 			await uploadAndEnterFilesReady(page);
-			await expect(page.getByRole('heading', { level: 3, name: 'Risk Scanner' })).toBeVisible();
+			// On mobile, MobileRiskBanner shows "Risk Scanner" as a <span> inside a button, not as h3
+			await expect(page.getByText('Risk Scanner', { exact: true }).first()).toBeVisible();
 		});
 	});
 
@@ -138,7 +140,8 @@ test.describe('Responsive — Step 3 (Processing)', () => {
 
 		test('mobile stats card shows "Fields deleted" label', async ({ page }) => {
 			await navigateToProcessing(page, 'mobile');
-			await expect(page.getByText('Fields deleted')).toBeVisible();
+			// MobileStatusCard is inside lg:hidden — use .first() to pick visible element
+			await expect(page.getByText('Fields deleted').first()).toBeVisible();
 		});
 
 		test('processing status sidebar is hidden on mobile', async ({ page }) => {
@@ -153,12 +156,14 @@ test.describe('Responsive — Step 3 (Processing)', () => {
 
 		test('processing status sidebar is visible on desktop', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' })).toBeVisible();
+			// ProcessingStatusCard is inside hidden lg:flex — scope to avoid strict mode (MobileStatusCard also has same heading)
+			await expect(page.locator('.hidden.lg\\:flex').getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
 		});
 
 		test('desktop shows "Fields deleted" label', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
-			await expect(page.getByText('Fields deleted').first()).toBeVisible();
+			// ProcessingStatusCard stats are inside hidden lg:flex — scope to pick desktop element (not MobileStatusCard)
+			await expect(page.locator('.hidden.lg\\:flex').getByText('Fields deleted').first()).toBeVisible();
 		});
 	});
 });
@@ -171,7 +176,8 @@ test.describe('Responsive — Step 4 (Error)', () => {
 
 		test('mobile error visual is visible', async ({ page }) => {
 			await navigateToErrorState(page, 'mobile');
-			await expect(page.getByText('Metadata cleaning failed')).toBeVisible();
+			// Use .first() — "Metadata cleaning failed" appears in both desktop and mobile error elements
+			await expect(page.getByText('Metadata cleaning failed').first()).toBeVisible();
 		});
 
 		test('error detail accordion is visible on mobile', async ({ page }) => {

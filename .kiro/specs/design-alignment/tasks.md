@@ -349,7 +349,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure `bun run test:e2e` passes without failures
     - _Requirements: 27.1, 27.4_
 
-- [ ] 18. Final checkpoint — Ensure all tests pass
+- [x] 18. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

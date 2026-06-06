@@ -37,10 +37,11 @@ test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
 		test('shows risk breakdown bars', async ({ page }) => {
 			await enterFilesReadyState(page);
 
-			await expect(page.getByText('GPS coordinates')).toBeVisible();
-			await expect(page.getByText('Device identity')).toBeVisible();
-			await expect(page.getByText('Personal data')).toBeVisible();
-			await expect(page.getByText('Timestamp')).toBeVisible();
+			await expect(page.getByText('GPS coordinates').first()).toBeVisible();
+			await expect(page.getByText('Device identity').first()).toBeVisible();
+			// "Personal data leak probable" also contains "Personal data" — use exact match
+			await expect(page.getByText('Personal data', { exact: true }).first()).toBeVisible();
+			await expect(page.getByText('Timestamp').first()).toBeVisible();
 		});
 
 		test('shows risk analysis section heading', async ({ page }) => {
@@ -78,7 +79,8 @@ test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
 		test('shows reduce risk CTA hint', async ({ page }) => {
 			await enterFilesReadyState(page);
 
-			await expect(page.getByText('reduce risk to 0')).toBeVisible();
+			// First match is in lg:hidden mobile CTA card; second is in desktop RiskScannerCard
+			await expect(page.getByText('reduce risk to 0').last()).toBeVisible();
 		});
 
 		test('URL stays at / after entering files-ready state', async ({ page }) => {
@@ -94,17 +96,24 @@ test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
 			await enterFilesReadyState(page);
 
 			await expect(page.getByRole('heading', { level: 1 })).toContainText('Metadata Cleaning');
-			// Mobile risk banner (accordion) appears
-			await expect(page.getByRole('heading', { level: 3, name: 'Risk Scanner' })).toBeVisible();
+			// On mobile, MobileRiskBanner shows "Risk Scanner" as a <span> in a button, not h3
+			await expect(page.getByText('Risk Scanner', { exact: true }).first()).toBeVisible();
 		});
 
 		test('shows risk breakdown bars on mobile', async ({ page }) => {
 			await enterFilesReadyState(page);
 
-			await expect(page.getByText('GPS coordinates')).toBeVisible();
-			await expect(page.getByText('Device identity')).toBeVisible();
-			await expect(page.getByText('Personal data')).toBeVisible();
-			await expect(page.getByText('Timestamp')).toBeVisible();
+			// On mobile, bars are inside MobileRiskBanner accordion (collapsed by default)
+			// Open the accordion first to see the bars
+			const bannerToggle = page.locator('button').filter({ hasText: 'Risk Scanner' }).first();
+			await bannerToggle.click();
+
+			// Bars are now visible inside the expanded accordion body
+			// Use .first() since RiskScannerCard (hidden) also has these in the DOM
+			await expect(page.getByText('GPS coordinates').first()).toBeVisible();
+			await expect(page.getByText('Device identity').first()).toBeVisible();
+			await expect(page.getByText('Personal data', { exact: true }).first()).toBeVisible();
+			await expect(page.getByText('Timestamp').first()).toBeVisible();
 		});
 
 		test('mobile fixed bottom bar with Start Cleaning is visible', async ({ page }) => {
@@ -121,8 +130,8 @@ test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
 			const mobileBar = page.locator('.fixed.bottom-0');
 			await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 
-			// Processing badge appears (mobile shorter text)
-			await expect(page.getByText('In progress...')).toBeVisible();
+			// Processing badge appears (mobile shorter text — use exact to avoid matching desktop badge)
+			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			expect(page.url()).toMatch(/\/$/);
 		});
 

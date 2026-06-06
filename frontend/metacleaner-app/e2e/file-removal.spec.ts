@@ -177,12 +177,12 @@ test.describe('File removal and last-file idle transition', () => {
 			// File gone
 			await expect(page.getByText('alpha.jpg')).not.toBeVisible();
 
-			// Idle state — StatusCardIdle visible, fixed bottom bar gone
+			// Idle state — StatusCardIdle visible
 			await expect(page.getByText('Waiting for files')).toBeVisible();
 
-			// The fixed bottom CTA bar should no longer be shown (only rendered in files-ready state)
+			// MobileBottomCta exists in both idle and files-ready, but Start Cleaning is disabled in idle
 			const mobileBar = page.locator('.fixed.bottom-0');
-			await expect(mobileBar).not.toBeVisible();
+			await expect(mobileBar.getByRole('button', { name: /start cleaning/i })).toBeDisabled();
 		});
 
 		test('removing files one by one on mobile reduces list until idle', async ({ page }) => {
