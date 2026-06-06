@@ -195,8 +195,8 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Action buttons: "Stáhnout vše (ZIP)" + "Zobrazit report" (navigates to `/report`)
     - _Requirements: 11.4, 23.1_
 
-- [ ] 11. Wire Main Page SPA Router
-  - [ ] 11.1 Rewrite `src/routes/+page.svelte` as SPA state dispatcher
+- [x] 11. Wire Main Page SPA Router
+  - [x] 11.1 Rewrite `src/routes/+page.svelte` as SPA state dispatcher
     - Replace current content with conditional rendering based on `appState` store
     - Render: `Step1Idle` | `Step2FilesReady` | `Step3Processing` | `Step4Error` | `Step5Success`
     - No route navigation for state transitions — only content area re-renders

@@ -1,22 +1,20 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
-	import UploadZoneCard from './(step1)/sections/UploadZoneCard.svelte';
-	import RiskScannerCard from './(step1)/sections/RiskScannerCard.svelte';
-	import FileListCard from './(step1)/sections/FileListCard.svelte';
-	import MobileRiskBanner from './(step1)/sections/MobileRiskBanner.svelte';
-
-	const hasFiles = $derived(scannerStore.hasFiles);
+	import { appState } from '$lib/stores/appState.svelte';
+	import Step1Idle from './sections/Step1Idle/Step1Idle.svelte';
+	import Step2FilesReady from './sections/Step2FilesReady/Step2FilesReady.svelte';
+	import Step3Processing from './sections/Step3Processing/Step3Processing.svelte';
+	import Step4Error from './sections/Step4Error/Step4Error.svelte';
+	import Step5Success from './sections/Step5Success/Step5Success.svelte';
 
 	function tx(key: string): string {
 		void locale.current;
 		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
 		return fn ? fn() : key;
 	}
+
+	const state = $derived(appState.current);
 </script>
 
 <svelte:head>
@@ -26,85 +24,22 @@
 <main
 	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-24 lg:mt-0 lg:gap-6 lg:px-6"
 >
-	<div class="mb-0 flex flex-col gap-1 lg:mb-2">
-		<h1 class="text-2xl font-bold text-white lg:text-3xl">{tx('step1.header.title')}</h1>
-		<p class="mt-1 text-sm text-text-muted">{tx('step1.header.description')}</p>
-	</div>
-
-	{#if !hasFiles}
-		<!-- Upload-only layout (full width) -->
-		<div class="flex flex-col gap-4 lg:gap-5">
-			<UploadZoneCard />
-			<!-- Disabled Start Cleaning button (desktop, no files) -->
-			<div class="hidden lg:block">
-				<button
-					disabled
-					class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-700 py-3.5 text-sm font-bold text-gray-500 opacity-60"
-				>
-					<i class="fa-solid fa-wand-magic-sparkles"></i>
-					{tx('step1.actions.startCleaning')}
-				</button>
-			</div>
-		</div>
-	{:else}
-		<!-- Unified layout: upload + risk scanner -->
-		<div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
-			<!-- Left column -->
-			<div class="flex flex-col gap-4 lg:gap-5">
-				<UploadZoneCard />
-
-				<!-- Mobile risk banner (between upload zone and file list) -->
-				<div class="lg:hidden">
-					<MobileRiskBanner />
-				</div>
-
-				<FileListCard />
-
-				<!-- Start Cleaning button (mobile fixed bottom / inline on desktop) -->
-				<div class="hidden lg:block">
-					<button
-						onclick={() => goto(resolve('/step2' as Pathname))}
-						class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500"
-					>
-						<i class="fa-solid fa-wand-magic-sparkles"></i>
-						{tx('step1.actions.startCleaning')}
-					</button>
-				</div>
-			</div>
-
-			<!-- Right column (desktop: risk scanner panel) -->
-			<div class="flex flex-col gap-4 lg:gap-5">
-				<RiskScannerCard />
-			</div>
+	{#if state === 'idle' || state === 'files-ready'}
+		<div class="mb-0 flex flex-col gap-1 lg:mb-2">
+			<h1 class="text-2xl font-bold text-white lg:text-3xl">{tx('step1.header.title')}</h1>
+			<p class="mt-1 text-sm text-text-muted">{tx('step1.header.description')}</p>
 		</div>
 	{/if}
+
+	{#if state === 'idle'}
+		<Step1Idle />
+	{:else if state === 'files-ready'}
+		<Step2FilesReady />
+	{:else if state === 'processing'}
+		<Step3Processing />
+	{:else if state === 'error'}
+		<Step4Error />
+	{:else if state === 'success'}
+		<Step5Success />
+	{/if}
 </main>
-
-<!-- Mobile fixed bottom CTA (shown when hasFiles) -->
-{#if hasFiles}
-	<div
-		class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
-	>
-		<button
-			onclick={() => goto(resolve('/step2' as Pathname))}
-			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95"
-		>
-			<i class="fa-solid fa-wand-magic-sparkles"></i>
-			{tx('step1.actions.startCleaning')}
-		</button>
-	</div>
-{:else}
-	<!-- Disabled Start Cleaning button when no files -->
-	<div
-		class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-800 bg-navy-main px-4 py-4 lg:hidden"
-	>
-		<button
-			disabled
-			class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-700 py-4 text-sm font-bold text-gray-500 opacity-60"
-		>
-			<i class="fa-solid fa-wand-magic-sparkles"></i>
-			{tx('step1.actions.startCleaning')}
-		</button>
-	</div>
-{/if}
-
