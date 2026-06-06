@@ -167,7 +167,7 @@
 				/>
 			</div>
 
-			<!-- Before/After -->
+			<!-- Before/After: afterScore is always 0 because full cleaning removes all metadata fields -->
 			<BeforeAfterScore beforeScore={score} afterScore={0} />
 
 			<!-- CTA hint -->

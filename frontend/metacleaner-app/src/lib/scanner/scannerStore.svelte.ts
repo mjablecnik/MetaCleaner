@@ -6,9 +6,6 @@ import { computeAggregatedRisk } from './riskAnalyzer.js';
 let files = $state<QueuedFile[]>([]);
 let _isProcessing = false;
 let _idCounter = 0;
-let lastRejection = $state<{ tooLarge: number; unsupported: number } | null>(null);
-
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
 
 function generateId(): string {
 	return `file-${Date.now()}-${++_idCounter}`;
@@ -64,20 +61,13 @@ async function processNext(): Promise<void> {
 
 export function addFiles(fileList: FileList | File[]): void {
 	const added: QueuedFile[] = [];
-	let tooLarge = 0;
-	let unsupported = 0;
 
 	for (const file of fileList) {
-		if (file.size > MAX_FILE_SIZE) {
-			tooLarge++;
-			continue;
-		}
 		const detected = detectFormat(file);
 		const id = generateId();
 		const dotIdx = file.name.lastIndexOf('.');
 
 		if (!detected) {
-			unsupported++;
 			added.push({
 				id,
 				file,
@@ -101,12 +91,6 @@ export function addFiles(fileList: FileList | File[]): void {
 			format: detected.format,
 			scanResult: makePendingResult(id)
 		});
-	}
-
-	if (tooLarge > 0 || unsupported > 0) {
-		lastRejection = { tooLarge, unsupported };
-	} else {
-		lastRejection = null;
 	}
 
 	files = [...files, ...added];
@@ -146,13 +130,7 @@ export const scannerStore = {
 	get isScanning() {
 		return isScanning;
 	},
-	get lastRejection() {
-		return lastRejection;
-	},
 	addFiles,
 	removeFile,
-	clearFiles,
-	clearRejection() {
-		lastRejection = null;
-	}
+	clearFiles
 };

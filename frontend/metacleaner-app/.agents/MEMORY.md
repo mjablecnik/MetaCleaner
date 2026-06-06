@@ -155,3 +155,33 @@
 - Problem: When WS disconnects, step3 polls `GET /api/jobs/{id}` with `MAX_POLLS = 10` at 3s intervals (30s total). Large file batches (500MB × multiple files) can take several minutes on the backend.
 - Solution: Increase `MAX_POLLS` to 100+ (5+ minutes) or use exponential backoff. Also attempt WS reconnection before falling back to polling.
 - Source: code-review, 2026-06-05T17:46:39.061+00:00
+
+## report/[id] page used real API client instead of mockCleaningService
+
+- Problem: `/report/[id]/+page.svelte` imported `getReportDetail` from `$lib/api/client` and used `mapApiToReportDetail()` adapter — always failed with network error since no backend exists.
+- Solution: Replace with `mockCleaningService.getReportDetail(id)` which returns `ReportDetail` directly (no mapping needed). Also removed `|| 'Loading report...'` hardcoded fallbacks — `tx()` already returns key name when key is missing.
+- Source: code-review-fix, 2026-06-06
+
+## Session report ID must be stored in cleaningResultsStore for navigation
+
+- Problem: Step5 "View Report" navigated to static `/report` — no way to pass the session's job ID to the report detail page. The job ID is only available inside `onMount` where `job` is set.
+- Solution: Add `reportId` field to `cleaningResultsStore`. In `Step3Processing.svelte`'s `onComplete` callback, pass `job?.jobId` (which is set synchronously before `onComplete` fires asynchronously) to `setResults(results, job?.jobId)`. Step5 then reads `cleaningResultsStore.reportId` for navigation.
+- Source: code-review-fix, 2026-06-06
+
+## cleaningResultsStore not cleared on appState.reset()
+
+- Problem: `appState.reset()` calls `scannerStore.clearFiles()` but not `cleaningResultsStore.clear()`. Stale success/error data persists across sessions, potentially causing incorrect UI state after re-cleaning.
+- Solution: Add `cleaningResultsStore.clear()` inside the `reset()` function in `src/lib/stores/appState.svelte.ts`.
+- Source: code-review, 2026-06-06T20:01:35+00:00
+
+## Step3Processing does not cancel job on component unmount
+
+- Problem: If user navigates away during processing (e.g., browser back, direct URL change), the mock cleaning service continues running and may call `appState.transitionTo('success'/'error')` after the component is destroyed.
+- Solution: Return a cleanup function from `onMount(() => { ... return () => { job?.cancel(); }; })` in `Step3Processing.svelte`.
+- Source: code-review, 2026-06-06T20:01:35+00:00
+
+## /report/[id] route calls real API instead of mock service
+
+- Problem: `src/routes/report/[id]/+page.svelte` imports `getReportDetail` from `$lib/api/client` which makes real HTTP requests to `PUBLIC_API_URL`. No backend exists, so the page always shows an error state.
+- Solution: Switch to `mockCleaningService.getReportDetail(id)` to match the rest of the app, or add fallback to mock on network error.
+- Source: code-review, 2026-06-06T20:01:35+00:00

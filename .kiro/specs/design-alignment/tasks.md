@@ -297,7 +297,7 @@ Realign the MetaCleaner SvelteKit 5 frontend with the reference HTML mockups acr
     - Ensure `bun run test` passes without failures
     - _Requirements: 26.1, 26.2, 26.3_
 
-- [ ] 17. E2E Tests (Playwright)
+- [x] 17. E2E Tests (Playwright)
   - [x]* 17.1 Write E2E test for Step 1 → Step 2 transition (upload files, verify in-place re-render)
     - Desktop: upload files, verify two-column layout with risk scanner appears without URL change
     - Mobile: verify risk banner and file list appear

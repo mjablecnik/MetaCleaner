@@ -68,6 +68,14 @@ fly logs --app metacleaner-app   # View logs
 fly status --app metacleaner-app # Check status
 ```
 
+## Development Notes
+
+### Triggering Mock Error States
+
+The mock cleaning service (`src/lib/services/mockCleaningService.ts`) uses a filename convention to simulate processing errors during development and testing: **any file whose name starts with `error-`** (e.g. `error-photo.jpg`, `error-test.png`) will cause the mock service to report a cleaning failure for that file and transition the app to the error state (step 4).
+
+This is useful for testing the error UI without a real backend. Example: rename a test image to `error-sample.jpg` before uploading.
+
 ## Project Structure
 
 ```
