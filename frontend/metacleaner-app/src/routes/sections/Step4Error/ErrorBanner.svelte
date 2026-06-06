@@ -38,7 +38,7 @@
 	</div>
 	<button
 		onclick={onDismiss}
-		aria-label="Dismiss"
+		aria-label={tx('common.dismiss')}
 		class="mt-0.5 flex-shrink-0 p-1 text-text-muted transition-colors hover:text-white"
 	>
 		<i class="fa-solid fa-xmark text-sm"></i>

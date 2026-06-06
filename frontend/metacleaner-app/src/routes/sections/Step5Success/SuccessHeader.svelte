@@ -7,7 +7,7 @@
 		onUploadNew: () => void;
 	}
 
-	let { fileCount, onUploadNew }: Props = $props();
+	const { fileCount, onUploadNew }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;

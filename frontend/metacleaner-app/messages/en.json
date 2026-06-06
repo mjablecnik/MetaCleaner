@@ -284,5 +284,7 @@
 	"common.clearAll": "Clear all",
 	"common.downloadZip": "Download all (ZIP)",
 	"common.viewReport": "View report",
-	"common.uploadNew": "Upload new files"
+	"common.uploadNew": "Upload new files",
+	"common.dismiss": "Dismiss",
+	"step2.risk.srAnnouncement": "Risk score: {score} out of 100. Severity: {severity}."
 }

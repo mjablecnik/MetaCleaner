@@ -70,7 +70,7 @@
 </script>
 
 <div aria-live="polite" aria-atomic="true" class="sr-only">
-	Risk score: {score} out of 100. Severity: {severity}.
+	{tx('step2.risk.srAnnouncement', { score, severity: tx(severityLabelKey[severity]) })}
 </div>
 <div class="flex flex-col gap-5">
 	<div class="flex flex-col gap-5 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card">

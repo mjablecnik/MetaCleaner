@@ -62,16 +62,10 @@
 		if (tooLarge > 0 || unsupported > 0) {
 			const parts: string[] = [];
 			if (tooLarge > 0) {
-				parts.push(
-					tx('step1.upload.rejectedTooLarge', { count: tooLarge }) ||
-						`${tooLarge} file(s) exceeded the 500 MB limit`
-				);
+				parts.push(tx('step1.upload.rejectedTooLarge', { count: tooLarge }));
 			}
 			if (unsupported > 0) {
-				parts.push(
-					tx('step1.upload.rejectedUnsupported', { count: unsupported }) ||
-						`${unsupported} file(s) have an unsupported format`
-				);
+				parts.push(tx('step1.upload.rejectedUnsupported', { count: unsupported }));
 			}
 			rejectionMessage = parts.join(' · ');
 			showRejectionToast = true;

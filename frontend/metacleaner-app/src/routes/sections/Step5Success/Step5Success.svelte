@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
@@ -16,6 +17,12 @@
 
 	let showDownloadError = $state(false);
 	let downloadErrorTimer: ReturnType<typeof setTimeout>;
+
+	onMount(() => {
+		return () => {
+			clearTimeout(downloadErrorTimer);
+		};
+	});
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;

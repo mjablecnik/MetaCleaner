@@ -11,7 +11,7 @@
 		onViewReport: () => void;
 	}
 
-	let { files, fileResults, onDownload, onViewReport }: Props = $props();
+	const { files, fileResults, onDownload, onViewReport }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;

@@ -185,3 +185,27 @@
 - Problem: `src/routes/report/[id]/+page.svelte` imports `getReportDetail` from `$lib/api/client` which makes real HTTP requests to `PUBLIC_API_URL`. No backend exists, so the page always shows an error state.
 - Solution: Switch to `mockCleaningService.getReportDetail(id)` to match the rest of the app, or add fallback to mock on network error.
 - Source: code-review, 2026-06-06T20:01:35+00:00
+
+## Dead API client module persists after mock service migration
+
+- Problem: `src/lib/api/client.ts` (175+ lines with HTTP/WebSocket functions) has zero imports anywhere in the codebase. It was superseded by `mockCleaningService.ts` but never deleted, violating Requirement 22 (remove dead code).
+- Solution: Delete the file. When real backend integration is needed, create a new implementation of the `CleaningService` interface from `cleaningService.ts`.
+- Source: code-review, 2026-06-06T20:16:48+00:00
+
+## Hardcoded strings bypass i18n in error/log computation functions
+
+- Problem: Template-literal strings with English/Czech text appear inside `$derived` or helper functions (e.g., Step4Error `computeLogEntries` uses `"fields removed"`, FileResultsCard uses `"polí"`). These bypass `tx()` because they're in script logic, not templates — easy to miss in review.
+- Solution: Always use `tx()` for ANY user-visible text, even inside computed helper functions. Pass the `tx` function reference or call it at render-time in the template rather than baking text into data structures.
+- Source: code-review, 2026-06-06T20:16:48+00:00
+
+## Hardcoded fallback strings hide missing i18n keys
+
+- Problem: Pattern `tx('key') || 'English fallback'` in UploadZoneCard.svelte silently hides missing i18n keys from developers. Since `tx()` returns the key name when the function isn't found, the `||` fallback only activates when the key is genuinely missing — but then Czech users see English text with no warning.
+- Solution: Never use `|| 'fallback'` after `tx()`. The raw key name returned by `tx()` is the correct fallback — it makes missing translations visible during QA. If the keys exist in both JSON files, the fallback never fires anyway.
+- Source: code-review, 2026-06-06T20:31:31+00:00
+
+## Accessibility aria-labels and sr-only text must use i18n
+
+- Problem: `aria-label="Dismiss"`, `aria-live` sr-only text with hardcoded English ("Risk score: X out of 100") bypass i18n. Easy to miss in review because they're not visually rendered.
+- Solution: All `aria-label`, `aria-live`, and `.sr-only` text must use `tx()` calls. Add corresponding keys to both message files.
+- Source: code-review, 2026-06-06T20:31:31+00:00

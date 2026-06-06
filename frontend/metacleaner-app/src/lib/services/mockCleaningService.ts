@@ -15,7 +15,7 @@ const FILE_DELAY_MS = 800;
 const PROGRESS_INTERVAL_MS = 100;
 
 let _jobCounter = 0;
-const _completedJobs = new Map<string, ProcessingResults>();
+const _completedJobs = new Map<string, { results: ProcessingResults; files: QueuedFile[] }>();
 
 function randomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -185,7 +185,7 @@ class MockCleaningService implements CleaningService {
 				}
 			};
 
-			_completedJobs.set(jobId, results);
+			_completedJobs.set(jobId, { results, files });
 			callbacks.onComplete(results);
 		})();
 
@@ -215,10 +215,87 @@ class MockCleaningService implements CleaningService {
 		};
 	}
 
-	async getReportDetail(_reportId: string): Promise<ReportDetail> {
+	async getReportDetail(reportId: string): Promise<ReportDetail> {
 		await new Promise((r) => setTimeout(r, 200));
+		const job = _completedJobs.get(reportId);
+		if (job) {
+			return _generateReportDetailFromResults(reportId, job.results, job.files);
+		}
 		return _generateMockReportDetail();
 	}
+}
+
+function _generateReportDetailFromResults(
+	reportId: string,
+	results: ProcessingResults,
+	files: QueuedFile[]
+): ReportDetail {
+	const now = new Date();
+	const dateStr = now.toLocaleDateString('cs-CZ', {
+		day: 'numeric',
+		month: 'numeric',
+		year: 'numeric'
+	});
+	const timeStr = now.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+
+	const totalExif = results.beforeBreakdown.exifFields;
+	const totalXmp = results.beforeBreakdown.xmpFields;
+	const totalGps = results.beforeBreakdown.gpsLocations;
+	const totalFields = results.fieldsRemoved;
+
+	const chartData = [
+		{ label: 'GPS Data', fields: totalGps, percentage: totalFields > 0 ? Math.round((totalGps / totalFields) * 100) : 0 },
+		{ label: 'EXIF Data', fields: totalExif, percentage: totalFields > 0 ? Math.round((totalExif / totalFields) * 100) : 0 },
+		{ label: 'XMP Data', fields: totalXmp, percentage: totalFields > 0 ? Math.round((totalXmp / totalFields) * 100) : 0 }
+	];
+
+	const reportFiles = files.map((file, i) => {
+		const fileResult = results.fileResults[i];
+		const fieldsRemoved = fileResult?.totalFields ?? 0;
+		const fileHasGps = fileResult?.gpsRemoved ?? false;
+		const barWidthPercent = totalFields > 0 ? Math.round((fieldsRemoved / totalFields) * 100) : 0;
+
+		return {
+			name: file.name,
+			extension: file.extension,
+			sizeMB: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+			format: file.extension.replace('.', '').toUpperCase(),
+			device: file.scanResult?.device ?? '',
+			type: file.type as 'image' | 'video',
+			iconColor: (file.type === 'video' ? 'orange' : 'green') as 'green' | 'blue' | 'orange',
+			hasGps: fileHasGps,
+			fieldsRemoved,
+			barWidthPercent: Math.max(barWidthPercent, 5),
+			barGradientFrom: '#22c55e',
+			barGradientTo: '#16a34a',
+			metadata: {
+				gpsFields: fileHasGps
+					? [
+							{ label: 'GPS Latitude', value: '—' },
+							{ label: 'GPS Longitude', value: '—' }
+						]
+					: [],
+				exifFields: fileResult
+					? [{ label: 'EXIF fields', value: `${fileResult.exifCount} removed` }]
+					: [],
+				xmpFields: fileResult
+					? [{ label: 'XMP fields', value: `${fileResult.xmpCount} removed` }]
+					: [],
+				totalRemoved: fieldsRemoved
+			}
+		};
+	});
+
+	return {
+		reportId,
+		date: `${dateStr} · ${timeStr}`,
+		filesProcessed: results.filesProcessed,
+		fieldsRemoved: results.fieldsRemoved,
+		gpsLocationsRemoved: results.gpsLocationsRemoved,
+		totalTimeSeconds: results.totalTimeSeconds,
+		chartData,
+		files: reportFiles
+	};
 }
 
 function _generateMockReports(): Report[] {

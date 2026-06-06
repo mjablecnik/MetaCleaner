@@ -284,5 +284,7 @@
 	"common.clearAll": "Vymazat vše",
 	"common.downloadZip": "Stáhnout vše (ZIP)",
 	"common.viewReport": "Zobrazit report",
-	"common.uploadNew": "Nahrát nové soubory"
+	"common.uploadNew": "Nahrát nové soubory",
+	"common.dismiss": "Zavřít",
+	"step2.risk.srAnnouncement": "Rizikové skóre: {score} ze 100. Závažnost: {severity}."
 }

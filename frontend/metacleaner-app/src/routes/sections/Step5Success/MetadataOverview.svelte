@@ -9,7 +9,7 @@
 		gpsLocationsRemoved: number;
 	}
 
-	let { beforeBreakdown, totalFieldsBefore, gpsLocationsRemoved }: Props = $props();
+	const { beforeBreakdown, totalFieldsBefore, gpsLocationsRemoved }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
