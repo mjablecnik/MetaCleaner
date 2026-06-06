@@ -151,8 +151,8 @@ Build a TypeScript CLI tool (`terminal/metacleaner-cli/`) using Bun that provide
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement server client
-  - [ ] 7.1 Implement serverClient.ts HTTP client
+- [x] 7. Implement server client
+  - [x] 7.1 Implement serverClient.ts HTTP client
     - Implement `checkHealth(serverUrl)`: GET `/api/health`, return boolean
     - Implement `uploadFiles(serverUrl, filePaths)`: POST `/api/upload` with multipart form data, return `UploadedFile[]`
     - Implement `createJob(serverUrl, fileIds)`: POST `/api/jobs` with file IDs, return `JobResponse`
