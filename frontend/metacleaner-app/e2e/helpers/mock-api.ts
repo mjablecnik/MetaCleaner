@@ -1,0 +1,236 @@
+import type { Page } from 'playwright/test';
+
+export const mockFiles = [
+	{
+		id: 'file-1',
+		name: 'photo.jpg',
+		size: 2048576,
+		extension: 'jpg',
+		type: 'image',
+		format: 'JPEG'
+	},
+	{
+		id: 'file-2',
+		name: 'document.png',
+		size: 1024000,
+		extension: 'png',
+		type: 'image',
+		format: 'PNG'
+	},
+	{
+		id: 'file-3',
+		name: 'vacation.jpg',
+		size: 3145728,
+		extension: 'jpg',
+		type: 'image',
+		format: 'JPEG'
+	}
+];
+
+export const mockJob = {
+	jobId: 'job-001',
+	status: 'processing',
+	totalFiles: 3,
+	createdAt: '2026-01-15T10:30:00Z'
+};
+
+export const mockJobCompleted = {
+	jobId: 'job-001',
+	status: 'completed',
+	totalFiles: 3,
+	filesCompleted: 3,
+	fieldsRemoved: 42,
+	totalTimeSeconds: 12,
+	createdAt: '2026-01-15T10:30:00Z',
+	completedAt: '2026-01-15T10:30:12Z'
+};
+
+export const mockReports = {
+	summary: {
+		totalReports: 5,
+		fieldsRemoved: 234,
+		filesProcessed: 18,
+		gpsRemoved: 7
+	},
+	reports: [
+		{
+			id: 'rpt-001',
+			reportId: 'RPT-001',
+			date: '2026-01-15',
+			time: '10:30',
+			duration: '12s',
+			fileCount: 3,
+			fileTypes: 'JPEG, PNG',
+			type: 'image',
+			gps: true,
+			fields: 42,
+			tags: ['GPS', 'EXIF'],
+			iconColor: 'green'
+		}
+	]
+};
+
+export const mockReportDetail = {
+	reportId: 'RPT-001',
+	date: '2026-01-15',
+	filesProcessed: 3,
+	fieldsRemoved: 42,
+	gpsLocationsRemoved: 2,
+	totalTimeSeconds: 12,
+	chartData: [
+		{ label: 'GPS', fields: 8, percentage: 19 },
+		{ label: 'EXIF', fields: 22, percentage: 52 },
+		{ label: 'XMP', fields: 12, percentage: 29 }
+	],
+	files: [
+		{
+			name: 'photo',
+			extension: '.jpg',
+			sizeMB: '2.1',
+			format: 'JPEG',
+			device: 'iPhone 15',
+			type: 'image',
+			iconColor: 'green',
+			hasGps: true,
+			fieldsRemoved: 14,
+			metadata: {
+				gpsFields: [{ label: 'Latitude', value: '50.0755° N' }],
+				exifFields: [{ label: 'Camera Model', value: 'iPhone 15' }],
+				xmpFields: [{ label: 'Creator', value: 'John Doe' }],
+				totalRemoved: 14
+			}
+		}
+	]
+};
+
+export async function mockUploadApi(page: Page) {
+	await page.route('**/api/upload', async (route) => {
+		if (route.request().method() === 'POST') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ files: mockFiles })
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+export async function mockJobsApi(page: Page) {
+	await page.route('**/api/jobs', async (route) => {
+		if (route.request().method() === 'POST') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockJob)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+
+	await page.route('**/api/jobs/*', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockJobCompleted)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+export async function mockWebSocketProgress(page: Page, outcome: 'success' | 'error' = 'success') {
+	await page.routeWebSocket('**/api/jobs/*/progress', (ws) => {
+		const send = (data: object) => ws.send(JSON.stringify(data));
+
+		send({ type: 'job_progress', overallProgress: 33, filesCompleted: 1, totalFiles: 3 });
+
+		if (outcome === 'success') {
+			send({
+				type: 'file_complete',
+				fileId: 'file-1',
+				fieldsRemoved: 14,
+				gpsRemoved: true
+			});
+			send({
+				type: 'file_complete',
+				fileId: 'file-2',
+				fieldsRemoved: 15,
+				gpsRemoved: false
+			});
+			send({
+				type: 'file_complete',
+				fileId: 'file-3',
+				fieldsRemoved: 13,
+				gpsRemoved: true
+			});
+			send({
+				type: 'job_complete',
+				filesCompleted: 3,
+				fieldsRemoved: 42,
+				reportId: 'rpt-001',
+				totalTimeSeconds: 12,
+				gpsLocationsRemoved: 2
+			});
+		} else {
+			send({
+				type: 'job_error',
+				error: 'Processing failed'
+			});
+		}
+	});
+}
+
+export async function mockReportsApi(page: Page) {
+	await page.route('**/api/reports', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockReports)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+
+	await page.route('**/api/reports/*', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(mockReportDetail)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+export async function mockDownloadApi(page: Page) {
+	await page.route('**/api/files/*/download', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				headers: {
+					'Content-Type': 'image/jpeg',
+					'Content-Disposition': 'attachment; filename="cleaned_photo.jpg"'
+				},
+				body: Buffer.from('fake-cleaned-image-content')
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+export async function mockAllApis(page: Page) {
+	await mockUploadApi(page);
+	await mockJobsApi(page);
+	await mockReportsApi(page);
+	await mockDownloadApi(page);
+}

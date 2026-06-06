@@ -16,7 +16,8 @@
 		"test": "npm run test:unit -- --run --project=server",
 		"test:browser": "npm run test:unit -- --run --project=client --project=storybook",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"test:e2e": "npx playwright test"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^5.2.1",
