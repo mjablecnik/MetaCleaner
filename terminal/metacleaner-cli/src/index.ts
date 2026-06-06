@@ -14,7 +14,7 @@ interface ParseResult {
 function parseArgs(argv: string[]): ParseResult {
   let command: CLIOptions['command'] = 'help';
   const files: string[] = [];
-  let server = 'http://localhost:8080';
+  let server = process.env.METACLEANER_SERVER_URL ?? 'http://localhost:8080';
   let json = false;
   let verbose = false;
   let quiet = false;

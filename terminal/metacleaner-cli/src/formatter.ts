@@ -29,7 +29,7 @@ const SEVERITY_EMOJI: Record<SeverityLevel, string> = {
   low: '🟢',
 };
 
-export function formatSeverity(score: number): string {
+export function formatSeverity(score: number): SeverityLevel {
   return classifySeverity(score);
 }
 
@@ -101,7 +101,7 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
   }
 
   const scan = result.scanResult!;
-  const severity = formatSeverity(scan.fileScore) as SeverityLevel;
+  const severity = formatSeverity(scan.fileScore);
   const emoji = SEVERITY_EMOJI[severity];
 
   lines.push(`${emoji} ${result.fileName}`);

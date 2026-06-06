@@ -1,3 +1,4 @@
+// defensive: also imported by index.ts — ensures polyfills are available when commands.ts is imported standalone (e.g. in tests)
 import './polyfills.js';
 import { readFileSync } from 'fs';
 import { join, dirname, extname } from 'path';
@@ -5,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { existsSync, statSync } from 'fs';
 import { tmpdir } from 'os';
 import { rm } from 'fs/promises';
-import type { CLIOptions, CommandResult, FileResult, CleanResult, CompareResult, SeverityLevel } from './types.js';
+import type { CLIOptions, CommandResult, FileResult, CleanResult, CompareResult } from './types.js';
 import { scanFiles } from './scanner.js';
 import {
   IMAGE_EXTENSIONS,
@@ -277,7 +278,8 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
   for (const filePath of options.files) {
     const fileName = filePath.split('/').pop() ?? filePath;
     const fileSize = existsSync(filePath) ? statSync(filePath).size : 0;
-    const format = extname(filePath).toLowerCase().slice(1);
+    const ext = extname(filePath).toLowerCase();
+    const format = IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext] ?? ext.slice(1);
 
     try {
       const [beforeResult] = await scanFiles([filePath]);
@@ -295,8 +297,7 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
 
       if (status.status === 'failed') throw new Error('Server cleaning job failed');
 
-      const tempExt = extname(filePath);
-      const tempPath = join(tmpdir(), `metacleaner_${Date.now()}${tempExt}`);
+      const tempPath = join(tmpdir(), `metacleaner_${Date.now()}${ext}`);
       await downloadFile(options.server, fileId, tempPath);
 
       const [afterResult] = await scanFiles([tempPath]);
@@ -322,8 +323,8 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
         fieldsRemovedCount: before.fieldCount - after.fieldCount,
         scoreBefore: before.fileScore,
         scoreAfter: after.fileScore,
-        severityBefore: formatSeverity(before.fileScore) as SeverityLevel,
-        severityAfter: formatSeverity(after.fileScore) as SeverityLevel,
+        severityBefore: formatSeverity(before.fileScore),
+        severityAfter: formatSeverity(after.fileScore),
         gpsRemovedInCleaning: before.hasGps && !after.hasGps,
       };
 
