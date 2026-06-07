@@ -209,3 +209,9 @@
 - Problem: `aria-label="Dismiss"`, `aria-live` sr-only text with hardcoded English ("Risk score: X out of 100") bypass i18n. Easy to miss in review because they're not visually rendered.
 - Solution: All `aria-label`, `aria-live`, and `.sr-only` text must use `tx()` calls. Add corresponding keys to both message files.
 - Source: code-review, 2026-06-06T20:31:31+00:00
+
+## report-detail page uses in-memory mock service — HTTP route mocks never fire
+
+- Problem: `report-detail.spec.ts` (and hamburger-menu, navigation, responsive) mock `**/api/reports/*` with `page.route()`, but `/report/[id]/+page.svelte` calls `mockCleaningService.getReportDetail(id)` directly in-memory. HTTP intercepts never fire; `navigateToReportDetail()` was waiting for `'RPT-001'` but the service returns `reportId: 'MC-2025-001'` from `_generateMockReportDetail()`. The error state (`loadError`) is also unreachable since the in-memory service never throws.
+- Solution: Updated `mockReportDetail` in `e2e/helpers/mock-api.ts` to match the service's fixed output (`reportId: 'MC-2025-001'`, `date: '4. 6. 2025 · 14:32'`, EXIF fields: Make/Model/DateTimeOriginal/ExposureTime). Removed untestable HTTP error tests; replaced route guard test (was asserting content on `/report` which now redirects to `/reports`) with redirect assertion. Other spec files (`hamburger-menu.spec.ts`, `navigation.spec.ts`, `responsive.spec.ts`) still hardcode `'RPT-001'` and need separate fixes.
+- Source: ui-tests, 2026-06-07

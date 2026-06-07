@@ -70,34 +70,47 @@ export const mockReports = {
 	]
 };
 
+// Matches what mockCleaningService._generateMockReportDetail() returns (in-memory, no HTTP)
 export const mockReportDetail = {
-	reportId: 'RPT-001',
-	date: '2026-01-15',
-	filesProcessed: 3,
-	fieldsRemoved: 42,
-	gpsLocationsRemoved: 2,
-	totalTimeSeconds: 12,
+	reportId: 'MC-2025-001',
+	date: '4. 6. 2025 · 14:32',
+	filesProcessed: 8,
+	fieldsRemoved: 247,
+	gpsLocationsRemoved: 5,
+	totalTimeSeconds: 134,
 	chartData: [
-		{ label: 'GPS', fields: 8, percentage: 19 },
-		{ label: 'EXIF', fields: 22, percentage: 52 },
-		{ label: 'XMP', fields: 12, percentage: 29 }
+		{ label: 'GPS Data', fields: 42, percentage: 17 },
+		{ label: 'EXIF Data', fields: 138, percentage: 56 },
+		{ label: 'XMP Data', fields: 67, percentage: 27 }
 	],
 	files: [
 		{
-			name: 'photo',
+			name: 'photo_001.jpg',
 			extension: '.jpg',
-			sizeMB: '2.1',
+			sizeMB: '2.1 MB',
 			format: 'JPEG',
-			device: 'iPhone 15',
+			device: 'iPhone 15 Pro',
 			type: 'image',
 			iconColor: 'green',
 			hasGps: true,
-			fieldsRemoved: 14,
+			fieldsRemoved: 25,
 			metadata: {
-				gpsFields: [{ label: 'Latitude', value: '50.0755° N' }],
-				exifFields: [{ label: 'Camera Model', value: 'iPhone 15' }],
-				xmpFields: [{ label: 'Creator', value: 'John Doe' }],
-				totalRemoved: 14
+				gpsFields: [
+					{ label: 'GPS Latitude', value: '50.0755° N' },
+					{ label: 'GPS Longitude', value: '14.4378° E' },
+					{ label: 'GPS Altitude', value: '285 m' }
+				],
+				exifFields: [
+					{ label: 'Make', value: 'Apple' },
+					{ label: 'Model', value: 'iPhone 15 Pro' },
+					{ label: 'DateTimeOriginal', value: '2025:06:04 14:22:18' },
+					{ label: 'ExposureTime', value: '1/120 s', moreCount: 12 }
+				],
+				xmpFields: [
+					{ label: 'xmp:Creator', value: 'iPhone' },
+					{ label: 'xmp:CreateDate', value: '2025-06-04T14:22:18' }
+				],
+				totalRemoved: 25
 			}
 		}
 	]
