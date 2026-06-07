@@ -4,8 +4,11 @@
  * Detects AI-generated images by analyzing:
  * 1. C2PA/JUMBF content credentials (PNG caBX/jUMb chunks, JPEG APP11 segments)
  * 2. Known AI generator signatures in text metadata (tEXt, iTXt, XMP)
- * 3. Filename heuristics (e.g. "ChatGPT Image", "Gemini_Generated")
- * 4. Structural indicators (missing camera EXIF in otherwise valid images)
+ * 3. IPTC DigitalSourceType standard for AI content classification
+ * 4. FileSource/SceneType EXIF tags (camera vs synthetic)
+ * 5. UserComment field (may contain AI prompts)
+ * 6. Filename heuristics (e.g. "ChatGPT Image", "Gemini_Generated")
+ * 7. Structural indicators (missing camera EXIF, no thumbnail, no ICC)
  */
 
 export interface AIDetectionResult {
@@ -38,7 +41,13 @@ const AI_SOFTWARE_NAMES = [
 	'ideogram',
 	'flux',
 	'openai',
-	'chatgpt'
+	'chatgpt',
+	'bing image creator',
+	'copilot',
+	'craiyon',
+	'nightcafe',
+	'artbreeder',
+	'deepai'
 ];
 
 // Known AI metadata keys (found in PNG tEXt/iTXt chunks)
@@ -50,7 +59,10 @@ const AI_METADATA_KEYS = new Set([
 	'invokeai_metadata',
 	'dream',
 	'comfyui',
-	'negative_prompt'
+	'negative_prompt',
+	'aesthetic_score',
+	'generation_data',
+	'postprocessing'
 ]);
 
 // Filename patterns suggesting AI generation
@@ -69,7 +81,17 @@ const AI_FILENAME_PATTERNS = [
 	'leonardo',
 	'ideogram',
 	'flux_',
-	'playground'
+	'playground',
+	'bing_image',
+	'copilot_image',
+	'craiyon'
+];
+
+// IPTC DigitalSourceType values indicating AI generation
+const AI_DIGITAL_SOURCE_TYPES = [
+	'trainedalgorithmicmedia',
+	'compositewithtrainedalgorithmicmedia',
+	'algorithmicmedia'
 ];
 
 /**
@@ -229,9 +251,81 @@ export function detectAIInMetadata(
 		const strValue = String(value).toLowerCase();
 		const keyLower = key.toLowerCase();
 
-		// Check for known AI metadata keys
+		// ─── IPTC DigitalSourceType (official AI classification standard) ───
+		if (keyLower === 'digitalsourcetype' || keyLower === 'iptc4xmpext:digitalsourcetype') {
+			for (const aiSourceType of AI_DIGITAL_SOURCE_TYPES) {
+				if (strValue.includes(aiSourceType)) {
+					signals.push({
+						type: 'confirmed',
+						source: `${key} field`,
+						detail: `IPTC DigitalSourceType indicates AI-generated content: ${strValue}`
+					});
+					break;
+				}
+			}
+			continue;
+		}
+
+		// ─── FileSource tag (EXIF 0xA300) ───
+		// Value 1 = Film scanner, 2 = Reflection print scanner, 3 = Digital camera
+		// Anything else or missing = not a camera photo
+		if (keyLower === 'filesource') {
+			const numValue = typeof value === 'number' ? value : parseInt(strValue, 10);
+			if (!isNaN(numValue) && numValue !== 3) {
+				signals.push({
+					type: 'heuristic',
+					source: `${key} field`,
+					detail: `FileSource=${numValue} (not a digital camera, value 3 expected for real photos)`
+				});
+			}
+			continue;
+		}
+
+		// ─── SceneType tag (EXIF 0xA301) ───
+		// Value 1 = directly photographed; anything else = synthetic
+		if (keyLower === 'scenetype') {
+			const numValue = typeof value === 'number' ? value : parseInt(strValue, 10);
+			if (!isNaN(numValue) && numValue !== 1) {
+				signals.push({
+					type: 'heuristic',
+					source: `${key} field`,
+					detail: `SceneType=${numValue} (not directly photographed, may be synthetic)`
+				});
+			}
+			continue;
+		}
+
+		// ─── UserComment (EXIF 0x9286) — may contain AI prompts ───
+		if (keyLower === 'usercomment') {
+			// Check if UserComment contains AI-related content
+			for (const aiName of AI_SOFTWARE_NAMES) {
+				if (strValue.includes(aiName)) {
+					signals.push({
+						type: 'confirmed',
+						source: 'UserComment field',
+						detail: `UserComment references AI tool: ${aiName}`
+					});
+					break;
+				}
+			}
+			// Check for prompt-like content (common SD pattern)
+			if (
+				strValue.includes('steps:') ||
+				strValue.includes('sampler:') ||
+				strValue.includes('cfg scale:') ||
+				(strValue.includes('seed:') && strValue.length > 50)
+			) {
+				signals.push({
+					type: 'confirmed',
+					source: 'UserComment field',
+					detail: 'UserComment contains AI generation parameters'
+				});
+			}
+			continue;
+		}
+
+		// ─── Check for known AI metadata keys ───
 		if (AI_METADATA_KEYS.has(keyLower)) {
-			// Verify it looks like AI parameters
 			if (
 				keyLower === 'parameters' &&
 				(strValue.includes('steps:') ||
@@ -265,17 +359,26 @@ export function detectAIInMetadata(
 				continue;
 			}
 
-			if (['sd-metadata', 'invokeai_metadata', 'dream', 'negative_prompt'].includes(keyLower)) {
+			if (keyLower === 'negative_prompt' && strValue.length > 5) {
 				signals.push({
 					type: 'confirmed',
 					source: `Metadata key '${key}'`,
-					detail: `AI generator metadata key detected`
+					detail: 'AI negative prompt found (Stable Diffusion / ComfyUI)'
+				});
+				continue;
+			}
+
+			if (['sd-metadata', 'invokeai_metadata', 'dream', 'aesthetic_score', 'generation_data', 'postprocessing'].includes(keyLower)) {
+				signals.push({
+					type: 'confirmed',
+					source: `Metadata key '${key}'`,
+					detail: 'AI generator metadata key detected'
 				});
 				continue;
 			}
 		}
 
-		// Check values for known AI software names
+		// ─── Check values for known AI software names ───
 		for (const aiName of AI_SOFTWARE_NAMES) {
 			if (strValue.includes(aiName)) {
 				signals.push({
@@ -287,7 +390,7 @@ export function detectAIInMetadata(
 			}
 		}
 
-		// Check for C2PA/Content Credentials in XMP
+		// ─── C2PA/Content Credentials in XMP fields ───
 		if (keyLower.includes('xmp') || keyLower === 'description' || keyLower === 'creatortool') {
 			if (strValue.includes('c2pa') || strValue.includes('contentcredentials')) {
 				signals.push({
@@ -305,7 +408,7 @@ export function detectAIInMetadata(
 			}
 		}
 
-		// Midjourney prompt pattern
+		// ─── Midjourney prompt pattern ───
 		if (keyLower === 'description' && (strValue.includes('--ar') || strValue.includes('--v '))) {
 			signals.push({
 				type: 'confirmed',
@@ -315,7 +418,7 @@ export function detectAIInMetadata(
 		}
 	}
 
-	// Filename heuristics
+	// ─── Filename heuristics ───
 	const fileNameLower = fileName.toLowerCase();
 	for (const pattern of AI_FILENAME_PATTERNS) {
 		if (fileNameLower.includes(pattern)) {
@@ -333,7 +436,7 @@ export function detectAIInMetadata(
 
 /**
  * Analyze structural properties to detect AI-generated images.
- * Called when no metadata-based confirmation is found.
+ * Checks for missing camera indicators, thumbnail absence, and ICC profile absence.
  */
 export function detectAIByStructure(
 	raw: Record<string, unknown>,
@@ -346,17 +449,19 @@ export function detectAIByStructure(
 	const hasExposure = !!raw['ExposureTime'];
 	const hasFNumber = !!raw['FNumber'];
 	const hasISO = !!raw['ISOSpeedRatings'] || !!raw['ISO'];
+	const hasFocalLength = !!raw['FocalLength'];
+	const hasFlash = raw['Flash'] !== undefined;
 
 	// If there's truly no camera data at all and it's not a screenshot-like format
 	const hasAnyExif = Object.keys(raw).length > 0;
 	if (!hasAnyExif) {
-		// Check filename for AI hints (already handled above but also relevant structurally)
 		const fileNameLower = fileName.toLowerCase();
 		const looksLikePhoto =
 			fileNameLower.startsWith('img_') ||
 			fileNameLower.startsWith('dsc') ||
 			fileNameLower.startsWith('dcim') ||
-			fileNameLower.startsWith('photo');
+			fileNameLower.startsWith('photo') ||
+			fileNameLower.startsWith('pic_');
 		if (!looksLikePhoto) {
 			signals.push({
 				type: 'heuristic',
@@ -369,6 +474,16 @@ export function detectAIByStructure(
 			type: 'heuristic',
 			source: 'Structure',
 			detail: 'Metadata present but no camera or exposure info (unusual for real photos)'
+		});
+	}
+
+	// Real camera photos from phones/DSLRs almost always have FocalLength + Flash + ISO
+	// AI images that fake EXIF typically miss some of these
+	if (hasMake && hasModel && !hasFocalLength && !hasFlash && !hasISO) {
+		signals.push({
+			type: 'heuristic',
+			source: 'Structure',
+			detail: 'Has Make/Model but missing FocalLength, Flash, and ISO (incomplete camera data)'
 		});
 	}
 

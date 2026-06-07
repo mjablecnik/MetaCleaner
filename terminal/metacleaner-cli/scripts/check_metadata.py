@@ -44,9 +44,12 @@ EXIF_TAGS = {
     0x9209: "Flash",
     0x920A: "FocalLength",
     0x927C: "MakerNote",
+    0x9286: "UserComment",
     0xA001: "ColorSpace",
     0xA002: "PixelXDimension",
     0xA003: "PixelYDimension",
+    0xA300: "FileSource",
+    0xA301: "SceneType",
     0xA404: "DigitalZoomRatio",
     0xA405: "FocalLengthIn35mmFilm",
     0xA406: "SceneCaptureType",
@@ -124,6 +127,14 @@ AI_SOFTWARE_NAMES = [
     "playground ai",
     "ideogram",
     "flux",
+    "openai",
+    "chatgpt",
+    "bing image creator",
+    "copilot",
+    "craiyon",
+    "nightcafe",
+    "artbreeder",
+    "deepai",
 ]
 
 
@@ -270,6 +281,11 @@ def format_exif_results(exif_data: dict) -> list[str]:
         for tag, value in exif_sub.items():
             if tag == "MakerNote":
                 lines.append(f"     {tag}: <manufacturer-specific data>")
+            elif tag == "UserComment":
+                if isinstance(value, str) and len(value) > 200:
+                    lines.append(f"     {tag}: {value[:200]}... ({len(value)} chars)")
+                else:
+                    lines.append(f"     {tag}: {value}")
             elif tag == "ExposureTime" and isinstance(value, float):
                 if value < 1:
                     lines.append(f"     {tag}: 1/{int(1/value)}s")
@@ -279,6 +295,14 @@ def format_exif_results(exif_data: dict) -> list[str]:
                 lines.append(f"     {tag}: f/{value:.1f}")
             elif tag == "FocalLength" and isinstance(value, float):
                 lines.append(f"     {tag}: {value:.1f}mm")
+            elif tag == "FileSource":
+                source_names = {1: "Film scanner", 2: "Reflection print scanner", 3: "Digital camera"}
+                name = source_names.get(value, f"Unknown ({value})")
+                lines.append(f"     {tag}: {name}")
+            elif tag == "SceneType":
+                scene_names = {1: "Directly photographed"}
+                name = scene_names.get(value, f"Other ({value})")
+                lines.append(f"     {tag}: {name}")
             else:
                 lines.append(f"     {tag}: {value}")
 
@@ -341,6 +365,14 @@ def detect_ai_in_text_metadata(key: str, value: str, result: AIDetectionResult) 
     key_lower = key.lower()
     value_lower = value.lower()
 
+    # IPTC DigitalSourceType — official AI classification standard
+    if key_lower in ("digitalsourcetype", "iptc4xmpext:digitalsourcetype"):
+        ai_source_types = ["trainedalgorithmicmedia", "compositewithtrainedalgorithmicmedia", "algorithmicmedia"]
+        for source_type in ai_source_types:
+            if source_type in value_lower:
+                result.confirmed_signals.append(f"IPTC DigitalSourceType indicates AI-generated: {value}")
+                return
+
     # Direct AI generator keys
     if key_lower == "parameters" and ("steps:" in value_lower or "sampler:" in value_lower
                                        or "cfg scale:" in value_lower or "seed:" in value_lower):
@@ -353,12 +385,17 @@ def detect_ai_in_text_metadata(key: str, value: str, result: AIDetectionResult) 
         result.generator = "Stable Diffusion / ComfyUI"
         return
 
+    if key_lower == "negative_prompt" and len(value) > 5:
+        result.confirmed_signals.append(f"AI negative prompt found in '{key}' metadata")
+        result.generator = "Stable Diffusion / ComfyUI"
+        return
+
     if key_lower == "workflow" and ("nodes" in value_lower or "class_type" in value_lower):
         result.confirmed_signals.append(f"ComfyUI workflow data found in '{key}' metadata")
         result.generator = "ComfyUI"
         return
 
-    if key_lower in ("sd-metadata", "invokeai_metadata"):
+    if key_lower in ("sd-metadata", "invokeai_metadata", "aesthetic_score", "generation_data", "postprocessing"):
         result.confirmed_signals.append(f"AI generator metadata key: '{key}'")
         result.generator = key_lower.replace("-metadata", "").replace("_metadata", "").title()
         return
@@ -367,6 +404,19 @@ def detect_ai_in_text_metadata(key: str, value: str, result: AIDetectionResult) 
         result.confirmed_signals.append(f"Stable Diffusion Dream prompt in '{key}' metadata")
         result.generator = "Stable Diffusion"
         return
+
+    # UserComment containing AI generation data
+    if key_lower == "usercomment":
+        for ai_name in AI_SOFTWARE_NAMES:
+            if ai_name in value_lower:
+                result.confirmed_signals.append(f"UserComment references AI tool: {ai_name}")
+                result.generator = ai_name.title()
+                return
+        if ("steps:" in value_lower or "sampler:" in value_lower
+                or "cfg scale:" in value_lower) and len(value) > 50:
+            result.confirmed_signals.append("UserComment contains AI generation parameters")
+            result.generator = "Stable Diffusion"
+            return
 
     # Check value for known AI tool references
     for ai_name in AI_SOFTWARE_NAMES:
@@ -386,6 +436,14 @@ def detect_ai_in_xmp(xmp_data: str, result: AIDetectionResult) -> None:
     """Check XMP data for AI generation indicators."""
     xmp_lower = xmp_data.lower()
 
+    # IPTC DigitalSourceType — official standard for AI content
+    if "digitalsourcetype" in xmp_lower:
+        ai_source_types = ["trainedalgorithmicmedia", "compositewithtrainedalgorithmicmedia", "algorithmicmedia"]
+        for source_type in ai_source_types:
+            if source_type in xmp_lower:
+                result.confirmed_signals.append(f"XMP DigitalSourceType indicates AI: {source_type}")
+                return
+
     # C2PA / Content Credentials
     if "c2pa" in xmp_lower or "contentcredentials" in xmp_lower:
         result.confirmed_signals.append("C2PA Content Credentials metadata present")
@@ -396,18 +454,14 @@ def detect_ai_in_xmp(xmp_data: str, result: AIDetectionResult) -> None:
             result.generator = "DALL-E"
         elif "midjourney" in xmp_lower:
             result.generator = "Midjourney"
+        elif "openai" in xmp_lower or "chatgpt" in xmp_lower:
+            result.generator = "ChatGPT / DALL-E"
         return
 
     # ai:generatedBy tag
     if "ai:generatedby" in xmp_lower or "ai:generated" in xmp_lower:
         result.confirmed_signals.append("XMP ai:generatedBy tag found")
         return
-
-    # DigitalSourceType AI indicators
-    if "digitalsourcetype" in xmp_lower:
-        if "trainedAlgorithmicMedia" in xmp_data or "compositeWithTrainedAlgorithmicMedia" in xmp_data:
-            result.confirmed_signals.append("XMP DigitalSourceType indicates AI-generated content")
-            return
 
     # Check CreatorTool for AI tools
     creator_start = xmp_data.find("xmp:CreatorTool")
@@ -421,7 +475,8 @@ def detect_ai_in_xmp(xmp_data: str, result: AIDetectionResult) -> None:
 
 
 def detect_ai_in_jpg_structure(has_exif: bool, has_make_model: bool, has_camera_settings: bool,
-                                filename: str, result: AIDetectionResult) -> None:
+                                filename: str, result: AIDetectionResult,
+                                exif_data: dict | None = None) -> None:
     """Heuristic detection based on JPEG structure and missing camera data."""
     filename_lower = filename.lower()
 
@@ -429,12 +484,39 @@ def detect_ai_in_jpg_structure(has_exif: bool, has_make_model: bool, has_camera_
     ai_filename_patterns = [
         "chatgpt", "dall-e", "dalle", "midjourney", "stable_diffusion",
         "sd_", "comfyui", "generated", "gemini", "firefly", "leonardo",
-        "ideogram", "flux_", "playground",
+        "ideogram", "flux_", "playground", "bing_image", "copilot", "craiyon",
     ]
     for pattern in ai_filename_patterns:
         if pattern in filename_lower:
             result.suspicious_signals.append(f"Filename contains AI-related pattern: '{pattern}'")
             break
+
+    # Check FileSource and SceneType from EXIF
+    if exif_data:
+        exif_sub = exif_data.get("ExifSubIFD", {})
+
+        # FileSource: 3 = Digital camera (expected for real photos)
+        file_source = exif_sub.get("FileSource")
+        if file_source is not None and file_source != 3:
+            result.suspicious_signals.append(f"FileSource={file_source} (not a digital camera)")
+
+        # SceneType: 1 = Directly photographed
+        scene_type = exif_sub.get("SceneType")
+        if scene_type is not None and scene_type != 1:
+            result.suspicious_signals.append(f"SceneType={scene_type} (not directly photographed)")
+
+        # UserComment may contain AI prompts
+        user_comment = exif_sub.get("UserComment", "")
+        if isinstance(user_comment, str) and len(user_comment) > 10:
+            comment_lower = user_comment.lower()
+            for ai_name in AI_SOFTWARE_NAMES:
+                if ai_name in comment_lower:
+                    result.confirmed_signals.append(f"UserComment references AI tool: {ai_name}")
+                    result.generator = ai_name.title()
+                    break
+            if "steps:" in comment_lower or "sampler:" in comment_lower or "cfg scale:" in comment_lower:
+                result.confirmed_signals.append("UserComment contains AI generation parameters")
+                result.generator = "Stable Diffusion"
 
     # Structure-based heuristics (only if no confirmed signals yet)
     if not result.is_ai_confirmed:
@@ -455,7 +537,7 @@ def detect_ai_in_png_structure(has_any_metadata: bool, chunk_types: list[str],
     ai_filename_patterns = [
         "chatgpt", "dall-e", "dalle", "midjourney", "stable_diffusion",
         "sd_", "comfyui", "generated", "gemini", "firefly", "leonardo",
-        "ideogram", "flux_", "playground",
+        "ideogram", "flux_", "playground", "bing_image", "copilot", "craiyon",
     ]
     for pattern in ai_filename_patterns:
         if pattern in filename_lower:
@@ -495,6 +577,7 @@ def scan_jpg(path: str) -> tuple[list[str], AIDetectionResult]:
     has_exif = False
     has_make_model = False
     has_camera_settings = False
+    parsed_exif = None
 
     # Check for C2PA markers
     detect_ai_c2pa_jpeg(data, ai_result)
@@ -524,6 +607,7 @@ def scan_jpg(path: str) -> tuple[list[str], AIDetectionResult]:
                 has_exif = True
                 results.append(f"  APP1/EXIF ({size:,} bytes)")
                 exif_result = parse_exif(segment_data)
+                parsed_exif = exif_result
                 detail_lines = format_exif_results(exif_result)
                 results.extend(detail_lines)
 
@@ -626,7 +710,7 @@ def scan_jpg(path: str) -> tuple[list[str], AIDetectionResult]:
 
     # Structural AI detection
     detect_ai_in_jpg_structure(has_exif, has_make_model, has_camera_settings,
-                               os.path.basename(path), ai_result)
+                               os.path.basename(path), ai_result, parsed_exif)
 
     return results, ai_result
 

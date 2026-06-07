@@ -31,9 +31,13 @@ const PERSONAL_EXACT = new Set([
 	'UserComment',
 	'ProfileCopyright',
 	'ContactInfo',
-	'PersonInImage'
+	'PersonInImage',
+	'UsageTerms',
+	'WebStatement',
+	'Credit',
+	'Source'
 ]);
-const PERSONAL_PATTERNS = [/^Owner/i, /^By-line/i];
+const PERSONAL_PATTERNS = [/^Owner/i, /^By-line/i, /^dc:creator/i, /^dc:rights/i, /^xmpRights/i, /^photoshop:Credit/i, /^photoshop:AuthorsPosition/i];
 
 // Exact keys and patterns for timestamps
 const TIMESTAMP_EXACT = new Set([
@@ -50,9 +54,11 @@ const TIMESTAMP_EXACT = new Set([
 	'SubSecTimeOriginal',
 	'SubSecTimeDigitized',
 	'SubSecTime',
-	'SubSecDateTimeOriginal'
+	'SubSecDateTimeOriginal',
+	'MetadataDate',
+	'DateCreated'
 ]);
-const TIMESTAMP_PATTERNS = [/^SubSec/i];
+const TIMESTAMP_PATTERNS = [/^SubSec/i, /^photoshop:DateCreated/i];
 
 export type FieldCategory = 'gps' | 'deviceIdentity' | 'personalData' | 'timestamps';
 
