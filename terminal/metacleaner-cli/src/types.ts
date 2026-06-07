@@ -6,6 +6,7 @@ export type {
   FileType,
   ImageFormat,
   VideoFormat,
+  AIDetectionInfo,
 } from 'metacleaner-app/src/lib/scanner/types.js';
 
 import type { ScanResult, SeverityLevel } from 'metacleaner-app/src/lib/scanner/types.js';
@@ -58,6 +59,7 @@ export interface AggregatedSummary {
   maxRiskScore: number;
   maxSeverity: SeverityLevel;
   gpsFileCount: number;
+  aiFileCount: number;
 }
 
 export interface CommandResult {

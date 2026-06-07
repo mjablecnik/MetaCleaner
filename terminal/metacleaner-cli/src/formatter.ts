@@ -42,6 +42,7 @@ function formatBytes(bytes: number): string {
 export function computeAggregatedSummary(results: FileResult[]): AggregatedSummary {
   let maxRiskScore = 0;
   let gpsFileCount = 0;
+  let aiFileCount = 0;
   let successCount = 0;
   let errorCount = 0;
 
@@ -53,6 +54,7 @@ export function computeAggregatedSummary(results: FileResult[]): AggregatedSumma
       const score = r.scanResult?.fileScore ?? 0;
       if (score > maxRiskScore) maxRiskScore = score;
       if (r.scanResult?.hasGps) gpsFileCount++;
+      if (r.scanResult?.aiDetection?.isAIGenerated) aiFileCount++;
     }
   }
 
@@ -63,6 +65,7 @@ export function computeAggregatedSummary(results: FileResult[]): AggregatedSumma
     maxRiskScore,
     maxSeverity: classifySeverity(maxRiskScore),
     gpsFileCount,
+    aiFileCount,
   };
 }
 
@@ -136,6 +139,17 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
     lines.push(`\n   Size: ${formatBytes(result.fileSize)}`);
     lines.push(`   Format: ${result.format}`);
     lines.push(`   File path: ${result.filePath}`);
+  }
+
+  // AI detection output
+  if (scan.aiDetection?.isAIGenerated) {
+    const ai = scan.aiDetection;
+    const genStr = ai.generator ? ` (${ai.generator})` : '';
+    lines.push(`\n   🤖 AI-Generated [${ai.confidence}]${genStr}`);
+    for (const signal of ai.signals) {
+      const icon = signal.type === 'confirmed' ? '✔' : '⚠';
+      lines.push(`      ${icon} ${signal.detail} [${signal.source}]`);
+    }
   }
 
   return lines.join('\n');
@@ -231,6 +245,7 @@ export function formatSummary(results: FileResult[], options: FormatOptions): st
   lines.push(`   Errors:         ${summary.errorCount}`);
   lines.push(`   Max risk score: ${summary.maxRiskScore} (${summary.maxSeverity})`);
   lines.push(`   GPS detected:   ${summary.gpsFileCount} file(s)`);
+  lines.push(`   AI-generated:   ${summary.aiFileCount} file(s)`);
   lines.push(`─────────────────────────────────────`);
 
   return lines.join('\n');

@@ -8,6 +8,14 @@ import {
 	categorizeField
 } from '../constants.js';
 import { computeFileScore } from '../riskAnalyzer.js';
+import {
+	detectAIInPngBytes,
+	detectAIInJpegBytes,
+	detectAIInMetadata,
+	detectAIByStructure,
+	buildAIDetectionResult,
+	type AISignal
+} from '../aiDetector.js';
 
 const EXIFR_FORMATS = new Set<ImageFormat>(['jpeg', 'png', 'heic', 'heif', 'avif', 'tiff', 'dng']);
 const EXIFREADER_FORMATS = new Set<ImageFormat>(['webp', 'gif']);
@@ -38,7 +46,16 @@ function rawToFields(raw: Record<string, unknown>): MetadataField[] {
 	return fields;
 }
 
-async function parseWithExifr(input: Blob, fileId: string): Promise<ScanResult> {
+async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat): Promise<ScanResult> {
+	// Read raw bytes for binary-level AI detection (C2PA chunks)
+	const rawBytes = await input.arrayBuffer();
+	let byteSignals: AISignal[] = [];
+	if (format === 'png') {
+		byteSignals = detectAIInPngBytes(rawBytes);
+	} else if (format === 'jpeg') {
+		byteSignals = detectAIInJpegBytes(rawBytes);
+	}
+
 	const data = await exifr.parse(input, {
 		tiff: true,
 		exif: true,
@@ -54,7 +71,24 @@ async function parseWithExifr(input: Blob, fileId: string): Promise<ScanResult> 
 		mergeOutput: true
 	});
 
-	if (!data) return makeEmptyResult(fileId);
+	if (!data) {
+		// No metadata at all — check for AI via bytes and filename
+		const fileName = fileId.split('/').pop() ?? fileId;
+		const structureSignals = detectAIByStructure({}, fileName);
+		const allSignals = [...byteSignals, ...structureSignals];
+		const aiDetection = buildAIDetectionResult(allSignals);
+
+		return {
+			fileId,
+			status: 'done',
+			fields: [],
+			hasGps: false,
+			fieldCount: 0,
+			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+			fileScore: 0,
+			aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
+		};
+	}
 
 	const raw = data as Record<string, unknown>;
 	const fields = rawToFields(raw);
@@ -64,6 +98,13 @@ async function parseWithExifr(input: Blob, fileId: string): Promise<ScanResult> 
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
 	const { score, categories } = computeFileScore(fields);
 
+	// AI detection from metadata + bytes + structure
+	const fileName = fileId.split('/').pop() ?? fileId;
+	const metadataSignals = detectAIInMetadata(raw, fileName);
+	const structureSignals = detectAIByStructure(raw, fileName);
+	const allSignals = [...byteSignals, ...metadataSignals, ...structureSignals];
+	const aiDetection = buildAIDetectionResult(allSignals);
+
 	return {
 		fileId,
 		status: 'done',
@@ -72,7 +113,8 @@ async function parseWithExifr(input: Blob, fileId: string): Promise<ScanResult> 
 		device,
 		fieldCount: fields.length,
 		categoryScores: categories,
-		fileScore: score
+		fileScore: score,
+		aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
 	};
 }
 
@@ -94,6 +136,13 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
 	const { score, categories } = computeFileScore(fields);
 
+	// AI detection from metadata + structure
+	const fileName = fileId.split('/').pop() ?? fileId;
+	const metadataSignals = detectAIInMetadata(raw, fileName);
+	const structureSignals = detectAIByStructure(raw, fileName);
+	const allSignals = [...metadataSignals, ...structureSignals];
+	const aiDetection = buildAIDetectionResult(allSignals);
+
 	return {
 		fileId,
 		status: 'done',
@@ -102,7 +151,8 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 		device,
 		fieldCount: fields.length,
 		categoryScores: categories,
-		fileScore: score
+		fileScore: score,
+		aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
 	};
 }
 
@@ -115,7 +165,7 @@ export async function parseImage(
 		file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_IMAGE_HEADER_BYTES) : file;
 
 	if (EXIFR_FORMATS.has(format)) {
-		return parseWithExifr(input, fileId);
+		return parseWithExifr(input, fileId, format);
 	}
 
 	if (EXIFREADER_FORMATS.has(format)) {

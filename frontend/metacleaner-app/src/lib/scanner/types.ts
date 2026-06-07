@@ -37,6 +37,13 @@ export interface MetadataField {
 	category: keyof RiskCategory;
 }
 
+export interface AIDetectionInfo {
+	isAIGenerated: boolean;
+	confidence: 'confirmed' | 'likely' | 'suspected' | 'none';
+	generator: string | null;
+	signals: Array<{ type: 'confirmed' | 'heuristic'; source: string; detail: string }>;
+}
+
 export interface ScanResult {
 	fileId: string;
 	status: ScanStatus;
@@ -46,6 +53,7 @@ export interface ScanResult {
 	fieldCount: number;
 	categoryScores: RiskCategory;
 	fileScore: number;
+	aiDetection?: AIDetectionInfo;
 	error?: string;
 }
 
