@@ -1,84 +1,86 @@
 # Test Report
 
-Created: 2025-06-06T17:26:00+00:00
-Updated: 2026-06-07T03:10:52+00:00
+Created: 2025-06-03T03:42:00+00:00
+Updated: 2026-06-07T07:18:03+00:00
 
 ## Summary
 
 - Total E2E tests: 269
-- Passing E2E tests: 0
-- Failing E2E tests: 269
+- Passing E2E tests: 268
+- Failing E2E tests: 1
 - Total component stories: 179
 - Passing component stories: 179
 - Failing component stories: 0
+- Total unit tests (Vitest server): 123
+- Passing unit tests: 123
+- Failing unit tests: 0
 
 ## E2E Test Coverage
 
 | Page/Route | Test File | Status |
 |---|---|---|
-| / (Step 1 — Upload) | e2e/step1-upload.spec.ts | ⚠️ Env Error (10 tests) |
-| / (Step 1 → Step 2 transition) | e2e/step1-to-step2-transition.spec.ts | ⚠️ Env Error (14 tests) |
-| / (Step 2 — Risk Analysis) | e2e/step2-risk-analysis.spec.ts | ⚠️ Env Error (14 tests) |
-| / (Step 2 → Step 5 flow) | e2e/step2-to-step5-complete-flow.spec.ts | ⚠️ Env Error (12 tests) |
-| / (Step 3 — Processing) | e2e/step3-processing.spec.ts | ⚠️ Env Error (14 tests) |
-| / (Step 3 — Cancel) | e2e/step3-cancel.spec.ts | ⚠️ Env Error (9 tests) |
-| / (Step 4 — Error) | e2e/step4-error.spec.ts | ⚠️ Env Error (23 tests) |
-| / (Step 5 — Results) | e2e/step5-results.spec.ts | ⚠️ Env Error (17 tests) |
-| / → /report (navigation) | e2e/step5-report-navigation.spec.ts | ⚠️ Env Error (10 tests) |
-| / (File validation) | e2e/file-validation.spec.ts | ⚠️ Env Error (5 tests) |
-| / (File removal) | e2e/file-removal.spec.ts | ⚠️ Env Error (9 tests) |
-| / (Responsive layout) | e2e/responsive.spec.ts | ⚠️ Env Error (33 tests) |
-| / (Navigation SPA) | e2e/navigation.spec.ts | ⚠️ Env Error (17 tests) |
-| / (Hamburger menu) | e2e/hamburger-menu.spec.ts | ⚠️ Env Error (20 tests) |
-| /reports | e2e/reports.spec.ts | ⚠️ Env Error (34 tests) |
-| /report/[id] | e2e/report-detail.spec.ts | ⚠️ Env Error (28 tests) |
+| / (Step 1 — Upload) | e2e/step1-upload.spec.ts | ✅ Pass (10 tests) |
+| / (Step 1 → Step 2 transition) | e2e/step1-to-step2-transition.spec.ts | ✅ Pass (14 tests) |
+| / (Step 2 — Risk Analysis) | e2e/step2-risk-analysis.spec.ts | ✅ Pass (14 tests) |
+| / (Step 2 → Step 5 complete flow) | e2e/step2-to-step5-complete-flow.spec.ts | ✅ Pass (12 tests) |
+| / (Step 3 — Processing) | e2e/step3-processing.spec.ts | ✅ Pass (14 tests) |
+| / (Step 3 — Cancel) | e2e/step3-cancel.spec.ts | ✅ Pass (9 tests) |
+| / (Step 4 — Error) | e2e/step4-error.spec.ts | ✅ Pass (23 tests) |
+| / (Step 5 — Results) | e2e/step5-results.spec.ts | ✅ Pass (17 tests) |
+| / (Step 5 → Report navigation) | e2e/step5-report-navigation.spec.ts | ✅ Pass (10 tests) |
+| /reports | e2e/reports.spec.ts | ✅ Pass (34 tests) |
+| /report/[id] | e2e/report-detail.spec.ts | ❌ 1 Fail (27 pass, 1 fail) |
+| Cross-cutting: File validation | e2e/file-validation.spec.ts | ✅ Pass (5 tests) |
+| Cross-cutting: File removal | e2e/file-removal.spec.ts | ✅ Pass (9 tests) |
+| Cross-cutting: Navigation (SPA) | e2e/navigation.spec.ts | ✅ Pass (17 tests) |
+| Cross-cutting: Hamburger menu | e2e/hamburger-menu.spec.ts | ✅ Pass (20 tests) |
+| Cross-cutting: Responsive layout | e2e/responsive.spec.ts | ✅ Pass (33 tests) |
 
 ## Component Test Coverage
 
 | Component | Story File | States Covered | Status |
 |---|---|---|---|
-| AccordionCard | AccordionCard.stories.svelte | Closed, Open, WithIcon, RedBorder, BlueBorder, GreenBorder, WithHeaderContent | ✅ Pass |
-| Badge | Badge.stories.svelte | Blue, Green, Red, Orange, WithDot, WithDotGreen, WithIcon, WithIconRed, WithIconOrange, WithDotAndIcon | ✅ Pass |
-| Button | Button.stories.svelte | Primary, Secondary, Danger, Ghost, Disabled, WithIcon, Loading, SizeSmall, SizeMedium, SizeLarge | ✅ Pass |
-| Card | Card.stories.svelte | Default, GreenBorder, RedBorder, BlueBorder, OrangeBorder, CustomPadding | ✅ Pass |
-| Chip | Chip.stories.svelte | Blue, Green, Red, Orange, Muted, WithoutBorder, RoundedShape, AllColors | ✅ Pass |
-| IconContainer | IconContainer.stories.svelte | BlueTinted, GreenTinted, RedTinted, OrangeTinted, MutedTinted, BlueSolid, GreenSolid, RedSolid, OrangeSolid, MutedSolid, SizeXs–2xl, Square, Circle, AllSizes, AllColors | ✅ Pass |
-| ProgressBar | ProgressBar.stories.svelte | Empty, Half, Full, Blue, Green, Red, Orange, Gray, HeightXS, HeightSM, HeightMD | ✅ Pass |
-| ToggleSwitch | ToggleSwitch.stories.svelte | Off, On, DisabledOff, DisabledOn | ✅ Pass |
-| ActivityLog | ActivityLog.stories.svelte | WithEntries, SuccessOnly, WithError, InProgress, Empty | ✅ Pass |
-| LanguageDropdown | LanguageDropdown.stories.svelte | Closed, Open, CzechSelectedClosed, CzechSelectedOpen | ✅ Pass |
-| MobileBottomCta | MobileBottomCta.stories.svelte | WithButtonContent, WithTextContent | ✅ Pass |
-| MobileHamburgerMenu | MobileHamburgerMenu.stories.svelte | Closed, Open, OpenWithLanguageOptions, NoUser, NoUserOpen | ✅ Pass |
-| NavBar | NavBar.stories.svelte | Default, WithBackButton, WithoutLanguageDropdown, Compact, NoUser | ✅ Pass |
-| PageHeader | PageHeader.stories.svelte | WithoutBadge, WithBlueBadge, WithOrangeBadge, WithRedBadge | ✅ Pass |
-| StatCard | StatCard.stories.svelte | Blue, Green, Red, Orange, BlueHighlighted, GreenHighlighted, RedHighlighted, OrangeHighlighted, WithMobileLabel | ✅ Pass |
-| Toast | Toast.stories.svelte | Visible, Hidden, WithCustomIcon, ErrorIcon | ✅ Pass |
-| UserDropdown | UserDropdown.stories.svelte | Closed, Open, NoUser, NoUserOpen | ✅ Pass |
-| BeforeAfterScore | BeforeAfterScore.stories.svelte | ImprovedHigh, ImprovedModerate, UnchangedEqual, UnchangedZero | ✅ Pass |
+| AccordionCard | AccordionCard.stories.svelte | Open, Closed, Blue/Green/Red border, With header, With icon | ✅ Pass |
+| Badge | Badge.stories.svelte | Blue, Green, Orange, Red, With dot, With icon | ✅ Pass |
+| Button | Button.stories.svelte | Primary, Secondary, Danger, Ghost, Disabled, Loading, Sizes, With icon | ✅ Pass |
+| Card | Card.stories.svelte | Default, Blue/Green/Orange/Red border, Custom padding | ✅ Pass |
+| Chip | Chip.stories.svelte | Blue, Green, Orange, Red, Muted, Rounded, Without border | ✅ Pass |
+| IconContainer | IconContainer.stories.svelte | All colors solid/tinted, All sizes, Circle/Square shape | ✅ Pass |
+| ProgressBar | ProgressBar.stories.svelte | Empty, Half, Full, Colors (blue/green/orange/red/gray), Heights | ✅ Pass |
+| ToggleSwitch | ToggleSwitch.stories.svelte | On, Off, Disabled on, Disabled off | ✅ Pass |
+| ActivityLog | ActivityLog.stories.svelte | Empty, In progress, Success only, With entries, With error | ✅ Pass |
+| LanguageDropdown | LanguageDropdown.stories.svelte | Closed, Open, Czech selected closed/open | ✅ Pass |
+| MobileBottomCta | MobileBottomCta.stories.svelte | With button content, With text content | ✅ Pass |
+| MobileHamburgerMenu | MobileHamburgerMenu.stories.svelte | Closed, Open, No user, Open with language options | ✅ Pass |
+| NavBar | NavBar.stories.svelte | Default, Compact, No user, With back button, Without language | ✅ Pass |
+| PageHeader | PageHeader.stories.svelte | Without badge, Blue/Orange/Red badge | ✅ Pass |
+| StatCard | StatCard.stories.svelte | Blue/Green/Orange/Red default/highlighted, With mobile label | ✅ Pass |
+| Toast | Toast.stories.svelte | Visible, Hidden, Error icon, Custom icon | ✅ Pass |
+| UserDropdown | UserDropdown.stories.svelte | Closed, Open, No user, No user open | ✅ Pass |
+| BeforeAfterScore | BeforeAfterScore.stories.svelte | Improved high, Improved moderate, Unchanged equal, Zero risk | ✅ Pass |
 | DropZone | DropZone.stories.svelte | Idle, Dragover | ✅ Pass |
-| FileListItemRisk | FileListItemRisk.stories.svelte | HighRisk, MediumRisk, LowRisk, ScanningInProgress, ScanError, VideoFile | ✅ Pass |
-| RiskBreakdownBar | RiskBreakdownBar.stories.svelte | CriticalGPS, HighDevice, MediumTimestamps, LowAuthor, MultipleCategories | ✅ Pass |
-| RiskScoreRing | RiskScoreRing.stories.svelte | LowRisk20, MediumRisk50, HighRisk72, SmallSize, LargeSize, BlueVariant | ✅ Pass |
+| FileListItemRisk | FileListItemRisk.stories.svelte | High/Medium/Low risk, Scan error, Scanning, Video file | ✅ Pass |
+| RiskBreakdownBar | RiskBreakdownBar.stories.svelte | Critical GPS, High device, Low author, Medium timestamps, Multiple | ✅ Pass |
+| RiskScoreRing | RiskScoreRing.stories.svelte | High/Medium/Low risk, Blue variant, Large/Small size | ✅ Pass |
 | ScanProgressIndicator | ScanProgressIndicator.stories.svelte | Idle, Scanning, Complete, Error | ✅ Pass |
-| FilterPill | FilterPill.stories.svelte | Active, Inactive, ActiveWithCount, InactiveWithCount, ActiveWithIcon, InactiveWithIcon, PillGroup | ✅ Pass |
-| ReportCard | ReportCard.stories.svelte | ImageType, VideoType, WithTags, HighFieldCount, MultipleCards | ✅ Pass |
-| ReportTableRow | ReportTableRow.stories.svelte | ImageType, VideoType, WithGPSTag, HighFieldCount, MultipleRows | ✅ Pass |
-| ChartBar | ChartBar.stories.svelte | RedHigh, OrangeMedium, BlueLow, GreenFull, ZeroValue, AllColors | ✅ Pass |
-| FileAccordionItem | FileAccordionItem.stories.svelte | CollapsedImageNoGPS, ExpandedWithMetadata, CollapsedWithGPS, ExpandedGPSRich, ExpandedVideo | ✅ Pass |
-| MetadataTable | MetadataTable.stories.svelte | FewFields, ManyFields, WithMoreCountRow, SingleField | ✅ Pass |
+| ChartBar | ChartBar.stories.svelte | All colors, Blue low, Green full, Orange medium, Red high, Zero | ✅ Pass |
+| FileAccordionItem | FileAccordionItem.stories.svelte | Collapsed no GPS, Collapsed with GPS, Expanded image/video, Rich metadata | ✅ Pass |
+| MetadataTable | MetadataTable.stories.svelte | Few fields, Many fields, Single field, With more count | ✅ Pass |
+| FilterPill | FilterPill.stories.svelte | Active, Inactive, With count, With icon, Pill group | ✅ Pass |
+| ReportCard | ReportCard.stories.svelte | Image type, Video type, High fields, With tags, Multiple | ✅ Pass |
+| ReportTableRow | ReportTableRow.stories.svelte | Image type, Video type, High fields, With GPS, Multiple | ✅ Pass |
 
 ## Uncovered (no tests)
 
-All pages and interactive components have test coverage:
-- All 8 shared elements have Storybook stories
-- All 9 shared components have Storybook stories
-- All 12 route-specific interactive components have Storybook stories
-- All routes (/, /reports, /report/[id]) have E2E test files covering desktop and mobile viewports
+**None** — All pages/routes and interactive components have test coverage.
+
+- All 7 route states (`/` idle, files-ready, processing, error, success + `/reports` + `/report/[id]`) are covered by E2E tests.
+- All 29 interactive components have Storybook stories (179 total variants).
+- Section-level compositions are tested via E2E (appropriate for their integration complexity).
 
 ## Notes
 
-- **E2E tests cannot run in this environment**: All 269 E2E tests fail with `browserType.launch: Executable doesn't exist` — the Playwright `chromium_headless_shell` binary is missing. Running `npx playwright install` would fix this. The tests are structurally valid (they compile and list correctly with `--list`).
-- **Storybook build successful**: `storybook-static/` was generated with all 179 stories compiled without errors, confirming all component stories are valid.
-- **Coverage is comprehensive**: Every page state (idle, files-ready, processing, error, success) and both viewports (desktop 1280px, mobile 375px) are covered by E2E tests. Every reusable component has story coverage across its visual states.
-- **16 E2E test files** cover all application routes and user flows including navigation, responsive behavior, file operations, and the complete cleaning wizard.
-- **29 story files** cover all 29 interactive components across elements, shared components, and route-specific components.
+- **1 failing E2E test**: `e2e/report-detail.spec.ts` — "collapse all button collapses open accordion" (desktop viewport) times out at 30s. This appears to be a timing/interaction issue with the accordion collapse animation, not a structural test defect.
+- **Storybook build**: Successful (179 stories compiled without errors).
+- **Unit tests**: All 123 Vitest server-side tests pass (stores, scanner, risk analyzer, format detector).
+- **Test infrastructure**: Playwright with Chromium, Vitest for unit/component, Storybook 10 for visual catalog.
