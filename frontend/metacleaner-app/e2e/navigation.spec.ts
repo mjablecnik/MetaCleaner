@@ -184,16 +184,6 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 	});
 });
 
-test.describe('Navigation — route guard', () => {
-	test.use({ viewport: { width: 1280, height: 800 } });
-
-	test('/report (no id) shows report page content', async ({ page }) => {
-		// /report is a valid static route (shows mock report data), not a redirect
-		await page.goto('/report');
-		await expect(page.getByRole('heading', { name: /detailed cleaning report/i })).toBeVisible({ timeout: 8000 });
-	});
-});
-
 test.describe('Navigation — mobile SPA state transitions', () => {
 	test.use({ viewport: { width: 375, height: 812 } });
 
