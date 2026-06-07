@@ -1,5 +1,5 @@
 import { test, expect, type Page } from 'playwright/test';
-import { mockReportsApi } from './helpers/mock-api';
+import { mockReportsApi, mockReportDetail } from './helpers/mock-api';
 
 const TEST_FILE = {
 	name: 'photo.jpg',
@@ -330,7 +330,7 @@ test.describe('Responsive — Report Detail', () => {
 		test('chart and file accordion are visible on mobile', async ({ page }) => {
 			await mockReportsApi(page);
 			await page.goto('/report/rpt-001');
-			await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
 			await expect(page.getByRole('heading', { name: /distribution of removed metadata/i })).toBeVisible();
 			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
@@ -339,7 +339,7 @@ test.describe('Responsive — Report Detail', () => {
 		test('download PDF button is not visible on mobile (desktop-only button)', async ({ page }) => {
 			await mockReportsApi(page);
 			await page.goto('/report/rpt-001');
-			await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
 			const pdfBtn = page.locator('.hidden.lg\\:flex').getByRole('button', { name: /download pdf/i });
 			await expect(pdfBtn).not.toBeVisible();
@@ -352,7 +352,7 @@ test.describe('Responsive — Report Detail', () => {
 		test('chart and file accordion are visible on desktop', async ({ page }) => {
 			await mockReportsApi(page);
 			await page.goto('/report/rpt-001');
-			await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
 			await expect(page.getByRole('heading', { name: /distribution of removed metadata/i })).toBeVisible();
 			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
@@ -361,7 +361,7 @@ test.describe('Responsive — Report Detail', () => {
 		test('download PDF button is visible on desktop', async ({ page }) => {
 			await mockReportsApi(page);
 			await page.goto('/report/rpt-001');
-			await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
 			const pdfBtn = page.locator('.hidden.lg\\:flex').getByRole('button', { name: /download pdf/i });
 			await expect(pdfBtn).toBeVisible();
