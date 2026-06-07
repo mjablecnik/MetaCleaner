@@ -1,5 +1,5 @@
 import { test, expect, type Page } from 'playwright/test';
-import { mockReportsApi } from './helpers/mock-api';
+import { mockReportsApi, mockReportDetail } from './helpers/mock-api';
 
 // All hamburger menu tests use mobile viewport
 test.use({ viewport: { width: 375, height: 812 } });
@@ -136,8 +136,8 @@ test.describe('Mobile hamburger menu — report detail page (/report/[id])', () 
 	test.beforeEach(async ({ page }) => {
 		await mockReportsApi(page);
 		await page.goto('/report/rpt-001');
-		// Wait for report detail content to load
-		await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+		// Wait for report detail content to load (in-memory service returns MC-2025-001, not rpt-001)
+		await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 	});
 
 	test('hamburger button is visible on report detail page', async ({ page }) => {
