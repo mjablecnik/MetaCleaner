@@ -95,7 +95,7 @@ function makeEmptyResult(fileId: string): ScanResult {
 		fields: [],
 		hasGps: false,
 		fieldCount: 0,
-		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 		fileScore: 0
 	};
 }

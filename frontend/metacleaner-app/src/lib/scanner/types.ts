@@ -29,6 +29,7 @@ export interface RiskCategory {
 	deviceIdentity: number;
 	personalData: number;
 	timestamps: number;
+	aiOrigin: number;
 }
 
 export interface MetadataField {

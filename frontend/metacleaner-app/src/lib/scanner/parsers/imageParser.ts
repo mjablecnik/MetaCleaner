@@ -27,7 +27,7 @@ function makeEmptyResult(fileId: string): ScanResult {
 		fields: [],
 		hasGps: false,
 		fieldCount: 0,
-		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 		fileScore: 0
 	};
 }
@@ -77,6 +77,8 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 		const structureSignals = detectAIByStructure({}, fileName);
 		const allSignals = [...byteSignals, ...structureSignals];
 		const aiDetection = buildAIDetectionResult(allSignals);
+		const aiInfo = aiDetection.isAIGenerated ? aiDetection : undefined;
+		const { score, categories } = computeFileScore([], aiInfo);
 
 		return {
 			fileId,
@@ -84,9 +86,9 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 			fields: [],
 			hasGps: false,
 			fieldCount: 0,
-			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
-			fileScore: 0,
-			aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
+			categoryScores: categories,
+			fileScore: score,
+			aiDetection: aiInfo
 		};
 	}
 
@@ -96,7 +98,6 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 	const makePart = raw['Make'] as string | undefined;
 	const modelPart = raw['Model'] as string | undefined;
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
-	const { score, categories } = computeFileScore(fields);
 
 	// AI detection from metadata + bytes + structure
 	const fileName = fileId.split('/').pop() ?? fileId;
@@ -104,6 +105,9 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 	const structureSignals = detectAIByStructure(raw, fileName);
 	const allSignals = [...byteSignals, ...metadataSignals, ...structureSignals];
 	const aiDetection = buildAIDetectionResult(allSignals);
+	const aiInfo = aiDetection.isAIGenerated ? aiDetection : undefined;
+
+	const { score, categories } = computeFileScore(fields, aiInfo);
 
 	return {
 		fileId,
@@ -114,7 +118,7 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 		fieldCount: fields.length,
 		categoryScores: categories,
 		fileScore: score,
-		aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
+		aiDetection: aiInfo
 	};
 }
 
@@ -134,7 +138,6 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 	const makePart = raw['Make'] as string | undefined;
 	const modelPart = raw['Model'] as string | undefined;
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
-	const { score, categories } = computeFileScore(fields);
 
 	// AI detection from metadata + structure
 	const fileName = fileId.split('/').pop() ?? fileId;
@@ -142,6 +145,9 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 	const structureSignals = detectAIByStructure(raw, fileName);
 	const allSignals = [...metadataSignals, ...structureSignals];
 	const aiDetection = buildAIDetectionResult(allSignals);
+	const aiInfo = aiDetection.isAIGenerated ? aiDetection : undefined;
+
+	const { score, categories } = computeFileScore(fields, aiInfo);
 
 	return {
 		fileId,
@@ -152,7 +158,7 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 		fieldCount: fields.length,
 		categoryScores: categories,
 		fileScore: score,
-		aiDetection: aiDetection.isAIGenerated ? aiDetection : undefined
+		aiDetection: aiInfo
 	};
 }
 

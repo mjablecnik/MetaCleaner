@@ -11,7 +11,8 @@ import type {
 	RiskCategory,
 	ScanResult,
 	AggregatedRisk,
-	SeverityLevel
+	SeverityLevel,
+	AIDetectionInfo
 } from './types.js';
 
 /**
@@ -40,7 +41,7 @@ function computeCategoryScore(
 	return Math.min(100, baseScore + bonus);
 }
 
-export function computeFileScore(fields: MetadataField[]): {
+export function computeFileScore(fields: MetadataField[], aiDetection?: AIDetectionInfo): {
 	score: number;
 	categories: RiskCategory;
 } {
@@ -49,7 +50,23 @@ export function computeFileScore(fields: MetadataField[]): {
 	const personalData = computeCategoryScore(fields, 'personalData', PERSONAL_FIELDS);
 	const timestamps = computeCategoryScore(fields, 'timestamps', TIMESTAMP_FIELDS);
 
-	const categories: RiskCategory = { gps, deviceIdentity, personalData, timestamps };
+	// AI origin score based on detection confidence
+	let aiOrigin = 0;
+	if (aiDetection?.isAIGenerated) {
+		switch (aiDetection.confidence) {
+			case 'confirmed':
+				aiOrigin = 100;
+				break;
+			case 'likely':
+				aiOrigin = 70;
+				break;
+			case 'suspected':
+				aiOrigin = 40;
+				break;
+		}
+	}
+
+	const categories: RiskCategory = { gps, deviceIdentity, personalData, timestamps, aiOrigin };
 
 	const score = Math.min(
 		100,
@@ -58,7 +75,8 @@ export function computeFileScore(fields: MetadataField[]): {
 			gps * CATEGORY_WEIGHTS.gps +
 				deviceIdentity * CATEGORY_WEIGHTS.deviceIdentity +
 				personalData * CATEGORY_WEIGHTS.personalData +
-				timestamps * CATEGORY_WEIGHTS.timestamps
+				timestamps * CATEGORY_WEIGHTS.timestamps +
+				aiOrigin * CATEGORY_WEIGHTS.aiOrigin
 		)
 	);
 
@@ -81,7 +99,7 @@ export function computeAggregatedRisk(results: ScanResult[]): AggregatedRisk {
 		return {
 			overallScore: 0,
 			severity: 'low',
-			categories: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+			categories: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 			fileCount: 0,
 			scannedCount: 0,
 			isScanning: false

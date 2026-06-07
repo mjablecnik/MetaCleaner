@@ -13,6 +13,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   deviceIdentity: 'Device Identity',
   personalData: 'Personal Data',
   timestamps: 'Timestamps',
+  aiOrigin: 'AI Origin',
 };
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -20,6 +21,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
   deviceIdentity: '📱',
   personalData: '👤',
   timestamps: '🕐',
+  aiOrigin: '🤖',
 };
 
 const SEVERITY_EMOJI: Record<SeverityLevel, string> = {

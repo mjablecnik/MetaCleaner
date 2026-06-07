@@ -100,10 +100,11 @@ export const TIMESTAMP_FIELDS = [
 ];
 
 export const CATEGORY_WEIGHTS = {
-	gps: 0.4,
-	deviceIdentity: 0.25,
-	personalData: 0.2,
-	timestamps: 0.15
+	gps: 0.3,
+	deviceIdentity: 0.2,
+	personalData: 0.25,
+	timestamps: 0.25,
+	aiOrigin: 0.65
 } as const;
 
 export const SEVERITY_THRESHOLDS = {
