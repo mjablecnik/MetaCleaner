@@ -159,7 +159,7 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 	test('/report/[id] → /reports on "Back to results" link', async ({ page }) => {
 		await mockReportsApi(page);
 		await page.goto('/report/rpt-001');
-		await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+		await expect(page.getByText('MC-2025-001')).toBeVisible({ timeout: 8000 });
 
 		const backLink = page.getByRole('link', { name: /back to results/i }).first();
 		await backLink.click();
@@ -171,7 +171,7 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 	test('/report/[id] → / on navigating to /reports → "Back to cleaning"', async ({ page }) => {
 		await mockReportsApi(page);
 		await page.goto('/report/rpt-001');
-		await expect(page.getByText('RPT-001')).toBeVisible({ timeout: 8000 });
+		await expect(page.getByText('MC-2025-001')).toBeVisible({ timeout: 8000 });
 
 		await page.getByRole('link', { name: /back to results/i }).first().click();
 		await page.waitForURL('**/reports');
