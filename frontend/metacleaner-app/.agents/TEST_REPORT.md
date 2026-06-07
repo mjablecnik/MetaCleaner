@@ -1,7 +1,7 @@
 # Test Report
 
 Created: 2025-06-06T17:26:00+00:00
-Updated: 2026-06-07T01:07:07+00:00
+Updated: 2026-06-07T03:10:52+00:00
 
 ## Summary
 
@@ -77,6 +77,8 @@ All pages and interactive components have test coverage:
 
 ## Notes
 
-- **E2E tests cannot run in this environment**: All 269 E2E tests fail with `browserType.launch: Executable doesn't exist` — the Playwright `chromium_headless_shell` binary is missing. Running `npx playwright install` would fix this. The tests are structurally valid and pass in environments with proper Playwright browser installation.
-- **Storybook build successful**: `storybook-static/` was generated with all 179 stories compiled without errors.
+- **E2E tests cannot run in this environment**: All 269 E2E tests fail with `browserType.launch: Executable doesn't exist` — the Playwright `chromium_headless_shell` binary is missing. Running `npx playwright install` would fix this. The tests are structurally valid (they compile and list correctly with `--list`).
+- **Storybook build successful**: `storybook-static/` was generated with all 179 stories compiled without errors, confirming all component stories are valid.
 - **Coverage is comprehensive**: Every page state (idle, files-ready, processing, error, success) and both viewports (desktop 1280px, mobile 375px) are covered by E2E tests. Every reusable component has story coverage across its visual states.
+- **16 E2E test files** cover all application routes and user flows including navigation, responsive behavior, file operations, and the complete cleaning wizard.
+- **29 story files** cover all 29 interactive components across elements, shared components, and route-specific components.
