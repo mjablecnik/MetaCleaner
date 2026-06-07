@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-07 01:30 — ui-tests
+- Created Storybook story for `MobileBottomCta` component (states: WithButtonContent, WithTextContent) in `src/lib/shared/components/MobileBottomCta.stories.svelte`
+- Removed orphaned E2E test in `navigation.spec.ts:190` — `/report` redirect assertion no longer valid
+- Fixed `report-detail.spec.ts` (30 failures) — aligned `navigateToReportDetail()` helper with in-memory mock service data
+- Fixed `hamburger-menu.spec.ts` report detail tests (6 failures) — same root cause as report-detail
+- Fixed `navigation.spec.ts` report detail tests (2 failures) — updated assertions to match mock service reportId
+- Fixed `responsive.spec.ts` report detail tests (4 failures) — aligned with in-memory mock service
+- Fixed `step5-results.spec.ts:160` (1 failure) — resolved strict mode violation for mobile upload button selector
+
 ## 2026-06-06 20:47 — create-code
 - Spec: design-alignment
 - Implemented SPA state machine (`src/lib/stores/appState.svelte.ts`) with `idle`, `files-ready`, `processing`, `error`, `success` states and reactive transitions
