@@ -161,7 +161,7 @@ test.describe('Step 5 — Results', () => {
 			await navigateToSuccess(page, 'mobile');
 
 			// Upload new files button is in SuccessHeader (visible on all viewports)
-			await expect(page.getByRole('button', { name: /upload new files/i })).toBeVisible();
+			await expect(page.getByRole('button', { name: /upload new files/i }).first()).toBeVisible();
 		});
 	});
 });
