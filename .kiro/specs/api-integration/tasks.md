@@ -45,7 +45,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Ignore unknown message types without error
     - _Requirements: 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.10, 11.2, 11.3, 11.6_
 
-  - [ ]* 2.4 Write property tests for WebSocket message dispatch and ProcessingResults construction
+  - [x]* 2.4 Write property tests for WebSocket message dispatch and ProcessingResults construction
     - **Property 6: WebSocket message dispatch correctness with fileName resolution**
     - **Property 7: ProcessingResults construction from accumulated events**
     - **Validates: Requirements 4.3, 4.4, 4.5, 4.6, 4.7, 11.2, 11.3, 11.5**
