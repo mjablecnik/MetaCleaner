@@ -65,8 +65,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
 - [x] 4. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement backend-to-frontend type mapping functions
-  - [ ] 5.1 Implement report summary mapping functions
+- [x] 5. Implement backend-to-frontend type mapping functions
+  - [x] 5.1 Implement report summary mapping functions
     - Implement `mapSingleReport` transforming backend `ReportSummary` to frontend `Report`
     - Implement `extractDate(dateStr)` splitting ISO date strings
     - Implement `extractTime(dateStr)` extracting time portion or returning empty string
@@ -79,7 +79,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 10: Report summary type mapping correctness**
     - **Validates: Requirements 9.1, 9.2, 9.3**
 
-  - [ ] 5.3 Implement report file detail mapping functions
+  - [x] 5.3 Implement report file detail mapping functions
     - Implement `mapReportFileDetails` computing `barWidthPercent`, `iconColor`, gradients for each file
     - Implement `computeBarWidth(fileFieldsRemoved, totalFieldsRemoved)` as percentage
     - Implement `getGradientFrom(type)` and `getGradientTo(type)` with color values per file type
