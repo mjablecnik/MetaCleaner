@@ -183,7 +183,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
       - That backend must have `FRONTEND_ORIGIN` set to frontend URL in production for CORS
     - _Requirements: 1.1, 1.3, 12.1, 12.5_
 
-- [ ] 12. Final checkpoint
+- [x] 12. Final checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

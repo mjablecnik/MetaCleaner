@@ -1,5 +1,11 @@
 # Memory
 
+## pipeline_integration_test.go: LocalID and exiftool script args were wrong
+
+- Problem: `TestPipelineMixedSuccess` failed because (1) FileRecord structs lacked `LocalID` field (pipeline uses `f.LocalID` for disk path lookup, not `f.ID`), and (2) the fake exiftool shell script used `cp "$3" "$2"` but the actual call is `exiftool -all= -o <cleanedPath> <originalPath>` so `$3`=cleanedPath, `$4`=originalPath — the copy should be `cp "$4" "$3"`.
+- Solution: Add `LocalID: "f-ok"` etc. to FileRecord structs in the test, and change `cp "$3" "$2"` to `cp "$4" "$3"` in the exiftool script.
+- Source: create-code, 2026-06-10T15:30:00+00:00
+
 ## $state<Date> triggers svelte/prefer-svelte-reactivity lint error
 
 - Problem: Storing `new Date()` in `$state<Date | null>` triggers ESLint error `svelte/prefer-svelte-reactivity` — Svelte's lint rule requires `SvelteDate` from `svelte/reactivity` instead of the native `Date` class for reactive state.
