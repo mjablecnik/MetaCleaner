@@ -8,7 +8,7 @@
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
-	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import SuccessHeader from './SuccessHeader.svelte';
@@ -58,7 +58,7 @@
 	async function handleDownload(): Promise<void> {
 		if (!results) return;
 		try {
-			const blob = await mockCleaningService.downloadResults('current');
+			const blob = await apiCleaningService.downloadResults(cleaningResultsStore.reportId ?? '');
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;

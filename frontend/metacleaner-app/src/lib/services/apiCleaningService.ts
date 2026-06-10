@@ -364,7 +364,16 @@ class ApiCleaningService implements CleaningService {
 
 		const fileNameMap = new Map<string, string>();
 		const accumulatedResults: AccumulatedFileResult[] = [];
-		let currentJobId = '';
+
+		// Mutable handle — jobId is updated after createJob resolves so
+		// callers reading job.jobId inside onComplete see the real ID.
+		const jobHandle: CleaningJob = {
+			jobId: '',
+			cancel() {
+				cancelled = true;
+				ws?.close();
+			}
+		};
 
 		const execute = async () => {
 			try {
@@ -379,16 +388,16 @@ class ApiCleaningService implements CleaningService {
 				if (cancelled) return;
 
 				const jobResponse = await api.createJob(fileIds);
-				currentJobId = jobResponse.jobId;
+				jobHandle.jobId = jobResponse.jobId;
 
 				if (cancelled) return;
 
-				ws = api.connectJobProgress(currentJobId);
+				ws = api.connectJobProgress(jobHandle.jobId);
 
 				ws.onmessage = (event) => {
 					if (cancelled) return;
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
-					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, currentJobId);
+					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, jobHandle.jobId);
 				};
 
 				ws.onerror = () => {
@@ -415,13 +424,7 @@ class ApiCleaningService implements CleaningService {
 
 		void execute();
 
-		return {
-			jobId: '',
-			cancel() {
-				cancelled = true;
-				ws?.close();
-			}
-		};
+		return jobHandle;
 	}
 
 	async downloadResults(jobId: string): Promise<Blob> {

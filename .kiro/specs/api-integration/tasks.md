@@ -149,26 +149,26 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
 - [x] 8. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Add `downloadJobZip` to frontend API client
-  - [ ] 9.1 Add `downloadJobZip(jobId: string): Promise<Blob>` method in `src/lib/clients/metaCleanerApi.ts`
+- [x] 9. Add `downloadJobZip` to frontend API client
+  - [x] 9.1 Add `downloadJobZip(jobId: string): Promise<Blob>` method in `src/lib/clients/metaCleanerApi.ts`
     - Call `GET /api/jobs/{jobId}/download` and return response as Blob
     - Throw `ApiHttpError` on non-OK responses
     - _Requirements: 13.7_
 
-  - [ ] 9.2 Update `downloadResults` in `src/lib/services/apiCleaningService.ts` to call `downloadJobZip` by default
+  - [x] 9.2 Update `downloadResults` in `src/lib/services/apiCleaningService.ts` to call `downloadJobZip` by default
     - Change `downloadResults(jobId)` to call `api.downloadJobZip(jobId)` instead of `api.downloadFile(jobId)`
     - Keep per-file download as fallback if needed
     - _Requirements: 13.8, 13.9_
 
-- [ ] 10. Remove mock layer and wire ApiCleaningService
-  - [ ] 10.1 Delete `mockCleaningService.ts` and update all imports to use `apiCleaningService`
+- [x] 10. Remove mock layer and wire ApiCleaningService
+  - [x] 10.1 Delete `mockCleaningService.ts` and update all imports to use `apiCleaningService`
     - Delete `src/lib/services/mockCleaningService.ts`
     - Search and replace all imports of `mockCleaningService` with `apiCleaningService` from `./apiCleaningService.js`
     - Export `apiCleaningService` as the sole `CleaningService` instance consumed by the application
     - Files to update: `Step3Processing.svelte`, `Step5Success.svelte`, `reports/+page.svelte`, `report/[id]/+page.svelte`
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ] 10.2 Refactor `Step5Success.svelte` to pass real jobId to `downloadResults`
+  - [x] 10.2 Refactor `Step5Success.svelte` to pass real jobId to `downloadResults`
     - The current mock calls `downloadResults('current')` with a hardcoded placeholder string
     - Refactor to pass the real `jobId` obtained from the job creation/WebSocket flow
     - Ensure the jobId is stored in an accessible state (e.g. a store or prop) after job completion

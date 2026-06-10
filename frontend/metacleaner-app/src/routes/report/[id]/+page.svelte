@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
-	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import type { ReportDetail } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
@@ -53,7 +53,7 @@
 	]);
 
 	onMount(() => {
-		mockCleaningService
+		apiCleaningService
 			.getReportDetail(reportId ?? '')
 			.then((detail) => {
 				reportDetail = detail;

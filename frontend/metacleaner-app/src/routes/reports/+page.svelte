@@ -6,7 +6,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { appState } from '$lib/stores/appState.svelte';
-	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import type { Report, ReportSummaryStats } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -97,7 +97,7 @@
 	}
 
 	onMount(() => {
-		mockCleaningService
+		apiCleaningService
 			.getReports()
 			.then((data) => {
 				stats = data.summary;

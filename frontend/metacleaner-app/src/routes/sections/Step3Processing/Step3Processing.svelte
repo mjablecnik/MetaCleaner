@@ -5,7 +5,7 @@
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
-	import { mockCleaningService } from '$lib/services/mockCleaningService';
+	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import type { CleaningJob } from '$lib/services/cleaningService';
 	import type { ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
 	import ProcessingFilesCard from './ProcessingFilesCard.svelte';
@@ -95,7 +95,7 @@
 			status: 'waiting' as const
 		}));
 
-		job = mockCleaningService.startCleaning(
+		job = apiCleaningService.startCleaning(
 			files,
 			{ removeGps: true, removeExif: true, removeXmp: true, removeComments: true },
 			{
