@@ -106,13 +106,13 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Test getReportDetail maps backend response to ReportDetail with computed fields
     - _Requirements: 5.3, 5.4, 6.5, 10.4, 10.5_
 
-- [ ] 7. Implement batch ZIP download endpoint (backend)
-  - [ ] 7.1 Add `ErrJobNotReady` and `ErrFilesExpired` error codes in `source/errors.go`
+- [x] 7. Implement batch ZIP download endpoint (backend)
+  - [x] 7.1 Add `ErrJobNotReady` and `ErrFilesExpired` error codes in `source/errors.go`
     - Add `ErrJobNotReady = "JOB_NOT_READY"` constant
     - Add `ErrFilesExpired = "FILES_EXPIRED"` constant
     - _Requirements: 13.4, 13.5, 13.6_
 
-  - [ ] 7.2 Verify `GetFileRecords` method and LocalID resolution strategy
+  - [x] 7.2 Verify `GetFileRecords` method and LocalID resolution strategy
     - The existing `GetFileRecords(ctx, jobID)` in `source/supabase.go` fetches ALL file records for a job
     - **IMPORTANT:** `LocalID` field is tagged `json:"-"` and is NOT persisted to DB — it will always be empty when fetched from DB
     - The handler MUST derive the local file ID from the stored `FileName` field (format: `f-abcd1234.ext`) by stripping the extension: `localID := strings.TrimSuffix(f.FileName, f.FileExtension)`
@@ -120,7 +120,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - No new Supabase method needed — use existing `GetFileRecords` with local derivation
     - _Requirements: 13.2_
 
-  - [ ] 7.3 Implement `HandleJobDownload` handler in `source/handlers.go`
+  - [x] 7.3 Implement `HandleJobDownload` handler in `source/handlers.go`
     - Create `HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc`
     - Look up job by ID using `r.PathValue("id")` (consistent with existing route convention)
     - Return 404 with `ErrJobNotFound` if not found
@@ -133,13 +133,13 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Use `buildCleanedFileName` for each entry name in the ZIP
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6_
 
-  - [ ] 7.4 Register `GET /api/jobs/{id}/download` route in `source/router.go`
+  - [x] 7.4 Register `GET /api/jobs/{id}/download` route in `source/router.go`
     - Add `mux.Handle("GET /api/jobs/{id}/download", HandleJobDownload(cfg, db))` in `NewRouter`
     - Use `{id}` path parameter (consistent with existing routes like `GET /api/jobs/{id}`)
     - Place it after the existing `GET /api/jobs/{id}/progress` route
     - _Requirements: 13.1_
 
-  - [ ]* 7.5 Write unit tests for `HandleJobDownload` in `tests/handlers_download_test.go`
+  - [x]* 7.5 Write unit tests for `HandleJobDownload` in `tests/handlers_download_test.go`
     - Test 404 response when job not found
     - Test 409 response when job status is not "completed"
     - Test 404 with `FILES_EXPIRED` when cleaned files are missing from disk

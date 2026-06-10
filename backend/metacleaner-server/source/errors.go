@@ -17,6 +17,8 @@ const (
 	ErrInvalidRequest      = "INVALID_REQUEST"
 	ErrDatabaseError       = "DATABASE_ERROR"
 	ErrRateLimitExceeded   = "RATE_LIMIT_EXCEEDED"
+	ErrJobNotReady         = "JOB_NOT_READY"
+	ErrFilesExpired        = "FILES_EXPIRED"
 )
 
 type ErrorResponse struct {

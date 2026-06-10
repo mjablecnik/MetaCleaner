@@ -140,6 +140,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/jobs/{id}/progress — WebSocket
 	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub))
 
+	// GET /api/jobs/{id}/download
+	mux.Handle("GET /api/jobs/{id}/download", HandleJobDownload(cfg, db))
+
 	// GET /api/files/{id}/download
 	mux.Handle("GET /api/files/{id}/download", HandleFileDownload(cfg))
 

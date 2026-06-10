@@ -1,6 +1,7 @@
 package source
 
 import (
+	"archive/zip"
 	"context"
 	"crypto/rand"
 	"encoding/hex"
@@ -320,6 +321,86 @@ func HandleFileDownload(cfg Config) http.HandlerFunc {
 
 		// Neither file found — expired or never existed.
 		WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+	}
+}
+
+// HandleJobDownload handles GET /api/jobs/{id}/download — streams all cleaned files as a ZIP archive.
+func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		jobID := r.PathValue("id")
+		if jobID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+			return
+		}
+
+		job, err := db.GetJob(r.Context(), jobID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch job")
+			return
+		}
+		if job == nil {
+			WriteError(w, http.StatusNotFound, ErrJobNotFound, "Job not found")
+			return
+		}
+		if job.Status != "completed" {
+			WriteError(w, http.StatusConflict, ErrJobNotReady, "Job is still processing")
+			return
+		}
+
+		files, err := db.GetFileRecords(r.Context(), jobID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch file records")
+			return
+		}
+
+		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
+
+		type zipEntry struct {
+			path     string
+			fileName string
+		}
+		entries := make([]zipEntry, 0, len(files))
+
+		for _, f := range files {
+			if f.Status != "done" {
+				continue
+			}
+			// LocalID is not persisted to DB — derive it from FileName by stripping the extension
+			localID := strings.TrimSuffix(f.FileName, f.FileExtension)
+			matches, _ := filepath.Glob(filepath.Join(cleanedDir, localID+"_cleaned.*"))
+			if len(matches) == 0 {
+				continue
+			}
+			cleanedPath := matches[0]
+			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
+			downloadName := buildCleanedFileName(localID, ext, nil)
+			entries = append(entries, zipEntry{path: cleanedPath, fileName: downloadName})
+		}
+
+		if len(entries) == 0 {
+			WriteError(w, http.StatusNotFound, ErrFilesExpired, "Cleaned files have expired")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/zip")
+		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="metacleaner-%s.zip"`, jobID))
+
+		zipWriter := zip.NewWriter(w)
+		defer zipWriter.Close()
+
+		for _, entry := range entries {
+			file, err := os.Open(entry.path)
+			if err != nil {
+				continue
+			}
+			writer, err := zipWriter.Create(entry.fileName)
+			if err != nil {
+				file.Close()
+				continue
+			}
+			io.Copy(writer, file) //nolint:errcheck
+			file.Close()
+		}
 	}
 }
 
