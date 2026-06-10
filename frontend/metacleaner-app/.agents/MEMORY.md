@@ -1,5 +1,23 @@
 # Memory
 
+## Dead i18n key audit: simple tx() grep misses dynamic key references
+
+- Problem: Running `grep -roh "tx('[^']*')" src/` to find all used i18n keys produces many false positives ("dead" keys that are actually used). Dynamic patterns like `metaTitleKey = state === 'processing' ? 'step3.meta.title' : ...` and object literals like `{ txKey: 'report.chart.gpsData' }` or severity maps `{ critical: 'step2.risk.critical', ... }` are NOT matched by the simple quoted-string grep.
+- Solution: After running the basic grep, do a secondary broad search (`grep -rn "key.name" src/`) on every suspected dead key before removing it. Keys used via dynamic string variables or object property values are easy to miss.
+- Source: code-review-fix, 2026-06-10
+
+## WS cancel after job_complete: delayed close for trailing report_ready
+
+- Problem: When `job_complete` fires, the component unmounts synchronously via `appState.transitionTo('success')` and the cleanup runs `job?.cancel()`, which immediately calls `ws?.close()`. Any trailing `report_ready` WS message sent by the backend after `job_complete` is dropped (either WS closed before it arrives, or `cancelled=true` suppresses the handler).
+- Solution: In `cancel()`, when `jobCompleted=true`, delay `ws?.close()` by 500ms instead of closing immediately. In `ws.onmessage`, when `cancelled=true` but `jobCompleted=true`, still process `report_ready` to update `jobHandle.reportId`. The `job_complete.reportId` is still the authoritative source (already captured) — this is purely a defensive measure for the edge case where backend omits `reportId` from `job_complete`.
+- Source: code-review-fix, 2026-06-10
+
+## WS polling fallback: setJobCompleted must be wired to dispatchWsMessage
+
+- Problem: Adding a `pollUntilComplete` fallback requires knowing when `job_complete` was already handled via WS — otherwise the polling loop and the WS `job_complete` handler both call `onComplete`, causing duplicate callbacks. The `jobCompleted` flag lives in the closure of `startCleaning`; `dispatchWsMessage` needed an additional `setJobCompleted: () => void` parameter to flip it.
+- Solution: Add `setJobCompleted` as the last parameter of `dispatchWsMessage`, call it in the `job_complete` case before `callbacks.onComplete()`. In `ws.onerror`/`ws.onclose`, guard with `!jobCompleted` before starting `pollUntilComplete`. Also add `getJobStatus: vi.fn()` to the API mock in tests since the polling path now calls it.
+- Source: code-review-fix, 2026-06-10
+
 ## pipeline_integration_test.go: LocalID and exiftool script args were wrong
 
 - Problem: `TestPipelineMixedSuccess` failed because (1) FileRecord structs lacked `LocalID` field (pipeline uses `f.LocalID` for disk path lookup, not `f.ID`), and (2) the fake exiftool shell script used `cp "$3" "$2"` but the actual call is `exiftool -all= -o <cleanedPath> <originalPath>` so `$3`=cleanedPath, `$4`=originalPath — the copy should be `cp "$4" "$3"`.
@@ -233,3 +251,15 @@
 - Problem: `cleaningResultsStore` has a field named `reportId` but `Step3Processing` stores `job?.jobId` into it via `setResults(results, job?.jobId)`. The naming is misleading and causes Step5 to use jobId for report navigation (wrong endpoint).
 - Solution: Split into `jobId: string | null` and `reportId: string | null`. Update `setResults` signature. Step5 uses `jobId` for `downloadResults()` and `reportId` for "View Report" navigation.
 - Source: code-review, 2026-06-10T16:12:16+00:00
+
+## Dead i18n keys remain after mock layer removal
+
+- Problem: When mock components and repositories were deleted, their i18n keys (e.g., `step3.actions.orGoToResults` with "(demo)" text) were not removed from `messages/en.json` and `messages/cs.json`. These dead keys accumulate and confuse translators.
+- Solution: After removing any component or flow, grep for all `tx('key')` calls across `.svelte` and `.ts` files, then diff against the keys in both JSON message files. Remove keys that have zero references.
+- Source: code-review, 2026-06-10T16:32:29+00:00
+
+## languageRepository lists unsupported languages (DE, SK)
+
+- Problem: `getLanguages()` returns 4 options (CS, EN, DE, SK) but only EN and CS have Paraglide message files. Selecting an unsupported language shows raw key names.
+- Solution: Filter the dropdown to only show languages with actual message files in `messages/` directory, or remove DE/SK from the repository until translations are provided.
+- Source: code-review, 2026-06-10T16:32:29+00:00
