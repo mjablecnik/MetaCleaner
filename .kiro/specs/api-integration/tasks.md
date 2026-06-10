@@ -50,8 +50,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 7: ProcessingResults construction from accumulated events**
     - **Validates: Requirements 4.3, 4.4, 4.5, 4.6, 4.7, 11.2, 11.3, 11.5**
 
-- [ ] 3. Implement error mapping helpers
-  - [ ] 3.1 Implement error mapping functions in `apiCleaningService.ts`
+- [x] 3. Implement error mapping helpers
+  - [x] 3.1 Implement error mapping functions in `apiCleaningService.ts`
     - Implement `mapApiHttpError` mapping status codes 413, 415, 429, 400, 404 to `CleaningError` codes
     - Implement `makeConnectionError` for WebSocket lifecycle errors
     - Implement `makeNetworkError` for fetch TypeError
