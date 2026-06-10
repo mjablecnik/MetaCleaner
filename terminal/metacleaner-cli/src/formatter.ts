@@ -1,4 +1,5 @@
 import { classifySeverity } from 'metacleaner-app/src/lib/scanner/riskAnalyzer.js';
+import { VIDEO_EXTENSIONS } from 'metacleaner-app/src/lib/scanner/constants.js';
 import type { SeverityLevel } from 'metacleaner-app/src/lib/scanner/types.js';
 import type { FileResult, AggregatedSummary, CleanResult, CompareResult } from './types.js';
 
@@ -81,10 +82,11 @@ export function getDefaultOutputPath(filePath: string): string {
   const lastSlash = filePath.lastIndexOf('/');
   const fileName = lastSlash >= 0 ? filePath.slice(lastSlash + 1) : filePath;
   const lastDot = fileName.lastIndexOf('.');
-  if (lastDot < 0) return `${fileName}_cleaned`;
+  if (lastDot < 0) return `IMG_${fileName}_cleaned`;
   const name = fileName.slice(0, lastDot);
   const ext = fileName.slice(lastDot);
-  return `${name}_cleaned${ext}`;
+  const prefix = ext.toLowerCase() in VIDEO_EXTENSIONS ? 'VID_' : 'IMG_';
+  return `${prefix}${name}_cleaned${ext}`;
 }
 
 export function formatScanResult(result: FileResult, options: FormatOptions): string {

@@ -199,6 +199,7 @@ func exifReadMetadata(ctx context.Context, path string) (map[string]string, stri
 }
 
 // exifStrip runs `exiftool -all= -o <cleaned_path> <original_path>`.
+// For PNG files, it also removes C2PA content credential chunks (caBX, jUMb).
 func exifStrip(ctx context.Context, originalPath, cleanedPath string) error {
 	cmd := exec.CommandContext(ctx, "exiftool", "-all=", "-o", cleanedPath, originalPath)
 	var stderr bytes.Buffer
@@ -206,7 +207,158 @@ func exifStrip(ctx context.Context, originalPath, cleanedPath string) error {
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("%w: %s", err, stderr.String())
 	}
+
+	// Post-process to remove C2PA chunks that exiftool doesn't strip
+	ext := strings.ToLower(filepath.Ext(cleanedPath))
+	switch ext {
+	case ".png":
+		if err := stripPngC2PAChunks(cleanedPath); err != nil {
+			return fmt.Errorf("c2pa strip: %w", err)
+		}
+	case ".jpg", ".jpeg":
+		if err := stripJpegC2PASegments(cleanedPath); err != nil {
+			return fmt.Errorf("c2pa strip: %w", err)
+		}
+	}
+
 	return nil
+}
+
+// stripPngC2PAChunks rewrites a PNG file excluding caBX and jUMb chunks
+// which contain C2PA content credentials (used by AI generators for provenance).
+func stripPngC2PAChunks(pngPath string) error {
+	data, err := os.ReadFile(pngPath)
+	if err != nil {
+		return err
+	}
+
+	// PNG signature: 8 bytes
+	if len(data) < 8 || data[0] != 0x89 || data[1] != 0x50 || data[2] != 0x4e || data[3] != 0x47 {
+		return nil // Not a valid PNG, skip silently
+	}
+
+	var output bytes.Buffer
+	output.Write(data[:8]) // PNG signature
+
+	offset := 8
+	modified := false
+
+	for offset+8 <= len(data) {
+		// Chunk: 4 bytes length + 4 bytes type + data + 4 bytes CRC
+		chunkLength := int(data[offset])<<24 | int(data[offset+1])<<16 | int(data[offset+2])<<8 | int(data[offset+3])
+		chunkType := string(data[offset+4 : offset+8])
+
+		totalChunkSize := 12 + chunkLength // 4 (length) + 4 (type) + data + 4 (CRC)
+		if offset+totalChunkSize > len(data) {
+			// Malformed chunk — write remaining bytes as-is
+			output.Write(data[offset:])
+			break
+		}
+
+		// Skip C2PA-related chunks
+		if chunkType == "caBX" || chunkType == "jUMb" {
+			modified = true
+			offset += totalChunkSize
+			continue
+		}
+
+		output.Write(data[offset : offset+totalChunkSize])
+		offset += totalChunkSize
+	}
+
+	if !modified {
+		return nil // No C2PA chunks found, no rewrite needed
+	}
+
+	return os.WriteFile(pngPath, output.Bytes(), 0644)
+}
+
+// stripJpegC2PASegments rewrites a JPEG file excluding APP11 (0xFFEB) segments
+// that contain C2PA/JUMBF content credentials.
+func stripJpegC2PASegments(jpegPath string) error {
+	data, err := os.ReadFile(jpegPath)
+	if err != nil {
+		return err
+	}
+
+	// JPEG SOI check
+	if len(data) < 2 || data[0] != 0xFF || data[1] != 0xD8 {
+		return nil // Not a valid JPEG, skip silently
+	}
+
+	var output bytes.Buffer
+	output.Write(data[:2]) // SOI marker
+
+	offset := 2
+	modified := false
+
+	for offset+2 <= len(data) {
+		if data[offset] != 0xFF {
+			// Not a marker — write rest of file (image data after SOS)
+			output.Write(data[offset:])
+			break
+		}
+
+		marker := data[offset+1]
+
+		// Start of Scan (SOS) — everything after this is image data
+		if marker == 0xDA {
+			output.Write(data[offset:])
+			break
+		}
+
+		// Padding bytes (0xFF followed by 0xFF)
+		if marker == 0xFF {
+			output.WriteByte(0xFF)
+			offset++
+			continue
+		}
+
+		// Standalone markers (no length field)
+		if marker == 0x00 || (marker >= 0xD0 && marker <= 0xD9) {
+			output.Write(data[offset : offset+2])
+			offset += 2
+			continue
+		}
+
+		// Segment with length
+		if offset+4 > len(data) {
+			output.Write(data[offset:])
+			break
+		}
+
+		segLength := int(data[offset+2])<<8 | int(data[offset+3])
+		totalSize := 2 + segLength // marker (2) + length includes itself + data
+
+		if offset+totalSize > len(data) {
+			output.Write(data[offset:])
+			break
+		}
+
+		// APP11 (0xEB) — used for C2PA/JUMBF
+		if marker == 0xEB {
+			// Check if this APP11 segment contains JUMBF/C2PA data
+			if segLength > 10 {
+				segData := data[offset+4 : offset+totalSize]
+				segStr := string(segData)
+				if strings.Contains(segStr, "jumb") || strings.Contains(segStr, "c2pa") ||
+					strings.Contains(segStr, "JP") { // JP is the JUMBF box type prefix
+					modified = true
+					offset += totalSize
+					continue
+				}
+			}
+		}
+
+		output.Write(data[offset : offset+totalSize])
+		offset += totalSize
+	}
+
+	if !modified {
+		return nil
+	}
+
+	return os.WriteFile(jpegPath, output.Bytes(), 0644)
 }
 
 // categorizeExifFields splits flat exif fields into GPS / XMP / EXIF buckets.

@@ -116,25 +116,30 @@ describe('determineExitCode', () => {
 });
 
 describe('getDefaultOutputPath', () => {
-  it('appends _cleaned before the extension', () => {
-    expect(getDefaultOutputPath('photo.jpg')).toBe('photo_cleaned.jpg');
+  it('appends IMG_ prefix and _cleaned before the extension for images', () => {
+    expect(getDefaultOutputPath('photo.jpg')).toBe('IMG_photo_cleaned.jpg');
+  });
+
+  it('appends VID_ prefix and _cleaned before the extension for videos', () => {
+    expect(getDefaultOutputPath('clip.mp4')).toBe('VID_clip_cleaned.mp4');
+    expect(getDefaultOutputPath('recording.mov')).toBe('VID_recording_cleaned.mov');
   });
 
   it('handles paths with directories', () => {
-    expect(getDefaultOutputPath('/some/dir/photo.jpg')).toBe('photo_cleaned.jpg');
+    expect(getDefaultOutputPath('/some/dir/photo.jpg')).toBe('IMG_photo_cleaned.jpg');
   });
 
   it('handles files without extensions', () => {
-    expect(getDefaultOutputPath('noextension')).toBe('noextension_cleaned');
+    expect(getDefaultOutputPath('noextension')).toBe('IMG_noextension_cleaned');
   });
 
   it('handles dotfiles (extension is the dot part)', () => {
-    expect(getDefaultOutputPath('.hidden')).toBe('_cleaned.hidden');
+    expect(getDefaultOutputPath('.hidden')).toBe('IMG__cleaned.hidden');
   });
 
   it('preserves original extension', () => {
-    expect(getDefaultOutputPath('video.mp4')).toBe('video_cleaned.mp4');
-    expect(getDefaultOutputPath('image.PNG')).toBe('image_cleaned.PNG');
+    expect(getDefaultOutputPath('video.mp4')).toBe('VID_video_cleaned.mp4');
+    expect(getDefaultOutputPath('image.PNG')).toBe('IMG_image_cleaned.PNG');
   });
 });
 
@@ -142,23 +147,36 @@ describe('getDefaultOutputPath', () => {
 describe('getDefaultOutputPath property tests (Property 5)', () => {
   const safeNameArb = fc.stringMatching(/^[a-zA-Z0-9_-]{1,20}$/);
   const extArb = fc.stringMatching(/^[a-zA-Z0-9]{1,5}$/);
+  const imageExtArb = fc.constantFrom('jpg', 'jpeg', 'png', 'heic', 'webp', 'gif', 'tiff', 'avif');
+  const videoExtArb = fc.constantFrom('mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', '3gp');
 
-  it('output equals <name>_cleaned.<ext> for name.ext inputs', () => {
+  it('output equals IMG_<name>_cleaned.<ext> for image inputs', () => {
     fc.assert(
-      fc.property(safeNameArb, extArb, (name, ext) => {
+      fc.property(safeNameArb, imageExtArb, (name, ext) => {
         const input = `${name}.${ext}`;
         const result = getDefaultOutputPath(input);
-        expect(result).toBe(`${name}_cleaned.${ext}`);
+        expect(result).toBe(`IMG_${name}_cleaned.${ext}`);
       }),
       { numRuns: 200 }
     );
   });
 
-  it('output equals <name>_cleaned for inputs with no extension', () => {
+  it('output equals VID_<name>_cleaned.<ext> for video inputs', () => {
+    fc.assert(
+      fc.property(safeNameArb, videoExtArb, (name, ext) => {
+        const input = `${name}.${ext}`;
+        const result = getDefaultOutputPath(input);
+        expect(result).toBe(`VID_${name}_cleaned.${ext}`);
+      }),
+      { numRuns: 200 }
+    );
+  });
+
+  it('output equals IMG_<name>_cleaned for inputs with no extension', () => {
     fc.assert(
       fc.property(safeNameArb, (name) => {
         const result = getDefaultOutputPath(name);
-        expect(result).toBe(`${name}_cleaned`);
+        expect(result).toBe(`IMG_${name}_cleaned`);
       }),
       { numRuns: 100 }
     );
@@ -190,6 +208,16 @@ describe('getDefaultOutputPath property tests (Property 5)', () => {
       fc.property(safeNameArb, extArb, (name, ext) => {
         const result = getDefaultOutputPath(`${name}.${ext}`);
         expect(result).toContain('_cleaned');
+      }),
+      { numRuns: 100 }
+    );
+  });
+
+  it('output always starts with IMG_ or VID_ prefix', () => {
+    fc.assert(
+      fc.property(safeNameArb, extArb, (name, ext) => {
+        const result = getDefaultOutputPath(`${name}.${ext}`);
+        expect(result.startsWith('IMG_') || result.startsWith('VID_')).toBe(true);
       }),
       { numRuns: 100 }
     );

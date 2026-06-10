@@ -300,10 +300,13 @@ func HandleFileDownload(cfg Config) http.HandlerFunc {
 			// File is ready — serve it.
 			cleanedPath := cleanedMatches[0]
 			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
-			originalName := fileID + "_cleaned." + ext
+
+			// Look up the original upload name for a meaningful download filename.
+			originalMatches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
+			downloadName := buildCleanedFileName(fileID, ext, originalMatches)
 
 			w.Header().Set("Content-Type", contentTypeForExt(ext))
-			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="cleaned_%s"`, originalName))
+			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, downloadName))
 			http.ServeFile(w, r, cleanedPath)
 			return
 		}
@@ -318,6 +321,20 @@ func HandleFileDownload(cfg Config) http.HandlerFunc {
 		// Neither file found — expired or never existed.
 		WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
 	}
+}
+
+// buildCleanedFileName generates a download filename with IMG_/VID_ prefix to neutralize
+// AI-revealing filenames. Format: IMG_<fileID>_cleaned.<ext> or VID_<fileID>_cleaned.<ext>
+func buildCleanedFileName(fileID, ext string, originalMatches []string) string {
+	baseName := fileID
+	_ = originalMatches
+
+	prefix := "IMG_"
+	if videoFormats[strings.ToLower(ext)] {
+		prefix = "VID_"
+	}
+
+	return fmt.Sprintf("%s%s_cleaned.%s", prefix, baseName, ext)
 }
 
 // generateReportID returns a human-readable report ID in MCR-YYYY-MMDD-XX format.
