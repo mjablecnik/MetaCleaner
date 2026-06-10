@@ -16,7 +16,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Implement endpoint methods: `uploadFiles`, `createJob`, `getJobStatus`, `connectJobProgress`, `downloadFile`, `downloadJobZip`, `getReports`, `getReportDetail`, `getReportPdf`, `healthCheck`
     - _Requirements: 1.1, 1.2, 1.4, 8.1, 8.2, 8.3, 13.7_
 
-  - [ ]* 1.2 Write property tests for URL construction and WebSocket URL derivation
+  - [x]* 1.2 Write property tests for URL construction and WebSocket URL derivation
     - **Property 1: API URL construction preserves base and path**
     - **Property 2: WebSocket URL protocol derivation**
     - **Validates: Requirements 1.2, 1.4, 8.1, 8.2, 8.3**
