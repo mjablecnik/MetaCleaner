@@ -162,7 +162,7 @@
 				},
 				onComplete(results) {
 					overallProgress = 100;
-					cleaningResultsStore.setResults(results, job?.jobId);
+					cleaningResultsStore.setResults(results, job?.jobId, job?.reportId);
 					appState.transitionTo('success');
 				},
 				onError(error) {

@@ -58,7 +58,7 @@
 	async function handleDownload(): Promise<void> {
 		if (!results) return;
 		try {
-			const blob = await apiCleaningService.downloadResults(cleaningResultsStore.reportId ?? '');
+			const blob = await apiCleaningService.downloadResults(cleaningResultsStore.jobId ?? '');
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
@@ -75,7 +75,11 @@
 	}
 
 	function handleViewReport(): void {
-		const id = cleaningResultsStore.reportId ?? 'mock-report';
+		const id = cleaningResultsStore.reportId;
+		if (!id) {
+			void goto(resolve('/reports' as Pathname));
+			return;
+		}
 		void goto(resolve(`/report/${id}` as Pathname));
 	}
 </script>

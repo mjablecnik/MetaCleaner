@@ -221,3 +221,15 @@
 - Problem: `report-detail.spec.ts` (and hamburger-menu, navigation, responsive) mock `**/api/reports/*` with `page.route()`, but `/report/[id]/+page.svelte` calls `mockCleaningService.getReportDetail(id)` directly in-memory. HTTP intercepts never fire; `navigateToReportDetail()` was waiting for `'RPT-001'` but the service returns `reportId: 'MC-2025-001'` from `_generateMockReportDetail()`. The error state (`loadError`) is also unreachable since the in-memory service never throws.
 - Solution: Updated `mockReportDetail` in `e2e/helpers/mock-api.ts` to match the service's fixed output (`reportId: 'MC-2025-001'`, `date: '4. 6. 2025 · 14:32'`, EXIF fields: Make/Model/DateTimeOriginal/ExposureTime). Removed untestable HTTP error tests; replaced route guard test (was asserting content on `/report` which now redirects to `/reports`) with redirect assertion. Other spec files (`hamburger-menu.spec.ts`, `navigation.spec.ts`, `responsive.spec.ts`) still hardcode `'RPT-001'` and need separate fixes.
 - Source: ui-tests, 2026-06-07
+
+## report_ready WebSocket event reportId is never stored — View Report broken
+
+- Problem: `apiCleaningService.ts` handles `report_ready` with a no-op. The actual `reportId` from this WS message is discarded. `Step3Processing` stores `job?.jobId` into `cleaningResultsStore.reportId`. Step5 then navigates to `/report/{jobId}` which will 404 because the backend expects a report ID, not a job ID.
+- Solution: Capture `reportId` from `report_ready` WS event, store it separately from `jobId` in `cleaningResultsStore`. Use `jobId` for downloads (`GET /api/jobs/{id}/download`) and `reportId` for report navigation (`GET /api/reports/{id}`). Handle timing: `report_ready` may arrive after `job_complete`.
+- Source: code-review, 2026-06-10T16:12:16+00:00
+
+## cleaningResultsStore conflates jobId and reportId in single field
+
+- Problem: `cleaningResultsStore` has a field named `reportId` but `Step3Processing` stores `job?.jobId` into it via `setResults(results, job?.jobId)`. The naming is misleading and causes Step5 to use jobId for report navigation (wrong endpoint).
+- Solution: Split into `jobId: string | null` and `reportId: string | null`. Update `setResults` signature. Step5 uses `jobId` for `downloadResults()` and `reportId` for "View Report" navigation.
+- Source: code-review, 2026-06-10T16:12:16+00:00

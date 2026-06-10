@@ -84,7 +84,8 @@ function dispatchWsMessage(
 	callbacks: CleaningCallbacks,
 	fileNameMap: Map<string, string>,
 	accumulatedResults: AccumulatedFileResult[],
-	jobId: string
+	jobId: string,
+	setReportId: (id: string) => void
 ): void {
 	switch (msg.type) {
 		case 'file_progress': {
@@ -133,13 +134,20 @@ function dispatchWsMessage(
 			});
 			break;
 
-		case 'job_complete':
+		case 'job_complete': {
+			// job_complete embeds reportId — capture it before onComplete triggers WS close (Req 4.10, 11.7)
+			const jobCompleteReportId = (msg.reportId as string) ?? '';
+			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
 			break;
+		}
 
-		case 'report_ready':
-			// Store reportId silently — no error callback (Req 4.10)
+		case 'report_ready': {
+			// report_ready may arrive after job_complete; store/override reportId silently (Req 4.10, 11.7)
+			const reportReadyId = (msg.reportId as string) ?? '';
+			if (reportReadyId) setReportId(reportReadyId);
 			break;
+		}
 
 		default:
 			// Unknown message types are silently ignored
@@ -365,10 +373,11 @@ class ApiCleaningService implements CleaningService {
 		const fileNameMap = new Map<string, string>();
 		const accumulatedResults: AccumulatedFileResult[] = [];
 
-		// Mutable handle — jobId is updated after createJob resolves so
-		// callers reading job.jobId inside onComplete see the real ID.
+		// Mutable handle — jobId and reportId are updated as WS events arrive so
+		// callers reading these fields inside onComplete see the real IDs.
 		const jobHandle: CleaningJob = {
 			jobId: '',
+			reportId: '',
 			cancel() {
 				cancelled = true;
 				ws?.close();
@@ -397,7 +406,9 @@ class ApiCleaningService implements CleaningService {
 				ws.onmessage = (event) => {
 					if (cancelled) return;
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
-					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, jobHandle.jobId);
+					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, jobHandle.jobId, (id) => {
+						jobHandle.reportId = id;
+					});
 				};
 
 				ws.onerror = () => {

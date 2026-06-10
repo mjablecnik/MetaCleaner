@@ -37,6 +37,7 @@ export type CleaningJobStatus = 'pending' | 'running' | 'completed' | 'failed' |
 
 export interface CleaningJob {
 	jobId: string;
+	reportId: string;
 	cancel(): void;
 }
 

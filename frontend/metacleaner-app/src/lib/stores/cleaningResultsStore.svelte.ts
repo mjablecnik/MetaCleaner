@@ -3,6 +3,7 @@ import type { CleaningError } from '$lib/services/cleaningService.js';
 
 let _results = $state<ProcessingResults | null>(null);
 let _error = $state<CleaningError | null>(null);
+let _jobId = $state<string | null>(null);
 let _reportId = $state<string | null>(null);
 
 export const cleaningResultsStore = {
@@ -12,12 +13,16 @@ export const cleaningResultsStore = {
 	get error() {
 		return _error;
 	},
+	get jobId() {
+		return _jobId;
+	},
 	get reportId() {
 		return _reportId;
 	},
-	setResults(r: ProcessingResults, reportId?: string) {
+	setResults(r: ProcessingResults, jobId?: string, reportId?: string) {
 		_results = r;
 		_error = null;
+		_jobId = jobId ?? null;
 		_reportId = reportId ?? null;
 	},
 	setError(e: CleaningError) {
@@ -27,6 +32,7 @@ export const cleaningResultsStore = {
 	clear() {
 		_results = null;
 		_error = null;
+		_jobId = null;
 		_reportId = null;
 	}
 };
