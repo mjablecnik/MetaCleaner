@@ -466,7 +466,13 @@ class ApiCleaningService implements CleaningService {
 			reportId: '',
 			cancel() {
 				cancelled = true;
-				ws?.close();
+				if (jobCompleted) {
+					// Delay close by 500ms to allow any trailing report_ready message
+					// to arrive before the socket shuts down (Req 4.10).
+					setTimeout(() => ws?.close(), 500);
+				} else {
+					ws?.close();
+				}
 			}
 		};
 
@@ -490,8 +496,17 @@ class ApiCleaningService implements CleaningService {
 				ws = api.connectJobProgress(jobHandle.jobId);
 
 				ws.onmessage = (event) => {
-					if (cancelled) return;
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
+					if (cancelled) {
+						// After job_complete + cancel, still capture a trailing report_ready
+						// that may arrive within the 500ms WS close delay (defensive measure
+						// for edge case where backend omits reportId from job_complete).
+						if (jobCompleted && msg.type === 'report_ready') {
+							const id = (msg.reportId as string) ?? '';
+							if (id) jobHandle.reportId = id;
+						}
+						return;
+					}
 					dispatchWsMessage(
 						msg,
 						callbacks,
