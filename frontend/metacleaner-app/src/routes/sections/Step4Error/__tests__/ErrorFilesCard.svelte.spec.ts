@@ -20,7 +20,7 @@ function makeQueuedFile(id: string, name: string): QueuedFile {
 			fields: [],
 			hasGps: false,
 			fieldCount: 4,
-			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 			fileScore: 15
 		}
 	};

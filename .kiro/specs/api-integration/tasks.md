@@ -62,7 +62,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 8: HTTP error status code mapping**
     - **Validates: Requirements 3.3, 3.4, 3.5**
 
-- [ ] 4. Checkpoint
+- [x] 4. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement backend-to-frontend type mapping functions

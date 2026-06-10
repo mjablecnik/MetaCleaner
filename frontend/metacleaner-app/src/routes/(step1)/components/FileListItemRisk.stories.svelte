@@ -39,7 +39,7 @@
 			hasGps: true,
 			device: 'iPhone 15 Pro',
 			fieldCount: 22,
-			categoryScores: { gps: 100, deviceIdentity: 80, personalData: 60, timestamps: 40 },
+			categoryScores: { gps: 100, deviceIdentity: 80, personalData: 60, timestamps: 40, aiOrigin: 0 },
 			fileScore: 85
 		}
 	};
@@ -58,7 +58,7 @@
 			hasGps: false,
 			device: 'Canon EOS R5',
 			fieldCount: 8,
-			categoryScores: { gps: 0, deviceIdentity: 70, personalData: 40, timestamps: 30 },
+			categoryScores: { gps: 0, deviceIdentity: 70, personalData: 40, timestamps: 30, aiOrigin: 0 },
 			fileScore: 52
 		}
 	};
@@ -77,7 +77,7 @@
 			hasGps: false,
 			device: undefined,
 			fieldCount: 2,
-			categoryScores: { gps: 0, deviceIdentity: 10, personalData: 0, timestamps: 15 },
+			categoryScores: { gps: 0, deviceIdentity: 10, personalData: 0, timestamps: 15, aiOrigin: 0 },
 			fileScore: 12
 		}
 	};
@@ -96,7 +96,7 @@
 			hasGps: false,
 			device: undefined,
 			fieldCount: 0,
-			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 			fileScore: 0
 		}
 	};
@@ -115,7 +115,7 @@
 			hasGps: false,
 			device: undefined,
 			fieldCount: 0,
-			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+			categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 			fileScore: 0,
 			error: 'Failed to parse file metadata'
 		}
@@ -136,7 +136,7 @@
 			hasGps: false,
 			device: 'H.264',
 			fieldCount: 6,
-			categoryScores: { gps: 0, deviceIdentity: 40, personalData: 20, timestamps: 30 },
+			categoryScores: { gps: 0, deviceIdentity: 40, personalData: 20, timestamps: 30, aiOrigin: 0 },
 			fileScore: 28
 		}
 	};

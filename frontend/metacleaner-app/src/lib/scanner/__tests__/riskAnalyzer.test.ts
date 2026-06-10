@@ -10,7 +10,7 @@ import {
 } from '../constants.js';
 import type { MetadataField, RiskCategory, ScanResult, SeverityLevel } from '../types.js';
 
-const CATEGORY_FIELD_MAP: Record<keyof RiskCategory, string[]> = {
+const CATEGORY_FIELD_MAP: Partial<Record<keyof RiskCategory, string[]>> = {
 	gps: GPS_FIELDS,
 	deviceIdentity: DEVICE_FIELDS,
 	personalData: PERSONAL_FIELDS,
@@ -28,7 +28,7 @@ function makeScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
 		fields: [],
 		hasGps: false,
 		fieldCount: 0,
-		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 		fileScore: 0,
 		...overrides
 	};
@@ -37,7 +37,7 @@ function makeScanResult(overrides: Partial<ScanResult> = {}): ScanResult {
 // Property 1: Category score computation is correct
 describe('Feature: client-side-risk-scanner, Property 1: category score computation is correct', () => {
 	(Object.keys(CATEGORY_FIELD_MAP) as Array<keyof RiskCategory>).forEach((category) => {
-		const knownKeys = CATEGORY_FIELD_MAP[category];
+		const knownKeys = CATEGORY_FIELD_MAP[category]!;
 		const weight = 100 / knownKeys.length;
 
 		it(`${category}: score equals sum of per-field weights for any subset`, () => {
@@ -67,7 +67,8 @@ describe('Feature: client-side-risk-scanner, Property 2: per-file risk score is 
 							'gps',
 							'deviceIdentity',
 							'personalData',
-							'timestamps'
+							'timestamps',
+							'aiOrigin'
 						)
 					}),
 					{ maxLength: 50 }
@@ -147,7 +148,7 @@ describe('Feature: client-side-risk-scanner, Property 4: aggregated score equals
 					const results = scores.map((s) =>
 						makeScanResult({
 							fileScore: s,
-							categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 }
+							categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 }
 						})
 					);
 					const aggregated = computeAggregatedRisk(results);

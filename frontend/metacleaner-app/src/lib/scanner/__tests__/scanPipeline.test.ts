@@ -22,7 +22,7 @@ function makeScanResult(fileId: string, fileScore = 0, fields: MetadataField[] =
 		fields,
 		hasGps: fields.some((f) => f.category === 'gps'),
 		fieldCount: fields.length,
-		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0 },
+		categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
 		fileScore
 	};
 }
