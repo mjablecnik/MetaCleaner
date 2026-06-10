@@ -806,3 +806,167 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 		expect(result.filesProcessed).toBe(3);
 	});
 });
+
+// ─── Property 8: HTTP error status code mapping ───────────────────────────────
+
+describe('Feature: api-integration, Property 8: HTTP error status code mapping', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('status 413 maps to FILE_TOO_LARGE, 415 to UNSUPPORTED_FORMAT, 429 to RATE_LIMIT_EXCEEDED', async () => {
+		const statusToCode: [number, string][] = [
+			[413, 'FILE_TOO_LARGE'],
+			[415, 'UNSUPPORTED_FORMAT'],
+			[429, 'RATE_LIMIT_EXCEEDED'],
+			[400, 'INVALID_REQUEST'],
+			[404, 'FILE_NOT_FOUND']
+		];
+
+		for (const [status, expectedCode] of statusToCode) {
+			const callbacks = makeCallbacks();
+
+			vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+				new api.ApiHttpError(status, expectedCode, `Error ${status}`, '2024-01-01T00:00:00Z')
+			);
+
+			apiCleaningService.startCleaning([makeQueuedFile('f-001', 5, false)], noopOptions, callbacks);
+
+			await vi.waitFor(
+				() => {
+					expect(callbacks.onError).toHaveBeenCalledTimes(1);
+				},
+				{ timeout: 1000 }
+			);
+
+			const error = vi.mocked(callbacks.onError).mock.calls[0][0];
+			expect(error.code).toBe(expectedCode);
+			expect(error.phase).toBe('upload');
+		}
+	});
+
+	it('error code and message from ApiHttpError are preserved for any status code', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					status: fc.oneof(
+						fc.constantFrom(413, 415, 429, 400, 404, 500, 503),
+						fc.integer({ min: 400, max: 599 })
+					),
+					errorCode: fc.string({ minLength: 1, maxLength: 40 }),
+					errorMessage: fc.string({ minLength: 1, maxLength: 200 })
+				}),
+				async ({ status, errorCode, errorMessage }) => {
+					const callbacks = makeCallbacks();
+
+					vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+						new api.ApiHttpError(status, errorCode, errorMessage, '2024-01-01T00:00:00Z')
+					);
+
+					apiCleaningService.startCleaning(
+						[makeQueuedFile('f-002', 5, false)],
+						noopOptions,
+						callbacks
+					);
+
+					await vi.waitFor(
+						() => {
+							expect(callbacks.onError).toHaveBeenCalledTimes(1);
+						},
+						{ timeout: 1000 }
+					);
+
+					const error = vi.mocked(callbacks.onError).mock.calls[0][0];
+					expect(error.code).toBe(errorCode);
+					expect(error.message).toBe(errorMessage);
+					expect(error.phase).toBe('upload');
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	it('phase is always upload when uploadFiles throws ApiHttpError', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.integer({ min: 400, max: 599 }),
+				async (status) => {
+					const callbacks = makeCallbacks();
+
+					vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+						new api.ApiHttpError(status, 'SOME_CODE', 'Error message', '2024-01-01T00:00:00Z')
+					);
+
+					apiCleaningService.startCleaning(
+						[makeQueuedFile('f-003', 5, false)],
+						noopOptions,
+						callbacks
+					);
+
+					await vi.waitFor(
+						() => {
+							expect(callbacks.onError).toHaveBeenCalledTimes(1);
+						},
+						{ timeout: 1000 }
+					);
+
+					const error = vi.mocked(callbacks.onError).mock.calls[0][0];
+					expect(error.phase).toBe('upload');
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	it('network TypeError from fetch is mapped to code NETWORK_ERROR with phase upload', async () => {
+		const callbacks = makeCallbacks();
+
+		vi.mocked(api.uploadFiles).mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+		apiCleaningService.startCleaning([makeQueuedFile('f-004', 5, false)], noopOptions, callbacks);
+
+		await vi.waitFor(
+			() => {
+				expect(callbacks.onError).toHaveBeenCalledTimes(1);
+			},
+			{ timeout: 1000 }
+		);
+
+		const error = vi.mocked(callbacks.onError).mock.calls[0][0];
+		expect(error.code).toBe('NETWORK_ERROR');
+		expect(error.phase).toBe('upload');
+		expect(error.message).toBe('Failed to fetch');
+	});
+
+	it('onError is called exactly once per HTTP error — no duplicate error callbacks', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.constantFrom(413, 415, 429, 400, 404),
+				async (status) => {
+					const callbacks = makeCallbacks();
+
+					vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+						new api.ApiHttpError(status, 'ANY_CODE', 'msg', '2024-01-01T00:00:00Z')
+					);
+
+					apiCleaningService.startCleaning(
+						[makeQueuedFile('f-005', 5, false)],
+						noopOptions,
+						callbacks
+					);
+
+					await vi.waitFor(
+						() => {
+							expect(callbacks.onError).toHaveBeenCalledTimes(1);
+						},
+						{ timeout: 1000 }
+					);
+
+					expect(callbacks.onError).toHaveBeenCalledTimes(1);
+					expect(callbacks.onComplete).not.toHaveBeenCalled();
+				}
+			),
+			{ numRuns: 20 }
+		);
+	});
+});

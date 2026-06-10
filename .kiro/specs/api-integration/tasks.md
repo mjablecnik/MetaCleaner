@@ -58,7 +58,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Wire error handling in `startCleaning` try/catch and WebSocket onerror/onclose
     - _Requirements: 3.3, 3.4, 3.5, 3.6, 4.7, 4.8_
 
-  - [ ]* 3.2 Write property test for HTTP error status code mapping
+  - [x]* 3.2 Write property test for HTTP error status code mapping
     - **Property 8: HTTP error status code mapping**
     - **Validates: Requirements 3.3, 3.4, 3.5**
 
