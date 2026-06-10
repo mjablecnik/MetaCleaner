@@ -1,5 +1,16 @@
 # AI Log
 
+## 2026-06-10 14:03 — manual
+- Improved metadata handling in `imageParser.ts` and `videoParser.ts` with privacy categorization and raw metadata output
+- Added new fields to scanner types (`src/lib/scanner/types.ts`) for privacy categories
+
+## 2026-06-07 13:38 — manual
+- Created AI image detection module (`src/lib/scanner/aiDetector.ts`) with heuristic scoring for AI-generated image identification
+- Integrated AI detection into image parsing logic in `imageParser.ts`
+- Added AI origin scoring to risk analyzer (`riskAnalyzer.ts`) and scanner constants
+- Updated `metadataParser.ts`, `videoParser.ts`, and `scannerStore.svelte.ts` to support AI origin score field
+- Enhanced AI detection capabilities with additional metadata checks and expanded constants
+
 ## 2026-06-07 07:50 — ui-tests
 - No changes needed — all tests up to date
 
