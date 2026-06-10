@@ -6,8 +6,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
 
 ## Tasks
 
-- [ ] 1. Create API client module with URL builders and endpoint methods
-  - [ ] 1.1 Create `src/lib/clients/metaCleanerApi.ts` with URL builders, response types, error class, and all endpoint methods
+- [x] 1. Create API client module with URL builders and endpoint methods
+  - [x] 1.1 Create `src/lib/clients/metaCleanerApi.ts` with URL builders, response types, error class, and all endpoint methods
     - Implement `buildApiUrl(path)` reading from `PUBLIC_API_URL` env var
     - Implement `buildWsUrl(path)` deriving ws/wss protocol from http/https base URL
     - Define `UploadResponse`, `CreateJobResponse`, `JobStatusResponse`, `ApiErrorResponse`, `HealthResponse` types
