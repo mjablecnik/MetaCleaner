@@ -50,7 +50,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 			CurrentFileID:   f.ID,
 		})
 
-		originalPath := filepath.Join(p.cfg.TempStoragePath, "uploads", f.ID+"_original."+strings.TrimPrefix(f.FileExtension, "."))
+		originalPath := filepath.Join(p.cfg.TempStoragePath, "uploads", f.LocalID+"_original."+strings.TrimPrefix(f.FileExtension, "."))
 		cleanedDir := filepath.Join(p.cfg.TempStoragePath, "cleaned")
 		if err := os.MkdirAll(cleanedDir, 0755); err != nil {
 			f.Status = "error"
@@ -60,7 +60,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 			continue
 		}
 
-		cleanedPath := filepath.Join(cleanedDir, f.ID+"_cleaned."+strings.TrimPrefix(f.FileExtension, "."))
+		cleanedPath := filepath.Join(cleanedDir, f.LocalID+"_cleaned."+strings.TrimPrefix(f.FileExtension, "."))
 
 		var result *CleaningResult
 		var processErr error

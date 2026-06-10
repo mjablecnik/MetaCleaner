@@ -34,6 +34,7 @@ type Job struct {
 // FileRecord represents a file within a job
 type FileRecord struct {
 	ID                string          `json:"id"`
+	LocalID           string          `json:"-"` // internal file ID for disk path lookup, not persisted to DB
 	JobID             string          `json:"jobId"`
 	FileName          string          `json:"name"`
 	FileExtension     string          `json:"extension"`

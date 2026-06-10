@@ -529,7 +529,6 @@ func (c *SupabaseClient) GetPDFSignedURL(ctx context.Context, path string) (stri
 
 func fileRecordToDB(f FileRecord) dbFileRecord {
 	rec := dbFileRecord{
-		ID:            f.ID,
 		JobID:         f.JobID,
 		FileName:      f.FileName,
 		FileExtension: f.FileExtension,

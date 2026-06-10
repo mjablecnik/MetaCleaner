@@ -186,7 +186,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			}
 			ext := filepath.Ext(matches[0])
 			files = append(files, FileRecord{
-				ID:            fileID,
+				LocalID:       fileID,
 				FileName:      fileID + ext,
 				FileExtension: ext,
 				FileSizeBytes: info.Size(),
