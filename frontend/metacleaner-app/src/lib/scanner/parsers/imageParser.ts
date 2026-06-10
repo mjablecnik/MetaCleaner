@@ -99,6 +99,13 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 	const modelPart = raw['Model'] as string | undefined;
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
 
+	// Build rawMetadata for verbose output
+	const rawMetadata: Record<string, string> = {};
+	for (const [key, value] of Object.entries(raw)) {
+		if (value === null || value === undefined) continue;
+		rawMetadata[key] = typeof value === 'string' ? value : String(value);
+	}
+
 	// AI detection from metadata + bytes + structure
 	const fileName = fileId.split('/').pop() ?? fileId;
 	const metadataSignals = detectAIInMetadata(raw, fileName);
@@ -118,7 +125,8 @@ async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat):
 		fieldCount: fields.length,
 		categoryScores: categories,
 		fileScore: score,
-		aiDetection: aiInfo
+		aiDetection: aiInfo,
+		rawMetadata
 	};
 }
 

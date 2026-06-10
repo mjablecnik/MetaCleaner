@@ -394,10 +394,11 @@ func runFFmpeg(ctx context.Context, originalPath, cleanedPath string) (*Cleaning
 	}
 
 	breakdown := categorizeFFmpegFields(fields)
+	gpsRemoved := len(breakdown.GPSFields) > 0
 
 	return &CleaningResult{
 		FieldsRemoved:     breakdown.TotalRemoved,
-		GPSRemoved:        false, // video metadata doesn't include GPS in this implementation
+		GPSRemoved:        gpsRemoved,
 		MetadataBreakdown: breakdown,
 	}, nil
 }
@@ -468,21 +469,65 @@ func ffmpegStrip(ctx context.Context, originalPath, cleanedPath string) error {
 	return nil
 }
 
-// categorizeFFmpegFields splits ffprobe tags into ID3 and MP4 atom buckets.
+// categorizeFFmpegFields splits ffprobe tags into privacy-relevant categories.
+// Non-privacy container metadata (major_brand, compatible_brands, etc.) is excluded from the count.
 func categorizeFFmpegFields(fields map[string]string) *MetadataDetail {
 	detail := &MetadataDetail{}
 	for k, v := range fields {
+		cat := classifyFFmpegField(k)
+		if cat == "" {
+			continue // Skip non-privacy container metadata
+		}
 		field := MetadataField{Label: k, Value: v}
-		cat := CategorizeMetadataField(k, "ffmpeg")
 		switch cat {
+		case "GPS":
+			detail.GPSFields = append(detail.GPSFields, field)
 		case "ID3":
 			detail.ID3Fields = append(detail.ID3Fields, field)
 		default:
 			detail.MP4Atoms = append(detail.MP4Atoms, field)
 		}
 	}
-	detail.TotalRemoved = len(detail.ID3Fields) + len(detail.MP4Atoms)
+	detail.TotalRemoved = len(detail.GPSFields) + len(detail.ID3Fields) + len(detail.MP4Atoms)
 	return detail
+}
+
+// classifyFFmpegField returns a category for privacy-relevant ffprobe fields,
+// or empty string for non-privacy container metadata that should be excluded from counts.
+func classifyFFmpegField(key string) string {
+	lower := strings.ToLower(key)
+
+	// GPS-related fields
+	if strings.Contains(lower, "location") || strings.Contains(lower, "gps") || lower == "xyz" {
+		return "GPS"
+	}
+
+	// ID3 tags (common in audio/video)
+	id3Keys := map[string]bool{
+		"title": true, "artist": true, "album": true, "album_artist": true,
+		"comment": true, "genre": true, "track": true, "date": true, "year": true,
+		"composer": true, "lyrics": true, "description": true, "encoder": true,
+		"copyright": true, "author": true, "performer": true,
+	}
+	if id3Keys[lower] {
+		return "ID3"
+	}
+
+	// Timestamps
+	if strings.Contains(lower, "creation_time") || strings.Contains(lower, "date") ||
+		lower == "encoded_date" || lower == "tagged_date" || lower == "recorded_date" {
+		return "MP4"
+	}
+
+	// Device/software identity
+	if lower == "handler_name" || strings.Contains(lower, "encoder") ||
+		strings.Contains(lower, "software") || lower == "make" || lower == "model" {
+		return "MP4"
+	}
+
+	// Non-privacy container metadata — skip these
+	// major_brand, minor_version, compatible_brands, language, handler_type, etc.
+	return ""
 }
 
 // --- Categorization ---

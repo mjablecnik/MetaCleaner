@@ -56,6 +56,8 @@ export interface ScanResult {
 	fileScore: number;
 	aiDetection?: AIDetectionInfo;
 	error?: string;
+	/** All raw metadata key-value pairs found in the file (including non-privacy fields). Used for verbose output. */
+	rawMetadata?: Record<string, string>;
 }
 
 export interface QueuedFile {

@@ -143,6 +143,17 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
     lines.push(`\n   Size: ${formatBytes(result.fileSize)}`);
     lines.push(`   Format: ${result.format}`);
     lines.push(`   File path: ${result.filePath}`);
+
+    // Show all raw metadata fields (including non-privacy ones)
+    if (scan.rawMetadata && Object.keys(scan.rawMetadata).length > 0) {
+      lines.push(`\n   📋 All metadata fields (${Object.keys(scan.rawMetadata).length}):`);
+      const privacyKeys = new Set(scan.fields.map(f => f.key));
+      for (const [key, value] of Object.entries(scan.rawMetadata)) {
+        const truncated = String(value).length > 80 ? String(value).slice(0, 77) + '...' : String(value);
+        const marker = privacyKeys.has(key) ? '⚠' : ' ';
+        lines.push(`      ${marker} ${key}: ${truncated}`);
+      }
+    }
   }
 
   // AI detection output
@@ -226,6 +237,40 @@ export function formatCompareResult(result: FileResult, options: FormatOptions):
     lines.push(`   Device: ${beforeDevice} → ${afterDevice}`);
   } else {
     lines.push(`   Device: ${beforeDevice}`);
+  }
+
+  if (options.verbose) {
+    // Show fields that were removed (present before, absent after)
+    const afterKeys = new Set(cmp.after.fields.map(f => f.key));
+    const removedFields = cmp.before.fields.filter(f => !afterKeys.has(f.key));
+
+    if (removedFields.length > 0) {
+      lines.push(`\n   🗑️  Removed fields (${removedFields.length}):`);
+      for (const field of removedFields) {
+        const catEmoji = CATEGORY_EMOJI[field.category] ?? '·';
+        lines.push(`      ${catEmoji} ${field.key}: ${field.value}`);
+      }
+    }
+
+    // Show fields that remain after cleaning
+    if (cmp.after.fields.length > 0) {
+      lines.push(`\n   ⚠️  Remaining fields (${cmp.after.fields.length}):`);
+      for (const field of cmp.after.fields) {
+        const catEmoji = CATEGORY_EMOJI[field.category] ?? '·';
+        lines.push(`      ${catEmoji} ${field.key}: ${field.value}`);
+      }
+    }
+
+    // Show all raw metadata before cleaning
+    if (cmp.before.rawMetadata && Object.keys(cmp.before.rawMetadata).length > 0) {
+      lines.push(`\n   📋 All metadata before (${Object.keys(cmp.before.rawMetadata).length}):`);
+      const privacyKeys = new Set(cmp.before.fields.map(f => f.key));
+      for (const [key, value] of Object.entries(cmp.before.rawMetadata)) {
+        const truncated = String(value).length > 80 ? String(value).slice(0, 77) + '...' : String(value);
+        const marker = privacyKeys.has(key) ? '⚠' : ' ';
+        lines.push(`      ${marker} ${key}: ${truncated}`);
+      }
+    }
   }
 
   return lines.join('\n');

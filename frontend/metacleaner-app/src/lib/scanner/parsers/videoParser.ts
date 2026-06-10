@@ -9,6 +9,8 @@ const VIDEO_FIELD_MAP: Record<string, { key: string; category: keyof RiskCategor
 	com_apple_quicktime_location_ISO6709: { key: 'GPSPosition', category: 'gps' },
 	location: { key: 'GPSPosition', category: 'gps' },
 	GPS_Coordinate: { key: 'GPSPosition', category: 'gps' },
+	'location.ISO6709': { key: 'GPSPosition', category: 'gps' },
+	xyz: { key: 'GPSPosition', category: 'gps' },
 	// Device identity
 	'com.apple.quicktime.make': { key: 'Make', category: 'deviceIdentity' },
 	com_apple_quicktime_make: { key: 'Make', category: 'deviceIdentity' },
@@ -16,20 +18,40 @@ const VIDEO_FIELD_MAP: Record<string, { key: string; category: keyof RiskCategor
 	com_apple_quicktime_model: { key: 'Model', category: 'deviceIdentity' },
 	Encoded_Application: { key: 'Software', category: 'deviceIdentity' },
 	Encoder: { key: 'Software', category: 'deviceIdentity' },
+	encoder: { key: 'Software', category: 'deviceIdentity' },
+	Encoded_Library: { key: 'EncoderLibrary', category: 'deviceIdentity' },
+	Encoded_Library_Name: { key: 'EncoderLibrary', category: 'deviceIdentity' },
+	Writing_Application: { key: 'Software', category: 'deviceIdentity' },
+	Writing_Library: { key: 'EncoderLibrary', category: 'deviceIdentity' },
+	'com.apple.quicktime.software': { key: 'Software', category: 'deviceIdentity' },
+	com_apple_quicktime_software: { key: 'Software', category: 'deviceIdentity' },
+	handler_name: { key: 'HandlerName', category: 'deviceIdentity' },
+	HandlerDescription: { key: 'HandlerName', category: 'deviceIdentity' },
 	// Personal data
 	Title: { key: 'Creator', category: 'personalData' },
+	title: { key: 'Creator', category: 'personalData' },
 	Author: { key: 'Artist', category: 'personalData' },
+	artist: { key: 'Artist', category: 'personalData' },
 	Performer: { key: 'Artist', category: 'personalData' },
 	Director: { key: 'Artist', category: 'personalData' },
 	'com.apple.quicktime.author': { key: 'Artist', category: 'personalData' },
 	com_apple_quicktime_author: { key: 'Artist', category: 'personalData' },
 	Copyright: { key: 'Copyright', category: 'personalData' },
+	copyright: { key: 'Copyright', category: 'personalData' },
+	comment: { key: 'Comment', category: 'personalData' },
+	Comment: { key: 'Comment', category: 'personalData' },
+	description: { key: 'Description', category: 'personalData' },
+	Description: { key: 'Description', category: 'personalData' },
 	// Timestamps
 	Recorded_Date: { key: 'CreateDate', category: 'timestamps' },
 	Encoded_Date: { key: 'DateTimeOriginal', category: 'timestamps' },
 	Tagged_Date: { key: 'DateTimeDigitized', category: 'timestamps' },
 	'com.apple.quicktime.creationdate': { key: 'CreateDate', category: 'timestamps' },
-	com_apple_quicktime_creationdate: { key: 'CreateDate', category: 'timestamps' }
+	com_apple_quicktime_creationdate: { key: 'CreateDate', category: 'timestamps' },
+	creation_time: { key: 'CreateDate', category: 'timestamps' },
+	File_Created_Date: { key: 'CreateDate', category: 'timestamps' },
+	File_Modified_Date: { key: 'ModifyDate', category: 'timestamps' },
+	Mastered_Date: { key: 'CreateDate', category: 'timestamps' }
 };
 
 type MediaInfoInstance = {
@@ -53,8 +75,9 @@ export async function getMediaInfo(): Promise<MediaInfoInstance> {
 	return mediaInfoInstance;
 }
 
-function extractFieldsFromTrack(track: Record<string, unknown>): MetadataField[] {
+function extractFieldsFromTrack(track: Record<string, unknown>): { fields: MetadataField[]; raw: Record<string, string> } {
 	const fields: MetadataField[] = [];
+	const raw: Record<string, string> = {};
 	const seen = new Set<string>();
 
 	for (const [rawKey, rawValue] of Object.entries(track)) {
@@ -64,9 +87,12 @@ function extractFieldsFromTrack(track: Record<string, unknown>): MetadataField[]
 		if (rawKey === 'extra' && typeof rawValue === 'object' && rawValue !== null) {
 			const extra = rawValue as Record<string, unknown>;
 			for (const [extraKey, extraValue] of Object.entries(extra)) {
+				if (extraValue === null || extraValue === undefined) continue;
+				const strVal = typeof extraValue === 'string' ? extraValue : String(extraValue);
+				raw[extraKey] = strVal;
+
 				const mapping = VIDEO_FIELD_MAP[extraKey];
 				if (!mapping || seen.has(mapping.key)) continue;
-				if (extraValue === null || extraValue === undefined) continue;
 				const value =
 					typeof extraValue === 'string' || typeof extraValue === 'number'
 						? extraValue
@@ -77,6 +103,10 @@ function extractFieldsFromTrack(track: Record<string, unknown>): MetadataField[]
 			continue;
 		}
 
+		// Store all raw fields
+		const strVal = typeof rawValue === 'string' ? rawValue : String(rawValue);
+		raw[rawKey] = strVal;
+
 		const mapping = VIDEO_FIELD_MAP[rawKey];
 		if (!mapping || seen.has(mapping.key)) continue;
 		const value =
@@ -85,7 +115,7 @@ function extractFieldsFromTrack(track: Record<string, unknown>): MetadataField[]
 		seen.add(mapping.key);
 	}
 
-	return fields;
+	return { fields, raw };
 }
 
 function makeEmptyResult(fileId: string): ScanResult {
@@ -119,9 +149,12 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 	if (!media?.track) return makeEmptyResult(fileId);
 
 	const allFields: MetadataField[] = [];
+	const allRaw: Record<string, string> = {};
 	for (const track of media.track) {
 		if (typeof track !== 'object' || track === null) continue;
-		allFields.push(...extractFieldsFromTrack(track as Record<string, unknown>));
+		const { fields: trackFields, raw: trackRaw } = extractFieldsFromTrack(track as Record<string, unknown>);
+		allFields.push(...trackFields);
+		Object.assign(allRaw, trackRaw);
 	}
 
 	// Deduplicate by key, keeping first occurrence
@@ -146,6 +179,7 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 		device: device as string | undefined,
 		fieldCount: fields.length,
 		categoryScores: categories,
-		fileScore: score
+		fileScore: score,
+		rawMetadata: allRaw
 	};
 }
