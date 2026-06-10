@@ -1158,6 +1158,250 @@ describe('Feature: api-integration, Property 10: Report summary type mapping cor
 	});
 });
 
+// ─── Task 6.2: download error handling and report mapping integration ─────────
+
+describe('Feature: api-integration, Task 6.2: downloadResults error handling and report mapping integration', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	// downloadResults
+
+	it('downloadResults throws "File not found or expired" on 404', async () => {
+		vi.mocked(api.downloadJobZip).mockRejectedValueOnce(
+			new api.ApiHttpError(404, 'FILE_NOT_FOUND', 'Not found', '2024-01-01T00:00:00Z')
+		);
+
+		await expect(apiCleaningService.downloadResults('job-404')).rejects.toThrow(
+			'File not found or expired'
+		);
+	});
+
+	it('downloadResults throws "Job is still processing" on 409', async () => {
+		vi.mocked(api.downloadJobZip).mockRejectedValueOnce(
+			new api.ApiHttpError(409, 'JOB_NOT_READY', 'Conflict', '2024-01-01T00:00:00Z')
+		);
+
+		await expect(apiCleaningService.downloadResults('job-409')).rejects.toThrow(
+			'Job is still processing'
+		);
+	});
+
+	it('downloadResults re-throws non-404/409 ApiHttpError unchanged', async () => {
+		const err = new api.ApiHttpError(500, 'SERVER_ERROR', 'Internal error', '2024-01-01T00:00:00Z');
+		vi.mocked(api.downloadJobZip).mockRejectedValueOnce(err);
+
+		await expect(apiCleaningService.downloadResults('job-500')).rejects.toBe(err);
+	});
+
+	it('downloadResults returns blob on success', async () => {
+		const blob = new Blob(['zip-content'], { type: 'application/zip' });
+		vi.mocked(api.downloadJobZip).mockResolvedValueOnce(blob);
+
+		const result = await apiCleaningService.downloadResults('job-ok');
+		expect(result).toBe(blob);
+	});
+
+	it('downloadResults calls downloadJobZip with the provided jobId', async () => {
+		const blob = new Blob(['data'], { type: 'application/zip' });
+		vi.mocked(api.downloadJobZip).mockResolvedValueOnce(blob);
+
+		await apiCleaningService.downloadResults('job-id-xyz');
+		expect(api.downloadJobZip).toHaveBeenCalledWith('job-id-xyz');
+	});
+
+	// getReports
+
+	it('getReports passes summary through unchanged from backend', async () => {
+		const backendSummary = { totalReports: 5, fieldsRemoved: 42, filesProcessed: 10, gpsRemoved: 3 };
+		vi.mocked(api.getReports).mockResolvedValueOnce({
+			summary: backendSummary,
+			reports: []
+		} as never);
+
+		const result = await apiCleaningService.getReports();
+		expect(result.summary).toEqual(backendSummary);
+		expect(result.reports).toHaveLength(0);
+	});
+
+	it('getReports maps all scalar fields and computes iconColor and fieldsColor', async () => {
+		vi.mocked(api.getReports).mockResolvedValueOnce({
+			summary: { totalReports: 1, fieldsRemoved: 42, filesProcessed: 3, gpsRemoved: 0 },
+			reports: [
+				{
+					id: 'r-001',
+					reportId: 'RPT-001',
+					date: '2025-01-15T14:32:00Z',
+					duration: '5s',
+					fileCount: 3,
+					fileTypes: 'jpg',
+					type: 'image',
+					gps: false,
+					fields: 42,
+					tags: ['exif', 'xmp']
+				}
+			]
+		} as never);
+
+		const result = await apiCleaningService.getReports();
+		const report = result.reports[0];
+		expect(report.id).toBe('r-001');
+		expect(report.reportId).toBe('RPT-001');
+		expect(report.date).toBe('2025-01-15');
+		expect(report.time).toBe('14:32');
+		expect(report.duration).toBe('5s');
+		expect(report.fileCount).toBe(3);
+		expect(report.fileTypes).toBe('jpg');
+		expect(report.type).toBe('image');
+		expect(report.gps).toBe(false);
+		expect(report.fields).toBe(42);
+		expect(report.fieldsColor).toBe('white');
+		expect(report.tags).toEqual(['exif', 'xmp']);
+		expect(report.iconColor).toBe('green');
+	});
+
+	it('getReports maps video type to orange iconColor', async () => {
+		vi.mocked(api.getReports).mockResolvedValueOnce({
+			summary: { totalReports: 1, fieldsRemoved: 10, filesProcessed: 1, gpsRemoved: 0 },
+			reports: [
+				{
+					id: 'r-002',
+					reportId: 'RPT-002',
+					date: '2025-06-10',
+					duration: '2s',
+					fileCount: 1,
+					fileTypes: 'mp4',
+					type: 'video',
+					gps: false,
+					fields: 10,
+					tags: []
+				}
+			]
+		} as never);
+
+		const result = await apiCleaningService.getReports();
+		expect(result.reports[0].iconColor).toBe('orange');
+	});
+
+	// getReportDetail
+
+	it('getReportDetail maps backend response to ReportDetail with computed barWidthPercent and gradients', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-001',
+			date: '2025-01-15T14:32:00Z',
+			filesProcessed: 2,
+			fieldsRemoved: 30,
+			gpsLocationsRemoved: 1,
+			totalTimeSeconds: 7,
+			chartData: [{ label: 'EXIF', fields: 20, percentage: 67 }],
+			files: [
+				{
+					name: 'photo.jpg',
+					extension: '.jpg',
+					sizeMB: '2.5',
+					format: 'jpeg',
+					device: 'Canon',
+					type: 'image',
+					hasGps: true,
+					fieldsRemoved: 20,
+					metadata: null
+				},
+				{
+					name: 'clip.mp4',
+					extension: '.mp4',
+					sizeMB: '5.0',
+					format: 'mp4',
+					device: 'Sony',
+					type: 'video',
+					hasGps: false,
+					fieldsRemoved: 10,
+					metadata: null
+				}
+			]
+		} as never);
+
+		const result = await apiCleaningService.getReportDetail('RPT-001');
+		expect(result.reportId).toBe('RPT-001');
+		expect(result.filesProcessed).toBe(2);
+		expect(result.fieldsRemoved).toBe(30);
+		expect(result.gpsLocationsRemoved).toBe(1);
+		expect(result.totalTimeSeconds).toBe(7);
+		expect(result.chartData).toEqual([{ label: 'EXIF', fields: 20, percentage: 67 }]);
+		expect(result.files).toHaveLength(2);
+
+		const imageFile = result.files[0];
+		expect(imageFile.name).toBe('photo.jpg');
+		expect(imageFile.iconColor).toBe('green');
+		expect(imageFile.barWidthPercent).toBe(67); // Math.round(20/30*100)
+		expect(imageFile.barGradientFrom).toBe('#22c55e');
+		expect(imageFile.barGradientTo).toBe('#16a34a');
+		expect(imageFile.hasGps).toBe(true);
+
+		const videoFile = result.files[1];
+		expect(videoFile.iconColor).toBe('orange');
+		expect(videoFile.barWidthPercent).toBe(33); // Math.round(10/30*100)
+		expect(videoFile.barGradientFrom).toBe('#f97316');
+		expect(videoFile.barGradientTo).toBe('#ea580c');
+	});
+
+	it('getReportDetail maps metadata fields with moreCount: undefined', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-002',
+			date: '2025-06-10',
+			filesProcessed: 1,
+			fieldsRemoved: 5,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 3,
+			chartData: [],
+			files: [
+				{
+					name: 'photo.jpg',
+					extension: '.jpg',
+					sizeMB: '1.0',
+					format: 'jpeg',
+					device: '',
+					type: 'image',
+					hasGps: false,
+					fieldsRemoved: 5,
+					metadata: {
+						gpsFields: [{ label: 'Latitude', value: '50.0' }],
+						exifFields: [
+							{ label: 'Make', value: 'Canon' },
+							{ label: 'Model', value: 'EOS' }
+						],
+						xmpFields: [],
+						totalRemoved: 3
+					}
+				}
+			]
+		} as never);
+
+		const result = await apiCleaningService.getReportDetail('RPT-002');
+		const meta = result.files[0].metadata;
+		expect(meta.gpsFields).toHaveLength(1);
+		expect(meta.gpsFields[0]).toEqual({ label: 'Latitude', value: '50.0', moreCount: undefined });
+		expect(meta.exifFields).toHaveLength(2);
+		expect(meta.exifFields[0]).toEqual({ label: 'Make', value: 'Canon', moreCount: undefined });
+		expect(meta.xmpFields).toHaveLength(0);
+		expect(meta.totalRemoved).toBe(3);
+	});
+
+	it('getReportDetail throws "Report not found" on 404', async () => {
+		vi.mocked(api.getReportDetail).mockRejectedValueOnce(
+			new api.ApiHttpError(404, 'NOT_FOUND', 'Not found', '2024-01-01T00:00:00Z')
+		);
+
+		await expect(apiCleaningService.getReportDetail('RPT-999')).rejects.toThrow('Report not found');
+	});
+
+	it('getReportDetail re-throws non-404 ApiHttpError unchanged', async () => {
+		const err = new api.ApiHttpError(500, 'SERVER_ERROR', 'Internal error', '2024-01-01T00:00:00Z');
+		vi.mocked(api.getReportDetail).mockRejectedValueOnce(err);
+
+		await expect(apiCleaningService.getReportDetail('RPT-999')).rejects.toBe(err);
+	});
+});
+
 // ─── Property 11: Bar width percentage computation invariant ───────────────────
 
 describe('Feature: api-integration, Property 11: Bar width percentage computation invariant', () => {

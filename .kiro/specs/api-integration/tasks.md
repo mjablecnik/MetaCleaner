@@ -100,7 +100,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Handle 404 for report not found
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 6.1, 6.2, 6.3, 6.4, 6.5, 10.1, 10.2, 10.3, 10.4, 10.5, 13.8, 13.9_
 
-  - [ ]* 6.2 Write unit tests for download error handling and report mapping integration
+  - [x]* 6.2 Write unit tests for download error handling and report mapping integration
     - Test 404 and 409 status code handling in downloadResults
     - Test getReports returns correctly mapped summary and reports array
     - Test getReportDetail maps backend response to ReportDetail with computed fields
