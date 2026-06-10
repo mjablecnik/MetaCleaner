@@ -109,7 +109,6 @@ type ReportSummary struct {
 	GPS       bool     `json:"gps"`
 	Fields    int      `json:"fields"`
 	Tags      []string `json:"tags"`
-	IconColor string   `json:"iconColor"`
 }
 
 // ReportDetail is the full report view
@@ -139,7 +138,6 @@ type ReportFileDetail struct {
 	Format        string          `json:"format"`
 	Device        string          `json:"device"`
 	Type          string          `json:"type"`
-	IconColor     string          `json:"iconColor"`
 	HasGPS        bool            `json:"hasGps"`
 	FieldsRemoved int             `json:"fieldsRemoved"`
 	Metadata      *MetadataDetail `json:"metadata"`
@@ -159,7 +157,6 @@ type Report struct {
 	DominantType        string           `json:"dominantType"`
 	HasGPS              bool             `json:"hasGps"`
 	Tags                []string         `json:"tags"`
-	IconColor           string           `json:"iconColor"`
 	ChartData           []ChartDataPoint `json:"chartData"`
 	PDFPath             string           `json:"pdfPath,omitempty"`
 	PDFStatus           string           `json:"pdfStatus"`

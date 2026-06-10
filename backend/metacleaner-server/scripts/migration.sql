@@ -65,7 +65,6 @@ CREATE TABLE IF NOT EXISTS cleaning_reports (
     dominant_type        TEXT        NOT NULL DEFAULT '',
     has_gps              BOOLEAN     NOT NULL DEFAULT FALSE,
     tags                 TEXT[]      NOT NULL DEFAULT '{}',
-    icon_color           TEXT        NOT NULL DEFAULT 'green',
     chart_data           JSONB       NOT NULL DEFAULT '[]',
     pdf_path             TEXT,
     pdf_status           TEXT        NOT NULL DEFAULT 'pending' CHECK (pdf_status IN ('pending', 'uploaded', 'failed')),

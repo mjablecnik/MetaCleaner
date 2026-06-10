@@ -72,7 +72,6 @@ type dbReport struct {
 	DominantType        string          `json:"dominant_type"`
 	HasGPS              bool            `json:"has_gps"`
 	Tags                []string        `json:"tags"`
-	IconColor           string          `json:"icon_color"`
 	ChartData           json.RawMessage `json:"chart_data"`
 	PDFPath             string          `json:"pdf_path,omitempty"`
 	PDFStatus           string          `json:"pdf_status"`
@@ -294,7 +293,6 @@ func (c *SupabaseClient) CreateReport(ctx context.Context, report *Report) error
 		DominantType:        report.DominantType,
 		HasGPS:              report.HasGPS,
 		Tags:                report.Tags,
-		IconColor:           report.IconColor,
 		ChartData:           json.RawMessage(chartJSON),
 		PDFStatus:           report.PDFStatus,
 	}
@@ -344,7 +342,6 @@ func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*Re
 				Format:        f.Format,
 				Device:        f.Device,
 				Type:          f.FileType,
-				IconColor:     iconColorForType(f.FileType),
 				HasGPS:        f.GPSRemoved,
 				FieldsRemoved: f.FieldsRemoved,
 				Metadata:      f.MetadataBreakdown,
@@ -379,7 +376,6 @@ func dbRowToReport(r dbReport) *Report {
 		DominantType:        r.DominantType,
 		HasGPS:              r.HasGPS,
 		Tags:                r.Tags,
-		IconColor:           r.IconColor,
 		PDFPath:             r.PDFPath,
 		PDFStatus:           r.PDFStatus,
 	}
@@ -444,7 +440,6 @@ func (c *SupabaseClient) ListReports(ctx context.Context) ([]ReportSummary, erro
 			GPS:       r.HasGPS,
 			Fields:    r.FieldsRemoved,
 			Tags:      r.Tags,
-			IconColor: r.IconColor,
 		}
 	}
 	return summaries, nil
@@ -576,11 +571,4 @@ func dbToFileRecord(r dbFileRecord) FileRecord {
 		}
 	}
 	return f
-}
-
-func iconColorForType(fileType string) string {
-	if fileType == "video" {
-		return "blue"
-	}
-	return "green"
 }

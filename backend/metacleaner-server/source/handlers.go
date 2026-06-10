@@ -217,6 +217,9 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 			_ = pl.ProcessJob(ctx, job, files, progressFn)
 			_ = db.UpdateJob(ctx, job)
+			for i := range files {
+				_ = db.UpdateFileRecord(ctx, &files[i])
+			}
 			createJobReport(ctx, db, hub, job, files)
 		}()
 
@@ -369,11 +372,6 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 		}
 	}
 
-	iconColor := "green"
-	if dominantType == "video" {
-		iconColor = "blue"
-	}
-
 	total := 0
 	for _, v := range catCounts {
 		total += v
@@ -403,7 +401,6 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 		DominantType:        dominantType,
 		HasGPS:              job.GPSLocationsRemoved > 0,
 		Tags:                tags,
-		IconColor:           iconColor,
 		ChartData:           chartData,
 		PDFStatus:           "pending",
 	}
