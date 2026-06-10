@@ -1,5 +1,23 @@
 # AI Log
 
+## 2026-06-10T14:03 — manual
+- Improved metadata handling in `src/formatter.ts` with privacy categorization and raw metadata output support
+
+## 2026-06-10T11:19 — manual
+- Added meaningful download filename generation with IMG_/VID_ prefix in `src/formatter.ts`
+- Updated formatter tests in `tests/formatter.test.ts`
+
+## 2026-06-07T13:38 — manual
+- Added metadata scanner for image files (`scripts/check_metadata.py`) with AI detection capabilities
+- Added AI image detection module and integrated into image parsing logic
+- Added AI origin scoring to metadata processing (`src/types.ts`, `src/formatter.ts`)
+- Enhanced AI detection with additional metadata checks in `scripts/check_metadata.py`
+
+## 2026-06-07T01:50 — manual
+- Added Dockerfile for the CLI project
+- Added `.gitignore` with build/dependency exclusions
+- Updated `.agents/MEMORY.md` with project documentation
+
 ## 2026-06-06T23:46 — create-code
 - Spec: metadata-inspect-cli
 - Implemented CLI entry point with manual argument parsing (`src/index.ts`) — parses commands (scan, clean, compare, help, version) and global flags (--server, --json, --verbose, --quiet, --output, --timeout, --version)
