@@ -30,7 +30,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Implement `cancel()` closing WebSocket connection
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 4.1, 4.2, 4.9, 11.1_
 
-  - [ ]* 2.2 Write property tests for analyzeFiles aggregation and file name map completeness
+  - [x]* 2.2 Write property tests for analyzeFiles aggregation and file name map completeness
     - **Property 3: analyzeFiles aggregation correctness**
     - **Property 12: File name map completeness from upload response**
     - **Validates: Requirements 2.4, 11.1**
