@@ -77,6 +77,89 @@ interface BackendReportDetail {
 	files: BackendReportFileDetail[];
 }
 
+// ─── Polling fallback when WebSocket disconnects mid-job ────────
+
+const POLL_INTERVAL_MS = 3000;
+const MAX_POLLS = 100; // ~5 minutes
+
+async function pollUntilComplete(
+	jobId: string,
+	callbacks: CleaningCallbacks,
+	accumulatedResults: AccumulatedFileResult[],
+	isCancelled: () => boolean,
+	isCompleted: () => boolean
+): Promise<void> {
+	for (let i = 0; i < MAX_POLLS; i++) {
+		if (isCancelled() || isCompleted()) return;
+
+		await new Promise<void>((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+
+		if (isCancelled() || isCompleted()) return;
+
+		try {
+			const status = await api.getJobStatus(jobId);
+
+			if (status.status === 'completed') {
+				callbacks.onComplete(buildResultsFromStatus(status, accumulatedResults));
+				return;
+			}
+
+			if (status.status === 'failed') {
+				callbacks.onError({
+					code: 'JOB_FAILED',
+					hexCode: '0xF00',
+					message: 'Job failed on server',
+					phase: 'cleaning',
+					timestamp: new Date().toISOString()
+				});
+				return;
+			}
+			// still 'pending' or 'running' — continue polling
+		} catch {
+			// network error during poll — continue trying
+		}
+	}
+
+	// Timed out after MAX_POLLS
+	if (!isCancelled() && !isCompleted()) {
+		callbacks.onError(makeConnectionError());
+	}
+}
+
+function buildResultsFromStatus(
+	status: api.JobStatusResponse,
+	accumulatedResults: AccumulatedFileResult[]
+): ProcessingResults {
+	const fileResults: FileMetadataResult[] = accumulatedResults.map((r) => ({
+		fileId: r.fileId,
+		gpsRemoved: r.gpsRemoved,
+		exifCount: 0,
+		xmpCount: 0,
+		id3Count: 0,
+		mp4AtomsCount: 0,
+		pngChunksCount: 0,
+		totalFields: r.fieldsRemoved
+	}));
+
+	const gpsLocations = accumulatedResults.filter((r) => r.gpsRemoved).length;
+	const remainingFields = Math.max(0, status.fieldsRemoved - gpsLocations);
+
+	return {
+		filesProcessed: status.filesCompleted,
+		fieldsRemoved: status.fieldsRemoved,
+		gpsLocationsRemoved: status.gpsLocationsRemoved,
+		totalTimeSeconds: status.totalTimeSeconds,
+		fileResults,
+		beforeBreakdown: {
+			gpsLocations,
+			exifFields: remainingFields,
+			xmpFields: 0,
+			id3mp4Fields: 0,
+			otherFields: 0
+		}
+	};
+}
+
 // ─── WebSocket message dispatcher (Req 4, 11) ───────────────────
 
 function dispatchWsMessage(
@@ -85,7 +168,8 @@ function dispatchWsMessage(
 	fileNameMap: Map<string, string>,
 	accumulatedResults: AccumulatedFileResult[],
 	jobId: string,
-	setReportId: (id: string) => void
+	setReportId: (id: string) => void,
+	setJobCompleted: () => void
 ): void {
 	switch (msg.type) {
 		case 'file_progress': {
@@ -138,6 +222,7 @@ function dispatchWsMessage(
 			// job_complete embeds reportId — capture it before onComplete triggers WS close (Req 4.10, 11.7)
 			const jobCompleteReportId = (msg.reportId as string) ?? '';
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
+			setJobCompleted();
 			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
 			break;
 		}
@@ -369,6 +454,7 @@ class ApiCleaningService implements CleaningService {
 	): CleaningJob {
 		let ws: WebSocket | null = null;
 		let cancelled = false;
+		let jobCompleted = false;
 
 		const fileNameMap = new Map<string, string>();
 		const accumulatedResults: AccumulatedFileResult[] = [];
@@ -406,20 +492,41 @@ class ApiCleaningService implements CleaningService {
 				ws.onmessage = (event) => {
 					if (cancelled) return;
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
-					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, jobHandle.jobId, (id) => {
-						jobHandle.reportId = id;
-					});
+					dispatchWsMessage(
+						msg,
+						callbacks,
+						fileNameMap,
+						accumulatedResults,
+						jobHandle.jobId,
+						(id) => { jobHandle.reportId = id; },
+						() => { jobCompleted = true; }
+					);
 				};
 
+				// On WS error or unexpected close, fall back to polling instead of
+				// immediately surfacing an error. The backend continues processing
+				// even when the frontend loses the WebSocket connection.
 				ws.onerror = () => {
-					if (!cancelled) {
-						callbacks.onError(makeConnectionError());
+					if (!cancelled && !jobCompleted) {
+						void pollUntilComplete(
+							jobHandle.jobId,
+							callbacks,
+							accumulatedResults,
+							() => cancelled,
+							() => jobCompleted
+						);
 					}
 				};
 
 				ws.onclose = (event) => {
-					if (!cancelled && event.code !== 1000) {
-						callbacks.onError(makeConnectionError());
+					if (!cancelled && !jobCompleted && event.code !== 1000) {
+						void pollUntilComplete(
+							jobHandle.jobId,
+							callbacks,
+							accumulatedResults,
+							() => cancelled,
+							() => jobCompleted
+						);
 					}
 				};
 			} catch (err) {

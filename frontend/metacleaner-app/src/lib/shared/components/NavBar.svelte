@@ -95,7 +95,7 @@
 			{#if showBackButton}
 				<a
 					href={resolve(backHref as Pathname)}
-					aria-label="Go back"
+					aria-label={tx('common.goBack')}
 					class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
 						{compact ? 'h-8 w-8' : 'h-9 w-9'}"
 				>

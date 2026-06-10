@@ -2,7 +2,12 @@ import { PUBLIC_API_URL } from '$env/static/public';
 
 // ─── URL Builders ───────────────────────────────────────────────
 
-const API_BASE_URL: string = PUBLIC_API_URL;
+// Strip trailing slashes so URL construction never produces double slashes.
+// Warn at module init if the variable is unset (all requests go to relative paths).
+const API_BASE_URL: string = PUBLIC_API_URL.replace(/\/+$/, '');
+if (!API_BASE_URL) {
+	console.warn('[MetaCleanerApi] PUBLIC_API_URL is not set — API requests will use relative paths');
+}
 
 export function buildApiUrl(path: string): string {
 	return `${API_BASE_URL}${path}`;

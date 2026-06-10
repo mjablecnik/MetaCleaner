@@ -141,7 +141,7 @@
 		>
 		<button
 			onclick={onRemove}
-			aria-label="Remove file"
+			aria-label={tx('common.removeFile')}
 			class="text-gray-600 opacity-100 transition-colors hover:text-brand-red lg:opacity-0 lg:group-hover:opacity-100"
 		>
 			<i class="fa-solid fa-xmark text-sm"></i>

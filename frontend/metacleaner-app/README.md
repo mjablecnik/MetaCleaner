@@ -86,16 +86,18 @@ Start the backend on port 8080, then run `bun run dev`. All API calls will go to
 
 ### Production Deployment
 
-Set `PUBLIC_API_URL` to the deployed backend URL at build time:
+`PUBLIC_API_URL` is resolved at **build time** via `$env/static/public` (SvelteKit static adapter). It is baked into the JS bundle — it cannot be overridden at runtime via environment variables or secrets.
+
+Set it as an environment variable when running the build:
 
 ```bash
 PUBLIC_API_URL=https://api.your-domain.com bun run build
 ```
 
-For Fly.io deployments, set it as a secret:
+For Fly.io, pass it as a build argument — **do not** use `fly secrets set PUBLIC_API_URL` (secrets are runtime-only and will have no effect on the static bundle):
 
 ```bash
-fly secrets set PUBLIC_API_URL=https://api.your-domain.com
+fly deploy --build-arg PUBLIC_API_URL=https://api.your-domain.com
 ```
 
 The backend must have `FRONTEND_ORIGIN` set to the frontend production URL to allow CORS:
@@ -115,11 +117,13 @@ The app uses `ApiCleaningService` which communicates with the real backend over 
 ```
 src/
 ├── lib/
+│   ├── clients/           # HTTP/WebSocket API client (metaCleanerApi.ts)
+│   ├── services/          # CleaningService implementations (apiCleaningService.ts)
 │   ├── shared/
 │   │   ├── elements/      # Low-level UI primitives (Button, Card, Badge…)
 │   │   ├── components/    # Composed UI (NavBar, Toast, FileListItem…)
 │   │   └── sections/      # Shared page sections
-│   ├── repositories/      # Data layer (mock → API)
+│   ├── repositories/      # Static UI config (languages, user placeholder)
 │   └── paraglide/         # Generated i18n
 ├── routes/
 │   ├── (step1)/           # File upload

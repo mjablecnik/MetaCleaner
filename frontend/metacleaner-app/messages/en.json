@@ -286,5 +286,9 @@
 	"common.viewReport": "View report",
 	"common.uploadNew": "Upload new files",
 	"common.dismiss": "Dismiss",
+	"common.removeFile": "Remove file",
+	"common.openMenu": "Open menu",
+	"common.closeMenu": "Close menu",
+	"common.goBack": "Go back",
 	"step2.risk.srAnnouncement": "Risk score: {score} out of 100. Severity: {severity}."
 }

@@ -286,5 +286,9 @@
 	"common.viewReport": "Zobrazit report",
 	"common.uploadNew": "Nahrát nové soubory",
 	"common.dismiss": "Zavřít",
+	"common.removeFile": "Odebrat soubor",
+	"common.openMenu": "Otevřít menu",
+	"common.closeMenu": "Zavřít menu",
+	"common.goBack": "Zpět",
 	"step2.risk.srAnnouncement": "Rizikové skóre: {score} ze 100. Závažnost: {severity}."
 }

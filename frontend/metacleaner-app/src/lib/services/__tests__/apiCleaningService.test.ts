@@ -18,6 +18,7 @@ vi.mock('$lib/clients/metaCleanerApi.js', () => {
 		uploadFiles: vi.fn(),
 		createJob: vi.fn(),
 		connectJobProgress: vi.fn(),
+		getJobStatus: vi.fn(),
 		downloadJobZip: vi.fn(),
 		downloadFile: vi.fn(),
 		getReports: vi.fn(),
