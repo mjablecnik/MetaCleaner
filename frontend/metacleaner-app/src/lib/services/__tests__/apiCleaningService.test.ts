@@ -1157,3 +1157,124 @@ describe('Feature: api-integration, Property 10: Report summary type mapping cor
 		);
 	});
 });
+
+// ─── Property 11: Bar width percentage computation invariant ───────────────────
+
+describe('Feature: api-integration, Property 11: Bar width percentage computation invariant', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	function makeBackendFile(fieldsRemoved: number): Record<string, unknown> {
+		return {
+			name: 'photo.jpg',
+			extension: '.jpg',
+			sizeMB: '1.5',
+			format: 'jpeg',
+			device: 'Canon',
+			type: 'image',
+			hasGps: false,
+			fieldsRemoved,
+			metadata: null
+		};
+	}
+
+	function makeBackendReportDetail(files: Record<string, unknown>[]): Record<string, unknown> {
+		return {
+			reportId: 'RPT-001',
+			date: '2025-01-15T14:32:00Z',
+			filesProcessed: files.length,
+			fieldsRemoved: files.reduce((sum, f) => sum + (f.fieldsRemoved as number), 0),
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 5,
+			chartData: [],
+			files
+		};
+	}
+
+	function mockReportDetail(files: Record<string, unknown>[]) {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce(makeBackendReportDetail(files) as never);
+	}
+
+	it('barWidthPercent is always in range [0, 100] for any file configuration', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(fc.nat({ max: 500 }), { minLength: 1, maxLength: 10 }),
+				async (fieldCounts) => {
+					mockReportDetail(fieldCounts.map((n) => makeBackendFile(n)));
+					const result = await apiCleaningService.getReportDetail('RPT-001');
+					for (const file of result.files) {
+						expect(file.barWidthPercent).toBeGreaterThanOrEqual(0);
+						expect(file.barWidthPercent).toBeLessThanOrEqual(100);
+					}
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('all barWidthPercent values are 0 when totalFieldsRemoved is 0', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(fc.constant(0), { minLength: 1, maxLength: 10 }),
+				async (fieldCounts) => {
+					mockReportDetail(fieldCounts.map((n) => makeBackendFile(n)));
+					const result = await apiCleaningService.getReportDetail('RPT-001');
+					for (const file of result.files) {
+						expect(file.barWidthPercent).toBe(0);
+					}
+				}
+			),
+			{ numRuns: 20 }
+		);
+	});
+
+	it('a file with all the removed fields gets barWidthPercent = 100', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.nat({ max: 1000 }).filter((n) => n > 0),
+				async (fieldsRemoved) => {
+					mockReportDetail([makeBackendFile(fieldsRemoved)]);
+					const result = await apiCleaningService.getReportDetail('RPT-001');
+					expect(result.files[0].barWidthPercent).toBe(100);
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	it('barWidthPercent equals Math.round((fileFields / totalFields) * 100) for each file', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(fc.nat({ max: 500 }), { minLength: 1, maxLength: 10 }),
+				async (fieldCounts) => {
+					const total = fieldCounts.reduce((sum, n) => sum + n, 0);
+					mockReportDetail(fieldCounts.map((n) => makeBackendFile(n)));
+					const result = await apiCleaningService.getReportDetail('RPT-001');
+					result.files.forEach((file, i) => {
+						const expected = total === 0 ? 0 : Math.round((fieldCounts[i] / total) * 100);
+						expect(file.barWidthPercent).toBe(expected);
+					});
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('sum of barWidthPercents differs from 100 by at most N (rounding error bound) when total > 0', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(fc.nat({ max: 500 }), { minLength: 1, maxLength: 10 }).filter((arr) =>
+					arr.some((n) => n > 0)
+				),
+				async (fieldCounts) => {
+					mockReportDetail(fieldCounts.map((n) => makeBackendFile(n)));
+					const result = await apiCleaningService.getReportDetail('RPT-001');
+					const widthSum = result.files.reduce((sum, f) => sum + f.barWidthPercent, 0);
+					expect(Math.abs(widthSum - 100)).toBeLessThanOrEqual(fieldCounts.length);
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+});

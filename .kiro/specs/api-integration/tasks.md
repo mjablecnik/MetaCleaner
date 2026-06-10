@@ -87,7 +87,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Implement `mapReportDetail` composing full ReportDetail from backend response
     - _Requirements: 9.4, 9.5, 9.6, 9.8_
 
-  - [ ]* 5.4 Write property test for bar width percentage computation
+  - [x]* 5.4 Write property test for bar width percentage computation
     - **Property 11: Bar width percentage computation invariant**
     - **Validates: Requirements 9.4**
 
