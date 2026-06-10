@@ -21,8 +21,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 2: WebSocket URL protocol derivation**
     - **Validates: Requirements 1.2, 1.4, 8.1, 8.2, 8.3**
 
-- [ ] 2. Implement ApiCleaningService core orchestration
-  - [ ] 2.1 Create `src/lib/services/apiCleaningService.ts` with `analyzeFiles` (client-side scan aggregation) and `startCleaning` orchestration flow
+- [x] 2. Implement ApiCleaningService core orchestration
+  - [x] 2.1 Create `src/lib/services/apiCleaningService.ts` with `analyzeFiles` (client-side scan aggregation) and `startCleaning` orchestration flow
     - Implement `analyzeFiles` using existing scan results without HTTP calls
     - Implement `startCleaning`: upload files → build fileNameMap from upload response → create job → open WebSocket → dispatch messages
     - Build `fileNameMap` from upload response `files[].id → files[].name` (Req 11.1)
@@ -35,7 +35,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 12: File name map completeness from upload response**
     - **Validates: Requirements 2.4, 11.1**
 
-  - [ ] 2.3 Implement WebSocket message dispatcher with fileName resolution and progress extraction
+  - [x] 2.3 Implement WebSocket message dispatcher with fileName resolution and progress extraction
     - Implement `dispatchWsMessage` handling all message types: `file_progress`, `file_complete`, `file_error`, `job_complete`, `report_ready`
     - Resolve `fileName` from `fileNameMap` for `file_progress` events (Req 11.2)
     - Extract `overallProgress`, `filesCompleted`, `totalFiles` from `file_progress` AND `file_complete` events and call `onProgress` — there is NO separate `job_progress` message type from the backend (Req 4.5)

@@ -1,0 +1,460 @@
+import type {
+	CleaningService,
+	CleaningOptions,
+	AnalysisResult,
+	CleaningJob,
+	CleaningCallbacks,
+	CleaningError
+} from './cleaningService.js';
+import type { QueuedFile } from '$lib/scanner/types.js';
+import type {
+	ProcessingResults,
+	FileMetadataResult,
+	MetadataBreakdown
+} from '$lib/types/processing.js';
+import type {
+	Report,
+	ReportDetail,
+	ReportSummaryStats,
+	ReportFileDetail,
+	FileMetadataSection
+} from '$lib/types/report.js';
+import * as api from '$lib/clients/metaCleanerApi.js';
+
+// ─── Accumulated per-file data during WebSocket progress ────────
+
+interface AccumulatedFileResult {
+	fileId: string;
+	fieldsRemoved: number;
+	gpsRemoved: boolean;
+}
+
+// ─── Backend response types (as received from API) ──────────────
+
+interface BackendReportSummary {
+	id: string;
+	reportId: string;
+	date: string;
+	duration: string;
+	fileCount: number;
+	fileTypes: string;
+	type: string;
+	gps: boolean;
+	fields: number;
+	tags: string[];
+}
+
+interface BackendMetadataDetail {
+	gpsFields: { label: string; value: string }[];
+	exifFields: { label: string; value: string }[];
+	xmpFields: { label: string; value: string }[];
+	id3Fields?: { label: string; value: string }[];
+	mp4Atoms?: { label: string; value: string }[];
+	pngChunks?: { label: string; value: string }[];
+	totalRemoved: number;
+}
+
+interface BackendReportFileDetail {
+	name: string;
+	extension: string;
+	sizeMB: string;
+	format: string;
+	device: string;
+	type: string;
+	hasGps: boolean;
+	fieldsRemoved: number;
+	metadata: BackendMetadataDetail | null;
+}
+
+interface BackendReportDetail {
+	reportId: string;
+	date: string;
+	filesProcessed: number;
+	fieldsRemoved: number;
+	gpsLocationsRemoved: number;
+	totalTimeSeconds: number;
+	chartData: { label: string; fields: number; percentage: number }[];
+	files: BackendReportFileDetail[];
+}
+
+// ─── WebSocket message dispatcher (Req 4, 11) ───────────────────
+
+function dispatchWsMessage(
+	msg: Record<string, unknown>,
+	callbacks: CleaningCallbacks,
+	fileNameMap: Map<string, string>,
+	accumulatedResults: AccumulatedFileResult[],
+	jobId: string
+): void {
+	switch (msg.type) {
+		case 'file_progress': {
+			const fileId = msg.fileId as string;
+			const fileName = fileNameMap.get(fileId) ?? fileId;
+			callbacks.onFileStart(fileId, fileName);
+
+			// Progress is embedded in file_progress events — no separate job_progress message (Req 4.5)
+			callbacks.onProgress(
+				(msg.overallProgress as number) ?? 0,
+				(msg.filesCompleted as number) ?? 0,
+				(msg.totalFiles as number) ?? 0,
+				0,
+				0
+			);
+			break;
+		}
+
+		case 'file_complete': {
+			const fileId = msg.fileId as string;
+			const fieldsRemoved = (msg.fieldsRemoved as number) ?? 0;
+			const gpsRemoved = (msg.gpsRemoved as boolean) ?? false;
+
+			accumulatedResults.push({ fileId, fieldsRemoved, gpsRemoved });
+			callbacks.onFileComplete(fileId, fieldsRemoved, gpsRemoved);
+
+			callbacks.onProgress(
+				(msg.overallProgress as number) ?? 0,
+				(msg.filesCompleted as number) ?? 0,
+				(msg.totalFiles as number) ?? 0,
+				fieldsRemoved,
+				0
+			);
+			break;
+		}
+
+		case 'file_error':
+			callbacks.onError({
+				code: (msg.errorCode as string) ?? 'FILE_ERROR',
+				hexCode: (msg.errorCode as string) ?? 'FILE_ERROR',
+				message: (msg.message as string) ?? 'File processing failed',
+				fileId: msg.fileId as string,
+				fileName: fileNameMap.get(msg.fileId as string) ?? undefined,
+				phase: 'cleaning',
+				timestamp: new Date().toISOString()
+			});
+			break;
+
+		case 'job_complete':
+			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
+			break;
+
+		case 'report_ready':
+			// Store reportId silently — no error callback (Req 4.10)
+			break;
+
+		default:
+			// Unknown message types are silently ignored
+			break;
+	}
+}
+
+// ─── ProcessingResults construction from accumulated events ──────
+
+function buildProcessingResults(
+	msg: Record<string, unknown>,
+	accumulatedResults: AccumulatedFileResult[],
+	_jobId: string
+): ProcessingResults {
+	const filesProcessed = (msg.filesProcessed as number) ?? accumulatedResults.length;
+	const fieldsRemoved = (msg.fieldsRemoved as number) ?? 0;
+	const gpsLocationsRemoved = (msg.gpsLocationsRemoved as number) ?? 0;
+	const totalTimeSeconds = (msg.totalTimeSeconds as number) ?? 0;
+
+	const fileResults: FileMetadataResult[] = accumulatedResults.map((r) => ({
+		fileId: r.fileId,
+		gpsRemoved: r.gpsRemoved,
+		exifCount: 0,
+		xmpCount: 0,
+		id3Count: 0,
+		mp4AtomsCount: 0,
+		pngChunksCount: 0,
+		totalFields: r.fieldsRemoved
+	}));
+
+	const gpsLocations = accumulatedResults.filter((r) => r.gpsRemoved).length;
+	const remainingFields = Math.max(0, fieldsRemoved - gpsLocations);
+
+	const beforeBreakdown: MetadataBreakdown = {
+		gpsLocations,
+		exifFields: remainingFields,
+		xmpFields: 0,
+		id3mp4Fields: 0,
+		otherFields: 0
+	};
+
+	return {
+		filesProcessed,
+		fieldsRemoved,
+		gpsLocationsRemoved,
+		totalTimeSeconds,
+		fileResults,
+		beforeBreakdown
+	};
+}
+
+// ─── Error mapping helpers (Req 3.3–3.6) ────────────────────────
+
+function mapApiHttpError(err: api.ApiHttpError): CleaningError {
+	const codeMap: Record<number, string> = {
+		413: 'FILE_TOO_LARGE',
+		415: 'UNSUPPORTED_FORMAT',
+		429: 'RATE_LIMIT_EXCEEDED',
+		400: 'INVALID_REQUEST',
+		404: 'FILE_NOT_FOUND'
+	};
+
+	return {
+		code: err.errorCode ?? codeMap[err.status] ?? 'UNKNOWN_ERROR',
+		hexCode: '0x000',
+		message: err.errorMessage ?? `Request failed with status ${err.status}`,
+		phase: 'upload',
+		timestamp: err.timestamp ?? new Date().toISOString()
+	};
+}
+
+function makeConnectionError(): CleaningError {
+	return {
+		code: 'CONNECTION_LOST',
+		hexCode: '0xFFE',
+		message: 'WebSocket connection closed unexpectedly',
+		phase: 'progress',
+		timestamp: new Date().toISOString()
+	};
+}
+
+function makeNetworkError(err: unknown): CleaningError {
+	return {
+		code: 'NETWORK_ERROR',
+		hexCode: '0xFFF',
+		message: err instanceof Error ? err.message : 'Network request failed',
+		phase: 'upload',
+		timestamp: new Date().toISOString()
+	};
+}
+
+// ─── Report summary mapping (Req 9.1–9.3) ───────────────────────
+
+function extractDate(dateStr: string): string {
+	if (dateStr.includes('T')) return dateStr.split('T')[0];
+	return dateStr;
+}
+
+function extractTime(dateStr: string): string {
+	if (!dateStr.includes('T')) return '';
+	const timePart = dateStr.split('T')[1];
+	if (!timePart) return '';
+	return timePart.replace('Z', '').substring(0, 5);
+}
+
+function computeIconColor(type: string): 'green' | 'orange' {
+	return type === 'image' ? 'green' : 'orange';
+}
+
+function mapSingleReport(r: BackendReportSummary): Report {
+	return {
+		id: r.id,
+		date: extractDate(r.date),
+		time: extractTime(r.date),
+		duration: r.duration,
+		fileCount: r.fileCount,
+		fileTypes: r.fileTypes,
+		type: r.type as 'image' | 'video',
+		gps: r.gps,
+		fields: r.fields,
+		fieldsColor: 'white',
+		tags: r.tags ?? [],
+		reportId: r.reportId,
+		iconColor: computeIconColor(r.type)
+	};
+}
+
+function mapReportSummaries(backendReports: BackendReportSummary[]): Report[] {
+	return backendReports.map(mapSingleReport);
+}
+
+// ─── Report file detail mapping (Req 9.4–9.6, 9.8) ─────────────
+
+function computeBarWidth(fileFieldsRemoved: number, totalFieldsRemoved: number): number {
+	if (totalFieldsRemoved === 0) return 0;
+	return Math.round((fileFieldsRemoved / totalFieldsRemoved) * 100);
+}
+
+function getGradientFrom(type: string): string {
+	return type === 'image' ? '#22c55e' : '#f97316';
+}
+
+function getGradientTo(type: string): string {
+	return type === 'image' ? '#16a34a' : '#ea580c';
+}
+
+function mapMetadataDetail(md: BackendMetadataDetail | null): FileMetadataSection {
+	if (!md) {
+		return { gpsFields: [], exifFields: [], xmpFields: [], totalRemoved: 0 };
+	}
+
+	return {
+		gpsFields: md.gpsFields.map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		exifFields: md.exifFields.map((f) => ({
+			label: f.label,
+			value: f.value,
+			moreCount: undefined
+		})),
+		xmpFields: md.xmpFields.map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		totalRemoved: md.totalRemoved
+	};
+}
+
+function mapReportFileDetails(files: BackendReportFileDetail[]): ReportFileDetail[] {
+	const totalFieldsRemoved = files.reduce((sum, f) => sum + f.fieldsRemoved, 0);
+
+	return files.map((f) => ({
+		name: f.name,
+		extension: f.extension,
+		sizeMB: f.sizeMB,
+		format: f.format,
+		device: f.device,
+		type: f.type as 'image' | 'video',
+		iconColor: computeIconColor(f.type),
+		hasGps: f.hasGps,
+		fieldsRemoved: f.fieldsRemoved,
+		barWidthPercent: computeBarWidth(f.fieldsRemoved, totalFieldsRemoved),
+		barGradientFrom: getGradientFrom(f.type),
+		barGradientTo: getGradientTo(f.type),
+		metadata: mapMetadataDetail(f.metadata)
+	}));
+}
+
+function mapReportDetail(data: BackendReportDetail): ReportDetail {
+	return {
+		reportId: data.reportId,
+		date: data.date,
+		filesProcessed: data.filesProcessed,
+		fieldsRemoved: data.fieldsRemoved,
+		gpsLocationsRemoved: data.gpsLocationsRemoved,
+		totalTimeSeconds: data.totalTimeSeconds,
+		chartData: data.chartData,
+		files: mapReportFileDetails(data.files)
+	};
+}
+
+// ─── ApiCleaningService implementation ──────────────────────────
+
+class ApiCleaningService implements CleaningService {
+	async analyzeFiles(files: QueuedFile[]): Promise<AnalysisResult> {
+		const perFileFieldCounts: Record<string, number> = {};
+		let totalFields = 0;
+		let hasGps = false;
+
+		for (const file of files) {
+			const count = file.scanResult?.fieldCount ?? 0;
+			perFileFieldCounts[file.id] = count;
+			totalFields += count;
+			if (file.scanResult?.hasGps) hasGps = true;
+		}
+
+		return { totalFields, hasGps, perFileFieldCounts };
+	}
+
+	startCleaning(
+		files: QueuedFile[],
+		_options: CleaningOptions,
+		callbacks: CleaningCallbacks
+	): CleaningJob {
+		let ws: WebSocket | null = null;
+		let cancelled = false;
+
+		const fileNameMap = new Map<string, string>();
+		const accumulatedResults: AccumulatedFileResult[] = [];
+		let currentJobId = '';
+
+		const execute = async () => {
+			try {
+				const rawFiles = files.map((f) => f.file);
+				const uploadResponse = await api.uploadFiles(rawFiles);
+				const fileIds = uploadResponse.files.map((f) => f.id);
+
+				for (const fileInfo of uploadResponse.files) {
+					fileNameMap.set(fileInfo.id, fileInfo.name);
+				}
+
+				if (cancelled) return;
+
+				const jobResponse = await api.createJob(fileIds);
+				currentJobId = jobResponse.jobId;
+
+				if (cancelled) return;
+
+				ws = api.connectJobProgress(currentJobId);
+
+				ws.onmessage = (event) => {
+					if (cancelled) return;
+					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
+					dispatchWsMessage(msg, callbacks, fileNameMap, accumulatedResults, currentJobId);
+				};
+
+				ws.onerror = () => {
+					if (!cancelled) {
+						callbacks.onError(makeConnectionError());
+					}
+				};
+
+				ws.onclose = (event) => {
+					if (!cancelled && event.code !== 1000) {
+						callbacks.onError(makeConnectionError());
+					}
+				};
+			} catch (err) {
+				if (cancelled) return;
+
+				if (err instanceof api.ApiHttpError) {
+					callbacks.onError(mapApiHttpError(err));
+				} else {
+					callbacks.onError(makeNetworkError(err));
+				}
+			}
+		};
+
+		void execute();
+
+		return {
+			jobId: '',
+			cancel() {
+				cancelled = true;
+				ws?.close();
+			}
+		};
+	}
+
+	async downloadResults(jobId: string): Promise<Blob> {
+		try {
+			return await api.downloadJobZip(jobId);
+		} catch (err) {
+			if (err instanceof api.ApiHttpError) {
+				if (err.status === 404) throw new Error('File not found or expired');
+				if (err.status === 409) throw new Error('Job is still processing');
+			}
+			throw err;
+		}
+	}
+
+	async getReports(): Promise<{ summary: ReportSummaryStats; reports: Report[] }> {
+		const data = await api.getReports();
+		return {
+			summary: data.summary as ReportSummaryStats,
+			reports: mapReportSummaries(data.reports as BackendReportSummary[])
+		};
+	}
+
+	async getReportDetail(reportId: string): Promise<ReportDetail> {
+		try {
+			const data = (await api.getReportDetail(reportId)) as BackendReportDetail;
+			return mapReportDetail(data);
+		} catch (err) {
+			if (err instanceof api.ApiHttpError && err.status === 404) {
+				throw new Error('Report not found');
+			}
+			throw err;
+		}
+	}
+}
+
+export const apiCleaningService: CleaningService = new ApiCleaningService();
