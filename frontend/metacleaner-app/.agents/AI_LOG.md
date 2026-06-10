@@ -1,5 +1,25 @@
 # AI Log
 
+## 2026-06-10 16:53 — create-code
+- Spec: api-integration
+- Implemented API client module (`src/lib/clients/metaCleanerApi.ts`) with `buildApiUrl`, `buildWsUrl`, `uploadFiles`, `createJob`, `getJobStatus`, `connectJobProgress`, `downloadFile`, `downloadJobZip`, `getReports`, `getReportDetail`, `getReportPdf`, `healthCheck`, and `ApiHttpError` class
+- Implemented `ApiCleaningService` (`src/lib/services/apiCleaningService.ts`) with upload→job→WebSocket orchestration, `dispatchWsMessage` dispatcher with fileName resolution from local map, `buildProcessingResults` from accumulated `file_complete` events, `mapApiHttpError`/`makeConnectionError`/`makeNetworkError` error helpers, backend-to-frontend type mapping (`mapSingleReport`, `mapReportFileDetails`, `computeBarWidth`, `computeIconColor`, `extractDate`/`extractTime`, `mapMetadataDetail`)
+- Implemented batch ZIP download endpoint (`HandleJobDownload`) in backend `handlers.go` at `GET /api/jobs/{id}/download`
+- Removed mock layer (`src/lib/services/mockCleaningService.ts`) and wired `apiCleaningService` as sole `CleaningService` implementation (task 10)
+- Added `PUBLIC_API_URL=http://localhost:8080` to `.env.example` and API configuration section to README
+- Created property tests for API URL construction and WebSocket protocol derivation (task 1.2) in scanner `__tests__/`
+- Created property tests for `analyzeFiles` aggregation and `fileNameMap` completeness (task 2.2)
+- Created property tests for WebSocket message dispatch and `ProcessingResults` construction (task 2.4)
+- Created property tests for HTTP error status code mapping (task 3.2)
+- Created property tests for report summary type mapping (task 5.2)
+- Created property tests for bar width percentage computation (task 5.4)
+- Created unit tests for download error handling and report mapping integration (task 6.2)
+- Fixed code review MEDIUM issues: addressed linting and structural concerns from API integration review
+- Fixed `reportId` capture from WS `report_ready` events and split `jobId`/`reportId` in cleaning store
+- Fixed WS close timing: delayed WebSocket close after `job_complete` to catch trailing `report_ready` message
+- Removed 63 dead i18n keys from `en.json` and `cs.json` identified during i18n audit
+- Updated `MEMORY.md` with i18n audit and WS close findings
+
 ## 2026-06-10 14:03 — manual
 - Improved metadata handling in `imageParser.ts` and `videoParser.ts` with privacy categorization and raw metadata output
 - Added new fields to scanner types (`src/lib/scanner/types.ts`) for privacy categories
