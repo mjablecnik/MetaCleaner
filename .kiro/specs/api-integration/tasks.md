@@ -75,7 +75,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Implement `mapReportSummaries` applying `mapSingleReport` to arrays
     - _Requirements: 9.1, 9.2, 9.3, 9.7_
 
-  - [ ]* 5.2 Write property test for report summary type mapping
+  - [x]* 5.2 Write property test for report summary type mapping
     - **Property 10: Report summary type mapping correctness**
     - **Validates: Requirements 9.1, 9.2, 9.3**
 

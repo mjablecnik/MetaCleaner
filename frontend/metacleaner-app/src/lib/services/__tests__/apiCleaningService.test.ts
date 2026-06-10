@@ -970,3 +970,190 @@ describe('Feature: api-integration, Property 8: HTTP error status code mapping',
 		);
 	});
 });
+
+// ─── Property 10: Report summary type mapping correctness ─────────────────────
+
+describe('Feature: api-integration, Property 10: Report summary type mapping correctness', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	function makeBackendReport(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+		return {
+			id: 'r-001',
+			reportId: 'RPT-001',
+			date: '2025-01-15T14:32:00Z',
+			duration: '5s',
+			fileCount: 3,
+			fileTypes: 'jpg',
+			type: 'image',
+			gps: false,
+			fields: 42,
+			tags: ['exif'],
+			...overrides
+		};
+	}
+
+	function mockGetReports(reports: Record<string, unknown>[]) {
+		vi.mocked(api.getReports).mockResolvedValueOnce({
+			summary: { totalReports: reports.length, fieldsRemoved: 0, filesProcessed: 0, gpsRemoved: 0 },
+			reports
+		} as never);
+	}
+
+	it('iconColor is green for type=image and orange for type=video for any other fields', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					id: fc.string({ minLength: 1, maxLength: 20 }),
+					reportId: fc.string({ minLength: 1, maxLength: 20 }),
+					date: fc.string({ minLength: 1, maxLength: 30 }),
+					duration: fc.string({ minLength: 0, maxLength: 10 }),
+					fileCount: fc.nat({ max: 1000 }),
+					fileTypes: fc.string({ minLength: 0, maxLength: 20 }),
+					gps: fc.boolean(),
+					fields: fc.nat({ max: 10000 }),
+					tags: fc.array(fc.string({ minLength: 1, maxLength: 10 }), { maxLength: 5 }),
+					type: fc.constantFrom('image', 'video') as fc.Arbitrary<string>
+				}),
+				async (backendReport) => {
+					mockGetReports([backendReport]);
+					const result = await apiCleaningService.getReports();
+					expect(result.reports).toHaveLength(1);
+					const report = result.reports[0];
+					if (backendReport.type === 'image') {
+						expect(report.iconColor).toBe('green');
+					} else {
+						expect(report.iconColor).toBe('orange');
+					}
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('fieldsColor is always white regardless of input', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					id: fc.string({ minLength: 1, maxLength: 20 }),
+					reportId: fc.string({ minLength: 1, maxLength: 20 }),
+					date: fc.string({ minLength: 1, maxLength: 30 }),
+					duration: fc.string({ minLength: 0, maxLength: 10 }),
+					fileCount: fc.nat({ max: 1000 }),
+					fileTypes: fc.string({ minLength: 0, maxLength: 20 }),
+					type: fc.constantFrom('image', 'video') as fc.Arbitrary<string>,
+					gps: fc.boolean(),
+					fields: fc.nat({ max: 10000 }),
+					tags: fc.array(fc.string({ minLength: 1, maxLength: 10 }), { maxLength: 5 })
+				}),
+				async (backendReport) => {
+					mockGetReports([backendReport]);
+					const result = await apiCleaningService.getReports();
+					expect(result.reports[0].fieldsColor).toBe('white');
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('time is empty string when date has no T, non-empty HH:MM when date contains T', async () => {
+		mockGetReports([makeBackendReport({ date: '2025-06-10' })]);
+		let result = await apiCleaningService.getReports();
+		expect(result.reports[0].time).toBe('');
+		expect(result.reports[0].date).toBe('2025-06-10');
+
+		mockGetReports([makeBackendReport({ date: '2025-06-10T14:32:00Z' })]);
+		result = await apiCleaningService.getReports();
+		expect(result.reports[0].time).toBe('14:32');
+		expect(result.reports[0].date).toBe('2025-06-10');
+	});
+
+	it('date and time are correctly extracted from any valid ISO timestamp', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					year: fc.integer({ min: 2000, max: 2099 }),
+					month: fc.integer({ min: 1, max: 12 }),
+					day: fc.integer({ min: 1, max: 28 }),
+					hour: fc.integer({ min: 0, max: 23 }),
+					minute: fc.integer({ min: 0, max: 59 })
+				}),
+				async ({ year, month, day, hour, minute }) => {
+					const pad = (n: number) => String(n).padStart(2, '0');
+					const dateStr = `${year}-${pad(month)}-${pad(day)}`;
+					const timeStr = `${pad(hour)}:${pad(minute)}`;
+					const isoDate = `${dateStr}T${timeStr}:00Z`;
+
+					mockGetReports([makeBackendReport({ date: isoDate })]);
+					const result = await apiCleaningService.getReports();
+					expect(result.reports[0].date).toBe(dateStr);
+					expect(result.reports[0].time).toBe(timeStr);
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('all scalar fields are passed through unchanged from backend to frontend', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					id: fc.string({ minLength: 1, maxLength: 20 }),
+					reportId: fc.string({ minLength: 1, maxLength: 20 }),
+					duration: fc.string({ minLength: 0, maxLength: 20 }),
+					fileCount: fc.nat({ max: 1000 }),
+					fileTypes: fc.string({ minLength: 0, maxLength: 50 }),
+					type: fc.constantFrom('image', 'video') as fc.Arbitrary<string>,
+					gps: fc.boolean(),
+					fields: fc.nat({ max: 10000 }),
+					tags: fc.array(fc.string({ minLength: 1, maxLength: 10 }), { maxLength: 5 })
+				}),
+				async (fields) => {
+					mockGetReports([makeBackendReport(fields)]);
+					const result = await apiCleaningService.getReports();
+					const report = result.reports[0];
+
+					expect(report.id).toBe(fields.id);
+					expect(report.reportId).toBe(fields.reportId);
+					expect(report.duration).toBe(fields.duration);
+					expect(report.fileCount).toBe(fields.fileCount);
+					expect(report.fileTypes).toBe(fields.fileTypes);
+					expect(report.type).toBe(fields.type);
+					expect(report.gps).toBe(fields.gps);
+					expect(report.fields).toBe(fields.fields);
+					expect(report.tags).toEqual(fields.tags);
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('mapReportSummaries preserves array length for any N reports', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.array(
+					fc.record({
+						id: fc.string({ minLength: 1, maxLength: 10 }),
+						reportId: fc.string({ minLength: 1, maxLength: 10 }),
+						date: fc.string({ minLength: 1, maxLength: 30 }),
+						duration: fc.string({ minLength: 0, maxLength: 10 }),
+						fileCount: fc.nat({ max: 100 }),
+						fileTypes: fc.string({ minLength: 0, maxLength: 20 }),
+						type: fc.constantFrom('image', 'video') as fc.Arbitrary<string>,
+						gps: fc.boolean(),
+						fields: fc.nat({ max: 1000 }),
+						tags: fc.array(fc.string({ minLength: 1, maxLength: 10 }), { maxLength: 3 })
+					}),
+					{ maxLength: 20 }
+				),
+				async (backendReports) => {
+					mockGetReports(backendReports);
+					const result = await apiCleaningService.getReports();
+					expect(result.reports).toHaveLength(backendReports.length);
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+});
