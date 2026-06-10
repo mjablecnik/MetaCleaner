@@ -91,8 +91,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - **Property 11: Bar width percentage computation invariant**
     - **Validates: Requirements 9.4**
 
-- [ ] 6. Implement download and reports methods
-  - [ ] 6.1 Implement `downloadResults` accepting job ID and `getReports`/`getReportDetail` with type mapping
+- [x] 6. Implement download and reports methods
+  - [x] 6.1 Implement `downloadResults` accepting job ID and `getReports`/`getReportDetail` with type mapping
     - Implement `downloadResults(jobId)` calling `api.downloadJobZip(jobId)` returning Blob (batch ZIP by default)
     - Handle 404 → "File not found or expired", 409 → "Job is still processing"
     - Implement `getReports()` calling `api.getReports()` and mapping via `mapReportSummaries`
