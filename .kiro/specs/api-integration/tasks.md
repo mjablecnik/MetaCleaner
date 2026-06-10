@@ -174,8 +174,8 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Ensure the jobId is stored in an accessible state (e.g. a store or prop) after job completion
     - _Requirements: 5.5, 11.8, 13.9_
 
-- [ ] 11. Environment configuration and README update
-  - [ ] 11.1 Add `PUBLIC_API_URL` to `.env.example` and update frontend README
+- [x] 11. Environment configuration and README update
+  - [x] 11.1 Add `PUBLIC_API_URL` to `.env.example` and update frontend README
     - Add `PUBLIC_API_URL=http://localhost:8080` to `frontend/metacleaner-app/.env.example`
     - Add API configuration section to `frontend/metacleaner-app/README.md` documenting:
       - How to set `PUBLIC_API_URL` for local development (default: `http://localhost:8080`)

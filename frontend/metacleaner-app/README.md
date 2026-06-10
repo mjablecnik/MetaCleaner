@@ -68,13 +68,47 @@ fly logs --app metacleaner-app   # View logs
 fly status --app metacleaner-app # Check status
 ```
 
+## API Configuration
+
+The frontend connects to the MetaCleaner backend via `PUBLIC_API_URL`.
+
+### Local Development
+
+Copy `.env.example` to `.env` and set the backend URL:
+
+```bash
+cp .env.example .env
+# .env contains:
+# PUBLIC_API_URL=http://localhost:8080
+```
+
+Start the backend on port 8080, then run `bun run dev`. All API calls will go to `http://localhost:8080`.
+
+### Production Deployment
+
+Set `PUBLIC_API_URL` to the deployed backend URL at build time:
+
+```bash
+PUBLIC_API_URL=https://api.your-domain.com bun run build
+```
+
+For Fly.io deployments, set it as a secret:
+
+```bash
+fly secrets set PUBLIC_API_URL=https://api.your-domain.com
+```
+
+The backend must have `FRONTEND_ORIGIN` set to the frontend production URL to allow CORS:
+
+```bash
+fly secrets set FRONTEND_ORIGIN=https://your-domain.com --app metacleaner-server
+```
+
 ## Development Notes
 
-### Triggering Mock Error States
+### Backend Required
 
-The mock cleaning service (`src/lib/services/mockCleaningService.ts`) uses a filename convention to simulate processing errors during development and testing: **any file whose name starts with `error-`** (e.g. `error-photo.jpg`, `error-test.png`) will cause the mock service to report a cleaning failure for that file and transition the app to the error state (step 4).
-
-This is useful for testing the error UI without a real backend. Example: rename a test image to `error-sample.jpg` before uploading.
+The app uses `ApiCleaningService` which communicates with the real backend over HTTP and WebSocket. There is no mock layer — a running backend at `PUBLIC_API_URL` is required for the upload, cleaning, and report flows to work.
 
 ## Project Structure
 
