@@ -146,7 +146,7 @@ Replace the mock data layer in the MetaCleaner frontend with a real HTTP + WebSo
     - Test successful ZIP response with correct headers and file contents
     - _Requirements: 13.4, 13.5, 13.6_
 
-- [ ] 8. Checkpoint
+- [x] 8. Checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Add `downloadJobZip` to frontend API client

@@ -122,7 +122,7 @@ func TestPipelineFFmpegFailure(t *testing.T) {
 
 func TestPipelineMixedSuccess(t *testing.T) {
 	toolDir := t.TempDir()
-	exiftoolScript := "case \"$1\" in\n  -json)\n    echo '[{\"Make\":\"TestCam\",\"GPSLatitude\":\"51.5\",\"XMPRating\":\"4\"}]'\n    ;;\n  -all=)\n    cp \"$3\" \"$2\"\n    ;;\nesac\nexit 0"
+	exiftoolScript := "case \"$1\" in\n  -json)\n    echo '[{\"Make\":\"TestCam\",\"GPSLatitude\":\"51.5\",\"XMPRating\":\"4\"}]'\n    ;;\n  -all=)\n    cp \"$4\" \"$3\"\n    ;;\nesac\nexit 0"
 	writeFakeExec(t, toolDir, "exiftool", exiftoolScript)
 	writeFakeExec(t, toolDir, "ffmpeg", "exit 1")
 	writeFakeExec(t, toolDir, "ffprobe", "echo '{\"format\":{\"tags\":{}},\"streams\":[]}'")
@@ -135,8 +135,8 @@ func TestPipelineMixedSuccess(t *testing.T) {
 
 	job := &src.Job{ID: "job-3", Status: "processing", TotalFiles: 2}
 	files := []src.FileRecord{
-		{ID: "f-ok", FileExtension: ".jpg", FileType: "image"},
-		{ID: "f-fail", FileExtension: ".mp4", FileType: "video"},
+		{ID: "f-ok", LocalID: "f-ok", FileExtension: ".jpg", FileType: "image"},
+		{ID: "f-fail", LocalID: "f-fail", FileExtension: ".mp4", FileType: "video"},
 	}
 
 	_ = pipeline.ProcessJob(context.Background(), job, files, func(e src.ProgressEvent) {})
