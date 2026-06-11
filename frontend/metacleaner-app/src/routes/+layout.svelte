@@ -75,6 +75,8 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="flex min-h-screen flex-col bg-navy-main font-sans text-white">
-	<NavBar {user} {langOptions} {...navProps} />
+	{#if !page.url.pathname.startsWith('/auth')}
+		<NavBar {user} {langOptions} {...navProps} />
+	{/if}
 	{@render children()}
 </div>
