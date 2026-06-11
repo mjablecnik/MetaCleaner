@@ -1,5 +1,20 @@
 # AI Log
 
+## 2026-06-11 23:32 — ui-refactor
+- Created theme tokens in `src/routes/layout.css`: `--color-brand-yellow`, `--color-page-gradient-blue`, `--color-page-gradient-green`, `--shadow-glow-green-strong`
+- Replaced 172 hardcoded color hex/rgba values in auth pages with theme token references (`var(--color-*)` / Tailwind utilities)
+- Replaced 7 hardcoded color values in `sections/Step4Error/` and `sections/Step3Processing/` / `Step5Success/` components
+- Extracted shared auth elements to `src/routes/(auth)/components/`: PasswordInput, OtpInput, PasswordStrengthMeter, StepProgressBar
+- Extracted shared auth components to `src/routes/(auth)/components/`: AuthNavbar, AuthFormCard, AuthStatsRow, AuthFeatureCard, AuthBranding, AuthMobileHero, AuthLayout
+- Created Storybook stories for all 11 shared auth components (co-located `.stories.svelte` files)
+- Refactored `(auth)/login/+page.svelte` — decomposed into AuthLayout, AuthNavbar, AuthBranding, AuthMobileHero, AuthFormCard, PasswordInput, AuthStatsRow, AuthFeatureCard
+- Refactored `(auth)/register/+page.svelte` — decomposed into AuthLayout, AuthNavbar, AuthBranding, AuthMobileHero, AuthFormCard, PasswordInput, PasswordStrengthMeter, AuthStatsRow
+- Refactored `(auth)/check-email/+page.svelte` — decomposed into AuthLayout, AuthNavbar, AuthBranding, AuthMobileHero, AuthFormCard, AuthStatsRow
+- Refactored `(auth)/forgot-password/+page.svelte` — decomposed into AuthLayout, AuthNavbar, StepProgressBar, AuthFormCard, PasswordInput, PasswordStrengthMeter, OtpInput
+- Refactored `(auth)/check-code/+page.svelte` — decomposed into AuthLayout, AuthNavbar, StepProgressBar, AuthFormCard, OtpInput
+- Refactored `(auth)/new-password/+page.svelte` — decomposed into AuthLayout, AuthNavbar, StepProgressBar, AuthFormCard, PasswordInput, PasswordStrengthMeter
+- Reduced total auth page code from ~3,677 lines to ~1,800 lines by eliminating duplication
+
 ## 2026-06-11 21:50 — data-refactor
 - Extracted ~130 new i18n keys with `auth.*` prefix to `messages/en.json` and `messages/cs.json` covering 6 auth pages
 - Created `src/lib/repositories/authRepository.ts` with `getAuthStats()` and `getAuthPlans()` mock data
