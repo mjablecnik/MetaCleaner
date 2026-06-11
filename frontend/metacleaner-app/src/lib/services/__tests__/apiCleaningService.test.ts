@@ -1822,3 +1822,164 @@ describe('Feature: api-integration, Property 11: Bar width percentage computatio
 		);
 	});
 });
+
+// ─── Property 13: mapMetadataDetail complete field mapping ─────────────────────
+// Design doc: "Generate random BackendMetadataDetail objects with various field
+// combinations and verify mapMetadataDetail() preserves all fields"
+// Tests the full 5-array mapping including Bug 8 additions (id3Fields, mp4AtomFields).
+
+describe('Feature: api-integration, Property 13: mapMetadataDetail complete field mapping', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	const fieldArb = fc.array(
+		fc.record({
+			label: fc.string({ minLength: 1, maxLength: 30 }),
+			value: fc.string({ minLength: 0, maxLength: 50 })
+		}),
+		{ maxLength: 6 }
+	);
+
+	function mockWithMetadata(metadata: Record<string, unknown> | null): void {
+		const fieldsRemoved = typeof metadata?.totalRemoved === 'number' ? metadata.totalRemoved : 0;
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-META-PROP',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 1,
+			chartData: [],
+			files: [
+				{
+					name: 'file.mp4',
+					extension: '.mp4',
+					sizeMB: '5.0',
+					format: 'mp4',
+					device: '',
+					type: 'video',
+					hasGps: false,
+					fieldsRemoved,
+					metadata
+				}
+			]
+		} as never);
+	}
+
+	it('all 5 field arrays (gps/exif/xmp/id3/mp4Atoms) preserve their lengths for any random combination', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					gpsFields: fieldArb,
+					exifFields: fieldArb,
+					xmpFields: fieldArb,
+					id3Fields: fieldArb,
+					mp4Atoms: fieldArb,
+					totalRemoved: fc.nat({ max: 200 })
+				}),
+				async ({ gpsFields, exifFields, xmpFields, id3Fields, mp4Atoms, totalRemoved }) => {
+					mockWithMetadata({ gpsFields, exifFields, xmpFields, id3Fields, mp4Atoms, totalRemoved });
+
+					const result = await apiCleaningService.getReportDetail('RPT-META-PROP');
+					const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+
+					expect((meta['gpsFields'] as unknown[]).length).toBe(gpsFields.length);
+					expect((meta['exifFields'] as unknown[]).length).toBe(exifFields.length);
+					expect((meta['xmpFields'] as unknown[]).length).toBe(xmpFields.length);
+					expect((meta['id3Fields'] as unknown[]).length).toBe(id3Fields.length);
+					expect((meta['mp4AtomFields'] as unknown[]).length).toBe(mp4Atoms.length);
+					expect(meta['totalRemoved']).toBe(totalRemoved);
+				}
+			),
+			{ numRuns: 80 }
+		);
+	});
+
+	it('each field label and value pass through unchanged for all 5 field types', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					gpsLabel: fc.string({ minLength: 1, maxLength: 20 }),
+					gpsValue: fc.string({ minLength: 0, maxLength: 30 }),
+					exifLabel: fc.string({ minLength: 1, maxLength: 20 }),
+					exifValue: fc.string({ minLength: 0, maxLength: 30 }),
+					xmpLabel: fc.string({ minLength: 1, maxLength: 20 }),
+					xmpValue: fc.string({ minLength: 0, maxLength: 30 }),
+					id3Label: fc.string({ minLength: 1, maxLength: 20 }),
+					id3Value: fc.string({ minLength: 0, maxLength: 30 }),
+					mp4Label: fc.string({ minLength: 1, maxLength: 20 }),
+					mp4Value: fc.string({ minLength: 0, maxLength: 30 })
+				}),
+				async ({
+					gpsLabel,
+					gpsValue,
+					exifLabel,
+					exifValue,
+					xmpLabel,
+					xmpValue,
+					id3Label,
+					id3Value,
+					mp4Label,
+					mp4Value
+				}) => {
+					mockWithMetadata({
+						gpsFields: [{ label: gpsLabel, value: gpsValue }],
+						exifFields: [{ label: exifLabel, value: exifValue }],
+						xmpFields: [{ label: xmpLabel, value: xmpValue }],
+						id3Fields: [{ label: id3Label, value: id3Value }],
+						mp4Atoms: [{ label: mp4Label, value: mp4Value }],
+						totalRemoved: 5
+					});
+
+					const result = await apiCleaningService.getReportDetail('RPT-META-PROP');
+					const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+					type Field = { label: string; value: string };
+
+					expect((meta['gpsFields'] as Field[])[0]).toMatchObject({ label: gpsLabel, value: gpsValue });
+					expect((meta['exifFields'] as Field[])[0]).toMatchObject({
+						label: exifLabel,
+						value: exifValue
+					});
+					expect((meta['xmpFields'] as Field[])[0]).toMatchObject({ label: xmpLabel, value: xmpValue });
+					expect((meta['id3Fields'] as Field[])[0]).toMatchObject({ label: id3Label, value: id3Value });
+					expect((meta['mp4AtomFields'] as Field[])[0]).toMatchObject({
+						label: mp4Label,
+						value: mp4Value
+					});
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	it('absent id3Fields and mp4Atoms in backend response default to empty arrays', async () => {
+		mockWithMetadata({
+			gpsFields: [{ label: 'Lat', value: '50.0' }],
+			exifFields: [],
+			xmpFields: [],
+			totalRemoved: 1
+		});
+
+		const result = await apiCleaningService.getReportDetail('RPT-META-PROP');
+		const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+
+		expect(meta['id3Fields']).toEqual([]);
+		expect(meta['mp4AtomFields']).toEqual([]);
+		expect((meta['gpsFields'] as unknown[]).length).toBe(1);
+	});
+
+	it('null metadata produces all-empty arrays and totalRemoved=0', async () => {
+		mockWithMetadata(null);
+
+		const result = await apiCleaningService.getReportDetail('RPT-META-PROP');
+		const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+
+		expect(meta['gpsFields']).toEqual([]);
+		expect(meta['exifFields']).toEqual([]);
+		expect(meta['xmpFields']).toEqual([]);
+		expect(meta['id3Fields']).toEqual([]);
+		expect(meta['mp4AtomFields']).toEqual([]);
+		expect(meta['totalRemoved']).toBe(0);
+	});
+});
