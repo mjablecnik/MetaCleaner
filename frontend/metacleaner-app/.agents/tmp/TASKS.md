@@ -26,7 +26,7 @@
 
 ## Phase 5 — Language switching
 
-- [ ] 13. [LOW] Language switching already works via existing locale store and localStorage persistence — verify auth pages respect the active locale by importing `tx()` and `locale` correctly
+- [x] 13. [LOW] Language switching already works via existing locale store and localStorage persistence — verify auth pages respect the active locale by importing `tx()` and `locale` correctly
 
 ## Final
 
