@@ -170,3 +170,65 @@ describe('Bug Condition 4: NavBar backAction callback — history.back() integra
 		expect(mobileBackBtn).toBeNull();
 	});
 });
+
+// Bug 2: Logo click resets app state (onLogoClick callback) integration.
+// Design spec (design.md): "Test cleaning flow → results → click logo → verify app resets to idle state"
+// This verifies that when NavBar receives onLogoClick (provided by +layout.svelte in success state),
+// clicking the logo fires the callback so appState.reset() can be triggered.
+describe('Bug Condition 2: NavBar logo onLogoClick callback — app reset integration', () => {
+	it('logo renders as <button> (not <a>) when onLogoClick is provided and logoHref is absent', async () => {
+		const onLogoClick = vi.fn();
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			onLogoClick
+		});
+		// When onLogoClick is provided without logoHref, logo is wrapped in a <button>
+		// (NavBar: {#if logoHref} <a> {:else if onLogoClick} <button>)
+		const logoButton = container.querySelector('button.cursor-pointer');
+		expect(logoButton).not.toBeNull();
+		// And no <a href="/"> wrapping the logo should exist
+		const logoAnchor = container.querySelector('a[href="/"]');
+		expect(logoAnchor).toBeNull();
+	});
+
+	it('clicking the logo button fires onLogoClick once (simulates appState.reset())', async () => {
+		const onLogoClick = vi.fn();
+		render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			onLogoClick
+		});
+		// The logo button contains the brand name text "MetaCleaner"
+		const logoBtn = page.getByRole('button', { name: /MetaCleaner/i });
+		await logoBtn.click();
+		expect(onLogoClick).toHaveBeenCalledOnce();
+	});
+
+	it('logoHref takes precedence over onLogoClick — renders as <a> not <button> when both are set', async () => {
+		const onLogoClick = vi.fn();
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			logoHref: '/',
+			onLogoClick
+		});
+		// NavBar: {#if logoHref} takes priority, renders <a> not <button>
+		const logoAnchor = container.querySelector('a[href="/"]');
+		expect(logoAnchor).not.toBeNull();
+		const logoButton = container.querySelector('button.cursor-pointer');
+		expect(logoButton).toBeNull();
+	});
+
+	it('logo renders as plain div (no link or button) when neither logoHref nor onLogoClick is set', async () => {
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions
+		});
+		// NavBar: {:else} renders a plain div with no interactivity
+		const logoAnchor = container.querySelector('a[href="/"]');
+		const logoButton = container.querySelector('button.cursor-pointer');
+		expect(logoAnchor).toBeNull();
+		expect(logoButton).toBeNull();
+	});
+});
