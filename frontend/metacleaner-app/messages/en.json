@@ -226,6 +226,7 @@
 	"step1.upload.rejectedUnsupported": "{count} file(s) have an unsupported format",
 	"step1.status.waiting": "Waiting for files",
 	"common.startCleaning": "Start cleaning",
+	"common.download": "Download",
 	"common.downloadZip": "Download all (ZIP)",
 	"common.viewReport": "View report",
 	"common.dismiss": "Dismiss",

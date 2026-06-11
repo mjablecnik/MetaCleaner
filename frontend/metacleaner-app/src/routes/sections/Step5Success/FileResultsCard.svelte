@@ -158,7 +158,7 @@
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
 		>
 			<i class="fa-solid fa-download"></i>
-			{tx('common.downloadZip')}
+			{files.length === 1 ? tx('common.download') : tx('common.downloadZip')}
 		</button>
 		<button
 			onclick={onViewReport}

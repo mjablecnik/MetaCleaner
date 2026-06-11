@@ -226,6 +226,7 @@
 	"step1.upload.rejectedUnsupported": "{count} soubor(ů) má nepodporovaný formát",
 	"step1.status.waiting": "Čeká na soubory",
 	"common.startCleaning": "Spustit čištění",
+	"common.download": "Stáhnout",
 	"common.downloadZip": "Stáhnout vše (ZIP)",
 	"common.viewReport": "Zobrazit report",
 	"common.dismiss": "Zavřít",

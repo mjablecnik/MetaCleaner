@@ -179,7 +179,7 @@
 			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-navy-main"
 		>
 			<i class="fa-solid fa-download"></i>
-			{tx('step5.actions.downloadAll')}
+			{results?.fileResults.length === 1 ? tx('common.download') : tx('step5.actions.downloadAll')}
 		</button>
 		<div class="grid grid-cols-2 gap-2">
 			<button
