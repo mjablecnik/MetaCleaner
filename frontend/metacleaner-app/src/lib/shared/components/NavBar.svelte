@@ -19,6 +19,8 @@
 		showLangDropdown?: boolean;
 		/** If provided, the logo is wrapped in an <a> tag with this href. */
 		logoHref?: string;
+		/** If provided (and logoHref is absent), the logo is a button with this click handler. */
+		onLogoClick?: () => void;
 		/** Compact mode: smaller mobile logo and icon sizes (reports pages). */
 		compact?: boolean;
 		/** Reduced desktop vertical padding — py-5 instead of py-6 (report detail page). */
@@ -35,6 +37,7 @@
 		backLabel = '',
 		showLangDropdown = true,
 		logoHref,
+		onLogoClick,
 		compact = false,
 		reducedDesktopPadding = false,
 		noPrint = false
@@ -106,6 +109,10 @@
 				<a href={resolve(logoHref as Pathname)} class="flex items-center gap-2 lg:gap-3">
 					{@render logoContent()}
 				</a>
+			{:else if onLogoClick}
+				<button onclick={onLogoClick} class="flex cursor-pointer items-center gap-2 bg-transparent p-0 lg:gap-3">
+					{@render logoContent()}
+				</button>
 			{:else}
 				<div class="flex items-center gap-2.5 lg:gap-3">
 					{@render logoContent()}

@@ -9,6 +9,7 @@
 	import NavBar from '$lib/shared/components/NavBar.svelte';
 	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
 	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
+	import { appState } from '$lib/stores/appState.svelte';
 
 	let { children } = $props();
 
@@ -47,6 +48,9 @@
 		}
 		if (path !== '/') {
 			return { logoHref: '/' as string | undefined };
+		}
+		if (appState.current === 'success') {
+			return { onLogoClick: () => appState.reset() };
 		}
 		return {};
 	});

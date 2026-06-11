@@ -75,9 +75,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Multi-file (2+) downloads continue to create ZIP archives_
     - _Requirements: 2.1, 3.1_
 
-- [ ] 5. Fix Bug 2 — Logo click resets app on success state
+- [x] 5. Fix Bug 2 — Logo click resets app on success state
 
-  - [ ] 5.1 Update `navProps` derivation for success state at root path
+  - [x] 5.1 Update `navProps` derivation for success state at root path
     - File: `frontend/metacleaner-app/src/routes/+layout.svelte`
     - When `path === '/'` AND `appState.current === 'success'`, provide a logo click handler or `logoHref`
     - The handler should reset `appState` to idle and navigate to step 1 (upload view)
