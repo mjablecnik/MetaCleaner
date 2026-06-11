@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { locale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getAuthStats } from '$lib/repositories/authRepository';
 
 	let email = $state('');
 	let password = $state('');
@@ -8,6 +11,16 @@
 	let emailError = $state('');
 	let passwordError = $state('');
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
+
+	const stats = getAuthStats();
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
+		return fn ? fn(params) : key;
+	}
 
 	function togglePassword() {
 		passwordVisible = !passwordVisible;
@@ -28,11 +41,11 @@
 
 		let valid = true;
 		if (!validateEmail(email)) {
-			emailError = 'Zadejte platnou e-mailovou adresu.';
+			emailError = tx('auth.common.validation.emailInvalid');
 			valid = false;
 		}
 		if (password.length < 6) {
-			passwordError = 'Heslo musí mít alespoň 6 znaků.';
+			passwordError = tx('auth.login.validation.passwordShort');
 			valid = false;
 		}
 		if (!valid) return;
@@ -45,7 +58,7 @@
 </script>
 
 <svelte:head>
-	<title>Přihlásit se – MetaCleaner</title>
+	<title>{tx('auth.login.meta.title')}</title>
 </svelte:head>
 
 <div
@@ -60,15 +73,15 @@
 			>
 				<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 			</div>
-			<span class="text-lg font-bold tracking-tight lg:text-xl">MetaCleaner</span>
+			<span class="text-lg font-bold tracking-tight lg:text-xl">{tx('common.brandName')}</span>
 		</div>
 		<div class="hidden items-center gap-2 lg:flex">
-			<span class="text-sm text-text-muted">Nemáte účet?</span>
+			<span class="text-sm text-text-muted">{tx('auth.login.nav.noAccount')}</span>
 			<a
 				href="/register"
 				class="rounded-lg border border-gray-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter"
 			>
-				Registrovat se
+				{tx('auth.login.nav.register')}
 			</a>
 		</div>
 	</nav>
@@ -81,11 +94,10 @@
 			<div class="hidden flex-col gap-8 lg:flex">
 				<div class="flex flex-col gap-4">
 					<h1 class="text-4xl font-black leading-tight text-white">
-						Chraňte své<br /><span class="text-brand-green">soukromí</span> online
+						{tx('auth.login.branding.headline')}<br /><span class="text-brand-green">{tx('auth.login.branding.headlineHighlight')}</span> {tx('auth.login.branding.headlineAfter')}
 					</h1>
 					<p class="max-w-md text-base leading-relaxed text-text-muted">
-						MetaCleaner odstraňuje skrytá metadata z vašich fotografií a videí. Vaše soubory
-						opouštějí zařízení bez citlivých informací.
+						{tx('auth.login.branding.description')}
 					</p>
 				</div>
 
@@ -98,11 +110,11 @@
 							<i class="fa-solid fa-lock text-brand-blue"></i>
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Bezpečné zpracování</p>
-							<p class="mt-0.5 text-xs text-text-muted">Soubory zůstávají soukromé a připravené ke sdílení.</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.login.feature.secureTitle')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.login.feature.secureDesc')}</p>
 						</div>
 						<div class="ml-auto">
-							<span class="rounded bg-brand-blue/10 px-2 py-1 text-xs font-bold text-brand-blue">E2E</span>
+							<span class="rounded bg-brand-blue/10 px-2 py-1 text-xs font-bold text-brand-blue">{tx('auth.login.feature.secureBadge')}</span>
 						</div>
 					</div>
 
@@ -113,11 +125,11 @@
 							<i class="fa-solid fa-bolt text-brand-green"></i>
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Rychlé čištění</p>
-							<p class="mt-0.5 text-xs text-text-muted">Stovky souborů za sekundu</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.login.feature.fastTitle')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.login.feature.fastDesc')}</p>
 						</div>
 						<div class="ml-auto">
-							<span class="rounded bg-brand-green/10 px-2 py-1 text-xs font-bold text-brand-green">Rychlé</span>
+							<span class="rounded bg-brand-green/10 px-2 py-1 text-xs font-bold text-brand-green">{tx('auth.login.feature.fastBadge')}</span>
 						</div>
 					</div>
 
@@ -128,8 +140,8 @@
 							<i class="fa-solid fa-file-image text-brand-orange"></i>
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Více formátů</p>
-							<p class="mt-0.5 text-xs text-text-muted">JPG, PNG, HEIC, MP4, MOV a další</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.login.feature.formatsTitle')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.login.feature.formatsDesc')}</p>
 						</div>
 						<div class="ml-auto flex gap-1">
 							<span class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">JPG</span>
@@ -141,16 +153,16 @@
 				<!-- Stats Row -->
 				<div class="grid grid-cols-3 gap-4">
 					<div class="text-center">
-						<p class="text-2xl font-black text-white">50K+</p>
-						<p class="mt-1 text-xs text-text-muted">Uživatelů</p>
+						<p class="text-2xl font-black text-white">{stats[0].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[0].labelKey)}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
-						<p class="text-2xl font-black text-brand-green">2M+</p>
-						<p class="mt-1 text-xs text-text-muted">Souborů vyčištěno</p>
+						<p class="text-2xl font-black text-brand-green">{stats[1].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[1].labelKey)}</p>
 					</div>
 					<div class="text-center">
-						<p class="text-2xl font-black text-brand-blue">100%</p>
-						<p class="mt-1 text-xs text-text-muted">Bezpečnost</p>
+						<p class="text-2xl font-black text-brand-blue">{stats[2].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[2].labelKey)}</p>
 					</div>
 				</div>
 			</div>
@@ -161,26 +173,26 @@
 				<!-- Mobile Hero (hidden on desktop) -->
 				<div class="mb-6 flex flex-col items-center text-center lg:hidden">
 					<h1 class="mb-2 text-2xl font-black leading-tight text-white">
-						Chraňte své <span class="text-brand-green">soukromí</span> online
+						{tx('auth.login.branding.headline')} <span class="text-brand-green">{tx('auth.login.branding.headlineHighlight')}</span> {tx('auth.login.branding.headlineAfter')}
 					</h1>
 					<p class="max-w-xs text-xs leading-relaxed text-text-muted">
-						MetaCleaner odstraňuje skrytá metadata z vašich fotografií a videí.
+						{tx('auth.login.branding.description')}
 					</p>
 					<!-- Mini Stats -->
 					<div class="mt-4 flex w-full max-w-xs items-center justify-center">
 						<div class="flex-1 text-center">
-							<p class="text-lg font-black text-white">50K+</p>
-							<p class="text-[10px] text-text-muted">Uživatelů</p>
+							<p class="text-lg font-black text-white">{stats[0].value}</p>
+							<p class="text-[10px] text-text-muted">{tx(stats[0].labelKey)}</p>
 						</div>
 						<div class="h-8 w-px bg-gray-800"></div>
 						<div class="flex-1 text-center">
-							<p class="text-lg font-black text-brand-green">2M+</p>
-							<p class="text-[10px] text-text-muted">Souborů</p>
+							<p class="text-lg font-black text-brand-green">{stats[1].value}</p>
+							<p class="text-[10px] text-text-muted">{tx(stats[1].labelKey)}</p>
 						</div>
 						<div class="h-8 w-px bg-gray-800"></div>
 						<div class="flex-1 text-center">
-							<p class="text-lg font-black text-brand-blue">100%</p>
-							<p class="text-[10px] text-text-muted">Bezpečnost</p>
+							<p class="text-lg font-black text-brand-blue">{stats[2].value}</p>
+							<p class="text-[10px] text-text-muted">{tx(stats[2].labelKey)}</p>
 						</div>
 					</div>
 				</div>
@@ -191,8 +203,8 @@
 				>
 					<!-- Header -->
 					<div class="flex flex-col gap-0.5 lg:gap-1">
-						<h2 class="text-xl font-bold text-white lg:text-2xl">Přihlásit se</h2>
-						<p class="text-xs text-text-muted lg:text-sm">Vítejte zpět! Zadejte své přihlašovací údaje.</p>
+						<h2 class="text-xl font-bold text-white lg:text-2xl">{tx('auth.login.form.title')}</h2>
+						<p class="text-xs text-text-muted lg:text-sm">{tx('auth.login.form.subtitle')}</p>
 					</div>
 
 					<!-- Social Login -->
@@ -218,20 +230,20 @@
 									fill="#EA4335"
 								/>
 							</svg>
-							Pokračovat s Google
+							{tx('auth.login.social.google')}
 						</button>
 						<button
 							class="flex min-h-[48px] w-full items-center justify-center gap-2.5 rounded-xl border border-[#374151] bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-[#4b5563] hover:bg-[#263347] lg:py-3"
 						>
 							<i class="fa-brands fa-apple text-lg"></i>
-							Pokračovat s Apple
+							{tx('auth.login.social.apple')}
 						</button>
 					</div>
 
 					<!-- Divider -->
 					<div class="flex items-center gap-3">
 						<div class="h-px flex-1 bg-navy-lighter"></div>
-						<span class="whitespace-nowrap text-xs font-medium text-text-muted">nebo emailem</span>
+						<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.login.divider.orEmail')}</span>
 						<div class="h-px flex-1 bg-navy-lighter"></div>
 					</div>
 
@@ -239,7 +251,7 @@
 					<form onsubmit={handleSubmit} class="flex flex-col gap-4">
 						<!-- Email -->
 						<div class="flex flex-col gap-1.5">
-							<label for="email-input" class="text-sm font-medium text-white">E-mailová adresa</label>
+							<label for="email-input" class="text-sm font-medium text-white">{tx('auth.login.field.emailLabel')}</label>
 							<div class="relative">
 								<span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted">
 									<i class="fa-regular fa-envelope"></i>
@@ -248,7 +260,7 @@
 									id="email-input"
 									type="email"
 									bind:value={email}
-									placeholder="vas@email.cz"
+									placeholder={tx('auth.login.field.emailPlaceholder')}
 									class="min-h-[48px] w-full rounded-xl border py-3 pl-10 pr-4 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
 									style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
 									onfocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = emailError ? '#ef4444' : '#3b82f6')}
@@ -265,12 +277,12 @@
 						<!-- Password -->
 						<div class="flex flex-col gap-1.5">
 							<div class="flex items-center justify-between">
-								<label for="password-input" class="text-sm font-medium text-white">Heslo</label>
+								<label for="password-input" class="text-sm font-medium text-white">{tx('auth.login.field.passwordLabel')}</label>
 								<a
 									href="/forgot-password"
 									class="text-xs font-medium text-brand-blue transition-colors hover:text-blue-400"
 								>
-									Zapomenuté heslo?
+									{tx('auth.login.field.forgotPassword')}
 								</a>
 							</div>
 							<div class="relative">
@@ -290,7 +302,7 @@
 								<button
 									type="button"
 									onclick={togglePassword}
-									aria-label={passwordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+									aria-label={passwordVisible ? tx('auth.common.a11y.hidePassword') : tx('auth.common.a11y.showPassword')}
 									class="absolute right-3.5 top-1/2 flex min-h-[44px] min-w-[44px] -translate-y-1/2 items-center justify-center text-sm text-text-muted transition-colors hover:text-white"
 								>
 									<i class={passwordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}></i>
@@ -315,7 +327,7 @@
 									<i class="fa-solid fa-check text-[10px] text-white"></i>
 								{/if}
 							</button>
-							<span class="text-sm text-text-muted">Zapamatovat si mě na tomto zařízení</span>
+							<span class="text-sm text-text-muted">{tx('auth.login.field.remember')}</span>
 						</div>
 
 						<!-- Submit -->
@@ -326,11 +338,11 @@
 							style="background: {submitState === 'success' ? '#16a34a' : '#22c55e'};"
 						>
 							{#if submitState === 'loading'}
-								<i class="fa-solid fa-spinner fa-spin"></i> Přihlašuji...
+								<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.login.submit.loading')}
 							{:else if submitState === 'success'}
-								<i class="fa-solid fa-circle-check"></i> Přihlášeno!
+								<i class="fa-solid fa-circle-check"></i> {tx('auth.login.submit.success')}
 							{:else}
-								<i class="fa-solid fa-arrow-right-to-bracket"></i> Přihlásit se
+								<i class="fa-solid fa-arrow-right-to-bracket"></i> {tx('auth.login.submit.idle')}
 							{/if}
 						</button>
 					</form>
@@ -338,12 +350,12 @@
 					<!-- Footer -->
 					<div class="border-t border-gray-800 pt-1 text-center">
 						<p class="text-sm text-text-muted">
-							Nemáte účet?
+							{tx('auth.login.footer.noAccount')}
 							<a
 								href="/register"
 								class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
 							>
-								Zaregistrujte se zdarma
+								{tx('auth.login.footer.registerFree')}
 							</a>
 						</p>
 					</div>
@@ -353,17 +365,17 @@
 				<div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span>SSL šifrování</span>
+						<span>{tx('auth.common.trust.ssl')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span>GDPR soulad</span>
+						<span>{tx('auth.common.trust.gdpr')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>Bez sledování</span>
+						<span>{tx('auth.common.trust.noTracking')}</span>
 					</div>
 				</div>
 			</div>
