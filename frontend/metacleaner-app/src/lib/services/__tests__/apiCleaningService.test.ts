@@ -1002,7 +1002,7 @@ describe('Feature: api-integration, Property 10: Report summary type mapping cor
 		} as never);
 	}
 
-	it('iconColor is green for type=image and orange for type=video for any other fields', async () => {
+	it('iconColor is blue for type=image and orange for type=video for any other fields', async () => {
 		await fc.assert(
 			fc.asyncProperty(
 				fc.record({
@@ -1023,7 +1023,7 @@ describe('Feature: api-integration, Property 10: Report summary type mapping cor
 					expect(result.reports).toHaveLength(1);
 					const report = result.reports[0];
 					if (backendReport.type === 'image') {
-						expect(report.iconColor).toBe('green');
+						expect(report.iconColor).toBe('blue');
 					} else {
 						expect(report.iconColor).toBe('orange');
 					}
@@ -1258,7 +1258,7 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 		expect(report.fields).toBe(42);
 		expect(report.fieldsColor).toBe('white');
 		expect(report.tags).toEqual(['exif', 'xmp']);
-		expect(report.iconColor).toBe('green');
+		expect(report.iconColor).toBe('blue');
 	});
 
 	it('getReports maps video type to orange iconColor', async () => {
@@ -1332,7 +1332,7 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 
 		const imageFile = result.files[0];
 		expect(imageFile.name).toBe('photo.jpg');
-		expect(imageFile.iconColor).toBe('green');
+		expect(imageFile.iconColor).toBe('blue');
 		expect(imageFile.barWidthPercent).toBe(67); // Math.round(20/30*100)
 		expect(imageFile.barGradientFrom).toBe('#22c55e');
 		expect(imageFile.barGradientTo).toBe('#16a34a');

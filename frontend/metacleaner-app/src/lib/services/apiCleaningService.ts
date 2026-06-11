@@ -350,8 +350,8 @@ function extractTime(dateStr: string): string {
 	return timePart.replace('Z', '').substring(0, 5);
 }
 
-function computeIconColor(type: string): 'green' | 'orange' {
-	return type === 'image' ? 'green' : 'orange';
+function computeIconColor(type: string): 'blue' | 'orange' {
+	return type === 'image' ? 'blue' : 'orange';
 }
 
 function mapSingleReport(r: BackendReportSummary): Report {

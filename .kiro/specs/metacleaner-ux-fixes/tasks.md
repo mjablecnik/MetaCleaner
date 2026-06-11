@@ -52,9 +52,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
   - Mark task complete when tests are written, run, and passing on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9_
 
-- [ ] 3. Fix Bug 6 — Image icon color
+- [x] 3. Fix Bug 6 — Image icon color
 
-  - [ ] 3.1 Change `computeIconColor()` return value for images
+  - [x] 3.1 Change `computeIconColor()` return value for images
     - File: `frontend/metacleaner-app/src/lib/services/apiCleaningService.ts`
     - Change: `type === 'image'` returns `'blue'` instead of `'green'`
     - Single line change: `return type === 'image' ? 'blue' : 'orange';`
