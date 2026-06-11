@@ -63,7 +63,7 @@
 
 <div
 	class="flex min-h-screen flex-col"
-	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Navbar -->
 	<nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-5 py-4 lg:px-6 lg:py-6">
@@ -262,9 +262,9 @@
 									bind:value={email}
 									placeholder={tx('auth.login.field.emailPlaceholder')}
 									class="min-h-[48px] w-full rounded-xl border py-3 pl-10 pr-4 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-									style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
-									onfocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = emailError ? '#ef4444' : '#3b82f6')}
-									onblur={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = emailError ? '#ef4444' : '#1e293b')}
+									style="background: var(--color-navy-main); border-color: {emailError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
+									onfocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = emailError ? 'var(--color-brand-red)' : 'var(--color-brand-blue)')}
+									onblur={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = emailError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)')
 								/>
 							</div>
 							{#if emailError}
@@ -295,9 +295,9 @@
 									bind:value={password}
 									placeholder="••••••••"
 									class="min-h-[48px] w-full rounded-xl border py-3 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-									style="background:#0a1628; border-color: {passwordError ? '#ef4444' : '#1e293b'};"
-									onfocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = passwordError ? '#ef4444' : '#3b82f6')}
-									onblur={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = passwordError ? '#ef4444' : '#1e293b')}
+									style="background: var(--color-navy-main); border-color: {passwordError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
+									onfocus={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = passwordError ? 'var(--color-brand-red)' : 'var(--color-brand-blue)')}
+									onblur={(e) => ((e.currentTarget as HTMLInputElement).style.borderColor = passwordError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)')
 								/>
 								<button
 									type="button"
@@ -320,8 +320,7 @@
 							<button
 								type="button"
 								onclick={toggleRemember}
-								class="flex min-w-[24px] h-6 w-6 flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5"
-								style="background: {rememberMe ? '#3b82f6' : '#0a1628'}; border-color: {rememberMe ? '#3b82f6' : '#4b5563'};"
+								class="flex min-w-[24px] h-6 w-6 flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 {rememberMe ? 'bg-brand-blue border-brand-blue' : 'bg-navy-main border-gray-600'}"
 							>
 								{#if rememberMe}
 									<i class="fa-solid fa-check text-[10px] text-white"></i>
@@ -334,8 +333,7 @@
 						<button
 							type="submit"
 							disabled={submitState === 'loading' || submitState === 'success'}
-							class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0 lg:py-3.5"
-							style="background: {submitState === 'success' ? '#16a34a' : '#22c55e'};"
+							class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0 lg:py-3.5 {submitState === 'success' ? 'bg-brand-green-dark' : 'bg-brand-green'}"
 						>
 							{#if submitState === 'loading'}
 								<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.login.submit.loading')}

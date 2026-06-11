@@ -21,13 +21,24 @@
 	--color-text-muted: #94a3b8; /* secondary / muted text */
 
 	/* ─── Border colors ──────────────────────────────────────────────────── */
+	--color-gray-600: #4b5563; /* lighter borders (unchecked inputs, inactive controls) */
 	--color-gray-700: #374151; /* borders, dividers */
 
 	/* ─── Typography ─────────────────────────────────────────────────────── */
 	--font-sans: 'Inter', sans-serif;
 
+	/* ─── Brand extended colors ─────────────────────────────────────────── */
+	--color-brand-yellow: #eab308; /* password strength: medium */
+	--color-brand-green-dark: #16a34a; /* success state (darker green) */
+	--color-navy-main-95: rgba(10, 22, 40, 0.95); /* navbar backdrop on mobile */
+
+	/* ─── Page background gradients ─────────────────────────────────────── */
+	--color-page-gradient-blue: rgba(59, 130, 246, 0.08); /* auth page radial gradient */
+	--color-page-gradient-green: rgba(34, 197, 94, 0.06); /* auth page radial gradient */
+
 	/* ─── Shadows ────────────────────────────────────────────────────────── */
 	--shadow-glow-green: 0 0 20px rgba(34, 197, 94, 0.2);
+	--shadow-glow-green-strong: 0 0 24px rgba(34, 197, 94, 0.4); /* stronger green glow for animations */
 	--shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.2);
 	--shadow-glow-red: 0 0 30px rgba(239, 68, 68, 0.15);
 	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
