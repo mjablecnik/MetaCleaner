@@ -9,6 +9,7 @@
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
+	import { downloadFile } from '$lib/clients/metaCleanerApi.js';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import SuccessHeader from './SuccessHeader.svelte';
@@ -58,11 +59,20 @@
 	async function handleDownload(): Promise<void> {
 		if (!results) return;
 		try {
-			const blob = await apiCleaningService.downloadResults(cleaningResultsStore.jobId ?? '');
+			let blob: Blob;
+			let filename: string;
+			if (results.fileResults.length === 1) {
+				const fileId = results.fileResults[0].fileId;
+				blob = await downloadFile(fileId);
+				filename = files[0]?.name ?? fileId;
+			} else {
+				blob = await apiCleaningService.downloadResults(cleaningResultsStore.jobId ?? '');
+				filename = 'cleaned-files.zip';
+			}
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
-			a.download = 'cleaned-files.zip';
+			a.download = filename;
 			a.click();
 			URL.revokeObjectURL(url);
 		} catch {

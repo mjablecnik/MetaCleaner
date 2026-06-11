@@ -63,9 +63,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: computeIconColor('video') and computeIconColor('document') continue to return 'orange'_
     - _Requirements: 2.6, 3.6_
 
-- [ ] 4. Fix Bug 1 — Single file direct download
+- [x] 4. Fix Bug 1 — Single file direct download
 
-  - [ ] 4.1 Add conditional download logic in `handleDownload()`
+  - [x] 4.1 Add conditional download logic in `handleDownload()`
     - File: `frontend/metacleaner-app/src/routes/sections/Step5Success/Step5Success.svelte`
     - Check `results.fileResults.length === 1` (or equivalent file count)
     - If single file: extract `fileId` from `results.fileResults[0].fileId`, call `api.downloadFile(fileId)` with original filename
