@@ -500,8 +500,7 @@ class ApiCleaningService implements CleaningService {
 
 				if (cancelled) return;
 
-				const fileNamesObj = Object.fromEntries(fileNameMap);
-				const jobResponse = await api.createJob(fileIds, fileNamesObj);
+				const jobResponse = await api.createJob(fileIds);
 				jobHandle.jobId = jobResponse.jobId;
 
 				if (cancelled) return;

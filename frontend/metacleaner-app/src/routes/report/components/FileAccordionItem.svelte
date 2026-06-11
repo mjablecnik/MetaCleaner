@@ -135,11 +135,9 @@
 	{#if open}
 		<div class="border-t border-gray-800">
 			<div class="flex flex-col gap-3 p-4">
-				<div class="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr_1fr]">
+				<div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
 					{#each metaSections as section (section.key)}
-						<div
-							class="max-h-[400px] overflow-y-auto rounded-xl border border-gray-800 bg-navy-main/60 p-3 lg:bg-navy-card"
-						>
+						<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 lg:bg-navy-card">
 							<p
 								class="mb-2 flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-text-muted uppercase"
 							>
