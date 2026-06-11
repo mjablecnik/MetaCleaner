@@ -100,9 +100,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Backend PDF generation pipeline (Supabase Storage) remains unchanged_
     - _Requirements: 2.3, 3.3_
 
-- [ ] 7. Fix Bug 4 — History-based back navigation
+- [x] 7. Fix Bug 4 — History-based back navigation
 
-  - [ ] 7.1 Replace hardcoded `backHref` with `history.back()` for report detail
+  - [x] 7.1 Replace hardcoded `backHref` with `history.back()` for report detail
     - File: `frontend/metacleaner-app/src/routes/+layout.svelte`
     - For the report detail route, replace `backHref: '/reports'` with a `backAction` callback
     - The callback calls `history.back()` to return to whatever page the user came from (results page or reports list)
@@ -112,9 +112,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Reports list page "Back to cleaning" button keeps its existing behavior_
     - _Requirements: 2.4, 3.4_
 
-- [ ] 8. Fix Bug 5 — Add "Report history" to user dropdown
+- [x] 8. Fix Bug 5 — Add "Report history" to user dropdown
 
-  - [ ] 8.1 Add "Report history" menu item to `UserDropdown`
+  - [x] 8.1 Add "Report history" menu item to `UserDropdown`
     - File: `frontend/metacleaner-app/src/lib/shared/components/UserDropdown.svelte`
     - Add a new `<a>` element with `href={resolve('/reports')}` between email header and "Settings"
     - Use icon: `fa-solid fa-clock-rotate-left` (or similar history icon)

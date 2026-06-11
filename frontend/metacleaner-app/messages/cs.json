@@ -2,6 +2,7 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"common.brandName": "MetaCleaner",
 	"common.nav.loggedInAs": "Přihlášen jako",
+	"common.nav.reportHistory": "Historie reportů",
 	"common.nav.settings": "Nastavení",
 	"common.nav.logout": "Odhlásit se",
 	"common.nav.language": "Jazyk",

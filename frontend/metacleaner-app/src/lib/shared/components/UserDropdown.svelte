@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { User } from '$lib/repositories/userRepository';
@@ -47,6 +49,10 @@
 			<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 			<p class="mt-0.5 text-sm font-semibold text-white">{user?.email ?? ''}</p>
 		</div>
+		<a class="lang-option" href={resolve('/reports' as Pathname)}>
+			<i class="fa-solid fa-clock-rotate-left text-sm text-text-muted"></i>
+			<span>{tx('common.nav.reportHistory')}</span>
+		</a>
 		<div
 			class="lang-option"
 			role="button"
