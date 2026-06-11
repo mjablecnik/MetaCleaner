@@ -32,9 +32,9 @@
 
 	const glowFilter: Record<Color, string> = {
 		red: 'var(--shadow-drop-red)',
-		orange: 'drop-shadow(0 0 6px rgba(249,115,22,0.6))',
-		green: 'drop-shadow(0 0 6px rgba(34,197,94,0.6))',
-		blue: 'drop-shadow(0 0 6px rgba(59,130,246,0.6))'
+		orange: 'var(--shadow-drop-orange)',
+		green: 'var(--shadow-drop-green)',
+		blue: 'var(--shadow-drop-blue)'
 	};
 
 	const textColorClass: Record<Color, string> = {

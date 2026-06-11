@@ -113,6 +113,6 @@
 		transition: background 0.15s;
 	}
 	.report-row:hover {
-		background: rgba(30, 41, 59, 0.5);
+		background: var(--color-navy-lighter-50);
 	}
 </style>

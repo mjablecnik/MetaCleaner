@@ -61,11 +61,11 @@
 	});
 
 	function barColor(barIndex: number): string {
-		if (newPassword.length === 0 || strengthScore === 0) return '#1e293b';
-		if (strengthScore <= 2) return barIndex === 1 ? '#ef4444' : '#1e293b';
-		if (strengthScore === 3) return barIndex <= 2 ? '#f97316' : '#1e293b';
-		if (strengthScore === 4) return barIndex <= 3 ? '#22c55e' : '#1e293b';
-		return '#22c55e';
+		if (newPassword.length === 0 || strengthScore === 0) return 'var(--color-navy-lighter)';
+		if (strengthScore <= 2) return barIndex === 1 ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)';
+		if (strengthScore === 3) return barIndex <= 2 ? 'var(--color-brand-orange)' : 'var(--color-navy-lighter)';
+		if (strengthScore === 4) return barIndex <= 3 ? 'var(--color-brand-green)' : 'var(--color-navy-lighter)';
+		return 'var(--color-brand-green)';
 	}
 
 	const passwordsMatch = $derived(
@@ -76,9 +76,9 @@
 	);
 
 	function confirmBorderColor(): string {
-		if (passwordsMismatch) return '#ef4444';
-		if (passwordsMatch) return '#22c55e';
-		return '#1e293b';
+		if (passwordsMismatch) return 'var(--color-brand-red)';
+		if (passwordsMatch) return 'var(--color-brand-green)';
+		return 'var(--color-navy-lighter)';
 	}
 
 	function handleSubmit(e: SubmitEvent) {
@@ -106,7 +106,7 @@
 
 <div
 	class="flex min-h-screen flex-col"
-	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Navbar -->
 	<nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6">
@@ -181,7 +181,7 @@
 					>
 						<div
 							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold {step === 3 ? 'ring-2 ring-brand-blue/30' : ''}"
-							style={step === 4 ? 'background: rgba(34,197,94,0.15);' : 'background: rgba(59,130,246,0.2); color: #3b82f6;'}
+							style={step === 4 ? 'background: var(--color-brand-green-15);' : 'background: var(--color-brand-blue-20); color: var(--color-brand-blue);'}
 						>
 							{#if step === 4}
 								<i class="fa-solid fa-check text-brand-green"></i>
@@ -247,7 +247,7 @@
 					</div>
 					<div
 						class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white transition-all duration-300"
-						style={step === 4 ? 'background: #22c55e;' : 'background: #3b82f6;'}
+						style={step === 4 ? 'background: var(--color-brand-green);' : 'background: var(--color-brand-blue);'}
 					>
 						{#if step === 4}
 							<i class="fa-solid fa-check text-xs"></i>
@@ -290,9 +290,9 @@
 										bind:value={newPassword}
 										placeholder="••••••••"
 										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-										style="background:#0a1628; border-color:#1e293b;"
-										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = '#3b82f6')}
-										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = '#1e293b')}
+										style="background: var(--color-navy-main); border-color: var(--color-navy-lighter);"
+										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = 'var(--color-brand-blue)')}
+										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = 'var(--color-navy-lighter)')}
 									/>
 									<button
 										type="button"
@@ -336,8 +336,8 @@
 										bind:value={confirmPassword}
 										placeholder="••••••••"
 										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-										style="background:#0a1628; border-color:{confirmBorderColor()};"
-										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = passwordsMismatch ? '#ef4444' : passwordsMatch ? '#22c55e' : '#3b82f6')}
+										style="background: var(--color-navy-main); border-color: {confirmBorderColor()};"
+										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = passwordsMismatch ? 'var(--color-brand-red)' : passwordsMatch ? 'var(--color-brand-green)' : 'var(--color-brand-blue)')}
 										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = confirmBorderColor())}
 									/>
 									<button
@@ -409,7 +409,7 @@
 								type="submit"
 								disabled={submitState === 'loading'}
 								class="pulse-green mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-								style="background: #22c55e;"
+								style="background: var(--color-brand-green);"
 							>
 								{#if submitState === 'loading'}
 									<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.common.submit.saving')}
@@ -446,7 +446,7 @@
 								<a
 									href="/login"
 									class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-									style="background: #22c55e;"
+									style="background: var(--color-brand-green);"
 								>
 									<i class="fa-solid fa-arrow-right-to-bracket"></i> {tx('auth.common.nav.login')}
 								</a>
@@ -509,22 +509,22 @@
 	}
 
 	.step-info-card.done-card {
-		border-color: rgba(34, 197, 94, 0.3) !important;
-		background: rgba(34, 197, 94, 0.04) !important;
+		border-color: var(--color-brand-green-30) !important;
+		background: var(--color-brand-green-4) !important;
 	}
 
 	.step-info-card.active-card {
-		border-color: rgba(59, 130, 246, 0.4) !important;
-		background: rgba(59, 130, 246, 0.05) !important;
+		border-color: var(--color-brand-blue-40) !important;
+		background: var(--color-brand-blue-5) !important;
 	}
 
 	@keyframes pulseGreen {
 		0%,
 		100% {
-			box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3);
+			box-shadow: 0 0 0 0 var(--color-brand-green-30);
 		}
 		50% {
-			box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+			box-shadow: 0 0 0 8px transparent;
 		}
 	}
 

@@ -35,9 +35,13 @@
 	--color-brand-green-20: rgba(34, 197, 94, 0.2); /* glow animation color */
 	--color-brand-green-30: rgba(34, 197, 94, 0.3); /* glow animation color */
 	--color-brand-green-40: rgba(34, 197, 94, 0.4); /* glow animation color */
+	--color-brand-green-4: rgba(34, 197, 94, 0.04); /* step-info done-card background */
 	--color-brand-orange-6: rgba(249, 115, 22, 0.06); /* plan/selection subtle bg */
 	--color-brand-orange-15: rgba(249, 115, 22, 0.15); /* icon container bg, badge bg */
 	--color-navy-main-95: rgba(10, 22, 40, 0.95); /* navbar backdrop on mobile */
+	--color-brand-blue-5: rgba(59, 130, 246, 0.05); /* step-info active-card background */
+	--color-brand-blue-20: rgba(59, 130, 246, 0.2); /* step progress circle active bg */
+	--color-brand-blue-40: rgba(59, 130, 246, 0.4); /* step-info active-card border */
 
 	/* ─── Page background gradients ─────────────────────────────────────── */
 	--color-page-gradient-blue: rgba(59, 130, 246, 0.08); /* auth page radial gradient */
@@ -51,6 +55,9 @@
 	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 	--shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.5); /* dropdowns, popovers */
 	--shadow-drop-red: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); /* red glow for error SVGs */
+	--shadow-drop-orange: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6)); /* orange glow for warning SVGs */
+	--shadow-drop-green: drop-shadow(0 0 6px rgba(34, 197, 94, 0.6)); /* green glow for success SVGs */
+	--shadow-drop-blue: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); /* blue glow for info SVGs */
 
 	/* ─── Border radii (non-standard values not covered by Tailwind defaults) */
 	--radius-dropdown: 10px; /* language / user dropdowns */

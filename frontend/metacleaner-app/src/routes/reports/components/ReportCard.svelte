@@ -99,6 +99,6 @@
 		transition: background 0.15s;
 	}
 	.report-card:active {
-		background: rgba(30, 41, 59, 0.6);
+		background: var(--color-navy-lighter-60);
 	}
 </style>
