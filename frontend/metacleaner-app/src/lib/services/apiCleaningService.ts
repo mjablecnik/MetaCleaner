@@ -393,7 +393,7 @@ function getGradientTo(type: string): string {
 
 function mapMetadataDetail(md: BackendMetadataDetail | null): FileMetadataSection {
 	if (!md) {
-		return { gpsFields: [], exifFields: [], xmpFields: [], totalRemoved: 0 };
+		return { gpsFields: [], exifFields: [], xmpFields: [], id3Fields: [], mp4AtomFields: [], totalRemoved: 0 };
 	}
 
 	return {
@@ -404,6 +404,8 @@ function mapMetadataDetail(md: BackendMetadataDetail | null): FileMetadataSectio
 			moreCount: undefined
 		})),
 		xmpFields: (md.xmpFields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		id3Fields: (md.id3Fields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		mp4AtomFields: (md.mp4Atoms ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
 		totalRemoved: md.totalRemoved
 	};
 }

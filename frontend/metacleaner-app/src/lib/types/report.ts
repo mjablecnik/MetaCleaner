@@ -34,6 +34,8 @@ export interface FileMetadataSection {
 	gpsFields: MetadataField[];
 	exifFields: MetadataField[];
 	xmpFields: MetadataField[];
+	id3Fields: MetadataField[];
+	mp4AtomFields: MetadataField[];
 	totalRemoved: number;
 }
 

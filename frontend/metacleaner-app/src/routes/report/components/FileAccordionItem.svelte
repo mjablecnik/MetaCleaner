@@ -48,13 +48,27 @@
 			icon: 'fa-tag',
 			iconClass: 'text-brand-blue',
 			txKey: 'report.chart.xmpData'
+		},
+		{
+			key: 'id3' as const,
+			icon: 'fa-music',
+			iconClass: 'text-brand-orange',
+			txKey: 'report.chart.id3Data'
+		},
+		{
+			key: 'mp4' as const,
+			icon: 'fa-video',
+			iconClass: 'text-brand-orange',
+			txKey: 'report.chart.mp4Data'
 		}
 	];
 
-	function getMetaFields(key: 'gps' | 'exif' | 'xmp') {
+	function getMetaFields(key: 'gps' | 'exif' | 'xmp' | 'id3' | 'mp4') {
 		if (key === 'gps') return file.metadata.gpsFields;
 		if (key === 'exif') return file.metadata.exifFields;
-		return file.metadata.xmpFields;
+		if (key === 'xmp') return file.metadata.xmpFields;
+		if (key === 'id3') return file.metadata.id3Fields;
+		return file.metadata.mp4AtomFields;
 	}
 
 	const colors = $derived(iconColors[file.iconColor]);

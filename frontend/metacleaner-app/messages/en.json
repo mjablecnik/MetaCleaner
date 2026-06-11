@@ -208,6 +208,8 @@
 	"report.chart.gpsData": "GPS Data",
 	"report.chart.exifData": "EXIF Data",
 	"report.chart.xmpData": "XMP Data",
+	"report.chart.id3Data": "ID3 Tags",
+	"report.chart.mp4Data": "MP4 Atoms",
 	"report.files.title": "Detailed file overview",
 	"report.files.collapseAll": "Collapse all",
 	"report.files.expandAll": "Expand all",

@@ -40,6 +40,8 @@
 				{ label: 'Creator', value: 'John Doe' },
 				{ label: 'Rights', value: 'All rights reserved' }
 			],
+			id3Fields: [],
+			mp4AtomFields: [],
 			totalRemoved: 12
 		}
 	} satisfies ReportFileDetail;
@@ -75,6 +77,8 @@
 				{ label: 'Creator', value: 'Jane Smith' },
 				{ label: 'Description', value: 'City walk photo' }
 			],
+			id3Fields: [],
+			mp4AtomFields: [],
 			totalRemoved: 43
 		}
 	} satisfies ReportFileDetail;
@@ -103,6 +107,14 @@
 				{ label: 'Creator', value: 'Bob Johnson' },
 				{ label: 'Duration', value: '00:03:42' },
 				{ label: 'Rating', value: '5' }
+			],
+			id3Fields: [
+				{ label: 'Title', value: 'Family Reunion 2024' },
+				{ label: 'Artist', value: 'Bob Johnson' }
+			],
+			mp4AtomFields: [
+				{ label: 'com.apple.quicktime.make', value: 'Samsung' },
+				{ label: 'com.apple.quicktime.model', value: 'Galaxy S23' }
 			],
 			totalRemoved: 18
 		}
