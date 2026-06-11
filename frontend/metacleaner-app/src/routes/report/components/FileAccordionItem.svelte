@@ -135,17 +135,23 @@
 	{#if open}
 		<div class="border-t border-gray-800">
 			<div class="flex flex-col gap-3 p-4">
-				<div class="grid grid-cols-1 gap-3 lg:grid-cols-3">
+				<div class="flex flex-col gap-4">
 					{#each metaSections as section (section.key)}
-						<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-3 lg:bg-navy-card">
-							<p
-								class="mb-2 flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-text-muted uppercase"
-							>
-								<i class="fa-solid {section.icon} {section.iconClass}"></i>
-								{tx(section.txKey)}
-							</p>
-							<MetadataTable fields={getMetaFields(section.key)} />
-						</div>
+						{@const sectionFields = getMetaFields(section.key)}
+						{#if sectionFields.length > 0}
+							<div class="rounded-xl border border-gray-800 bg-navy-main/60 p-4 lg:bg-navy-card">
+								<p
+									class="mb-3 flex items-center gap-2 text-xs font-semibold tracking-wider text-text-muted uppercase"
+								>
+									<i class="fa-solid {section.icon} {section.iconClass}"></i>
+									{tx(section.txKey)}
+									<span class="ml-auto rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted"
+										>{sectionFields.length}</span
+									>
+								</p>
+								<MetadataTable fields={sectionFields} />
+							</div>
+						{/if}
 					{/each}
 				</div>
 				<div
