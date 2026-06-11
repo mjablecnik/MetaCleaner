@@ -446,11 +446,11 @@
 
 	"auth.newPassword.meta.title": "Nové heslo – MetaCleaner",
 	"auth.newPassword.branding.headline": "Nastavte nové heslo",
-	"auth.newPassword.branding.description": "Jste skoro hotovi...",
+	"auth.newPassword.branding.description": "Jste skoro hotovi. Zvolte silné heslo, které bude chránit váš účet. Doporučujeme kombinaci písmen, číslic a symbolů.",
 	"auth.newPassword.step1.doneDesc": "Na váš účet jsme odeslali ověřovací kód.",
 	"auth.newPassword.step2.doneDesc": "6místný kód byl úspěšně ověřen.",
 	"auth.newPassword.tip.title": "Tip pro bezpečné heslo",
-	"auth.newPassword.tip.description": "Použijte alespoň 12 znaků...",
+	"auth.newPassword.tip.description": "Použijte alespoň 12 znaků, velká i malá písmena, čísla a speciální znaky jako !@#$%",
 	"auth.newPassword.mobile.headline": "Nové heslo nastavte",
 	"auth.newPassword.mobile.subtitle": "Krok 3 ze 3 · Zvolte silné heslo",
 	"auth.newPassword.form.description": "Zvolte silné heslo pro ochranu vašeho účtu MetaCleaner.",

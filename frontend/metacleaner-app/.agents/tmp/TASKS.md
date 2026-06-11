@@ -16,7 +16,7 @@
 - [x] 6. [MEDIUM] Extract hardcoded strings from `src/routes/(auth)/check-email/+page.svelte` to translation keys — 40 strings
 - [x] 7. [MEDIUM] Extract hardcoded strings from `src/routes/(auth)/forgot-password/+page.svelte` to translation keys — 55 strings
 - [x] 8. [MEDIUM] Extract hardcoded strings from `src/routes/(auth)/check-code/+page.svelte` to translation keys — 55 strings
-- [ ] 9. [MEDIUM] Extract hardcoded strings from `src/routes/(auth)/new-password/+page.svelte` to translation keys — 50 strings
+- [x] 9. [MEDIUM] Extract hardcoded strings from `src/routes/(auth)/new-password/+page.svelte` to translation keys — 50 strings
 
 ## Phase 4 — Replace API data with repository calls
 

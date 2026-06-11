@@ -1,10 +1,21 @@
 <script lang="ts">
+	import { locale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+
 	let newPassword = $state('');
 	let confirmPassword = $state('');
 	let newPasswordVisible = $state(false);
 	let confirmPasswordVisible = $state(false);
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 	let step = $state<3 | 4>(3);
+
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
+		return fn ? fn(params) : key;
+	}
 
 	const hasLen = $derived(newPassword.length >= 8);
 	const hasUpper = $derived(/[A-Z]/.test(newPassword));
@@ -22,29 +33,29 @@
 		if (newPassword.length === 0) return { label: '', labelColor: '', hint: '', hintColor: '' };
 		if (strengthScore <= 2)
 			return {
-				label: 'Slabé heslo',
+				label: tx('auth.common.strength.weakPassword'),
 				labelColor: 'text-brand-red',
-				hint: 'Přidejte více znaků',
+				hint: tx('auth.common.strength.addMore'),
 				hintColor: 'text-text-muted'
 			};
 		if (strengthScore === 3)
 			return {
-				label: 'Průměrné heslo',
+				label: tx('auth.common.strength.averagePassword'),
 				labelColor: 'text-brand-orange',
-				hint: 'Mohlo by být silnější',
+				hint: tx('auth.common.strength.couldBeStronger'),
 				hintColor: 'text-text-muted'
 			};
 		if (strengthScore === 4)
 			return {
-				label: 'Silné heslo',
+				label: tx('auth.common.strength.strongPassword'),
 				labelColor: 'text-brand-green',
-				hint: 'Skoro perfektní!',
+				hint: tx('auth.common.strength.almostPerfect'),
 				hintColor: 'text-text-muted'
 			};
 		return {
-			label: 'Velmi silné heslo',
+			label: tx('auth.common.strength.veryStrongPassword'),
 			labelColor: 'text-brand-green',
-			hint: 'Výborně!',
+			hint: tx('auth.common.strength.excellent'),
 			hintColor: 'text-brand-green'
 		};
 	});
@@ -90,7 +101,7 @@
 </script>
 
 <svelte:head>
-	<title>Nové heslo – MetaCleaner</title>
+	<title>{tx('auth.newPassword.meta.title')}</title>
 </svelte:head>
 
 <div
@@ -103,15 +114,15 @@
 			<div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue lg:h-10 lg:w-10">
 				<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 			</div>
-			<span class="text-lg font-bold tracking-tight lg:text-xl">MetaCleaner</span>
+			<span class="text-lg font-bold tracking-tight lg:text-xl">{tx('common.brandName')}</span>
 		</div>
 		<div class="flex items-center gap-2">
-			<span class="hidden text-sm text-text-muted lg:inline">Vzpomněli jste si?</span>
+			<span class="hidden text-sm text-text-muted lg:inline">{tx('auth.common.nav.remembered')}</span>
 			<a
 				href="/login"
 				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2 lg:text-sm"
 			>
-				Přihlásit se
+				{tx('auth.common.nav.login')}
 			</a>
 		</div>
 	</nav>
@@ -127,10 +138,10 @@
 						<i class="fa-solid fa-lock text-3xl text-brand-green"></i>
 					</div>
 					<h1 class="text-4xl font-black leading-tight text-white">
-						Nastavte<br /><span class="text-brand-green">nové heslo</span>
+						{tx('auth.newPassword.branding.headline')}
 					</h1>
 					<p class="max-w-md text-base leading-relaxed text-text-muted">
-						Jste skoro hotovi. Zvolte silné heslo, které bude chránit váš účet. Doporučujeme kombinaci písmen, číslic a symbolů.
+						{tx('auth.newPassword.branding.description')}
 					</p>
 				</div>
 
@@ -142,8 +153,8 @@
 							<i class="fa-solid fa-check text-sm text-brand-green"></i>
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Zadejte e-mail</p>
-							<p class="mt-0.5 text-xs text-text-muted">Na váš účet jsme odeslali ověřovací kód.</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step1.title')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.newPassword.step1.doneDesc')}</p>
 						</div>
 						<div class="ml-auto">
 							<i class="fa-solid fa-circle-check text-brand-green opacity-80"></i>
@@ -155,8 +166,8 @@
 							<i class="fa-solid fa-check text-sm text-brand-green"></i>
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Ověřte kód</p>
-							<p class="mt-0.5 text-xs text-text-muted">6místný kód byl úspěšně ověřen.</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step2.title')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.newPassword.step2.doneDesc')}</p>
 						</div>
 						<div class="ml-auto">
 							<i class="fa-solid fa-circle-check text-brand-green opacity-80"></i>
@@ -179,8 +190,8 @@
 							{/if}
 						</div>
 						<div>
-							<p class="text-sm font-semibold text-white">Nastavte nové heslo</p>
-							<p class="mt-0.5 text-xs text-text-muted">Zvolte silné heslo a přihlaste se.</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step3.title')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.forgotPassword.step3.desc')}</p>
 						</div>
 						<div class="ml-auto">
 							<i class={step === 4 ? 'fa-solid fa-circle-check text-brand-green opacity-80' : 'fa-solid fa-lock text-brand-blue opacity-80'}></i>
@@ -192,9 +203,9 @@
 				<div class="flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 p-4">
 					<i class="fa-solid fa-shield-halved mt-0.5 flex-shrink-0 text-brand-green"></i>
 					<div>
-						<p class="text-sm font-semibold text-white">Tip pro bezpečné heslo</p>
+						<p class="text-sm font-semibold text-white">{tx('auth.newPassword.tip.title')}</p>
 						<p class="mt-0.5 text-xs text-text-muted">
-							Použijte alespoň 12 znaků, velká i malá písmena, čísla a speciální znaky jako <span class="font-medium text-white">!@#$%</span>
+							{tx('auth.newPassword.tip.description')}
 						</p>
 					</div>
 				</div>
@@ -210,9 +221,9 @@
 					</div>
 					<div>
 						<h1 class="text-xl font-bold leading-tight text-white">
-							Nové heslo <span class="text-brand-green">nastavte</span>
+							{tx('auth.newPassword.mobile.headline')}
 						</h1>
-						<p class="mt-0.5 text-xs text-text-muted">Krok 3 ze 3 · Zvolte silné heslo</p>
+						<p class="mt-0.5 text-xs text-text-muted">{tx('auth.newPassword.mobile.subtitle')}</p>
 					</div>
 				</div>
 
@@ -259,16 +270,16 @@
 										<i class="fa-solid fa-lock text-brand-green"></i>
 									</div>
 									<div>
-										<h2 class="text-2xl font-bold text-white">Nové heslo</h2>
-										<p class="text-xs text-text-muted">Krok 3 ze 3</p>
+										<h2 class="text-2xl font-bold text-white">{tx('auth.forgotPassword.newPassword.title')}</h2>
+										<p class="text-xs text-text-muted">{tx('auth.forgotPassword.newPassword.stepLabel')}</p>
 									</div>
 								</div>
-								<p class="text-sm text-text-muted">Zvolte silné heslo pro ochranu vašeho účtu MetaCleaner.</p>
+								<p class="text-sm text-text-muted">{tx('auth.newPassword.form.description')}</p>
 							</div>
 
 							<!-- New Password -->
 							<div class="flex flex-col gap-1.5">
-								<label for="new-password" class="text-sm font-medium text-white">Nové heslo</label>
+								<label for="new-password" class="text-sm font-medium text-white">{tx('auth.common.field.newPasswordLabel')}</label>
 								<div class="relative">
 									<span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted">
 										<i class="fa-solid fa-lock"></i>
@@ -286,7 +297,7 @@
 									<button
 										type="button"
 										onclick={() => { newPasswordVisible = !newPasswordVisible; }}
-										aria-label={newPasswordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+										aria-label={newPasswordVisible ? tx('auth.common.a11y.hidePassword') : tx('auth.common.a11y.showPassword')}
 										class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-sm text-text-muted transition-colors hover:text-white"
 									>
 										<i class={newPasswordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}></i>
@@ -314,7 +325,7 @@
 
 							<!-- Confirm Password -->
 							<div class="flex flex-col gap-1.5">
-								<label for="confirm-password" class="text-sm font-medium text-white">Potvrdit heslo</label>
+								<label for="confirm-password" class="text-sm font-medium text-white">{tx('auth.common.field.confirmPasswordLabel')}</label>
 								<div class="relative">
 									<span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted">
 										<i class="fa-solid fa-lock"></i>
@@ -332,7 +343,7 @@
 									<button
 										type="button"
 										onclick={() => { confirmPasswordVisible = !confirmPasswordVisible; }}
-										aria-label={confirmPasswordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+										aria-label={confirmPasswordVisible ? tx('auth.common.a11y.hidePassword') : tx('auth.common.a11y.showPassword')}
 										class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-sm text-text-muted transition-colors hover:text-white"
 									>
 										<i class={confirmPasswordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}></i>
@@ -340,12 +351,12 @@
 								</div>
 								{#if passwordsMismatch}
 									<span class="text-[12px] text-brand-red">
-										<i class="fa-solid fa-circle-exclamation mr-1"></i>Hesla se neshodují.
+										<i class="fa-solid fa-circle-exclamation mr-1"></i>{tx('auth.common.validation.passwordsMismatch')}
 									</span>
 								{/if}
 								{#if passwordsMatch}
 									<span class="text-xs text-brand-green">
-										<i class="fa-solid fa-circle-check mr-1"></i>Hesla se shodují.
+										<i class="fa-solid fa-circle-check mr-1"></i>{tx('auth.common.validation.passwordsMatch')}
 									</span>
 								{/if}
 							</div>
@@ -353,42 +364,42 @@
 							<!-- Requirements -->
 							<div class="rounded-xl border border-gray-800 bg-navy-main p-3.5 lg:p-4">
 								<p class="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-muted lg:mb-2">
-									Požadavky na heslo
+									{tx('auth.common.requirements.title')}
 								</p>
 								<!-- Desktop: vertical list -->
 								<div class="hidden flex-col gap-2 lg:flex">
 									<div class={reqClass(hasLen)}>
-										<i class="{reqIcon(hasLen)} w-4 text-center flex-shrink-0"></i>Alespoň 8 znaků
+										<i class="{reqIcon(hasLen)} w-4 text-center flex-shrink-0"></i>{tx('auth.common.requirements.min8')}
 									</div>
 									<div class={reqClass(hasUpper)}>
-										<i class="{reqIcon(hasUpper)} w-4 text-center flex-shrink-0"></i>Velké písmeno (A–Z)
+										<i class="{reqIcon(hasUpper)} w-4 text-center flex-shrink-0"></i>{tx('auth.common.requirements.uppercaseFull')}
 									</div>
 									<div class={reqClass(hasLower)}>
-										<i class="{reqIcon(hasLower)} w-4 text-center flex-shrink-0"></i>Malé písmeno (a–z)
+										<i class="{reqIcon(hasLower)} w-4 text-center flex-shrink-0"></i>{tx('auth.common.requirements.lowercase')}
 									</div>
 									<div class={reqClass(hasNum)}>
-										<i class="{reqIcon(hasNum)} w-4 text-center flex-shrink-0"></i>Číslo (0–9)
+										<i class="{reqIcon(hasNum)} w-4 text-center flex-shrink-0"></i>{tx('auth.common.requirements.numberFull')}
 									</div>
 									<div class={reqClass(hasSpecial)}>
-										<i class="{reqIcon(hasSpecial)} w-4 text-center flex-shrink-0"></i>Speciální znak (!@#$%)
+										<i class="{reqIcon(hasSpecial)} w-4 text-center flex-shrink-0"></i>{tx('auth.common.requirements.special')}
 									</div>
 								</div>
 								<!-- Mobile: 2-column grid -->
 								<div class="grid grid-cols-2 gap-1.5 lg:hidden">
 									<div class={reqClass(hasLen)}>
-										<i class="{reqIcon(hasLen)} w-3.5 text-center flex-shrink-0"></i><span>Alespoň 8 znaků</span>
+										<i class="{reqIcon(hasLen)} w-3.5 text-center flex-shrink-0"></i><span>{tx('auth.common.requirements.min8')}</span>
 									</div>
 									<div class={reqClass(hasUpper)}>
-										<i class="{reqIcon(hasUpper)} w-3.5 text-center flex-shrink-0"></i><span>Velké písmeno</span>
+										<i class="{reqIcon(hasUpper)} w-3.5 text-center flex-shrink-0"></i><span>{tx('auth.common.requirements.uppercase')}</span>
 									</div>
 									<div class={reqClass(hasLower)}>
-										<i class="{reqIcon(hasLower)} w-3.5 text-center flex-shrink-0"></i><span>Malé písmeno</span>
+										<i class="{reqIcon(hasLower)} w-3.5 text-center flex-shrink-0"></i><span>{tx('auth.common.requirements.lowercase')}</span>
 									</div>
 									<div class={reqClass(hasNum)}>
-										<i class="{reqIcon(hasNum)} w-3.5 text-center flex-shrink-0"></i><span>Číslo (0–9)</span>
+										<i class="{reqIcon(hasNum)} w-3.5 text-center flex-shrink-0"></i><span>{tx('auth.common.requirements.numberFull')}</span>
 									</div>
 									<div class="{reqClass(hasSpecial)} col-span-2">
-										<i class="{reqIcon(hasSpecial)} w-3.5 text-center flex-shrink-0"></i><span>Speciální znak (!@#$%)</span>
+										<i class="{reqIcon(hasSpecial)} w-3.5 text-center flex-shrink-0"></i><span>{tx('auth.common.requirements.special')}</span>
 									</div>
 								</div>
 							</div>
@@ -401,9 +412,9 @@
 								style="background: #22c55e;"
 							>
 								{#if submitState === 'loading'}
-									<i class="fa-solid fa-spinner fa-spin"></i> Ukládám...
+									<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.common.submit.saving')}
 								{:else}
-									<i class="fa-solid fa-check"></i> Nastavit nové heslo
+									<i class="fa-solid fa-check"></i> {tx('auth.common.submit.setNewPassword')}
 								{/if}
 							</button>
 
@@ -413,7 +424,7 @@
 									href="/check-code"
 									class="inline-block py-1 text-sm text-text-muted transition-colors hover:text-white"
 								>
-									<i class="fa-solid fa-arrow-left mr-1.5"></i>Zpět na ověření kódu
+									<i class="fa-solid fa-arrow-left mr-1.5"></i>{tx('auth.common.nav.backToCode')}
 								</a>
 							</div>
 						</form>
@@ -426,9 +437,9 @@
 								<i class="fa-solid fa-circle-check text-4xl text-brand-green lg:text-5xl"></i>
 							</div>
 							<div class="flex flex-col gap-2">
-								<h2 class="text-2xl font-bold text-white">Heslo změněno!</h2>
+								<h2 class="text-2xl font-bold text-white">{tx('auth.common.success.passwordChanged')}</h2>
 								<p class="max-w-xs mx-auto text-sm leading-relaxed text-text-muted">
-									Vaše heslo bylo úspěšně nastaveno. Nyní se můžete přihlásit do svého účtu.
+									{tx('auth.common.success.passwordChangedDesc')}
 								</p>
 							</div>
 							<div class="mt-2 flex w-full flex-col gap-3">
@@ -437,11 +448,11 @@
 									class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
 									style="background: #22c55e;"
 								>
-									<i class="fa-solid fa-arrow-right-to-bracket"></i> Přihlásit se
+									<i class="fa-solid fa-arrow-right-to-bracket"></i> {tx('auth.common.nav.login')}
 								</a>
 								<div class="flex items-center gap-2 rounded-xl border border-brand-green/20 bg-navy-main p-3 text-xs text-text-muted">
 									<i class="fa-solid fa-shield-halved flex-shrink-0 text-brand-green"></i>
-									<span>Vaše heslo je bezpečně zašifrováno a uloženo.</span>
+									<span>{tx('auth.common.success.encrypted')}</span>
 								</div>
 							</div>
 						</div>
@@ -453,7 +464,7 @@
 					<div class="mt-4 flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 p-3.5 lg:hidden">
 						<i class="fa-solid fa-shield-halved mt-0.5 flex-shrink-0 text-sm text-brand-green"></i>
 						<p class="text-xs text-text-muted">
-							<span class="font-semibold text-white">Tip: </span>Použijte 12+ znaků, velká i malá písmena, čísla a znaky <span class="font-medium text-white">!@#$%</span>
+							<span class="font-semibold text-white">{tx('auth.common.tip.prefix')} </span>{tx('auth.newPassword.mobile.tip')}
 						</p>
 					</div>
 				{/if}
@@ -462,19 +473,19 @@
 				<div class="mt-4 flex items-center justify-center gap-4 lg:mt-5 lg:gap-5">
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span class="hidden lg:inline">SSL šifrování</span>
-						<span class="lg:hidden">SSL</span>
+						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
+						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span class="hidden lg:inline">GDPR soulad</span>
-						<span class="lg:hidden">GDPR</span>
+						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
+						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>Bez sledování</span>
+						<span>{tx('auth.common.trust.noTracking')}</span>
 					</div>
 				</div>
 			</div>

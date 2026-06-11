@@ -446,11 +446,11 @@
 
 	"auth.newPassword.meta.title": "New Password – MetaCleaner",
 	"auth.newPassword.branding.headline": "Set new password",
-	"auth.newPassword.branding.description": "You're almost there...",
+	"auth.newPassword.branding.description": "You're almost done. Choose a strong password to protect your account. We recommend a combination of letters, numbers and symbols.",
 	"auth.newPassword.step1.doneDesc": "We sent a verification code to your account.",
 	"auth.newPassword.step2.doneDesc": "6-digit code successfully verified.",
 	"auth.newPassword.tip.title": "Tip for a secure password",
-	"auth.newPassword.tip.description": "Use at least 12 characters...",
+	"auth.newPassword.tip.description": "Use at least 12 characters, uppercase and lowercase letters, numbers and special characters like !@#$%",
 	"auth.newPassword.mobile.headline": "Set new password",
 	"auth.newPassword.mobile.subtitle": "Step 3 of 3 · Choose a strong password",
 	"auth.newPassword.form.description": "Choose a strong password to protect your MetaCleaner account.",
