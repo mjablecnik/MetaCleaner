@@ -4,6 +4,7 @@
 // EXPECTED OUTCOME: FAILS on unfixed code (navProps returns {} when path === '/',
 // meaning logoHref is undefined and logo has no click action).
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import * as fc from 'fast-check';
 
 // Test the navProps computation logic in isolation.
 // The logic from +layout.svelte:
@@ -132,5 +133,97 @@ describe('Bug Condition 2: navProps provides logo action in success state at roo
 		// Instead it should use history.back() via a callback
 		expect(props.backHref).not.toBe('/reports');
 		// After fix, backHref for report detail is replaced by a history.back() mechanism
+	});
+});
+
+// ─── Property-Based Tests: navProps logoHref invariants ──────────────────────
+// Design spec: "Generate random route paths and app states, verify navProps.logoHref
+// is correctly determined."
+// Tests all three invariants across the full input domain:
+//   I1. Any non-root path → logoHref = '/'
+//   I2. Root path + non-success state → no logoHref, no onLogoClick
+//   I3. Root path + success state → onLogoClick defined, no logoHref
+
+describe('Property: navProps logoHref invariants across random routes and states', () => {
+	const ALL_STATES: AppState[] = ['idle', 'files-ready', 'processing', 'error', 'success'];
+
+	// I1: For any path ≠ '/', logoHref is always '/' regardless of appState
+	it('for any non-root path and any appState, logoHref is always "/"', () => {
+		fc.assert(
+			fc.property(
+				// Generate any path that starts with '/' but is not '/'
+				fc
+					.webPath()
+					.filter((p) => p !== '' && p !== '/')
+					.map((p) => (p.startsWith('/') ? p : `/${p}`)),
+				fc.constantFrom(...ALL_STATES) as fc.Arbitrary<AppState>,
+				(path, appState) => {
+					const props = computeNavProps({ path, appState });
+					expect(props.logoHref).toBe('/');
+				}
+			),
+			{ numRuns: 200 }
+		);
+	});
+
+	// I1 variant: explicit common non-root paths always get logoHref = '/'
+	it('for any of the specific known non-root paths, logoHref is "/" for all states', () => {
+		const knownPaths = ['/reports', '/report/abc', '/report', '/step2', '/step3', '/step4', '/step5'];
+		fc.assert(
+			fc.property(
+				fc.constantFrom(...knownPaths),
+				fc.constantFrom(...ALL_STATES) as fc.Arbitrary<AppState>,
+				(path, appState) => {
+					const props = computeNavProps({ path, appState });
+					expect(props.logoHref).toBe('/');
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	// I2: At root path, non-success states never provide a logo action
+	it('for root path "/" and any non-success appState, logoHref and onLogoClick are both undefined', () => {
+		fc.assert(
+			fc.property(
+				fc.constantFrom('idle', 'files-ready', 'processing', 'error') as fc.Arbitrary<AppState>,
+				(appState) => {
+					const props = computeNavProps({ path: '/', appState });
+					expect(props.logoHref).toBeUndefined();
+					expect(props.onLogoClick).toBeUndefined();
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	// I3: At root path in success state, a logo click callback is always provided
+	it('for root path "/" and appState "success", onLogoClick is always a function', () => {
+		fc.assert(
+			fc.property(
+				// The reset callback can be any function
+				fc.func(fc.constant(undefined as void)),
+				(onReset) => {
+					const props = computeNavProps({ path: '/', appState: 'success' }, onReset);
+					expect(typeof props.onLogoClick).toBe('function');
+					expect(props.logoHref).toBeUndefined();
+				}
+			),
+			{ numRuns: 50 }
+		);
+	});
+
+	// I3 corollary: the onLogoClick callback passed in is the exact one returned
+	it('onLogoClick returned for success state is the same callback passed as onLogoReset', () => {
+		fc.assert(
+			fc.property(
+				fc.func(fc.constant(undefined as void)),
+				(onReset) => {
+					const props = computeNavProps({ path: '/', appState: 'success' }, onReset);
+					expect(props.onLogoClick).toBe(onReset);
+				}
+			),
+			{ numRuns: 50 }
+		);
 	});
 });
