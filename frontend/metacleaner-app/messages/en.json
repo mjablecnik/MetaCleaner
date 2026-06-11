@@ -391,6 +391,7 @@
 	"auth.checkEmail.resend.idle": "Resend email",
 	"auth.checkEmail.changeEmail": "Change email address",
 	"auth.checkEmail.tips.title": "Can't find the email?",
+	"auth.checkEmail.tips.checkFolder": "Check the",
 	"auth.checkEmail.tips.spam": "Spam",
 	"auth.checkEmail.tips.bulk": "Bulk email",
 	"auth.checkEmail.tips.delay": "Email may arrive in",

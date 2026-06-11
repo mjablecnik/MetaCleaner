@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { locale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getAuthStats } from '$lib/repositories/authRepository';
 
 	const userEmail = 'jan.novak@email.cz';
 
@@ -8,16 +11,26 @@
 	let showToast = $state(false);
 	let tipsOpen = $state(false);
 
+	const stats = getAuthStats();
+
 	const progressPct = $derived((countdown / 86400) * 100);
 	const progressColor = $derived(
 		progressPct > 50 ? '#22c55e' : progressPct > 20 ? '#f97316' : '#ef4444'
 	);
 
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
+		return fn ? fn(params) : key;
+	}
+
 	function formatTime(seconds: number): string {
 		const h = Math.floor(seconds / 3600);
-		const m = Math.floor((seconds % 3600) / 60);
+		const min = Math.floor((seconds % 3600) / 60);
 		const s = seconds % 60;
-		return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+		return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 	}
 
 	onMount(() => {
@@ -45,7 +58,7 @@
 </script>
 
 <svelte:head>
-	<title>Ověřte e-mail – MetaCleaner</title>
+	<title>{tx('auth.checkEmail.meta.title')}</title>
 </svelte:head>
 
 <div
@@ -63,12 +76,12 @@
 			<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
 		</div>
 		<div class="flex items-center gap-2">
-			<span class="text-sm text-text-muted">Již máte účet?</span>
+			<span class="text-sm text-text-muted">{tx('auth.register.nav.hasAccount')}</span>
 			<a
 				href="/login"
 				class="rounded-lg border border-gray-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter"
 			>
-				Přihlásit se
+				{tx('auth.common.nav.login')}
 			</a>
 		</div>
 	</nav>
@@ -91,7 +104,7 @@
 			class="flex items-center rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white"
 			style="min-height: 44px;"
 		>
-			Přihlásit se
+			{tx('auth.common.nav.login')}
 		</a>
 	</nav>
 
@@ -110,14 +123,13 @@
 						class="inline-flex w-fit items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-3 py-1.5"
 					>
 						<i class="fa-solid fa-circle-check text-xs text-brand-green"></i>
-						<span class="text-xs font-semibold text-brand-green">Účet byl vytvořen · Poslední krok</span>
+						<span class="text-xs font-semibold text-brand-green">{tx('auth.checkEmail.badge.created')}</span>
 					</div>
 					<h1 class="text-4xl font-black leading-tight text-white">
-						Skoro hotovo!<br />Ověřte svůj <span class="text-brand-green">e-mail</span>
+						{tx('auth.checkEmail.heading.almostDone')}<br />{tx('auth.checkEmail.heading.verify')} <span class="text-brand-green">{tx('auth.checkEmail.heading.emailHighlight')}</span>
 					</h1>
 					<p class="max-w-md text-base leading-relaxed text-text-muted">
-						Poslali jsme vám ověřovací odkaz. Kliknutím na něj aktivujete svůj účet a získáte přístup
-						ke všem funkcím MetaCleaneru.
+						{tx('auth.checkEmail.heading.description')}
 					</p>
 				</div>
 
@@ -134,8 +146,8 @@
 							<div class="mt-1 h-10 w-px bg-brand-green/30"></div>
 						</div>
 						<div class="pt-1">
-							<p class="text-sm font-semibold text-white">Účet vytvořen</p>
-							<p class="mt-0.5 text-xs text-text-muted">Vaše údaje byly bezpečně uloženy</p>
+							<p class="text-sm font-semibold text-white">{tx('auth.checkEmail.step.accountCreated')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.checkEmail.step.accountCreatedDesc')}</p>
 						</div>
 					</div>
 					<!-- Step 2: Active -->
@@ -150,13 +162,13 @@
 						</div>
 						<div class="pt-1">
 							<p class="text-sm font-semibold text-white">
-								Ověření e-mailu
+								{tx('auth.checkEmail.step.verifyEmail')}
 								<span
 									class="ml-1 rounded bg-brand-blue/15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-blue"
-									>Aktuální krok</span
+									>{tx('auth.checkEmail.step.currentStep')}</span
 								>
 							</p>
-							<p class="mt-0.5 text-xs text-text-muted">Klikněte na odkaz v e-mailu</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.checkEmail.step.clickLink')}</p>
 						</div>
 					</div>
 					<!-- Step 3: Pending -->
@@ -169,8 +181,8 @@
 							</div>
 						</div>
 						<div class="pt-1">
-							<p class="text-sm font-semibold text-text-muted">Začít používat MetaCleaner</p>
-							<p class="mt-0.5 text-xs text-text-muted">Plný přístup ke všem funkcím</p>
+							<p class="text-sm font-semibold text-text-muted">{tx('auth.checkEmail.step.startUsing')}</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.checkEmail.step.fullAccess')}</p>
 						</div>
 					</div>
 				</div>
@@ -178,26 +190,26 @@
 				<!-- Tips card -->
 				<div class="flex flex-col gap-3 rounded-xl border border-gray-800 bg-navy-card p-5">
 					<p class="flex items-center gap-2 text-sm font-semibold text-white">
-						<i class="fa-solid fa-lightbulb text-sm text-brand-orange"></i> Nenašli jste e-mail?
+						<i class="fa-solid fa-lightbulb text-sm text-brand-orange"></i> {tx('auth.checkEmail.tips.title')}
 					</p>
 					<div class="flex flex-col gap-2">
 						<div class="flex items-start gap-2.5">
 							<i class="fa-solid fa-folder mt-0.5 flex-shrink-0 text-xs text-text-muted"></i>
 							<p class="text-xs text-text-muted">
-								Zkontrolujte složku <span class="font-medium text-white">Spam</span> nebo
-								<span class="font-medium text-white">Hromadné e-maily</span>
+								{tx('auth.checkEmail.tips.checkFolder')} <span class="font-medium text-white">{tx('auth.checkEmail.tips.spam')}</span> {tx('auth.checkEmail.divider.or')}
+								<span class="font-medium text-white">{tx('auth.checkEmail.tips.bulk')}</span>
 							</p>
 						</div>
 						<div class="flex items-start gap-2.5">
 							<i class="fa-solid fa-clock mt-0.5 flex-shrink-0 text-xs text-text-muted"></i>
 							<p class="text-xs text-text-muted">
-								E-mail může přijít až za <span class="font-medium text-white">2–3 minuty</span>
+								{tx('auth.checkEmail.tips.delay')} <span class="font-medium text-white">{tx('auth.checkEmail.tips.delayTime')}</span>
 							</p>
 						</div>
 						<div class="flex items-start gap-2.5">
 							<i class="fa-solid fa-shield-halved mt-0.5 flex-shrink-0 text-xs text-text-muted"></i>
 							<p class="text-xs text-text-muted">
-								Odkaz je platný <span class="font-medium text-white">24 hodin</span>
+								{tx('auth.checkEmail.tips.validFor')} <span class="font-medium text-white">{tx('auth.checkEmail.tips.validTime')}</span>
 							</p>
 						</div>
 					</div>
@@ -206,16 +218,16 @@
 				<!-- Stats -->
 				<div class="grid grid-cols-3 gap-4 border-t border-gray-800 pt-2">
 					<div class="text-center">
-						<p class="text-2xl font-black text-white">50K+</p>
-						<p class="mt-1 text-xs text-text-muted">Uživatelů</p>
+						<p class="text-2xl font-black text-white">{stats[0].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[0].labelKey)}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
-						<p class="text-2xl font-black text-brand-green">2M+</p>
-						<p class="mt-1 text-xs text-text-muted">Souborů vyčištěno</p>
+						<p class="text-2xl font-black text-brand-green">{stats[1].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[1].labelKey)}</p>
 					</div>
 					<div class="text-center">
-						<p class="text-2xl font-black text-brand-blue">100%</p>
-						<p class="mt-1 text-xs text-text-muted">Bezpečnost</p>
+						<p class="text-2xl font-black text-brand-blue">{stats[2].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[2].labelKey)}</p>
 					</div>
 				</div>
 			</div>
@@ -229,7 +241,7 @@
 						class="inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-3 py-1.5"
 					>
 						<i class="fa-solid fa-circle-check text-xs text-brand-green"></i>
-						<span class="text-xs font-semibold text-brand-green">Účet vytvořen · Poslední krok</span>
+						<span class="text-xs font-semibold text-brand-green">{tx('auth.checkEmail.badge.created')}</span>
 					</div>
 
 					<!-- Email icon floating -->
@@ -247,8 +259,8 @@
 					</div>
 
 					<div>
-						<h1 class="text-2xl font-black leading-tight text-white">Zkontrolujte e-mail</h1>
-						<p class="mt-1.5 text-sm text-text-muted">Poslali jsme ověřovací odkaz na</p>
+						<h1 class="text-2xl font-black leading-tight text-white">{tx('auth.checkEmail.card.title')}</h1>
+						<p class="mt-1.5 text-sm text-text-muted">{tx('auth.checkEmail.card.sentTo')}</p>
 						<div
 							class="mt-2 inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2"
 						>
@@ -268,7 +280,7 @@
 						>
 							<i class="fa-solid fa-check text-xs text-white"></i>
 						</div>
-						<p class="text-center text-xs font-medium leading-tight text-white">Účet<br />vytvořen</p>
+						<p class="text-center text-xs font-medium leading-tight text-white">{tx('auth.checkEmail.mobile.stepCreated')}</p>
 					</div>
 					<div class="mb-5 h-px flex-1 bg-brand-green/30"></div>
 					<div class="flex flex-1 flex-col items-center gap-1.5">
@@ -277,7 +289,7 @@
 						>
 							<i class="fa-regular fa-envelope text-xs text-white"></i>
 						</div>
-						<p class="text-center text-xs font-medium leading-tight text-white">Ověření<br />e-mailu</p>
+						<p class="text-center text-xs font-medium leading-tight text-white">{tx('auth.checkEmail.mobile.stepVerify')}</p>
 					</div>
 					<div class="mb-5 h-px flex-1 bg-gray-700"></div>
 					<div class="flex flex-1 flex-col items-center gap-1.5">
@@ -286,7 +298,7 @@
 						>
 							<i class="fa-solid fa-rocket text-xs text-text-muted"></i>
 						</div>
-						<p class="text-center text-xs font-medium leading-tight text-text-muted">Spustit<br />app</p>
+						<p class="text-center text-xs font-medium leading-tight text-text-muted">{tx('auth.checkEmail.mobile.stepStart')}</p>
 					</div>
 				</div>
 
@@ -310,8 +322,8 @@
 							</div>
 						</div>
 						<div class="text-center">
-							<h2 class="text-2xl font-bold text-white">Zkontrolujte e-mail</h2>
-							<p class="mt-1.5 text-sm text-text-muted">Poslali jsme ověřovací odkaz na</p>
+							<h2 class="text-2xl font-bold text-white">{tx('auth.checkEmail.card.title')}</h2>
+							<p class="mt-1.5 text-sm text-text-muted">{tx('auth.checkEmail.card.sentTo')}</p>
 							<div
 								class="mt-2 inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-1.5"
 							>
@@ -324,7 +336,7 @@
 					<!-- Desktop divider "čekáme na ověření" -->
 					<div class="hidden items-center gap-3 lg:flex">
 						<div class="h-px flex-1 bg-navy-lighter"></div>
-						<span class="whitespace-nowrap text-xs font-medium text-text-muted">čekáme na ověření</span>
+						<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.checkEmail.divider.waiting')}</span>
 						<div class="h-px flex-1 bg-navy-lighter"></div>
 					</div>
 
@@ -342,15 +354,15 @@
 								<div class="dot-bounce h-2.5 w-2.5 rounded-full bg-brand-blue"></div>
 							</div>
 							<div>
-								<p class="text-sm font-semibold text-white">Čekáme na potvrzení</p>
-								<p class="mt-0.5 text-xs text-text-muted">Tato stránka se automaticky aktualizuje</p>
+								<p class="text-sm font-semibold text-white">{tx('auth.checkEmail.waiting.title')}</p>
+								<p class="mt-0.5 text-xs text-text-muted">{tx('auth.checkEmail.waiting.autoRefresh')}</p>
 							</div>
 						</div>
 
 						<!-- Progress -->
 						<div class="flex flex-col gap-2">
 							<div class="flex items-center justify-between">
-								<span class="text-xs text-text-muted">Platnost odkazu</span>
+								<span class="text-xs text-text-muted">{tx('auth.checkEmail.progress.linkValidity')}</span>
 								<span class="text-xs font-semibold tabular-nums text-white"
 									>{formatTime(countdown)}</span
 								>
@@ -361,14 +373,14 @@
 									style="width: {progressPct}%; background-color: {progressColor};"
 								></div>
 							</div>
-							<p class="text-xs text-text-muted">Odkaz vyprší za 24 hodin</p>
+							<p class="text-xs text-text-muted">{tx('auth.checkEmail.progress.expiresIn24h')}</p>
 						</div>
 					</div>
 
 					<!-- Desktop divider "nebo" -->
 					<div class="hidden items-center gap-3 lg:flex">
 						<div class="h-px flex-1 bg-navy-lighter"></div>
-						<span class="whitespace-nowrap text-xs font-medium text-text-muted">nebo</span>
+						<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.checkEmail.divider.or')}</span>
 						<div class="h-px flex-1 bg-navy-lighter"></div>
 					</div>
 
@@ -380,9 +392,9 @@
 							class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 disabled:opacity-60 lg:min-h-0"
 						>
 							{#if resendLoading}
-								<i class="fa-solid fa-spinner fa-spin"></i> Odesílám...
+								<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.checkEmail.resend.loading')}
 							{:else}
-								<i class="fa-solid fa-rotate-right"></i> Znovu odeslat e-mail
+								<i class="fa-solid fa-rotate-right"></i> {tx('auth.checkEmail.resend.idle')}
 							{/if}
 						</button>
 						<a
@@ -390,7 +402,7 @@
 							class="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-text-muted transition-colors hover:text-white lg:min-h-0"
 						>
 							<i class="fa-regular fa-pen-to-square"></i>
-							Změnit e-mailovou adresu
+							{tx('auth.checkEmail.changeEmail')}
 						</a>
 					</div>
 
@@ -399,12 +411,12 @@
 						class="flex flex-col gap-2.5 rounded-xl border border-gray-800 bg-navy-main p-4 lg:hidden"
 					>
 						<p class="flex items-center gap-2 text-xs font-semibold text-white">
-							<i class="fa-solid fa-lightbulb text-brand-orange"></i> Nenašli jste e-mail?
+							<i class="fa-solid fa-lightbulb text-brand-orange"></i> {tx('auth.checkEmail.tips.title')}
 						</p>
 						<p class="text-xs text-text-muted">
-							Zkontrolujte složku <span class="font-medium text-white">Spam</span> nebo
-							<span class="font-medium text-white">Hromadné e-maily</span>. Odkaz je platný
-							<span class="font-medium text-white">24 hodin</span>.
+							{tx('auth.checkEmail.tips.checkFolder')} <span class="font-medium text-white">{tx('auth.checkEmail.tips.spam')}</span> {tx('auth.checkEmail.divider.or')}
+							<span class="font-medium text-white">{tx('auth.checkEmail.tips.bulk')}</span>. {tx('auth.checkEmail.tips.validFor')}
+							<span class="font-medium text-white">{tx('auth.checkEmail.tips.validTime')}</span>.
 						</p>
 					</div>
 				</div>
@@ -413,17 +425,17 @@
 				<div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span>SSL šifrování</span>
+						<span>{tx('auth.common.trust.ssl')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span>GDPR soulad</span>
+						<span>{tx('auth.common.trust.gdpr')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1.5 text-xs text-text-muted">
 						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>Bez sledování</span>
+						<span>{tx('auth.common.trust.noTracking')}</span>
 					</div>
 				</div>
 			</div>
@@ -437,7 +449,7 @@
 		class="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-xl border border-brand-green/30 bg-navy-card px-5 py-3 shadow-card"
 	>
 		<i class="fa-solid fa-circle-check text-brand-green"></i>
-		<span class="text-sm font-medium text-white">E-mail byl znovu odeslán!</span>
+		<span class="text-sm font-medium text-white">{tx('auth.checkEmail.toast.resent')}</span>
 	</div>
 {/if}
 

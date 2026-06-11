@@ -391,6 +391,7 @@
 	"auth.checkEmail.resend.idle": "Znovu odeslat e-mail",
 	"auth.checkEmail.changeEmail": "Změnit e-mailovou adresu",
 	"auth.checkEmail.tips.title": "Nenašli jste e-mail?",
+	"auth.checkEmail.tips.checkFolder": "Zkontrolujte složku",
 	"auth.checkEmail.tips.spam": "Spam",
 	"auth.checkEmail.tips.bulk": "Hromadné e-maily",
 	"auth.checkEmail.tips.delay": "E-mail může přijít až za",
