@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { locale } from '$lib/locale.svelte';
+	import * as m from '$lib/paraglide/messages';
 
 	let firstName = $state('');
 	let lastName = $state('');
@@ -19,6 +21,14 @@
 	let termsError = $state('');
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
+	function tx(key: string, params: Record<string, unknown> = {}): string {
+		void locale.current;
+		const fn = (
+			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
+		)[key];
+		return fn ? fn(params) : key;
+	}
+
 	function getStrengthScore(val: string) {
 		let score = 0;
 		if (val.length >= 8) score++;
@@ -29,11 +39,16 @@
 	}
 
 	const strengthColors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
-	const strengthLabels = ['Velmi slabé', 'Slabé', 'Dobré', 'Silné'];
+	const strengthKeys = [
+		'auth.common.strength.veryWeak',
+		'auth.common.strength.weak',
+		'auth.common.strength.good',
+		'auth.common.strength.strong'
+	];
 
 	let strengthScore = $derived(password.length > 0 ? getStrengthScore(password) : 0);
 	let strengthColor = $derived(strengthScore > 0 ? strengthColors[strengthScore - 1] : '#374151');
-	let strengthLabel = $derived(strengthScore > 0 ? strengthLabels[strengthScore - 1] : '');
+	let strengthLabel = $derived(strengthScore > 0 ? tx(strengthKeys[strengthScore - 1]) : '');
 
 	function togglePassword() {
 		passwordVisible = !passwordVisible;
@@ -63,27 +78,27 @@
 
 		let valid = true;
 		if (!firstName.trim()) {
-			firstNameError = 'Vyplňte jméno.';
+			firstNameError = tx('auth.register.validation.firstNameRequired');
 			valid = false;
 		}
 		if (!lastName.trim()) {
-			lastNameError = 'Vyplňte příjmení.';
+			lastNameError = tx('auth.register.validation.lastNameRequired');
 			valid = false;
 		}
 		if (!validateEmail(email)) {
-			emailError = 'Zadejte platnou e-mailovou adresu.';
+			emailError = tx('auth.common.validation.emailInvalid');
 			valid = false;
 		}
 		if (password.length < 8) {
-			passwordError = 'Heslo musí mít alespoň 8 znaků.';
+			passwordError = tx('auth.common.validation.passwordMin8');
 			valid = false;
 		}
 		if (password !== confirmPassword) {
-			confirmError = 'Hesla se neshodují.';
+			confirmError = tx('auth.common.validation.passwordsMismatch');
 			valid = false;
 		}
 		if (!termsAccepted) {
-			termsError = 'Musíte souhlasit s podmínkami.';
+			termsError = tx('auth.register.validation.termsRequired');
 			valid = false;
 		}
 		if (!valid) return;
@@ -97,7 +112,7 @@
 </script>
 
 <svelte:head>
-	<title>Vytvořit účet – MetaCleaner</title>
+	<title>{tx('auth.register.meta.title')}</title>
 </svelte:head>
 
 <div
@@ -112,15 +127,15 @@
 			>
 				<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
 			</div>
-			<span class="text-lg font-bold tracking-tight lg:text-xl">MetaCleaner</span>
+			<span class="text-lg font-bold tracking-tight lg:text-xl">{tx('common.brandName')}</span>
 		</div>
 		<div class="flex items-center gap-2">
-			<span class="text-xs text-text-muted lg:text-sm">Již máte účet?</span>
+			<span class="text-xs text-text-muted lg:text-sm">{tx('auth.register.nav.hasAccount')}</span>
 			<a
 				href="/login"
 				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2 lg:text-sm"
 			>
-				Přihlásit se
+				{tx('auth.common.nav.login')}
 			</a>
 		</div>
 	</nav>
@@ -138,20 +153,19 @@
 						class="inline-flex w-fit items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green/10 px-3 py-1.5"
 					>
 						<i class="fa-solid fa-circle-check text-xs text-brand-green"></i>
-						<span class="text-xs font-semibold text-brand-green">Zdarma navždy · Bez kreditní karty</span>
+						<span class="text-xs font-semibold text-brand-green">{tx('auth.register.badge.freeForever')}</span>
 					</div>
 					<h1 class="text-4xl font-black leading-tight text-white">
-						Začněte chránit<br />své <span class="text-brand-green">soukromí</span> dnes
+						{tx('auth.register.branding.headline')}<br />své <span class="text-brand-green">{tx('auth.register.branding.headlineHighlight')}</span> dnes
 					</h1>
 					<p class="max-w-md text-base leading-relaxed text-text-muted">
-						Vytvořte si bezplatný účet a začněte odstraňovat metadata z fotek a videí. Žádné skryté
-						poplatky, žádné sledování.
+						{tx('auth.register.branding.description')}
 					</p>
 				</div>
 
 				<!-- Plan Selector -->
 				<div class="flex flex-col gap-3">
-					<p class="text-sm font-semibold text-white">Vyberte svůj plán</p>
+					<p class="text-sm font-semibold text-white">{tx('auth.register.plan.title')}</p>
 					<button
 						type="button"
 						onclick={() => selectPlan('free')}
@@ -165,13 +179,13 @@
 						</div>
 						<div class="flex-1 text-left">
 							<div class="flex items-center gap-2">
-								<p class="text-sm font-bold text-white">Free</p>
+								<p class="text-sm font-bold text-white">{tx('auth.register.plan.freeName')}</p>
 								<span
 									class="rounded bg-brand-green/15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
-									>Zdarma</span
+									>{tx('auth.register.plan.freeBadge')}</span
 								>
 							</div>
-							<p class="mt-0.5 text-xs text-text-muted">50 souborů / měsíc · JPG, PNG</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.register.plan.freeDesc')}</p>
 						</div>
 						<div
 							class="flex h-5 w-5 items-center justify-center rounded-full"
@@ -196,13 +210,13 @@
 						</div>
 						<div class="flex-1 text-left">
 							<div class="flex items-center gap-2">
-								<p class="text-sm font-bold text-white">Pro</p>
+								<p class="text-sm font-bold text-white">{tx('auth.register.plan.proName')}</p>
 								<span
 									class="rounded bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
-									>Nejoblíbenější</span
+									>{tx('auth.register.plan.proBadge')}</span
 								>
 							</div>
-							<p class="mt-0.5 text-xs text-text-muted">Neomezeno · Všechny formáty · Priority</p>
+							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.register.plan.proDesc')}</p>
 						</div>
 						<div
 							class="flex h-5 w-5 items-center justify-center rounded-full"
@@ -219,19 +233,19 @@
 				<div class="flex flex-col gap-2.5">
 					<div class="flex items-center gap-3">
 						<i class="fa-solid fa-circle-check flex-shrink-0 text-sm text-brand-green"></i>
-						<span class="text-sm text-text-muted">Žádná kreditní karta není vyžadována</span>
+						<span class="text-sm text-text-muted">{tx('auth.register.benefit.noCard')}</span>
 					</div>
 					<div class="flex items-center gap-3">
 						<i class="fa-solid fa-circle-check flex-shrink-0 text-sm text-brand-green"></i>
-						<span class="text-sm text-text-muted">GDPR soulad · Data nikdy nesdílíme</span>
+						<span class="text-sm text-text-muted">{tx('auth.register.benefit.gdpr')}</span>
 					</div>
 					<div class="flex items-center gap-3">
 						<i class="fa-solid fa-circle-check flex-shrink-0 text-sm text-brand-green"></i>
-						<span class="text-sm text-text-muted">Zabezpečené E2E šifrování</span>
+						<span class="text-sm text-text-muted">{tx('auth.register.benefit.e2e')}</span>
 					</div>
 					<div class="flex items-center gap-3">
 						<i class="fa-solid fa-circle-check flex-shrink-0 text-sm text-brand-green"></i>
-						<span class="text-sm text-text-muted">Kdykoli zrušte bez závazků</span>
+						<span class="text-sm text-text-muted">{tx('auth.register.benefit.cancel')}</span>
 					</div>
 				</div>
 
@@ -239,15 +253,15 @@
 				<div class="grid grid-cols-3 gap-4 border-t border-gray-800 pt-2">
 					<div class="text-center">
 						<p class="text-2xl font-black text-white">50K+</p>
-						<p class="mt-1 text-xs text-text-muted">Uživatelů</p>
+						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.usersLabel')}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
 						<p class="text-2xl font-black text-brand-green">2M+</p>
-						<p class="mt-1 text-xs text-text-muted">Souborů vyčištěno</p>
+						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.filesCleanedLabel')}</p>
 					</div>
 					<div class="text-center">
 						<p class="text-2xl font-black text-brand-blue">100%</p>
-						<p class="mt-1 text-xs text-text-muted">Bezpečnost</p>
+						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.securityLabel')}</p>
 					</div>
 				</div>
 			</div>
@@ -262,14 +276,14 @@
 					>
 						<i class="fa-solid fa-circle-check text-[10px] text-brand-green"></i>
 						<span class="text-[10px] font-semibold text-brand-green"
-							>Zdarma navždy · Bez kreditní karty</span
+							>{tx('auth.register.badge.freeForever')}</span
 						>
 					</div>
 					<h1 class="text-2xl font-black leading-tight text-white">
-						Chraňte své <span class="text-brand-green">soukromí</span>
+						{tx('auth.login.branding.headline')} <span class="text-brand-green">{tx('auth.login.branding.headlineHighlight')}</span>
 					</h1>
 					<p class="max-w-xs text-xs leading-relaxed text-text-muted">
-						Odstraňte metadata z fotek a videí. Žádné poplatky, žádné sledování.
+						{tx('auth.register.mobile.description')}
 					</p>
 				</div>
 
@@ -279,9 +293,9 @@
 				>
 					<!-- Header -->
 					<div class="flex flex-col gap-0.5 lg:gap-1">
-						<h2 class="text-xl font-bold text-white lg:text-2xl">Vytvořit účet</h2>
+						<h2 class="text-xl font-bold text-white lg:text-2xl">{tx('auth.register.form.title')}</h2>
 						<p class="text-xs text-text-muted lg:text-sm">
-							Zaregistrujte se zdarma za méně než minutu.
+							{tx('auth.register.form.subtitle')}
 						</p>
 					</div>
 
@@ -308,20 +322,20 @@
 									fill="#EA4335"
 								/>
 							</svg>
-							Registrovat přes Google
+							{tx('auth.register.social.google')}
 						</button>
 						<button
 							class="flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border border-[#374151] bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-[#4b5563] hover:bg-[#263347] lg:min-h-0 lg:py-3"
 						>
 							<i class="fa-brands fa-apple text-base lg:text-lg"></i>
-							Registrovat přes Apple
+							{tx('auth.register.social.apple')}
 						</button>
 					</div>
 
 					<!-- Divider -->
 					<div class="flex items-center gap-3">
 						<div class="h-px flex-1 bg-navy-lighter"></div>
-						<span class="whitespace-nowrap text-xs font-medium text-text-muted">nebo emailem</span>
+						<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.common.divider.orEmail')}</span>
 						<div class="h-px flex-1 bg-navy-lighter"></div>
 					</div>
 
@@ -331,7 +345,7 @@
 						<div class="grid grid-cols-2 gap-2.5 lg:gap-3">
 							<div class="flex flex-col gap-1 lg:gap-1.5">
 								<label for="fname-input" class="text-xs font-medium text-white lg:text-sm"
-									>Jméno</label
+									>{tx('auth.register.field.firstName')}</label
 								>
 								<div class="relative">
 									<span
@@ -343,7 +357,7 @@
 										id="fname-input"
 										type="text"
 										bind:value={firstName}
-										placeholder="Jan"
+										placeholder={tx('auth.register.field.firstNamePlaceholder')}
 										class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
 										style="background:#0a1628; border-color: {firstNameError ? '#ef4444' : '#1e293b'};"
 										onfocus={(e) =>
@@ -364,14 +378,14 @@
 							</div>
 							<div class="flex flex-col gap-1 lg:gap-1.5">
 								<label for="lname-input" class="text-xs font-medium text-white lg:text-sm"
-									>Příjmení</label
+									>{tx('auth.register.field.lastName')}</label
 								>
 								<div class="relative">
 									<input
 										id="lname-input"
 										type="text"
 										bind:value={lastName}
-										placeholder="Novák"
+										placeholder={tx('auth.register.field.lastNamePlaceholder')}
 										class="min-h-[44px] w-full rounded-xl border px-3 py-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:px-4"
 										style="background:#0a1628; border-color: {lastNameError ? '#ef4444' : '#1e293b'};"
 										onfocus={(e) =>
@@ -395,7 +409,7 @@
 						<!-- Email -->
 						<div class="flex flex-col gap-1 lg:gap-1.5">
 							<label for="email-input" class="text-xs font-medium text-white lg:text-sm"
-								>E-mailová adresa</label
+								>{tx('auth.common.field.emailLabel')}</label
 							>
 							<div class="relative">
 								<span
@@ -407,7 +421,7 @@
 									id="email-input"
 									type="email"
 									bind:value={email}
-									placeholder="vas@email.cz"
+									placeholder={tx('auth.common.field.emailPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
 									style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
 									onfocus={(e) =>
@@ -430,7 +444,7 @@
 						<!-- Password -->
 						<div class="flex flex-col gap-1 lg:gap-1.5">
 							<label for="password-input" class="text-xs font-medium text-white lg:text-sm"
-								>Heslo</label
+								>{tx('auth.common.field.passwordLabel')}</label
 							>
 							<div class="relative">
 								<span
@@ -442,7 +456,7 @@
 									id="password-input"
 									type={passwordVisible ? 'text' : 'password'}
 									bind:value={password}
-									placeholder="Min. 8 znaků"
+									placeholder={tx('auth.register.field.passwordPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-11 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10"
 									style="background:#0a1628; border-color: {passwordError ? '#ef4444' : '#1e293b'};"
 									onfocus={(e) =>
@@ -457,7 +471,7 @@
 								<button
 									type="button"
 									onclick={togglePassword}
-									aria-label={passwordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+									aria-label={passwordVisible ? tx('auth.common.a11y.hidePassword') : tx('auth.common.a11y.showPassword')}
 									class="absolute right-3 top-1/2 flex min-h-[24px] min-w-[24px] -translate-y-1/2 items-center justify-center text-sm text-text-muted transition-colors hover:text-white lg:right-3.5"
 								>
 									<i class={passwordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}
@@ -491,7 +505,7 @@
 						<!-- Confirm Password -->
 						<div class="flex flex-col gap-1 lg:gap-1.5">
 							<label for="confirm-input" class="text-xs font-medium text-white lg:text-sm"
-								>Potvrdit heslo</label
+								>{tx('auth.common.field.confirmPasswordLabel')}</label
 							>
 							<div class="relative">
 								<span
@@ -503,7 +517,7 @@
 									id="confirm-input"
 									type="password"
 									bind:value={confirmPassword}
-									placeholder="Zopakujte heslo"
+									placeholder={tx('auth.register.field.confirmPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
 									style="background:#0a1628; border-color: {confirmError ? '#ef4444' : '#1e293b'};"
 									onfocus={(e) =>
@@ -530,7 +544,7 @@
 								onclick={() => (planOpen = !planOpen)}
 								class="flex w-full items-center justify-between py-2"
 							>
-								<span class="text-xs font-semibold text-white">Vyberte plán</span>
+								<span class="text-xs font-semibold text-white">{tx('auth.register.plan.titleMobile')}</span>
 								<i
 									class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform"
 									style="transform: {planOpen ? 'rotate(0deg)' : 'rotate(-90deg)'};"
@@ -551,14 +565,14 @@
 										</div>
 										<div class="flex-1 min-w-0 text-left">
 											<div class="flex items-center gap-1.5">
-												<p class="text-sm font-bold text-white">Free</p>
+												<p class="text-sm font-bold text-white">{tx('auth.register.plan.freeName')}</p>
 												<span
 													class="rounded bg-brand-green/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
-													>Zdarma</span
+													>{tx('auth.register.plan.freeBadge')}</span
 												>
 											</div>
 											<p class="mt-0.5 text-[11px] text-text-muted">
-												50 souborů / měsíc · JPG, PNG
+												{tx('auth.register.plan.freeDesc')}
 											</p>
 										</div>
 										<div
@@ -584,14 +598,14 @@
 										</div>
 										<div class="flex-1 min-w-0 text-left">
 											<div class="flex items-center gap-1.5">
-												<p class="text-sm font-bold text-white">Pro</p>
+												<p class="text-sm font-bold text-white">{tx('auth.register.plan.proName')}</p>
 												<span
 													class="rounded bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-orange"
-													>Nejoblíbenější</span
+													>{tx('auth.register.plan.proBadge')}</span
 												>
 											</div>
 											<p class="mt-0.5 text-[11px] text-text-muted">
-												Neomezeno · Všechny formáty · Priority
+												{tx('auth.register.plan.proDesc')}
 											</p>
 										</div>
 										<div
@@ -620,14 +634,14 @@
 								{/if}
 							</button>
 							<span class="text-xs leading-relaxed text-text-muted lg:text-sm">
-								Souhlasím s <a
+								{tx('auth.register.terms.agree')} <a
 									href="#"
 									class="font-medium text-brand-blue transition-colors hover:text-blue-400"
-									>podmínkami použití</a
-								> a <a
+									>{tx('auth.register.terms.tos')}</a
+								> {tx('auth.register.terms.and')} <a
 									href="#"
 									class="font-medium text-brand-blue transition-colors hover:text-blue-400"
-									>zásadami ochrany soukromí</a
+									>{tx('auth.register.terms.privacy')}</a
 								>
 							</span>
 						</div>
@@ -645,11 +659,11 @@
 							style="background: {submitState === 'success' ? '#16a34a' : '#22c55e'};"
 						>
 							{#if submitState === 'loading'}
-								<i class="fa-solid fa-spinner fa-spin"></i> Vytvářím účet...
+								<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.register.submit.loading')}
 							{:else if submitState === 'success'}
-								<i class="fa-solid fa-circle-check"></i> Účet vytvořen!
+								<i class="fa-solid fa-circle-check"></i> {tx('auth.register.submit.success')}
 							{:else}
-								<i class="fa-solid fa-user-plus"></i> Vytvořit účet zdarma
+								<i class="fa-solid fa-user-plus"></i> {tx('auth.register.submit.idle')}
 							{/if}
 						</button>
 					</form>
@@ -657,12 +671,12 @@
 					<!-- Footer -->
 					<div class="border-t border-gray-800 pt-1 text-center">
 						<p class="text-xs text-text-muted lg:text-sm">
-							Již máte účet?
+							{tx('auth.register.footer.hasAccount')}
 							<a
 								href="/login"
 								class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
 							>
-								Přihlásit se
+								{tx('auth.register.footer.login')}
 							</a>
 						</p>
 					</div>
@@ -674,15 +688,15 @@
 				>
 					<div class="text-center">
 						<p class="text-lg font-black text-white">50K+</p>
-						<p class="text-[10px] text-text-muted">Uživatelů</p>
+						<p class="text-[10px] text-text-muted">{tx('auth.common.stats.usersLabel')}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
 						<p class="text-lg font-black text-brand-green">2M+</p>
-						<p class="text-[10px] text-text-muted">Vyčištěno</p>
+						<p class="text-[10px] text-text-muted">{tx('auth.register.stats.cleanedLabel')}</p>
 					</div>
 					<div class="text-center">
 						<p class="text-lg font-black text-brand-blue">100%</p>
-						<p class="text-[10px] text-text-muted">Bezpečnost</p>
+						<p class="text-[10px] text-text-muted">{tx('auth.common.stats.securityLabel')}</p>
 					</div>
 				</div>
 
@@ -690,19 +704,19 @@
 				<div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
 					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
 						<i class="fa-solid fa-shield-halved text-xs text-brand-green lg:text-sm"></i>
-						<span class="lg:hidden">SSL</span>
-						<span class="hidden lg:inline">SSL šifrování</span>
+						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
+						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
 						<i class="fa-solid fa-user-shield text-xs text-brand-blue lg:text-sm"></i>
-						<span class="lg:hidden">GDPR</span>
-						<span class="hidden lg:inline">GDPR soulad</span>
+						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
+						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
 					</div>
 					<div class="h-3 w-px bg-gray-700"></div>
 					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
 						<i class="fa-solid fa-lock text-xs text-text-muted lg:text-sm"></i>
-						<span>Bez sledování</span>
+						<span>{tx('auth.common.trust.noTracking')}</span>
 					</div>
 				</div>
 			</div>
