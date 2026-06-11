@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-11 12:05 — manual
+- Updated frontend origin to port 3000 and adjusted `start-docker.sh`, `layout.css`, `riskAnalyzer.ts`, `FileListItemRisk.svelte`, `RiskScannerCard.svelte`, and i18n messages
+- Added C2PA chunk counting and updated fields removed handling in `apiCleaningService.ts` processing results
+- Fixed report links to use `reportId` instead of `jobId` in `ReportCard.svelte`, `ReportTableRow.svelte`, and `cleaningResultsStore.svelte.ts`; improved localization messages
+- Fixed potential null values in metadata mapping functions in `apiCleaningService.ts`
+- Enhanced job creation with optional file names in `metaCleanerApi.ts` and `apiCleaningService.ts`; improved report detail UI layout in `FileAccordionItem.svelte` and `MetadataTable.svelte`
+- Simplified `createJob` function and related handlers in API client and cleaning service
+- Improved layout and spacing in `FileAccordionItem` and `MetadataTable` components
+- Updated icon in `ReportTableRow` and removed unused success badge component from `Step5Success`
+
 ## 2026-06-10 16:53 — create-code
 - Spec: api-integration
 - Implemented API client module (`src/lib/clients/metaCleanerApi.ts`) with `buildApiUrl`, `buildWsUrl`, `uploadFiles`, `createJob`, `getJobStatus`, `connectJobProgress`, `downloadFile`, `downloadJobZip`, `getReports`, `getReportDetail`, `getReportPdf`, `healthCheck`, and `ApiHttpError` class
