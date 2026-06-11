@@ -137,19 +137,19 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Image file scanning (EXIF/XMP/GPS via exifr) continues to work correctly_
     - _Requirements: 2.7, 3.7_
 
-- [ ] 10. Fix Bug 8 — Video metadata field display in report detail
+- [x] 10. Fix Bug 8 — Video metadata field display in report detail
 
-  - [ ] 10.1 Extend `FileMetadataSection` type with video fields
+  - [x] 10.1 Extend `FileMetadataSection` type with video fields
     - File: `frontend/metacleaner-app/src/lib/types/report.ts`
     - Add `id3Fields: MetadataField[]` and `mp4AtomFields: MetadataField[]` to `FileMetadataSection`
     - _Requirements: 2.8_
 
-  - [ ] 10.2 Map video-specific fields in `mapMetadataDetail()`
+  - [x] 10.2 Map video-specific fields in `mapMetadataDetail()`
     - File: `frontend/metacleaner-app/src/lib/services/apiCleaningService.ts`
     - Include `md.id3Fields` and `md.mp4Atoms` from backend response in mapped output
     - _Requirements: 2.8_
 
-  - [ ] 10.3 Render video metadata sections in `FileAccordionItem`
+  - [x] 10.3 Render video metadata sections in `FileAccordionItem`
     - File: `frontend/metacleaner-app/src/routes/report/components/FileAccordionItem.svelte`
     - Add entries to `metaSections` array for ID3 and MP4 atoms
     - Use appropriate icons and translation keys for video-specific categories
@@ -158,16 +158,16 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Image report detail continues to show GPS/EXIF/XMP field-level breakdown_
     - _Requirements: 2.8, 3.8_
 
-- [ ] 11. Fix Bug 9 — Original filenames in report detail
+- [x] 11. Fix Bug 9 — Original filenames in report detail
 
-  - [ ] 11.1 Preserve original filename in backend report response
+  - [x] 11.1 Preserve original filename in backend report response
     - File: `backend/metacleaner-server/source/handlers.go` (and/or models/pipeline)
     - Ensure the original upload filename is stored and returned in the report file detail response
     - Add/use `original_name` field in file record that stores the name from upload
     - Include `original_name` in the report detail API response JSON
     - _Requirements: 2.9_
 
-  - [ ] 11.2 Use original filename in frontend report detail mapping
+  - [x] 11.2 Use original filename in frontend report detail mapping
     - File: `frontend/metacleaner-app/src/lib/services/apiCleaningService.ts`
     - In `mapReportFileDetails()`, use the `original_name` field from backend response instead of hashed `file_name`
     - _Bug_Condition: isBugCondition(input) where input.action == 'viewReportDetail' AND input.context.displayedFileName MATCHES /^f-[a-f0-9]+\./_

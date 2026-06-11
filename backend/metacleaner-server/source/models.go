@@ -37,6 +37,7 @@ type FileRecord struct {
 	LocalID           string          `json:"-"` // internal file ID for disk path lookup, not persisted to DB
 	JobID             string          `json:"jobId"`
 	FileName          string          `json:"name"`
+	OriginalName      string          `json:"originalName,omitempty"` // original upload filename from the client
 	FileExtension     string          `json:"extension"`
 	FileSizeBytes     int64           `json:"sizeBytes"`
 	FileType          string          `json:"type"`
@@ -133,6 +134,7 @@ type ChartDataPoint struct {
 // ReportFileDetail is a per-file breakdown in report detail
 type ReportFileDetail struct {
 	Name          string          `json:"name"`
+	OriginalName  string          `json:"original_name,omitempty"`
 	Extension     string          `json:"extension"`
 	SizeMB        string          `json:"sizeMB"`
 	Format        string          `json:"format"`

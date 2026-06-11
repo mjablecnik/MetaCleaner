@@ -147,7 +147,8 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 }
 
 type createJobRequest struct {
-	FileIDs []string `json:"fileIds"`
+	FileIDs   []string          `json:"fileIds"`
+	FileNames map[string]string `json:"fileNames,omitempty"` // optional map of fileId → original upload name
 }
 
 // CreateJobResponse is the response structure for job creation.
@@ -186,9 +187,14 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 				return
 			}
 			ext := filepath.Ext(matches[0])
+			originalName := ""
+			if req.FileNames != nil {
+				originalName = req.FileNames[fileID]
+			}
 			files = append(files, FileRecord{
 				LocalID:       fileID,
 				FileName:      fileID + ext,
+				OriginalName:  originalName,
 				FileExtension: ext,
 				FileSizeBytes: info.Size(),
 				FileType:      GetFileType(ext),

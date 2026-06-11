@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS job_files (
     id                 UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     job_id             UUID        NOT NULL REFERENCES cleaning_jobs(id) ON DELETE CASCADE,
     file_name          TEXT        NOT NULL,
+    original_name      TEXT,
     file_extension     TEXT        NOT NULL,
     file_size_bytes    BIGINT      NOT NULL DEFAULT 0,
     file_type          TEXT        NOT NULL CHECK (file_type IN ('image', 'video')),

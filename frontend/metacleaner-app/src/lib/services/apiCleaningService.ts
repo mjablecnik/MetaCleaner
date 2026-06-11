@@ -57,6 +57,7 @@ interface BackendMetadataDetail {
 
 interface BackendReportFileDetail {
 	name: string;
+	original_name?: string;
 	extension: string;
 	sizeMB: string;
 	format: string;
@@ -414,7 +415,7 @@ function mapReportFileDetails(files: BackendReportFileDetail[]): ReportFileDetai
 	const totalFieldsRemoved = files.reduce((sum, f) => sum + f.fieldsRemoved, 0);
 
 	return files.map((f) => ({
-		name: f.name,
+		name: f.original_name ?? f.name,
 		extension: f.extension,
 		sizeMB: f.sizeMB,
 		format: f.format,
@@ -495,14 +496,16 @@ class ApiCleaningService implements CleaningService {
 				const rawFiles = files.map((f) => f.file);
 				const uploadResponse = await api.uploadFiles(rawFiles);
 				const fileIds = uploadResponse.files.map((f) => f.id);
+				const fileNames: Record<string, string> = {};
 
 				for (const fileInfo of uploadResponse.files) {
 					fileNameMap.set(fileInfo.id, fileInfo.name);
+					fileNames[fileInfo.id] = fileInfo.name;
 				}
 
 				if (cancelled) return;
 
-				const jobResponse = await api.createJob(fileIds);
+				const jobResponse = await api.createJob(fileIds, fileNames);
 				jobHandle.jobId = jobResponse.jobId;
 
 				if (cancelled) return;

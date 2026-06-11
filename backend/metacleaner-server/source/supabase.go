@@ -44,6 +44,7 @@ type dbFileRecord struct {
 	ID                string          `json:"id,omitempty"`
 	JobID             string          `json:"job_id"`
 	FileName          string          `json:"file_name"`
+	OriginalName      string          `json:"original_name,omitempty"`
 	FileExtension     string          `json:"file_extension"`
 	FileSizeBytes     int64           `json:"file_size_bytes"`
 	FileType          string          `json:"file_type"`
@@ -337,6 +338,7 @@ func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*Re
 			sizeMB := fmt.Sprintf("%.1f", float64(f.FileSizeBytes)/(1024*1024))
 			fileDetails = append(fileDetails, ReportFileDetail{
 				Name:          f.FileName,
+				OriginalName:  f.OriginalName,
 				Extension:     f.FileExtension,
 				SizeMB:        sizeMB,
 				Format:        f.Format,
@@ -526,6 +528,7 @@ func fileRecordToDB(f FileRecord) dbFileRecord {
 	rec := dbFileRecord{
 		JobID:         f.JobID,
 		FileName:      f.FileName,
+		OriginalName:  f.OriginalName,
 		FileExtension: f.FileExtension,
 		FileSizeBytes: f.FileSizeBytes,
 		FileType:      f.FileType,
@@ -552,6 +555,7 @@ func dbToFileRecord(r dbFileRecord) FileRecord {
 		ID:            r.ID,
 		JobID:         r.JobID,
 		FileName:      r.FileName,
+		OriginalName:  r.OriginalName,
 		FileExtension: r.FileExtension,
 		FileSizeBytes: r.FileSizeBytes,
 		FileType:      r.FileType,
