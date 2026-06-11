@@ -1,5 +1,18 @@
 # AI Log
 
+## 2026-06-11 21:50 — data-refactor
+- Extracted ~130 new i18n keys with `auth.*` prefix to `messages/en.json` and `messages/cs.json` covering 6 auth pages
+- Created `src/lib/repositories/authRepository.ts` with `getAuthStats()` and `getAuthPlans()` mock data
+- Refactored `src/routes/(auth)/login/+page.svelte` — replaced ~45 hardcoded Czech strings with `tx()` calls
+- Refactored `src/routes/(auth)/register/+page.svelte` — replaced ~75 hardcoded Czech strings with `tx()` calls, wired stats and plans from authRepository
+- Refactored `src/routes/(auth)/check-email/+page.svelte` — replaced ~40 hardcoded Czech strings with `tx()` calls, wired stats from authRepository
+- Refactored `src/routes/(auth)/forgot-password/+page.svelte` — replaced ~55 hardcoded Czech strings with `tx()` calls
+- Refactored `src/routes/(auth)/check-code/+page.svelte` — replaced ~55 hardcoded Czech strings with `tx()` calls
+- Refactored `src/routes/(auth)/new-password/+page.svelte` — replaced ~50 hardcoded Czech strings with `tx()` calls
+- Replaced hardcoded marketing stats (50K+, 2M+, 100%) in login, register, and check-email pages with `authRepository.getAuthStats()` calls
+- Replaced hardcoded plan data (Free/Pro) in register page with `authRepository.getAuthPlans()` calls
+- Fixed NavBar visibility on auth pages and verified locale setup
+
 ## 2026-06-11 17:23 — design-to-code
 - Created Login page from `auth-login-form-desktop.html` / `auth-login-form-mobile.html` — route `/login`
 - Created Registration page from `auth-registration-form-desktop.html` / `auth-registration-form-mobile.html` — route `/register`
