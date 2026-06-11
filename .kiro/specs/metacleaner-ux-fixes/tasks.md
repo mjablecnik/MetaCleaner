@@ -87,9 +87,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Non-success states at root path keep current logo behavior (no link/no action)_
     - _Requirements: 2.2, 3.2_
 
-- [ ] 6. Fix Bug 3 — PDF download button functionality
+- [x] 6. Fix Bug 3 — PDF download button functionality
 
-  - [ ] 6.1 Wire PDF download handler in `ReportDetailHeader`
+  - [x] 6.1 Wire PDF download handler in `ReportDetailHeader`
     - File: `frontend/metacleaner-app/src/routes/report/sections/ReportDetailHeader.svelte`
     - Add `handleDownloadPdf()` function that calls `getReportPdf(reportId)`
     - Get `reportId` from the report detail data (prop or derived)

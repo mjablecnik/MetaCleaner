@@ -6,9 +6,10 @@
 	interface Props {
 		reportDetail: ReportDetail | null;
 		userEmail: string;
+		onDownloadPdf?: () => void;
 	}
 
-	let { reportDetail, userEmail }: Props = $props();
+	let { reportDetail, userEmail, onDownloadPdf }: Props = $props();
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -50,6 +51,7 @@
 
 	<!-- Mobile: full-width PDF download button -->
 	<button
+		onclick={onDownloadPdf}
 		class="no-print flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95 lg:hidden"
 	>
 		<i class="fa-solid fa-file-pdf"></i>
@@ -59,6 +61,7 @@
 	<!-- Desktop: action buttons -->
 	<div class="no-print hidden items-center gap-3 self-start lg:flex lg:self-auto">
 		<button
+			onclick={onDownloadPdf}
 			class="flex items-center gap-2 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
 		>
 			<i class="fa-solid fa-file-pdf"></i>

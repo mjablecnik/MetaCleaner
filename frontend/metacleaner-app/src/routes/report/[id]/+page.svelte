@@ -4,6 +4,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
+	import { getReportPdf } from '$lib/clients/metaCleanerApi';
 	import type { ReportDetail } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
@@ -52,6 +53,17 @@
 		}
 	]);
 
+	async function handleDownloadPdf() {
+		if (!reportId) return;
+		const url = await getReportPdf(reportId);
+		if (url) {
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `report-${reportId}.pdf`;
+			a.click();
+		}
+	}
+
 	onMount(() => {
 		apiCleaningService
 			.getReportDetail(reportId ?? '')
@@ -92,7 +104,7 @@
 			<p class="text-xs text-text-muted">{loadError}</p>
 		</div>
 	{:else}
-		<ReportDetailHeader {reportDetail} userEmail="" />
+		<ReportDetailHeader {reportDetail} userEmail="" onDownloadPdf={handleDownloadPdf} />
 		<SummaryStatsRow {stats} class="fade-in-up delay-1" />
 		<ReportChartCard {reportDetail} />
 		<FileAccordionList files={reportDetail?.files ?? []} />
