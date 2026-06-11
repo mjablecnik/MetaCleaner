@@ -175,9 +175,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Results page (Step5Success) continues to show filenames correctly_
     - _Requirements: 2.9, 3.9_
 
-- [ ] 12. Verify bug condition exploration tests now pass
+- [x] 12. Verify bug condition exploration tests now pass
 
-  - [ ] 12.1 Re-run bug condition tests after all fixes
+  - [x] 12.1 Re-run bug condition tests after all fixes
     - **Property 1: Expected Behavior** - All 9 UX Bugs Fixed
     - **IMPORTANT**: Re-run the SAME tests from task 1 - do NOT write new tests
     - The tests from task 1 encode the expected behavior for all 9 bugs
@@ -186,7 +186,7 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - **EXPECTED OUTCOME**: Tests PASS (confirms all bugs are fixed)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9_
 
-  - [ ] 12.2 Verify preservation tests still pass
+  - [x] 12.2 Verify preservation tests still pass
     - **Property 2: Preservation** - No Regressions
     - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
     - Run preservation property tests from step 2
