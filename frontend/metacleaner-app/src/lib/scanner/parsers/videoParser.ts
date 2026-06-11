@@ -67,12 +67,17 @@ let mediaInfoInstance: MediaInfoInstance | null = null;
 export async function getMediaInfo(): Promise<MediaInfoInstance> {
 	if (mediaInfoInstance) return mediaInfoInstance;
 
-	const MediaInfoFactory = (await import('mediainfo.js')).default as (options: {
-		format: string;
-	}) => Promise<MediaInfoInstance>;
+	try {
+		const MediaInfoFactory = (await import('mediainfo.js')).default as (options: {
+			format: string;
+		}) => Promise<MediaInfoInstance>;
 
-	mediaInfoInstance = await MediaInfoFactory({ format: 'object' });
-	return mediaInfoInstance;
+		mediaInfoInstance = await MediaInfoFactory({ format: 'object' });
+		return mediaInfoInstance;
+	} catch (err) {
+		mediaInfoInstance = null;
+		throw err;
+	}
 }
 
 function extractFieldsFromTrack(track: Record<string, unknown>): { fields: MetadataField[]; raw: Record<string, string> } {
@@ -131,17 +136,28 @@ function makeEmptyResult(fileId: string): ScanResult {
 }
 
 export async function parseVideo(file: File, fileId: string): Promise<ScanResult> {
-	const mi = await getMediaInfo();
+	let mi: MediaInfoInstance;
+	try {
+		mi = await getMediaInfo();
+	} catch {
+		return makeEmptyResult(fileId);
+	}
+
 	const slice = file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_VIDEO_HEADER_BYTES) : file;
 	const sliceSize = file.size > FILE_SIZE_THRESHOLD ? MAX_VIDEO_HEADER_BYTES : file.size;
 
-	const result = await mi.analyzeData(
-		() => sliceSize,
-		async (size, offset) => {
-			const chunk = slice.slice(offset, offset + size);
-			return new Uint8Array(await chunk.arrayBuffer());
-		}
-	);
+	let result: unknown;
+	try {
+		result = await mi.analyzeData(
+			() => sliceSize,
+			async (size, offset) => {
+				const chunk = slice.slice(offset, offset + size);
+				return new Uint8Array(await chunk.arrayBuffer());
+			}
+		);
+	} catch {
+		return makeEmptyResult(fileId);
+	}
 
 	if (!result || typeof result !== 'object') return makeEmptyResult(fileId);
 

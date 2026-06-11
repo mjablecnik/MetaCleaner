@@ -124,9 +124,9 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - _Preservation: Existing "Settings" and "Logout" options retain current functionality_
     - _Requirements: 2.5, 3.5_
 
-- [ ] 9. Fix Bug 7 — Video parsing resilience
+- [x] 9. Fix Bug 7 — Video parsing resilience
 
-  - [ ] 9.1 Add error handling to `getMediaInfo()` and `parseVideo()`
+  - [x] 9.1 Add error handling to `getMediaInfo()` and `parseVideo()`
     - File: `frontend/metacleaner-app/src/lib/scanner/parsers/videoParser.ts`
     - Reset cached `mediaInfoInstance` to `null` on failure so next call retries
     - Add try/catch in `getMediaInfo()` for WASM initialization errors
