@@ -1,0 +1,828 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	let currentStep = $state(2);
+	let sentEmail = $state('vas@email.cz');
+	let emailInput = $state('');
+	let emailError = $state('');
+
+	let otpValues = $state(['', '', '', '', '', '']);
+	let otpError = $state('');
+	let otpShake = $state(false);
+
+	let newPassword = $state('');
+	let confirmPassword = $state('');
+	let confirmError = $state('');
+	let newPasswordVisible = $state(false);
+	let confirmPasswordVisible = $state(false);
+	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
+
+	let countdown = $state('14:59');
+	let countdownInterval: ReturnType<typeof setInterval> | null = null;
+	let progressBarVisible = $state(true);
+
+	let otpInputs: HTMLInputElement[] = $state([]);
+
+	function validateEmail(v: string) {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+	}
+
+	function goToStep(n: number) {
+		currentStep = n;
+		if (n !== 2 && countdownInterval) {
+			clearInterval(countdownInterval);
+			countdownInterval = null;
+		}
+	}
+
+	function handleEmailSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		emailError = '';
+		if (!validateEmail(emailInput)) {
+			emailError = 'Zadejte platnou e-mailovou adresu.';
+			return;
+		}
+		sentEmail = emailInput.trim();
+		goToStep(2);
+		startCountdown();
+		setTimeout(() => {
+			if (otpInputs[0]) otpInputs[0].focus();
+		}, 100);
+	}
+
+	function handleOtpSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		otpError = '';
+		const code = otpValues.join('');
+		if (code.length < 6) {
+			otpError = 'Zadejte celý 6místný kód.';
+			otpShake = true;
+			setTimeout(() => {
+				otpShake = false;
+			}, 400);
+			return;
+		}
+		if (countdownInterval) clearInterval(countdownInterval);
+		goToStep(3);
+	}
+
+	function resendCode() {
+		otpValues = ['', '', '', '', '', ''];
+		startCountdown();
+		setTimeout(() => {
+			if (otpInputs[0]) otpInputs[0].focus();
+		}, 100);
+	}
+
+	function handleOtpInput(idx: number, e: Event) {
+		const input = e.currentTarget as HTMLInputElement;
+		const val = input.value.replace(/[^0-9]/g, '').slice(0, 1);
+		const next = [...otpValues];
+		next[idx] = val;
+		otpValues = next;
+		if (val && idx < 5 && otpInputs[idx + 1]) {
+			otpInputs[idx + 1].focus();
+		}
+	}
+
+	function handleOtpKeydown(idx: number, e: KeyboardEvent) {
+		if (e.key === 'Backspace' && !otpValues[idx] && idx > 0 && otpInputs[idx - 1]) {
+			otpInputs[idx - 1].focus();
+		}
+	}
+
+	function handleNewPasswordSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		confirmError = '';
+		if (newPassword !== confirmPassword || newPassword.length < 8) {
+			confirmError = 'Hesla se neshodují nebo jsou příliš krátká.';
+			return;
+		}
+		submitState = 'loading';
+		setTimeout(() => {
+			submitState = 'idle';
+			progressBarVisible = false;
+			goToStep(4);
+		}, 1200);
+	}
+
+	function startCountdown() {
+		let total = 899;
+		if (countdownInterval) clearInterval(countdownInterval);
+		countdown = '14:59';
+		countdownInterval = setInterval(() => {
+			const m = Math.floor(total / 60);
+			const s = total % 60;
+			countdown = m + ':' + String(s).padStart(2, '0');
+			if (total <= 0) {
+				clearInterval(countdownInterval!);
+				countdownInterval = null;
+			}
+			total--;
+		}, 1000);
+	}
+
+	onMount(() => {
+		startCountdown();
+		setTimeout(() => {
+			if (otpInputs[0]) otpInputs[0].focus();
+		}, 100);
+	});
+
+	type StrengthResult = {
+		score: number;
+		label: string;
+		color: string;
+		widthClass: string;
+		bgClass: string;
+	};
+
+	function getStrength(pwd: string): StrengthResult {
+		const len = pwd.length >= 8;
+		const upper = /[A-Z]/.test(pwd);
+		const num = /[0-9]/.test(pwd);
+		const long = pwd.length >= 12;
+		const score = [len, upper, num, long].filter(Boolean).length;
+		const labels = ['', 'Slabé', 'Průměrné', 'Dobré', 'Silné'];
+		const colors = [
+			'text-text-muted',
+			'text-brand-red',
+			'text-brand-orange',
+			'text-yellow-400',
+			'text-brand-green'
+		];
+		const widths = ['w-0', 'w-1/4', 'w-2/4', 'w-3/4', 'w-full'];
+		const bgs = ['', 'bg-brand-red', 'bg-brand-orange', 'bg-yellow-400', 'bg-brand-green'];
+		return {
+			score,
+			label: labels[score] || '',
+			color: colors[score],
+			widthClass: widths[score],
+			bgClass: bgs[score]
+		};
+	}
+
+	const strength = $derived(getStrength(newPassword));
+
+	function reqMet(check: boolean) {
+		return check
+			? 'flex items-center gap-2 text-xs text-brand-green'
+			: 'flex items-center gap-2 text-xs text-text-muted';
+	}
+	function reqIcon(check: boolean) {
+		return check ? 'fa-solid fa-circle-check text-brand-green' : 'fa-solid fa-circle text-[6px]';
+	}
+</script>
+
+<svelte:head>
+	<title>Ověřte kód – MetaCleaner</title>
+</svelte:head>
+
+<div
+	class="flex min-h-screen flex-col"
+	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+>
+	<!-- Navbar -->
+	<nav
+		class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6"
+	>
+		<div class="flex items-center gap-2.5 lg:gap-3">
+			<div
+				class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue lg:h-10 lg:w-10"
+			>
+				<i class="fa-solid fa-shield-halved text-base lg:text-xl"></i>
+			</div>
+			<span class="text-lg font-bold tracking-tight lg:text-xl">MetaCleaner</span>
+		</div>
+		<div class="flex items-center gap-2">
+			<span class="hidden text-sm text-text-muted lg:inline">Vzpomněli jste si?</span>
+			<a
+				href="/auth/login"
+				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2 lg:text-sm"
+			>
+				Přihlásit se
+			</a>
+		</div>
+	</nav>
+
+	<!-- Main -->
+	<main
+		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-4 pb-8 lg:px-6 lg:pb-16"
+	>
+		<div class="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-2">
+
+			<!-- Left: Branding (desktop only) -->
+			<div class="hidden flex-col gap-8 lg:flex">
+				<div class="flex flex-col gap-4">
+					<div
+						class="mb-2 flex h-16 w-16 items-center justify-center rounded-2xl border border-brand-blue/30 bg-brand-blue/15 floating-icon"
+					>
+						<i class="fa-solid fa-key text-3xl text-brand-blue"></i>
+					</div>
+					<h1 class="text-4xl font-black leading-tight text-white">
+						Obnova<br /><span class="text-brand-green">přístupu</span> k účtu
+					</h1>
+					<p class="max-w-md text-base leading-relaxed text-text-muted">
+						Zapomenuté heslo? Nevadí. Pošleme vám bezpečný kód na váš e-mail a během chvíle budete
+						zpět.
+					</p>
+				</div>
+
+				<!-- Step Info Cards -->
+				<div class="flex flex-col gap-3">
+					<!-- Step 1: Done -->
+					<div
+						class="step-info-card done-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15"
+						>
+							<i class="fa-solid fa-check text-sm text-brand-green"></i>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-white">Zadejte e-mail</p>
+							<p class="mt-0.5 text-xs text-text-muted">Na váš účet odešleme ověřovací kód.</p>
+						</div>
+						<div class="ml-auto">
+							<i class="fa-solid fa-circle-check text-brand-green opacity-80"></i>
+						</div>
+					</div>
+					<!-- Step 2: Active -->
+					<div
+						class="step-info-card active-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-blue/20 text-sm font-bold text-brand-blue ring-2 ring-brand-blue/30"
+						>
+							2
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-white">Ověřte kód</p>
+							<p class="mt-0.5 text-xs text-text-muted">Zadejte 6místný kód z e-mailu.</p>
+						</div>
+						<div class="ml-auto">
+							<i class="fa-solid fa-shield-halved text-brand-blue opacity-80"></i>
+						</div>
+					</div>
+					<!-- Step 3: Neutral -->
+					<div
+						class="step-info-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4"
+					>
+						<div
+							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15 text-sm font-bold text-brand-green"
+						>
+							3
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-white">Nastavte nové heslo</p>
+							<p class="mt-0.5 text-xs text-text-muted">Zvolte silné heslo a přihlaste se.</p>
+						</div>
+						<div class="ml-auto">
+							<i class="fa-solid fa-lock text-brand-green opacity-60"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Email Hint Card -->
+				<div
+					class="flex h-[72px] items-start gap-3 rounded-xl border border-brand-blue/20 bg-brand-blue/5 p-4"
+				>
+					<i class="fa-solid fa-envelope-open-text mt-0.5 text-brand-blue"></i>
+					<div>
+						<p class="text-sm font-semibold text-white">Kód odeslán na</p>
+						<p class="mt-0.5 text-xs text-text-muted">
+							Kód byl odeslán na <span class="font-semibold text-brand-blue">{sentEmail}</span>.
+							Zkontrolujte také složku spam.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Right: Form -->
+			<div class="mx-auto w-full max-w-[480px] lg:mx-0 lg:ml-auto">
+
+				<!-- Progress Bar -->
+				{#if progressBarVisible}
+					<div class="mb-5 flex items-center gap-2 lg:mb-6">
+						<div class="flex flex-1 items-center gap-2">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white transition-all duration-300 lg:h-8 lg:w-8"
+								style="background: {currentStep > 1 ? '#22c55e' : currentStep === 1 ? '#3b82f6' : '#1e293b'};"
+							>
+								{#if currentStep > 1}
+									<i class="fa-solid fa-check text-xs"></i>
+								{:else}
+									1
+								{/if}
+							</div>
+							<div class="flex-1 h-1 overflow-hidden rounded-full bg-navy-lighter">
+								<div
+									class="h-full rounded-full transition-all duration-500"
+									style="width: {currentStep > 1 ? '100%' : '0'}; background: {currentStep > 1 ? '#22c55e' : '#3b82f6'};"
+								></div>
+							</div>
+						</div>
+						<div class="flex flex-1 items-center gap-2">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 lg:h-8 lg:w-8"
+								style="background: {currentStep > 2 ? '#22c55e' : currentStep === 2 ? '#3b82f6' : '#1e293b'}; color: {currentStep < 2 ? '#94a3b8' : 'white'};"
+							>
+								{#if currentStep > 2}
+									<i class="fa-solid fa-check text-xs"></i>
+								{:else}
+									2
+								{/if}
+							</div>
+							<div class="flex-1 h-1 overflow-hidden rounded-full bg-navy-lighter">
+								<div
+									class="h-full rounded-full transition-all duration-500"
+									style="width: {currentStep > 2 ? '100%' : '0'}; background: #3b82f6;"
+								></div>
+							</div>
+						</div>
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 lg:h-8 lg:w-8"
+							style="background: {currentStep === 3 ? '#3b82f6' : '#1e293b'}; color: {currentStep === 3 ? 'white' : '#94a3b8'};"
+						>
+							3
+						</div>
+					</div>
+				{/if}
+
+				<!-- Form Card -->
+				<div class="rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card lg:p-8">
+
+					<!-- Step 1: Email -->
+					{#if currentStep === 1}
+						<form onsubmit={handleEmailSubmit} class="flex flex-col gap-3.5 lg:gap-4">
+							<div class="flex flex-col gap-1">
+								<h2 class="text-xl font-bold text-white lg:text-2xl">Zapomenuté heslo</h2>
+								<p class="text-sm text-text-muted">
+									Zadejte svůj e-mail a my vám pošleme kód pro obnovu hesla.
+								</p>
+							</div>
+
+							<div class="flex flex-col gap-1.5">
+								<label for="email-input" class="text-sm font-medium text-white"
+									>E-mailová adresa</label
+								>
+								<div class="relative">
+									<span
+										class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted"
+									>
+										<i class="fa-regular fa-envelope"></i>
+									</span>
+									<input
+										id="email-input"
+										type="email"
+										bind:value={emailInput}
+										placeholder="vas@email.cz"
+										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-4 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
+										style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
+										onfocus={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = emailError
+												? '#ef4444'
+												: '#3b82f6')}
+										onblur={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = emailError
+												? '#ef4444'
+												: '#1e293b')}
+									/>
+								</div>
+								{#if emailError}
+									<span class="text-[12px] text-brand-red">
+										<i class="fa-solid fa-circle-exclamation mr-1"></i>{emailError}
+									</span>
+								{/if}
+							</div>
+
+							<button
+								type="submit"
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
+								style="background: #22c55e;"
+							>
+								<i class="fa-solid fa-paper-plane"></i> Odeslat kód
+							</button>
+
+							<div class="text-center">
+								<a
+									href="/auth/login"
+									class="text-sm text-text-muted transition-colors hover:text-white"
+								>
+									<i class="fa-solid fa-arrow-left mr-1.5"></i>Zpět na přihlášení
+								</a>
+							</div>
+						</form>
+					{/if}
+
+					<!-- Step 2: OTP -->
+					{#if currentStep === 2}
+						<form onsubmit={handleOtpSubmit} class="flex flex-col gap-3.5 lg:gap-4">
+							<div class="mb-1 flex items-center gap-3">
+								<div
+									class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-brand-blue/30 bg-brand-blue/15"
+								>
+									<i class="fa-solid fa-shield-halved text-brand-blue"></i>
+								</div>
+								<div>
+									<h2 class="text-xl font-bold text-white lg:text-2xl">Ověřte kód</h2>
+									<p class="mt-0.5 text-xs text-text-muted">Krok 2 ze 3</p>
+								</div>
+							</div>
+
+							<p class="text-sm text-text-muted">
+								Zadejte 6místný kód, který jsme odeslali na
+								<span class="break-all font-semibold text-white">{sentEmail}</span>
+							</p>
+
+							<!-- OTP Inputs -->
+							<div
+								class="mt-1 flex justify-between otp-wrapper {otpShake ? 'shake' : ''}"
+							>
+								{#each otpValues as val, idx}
+									<input
+										bind:this={otpInputs[idx]}
+										type="text"
+										inputmode="numeric"
+										pattern="[0-9]*"
+										maxlength={1}
+										value={val}
+										oninput={(e) => handleOtpInput(idx, e)}
+										onkeydown={(e) => handleOtpKeydown(idx, e)}
+										class="otp-input text-center font-bold text-white transition-[border-color,box-shadow] focus:outline-none"
+										style="background: #0a1628; border-color: {val ? '#22c55e' : '#1e293b'}; box-shadow: {val ? '0 0 8px rgba(34,197,94,0.2)' : 'none'};"
+										onfocus={(ev) => {
+											const el = ev.currentTarget as HTMLInputElement;
+											if (!el.value) el.style.borderColor = '#3b82f6';
+										}}
+										onblur={(ev) => {
+											const el = ev.currentTarget as HTMLInputElement;
+											el.style.borderColor = el.value ? '#22c55e' : '#1e293b';
+										}}
+									/>
+								{/each}
+							</div>
+
+							{#if otpError}
+								<span class="text-[12px] text-brand-red">
+									<i class="fa-solid fa-circle-exclamation mr-1"></i>{otpError}
+								</span>
+							{/if}
+
+							<!-- Progress Dots -->
+							<div class="flex items-center justify-center gap-1.5 py-1">
+								{#each otpValues as val}
+									<div
+										class="h-2 w-2 rounded-full transition-all duration-200"
+										style="background: {val ? '#22c55e' : '#1e293b'};"
+									></div>
+								{/each}
+							</div>
+
+							<!-- Countdown Card -->
+							<div
+								class="flex items-center justify-between rounded-xl border border-gray-800 bg-navy-main p-3"
+							>
+								<div class="flex items-center gap-2">
+									<i class="fa-regular fa-clock text-sm text-text-muted"></i>
+									<span class="text-xs text-text-muted">Kód vyprší za</span>
+									<span class="tabular-nums text-sm font-bold text-white">{countdown}</span>
+								</div>
+								<button
+									type="button"
+									onclick={resendCode}
+									class="flex items-center gap-1.5 text-xs font-semibold text-brand-blue transition-colors hover:text-blue-400"
+								>
+									<i class="fa-solid fa-rotate-right text-xs"></i> Odeslat znovu
+								</button>
+							</div>
+
+							<!-- Verify Button -->
+							<button
+								type="submit"
+								class="pulse-green flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
+								style="background: #22c55e;"
+							>
+								<i class="fa-solid fa-shield-halved"></i> Ověřit kód
+							</button>
+
+							<!-- Help Text -->
+							<div
+								class="flex items-start gap-2 rounded-xl border border-gray-800 bg-navy-main p-3 text-xs text-text-muted"
+							>
+								<i
+									class="fa-solid fa-circle-info mt-0.5 flex-shrink-0 text-text-muted"
+								></i>
+								<span
+									>Kód jsme odeslali na váš e-mail. Pokud jej nevidíte, zkontrolujte složku
+									<span class="font-medium text-white">Spam</span> nebo
+									<span class="font-medium text-white">Hromadné</span>.</span
+								>
+							</div>
+
+							<!-- Back -->
+							<div class="text-center">
+								<button
+									type="button"
+									onclick={() => goToStep(1)}
+									class="py-1 text-sm text-text-muted transition-colors hover:text-white"
+								>
+									<i class="fa-solid fa-arrow-left mr-1.5"></i>Zpět
+								</button>
+							</div>
+						</form>
+					{/if}
+
+					<!-- Step 3: New Password -->
+					{#if currentStep === 3}
+						<form onsubmit={handleNewPasswordSubmit} class="flex flex-col gap-3.5 lg:gap-4">
+							<div class="mb-1 flex items-center gap-3">
+								<div
+									class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-brand-blue/30 bg-brand-blue/15"
+								>
+									<i class="fa-solid fa-shield-halved text-brand-blue"></i>
+								</div>
+								<div>
+									<h2 class="text-xl font-bold text-white lg:text-2xl">Nové heslo</h2>
+									<p class="mt-0.5 text-xs text-text-muted">Krok 3 ze 3</p>
+								</div>
+							</div>
+							<p class="text-sm text-text-muted">Zvolte silné heslo pro váš účet.</p>
+
+							<!-- New Password Field -->
+							<div class="flex flex-col gap-1.5">
+								<label for="new-password" class="text-sm font-medium text-white">Nové heslo</label>
+								<div class="relative">
+									<span
+										class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted"
+									>
+										<i class="fa-solid fa-lock"></i>
+									</span>
+									<input
+										id="new-password"
+										type={newPasswordVisible ? 'text' : 'password'}
+										bind:value={newPassword}
+										placeholder="••••••••"
+										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
+										style="background:#0a1628; border-color:#1e293b;"
+										onfocus={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = '#3b82f6')}
+										onblur={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = '#1e293b')}
+									/>
+									<button
+										type="button"
+										onclick={() => { newPasswordVisible = !newPasswordVisible; }}
+										aria-label={newPasswordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+										class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-sm text-text-muted transition-colors hover:text-white"
+									>
+										<i class={newPasswordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}
+										></i>
+									</button>
+								</div>
+								<!-- Strength Bar -->
+								<div class="mt-1 h-1.5 overflow-hidden rounded-full bg-navy-lighter">
+									<div
+										class="h-full rounded-full transition-all duration-300 {strength.widthClass} {strength.bgClass}"
+									></div>
+								</div>
+								{#if newPassword.length > 0}
+									<p class="text-xs {strength.color}">{strength.label}</p>
+								{/if}
+							</div>
+
+							<!-- Confirm Password Field -->
+							<div class="flex flex-col gap-1.5">
+								<label for="confirm-password" class="text-sm font-medium text-white"
+									>Potvrdit heslo</label
+								>
+								<div class="relative">
+									<span
+										class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted"
+									>
+										<i class="fa-solid fa-lock"></i>
+									</span>
+									<input
+										id="confirm-password"
+										type={confirmPasswordVisible ? 'text' : 'password'}
+										bind:value={confirmPassword}
+										placeholder="••••••••"
+										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
+										style="background:#0a1628; border-color:{confirmError ? '#ef4444' : '#1e293b'};"
+										onfocus={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError
+												? '#ef4444'
+												: '#3b82f6')}
+										onblur={(ev) =>
+											((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError
+												? '#ef4444'
+												: '#1e293b')}
+									/>
+									<button
+										type="button"
+										onclick={() => { confirmPasswordVisible = !confirmPasswordVisible; }}
+										aria-label={confirmPasswordVisible ? 'Skrýt heslo' : 'Zobrazit heslo'}
+										class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-sm text-text-muted transition-colors hover:text-white"
+									>
+										<i
+											class={confirmPasswordVisible
+												? 'fa-regular fa-eye-slash'
+												: 'fa-regular fa-eye'}
+										></i>
+									</button>
+								</div>
+								{#if confirmError}
+									<span class="text-[12px] text-brand-red">
+										<i class="fa-solid fa-circle-exclamation mr-1"></i>{confirmError}
+									</span>
+								{/if}
+							</div>
+
+							<!-- Requirements -->
+							<div class="flex flex-col gap-1.5 rounded-xl border border-gray-800 bg-navy-main p-3">
+								<p class="text-xs font-semibold uppercase tracking-wider text-text-muted">
+									Požadavky na heslo
+								</p>
+								<div class="mt-1 flex flex-col gap-1">
+									<div class={reqMet(newPassword.length >= 8)}>
+										<i class={reqIcon(newPassword.length >= 8)}></i>Alespoň 8 znaků
+									</div>
+									<div class={reqMet(/[A-Z]/.test(newPassword))}>
+										<i class={reqIcon(/[A-Z]/.test(newPassword))}></i>Velké písmeno
+									</div>
+									<div class={reqMet(/[0-9]/.test(newPassword))}>
+										<i class={reqIcon(/[0-9]/.test(newPassword))}></i>Číslo
+									</div>
+								</div>
+							</div>
+
+							<!-- Submit -->
+							<button
+								type="submit"
+								disabled={submitState === 'loading'}
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
+								style="background: #22c55e;"
+							>
+								{#if submitState === 'loading'}
+									<i class="fa-solid fa-spinner fa-spin"></i> Ukládám...
+								{:else}
+									<i class="fa-solid fa-check"></i> Nastavit nové heslo
+								{/if}
+							</button>
+
+							<!-- Back -->
+							<div class="text-center">
+								<button
+									type="button"
+									onclick={() => goToStep(2)}
+									class="py-1 text-sm text-text-muted transition-colors hover:text-white"
+								>
+									<i class="fa-solid fa-arrow-left mr-1.5"></i>Zpět na ověření kódu
+								</button>
+							</div>
+						</form>
+					{/if}
+
+					<!-- Step 4: Success -->
+					{#if currentStep === 4}
+						<div class="flex flex-col items-center gap-4 py-6 text-center lg:gap-5">
+							<div
+								class="flex h-20 w-20 items-center justify-center rounded-full border-2 border-brand-green/40 bg-brand-green/15"
+							>
+								<i class="fa-solid fa-circle-check text-5xl text-brand-green"></i>
+							</div>
+							<div>
+								<h2 class="text-2xl font-bold text-white">Heslo změněno!</h2>
+								<p class="mt-2 text-sm leading-relaxed text-text-muted">
+									Vaše heslo bylo úspěšně nastaveno.<br />Nyní se můžete přihlásit.
+								</p>
+							</div>
+							<a
+								href="/auth/login"
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
+								style="background: #22c55e;"
+							>
+								<i class="fa-solid fa-arrow-right-to-bracket"></i> Přihlásit se
+							</a>
+							<p class="flex items-center gap-1.5 text-xs text-text-muted">
+								<i class="fa-solid fa-shield-halved text-xs"></i>
+								Vaše heslo je bezpečně zašifrováno a uloženo.
+							</p>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Trust Badges -->
+				<div class="mt-4 flex items-center justify-center gap-4 lg:mt-5 lg:gap-5">
+					<div class="flex items-center gap-1.5 text-xs text-text-muted">
+						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
+						<span class="hidden lg:inline">SSL šifrování</span>
+						<span class="lg:hidden">SSL</span>
+					</div>
+					<div class="h-3 w-px bg-gray-700"></div>
+					<div class="flex items-center gap-1.5 text-xs text-text-muted">
+						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
+						<span class="hidden lg:inline">GDPR soulad</span>
+						<span class="lg:hidden">GDPR</span>
+					</div>
+					<div class="h-3 w-px bg-gray-700"></div>
+					<div class="flex items-center gap-1.5 text-xs text-text-muted">
+						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
+						<span>Bez sledování</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+
+<style>
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
+	}
+
+	.floating-icon {
+		animation: float 3s ease-in-out infinite;
+	}
+
+	.step-info-card.done-card {
+		border-color: rgba(34, 197, 94, 0.3) !important;
+		background: rgba(34, 197, 94, 0.04) !important;
+	}
+
+	.step-info-card.active-card {
+		border-color: rgba(59, 130, 246, 0.4) !important;
+		background: rgba(59, 130, 246, 0.05) !important;
+	}
+
+	@keyframes shake {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		20% {
+			transform: translateX(-6px);
+		}
+		40% {
+			transform: translateX(6px);
+		}
+		60% {
+			transform: translateX(-4px);
+		}
+		80% {
+			transform: translateX(4px);
+		}
+	}
+
+	.otp-wrapper.shake {
+		animation: shake 0.4s ease;
+	}
+
+	@keyframes pulseGreen {
+		0%,
+		100% {
+			box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3);
+		}
+		50% {
+			box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+		}
+	}
+
+	.pulse-green {
+		animation: pulseGreen 1.5s ease-in-out infinite;
+	}
+
+	/* OTP input sizing */
+	.otp-input {
+		border: 1px solid #1e293b;
+		border-radius: 10px;
+		height: 52px;
+		font-size: 1.25rem;
+		flex: 1;
+	}
+
+	@media (min-width: 1024px) {
+		.otp-input {
+			border-radius: 12px;
+			width: 52px;
+			height: 60px;
+			font-size: 1.5rem;
+			flex: none;
+		}
+
+		.otp-wrapper {
+			gap: 0.5rem;
+		}
+	}
+
+	.otp-wrapper {
+		display: flex;
+		gap: 0.375rem;
+	}
+</style>
