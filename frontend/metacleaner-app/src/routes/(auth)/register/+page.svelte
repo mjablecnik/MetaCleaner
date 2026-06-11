@@ -2,6 +2,16 @@
 	import { goto } from '$app/navigation';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import { getAuthStats, getAuthPlans } from '$lib/repositories/authRepository';
+
+	const stats = getAuthStats();
+	const plans = getAuthPlans();
+
+	function planColors(color: 'green' | 'orange') {
+		return color === 'green'
+			? { hex: '#22c55e', bg: 'rgba(34,197,94,0.06)', bg15: 'rgba(34,197,94,0.15)' }
+			: { hex: '#f97316', bg: 'rgba(249,115,22,0.06)', bg15: 'rgba(249,115,22,0.15)' };
+	}
 
 	let firstName = $state('');
 	let lastName = $state('');
@@ -166,67 +176,42 @@
 				<!-- Plan Selector -->
 				<div class="flex flex-col gap-3">
 					<p class="text-sm font-semibold text-white">{tx('auth.register.plan.title')}</p>
-					<button
-						type="button"
-						onclick={() => selectPlan('free')}
-						class="flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all"
-						style="border-color: {selectedPlan === 'free' ? '#22c55e' : '#1e293b'}; background: {selectedPlan === 'free' ? 'rgba(34,197,94,0.06)' : 'transparent'};"
-					>
-						<div
-							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15"
+					{#each plans as plan}
+						{@const c = planColors(plan.color)}
+						{@const isSelected = selectedPlan === plan.id}
+						<button
+							type="button"
+							onclick={() => selectPlan(plan.id)}
+							class="flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all"
+							style="border-color: {isSelected ? c.hex : '#1e293b'}; background: {isSelected ? c.bg : 'transparent'};"
 						>
-							<i class="fa-solid fa-seedling text-brand-green"></i>
-						</div>
-						<div class="flex-1 text-left">
-							<div class="flex items-center gap-2">
-								<p class="text-sm font-bold text-white">{tx('auth.register.plan.freeName')}</p>
-								<span
-									class="rounded bg-brand-green/15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
-									>{tx('auth.register.plan.freeBadge')}</span
-								>
+							<div
+								class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg"
+								style="background: {c.bg15};"
+							>
+								<i class="{plan.icon}" style="color: {c.hex};"></i>
 							</div>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.register.plan.freeDesc')}</p>
-						</div>
-						<div
-							class="flex h-5 w-5 items-center justify-center rounded-full"
-							style="background: {selectedPlan === 'free' ? '#22c55e' : 'transparent'}; border: {selectedPlan === 'free' ? 'none' : '1px solid #4b5563'};"
-						>
-							{#if selectedPlan === 'free'}
-								<i class="fa-solid fa-check text-[10px] text-white"></i>
-							{/if}
-						</div>
-					</button>
-
-					<button
-						type="button"
-						onclick={() => selectPlan('pro')}
-						class="flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all"
-						style="border-color: {selectedPlan === 'pro' ? '#f97316' : '#1e293b'}; background: {selectedPlan === 'pro' ? 'rgba(249,115,22,0.06)' : 'transparent'};"
-					>
-						<div
-							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-brand-orange/15"
-						>
-							<i class="fa-solid fa-bolt text-brand-orange"></i>
-						</div>
-						<div class="flex-1 text-left">
-							<div class="flex items-center gap-2">
-								<p class="text-sm font-bold text-white">{tx('auth.register.plan.proName')}</p>
-								<span
-									class="rounded bg-brand-orange/15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
-									>{tx('auth.register.plan.proBadge')}</span
-								>
+							<div class="flex-1 text-left">
+								<div class="flex items-center gap-2">
+									<p class="text-sm font-bold text-white">{tx(plan.nameKey)}</p>
+									<span
+										class="rounded px-2 py-0.5 text-[10px] font-bold uppercase"
+										style="background: {c.bg15}; color: {c.hex};"
+										>{tx(plan.badgeKey)}</span
+									>
+								</div>
+								<p class="mt-0.5 text-xs text-text-muted">{tx(plan.descriptionKey)}</p>
 							</div>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.register.plan.proDesc')}</p>
-						</div>
-						<div
-							class="flex h-5 w-5 items-center justify-center rounded-full"
-							style="background: {selectedPlan === 'pro' ? '#f97316' : 'transparent'}; border: {selectedPlan === 'pro' ? 'none' : '1px solid #4b5563'};"
-						>
-							{#if selectedPlan === 'pro'}
-								<i class="fa-solid fa-check text-[10px] text-white"></i>
-							{/if}
-						</div>
-					</button>
+							<div
+								class="flex h-5 w-5 items-center justify-center rounded-full"
+								style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid #4b5563'};"
+							>
+								{#if isSelected}
+									<i class="fa-solid fa-check text-[10px] text-white"></i>
+								{/if}
+							</div>
+						</button>
+					{/each}
 				</div>
 
 				<!-- Benefits -->
@@ -252,16 +237,16 @@
 				<!-- Stats -->
 				<div class="grid grid-cols-3 gap-4 border-t border-gray-800 pt-2">
 					<div class="text-center">
-						<p class="text-2xl font-black text-white">50K+</p>
-						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.usersLabel')}</p>
+						<p class="text-2xl font-black text-white">{stats[0].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[0].labelKey)}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
-						<p class="text-2xl font-black text-brand-green">2M+</p>
-						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.filesCleanedLabel')}</p>
+						<p class="text-2xl font-black text-brand-green">{stats[1].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[1].labelKey)}</p>
 					</div>
 					<div class="text-center">
-						<p class="text-2xl font-black text-brand-blue">100%</p>
-						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.securityLabel')}</p>
+						<p class="text-2xl font-black text-brand-blue">{stats[2].value}</p>
+						<p class="mt-1 text-xs text-text-muted">{tx(stats[2].labelKey)}</p>
 					</div>
 				</div>
 			</div>
@@ -552,71 +537,44 @@
 							</button>
 							{#if planOpen}
 								<div class="flex flex-col gap-2">
-									<button
-										type="button"
-										onclick={() => selectPlan('free')}
-										class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all"
-										style="border-color: {selectedPlan === 'free' ? '#22c55e' : '#1e293b'}; background: {selectedPlan === 'free' ? 'rgba(34,197,94,0.06)' : 'transparent'};"
-									>
-										<div
-											class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15"
+									{#each plans as plan}
+										{@const c = planColors(plan.color)}
+										{@const isSelected = selectedPlan === plan.id}
+										<button
+											type="button"
+											onclick={() => selectPlan(plan.id)}
+											class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all"
+											style="border-color: {isSelected ? c.hex : '#1e293b'}; background: {isSelected ? c.bg : 'transparent'};"
 										>
-											<i class="fa-solid fa-seedling text-sm text-brand-green"></i>
-										</div>
-										<div class="flex-1 min-w-0 text-left">
-											<div class="flex items-center gap-1.5">
-												<p class="text-sm font-bold text-white">{tx('auth.register.plan.freeName')}</p>
-												<span
-													class="rounded bg-brand-green/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
-													>{tx('auth.register.plan.freeBadge')}</span
-												>
+											<div
+												class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
+												style="background: {c.bg15};"
+											>
+												<i class="{plan.icon} text-sm" style="color: {c.hex};"></i>
 											</div>
-											<p class="mt-0.5 text-[11px] text-text-muted">
-												{tx('auth.register.plan.freeDesc')}
-											</p>
-										</div>
-										<div
-											class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-											style="background: {selectedPlan === 'free' ? '#22c55e' : 'transparent'}; border: {selectedPlan === 'free' ? 'none' : '1px solid #4b5563'};"
-										>
-											{#if selectedPlan === 'free'}
-												<i class="fa-solid fa-check text-[9px] text-white"></i>
-											{/if}
-										</div>
-									</button>
-
-									<button
-										type="button"
-										onclick={() => selectPlan('pro')}
-										class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all"
-										style="border-color: {selectedPlan === 'pro' ? '#f97316' : '#1e293b'}; background: {selectedPlan === 'pro' ? 'rgba(249,115,22,0.06)' : 'transparent'};"
-									>
-										<div
-											class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-orange/15"
-										>
-											<i class="fa-solid fa-bolt text-sm text-brand-orange"></i>
-										</div>
-										<div class="flex-1 min-w-0 text-left">
-											<div class="flex items-center gap-1.5">
-												<p class="text-sm font-bold text-white">{tx('auth.register.plan.proName')}</p>
-												<span
-													class="rounded bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-orange"
-													>{tx('auth.register.plan.proBadge')}</span
-												>
+											<div class="flex-1 min-w-0 text-left">
+												<div class="flex items-center gap-1.5">
+													<p class="text-sm font-bold text-white">{tx(plan.nameKey)}</p>
+													<span
+														class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase"
+														style="background: {c.bg15}; color: {c.hex};"
+														>{tx(plan.badgeKey)}</span
+													>
+												</div>
+												<p class="mt-0.5 text-[11px] text-text-muted">
+													{tx(plan.descriptionKey)}
+												</p>
 											</div>
-											<p class="mt-0.5 text-[11px] text-text-muted">
-												{tx('auth.register.plan.proDesc')}
-											</p>
-										</div>
-										<div
-											class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-											style="background: {selectedPlan === 'pro' ? '#f97316' : 'transparent'}; border: {selectedPlan === 'pro' ? 'none' : '1px solid #4b5563'};"
-										>
-											{#if selectedPlan === 'pro'}
-												<i class="fa-solid fa-check text-[9px] text-white"></i>
-											{/if}
-										</div>
-									</button>
+											<div
+												class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+												style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid #4b5563'};"
+											>
+												{#if isSelected}
+													<i class="fa-solid fa-check text-[9px] text-white"></i>
+												{/if}
+											</div>
+										</button>
+									{/each}
 								</div>
 							{/if}
 						</div>
@@ -687,16 +645,16 @@
 					class="mt-3 grid grid-cols-3 gap-2 border-t border-gray-800 pt-3 lg:hidden"
 				>
 					<div class="text-center">
-						<p class="text-lg font-black text-white">50K+</p>
-						<p class="text-[10px] text-text-muted">{tx('auth.common.stats.usersLabel')}</p>
+						<p class="text-lg font-black text-white">{stats[0].value}</p>
+						<p class="text-[10px] text-text-muted">{tx(stats[0].labelKey)}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
-						<p class="text-lg font-black text-brand-green">2M+</p>
+						<p class="text-lg font-black text-brand-green">{stats[1].value}</p>
 						<p class="text-[10px] text-text-muted">{tx('auth.register.stats.cleanedLabel')}</p>
 					</div>
 					<div class="text-center">
-						<p class="text-lg font-black text-brand-blue">100%</p>
-						<p class="text-[10px] text-text-muted">{tx('auth.common.stats.securityLabel')}</p>
+						<p class="text-lg font-black text-brand-blue">{stats[2].value}</p>
+						<p class="text-[10px] text-text-muted">{tx(stats[2].labelKey)}</p>
 					</div>
 				</div>
 

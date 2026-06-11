@@ -20,9 +20,9 @@
 
 ## Phase 4 — Replace API data with repository calls
 
-- [ ] 10. [MEDIUM] Replace hardcoded stats (50K+, 2M+, 100%) in login page with `authRepository.getAuthStats()` calls
-- [ ] 11. [MEDIUM] Replace hardcoded stats and plan data in register page with `authRepository.getAuthStats()` and `authRepository.getAuthPlans()` calls
-- [ ] 12. [MEDIUM] Replace hardcoded stats in check-email page with `authRepository.getAuthStats()` calls
+- [x] 10. [MEDIUM] Replace hardcoded stats (50K+, 2M+, 100%) in login page with `authRepository.getAuthStats()` calls
+- [x] 11. [MEDIUM] Replace hardcoded stats and plan data in register page with `authRepository.getAuthStats()` and `authRepository.getAuthPlans()` calls
+- [x] 12. [MEDIUM] Replace hardcoded stats in check-email page with `authRepository.getAuthStats()` calls
 
 ## Phase 5 — Language switching
 

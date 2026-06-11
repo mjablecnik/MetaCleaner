@@ -27,7 +27,7 @@ export function getAuthPlans(): AuthPlan[] {
 			nameKey: 'auth.register.plan.freeName',
 			badgeKey: 'auth.register.plan.freeBadge',
 			descriptionKey: 'auth.register.plan.freeDesc',
-			icon: '🌱',
+			icon: 'fa-solid fa-seedling',
 			color: 'green'
 		},
 		{
@@ -35,7 +35,7 @@ export function getAuthPlans(): AuthPlan[] {
 			nameKey: 'auth.register.plan.proName',
 			badgeKey: 'auth.register.plan.proBadge',
 			descriptionKey: 'auth.register.plan.proDesc',
-			icon: '⚡',
+			icon: 'fa-solid fa-bolt',
 			color: 'orange'
 		}
 	];
