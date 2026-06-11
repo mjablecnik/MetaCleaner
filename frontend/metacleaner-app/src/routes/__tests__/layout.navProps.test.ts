@@ -3,7 +3,7 @@
 // NavBar configuration for the success state.
 // EXPECTED OUTCOME: FAILS on unfixed code (navProps returns {} when path === '/',
 // meaning logoHref is undefined and logo has no click action).
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fc from 'fast-check';
 
 // Test the navProps computation logic in isolation.
@@ -133,6 +133,74 @@ describe('Bug Condition 2: navProps provides logo action in success state at roo
 		// Instead it should use history.back() via a callback
 		expect(props.backHref).not.toBe('/reports');
 		// After fix, backHref for report detail is replaced by a history.back() mechanism
+	});
+});
+
+// ─── Integration: report detail backAction calls history.back() ──────────────
+// Design spec (design.md): "Test navigation: results page → report detail →
+// back button → verify returns to results"
+//
+// The spec's integration test verifies that when the user navigates from the
+// results page (success state at /) to the report detail page and clicks "Back",
+// history.back() is called — which returns them to the results page (not /reports).
+//
+// This test set verifies:
+//  1. backAction is defined for any report detail path (not backHref)
+//  2. Calling backAction() invokes history.back() — the exact mechanism for returning
+//     to whatever page the user came from (results page at / or /reports list)
+//  3. backHref is NOT set for report detail — the old hardcoded '/reports' behavior
+//     is fully removed
+
+describe('Integration: report detail backAction invokes history.back()', () => {
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
+	it('backAction is defined (not undefined) for report detail path', () => {
+		const props = computeNavProps({ path: '/report/RPT-001', appState: 'success' });
+		expect(props.backAction).toBeDefined();
+		expect(typeof props.backAction).toBe('function');
+	});
+
+	it('backHref is undefined for report detail — old hardcoded /reports behavior removed', () => {
+		const props = computeNavProps({ path: '/report/RPT-001', appState: 'success' });
+		expect(props.backHref).toBeUndefined();
+	});
+
+	it('calling backAction() invokes history.back() — returns to whatever page user came from', () => {
+		const mockHistoryBack = vi.fn();
+		vi.stubGlobal('history', { back: mockHistoryBack });
+
+		const props = computeNavProps({ path: '/report/RPT-001', appState: 'success' });
+		props.backAction?.();
+
+		expect(mockHistoryBack).toHaveBeenCalledOnce();
+	});
+
+	it('backAction calls history.back() for any report detail path variant', () => {
+		const mockHistoryBack = vi.fn();
+		vi.stubGlobal('history', { back: mockHistoryBack });
+
+		const reportPaths = [
+			'/report/RPT-001',
+			'/report/MC-2025-001',
+			'/report/abc123',
+			'/report/some-long-report-id-here'
+		];
+
+		for (const path of reportPaths) {
+			mockHistoryBack.mockClear();
+			const props = computeNavProps({ path, appState: 'success' });
+			props.backAction?.();
+			expect(mockHistoryBack).toHaveBeenCalledOnce();
+		}
+	});
+
+	it('results page (path /) does NOT have backAction — no back button in success state', () => {
+		// Preservation 3.4: results page has no back button (unlike report detail)
+		const props = computeNavProps({ path: '/', appState: 'success' });
+		expect(props.backAction).toBeUndefined();
+		expect(props.showBackButton).toBeUndefined();
 	});
 });
 

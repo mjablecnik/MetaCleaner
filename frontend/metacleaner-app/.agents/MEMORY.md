@@ -1,5 +1,11 @@
 # Memory
 
+## Step5Success.download test: must mock API client, not apiCleaningService
+
+- Problem: `Step5Success.svelte` imports `downloadFile` directly from `$lib/clients/metaCleanerApi.js` (not from `apiCleaningService`). The original test mocked `$lib/services/apiCleaningService.downloadFile` — a method that doesn't exist on the service and is never called by the component. The assertion `expect(mockDownloadFile).toHaveBeenCalledWith(...)` was vacuous (the mock was never triggered).
+- Solution: Mock `$lib/clients/metaCleanerApi.js` to intercept `downloadFile`. Keep the `apiCleaningService` mock for `downloadResults` only (used by the multi-file ZIP path). Also verify the returned blob's MIME type is not `application/zip`.
+- Source: create-tests, 2026-06-11T13:41:00+00:00
+
 ## Dead i18n key audit: simple tx() grep misses dynamic key references
 
 - Problem: Running `grep -roh "tx('[^']*')" src/` to find all used i18n keys produces many false positives ("dead" keys that are actually used). Dynamic patterns like `metaTitleKey = state === 'processing' ? 'step3.meta.title' : ...` and object literals like `{ txKey: 'report.chart.gpsData' }` or severity maps `{ critical: 'step2.risk.critical', ... }` are NOT matched by the simple quoted-string grep.
