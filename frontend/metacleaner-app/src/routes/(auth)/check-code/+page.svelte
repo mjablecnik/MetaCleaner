@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	let currentStep = $state(2);
 	let sentEmail = $state('vas@email.cz');
@@ -63,7 +64,7 @@
 			return;
 		}
 		if (countdownInterval) clearInterval(countdownInterval);
-		goToStep(3);
+		goto('/new-password');
 	}
 
 	function resendCode() {
@@ -197,7 +198,7 @@
 		<div class="flex items-center gap-2">
 			<span class="hidden text-sm text-text-muted lg:inline">Vzpomněli jste si?</span>
 			<a
-				href="/auth/login"
+				href="/login"
 				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2 lg:text-sm"
 			>
 				Přihlásit se
@@ -406,7 +407,7 @@
 
 							<div class="text-center">
 								<a
-									href="/auth/login"
+									href="/login"
 									class="text-sm text-text-muted transition-colors hover:text-white"
 								>
 									<i class="fa-solid fa-arrow-left mr-1.5"></i>Zpět na přihlášení
@@ -698,7 +699,7 @@
 								</p>
 							</div>
 							<a
-								href="/auth/login"
+								href="/login"
 								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
 								style="background: #22c55e;"
 							>

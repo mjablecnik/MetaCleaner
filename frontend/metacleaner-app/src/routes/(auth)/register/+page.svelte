@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	let firstName = $state('');
 	let lastName = $state('');
 	let email = $state('');
@@ -89,6 +91,7 @@
 		submitState = 'loading';
 		setTimeout(() => {
 			submitState = 'success';
+			goto('/check-email');
 		}, 1500);
 	}
 </script>
@@ -114,7 +117,7 @@
 		<div class="flex items-center gap-2">
 			<span class="text-xs text-text-muted lg:text-sm">Již máte účet?</span>
 			<a
-				href="/auth/login"
+				href="/login"
 				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2 lg:text-sm"
 			>
 				Přihlásit se
@@ -656,7 +659,7 @@
 						<p class="text-xs text-text-muted lg:text-sm">
 							Již máte účet?
 							<a
-								href="/auth/login"
+								href="/login"
 								class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
 							>
 								Přihlásit se

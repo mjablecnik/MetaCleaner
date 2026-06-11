@@ -65,7 +65,7 @@
 		<div class="flex items-center gap-2">
 			<span class="text-sm text-text-muted">Již máte účet?</span>
 			<a
-				href="/auth/login"
+				href="/login"
 				class="rounded-lg border border-gray-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter"
 			>
 				Přihlásit se
@@ -87,7 +87,7 @@
 			<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
 		</div>
 		<a
-			href="/auth/login"
+			href="/login"
 			class="flex items-center rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white"
 			style="min-height: 44px;"
 		>
@@ -386,7 +386,7 @@
 							{/if}
 						</button>
 						<a
-							href="/auth/register"
+							href="/register"
 							class="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium text-text-muted transition-colors hover:text-white lg:min-h-0"
 						>
 							<i class="fa-regular fa-pen-to-square"></i>

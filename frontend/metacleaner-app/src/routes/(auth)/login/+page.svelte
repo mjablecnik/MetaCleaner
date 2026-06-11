@@ -65,7 +65,7 @@
 		<div class="hidden items-center gap-2 lg:flex">
 			<span class="text-sm text-text-muted">Nemáte účet?</span>
 			<a
-				href="/auth/register"
+				href="/register"
 				class="rounded-lg border border-gray-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter"
 			>
 				Registrovat se
@@ -267,7 +267,7 @@
 							<div class="flex items-center justify-between">
 								<label for="password-input" class="text-sm font-medium text-white">Heslo</label>
 								<a
-									href="/auth/forgot-password"
+									href="/forgot-password"
 									class="text-xs font-medium text-brand-blue transition-colors hover:text-blue-400"
 								>
 									Zapomenuté heslo?
@@ -340,7 +340,7 @@
 						<p class="text-sm text-text-muted">
 							Nemáte účet?
 							<a
-								href="/auth/register"
+								href="/register"
 								class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
 							>
 								Zaregistrujte se zdarma
