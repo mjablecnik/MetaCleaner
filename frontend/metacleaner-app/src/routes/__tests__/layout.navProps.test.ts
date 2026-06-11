@@ -136,6 +136,49 @@ describe('Bug Condition 2: navProps provides logo action in success state at roo
 	});
 });
 
+// ─── Preservation 3.4: Reports list back button keeps backHref (not backAction) ─
+// Design spec (design.md): "Reports list 'Back to cleaning' button must keep its
+// current behavior (navigates to `/`)"
+// Bugfix.md Req 3.4: WHEN the user clicks the back button on the reports list page
+// THEN the system SHALL CONTINUE TO navigate using the existing hardcoded link
+// behavior for that page.
+//
+// This preservation test verifies that Bug 4's fix (adding backAction for report
+// detail) did NOT accidentally change the /reports page back button behavior.
+// The /reports page must use backHref: '/' (rendered as <a> link), not backAction.
+
+describe('Preservation 3.4: /reports back button uses backHref not backAction', () => {
+	it('/reports navProps has backHref: "/" (hardcoded link — not backAction)', () => {
+		const props = computeNavProps({ path: '/reports', appState: 'idle' });
+		expect(props.backHref).toBe('/');
+		expect(props.backAction).toBeUndefined();
+	});
+
+	it('/reports navProps has showBackButton: true and backHref: "/" for all app states', () => {
+		const states: AppState[] = ['idle', 'files-ready', 'processing', 'error', 'success'];
+		for (const appState of states) {
+			const props = computeNavProps({ path: '/reports', appState });
+			expect(props.showBackButton).toBe(true);
+			expect(props.backHref).toBe('/');
+			expect(props.backAction).toBeUndefined();
+		}
+	});
+
+	it('/reports back button is a hardcoded link — distinct from /report/:id which uses backAction', () => {
+		const reportsProps = computeNavProps({ path: '/reports', appState: 'idle' });
+		const reportDetailProps = computeNavProps({ path: '/report/RPT-001', appState: 'success' });
+
+		// /reports: hardcoded backHref, no callback
+		expect(reportsProps.backHref).toBe('/');
+		expect(reportsProps.backAction).toBeUndefined();
+
+		// /report/:id: backAction callback (Bug 4 fix), no backHref
+		expect(reportDetailProps.backHref).toBeUndefined();
+		expect(reportDetailProps.backAction).toBeDefined();
+		expect(typeof reportDetailProps.backAction).toBe('function');
+	});
+});
+
 // ─── Integration: report detail backAction calls history.back() ──────────────
 // Design spec (design.md): "Test navigation: results page → report detail →
 // back button → verify returns to results"
