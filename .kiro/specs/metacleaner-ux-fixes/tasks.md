@@ -194,7 +194,7 @@ Fix 9 UX bugs in the MetaCleaner application spanning download behavior, navigat
     - Confirm all tests still pass after fixes (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9_
 
-- [ ] 13. Checkpoint - Ensure all tests pass
+- [x] 13. Checkpoint - Ensure all tests pass
   - Run full test suite: `bun run test` in `frontend/metacleaner-app/`
   - Run backend tests: `go test ./...` in `backend/metacleaner-server/`
   - Ensure all tests pass, ask the user if questions arise
