@@ -397,13 +397,13 @@ function mapMetadataDetail(md: BackendMetadataDetail | null): FileMetadataSectio
 	}
 
 	return {
-		gpsFields: md.gpsFields.map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
-		exifFields: md.exifFields.map((f) => ({
+		gpsFields: (md.gpsFields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		exifFields: (md.exifFields ?? []).map((f) => ({
 			label: f.label,
 			value: f.value,
 			moreCount: undefined
 		})),
-		xmpFields: md.xmpFields.map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		xmpFields: (md.xmpFields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
 		totalRemoved: md.totalRemoved
 	};
 }
@@ -436,8 +436,8 @@ function mapReportDetail(data: BackendReportDetail): ReportDetail {
 		fieldsRemoved: data.fieldsRemoved,
 		gpsLocationsRemoved: data.gpsLocationsRemoved,
 		totalTimeSeconds: data.totalTimeSeconds,
-		chartData: data.chartData,
-		files: mapReportFileDetails(data.files)
+		chartData: data.chartData ?? [],
+		files: mapReportFileDetails(data.files ?? [])
 	};
 }
 
