@@ -84,16 +84,6 @@
 	}
 </script>
 
-<!-- Success badge -->
-<div class="mb-2 flex items-center justify-end">
-	<div
-		class="flex items-center gap-1.5 rounded-xl border border-green-800/50 bg-navy-card px-3 py-2"
-	>
-		<div class="h-2 w-2 rounded-full bg-brand-green"></div>
-		<span class="text-[11px] font-semibold text-brand-green">{tx('step5.badge.success')}</span>
-	</div>
-</div>
-
 <!-- Success Header -->
 <SuccessHeader fileCount={files.length} onUploadNew={handleUploadNew} />
 

@@ -62,7 +62,7 @@
 				report.iconColor
 			)}"
 		>
-			<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-file-lines'} text-[10px]"></i>
+			<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-image'} text-[10px]"></i>
 		</div>
 		<div>
 			<p class="text-xs font-semibold text-white">{fileCountLabel(report.fileCount)}</p>
