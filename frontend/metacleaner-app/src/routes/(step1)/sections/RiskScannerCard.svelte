@@ -47,26 +47,37 @@
 		low: 'bg-gray-500'
 	};
 
-	function gpsBarSeverity(v: number): BarSeverity {
-		if (v >= 75) return 'critical';
-		if (v >= 50) return 'high';
-		if (v >= 25) return 'medium';
-		return 'low';
-	}
-
-	function deviceBarSeverity(v: number): BarSeverity {
-		if (v >= 75) return 'critical';
-		if (v >= 50) return 'high';
-		if (v >= 25) return 'medium';
-		return 'low';
-	}
-
 	const severityLabelKey: Record<SeverityLevel, string> = {
 		critical: 'step2.risk.critical',
 		high: 'step2.risk.high',
 		medium: 'step2.risk.medium',
 		low: 'step2.risk.low'
 	};
+
+	function barSeverity(v: number): BarSeverity {
+		if (v >= 75) return 'critical';
+		if (v >= 50) return 'high';
+		if (v >= 25) return 'medium';
+		return 'low';
+	}
+
+	interface RiskBar {
+		icon: string;
+		labelKey: string;
+		value: number;
+	}
+
+	const sortedBars = $derived(
+		(
+			[
+				{ icon: 'fa-solid fa-location-dot', labelKey: 'step2.risk.gpsCoordinates', value: categories.gps },
+				{ icon: 'fa-solid fa-mobile-screen', labelKey: 'step2.risk.deviceIdentity', value: categories.deviceIdentity },
+				{ icon: 'fa-solid fa-user', labelKey: 'step2.risk.personalData', value: categories.personalData },
+				{ icon: 'fa-solid fa-clock', labelKey: 'step2.risk.timestamp', value: categories.timestamps },
+				{ icon: 'fa-solid fa-robot', labelKey: 'step2.risk.aiOrigin', value: categories.aiOrigin }
+			] satisfies RiskBar[]
+		).toSorted((a, b) => b.value - a.value)
+	);
 </script>
 
 <div aria-live="polite" aria-atomic="true" class="sr-only">
@@ -107,8 +118,14 @@
 					<p class="text-xs leading-relaxed text-text-muted">
 						{tx('step2.risk.description')}
 					</p>
-					{#if categories.gps > 0 || categories.deviceIdentity > 0 || categories.personalData > 0}
+					{#if categories.gps > 0 || categories.deviceIdentity > 0 || categories.personalData > 0 || categories.aiOrigin > 0}
 						<div class="mt-1 flex items-center gap-1.5">
+							{#if categories.aiOrigin > 0}
+								<span
+									class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold text-brand-red"
+									>{tx('step2.risk.chipAI')}</span
+								>
+							{/if}
 							{#if categories.gps > 0}
 								<span
 									class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold text-brand-red"
@@ -137,34 +154,15 @@
 				<p class="text-xs font-bold tracking-widest text-text-muted uppercase">
 					{tx('step2.risk.analysisTitle')}
 				</p>
-				<RiskBreakdownBar
-					icon="fa-solid fa-location-dot"
-					label={tx('step2.risk.gpsCoordinates')}
-					severity={gpsBarSeverity(categories.gps)}
-					severityLabel={tx(severityLabelKey[gpsBarSeverity(categories.gps)])}
-					value={categories.gps}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-mobile-screen"
-					label={tx('step2.risk.deviceIdentity')}
-					severity={deviceBarSeverity(categories.deviceIdentity)}
-					severityLabel={tx(severityLabelKey[deviceBarSeverity(categories.deviceIdentity)])}
-					value={categories.deviceIdentity}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-user"
-					label={tx('step2.risk.personalData')}
-					severity={deviceBarSeverity(categories.personalData)}
-					severityLabel={tx(severityLabelKey[deviceBarSeverity(categories.personalData)])}
-					value={categories.personalData}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-clock"
-					label={tx('step2.risk.timestamp')}
-					severity={deviceBarSeverity(categories.timestamps)}
-					severityLabel={tx(severityLabelKey[deviceBarSeverity(categories.timestamps)])}
-					value={categories.timestamps}
-				/>
+				{#each sortedBars as bar}
+					<RiskBreakdownBar
+						icon={bar.icon}
+						label={tx(bar.labelKey)}
+						severity={barSeverity(bar.value)}
+						severityLabel={tx(severityLabelKey[barSeverity(bar.value)])}
+						value={bar.value}
+					/>
+				{/each}
 			</div>
 
 			<!-- Before/After: afterScore is always 0 because full cleaning removes all metadata fields -->

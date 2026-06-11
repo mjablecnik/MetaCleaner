@@ -16,10 +16,10 @@ echo "Stopping existing container (if any)..."
 docker stop "$APP_NAME" 2>/dev/null || true
 docker rm "$APP_NAME" 2>/dev/null || true
 
-echo "Starting container: $APP_NAME on port 8080"
+echo "Starting container: $APP_NAME on port 3000"
 docker run -d \
   --name "$APP_NAME" \
-  -p 8080:8080 \
+  -p 3000:8080 \
   "$APP_NAME"
 
-echo "Running at http://localhost:8080"
+echo "Running at http://localhost:3000"

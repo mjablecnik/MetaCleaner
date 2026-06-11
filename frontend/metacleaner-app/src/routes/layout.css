@@ -47,6 +47,11 @@ body {
 	font-family: var(--font-sans);
 }
 
+button,
+[role='button'] {
+	cursor: pointer;
+}
+
 ::-webkit-scrollbar {
 	display: none;
 }

@@ -29,6 +29,7 @@
 	const hasGps = $derived(file.scanResult?.hasGps ?? false);
 	const fieldCount = $derived(file.scanResult?.fieldCount ?? 0);
 	const device = $derived(file.scanResult?.device);
+	const isAIGenerated = $derived(file.scanResult?.aiDetection?.isAIGenerated ?? false);
 	const isVideo = $derived(file.type === 'video');
 	const sizeLabel = $derived(formatSize(file.size));
 	const ext = $derived(file.extension.replace('.', '').toUpperCase() || 'FILE');
@@ -101,6 +102,11 @@
 			{:else if status === 'error'}
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span class="text-[11px] text-brand-orange">{tx('step2.files.scanError')}</span>
+			{:else if isAIGenerated}
+				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
+				<span class="flex items-center gap-1 text-[11px] font-medium text-brand-red">
+					<i class="fa-solid fa-robot text-[9px]"></i>{tx('step2.files.aiGenerated')}
+				</span>
 			{:else if hasGps}
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span class="flex items-center gap-1 text-[11px] font-medium text-brand-red">

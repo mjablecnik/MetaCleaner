@@ -106,11 +106,30 @@ export function computeAggregatedRisk(results: ScanResult[]): AggregatedRisk {
 		};
 	}
 
-	const overallScore = Math.max(...results.map((r) => r.fileScore));
-	const severity = classifySeverity(overallScore);
+	const doneResults = results.filter((r) => r.status === 'done');
 
-	const maxFile = results.reduce((a, b) => (a.fileScore > b.fileScore ? a : b));
-	const categories: RiskCategory = maxFile.categoryScores;
+	// Take the maximum score per category across all files
+	const categories: RiskCategory = {
+		gps: Math.max(0, ...doneResults.map((r) => r.categoryScores.gps)),
+		deviceIdentity: Math.max(0, ...doneResults.map((r) => r.categoryScores.deviceIdentity)),
+		personalData: Math.max(0, ...doneResults.map((r) => r.categoryScores.personalData)),
+		timestamps: Math.max(0, ...doneResults.map((r) => r.categoryScores.timestamps)),
+		aiOrigin: Math.max(0, ...doneResults.map((r) => r.categoryScores.aiOrigin))
+	};
+
+	// Recompute overall score from aggregated categories using the same weights
+	const overallScore = Math.min(
+		100,
+		Math.max(
+			0,
+			categories.gps * CATEGORY_WEIGHTS.gps +
+				categories.deviceIdentity * CATEGORY_WEIGHTS.deviceIdentity +
+				categories.personalData * CATEGORY_WEIGHTS.personalData +
+				categories.timestamps * CATEGORY_WEIGHTS.timestamps +
+				categories.aiOrigin * CATEGORY_WEIGHTS.aiOrigin
+		)
+	);
+	const severity = classifySeverity(overallScore);
 
 	return { overallScore, severity, categories, fileCount, scannedCount, isScanning };
 }
