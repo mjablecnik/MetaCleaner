@@ -114,11 +114,15 @@ export async function uploadFiles(files: File[]): Promise<UploadResponse> {
 	return res.json();
 }
 
-export async function createJob(fileIds: string[]): Promise<CreateJobResponse> {
+export async function createJob(fileIds: string[], fileNames?: Record<string, string>): Promise<CreateJobResponse> {
+	const body: { fileIds: string[]; fileNames?: Record<string, string> } = { fileIds };
+	if (fileNames && Object.keys(fileNames).length > 0) {
+		body.fileNames = fileNames;
+	}
 	const res = await fetch(buildApiUrl('/api/jobs'), {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ fileIds })
+		body: JSON.stringify(body)
 	});
 
 	if (!res.ok) throw await parseErrorResponse(res);
