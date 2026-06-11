@@ -40,14 +40,21 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		f := &files[i]
 		f.Status = "in_progress"
 
+		// Use LocalID for progress events so the frontend can match events
+		// to the file IDs it received in the upload response.
+		fileProgressID := f.LocalID
+		if fileProgressID == "" {
+			fileProgressID = f.ID
+		}
+
 		progressFn(ProgressEvent{
 			Type:            "file_progress",
-			FileID:          f.ID,
+			FileID:          fileProgressID,
 			Status:          "in_progress",
 			OverallProgress: CalculateJobProgress(i, total),
 			FilesCompleted:  i,
 			TotalFiles:      total,
-			CurrentFileID:   f.ID,
+			CurrentFileID:   fileProgressID,
 		})
 
 		originalPath := filepath.Join(p.cfg.TempStoragePath, "uploads", f.LocalID+"_original."+strings.TrimPrefix(f.FileExtension, "."))
@@ -95,7 +102,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 
 		progressFn(ProgressEvent{
 			Type:            "file_complete",
-			FileID:          f.ID,
+			FileID:          fileProgressID,
 			Status:          "done",
 			FieldsRemoved:   result.FieldsRemoved,
 			GPSRemoved:      result.GPSRemoved,
@@ -126,9 +133,13 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 }
 
 func buildFileErrorEvent(f *FileRecord, completed, total int) ProgressEvent {
+	fileProgressID := f.LocalID
+	if fileProgressID == "" {
+		fileProgressID = f.ID
+	}
 	return ProgressEvent{
 		Type:            "file_error",
-		FileID:          f.ID,
+		FileID:          fileProgressID,
 		Status:          "error",
 		ErrorCode:       f.ErrorCode,
 		Message:         f.ErrorMessage,

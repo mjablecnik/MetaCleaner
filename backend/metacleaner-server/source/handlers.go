@@ -214,6 +214,10 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		}
 
 		go func() {
+			// Small delay to allow the frontend WebSocket client to connect
+			// before we start broadcasting progress events.
+			time.Sleep(500 * time.Millisecond)
+
 			ctx := context.Background()
 			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 			_ = pl.ProcessJob(ctx, job, files, progressFn)
