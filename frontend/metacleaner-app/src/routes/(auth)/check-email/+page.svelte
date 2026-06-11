@@ -73,7 +73,7 @@
 			>
 				<i class="fa-solid fa-shield-halved text-xl"></i>
 			</div>
-			<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
+			<span class="text-xl font-bold tracking-tight">{tx('common.brandName')}</span>
 		</div>
 		<div class="flex items-center gap-2">
 			<span class="text-sm text-text-muted">{tx('auth.register.nav.hasAccount')}</span>
@@ -97,7 +97,7 @@
 			>
 				<i class="fa-solid fa-shield-halved text-base"></i>
 			</div>
-			<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+			<span class="text-lg font-bold tracking-tight">{tx('common.brandName')}</span>
 		</div>
 		<a
 			href="/login"

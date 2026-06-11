@@ -30,4 +30,4 @@
 
 ## Final
 
-- [ ] 14. [LOW] Verify all auth page strings are translated, no hardcoded Czech text remains, locale switching works on auth pages
+- [x] 14. [LOW] Verify all auth page strings are translated, no hardcoded Czech text remains, locale switching works on auth pages
