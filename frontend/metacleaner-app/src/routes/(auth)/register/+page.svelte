@@ -9,8 +9,8 @@
 
 	function planColors(color: 'green' | 'orange') {
 		return color === 'green'
-			? { hex: '#22c55e', bg: 'rgba(34,197,94,0.06)', bg15: 'rgba(34,197,94,0.15)' }
-			: { hex: '#f97316', bg: 'rgba(249,115,22,0.06)', bg15: 'rgba(249,115,22,0.15)' };
+			? { hex: 'var(--color-brand-green)', bg: 'var(--color-brand-green-6)', bg15: 'var(--color-brand-green-15)' }
+			: { hex: 'var(--color-brand-orange)', bg: 'var(--color-brand-orange-6)', bg15: 'var(--color-brand-orange-15)' };
 	}
 
 	let firstName = $state('');
@@ -48,7 +48,7 @@
 		return score;
 	}
 
-	const strengthColors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+	const strengthColors = ['var(--color-brand-red)', 'var(--color-brand-orange)', 'var(--color-brand-yellow)', 'var(--color-brand-green)'];
 	const strengthKeys = [
 		'auth.common.strength.veryWeak',
 		'auth.common.strength.weak',
@@ -57,7 +57,7 @@
 	];
 
 	let strengthScore = $derived(password.length > 0 ? getStrengthScore(password) : 0);
-	let strengthColor = $derived(strengthScore > 0 ? strengthColors[strengthScore - 1] : '#374151');
+	let strengthColor = $derived(strengthScore > 0 ? strengthColors[strengthScore - 1] : 'var(--color-gray-700)');
 	let strengthLabel = $derived(strengthScore > 0 ? tx(strengthKeys[strengthScore - 1]) : '');
 
 	function togglePassword() {
@@ -127,7 +127,7 @@
 
 <div
 	class="flex min-h-screen flex-col"
-	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Navbar -->
 	<nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6">
@@ -183,7 +183,7 @@
 							type="button"
 							onclick={() => selectPlan(plan.id)}
 							class="flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all"
-							style="border-color: {isSelected ? c.hex : '#1e293b'}; background: {isSelected ? c.bg : 'transparent'};"
+							style="border-color: {isSelected ? c.hex : 'var(--color-navy-lighter)'}; background: {isSelected ? c.bg : 'transparent'};"
 						>
 							<div
 								class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg"
@@ -204,7 +204,7 @@
 							</div>
 							<div
 								class="flex h-5 w-5 items-center justify-center rounded-full"
-								style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid #4b5563'};"
+								style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid var(--color-gray-600)'};"
 							>
 								{#if isSelected}
 									<i class="fa-solid fa-check text-[10px] text-white"></i>
@@ -287,7 +287,7 @@
 					<!-- Social -->
 					<div class="flex flex-col gap-2.5 lg:gap-3">
 						<button
-							class="flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border border-[#374151] bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-[#4b5563] hover:bg-[#263347] lg:min-h-0 lg:py-3"
+							class="flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-gray-600 hover:bg-navy-lighter lg:min-h-0 lg:py-3"
 						>
 							<svg width="16" height="16" viewBox="0 0 18 18" fill="none">
 								<path
@@ -310,7 +310,7 @@
 							{tx('auth.register.social.google')}
 						</button>
 						<button
-							class="flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border border-[#374151] bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-[#4b5563] hover:bg-[#263347] lg:min-h-0 lg:py-3"
+							class="flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:border-gray-600 hover:bg-navy-lighter lg:min-h-0 lg:py-3"
 						>
 							<i class="fa-brands fa-apple text-base lg:text-lg"></i>
 							{tx('auth.register.social.apple')}
@@ -344,15 +344,15 @@
 										bind:value={firstName}
 										placeholder={tx('auth.register.field.firstNamePlaceholder')}
 										class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
-										style="background:#0a1628; border-color: {firstNameError ? '#ef4444' : '#1e293b'};"
+										style="background: var(--color-navy-main); border-color: {firstNameError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
 										onfocus={(e) =>
 											((e.currentTarget as HTMLInputElement).style.borderColor = firstNameError
-												? '#ef4444'
-												: '#3b82f6')}
+												? 'var(--color-brand-red)'
+												: 'var(--color-brand-blue)')}
 										onblur={(e) =>
 											((e.currentTarget as HTMLInputElement).style.borderColor = firstNameError
-												? '#ef4444'
-												: '#1e293b')}
+												? 'var(--color-brand-red)'
+												: 'var(--color-navy-lighter)')}
 									/>
 								</div>
 								{#if firstNameError}
@@ -372,15 +372,15 @@
 										bind:value={lastName}
 										placeholder={tx('auth.register.field.lastNamePlaceholder')}
 										class="min-h-[44px] w-full rounded-xl border px-3 py-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:px-4"
-										style="background:#0a1628; border-color: {lastNameError ? '#ef4444' : '#1e293b'};"
+										style="background: var(--color-navy-main); border-color: {lastNameError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
 										onfocus={(e) =>
 											((e.currentTarget as HTMLInputElement).style.borderColor = lastNameError
-												? '#ef4444'
-												: '#3b82f6')}
+												? 'var(--color-brand-red)'
+												: 'var(--color-brand-blue)')}
 										onblur={(e) =>
 											((e.currentTarget as HTMLInputElement).style.borderColor = lastNameError
-												? '#ef4444'
-												: '#1e293b')}
+												? 'var(--color-brand-red)'
+												: 'var(--color-navy-lighter)')}
 									/>
 								</div>
 								{#if lastNameError}
@@ -408,15 +408,15 @@
 									bind:value={email}
 									placeholder={tx('auth.common.field.emailPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
-									style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
+									style="background: var(--color-navy-main); border-color: {emailError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
 									onfocus={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = emailError
-											? '#ef4444'
-											: '#3b82f6')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-brand-blue)')}
 									onblur={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = emailError
-											? '#ef4444'
-											: '#1e293b')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-navy-lighter)')}
 								/>
 							</div>
 							{#if emailError}
@@ -443,15 +443,15 @@
 									bind:value={password}
 									placeholder={tx('auth.register.field.passwordPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-11 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10"
-									style="background:#0a1628; border-color: {passwordError ? '#ef4444' : '#1e293b'};"
+									style="background: var(--color-navy-main); border-color: {passwordError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
 									onfocus={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = passwordError
-											? '#ef4444'
-											: '#3b82f6')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-brand-blue)')}
 									onblur={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = passwordError
-											? '#ef4444'
-											: '#1e293b')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-navy-lighter)')}
 								/>
 								<button
 									type="button"
@@ -469,7 +469,7 @@
 										{#each [1, 2, 3, 4] as bar}
 											<div
 												class="h-1 flex-1 rounded-sm transition-all duration-300"
-												style="background: {bar <= strengthScore ? strengthColor : '#374151'};"
+												style="background: {bar <= strengthScore ? strengthColor : 'var(--color-gray-700)'};"
 											></div>
 										{/each}
 									</div>
@@ -504,15 +504,15 @@
 									bind:value={confirmPassword}
 									placeholder={tx('auth.register.field.confirmPlaceholder')}
 									class="min-h-[44px] w-full rounded-xl border py-3 pl-9 pr-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:pl-10 lg:pr-4"
-									style="background:#0a1628; border-color: {confirmError ? '#ef4444' : '#1e293b'};"
+									style="background: var(--color-navy-main); border-color: {confirmError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
 									onfocus={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = confirmError
-											? '#ef4444'
-											: '#3b82f6')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-brand-blue)')}
 									onblur={(e) =>
 										((e.currentTarget as HTMLInputElement).style.borderColor = confirmError
-											? '#ef4444'
-											: '#1e293b')}
+											? 'var(--color-brand-red)'
+											: 'var(--color-navy-lighter)')}
 								/>
 							</div>
 							{#if confirmError}
@@ -544,7 +544,7 @@
 											type="button"
 											onclick={() => selectPlan(plan.id)}
 											class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all"
-											style="border-color: {isSelected ? c.hex : '#1e293b'}; background: {isSelected ? c.bg : 'transparent'};"
+											style="border-color: {isSelected ? c.hex : 'var(--color-navy-lighter)'}; background: {isSelected ? c.bg : 'transparent'};"
 										>
 											<div
 												class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
@@ -567,7 +567,7 @@
 											</div>
 											<div
 												class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-												style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid #4b5563'};"
+												style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected ? 'none' : '1px solid var(--color-gray-600)'};"
 											>
 												{#if isSelected}
 													<i class="fa-solid fa-check text-[9px] text-white"></i>
@@ -584,8 +584,7 @@
 							<button
 								type="button"
 								onclick={toggleTerms}
-								class="mt-0.5 flex min-w-[24px] h-6 w-6 flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-[20px]"
-								style="background: {termsAccepted ? '#3b82f6' : '#0a1628'}; border-color: {termsAccepted ? '#3b82f6' : '#4b5563'};"
+								class="mt-0.5 flex min-w-[24px] h-6 w-6 flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-[20px] {termsAccepted ? 'bg-brand-blue border-brand-blue' : 'bg-navy-main border-gray-600'}"
 							>
 								{#if termsAccepted}
 									<i class="fa-solid fa-check text-[9px] text-white lg:text-[10px]"></i>
@@ -613,8 +612,7 @@
 						<button
 							type="submit"
 							disabled={submitState === 'loading' || submitState === 'success'}
-							class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0 lg:py-3.5"
-							style="background: {submitState === 'success' ? '#16a34a' : '#22c55e'};"
+							class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0 lg:py-3.5 {submitState === 'success' ? 'bg-brand-green-dark' : 'bg-brand-green'}"
 						>
 							{#if submitState === 'loading'}
 								<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.register.submit.loading')}
