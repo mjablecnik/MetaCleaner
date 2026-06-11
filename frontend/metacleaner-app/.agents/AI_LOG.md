@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-11 17:23 — design-to-code
+- Created Login page from `auth-login-form-desktop.html` / `auth-login-form-mobile.html` — route `/login`
+- Created Registration page from `auth-registration-form-desktop.html` / `auth-registration-form-mobile.html` — route `/register`
+- Created Check Email verification page from `auth-check-email-desktop.html` / `auth-check-email-mobile.html` — route `/check-email`
+- Created Forgot Password page from `auth-forgot-password-desktop.html` / `auth-forgot-password-mobile.html` — route `/forgot-password`
+- Created Check Code OTP verification page from `auth-check-code-desktop.html` / `auth-check-code-mobile.html` — route `/check-code`
+- Created New Password page from `auth-new-password-desktop.html` / `auth-new-password-mobile.html` — route `/new-password`
+- Wired navigation between all auth pages: Login ↔ Registration, Login → Forgot Password → Check Code → New Password → Login, Registration → Check Email
+
 ## 2026-06-11 12:05 — manual
 - Updated frontend origin to port 3000 and adjusted `start-docker.sh`, `layout.css`, `riskAnalyzer.ts`, `FileListItemRisk.svelte`, `RiskScannerCard.svelte`, and i18n messages
 - Added C2PA chunk counting and updated fields removed handling in `apiCleaningService.ts` processing results
