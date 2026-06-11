@@ -36,6 +36,7 @@ interface NavPropsOutput {
 	showLangDropdown?: boolean;
 	showBackButton?: boolean;
 	backHref?: string;
+	backAction?: () => void;
 	backLabel?: string;
 	reducedDesktopPadding?: boolean;
 	noPrint?: boolean;
@@ -62,7 +63,7 @@ function computeNavProps(input: NavPropsInput, onLogoReset?: () => void): NavPro
 			compact: true,
 			showLangDropdown: true,
 			showBackButton: true,
-			backHref: '/reports',
+			backAction: () => history.back(),
 			backLabel: 'Back to results',
 			reducedDesktopPadding: true,
 			noPrint: true

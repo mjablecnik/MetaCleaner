@@ -40,7 +40,7 @@
 				compact: true,
 				showLangDropdown: true,
 				showBackButton: true,
-				backHref: '/reports',
+				backAction: () => history.back(),
 				backLabel: tx('report.nav.backToResults'),
 				reducedDesktopPadding: true,
 				noPrint: true

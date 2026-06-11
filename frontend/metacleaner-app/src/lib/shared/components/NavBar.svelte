@@ -15,6 +15,8 @@
 		langOptions: Language[];
 		showBackButton?: boolean;
 		backHref?: string;
+		/** If provided, back button calls this instead of navigating to backHref. */
+		backAction?: () => void;
 		backLabel?: string;
 		showLangDropdown?: boolean;
 		/** If provided, the logo is wrapped in an <a> tag with this href. */
@@ -34,6 +36,7 @@
 		langOptions,
 		showBackButton = false,
 		backHref = '/',
+		backAction,
 		backLabel = '',
 		showLangDropdown = true,
 		logoHref,
@@ -96,14 +99,25 @@
 		<!-- Logo area -->
 		<div class="flex items-center {showBackButton ? 'gap-2 lg:gap-3' : 'gap-2.5 lg:gap-3'}">
 			{#if showBackButton}
-				<a
-					href={resolve(backHref as Pathname)}
-					aria-label={tx('common.goBack')}
-					class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
-						{compact ? 'h-8 w-8' : 'h-9 w-9'}"
-				>
-					<i class="fa-solid fa-arrow-left {compact ? 'text-xs' : 'text-sm'}"></i>
-				</a>
+				{#if backAction}
+					<button
+						onclick={backAction}
+						aria-label={tx('common.goBack')}
+						class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
+							{compact ? 'h-8 w-8' : 'h-9 w-9'}"
+					>
+						<i class="fa-solid fa-arrow-left {compact ? 'text-xs' : 'text-sm'}"></i>
+					</button>
+				{:else}
+					<a
+						href={resolve(backHref as Pathname)}
+						aria-label={tx('common.goBack')}
+						class="flex items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted lg:hidden
+							{compact ? 'h-8 w-8' : 'h-9 w-9'}"
+					>
+						<i class="fa-solid fa-arrow-left {compact ? 'text-xs' : 'text-sm'}"></i>
+					</a>
+				{/if}
 			{/if}
 			{#if logoHref}
 				<a href={resolve(logoHref as Pathname)} class="flex items-center gap-2 lg:gap-3">
@@ -123,13 +137,23 @@
 		<!-- Desktop right side -->
 		<div class="hidden items-center gap-3 lg:flex">
 			{#if showBackButton}
-				<a
-					href={resolve(backHref as Pathname)}
-					class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-text-muted transition-colors hover:bg-gray-800 hover:text-white"
-				>
-					<i class="fa-solid fa-arrow-left text-xs"></i>
-					<span>{backLabel}</span>
-				</a>
+				{#if backAction}
+					<button
+						onclick={backAction}
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-text-muted transition-colors hover:bg-gray-800 hover:text-white"
+					>
+						<i class="fa-solid fa-arrow-left text-xs"></i>
+						<span>{backLabel}</span>
+					</button>
+				{:else}
+					<a
+						href={resolve(backHref as Pathname)}
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-text-muted transition-colors hover:bg-gray-800 hover:text-white"
+					>
+						<i class="fa-solid fa-arrow-left text-xs"></i>
+						<span>{backLabel}</span>
+					</a>
+				{/if}
 			{/if}
 			{#if showLangDropdown}
 				<LanguageDropdown
