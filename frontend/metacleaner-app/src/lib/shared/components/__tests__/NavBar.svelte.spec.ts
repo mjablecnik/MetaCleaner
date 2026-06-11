@@ -1,5 +1,5 @@
 import { page } from 'vitest/browser';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import NavBar from '../NavBar.svelte';
 import type { Language } from '$lib/repositories/languageRepository';
@@ -82,5 +82,91 @@ describe('NavBar', () => {
 		// Mobile back button: <a aria-label="Go back">
 		const mobileBack = container.querySelector('a[aria-label="Go back"]');
 		expect(mobileBack).not.toBeNull();
+	});
+});
+
+// Bug 4: Back button must call history.back() (backAction callback) not navigate to /reports.
+// Integration test verifying NavBar renders <button> (not <a>) when backAction is provided,
+// and that clicking it fires the callback.
+describe('Bug Condition 4: NavBar backAction callback — history.back() integration', () => {
+	it('renders mobile back button as <button> (not <a>) when backAction is provided', async () => {
+		const backAction = vi.fn();
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			showBackButton: true,
+			backAction
+		});
+		// With backAction, mobile back is a <button aria-label="Go back">, not an <a> tag
+		const mobileBackBtn = container.querySelector('button[aria-label="Go back"]');
+		expect(mobileBackBtn).not.toBeNull();
+		// And no <a> link should be used for back navigation
+		const mobileBackLink = container.querySelector('a[aria-label="Go back"]');
+		expect(mobileBackLink).toBeNull();
+	});
+
+	it('clicking mobile back button calls backAction callback (not navigation)', async () => {
+		const backAction = vi.fn();
+		render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			showBackButton: true,
+			backAction,
+			backLabel: 'Back to results'
+		});
+		const mobileBackBtn = page.getByRole('button', { name: /go back/i });
+		await mobileBackBtn.click();
+		expect(backAction).toHaveBeenCalledOnce();
+	});
+
+	it('clicking desktop back button calls backAction callback (not navigation)', async () => {
+		const backAction = vi.fn();
+		render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			showBackButton: true,
+			backAction,
+			backLabel: 'Back to results'
+		});
+		// Desktop back button has the backLabel text and is a <button> not <a>
+		const desktopBackBtn = page.getByRole('button', { name: /back to results/i });
+		await desktopBackBtn.click();
+		expect(backAction).toHaveBeenCalledOnce();
+	});
+
+	it('renders desktop back button as <button> (not <a>) when backAction is provided', async () => {
+		const backAction = vi.fn();
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			showBackButton: true,
+			backAction,
+			backLabel: 'Back to results'
+		});
+		// Desktop buttons have text content — find button containing "Back to results"
+		const buttons = container.querySelectorAll('button');
+		const backButtons = Array.from(buttons).filter((b) => b.textContent?.includes('Back to results'));
+		expect(backButtons.length).toBeGreaterThan(0);
+		// None of them should be anchor tags
+		const backLinks = container.querySelectorAll('a');
+		const backAsLink = Array.from(backLinks).filter((a) => a.textContent?.includes('Back to results'));
+		expect(backAsLink).toHaveLength(0);
+	});
+
+	// Preservation 3.4: backHref renders <a> link (not button) when backAction absent
+	it('renders mobile back as <a> link when only backHref is provided (preservation)', async () => {
+		const { container } = render(NavBar, {
+			user: mockUser,
+			langOptions: mockLangOptions,
+			showBackButton: true,
+			backHref: '/reports',
+			backLabel: 'Back to results'
+		});
+		// Without backAction, mobile back is a link <a aria-label="Go back">
+		const mobileBackLink = container.querySelector('a[aria-label="Go back"]');
+		expect(mobileBackLink).not.toBeNull();
+		// And no button with "Go back" should exist
+		const mobileBackBtn = container.querySelector('button[aria-label="Go back"]');
+		expect(mobileBackBtn).toBeNull();
 	});
 });
