@@ -77,7 +77,7 @@
 		</div>
 		<div class="flex flex-shrink-0 flex-col gap-1.5">
 			<a
-				href={resolve(`/report/${report.id}` as Pathname)}
+				href={resolve(`/report/${report.reportId}` as Pathname)}
 				title={tx('reports.table.viewReport')}
 				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
 			>

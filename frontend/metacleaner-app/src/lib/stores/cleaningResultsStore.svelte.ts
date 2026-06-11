@@ -25,6 +25,9 @@ export const cleaningResultsStore = {
 		_jobId = jobId ?? null;
 		_reportId = reportId ?? null;
 	},
+	setReportId(reportId: string) {
+		_reportId = reportId;
+	},
 	setError(e: CleaningError) {
 		_error = e;
 		_results = null;

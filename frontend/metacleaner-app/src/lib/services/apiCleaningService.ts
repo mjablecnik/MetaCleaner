@@ -20,6 +20,7 @@ import type {
 	FileMetadataSection
 } from '$lib/types/report.js';
 import * as api from '$lib/clients/metaCleanerApi.js';
+import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte.js';
 
 // ─── Accumulated per-file data during WebSocket progress ────────
 
@@ -478,9 +479,9 @@ class ApiCleaningService implements CleaningService {
 			cancel() {
 				cancelled = true;
 				if (jobCompleted) {
-					// Delay close by 500ms to allow any trailing report_ready message
-					// to arrive before the socket shuts down (Req 4.10).
-					setTimeout(() => ws?.close(), 500);
+					// Delay close to allow trailing report_ready message to arrive
+					// (report creation involves a DB roundtrip which can take >500ms).
+					setTimeout(() => ws?.close(), 3000);
 				} else {
 					ws?.close();
 				}
@@ -514,7 +515,10 @@ class ApiCleaningService implements CleaningService {
 						// for edge case where backend omits reportId from job_complete).
 						if (jobCompleted && msg.type === 'report_ready') {
 							const id = (msg.reportId as string) ?? '';
-							if (id) jobHandle.reportId = id;
+							if (id) {
+								jobHandle.reportId = id;
+								cleaningResultsStore.setReportId(id);
+							}
 						}
 						return;
 					}
@@ -524,7 +528,10 @@ class ApiCleaningService implements CleaningService {
 						fileNameMap,
 						accumulatedResults,
 						jobHandle.jobId,
-						(id) => { jobHandle.reportId = id; },
+						(id) => {
+							jobHandle.reportId = id;
+							cleaningResultsStore.setReportId(id);
+						},
 						() => { jobCompleted = true; }
 					);
 				};

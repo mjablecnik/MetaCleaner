@@ -138,7 +138,7 @@
 	"step5.results.title": "File results",
 	"step5.results.allDone": "All done",
 	"step5.results.gpsRemoved": "GPS removed",
-	"step5.results.fieldsCount": "{count} fields",
+	"step5.results.fieldsCount": "{count} fields removed",
 	"step5.actions.downloadAll": "Download all (ZIP)",
 	"step5.actions.viewReport": "View report",
 	"reports.meta.title": "MetaCleaner — Report History",

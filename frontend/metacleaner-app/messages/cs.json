@@ -138,7 +138,7 @@
 	"step5.results.title": "Výsledky souborů",
 	"step5.results.allDone": "Vše hotovo",
 	"step5.results.gpsRemoved": "GPS odstraněno",
-	"step5.results.fieldsCount": "{count} polí",
+	"step5.results.fieldsCount": "{count} polí odstraněno",
 	"step5.actions.downloadAll": "Stáhnout vše (ZIP)",
 	"step5.actions.viewReport": "Zobrazit report",
 	"reports.meta.title": "MetaCleaner — Historie reportů",

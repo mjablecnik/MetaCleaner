@@ -92,7 +92,7 @@
 
 	<div class="col-span-1 flex items-center justify-end gap-1">
 		<a
-			href={resolve(`/report/${report.id}` as Pathname)}
+			href={resolve(`/report/${report.reportId}` as Pathname)}
 			title={tx('reports.table.viewReport')}
 			class="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 transition-colors hover:bg-brand-blue/20"
 		>
