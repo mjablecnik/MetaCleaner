@@ -169,7 +169,7 @@
 
 <div
 	class="flex min-h-screen flex-col"
-	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Navbar -->
 	<nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-5 py-4 lg:px-6 lg:py-6">
@@ -282,7 +282,7 @@
 						<div class="flex flex-1 items-center gap-2">
 							<div
 								class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white transition-all duration-300"
-								style="background: {currentStep > 1 ? '#22c55e' : currentStep === 1 ? '#3b82f6' : '#1e293b'}; color: {currentStep < 1 ? '#94a3b8' : 'white'};"
+								style="background: {currentStep > 1 ? 'var(--color-brand-green)' : currentStep === 1 ? 'var(--color-brand-blue)' : 'var(--color-navy-lighter)'}; color: {currentStep < 1 ? 'var(--color-text-muted)' : 'white'};"
 							>
 								{#if currentStep > 1}
 									<i class="fa-solid fa-check text-xs"></i>
@@ -293,14 +293,14 @@
 							<div class="flex-1 h-1 overflow-hidden rounded-full bg-navy-lighter">
 								<div
 									class="h-full rounded-full transition-all duration-500"
-									style="width: {currentStep > 1 ? '100%' : '0'}; background: {currentStep > 1 ? '#22c55e' : '#3b82f6'};"
+									style="width: {currentStep > 1 ? '100%' : '0'}; background: {currentStep > 1 ? 'var(--color-brand-green)' : 'var(--color-brand-blue)'};"
 								></div>
 							</div>
 						</div>
 						<div class="flex flex-1 items-center gap-2">
 							<div
 								class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
-								style="background: {currentStep > 2 ? '#22c55e' : currentStep === 2 ? '#3b82f6' : '#1e293b'}; color: {currentStep < 2 ? '#94a3b8' : 'white'};"
+								style="background: {currentStep > 2 ? 'var(--color-brand-green)' : currentStep === 2 ? 'var(--color-brand-blue)' : 'var(--color-navy-lighter)'}; color: {currentStep < 2 ? 'var(--color-text-muted)' : 'white'};"
 							>
 								{#if currentStep > 2}
 									<i class="fa-solid fa-check text-xs"></i>
@@ -311,13 +311,13 @@
 							<div class="flex-1 h-1 overflow-hidden rounded-full bg-navy-lighter">
 								<div
 									class="h-full rounded-full transition-all duration-500"
-									style="width: {currentStep > 2 ? '100%' : '0'}; background: #3b82f6;"
+									style="width: {currentStep > 2 ? '100%' : '0'}; background: var(--color-brand-blue);"
 								></div>
 							</div>
 						</div>
 						<div
 							class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
-							style="background: {currentStep === 3 ? '#3b82f6' : '#1e293b'}; color: {currentStep === 3 ? 'white' : '#94a3b8'};"
+							style="background: {currentStep === 3 ? 'var(--color-brand-blue)' : 'var(--color-navy-lighter)'}; color: {currentStep === 3 ? 'white' : 'var(--color-text-muted)'};"
 						>
 							3
 						</div>
@@ -368,9 +368,9 @@
 										bind:value={email}
 										placeholder={tx('auth.common.field.emailPlaceholder')}
 										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-4 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-										style="background:#0a1628; border-color: {emailError ? '#ef4444' : '#1e293b'};"
-										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = emailError ? '#ef4444' : '#3b82f6')}
-										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = emailError ? '#ef4444' : '#1e293b')}
+										style="background: var(--color-navy-main); border-color: {emailError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'}; "
+										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = emailError ? 'var(--color-brand-red)' : 'var(--color-brand-blue)')}
+										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = emailError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)')}
 									/>
 								</div>
 								{#if emailError}
@@ -383,8 +383,7 @@
 							<!-- Submit -->
 							<button
 								type="submit"
-								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-								style="background: #22c55e;"
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5 bg-brand-green"
 							>
 								<i class="fa-solid fa-paper-plane"></i> {tx('auth.forgotPassword.submit.sendCode')}
 							</button>
@@ -480,7 +479,7 @@
 										oninput={(e) => handleOtpInput(idx, e)}
 										onkeydown={(e) => handleOtpKeydown(idx, e)}
 										class="flex-1 rounded-[10px] border text-center font-bold text-white transition-[border-color,box-shadow] focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:rounded-[12px]"
-										style="background: #0a1628; border-color: {val ? '#22c55e' : '#1e293b'}; height: 52px; font-size: 1.25rem; max-width: 52px; lg:height:60px; lg:font-size:1.5rem;"
+										style="background: var(--color-navy-main); border-color: {val ? 'var(--color-brand-green)' : 'var(--color-navy-lighter)'}; height: 52px; font-size: 1.25rem; max-width: 52px;"
 									/>
 								{/each}
 							</div>
@@ -506,8 +505,7 @@
 							<!-- Verify Button -->
 							<button
 								type="submit"
-								class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-								style="background: #22c55e;"
+								class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5 bg-brand-green"
 							>
 								<i class="fa-solid fa-shield-halved"></i> {tx('auth.forgotPassword.otp.verify')}
 							</button>
@@ -554,9 +552,9 @@
 										bind:value={newPassword}
 										placeholder="••••••••"
 										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-										style="background:#0a1628; border-color:#1e293b;"
-										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = '#3b82f6')}
-										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = '#1e293b')}
+										style="background: var(--color-navy-main); border-color: var(--color-navy-lighter);"
+										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = 'var(--color-brand-blue)')}
+										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = 'var(--color-navy-lighter)')}
 									/>
 									<button
 										type="button"
@@ -591,9 +589,9 @@
 										bind:value={confirmPassword}
 										placeholder="••••••••"
 										class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 pr-12 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
-										style="background:#0a1628; border-color:{confirmError ? '#ef4444' : '#1e293b'};"
-										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError ? '#ef4444' : '#3b82f6')}
-										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError ? '#ef4444' : '#1e293b')}
+										style="background: var(--color-navy-main); border-color: {confirmError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)'};"
+										onfocus={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError ? 'var(--color-brand-red)' : 'var(--color-brand-blue)')}
+										onblur={(ev) => ((ev.currentTarget as HTMLInputElement).style.borderColor = confirmError ? 'var(--color-brand-red)' : 'var(--color-navy-lighter)')}
 									/>
 									<button
 										type="button"
@@ -631,8 +629,7 @@
 							<button
 								type="submit"
 								disabled={submitState === 'loading'}
-								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-								style="background: #22c55e;"
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5 bg-brand-green"
 							>
 								{#if submitState === 'loading'}
 									<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.common.submit.saving')}
@@ -659,8 +656,7 @@
 							</div>
 							<a
 								href="/login"
-								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5"
-								style="background: #22c55e;"
+								class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-500 lg:min-h-0 lg:py-3.5 bg-brand-green"
 							>
 								<i class="fa-solid fa-arrow-right-to-bracket"></i> {tx('auth.common.nav.login')}
 							</a>

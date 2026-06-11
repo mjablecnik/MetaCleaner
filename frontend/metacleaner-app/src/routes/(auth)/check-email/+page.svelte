@@ -15,7 +15,7 @@
 
 	const progressPct = $derived((countdown / 86400) * 100);
 	const progressColor = $derived(
-		progressPct > 50 ? '#22c55e' : progressPct > 20 ? '#f97316' : '#ef4444'
+		progressPct > 50 ? 'var(--color-brand-green)' : progressPct > 20 ? 'var(--color-brand-orange)' : 'var(--color-brand-red)'
 	);
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
@@ -63,7 +63,7 @@
 
 <div
 	class="flex min-h-screen flex-col"
-	style="background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%);"
+	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Desktop Navbar -->
 	<nav class="mx-auto hidden w-full max-w-[1100px] items-center justify-between px-6 py-6 lg:flex">
@@ -89,7 +89,7 @@
 	<!-- Mobile Navbar (sticky) -->
 	<nav
 		class="sticky top-0 z-50 flex w-full items-center justify-between px-4 py-4 lg:hidden"
-		style="background: rgba(10,22,40,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #1e293b;"
+		style="background: var(--color-navy-main-95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-navy-lighter);"
 	>
 		<div class="flex items-center gap-2.5">
 			<div
@@ -496,13 +496,13 @@
 		0%,
 		100% {
 			box-shadow:
-				0 0 0 0 rgba(34, 197, 94, 0.4),
-				0 0 24px rgba(34, 197, 94, 0.2);
+				0 0 0 0 var(--color-brand-green-40),
+				0 0 24px var(--color-brand-green-20);
 		}
 		50% {
 			box-shadow:
-				0 0 0 16px rgba(34, 197, 94, 0),
-				0 0 40px rgba(34, 197, 94, 0.3);
+				0 0 0 16px transparent,
+				0 0 40px var(--color-brand-green-30);
 		}
 	}
 
@@ -521,15 +521,15 @@
 	}
 
 	.step-done {
-		background: #22c55e;
-		border-color: #22c55e;
+		background: var(--color-brand-green);
+		border-color: var(--color-brand-green);
 	}
 	.step-active {
-		background: #3b82f6;
-		border-color: #3b82f6;
+		background: var(--color-brand-blue);
+		border-color: var(--color-brand-blue);
 	}
 	.step-pending {
-		background: #1e293b;
-		border-color: #374151;
+		background: var(--color-navy-lighter);
+		border-color: var(--color-gray-700);
 	}
 </style>
