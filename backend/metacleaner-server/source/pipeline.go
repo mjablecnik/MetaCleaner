@@ -125,6 +125,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		OverallProgress:     100,
 		FilesCompleted:      job.FilesCompleted,
 		TotalFiles:          total,
+		FieldsRemoved:       job.FieldsRemoved,
 		TotalTimeSeconds:    elapsed,
 		GPSLocationsRemoved: job.GPSLocationsRemoved,
 	})
@@ -165,12 +166,107 @@ func runExifTool(ctx context.Context, originalPath, cleanedPath string) (*Cleani
 	breakdown := categorizeExifFields(fields)
 	gpsRemoved := len(breakdown.GPSFields) > 0
 
+	// Count C2PA chunks that were stripped (not visible to exiftool)
+	c2paCount := countC2PAChunks(originalPath)
+	if c2paCount > 0 {
+		for i := 0; i < c2paCount; i++ {
+			breakdown.PNGChunks = append(breakdown.PNGChunks, MetadataField{
+				Label: "C2PA Content Credentials",
+				Value: "removed",
+			})
+		}
+		breakdown.TotalRemoved += c2paCount
+	}
+
 	return &CleaningResult{
 		FieldsRemoved:     breakdown.TotalRemoved,
 		GPSRemoved:        gpsRemoved,
 		MetadataBreakdown: breakdown,
 		Device:            device,
 	}, nil
+}
+
+// countC2PAChunks counts the number of C2PA-related chunks (caBX, jUMb) in a PNG file,
+// or C2PA APP11 segments in a JPEG file.
+func countC2PAChunks(filePath string) int {
+	ext := strings.ToLower(filepath.Ext(filePath))
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return 0
+	}
+
+	switch ext {
+	case ".png":
+		return countPngC2PAChunks(data)
+	case ".jpg", ".jpeg":
+		return countJpegC2PASegments(data)
+	default:
+		return 0
+	}
+}
+
+func countPngC2PAChunks(data []byte) int {
+	if len(data) < 8 || data[0] != 0x89 || data[1] != 0x50 {
+		return 0
+	}
+
+	count := 0
+	offset := 8
+	for offset+8 <= len(data) {
+		chunkLength := int(data[offset])<<24 | int(data[offset+1])<<16 | int(data[offset+2])<<8 | int(data[offset+3])
+		chunkType := string(data[offset+4 : offset+8])
+		totalChunkSize := 12 + chunkLength
+		if offset+totalChunkSize > len(data) {
+			break
+		}
+		if chunkType == "caBX" || chunkType == "jUMb" {
+			count++
+		}
+		offset += totalChunkSize
+	}
+	return count
+}
+
+func countJpegC2PASegments(data []byte) int {
+	if len(data) < 2 || data[0] != 0xFF || data[1] != 0xD8 {
+		return 0
+	}
+
+	count := 0
+	offset := 2
+	for offset+2 <= len(data) {
+		if data[offset] != 0xFF {
+			break
+		}
+		marker := data[offset+1]
+		if marker == 0xDA {
+			break
+		}
+		if marker == 0xFF {
+			offset++
+			continue
+		}
+		if marker == 0x00 || (marker >= 0xD0 && marker <= 0xD9) {
+			offset += 2
+			continue
+		}
+		if offset+4 > len(data) {
+			break
+		}
+		segLength := int(data[offset+2])<<8 | int(data[offset+3])
+		totalSize := 2 + segLength
+		if offset+totalSize > len(data) {
+			break
+		}
+		if marker == 0xEB && segLength > 10 {
+			segData := string(data[offset+4 : offset+totalSize])
+			if strings.Contains(segData, "jumb") || strings.Contains(segData, "c2pa") || strings.Contains(segData, "JP") {
+				count++
+			}
+		}
+		offset += totalSize
+	}
+	return count
 }
 
 // exifReadMetadata runs `exiftool -json <file>` and returns the flat key-value map + device string.

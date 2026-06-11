@@ -248,9 +248,20 @@ function buildProcessingResults(
 	_jobId: string
 ): ProcessingResults {
 	const filesProcessed = (msg.filesProcessed as number) ?? accumulatedResults.length;
-	const fieldsRemoved = (msg.fieldsRemoved as number) ?? 0;
-	const gpsLocationsRemoved = (msg.gpsLocationsRemoved as number) ?? 0;
 	const totalTimeSeconds = (msg.totalTimeSeconds as number) ?? 0;
+	const msgGpsRemoved = msg.gpsLocationsRemoved as number | undefined;
+	const accumulatedGpsRemoved = accumulatedResults.filter((r) => r.gpsRemoved).length;
+	const gpsLocationsRemoved = msgGpsRemoved && msgGpsRemoved > 0
+		? msgGpsRemoved
+		: accumulatedGpsRemoved;
+
+	// Use fieldsRemoved from job_complete if present and non-zero,
+	// otherwise sum from accumulated per-file results (more reliable).
+	const msgFieldsRemoved = msg.fieldsRemoved as number | undefined;
+	const accumulatedFieldsRemoved = accumulatedResults.reduce((sum, r) => sum + r.fieldsRemoved, 0);
+	const fieldsRemoved = msgFieldsRemoved && msgFieldsRemoved > 0
+		? msgFieldsRemoved
+		: accumulatedFieldsRemoved;
 
 	const fileResults: FileMetadataResult[] = accumulatedResults.map((r) => ({
 		fileId: r.fileId,
@@ -263,7 +274,7 @@ function buildProcessingResults(
 		totalFields: r.fieldsRemoved
 	}));
 
-	const gpsLocations = accumulatedResults.filter((r) => r.gpsRemoved).length;
+	const gpsLocations = gpsLocationsRemoved;
 	const remainingFields = Math.max(0, fieldsRemoved - gpsLocations);
 
 	const beforeBreakdown: MetadataBreakdown = {
