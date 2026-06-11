@@ -1403,6 +1403,305 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 	});
 });
 
+// ─── Task 1: Bug Condition Exploration Tests ─────────────────────────────────
+// CRITICAL: These tests MUST FAIL on unfixed code - failure confirms the bugs exist.
+// They encode expected behavior and will validate fixes once implemented.
+
+describe('Bug Condition 6: computeIconColor should return blue for image', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	// EXPECTED OUTCOME: FAILS on unfixed code (currently returns 'green')
+	it('computeIconColor returns blue for image type (EXPECTED BEHAVIOR)', async () => {
+		vi.mocked(api.getReports).mockResolvedValueOnce({
+			summary: { totalReports: 1, fieldsRemoved: 0, filesProcessed: 0, gpsRemoved: 0 },
+			reports: [
+				{
+					id: 'r-img-bug6',
+					reportId: 'RPT-IMG-BUG6',
+					date: '2025-01-15',
+					duration: '5s',
+					fileCount: 1,
+					fileTypes: 'jpg',
+					type: 'image',
+					gps: false,
+					fields: 10,
+					tags: []
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReports();
+		// Bug 6: currently returns 'green' — expected 'blue' per design spec
+		expect(result.reports[0].iconColor).toBe('blue');
+	});
+
+	// Preservation: video stays orange (EXPECTED OUTCOME: PASSES on unfixed code)
+	it('computeIconColor preserves orange for video type', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.constantFrom('video', 'document') as fc.Arbitrary<string>,
+				async (type) => {
+					vi.mocked(api.getReports).mockResolvedValueOnce({
+						summary: { totalReports: 1, fieldsRemoved: 0, filesProcessed: 0, gpsRemoved: 0 },
+						reports: [
+							{
+								id: 'r-vid-pres',
+								reportId: 'RPT-VID-PRES',
+								date: '2025-01-15',
+								duration: '5s',
+								fileCount: 1,
+								fileTypes: type,
+								type,
+								gps: false,
+								fields: 10,
+								tags: []
+							}
+						]
+					} as never);
+					const result = await apiCleaningService.getReports();
+					expect(result.reports[0].iconColor).toBe('orange');
+				}
+			),
+			{ numRuns: 20 }
+		);
+	});
+});
+
+describe('Bug Condition 8: mapMetadataDetail should include video-specific fields', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	// EXPECTED OUTCOME: FAILS on unfixed code (id3Fields ignored in mapMetadataDetail)
+	it('mapMetadataDetail includes id3Fields from backend response (EXPECTED BEHAVIOR)', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-BUG8-ID3',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved: 2,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 2,
+			chartData: [],
+			files: [
+				{
+					name: 'song.mp3',
+					extension: '.mp3',
+					sizeMB: '5.0',
+					format: 'mp3',
+					device: '',
+					type: 'video',
+					hasGps: false,
+					fieldsRemoved: 2,
+					metadata: {
+						gpsFields: [],
+						exifFields: [],
+						xmpFields: [],
+						id3Fields: [
+							{ label: 'Title', value: 'My Track' },
+							{ label: 'Artist', value: 'Some Artist' }
+						],
+						totalRemoved: 2
+					}
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReportDetail('RPT-BUG8-ID3');
+		const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+		// Bug 8: id3Fields missing from FileMetadataSection — mapMetadataDetail ignores them
+		expect(meta['id3Fields']).toBeDefined();
+		expect(Array.isArray(meta['id3Fields'])).toBe(true);
+		expect((meta['id3Fields'] as unknown[]).length).toBe(2);
+	});
+
+	// EXPECTED OUTCOME: FAILS on unfixed code (mp4Atoms ignored in mapMetadataDetail)
+	it('mapMetadataDetail includes mp4AtomFields from backend mp4Atoms (EXPECTED BEHAVIOR)', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-BUG8-MP4',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved: 2,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 2,
+			chartData: [],
+			files: [
+				{
+					name: 'video.mp4',
+					extension: '.mp4',
+					sizeMB: '15.0',
+					format: 'mp4',
+					device: '',
+					type: 'video',
+					hasGps: false,
+					fieldsRemoved: 2,
+					metadata: {
+						gpsFields: [],
+						exifFields: [],
+						xmpFields: [],
+						mp4Atoms: [
+							{ label: 'Encoder', value: 'ffmpeg' },
+							{ label: 'CreationTime', value: '2025-01-01' }
+						],
+						totalRemoved: 2
+					}
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReportDetail('RPT-BUG8-MP4');
+		const meta = result.files[0].metadata as unknown as Record<string, unknown>;
+		// Bug 8: mp4AtomFields missing from FileMetadataSection — mp4Atoms ignored
+		expect(meta['mp4AtomFields']).toBeDefined();
+		expect(Array.isArray(meta['mp4AtomFields'])).toBe(true);
+		expect((meta['mp4AtomFields'] as unknown[]).length).toBe(2);
+	});
+
+	// Preservation: existing GPS/EXIF/XMP fields remain (EXPECTED OUTCOME: PASSES)
+	it('mapMetadataDetail preserves existing gps/exif/xmp fields', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-BUG8-PRES',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved: 3,
+			gpsLocationsRemoved: 1,
+			totalTimeSeconds: 1,
+			chartData: [],
+			files: [
+				{
+					name: 'photo.jpg',
+					extension: '.jpg',
+					sizeMB: '2.0',
+					format: 'jpeg',
+					device: '',
+					type: 'image',
+					hasGps: true,
+					fieldsRemoved: 3,
+					metadata: {
+						gpsFields: [{ label: 'GPSLatitude', value: '50.0' }],
+						exifFields: [{ label: 'Make', value: 'Canon' }],
+						xmpFields: [{ label: 'Creator', value: 'User' }],
+						totalRemoved: 3
+					}
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReportDetail('RPT-BUG8-PRES');
+		const meta = result.files[0].metadata;
+		expect(meta.gpsFields).toHaveLength(1);
+		expect(meta.exifFields).toHaveLength(1);
+		expect(meta.xmpFields).toHaveLength(1);
+		expect(meta.totalRemoved).toBe(3);
+	});
+});
+
+describe('Bug Condition 9: Report detail should show original upload filename', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	// EXPECTED OUTCOME: FAILS on unfixed code (uses f.name which is the hashed ID)
+	it('mapReportFileDetails uses original_name when provided by backend (EXPECTED BEHAVIOR)', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-BUG9',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved: 5,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 2,
+			chartData: [],
+			files: [
+				{
+					name: 'f-fbe455fb.mp4', // hashed internal name — bug shows this
+					original_name: 'firefly-kling-3.0.mp4', // real upload name — expected
+					extension: '.mp4',
+					sizeMB: '15.0',
+					format: 'mp4',
+					device: '',
+					type: 'video',
+					hasGps: false,
+					fieldsRemoved: 5,
+					metadata: null
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReportDetail('RPT-BUG9');
+		// Bug 9: current code uses f.name (hashed) — expected to use f.original_name
+		expect(result.files[0].name).toBe('firefly-kling-3.0.mp4');
+		expect(result.files[0].name).not.toMatch(/^f-[a-f0-9]+\./);
+	});
+
+	// Preservation: when no original_name, name field still works (EXPECTED OUTCOME: PASSES)
+	it('mapReportFileDetails falls back to name when original_name is absent', async () => {
+		vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+			reportId: 'RPT-BUG9-PRES',
+			date: '2025-01-15',
+			filesProcessed: 1,
+			fieldsRemoved: 5,
+			gpsLocationsRemoved: 0,
+			totalTimeSeconds: 2,
+			chartData: [],
+			files: [
+				{
+					name: 'photo.jpg',
+					extension: '.jpg',
+					sizeMB: '2.0',
+					format: 'jpeg',
+					device: '',
+					type: 'image',
+					hasGps: false,
+					fieldsRemoved: 5,
+					metadata: null
+				}
+			]
+		} as never);
+		const result = await apiCleaningService.getReportDetail('RPT-BUG9-PRES');
+		expect(result.files[0].name).toBe('photo.jpg');
+	});
+
+	// Property: hashed IDs never appear as display names when original_name is present
+	it('for any file with original_name, displayed name must not be a hashed ID', async () => {
+		await fc.assert(
+			fc.asyncProperty(
+				fc.record({
+					hashedName: fc.stringMatching(/^[0-9a-f]{8}$/).map((h) => `f-${h}.mp4`),
+					originalName: fc.string({ minLength: 1, maxLength: 80 }).filter(
+						(s) => !s.match(/^f-[a-f0-9]+\./)
+					)
+				}),
+				async ({ hashedName, originalName }) => {
+					vi.mocked(api.getReportDetail).mockResolvedValueOnce({
+						reportId: 'RPT-PROP9',
+						date: '2025-01-15',
+						filesProcessed: 1,
+						fieldsRemoved: 1,
+						gpsLocationsRemoved: 0,
+						totalTimeSeconds: 1,
+						chartData: [],
+						files: [
+							{
+								name: hashedName,
+								original_name: originalName,
+								extension: '.mp4',
+								sizeMB: '5.0',
+								format: 'mp4',
+								device: '',
+								type: 'video',
+								hasGps: false,
+								fieldsRemoved: 1,
+								metadata: null
+							}
+						]
+					} as never);
+					const result = await apiCleaningService.getReportDetail('RPT-PROP9');
+					// After fix: original name used; before fix: hashed name used (test fails)
+					expect(result.files[0].name).not.toMatch(/^f-[a-f0-9]+\./);
+					expect(result.files[0].name).toBe(originalName);
+				}
+			),
+			{ numRuns: 30 }
+		);
+	});
+});
+
 // ─── Property 11: Bar width percentage computation invariant ───────────────────
 
 describe('Feature: api-integration, Property 11: Bar width percentage computation invariant', () => {
