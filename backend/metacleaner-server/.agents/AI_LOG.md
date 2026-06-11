@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-11 11:53 — manual
+- Added C2PA chunk counting and fields-removed handling in pipeline.go
+- Improved progress event handling with LocalID for files in pipeline and handlers
+- Enhanced job creation with optional file names in handlers.go, then simplified createJob function
+- Updated frontend origin to port 3000 in .env.example
+
+## 2026-06-10 15:20 — manual
+- Implemented batch ZIP download endpoint (handlers.go, router.go, errors.go) with tests
+- Fixed pipeline test fixtures and exiftool script args
+
 ## 2026-06-10 14:03 — manual
 - Improved metadata handling with privacy categorization and raw output support
 - Generated meaningful download filenames with IMG_/VID_ prefix
