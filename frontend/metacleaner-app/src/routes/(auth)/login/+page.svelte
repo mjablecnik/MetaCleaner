@@ -9,6 +9,7 @@
 	import AuthFormCard from '../components/AuthFormCard.svelte';
 	import AuthFeatureCard from '../components/AuthFeatureCard.svelte';
 	import LoginFormSection from './sections/LoginFormSection.svelte';
+	import TrustBadges from '../components/TrustBadges.svelte';
 
 	const stats = getAuthStats();
 
@@ -87,22 +88,7 @@
 					{/snippet}
 				</AuthFormCard>
 
-				<div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span>{tx('auth.common.trust.ssl')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span>{tx('auth.common.trust.gdpr')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>{tx('auth.common.trust.noTracking')}</span>
-					</div>
-				</div>
+				<TrustBadges />
 			</div>
 		</div>
 	</main>

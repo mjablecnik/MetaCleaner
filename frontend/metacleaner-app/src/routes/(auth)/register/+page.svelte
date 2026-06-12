@@ -7,6 +7,7 @@
 	import AuthBranding from '../components/AuthBranding.svelte';
 	import AuthFormCard from '../components/AuthFormCard.svelte';
 	import RegisterFormSection from './sections/RegisterFormSection.svelte';
+	import TrustBadges from '../components/TrustBadges.svelte';
 
 	const stats = getAuthStats();
 	const plans = getAuthPlans();
@@ -124,24 +125,7 @@
 					</div>
 				</div>
 
-				<div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
-					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
-						<i class="fa-solid fa-shield-halved text-xs text-brand-green lg:text-sm"></i>
-						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
-						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
-						<i class="fa-solid fa-user-shield text-xs text-brand-blue lg:text-sm"></i>
-						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
-						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1 text-[10px] text-text-muted lg:gap-1.5 lg:text-xs">
-						<i class="fa-solid fa-lock text-xs text-text-muted lg:text-sm"></i>
-						<span>{tx('auth.common.trust.noTracking')}</span>
-					</div>
-				</div>
+				<TrustBadges />
 			</div>
 		</div>
 	</main>

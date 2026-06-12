@@ -5,6 +5,8 @@
 	import AuthNavbar from '../components/AuthNavbar.svelte';
 	import StepProgressBar from '../components/StepProgressBar.svelte';
 	import CheckCodeFormSection from './sections/CheckCodeFormSection.svelte';
+	import TrustBadges from '../components/TrustBadges.svelte';
+	import PasswordRecoveryProgressCards from '../components/PasswordRecoveryProgressCards.svelte';
 
 	let currentStep = $state<1 | 2 | 3 | 4>(2);
 	let sentEmail = $state('vas@email.cz');
@@ -42,34 +44,7 @@
 					<p class="max-w-md text-base leading-relaxed text-text-muted">{tx('auth.forgotPassword.branding.description')}</p>
 				</div>
 
-				<div class="flex flex-col gap-3">
-					<div class="step-info-card done-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4">
-						<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15">
-							<i class="fa-solid fa-check text-sm text-brand-green"></i>
-						</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step1.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.forgotPassword.step1.desc')}</p>
-						</div>
-						<div class="ml-auto"><i class="fa-solid fa-circle-check text-brand-green opacity-80"></i></div>
-					</div>
-					<div class="step-info-card active-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4">
-						<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-blue/20 text-sm font-bold text-brand-blue ring-2 ring-brand-blue/30">2</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step2.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.forgotPassword.step2.desc')}</p>
-						</div>
-						<div class="ml-auto"><i class="fa-solid fa-shield-halved text-brand-blue opacity-80"></i></div>
-					</div>
-					<div class="step-info-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4">
-						<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15 text-sm font-bold text-brand-green">3</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step3.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.forgotPassword.step3.desc')}</p>
-						</div>
-						<div class="ml-auto"><i class="fa-solid fa-lock text-brand-green opacity-60"></i></div>
-					</div>
-				</div>
+				<PasswordRecoveryProgressCards currentStep={2} />
 
 				<div class="flex h-[72px] items-start gap-3 rounded-xl border border-brand-blue/20 bg-brand-blue/5 p-4">
 					<i class="fa-solid fa-envelope-open-text mt-0.5 text-brand-blue"></i>
@@ -84,42 +59,9 @@
 			<div class="mx-auto w-full max-w-[480px] lg:mx-0 lg:ml-auto">
 				<StepProgressBar steps={3} {currentStep} />
 				<CheckCodeFormSection bind:currentStep bind:sentEmail />
-				<div class="mt-4 flex items-center justify-center gap-4 lg:mt-5 lg:gap-5">
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>{tx('auth.common.trust.noTracking')}</span>
-					</div>
-				</div>
+				<TrustBadges />
 			</div>
 		</div>
 	</main>
 </AuthLayout>
 
-<style>
-	@keyframes float {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-8px); }
-	}
-	.floating-icon { animation: float 3s ease-in-out infinite; }
-
-	.step-info-card.done-card {
-		border-color: var(--color-brand-green-30) !important;
-		background: var(--color-brand-green-4) !important;
-	}
-	.step-info-card.active-card {
-		border-color: var(--color-brand-blue-40) !important;
-		background: var(--color-brand-blue-5) !important;
-	}
-</style>

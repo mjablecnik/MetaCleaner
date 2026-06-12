@@ -5,6 +5,7 @@
 	import AuthNavbar from '../components/AuthNavbar.svelte';
 	import StepProgressBar from '../components/StepProgressBar.svelte';
 	import ForgotPasswordFormSection from './sections/ForgotPasswordFormSection.svelte';
+	import TrustBadges from '../components/TrustBadges.svelte';
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -79,33 +80,9 @@
 			<div class="mx-auto w-full max-w-[480px] lg:mx-0 lg:ml-auto">
 				<StepProgressBar steps={3} currentStep={1} />
 				<ForgotPasswordFormSection />
-				<div class="mt-4 flex items-center justify-center gap-4 lg:mt-5 lg:gap-5">
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>{tx('auth.common.trust.noTracking')}</span>
-					</div>
-				</div>
+				<TrustBadges />
 			</div>
 		</div>
 	</main>
 </AuthLayout>
 
-<style>
-	@keyframes float {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-8px); }
-	}
-	.floating-icon { animation: float 3s ease-in-out infinite; }
-</style>

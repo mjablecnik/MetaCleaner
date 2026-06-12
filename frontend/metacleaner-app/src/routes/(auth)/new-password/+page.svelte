@@ -5,6 +5,8 @@
 	import AuthNavbar from '../components/AuthNavbar.svelte';
 	import StepProgressBar from '../components/StepProgressBar.svelte';
 	import NewPasswordFormSection from './sections/NewPasswordFormSection.svelte';
+	import TrustBadges from '../components/TrustBadges.svelte';
+	import PasswordRecoveryProgressCards from '../components/PasswordRecoveryProgressCards.svelte';
 
 	let step = $state<3 | 4>(3);
 
@@ -43,51 +45,11 @@
 					</p>
 				</div>
 
-				<div class="flex flex-col gap-3">
-					<div class="step-info-card done-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4">
-						<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15">
-							<i class="fa-solid fa-check text-sm text-brand-green"></i>
-						</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step1.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.newPassword.step1.doneDesc')}</p>
-						</div>
-						<div class="ml-auto"><i class="fa-solid fa-circle-check text-brand-green opacity-80"></i></div>
-					</div>
-					<div class="step-info-card done-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4">
-						<div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15">
-							<i class="fa-solid fa-check text-sm text-brand-green"></i>
-						</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step2.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.newPassword.step2.doneDesc')}</p>
-						</div>
-						<div class="ml-auto"><i class="fa-solid fa-circle-check text-brand-green opacity-80"></i></div>
-					</div>
-					<div
-						class="step-info-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4"
-						class:active-card={step === 3}
-						class:done-card={step === 4}
-					>
-						<div
-							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold {step === 3 ? 'ring-2 ring-brand-blue/30' : ''}"
-							style={step === 4 ? 'background: var(--color-brand-green-15);' : 'background: var(--color-brand-blue-20); color: var(--color-brand-blue);'}
-						>
-							{#if step === 4}
-								<i class="fa-solid fa-check text-brand-green"></i>
-							{:else}
-								3
-							{/if}
-						</div>
-						<div>
-							<p class="text-sm font-semibold text-white">{tx('auth.forgotPassword.step3.title')}</p>
-							<p class="mt-0.5 text-xs text-text-muted">{tx('auth.forgotPassword.step3.desc')}</p>
-						</div>
-						<div class="ml-auto">
-							<i class={step === 4 ? 'fa-solid fa-circle-check text-brand-green opacity-80' : 'fa-solid fa-lock text-brand-blue opacity-80'}></i>
-						</div>
-					</div>
-				</div>
+				<PasswordRecoveryProgressCards
+					currentStep={step === 4 ? 4 : 3}
+					step1DoneDesc={tx('auth.newPassword.step1.doneDesc')}
+					step2DoneDesc={tx('auth.newPassword.step2.doneDesc')}
+				/>
 
 				<div class="flex items-start gap-3 rounded-xl border border-brand-green/20 bg-brand-green/5 p-4">
 					<i class="fa-solid fa-shield-halved mt-0.5 flex-shrink-0 text-brand-green"></i>
@@ -114,42 +76,9 @@
 				<StepProgressBar steps={3} currentStep={step === 4 ? 4 : 3} />
 				<NewPasswordFormSection bind:step />
 
-				<div class="mt-4 flex items-center justify-center gap-4 lg:mt-5 lg:gap-5">
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-shield-halved text-sm text-brand-green"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.ssl')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.sslShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-user-shield text-sm text-brand-blue"></i>
-						<span class="hidden lg:inline">{tx('auth.common.trust.gdpr')}</span>
-						<span class="lg:hidden">{tx('auth.common.trust.gdprShort')}</span>
-					</div>
-					<div class="h-3 w-px bg-gray-700"></div>
-					<div class="flex items-center gap-1.5 text-xs text-text-muted">
-						<i class="fa-solid fa-lock text-sm text-text-muted"></i>
-						<span>{tx('auth.common.trust.noTracking')}</span>
-					</div>
-				</div>
+				<TrustBadges />
 			</div>
 		</div>
 	</main>
 </AuthLayout>
 
-<style>
-	@keyframes float {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-8px); }
-	}
-	.floating-icon { animation: float 3s ease-in-out infinite; }
-
-	.step-info-card.done-card {
-		border-color: var(--color-brand-green-30) !important;
-		background: var(--color-brand-green-4) !important;
-	}
-	.step-info-card.active-card {
-		border-color: var(--color-brand-blue-40) !important;
-		background: var(--color-brand-blue-5) !important;
-	}
-</style>
