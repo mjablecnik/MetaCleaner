@@ -4,11 +4,13 @@ import { render } from 'vitest-browser-svelte';
 import FileListCard from '../FileListCard.svelte';
 import type { QueuedFile } from '$lib/scanner/types';
 
-const mockRemoveFile = vi.fn();
-const mockClearFiles = vi.fn();
+const { mockRemoveFile, mockClearFiles } = vi.hoisted(() => ({
+	mockRemoveFile: vi.fn(),
+	mockClearFiles: vi.fn()
+}));
 let _mockFiles: QueuedFile[] = [];
 
-vi.mock('$lib/scanner/scannerStore.svelte.js', () => ({
+vi.mock('$lib/scanner/scannerStore.svelte', () => ({
 	scannerStore: {
 		get files() {
 			return _mockFiles;

@@ -6,6 +6,12 @@ import { page } from 'vitest/browser';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 
+// Use vi.hoisted so these vars are available when vi.mock factories run (hoisted calls)
+const { mockDownloadFile, mockDownloadResults } = vi.hoisted(() => ({
+	mockDownloadFile: vi.fn().mockResolvedValue(new Blob(['data'], { type: 'image/jpeg' })),
+	mockDownloadResults: vi.fn().mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }))
+}));
+
 // Mock stores with 2 files to trigger the multi-file (ZIP) path
 vi.mock('$lib/stores/cleaningResultsStore.svelte', () => ({
 	cleaningResultsStore: {
@@ -62,11 +68,6 @@ vi.mock('$lib/stores/appState.svelte', () => ({
 		reset: vi.fn()
 	}
 }));
-
-const mockDownloadFile = vi.fn().mockResolvedValue(new Blob(['data'], { type: 'image/jpeg' }));
-const mockDownloadResults = vi
-	.fn()
-	.mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }));
 
 vi.mock('$lib/services/apiCleaningService', () => ({
 	apiCleaningService: {

@@ -4,11 +4,11 @@ import { render } from 'vitest-browser-svelte';
 import UploadZoneCard from '../UploadZoneCard.svelte';
 
 // Mock the scanner store
-const mockAddFiles = vi.fn();
+const { mockAddFiles } = vi.hoisted(() => ({ mockAddFiles: vi.fn() }));
 let _hasFiles = false;
 let _isScanning = false;
 
-vi.mock('$lib/scanner/scannerStore.svelte.js', () => ({
+vi.mock('$lib/scanner/scannerStore.svelte', () => ({
 	scannerStore: {
 		get hasFiles() {
 			return _hasFiles;
@@ -31,10 +31,10 @@ describe('UploadZoneCard', () => {
 	});
 
 	it('renders card with file input', async () => {
-		render(UploadZoneCard);
+		const { container } = render(UploadZoneCard);
 		// Hidden file input should exist
-		const input = page.getByRole('button');
-		await expect.element(input).toBeInTheDocument();
+		const input = container.querySelector('input[type="file"]');
+		expect(input).not.toBeNull();
 	});
 
 	it('shows format badges (JPG, PNG, HEIC, MP4, MOV)', async () => {

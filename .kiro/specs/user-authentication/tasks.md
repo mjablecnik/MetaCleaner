@@ -195,7 +195,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Handle callback token extraction on app load (check URL params on login page mount)
     - _Requirements: 15.1, 15.2, 15.3, 15.5, 15.6, 18.6, 18.7, 18.8_
 
-- [ ] 8. Checkpoint — Frontend auth complete
+- [x] 8. Checkpoint — Frontend auth complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Backend testing

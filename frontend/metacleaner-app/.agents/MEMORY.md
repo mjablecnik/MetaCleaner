@@ -1,5 +1,35 @@
 # Memory
 
+## vi.mock hoisting: top-level const vi.fn() must use vi.hoisted()
+
+- Problem: `const mockFn = vi.fn()` declared BEFORE `vi.mock(...)` factories causes an "error when mocking a module" unhandled rejection. `vi.mock()` is hoisted to run before any module code, so `const mockFn` is undefined when the factory executes. Browser tests produce an unhandled rejection with no test results.
+- Solution: Replace top-level `const mockFn = vi.fn()` + `vi.mock(factory using mockFn)` with: `const { mockFn } = vi.hoisted(() => ({ mockFn: vi.fn() }))` followed by `vi.mock(factory using mockFn)`. The `vi.hoisted()` call is also hoisted alongside `vi.mock`.
+- Source: create-code, 2026-06-12
+
+## vi.mock path must match import path exactly (no .js extension for .ts files)
+
+- Problem: `vi.mock('$lib/scanner/scannerStore.svelte.js', ...)` silently fails when the actual file is `scannerStore.svelte.ts`. Vitest cannot intercept imports that use `$lib/scanner/scannerStore.svelte` (no extension) because the mock path doesn't match.
+- Solution: Always use the same path as the actual `import` statement. For SvelteKit `.svelte.ts` files, the import omits the extension: `vi.mock('$lib/scanner/scannerStore.svelte', ...)`.
+- Source: create-code, 2026-06-12
+
+## Browser vitest tests: use English text for button assertions (default locale)
+
+- Problem: Tests using Czech text (`/zastavit/i`, `/zkusit znovu/i`, `/vymazat vše/i`) or "X / Y" format for `tx('step3.progress.filesCompleted')` fail because the default Paraglide locale is English. The browser test environment starts with no localStorage, so `initLocale()` defaults to English. Czech translations ("Zastavit", etc.) are never rendered.
+- Solution: Use English equivalents in `filter({ hasText: ... })` locators: `/stop/i`, `/try again/i`, `/clear/i`. For file count text, use `/X of Y files/` regex pattern instead of `'X / Y'` literal (which matches neither language's translation format).
+- Source: create-code, 2026-06-12
+
+## getByText strict mode: multiple elements with same text require .first()
+
+- Problem: `page.getByText('45%')` fails with strict mode violation when both the overall progress bar AND per-file rows render the same percentage. Any test that passes `overallProgress: 45` AND file states with `progress: 45` creates duplicate text.
+- Solution: Use `page.getByText('45%').first()` to select the first match, or use a more specific selector targeting the parent container's text.
+- Source: create-code, 2026-06-12
+
+## Settings link in UserDropdown must be <a> for getByRole('link') ordering tests
+
+- Problem: The Settings item in `UserDropdown.svelte` was a `<div role="button">` which is not found by `page.getByRole('link')`. Tests checking "Report history appears before Settings in dropdown order" use `findIndex` on links[], and get `settingsIdx = -1` (not found), causing `expect(0).toBeLessThan(-1)` to fail.
+- Solution: Change the Settings `<div role="button">` to an `<a href="/settings">` element. If `onSettings` callback exists, call it via `onclick` with `e.preventDefault()`. This makes Settings discoverable by `getByRole('link')` while preserving the callback behavior.
+- Source: create-code, 2026-06-12
+
 ## vitest strict mock: arbitrary key access on mocked modules throws
 
 - Problem: `vi.mock('$lib/paraglide/messages', () => ({ 'known.key': () => '...' }))` creates a strict module namespace — accessing any property not in the factory return (e.g., `m['unknown.key']` inside `tx()`) throws `[vitest] No "unknown.key" export is defined on the mock`. This blocks property-based tests with `fc.string()` that generate arbitrary key names.

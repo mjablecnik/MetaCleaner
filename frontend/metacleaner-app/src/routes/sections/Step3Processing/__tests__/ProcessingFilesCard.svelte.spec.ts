@@ -56,7 +56,7 @@ describe('ProcessingFilesCard', () => {
 			timeRemainingSeconds: 30,
 			onStop
 		});
-		await expect.element(page.getByText('45%')).toBeInTheDocument();
+		await expect.element(page.getByText('45%').first()).toBeInTheDocument();
 	});
 
 	it('renders per-file rows', async () => {
@@ -84,7 +84,7 @@ describe('ProcessingFilesCard', () => {
 			onStop
 		});
 		// Find and click the red stop button
-		const stopBtn = page.getByRole('button').filter({ hasText: /zastavit/i });
+		const stopBtn = page.getByRole('button').filter({ hasText: /stop/i });
 		await stopBtn.click();
 		expect(onStop).toHaveBeenCalledOnce();
 	});
@@ -118,6 +118,6 @@ describe('ProcessingFilesCard', () => {
 			timeRemainingSeconds: 15,
 			onStop
 		});
-		await expect.element(page.getByText('1 / 2')).toBeInTheDocument();
+		await expect.element(page.getByText(/1 of 2 files/)).toBeInTheDocument();
 	});
 });

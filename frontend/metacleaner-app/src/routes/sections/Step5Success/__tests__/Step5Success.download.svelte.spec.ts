@@ -9,6 +9,13 @@ import { page } from 'vitest/browser';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 
+// Use vi.hoisted so these vars are available when vi.mock factories run (hoisted calls)
+const { mockApiDownloadFile, mockApiDownloadJobZip, mockDownloadResults } = vi.hoisted(() => ({
+	mockApiDownloadFile: vi.fn().mockResolvedValue(new Blob(['data'], { type: 'image/jpeg' })),
+	mockApiDownloadJobZip: vi.fn().mockResolvedValue(new Blob(['zip'], { type: 'application/zip' })),
+	mockDownloadResults: vi.fn().mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }))
+}));
+
 // Mock stores before importing the component
 vi.mock('$lib/stores/cleaningResultsStore.svelte', () => ({
 	cleaningResultsStore: {
@@ -56,11 +63,6 @@ vi.mock('$lib/stores/appState.svelte', () => ({
 
 // Mock the API client — the component imports downloadFile DIRECTLY from here,
 // not via apiCleaningService. Mocking apiCleaningService alone is insufficient.
-const mockApiDownloadFile = vi.fn().mockResolvedValue(new Blob(['data'], { type: 'image/jpeg' }));
-const mockApiDownloadJobZip = vi
-	.fn()
-	.mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }));
-
 vi.mock('$lib/clients/metaCleanerApi.js', () => ({
 	downloadFile: mockApiDownloadFile,
 	downloadJobZip: mockApiDownloadJobZip,
@@ -77,10 +79,6 @@ vi.mock('$lib/clients/metaCleanerApi.js', () => ({
 }));
 
 // Also mock apiCleaningService so downloadResults (multi-file ZIP path) is intercepted
-const mockDownloadResults = vi
-	.fn()
-	.mockResolvedValue(new Blob(['zip'], { type: 'application/zip' }));
-
 vi.mock('$lib/services/apiCleaningService', () => ({
 	apiCleaningService: {
 		downloadResults: mockDownloadResults

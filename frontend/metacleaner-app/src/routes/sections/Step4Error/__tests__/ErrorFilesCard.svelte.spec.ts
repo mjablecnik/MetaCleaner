@@ -67,7 +67,7 @@ describe('ErrorFilesCard', () => {
 			onTryAgain,
 			onClearAll: vi.fn()
 		});
-		const retryBtn = page.getByRole('button').filter({ hasText: /zkusit znovu/i });
+		const retryBtn = page.getByRole('button').filter({ hasText: /try again/i });
 		await retryBtn.click();
 		expect(onTryAgain).toHaveBeenCalledOnce();
 	});
@@ -82,7 +82,7 @@ describe('ErrorFilesCard', () => {
 			onTryAgain: vi.fn(),
 			onClearAll
 		});
-		const clearBtn = page.getByRole('button').filter({ hasText: /vymazat/i });
+		const clearBtn = page.getByRole('button').filter({ hasText: /clear/i });
 		await clearBtn.click();
 		expect(onClearAll).toHaveBeenCalledOnce();
 	});
@@ -96,7 +96,7 @@ describe('ErrorFilesCard', () => {
 			onTryAgain: vi.fn(),
 			onClearAll: vi.fn()
 		});
-		await expect.element(page.getByText('1 / 3')).toBeInTheDocument();
+		await expect.element(page.getByText(/1 of 3 files/)).toBeInTheDocument();
 	});
 
 	it('action buttons are present', async () => {

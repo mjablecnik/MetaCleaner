@@ -48,16 +48,14 @@
 			<i class="fa-solid fa-clock-rotate-left text-sm text-text-muted"></i>
 			<span>{tx('common.nav.reportHistory')}</span>
 		</a>
-		<div
+		<a
 			class="lang-option"
-			role="button"
-			tabindex="0"
-			onclick={() => onSettings?.()}
-			onkeydown={(e) => e.key === 'Enter' && onSettings?.()}
+			href={resolve('/settings' as Pathname)}
+			onclick={(e) => { if (onSettings) { e.preventDefault(); onSettings(); } }}
 		>
 			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 			<span>{tx('common.nav.settings')}</span>
-		</div>
+		</a>
 		<div
 			class="lang-option lang-option-danger"
 			role="button"
