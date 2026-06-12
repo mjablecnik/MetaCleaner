@@ -24,6 +24,8 @@ type Config struct {
 	MagicLinkCallbackURL   string
 	FrontendURL            string
 	RateLimitRPM           int
+	AndroidCertFingerprint string
+	AppleTeamID            string
 }
 
 func LoadConfig() Config {
@@ -76,6 +78,8 @@ func LoadConfig() Config {
 	cfg.OAuthCallbackURL = os.Getenv("OAUTH_CALLBACK_URL")
 	cfg.MagicLinkCallbackURL = os.Getenv("MAGIC_LINK_CALLBACK_URL")
 	cfg.FrontendURL = os.Getenv("FRONTEND_URL")
+	cfg.AndroidCertFingerprint = os.Getenv("ANDROID_CERT_FINGERPRINT")
+	cfg.AppleTeamID = os.Getenv("APPLE_TEAM_ID")
 
 	if cfg.SupabaseURL == "" {
 		log.Fatal("SUPABASE_URL environment variable is required")

@@ -197,6 +197,12 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 
+	// GET /.well-known/assetlinks.json — Android App Links domain verification (no auth)
+	mux.Handle("GET /.well-known/assetlinks.json", HandleAssetLinks(cfg))
+
+	// GET /.well-known/apple-app-site-association — iOS Universal Links (no auth)
+	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
+
 	cors := corsMiddleware(cfg.FrontendOrigin)
 	return cors(mux)
 }

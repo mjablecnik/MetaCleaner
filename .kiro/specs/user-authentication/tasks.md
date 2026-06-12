@@ -73,7 +73,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Handle errors: invalid provider 400, invalid code redirect with error param, Supabase unreachable redirect with error
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9, 16.3, 16.4, 16.6_
 
-  - [ ] 2.6 Implement magic link handlers
+  - [x] 2.6 Implement magic link handlers
     - POST `/api/auth/magic-link` — validate email, call `SignInWithOtp`, return 200
     - GET `/api/auth/magic-link/callback` — exchange token for session, redirect to frontend with tokens
     - Callback URL must use production domain format (e.g., `metacleaner.fly.dev/api/auth/magic-link/callback`) for Deep_Link compatibility
@@ -82,7 +82,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Magic link expiry (1 hour) is configured in Supabase dashboard — no backend code needed
     - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5, 17.6, 17.7, 17.8, 17.9, 17.10, 17.11, 17.12, 17.13, 16.5, 16.6_
 
-  - [ ] 2.7 Implement well-known endpoints (`source/well_known.go`)
+  - [x] 2.7 Implement well-known endpoints (`source/well_known.go`)
     - GET `/.well-known/assetlinks.json` — serve Android App Links JSON with package name and cert fingerprint
     - GET `/.well-known/apple-app-site-association` — serve iOS Universal Links JSON
     - Both endpoints: Content-Type `application/json`, no authentication required
