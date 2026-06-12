@@ -1,5 +1,22 @@
 # AI Log
 
+## 2026-06-12 07:49 — ui-refactor
+- Created `--shadow-focus-blue` theme token in `src/routes/layout.css` @theme block
+- Replaced hardcoded `focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]` with `focus:shadow-focus-blue` in `src/lib/shared/elements/AuthTextInput.svelte` and `src/routes/(auth)/components/PasswordInput.svelte`
+- Extracted `CountdownTimer` component to `src/routes/(auth)/components/CountdownTimer.svelte` (shared between check-code and check-email pages)
+- Created `CountdownTimer.stories.svelte` co-located story
+- Extracted `MetadataCategoryCard` component to `src/routes/sections/Step5Success/components/MetadataCategoryCard.svelte`
+- Created `MetadataCategoryCard.stories.svelte` co-located story
+- Extracted `MetadataFieldList` component to `src/routes/sections/Step5Success/components/MetadataFieldList.svelte`
+- Created `MetadataFieldList.stories.svelte` co-located story
+- Extracted `FileProcessingRow` component to `src/routes/sections/Step3Processing/components/FileProcessingRow.svelte`
+- Created `FileProcessingRow.stories.svelte` co-located story
+- Refactored `MetadataOverview` (419→~150 lines) to compose `MetadataCategoryCard` and `MetadataFieldList`
+- Refactored `ProcessingFilesCard` (235→~80 lines) to compose `FileProcessingRow`
+- Refactored `CheckCodeFormSection` to use shared `CountdownTimer` instead of inline countdown logic
+- Refactored `CheckEmailContent` to use shared `CountdownTimer` instead of inline countdown logic
+- Fixed Svelte 5 `state_referenced_locally` warning in `CountdownTimer`
+
 ## 2026-06-12 03:00 — ui-refactor
 - Created `--color-navy-hover: #263347` theme token in `src/routes/layout.css` and replaced `hover:bg-[#263347]` with `hover:bg-navy-hover` in login and register pages
 - Created `AuthTextInput` shared element in `src/lib/shared/elements/AuthTextInput.svelte` with co-located `AuthTextInput.stories.svelte`
