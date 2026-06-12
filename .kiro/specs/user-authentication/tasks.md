@@ -225,7 +225,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify all return HTTP 400 and no account is created
     - **Validates: Requirements 1.3, 1.4, 1.9, 5.3, 5.7, 17.11**
 
-  - [ ]* 9.5 Write property test — auth middleware rejects unauthenticated requests (rapid)
+  - [x]* 9.5 Write property test — auth middleware rejects unauthenticated requests (rapid)
     - **Property 3: Auth middleware rejects unauthenticated requests**
     - Generate random non-JWT strings, expired tokens, tokens with wrong signatures
     - Verify all return HTTP 401 and handler is never called
