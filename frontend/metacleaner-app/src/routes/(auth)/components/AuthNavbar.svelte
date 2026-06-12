@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		rightText?: string;
-		rightHref?: string;
+		rightHref?: Pathname;
 		rightLabel?: string;
 	}
 
@@ -27,7 +29,7 @@
 				<span class="hidden text-xs text-text-muted lg:inline lg:text-sm">{rightText}</span>
 			{/if}
 			<a
-				href={rightHref}
+				href={resolve(rightHref!)}
 				class="min-h-[44px] rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:min-h-0 lg:px-4 lg:py-2 lg:text-sm"
 			>
 				{rightLabel}

@@ -127,8 +127,8 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Test `current`, `isProcessing`, `hasFiles` getter values per state
     - _Requirements: 7.3, 7.4_
 
-- [ ] 9. Fix AuthNavbar path resolution
-  - [ ] 9.1 Wrap `rightHref` with `resolve()` in `AuthNavbar.svelte`
+- [x] 9. Fix AuthNavbar path resolution
+  - [x] 9.1 Wrap `rightHref` with `resolve()` in `AuthNavbar.svelte`
     - Import `resolve` from `$app/paths` and `Pathname` from `$app/types`
     - Change `rightHref` prop type from `string` to `Pathname`
     - Set anchor `href` to `resolve(rightHref)` instead of bare `rightHref`
