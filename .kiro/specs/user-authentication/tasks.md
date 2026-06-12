@@ -22,7 +22,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Return proper error codes: `AUTH_UNAUTHORIZED`, `AUTH_TOKEN_EXPIRED`, `AUTH_TOKEN_INVALID`
     - _Requirements: 6.1, 6.2, 6.3, 6.6, 13.5, 13.6_
 
-  - [ ] 1.3 Create auth rate limiter (`source/auth_rate_limiter.go`)
+  - [x] 1.3 Create auth rate limiter (`source/auth_rate_limiter.go`)
     - Implement per-IP rate limiting separate from existing upload rate limiter
     - Limits: 5 req/min for `/api/auth/login`, `/api/auth/register`, `/api/auth/forgot-password`, `/api/auth/verify-reset-code`
     - Limit: 3 req/email+IP/10 min for `/api/auth/magic-link`
