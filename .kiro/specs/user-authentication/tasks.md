@@ -231,7 +231,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify all return HTTP 401 and handler is never called
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.6**
 
-  - [ ]* 9.6 Write property test — error response format consistency (rapid)
+  - [x]* 9.6 Write property test — error response format consistency (rapid)
     - **Property 5: Error response format consistency**
     - Trigger various auth errors across endpoints
     - Verify every error response has exactly `error`, `message`, `timestamp` fields
