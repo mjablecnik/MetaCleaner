@@ -46,7 +46,7 @@
 			{placeholder}
 			class="min-h-[44px] w-full rounded-xl border py-3.5 pl-10 {showToggle
 				? 'pr-12'
-				: 'pr-4'} text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)] lg:min-h-0 lg:py-3"
+				: 'pr-4'} text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-focus-blue lg:min-h-0 lg:py-3"
 			style="background: var(--color-navy-main); border-color: {borderColor};"
 			onfocus={() => (isFocused = true)}
 			onblur={() => (isFocused = false)}
