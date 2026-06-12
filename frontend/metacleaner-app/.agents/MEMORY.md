@@ -287,3 +287,21 @@
 - Problem: `MobileHamburgerMenu.svelte` Settings and Logout divs have `onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}` but no `onclick` handler and no callback props. The fix from Requirement 6 (UserDropdown) was not applied to the parallel component.
 - Solution: Add `onSettings?: () => void` and `onLogout?: () => void` to Props. Add `onclick={() => onSettings?.()}` and `onclick={() => onLogout?.()}`. Replace `e.currentTarget.click()` with direct callback invocation.
 - Source: code-review, 2026-06-12T09:44:53+00:00
+
+## Auth pages missing resolve() — same bug class as AuthNavbar (Req 8)
+
+- Problem: All auth page components (`login`, `register`, `forgot-password`, `check-code`, `check-email`, `new-password`) use bare `goto('/path')` and `href="/path"` without wrapping in `resolve()`. This is the same issue fixed in `AuthNavbar.svelte` per Requirement 8, but the fix was not applied to the other auth routes. Results in 11 `svelte/no-navigation-without-resolve` ESLint errors.
+- Solution: Import `resolve` from `$app/paths` and `Pathname` from `$app/types`. Wrap all `goto('/x')` → `goto(resolve('/x' as Pathname))` and all `href="/x"` → `href={resolve('/x' as Pathname)}`.
+- Source: code-review, 2026-06-12T09:59:43+00:00
+
+## Auth pages missing {#each} keys — 8 violations
+
+- Problem: `{#each}` blocks in auth components lack `(key)` expressions, triggering `svelte/require-each-key`. Affects OtpInput, PasswordStrengthMeter, StepProgressBar, AuthFeatureCard, and several section files.
+- Solution: Add appropriate key expressions. For indexed items use `(index)`, for objects use a unique field like `(item.id)` or `(item.code)`.
+- Source: code-review, 2026-06-12T09:59:43+00:00
+
+## apiCleaningService.ts re-throws without cause — loses stack traces
+
+- Problem: `downloadResults` and `getReportDetail` catch blocks throw `new Error('message')` without `{ cause: err }`, losing the original ApiHttpError stack. Triggers `preserve-caught-error` ESLint rule.
+- Solution: Change to `throw new Error('message', { cause: err })` in all three locations (lines ~591, 592, 612).
+- Source: code-review, 2026-06-12T09:59:43+00:00
