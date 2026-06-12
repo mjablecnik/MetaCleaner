@@ -116,10 +116,19 @@
 		}
 	}
 
-	function resendCode() {
+	async function resendCode() {
 		otpValues = ['', '', '', '', '', ''];
 		otpApiError = '';
 		countdownKey++;
+		try {
+			await fetch(buildApiUrl('/api/auth/forgot-password'), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email: sentEmail })
+			});
+		} catch {
+			// Silently fail — anti-enumeration (Req 5.2)
+		}
 		setTimeout(() => {
 			otpRef?.focus();
 		}, 100);
@@ -128,7 +137,7 @@
 	async function handlePasswordSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		passwordApiError = '';
-		if (newPassword.length < 8 || newPassword.length > 72 || newPassword !== confirmPassword)
+		if (newPassword.length < 8 || newPassword.length > 128 || newPassword !== confirmPassword)
 			return;
 		passwordLoading = true;
 		try {
@@ -320,7 +329,7 @@
 					<i class="fa-regular fa-clock text-sm text-text-muted"></i>
 					<span class="text-xs text-text-muted">{tx('auth.checkCode.countdown.label')}</span>
 					{#key countdownKey}
-						<CountdownTimer durationSeconds={899} class="text-sm font-bold text-white" />
+						<CountdownTimer durationSeconds={900} class="text-sm font-bold text-white" />
 					{/key}
 				</div>
 				<button

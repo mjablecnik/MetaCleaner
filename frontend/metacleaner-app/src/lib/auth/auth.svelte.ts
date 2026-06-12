@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import type { Pathname } from '$app/types';
-import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
+import { buildApiUrl } from '$lib/clients/api-config.js';
 
 const TOKEN_KEY = 'mc_access_token';
 const REFRESH_KEY = 'mc_refresh_token';
@@ -52,8 +52,13 @@ async function callAuthApi<T>(
 	});
 
 	if (!res.ok) {
-		const err: ApiError = await res.json().catch(() => ({ error: 'unknown', message: res.statusText }));
-		throw Object.assign(new Error(err.message || res.statusText), { status: res.status, code: err.error });
+		const err: ApiError = await res
+			.json()
+			.catch(() => ({ error: 'unknown', message: res.statusText }));
+		throw Object.assign(new Error(err.message || res.statusText), {
+			status: res.status,
+			code: err.error
+		});
 	}
 
 	if (res.status === 204 || res.headers.get('content-length') === '0') return {} as T;
@@ -111,7 +116,10 @@ _restore();
 async function login(email: string, password: string): Promise<void> {
 	_isLoading = true;
 	try {
-		const data = await callAuthApi<AuthResponse>('/api/auth/login', { email, password } satisfies LoginRequest);
+		const data = await callAuthApi<AuthResponse>('/api/auth/login', {
+			email,
+			password
+		} satisfies LoginRequest);
 		_user = data.user ?? null;
 		_persist(data.access_token, data.refresh_token, data.expires_in);
 		await goto(resolve('/' as Pathname));
@@ -173,11 +181,21 @@ function setTokensFromCallback(
 // ─── Public store ────────────────────────────────────────────────
 
 export const authStore = {
-	get accessToken(): string | null { return _accessToken; },
-	get refreshToken(): string | null { return _refreshToken; },
-	get user(): AuthUser | null { return _user; },
-	get isAuthenticated(): boolean { return _isAuthenticated; },
-	get isLoading(): boolean { return _isLoading; },
+	get accessToken(): string | null {
+		return _accessToken;
+	},
+	get refreshToken(): string | null {
+		return _refreshToken;
+	},
+	get user(): AuthUser | null {
+		return _user;
+	},
+	get isAuthenticated(): boolean {
+		return _isAuthenticated;
+	},
+	get isLoading(): boolean {
+		return _isLoading;
+	},
 	get expiresAt(): number {
 		if (!browser) return 0;
 		return Number(localStorage.getItem(EXPIRES_KEY) ?? '0');

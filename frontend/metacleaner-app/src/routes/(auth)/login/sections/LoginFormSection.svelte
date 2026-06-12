@@ -25,6 +25,7 @@
 	let magicState = $state<'idle' | 'loading' | 'sent'>('idle');
 
 	let isSubmitting = $state(false);
+	let oauthLoading = $state(false);
 
 	function validateEmail(v: string) {
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -56,10 +57,12 @@
 	}
 
 	function handleGoogle() {
+		oauthLoading = true;
 		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/google');
 	}
 
 	function handleApple() {
+		oauthLoading = true;
 		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/apple');
 	}
 
@@ -106,13 +109,16 @@
 <SocialLoginButtons
 	googleLabel={tx('auth.login.social.google')}
 	appleLabel={tx('auth.login.social.apple')}
+	disabled={oauthLoading}
 	onGoogle={handleGoogle}
 	onApple={handleApple}
 />
 
 <div class="flex items-center gap-3">
 	<div class="h-px flex-1 bg-navy-lighter"></div>
-	<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.login.divider.orEmail')}</span>
+	<span class="text-xs font-medium whitespace-nowrap text-text-muted"
+		>{tx('auth.login.divider.orEmail')}</span
+	>
 	<div class="h-px flex-1 bg-navy-lighter"></div>
 </div>
 
@@ -129,8 +135,13 @@
 
 	<div class="flex flex-col gap-1.5">
 		<div class="flex items-center justify-between">
-			<label for="password-input" class="text-sm font-medium text-white">{tx('auth.login.field.passwordLabel')}</label>
-			<a href={resolve('/forgot-password' as Pathname)} class="text-xs font-medium text-brand-blue transition-colors hover:text-blue-400">
+			<label for="password-input" class="text-sm font-medium text-white"
+				>{tx('auth.login.field.passwordLabel')}</label
+			>
+			<a
+				href={resolve('/forgot-password' as Pathname)}
+				class="text-xs font-medium text-brand-blue transition-colors hover:text-blue-400"
+			>
 				{tx('auth.login.field.forgotPassword')}
 			</a>
 		</div>
@@ -150,8 +161,8 @@
 			type="button"
 			onclick={() => (rememberMe = !rememberMe)}
 			class="flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 {rememberMe
-				? 'bg-brand-blue border-brand-blue'
-				: 'bg-navy-main border-gray-600'}"
+				? 'border-brand-blue bg-brand-blue'
+				: 'border-gray-600 bg-navy-main'}"
 		>
 			{#if rememberMe}<i class="fa-solid fa-check text-[10px] text-white"></i>{/if}
 		</button>
@@ -167,7 +178,7 @@
 	<button
 		type="submit"
 		disabled={isSubmitting}
-		class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0 bg-brand-green"
+		class="mt-1 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all lg:min-h-0"
 	>
 		{#if isSubmitting}
 			<i class="fa-solid fa-spinner fa-spin"></i> {tx('auth.login.submit.loading')}
@@ -179,7 +190,9 @@
 
 <div class="flex items-center gap-3">
 	<div class="h-px flex-1 bg-navy-lighter"></div>
-	<span class="whitespace-nowrap text-xs font-medium text-text-muted">{tx('auth.login.magic.divider')}</span>
+	<span class="text-xs font-medium whitespace-nowrap text-text-muted"
+		>{tx('auth.login.magic.divider')}</span
+	>
 	<div class="h-px flex-1 bg-navy-lighter"></div>
 </div>
 
@@ -190,7 +203,10 @@
 		</div>
 		<div class="flex flex-col gap-1">
 			<p class="text-sm font-semibold text-white">{tx('auth.login.magic.successTitle')}</p>
-			<p class="text-xs text-text-muted">{tx('auth.login.magic.successDesc')} <span class="font-medium text-white">{magicEmail}</span></p>
+			<p class="text-xs text-text-muted">
+				{tx('auth.login.magic.successDesc')}
+				<span class="font-medium text-white">{magicEmail}</span>
+			</p>
 		</div>
 		<button
 			type="button"
@@ -234,7 +250,10 @@
 <div class="border-t border-gray-800 pt-1 text-center">
 	<p class="text-sm text-text-muted">
 		{tx('auth.login.footer.noAccount')}
-		<a href={resolve('/register' as Pathname)} class="font-semibold text-brand-blue transition-colors hover:text-blue-400">
+		<a
+			href={resolve('/register' as Pathname)}
+			class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
+		>
 			{tx('auth.login.footer.registerFree')}
 		</a>
 	</p>
