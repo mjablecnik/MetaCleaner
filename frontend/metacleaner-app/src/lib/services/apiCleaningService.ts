@@ -253,17 +253,15 @@ function buildProcessingResults(
 	const totalTimeSeconds = (msg.totalTimeSeconds as number) ?? 0;
 	const msgGpsRemoved = msg.gpsLocationsRemoved as number | undefined;
 	const accumulatedGpsRemoved = accumulatedResults.filter((r) => r.gpsRemoved).length;
-	const gpsLocationsRemoved = msgGpsRemoved && msgGpsRemoved > 0
-		? msgGpsRemoved
-		: accumulatedGpsRemoved;
+	const gpsLocationsRemoved =
+		msgGpsRemoved && msgGpsRemoved > 0 ? msgGpsRemoved : accumulatedGpsRemoved;
 
 	// Use fieldsRemoved from job_complete if present and non-zero,
 	// otherwise sum from accumulated per-file results (more reliable).
 	const msgFieldsRemoved = msg.fieldsRemoved as number | undefined;
 	const accumulatedFieldsRemoved = accumulatedResults.reduce((sum, r) => sum + r.fieldsRemoved, 0);
-	const fieldsRemoved = msgFieldsRemoved && msgFieldsRemoved > 0
-		? msgFieldsRemoved
-		: accumulatedFieldsRemoved;
+	const fieldsRemoved =
+		msgFieldsRemoved && msgFieldsRemoved > 0 ? msgFieldsRemoved : accumulatedFieldsRemoved;
 
 	const fileResults: FileMetadataResult[] = accumulatedResults.map((r) => ({
 		fileId: r.fileId,
@@ -394,19 +392,42 @@ function getGradientTo(type: string): string {
 
 function mapMetadataDetail(md: BackendMetadataDetail | null): FileMetadataSection {
 	if (!md) {
-		return { gpsFields: [], exifFields: [], xmpFields: [], id3Fields: [], mp4AtomFields: [], totalRemoved: 0 };
+		return {
+			gpsFields: [],
+			exifFields: [],
+			xmpFields: [],
+			id3Fields: [],
+			mp4AtomFields: [],
+			totalRemoved: 0
+		};
 	}
 
 	return {
-		gpsFields: (md.gpsFields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		gpsFields: (md.gpsFields ?? []).map((f) => ({
+			label: f.label,
+			value: f.value,
+			moreCount: undefined
+		})),
 		exifFields: (md.exifFields ?? []).map((f) => ({
 			label: f.label,
 			value: f.value,
 			moreCount: undefined
 		})),
-		xmpFields: (md.xmpFields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
-		id3Fields: (md.id3Fields ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
-		mp4AtomFields: (md.mp4Atoms ?? []).map((f) => ({ label: f.label, value: f.value, moreCount: undefined })),
+		xmpFields: (md.xmpFields ?? []).map((f) => ({
+			label: f.label,
+			value: f.value,
+			moreCount: undefined
+		})),
+		id3Fields: (md.id3Fields ?? []).map((f) => ({
+			label: f.label,
+			value: f.value,
+			moreCount: undefined
+		})),
+		mp4AtomFields: (md.mp4Atoms ?? []).map((f) => ({
+			label: f.label,
+			value: f.value,
+			moreCount: undefined
+		})),
 		totalRemoved: md.totalRemoved
 	};
 }
@@ -537,7 +558,9 @@ class ApiCleaningService implements CleaningService {
 							jobHandle.reportId = id;
 							cleaningResultsStore.setReportId(id);
 						},
-						() => { jobCompleted = true; }
+						() => {
+							jobCompleted = true;
+						}
 					);
 				};
 
@@ -588,8 +611,8 @@ class ApiCleaningService implements CleaningService {
 			return await api.downloadJobZip(jobId);
 		} catch (err) {
 			if (err instanceof api.ApiHttpError) {
-				if (err.status === 404) throw new Error('File not found or expired');
-				if (err.status === 409) throw new Error('Job is still processing');
+				if (err.status === 404) throw new Error('File not found or expired', { cause: err });
+				if (err.status === 409) throw new Error('Job is still processing', { cause: err });
 			}
 			throw err;
 		}
@@ -609,7 +632,7 @@ class ApiCleaningService implements CleaningService {
 			return mapReportDetail(data);
 		} catch (err) {
 			if (err instanceof api.ApiHttpError && err.status === 404) {
-				throw new Error('Report not found');
+				throw new Error('Report not found', { cause: err });
 			}
 			throw err;
 		}

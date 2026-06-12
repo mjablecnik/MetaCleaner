@@ -11,7 +11,6 @@
 	import TrustBadges from '../components/TrustBadges.svelte';
 
 	const stats = getAuthStats();
-
 </script>
 
 <svelte:head>
@@ -25,9 +24,10 @@
 		rightLabel={tx('auth.login.nav.register')}
 	/>
 
-	<main class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-5 pb-8 lg:px-6 lg:pb-16">
+	<main
+		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-5 pb-8 lg:px-6 lg:pb-16"
+	>
 		<div class="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-2">
-
 			<AuthBranding
 				headline={tx('auth.login.branding.headline')}
 				highlightedWord={tx('auth.login.branding.headlineHighlight')}
@@ -35,36 +35,34 @@
 				description={tx('auth.login.branding.description')}
 				{stats}
 			>
-				{#snippet children()}
-					<div class="flex flex-col gap-3">
-						<AuthFeatureCard
-							icon="fa-solid fa-lock"
-							iconClass="text-brand-blue"
-							iconBgClass="bg-brand-blue/15"
-							title={tx('auth.login.feature.secureTitle')}
-							desc={tx('auth.login.feature.secureDesc')}
-							badge={tx('auth.login.feature.secureBadge')}
-							badgeClass="bg-brand-blue/10 text-brand-blue"
-						/>
-						<AuthFeatureCard
-							icon="fa-solid fa-bolt"
-							iconClass="text-brand-green"
-							iconBgClass="bg-brand-green/15"
-							title={tx('auth.login.feature.fastTitle')}
-							desc={tx('auth.login.feature.fastDesc')}
-							badge={tx('auth.login.feature.fastBadge')}
-							badgeClass="bg-brand-green/10 text-brand-green"
-						/>
-						<AuthFeatureCard
-							icon="fa-solid fa-file-image"
-							iconClass="text-brand-orange"
-							iconBgClass="bg-brand-orange/15"
-							title={tx('auth.login.feature.formatsTitle')}
-							desc={tx('auth.login.feature.formatsDesc')}
-							chips={['JPG', 'PNG']}
-						/>
-					</div>
-				{/snippet}
+				<div class="flex flex-col gap-3">
+					<AuthFeatureCard
+						icon="fa-solid fa-lock"
+						iconClass="text-brand-blue"
+						iconBgClass="bg-brand-blue/15"
+						title={tx('auth.login.feature.secureTitle')}
+						desc={tx('auth.login.feature.secureDesc')}
+						badge={tx('auth.login.feature.secureBadge')}
+						badgeClass="bg-brand-blue/10 text-brand-blue"
+					/>
+					<AuthFeatureCard
+						icon="fa-solid fa-bolt"
+						iconClass="text-brand-green"
+						iconBgClass="bg-brand-green/15"
+						title={tx('auth.login.feature.fastTitle')}
+						desc={tx('auth.login.feature.fastDesc')}
+						badge={tx('auth.login.feature.fastBadge')}
+						badgeClass="bg-brand-green/10 text-brand-green"
+					/>
+					<AuthFeatureCard
+						icon="fa-solid fa-file-image"
+						iconClass="text-brand-orange"
+						iconBgClass="bg-brand-orange/15"
+						title={tx('auth.login.feature.formatsTitle')}
+						desc={tx('auth.login.feature.formatsDesc')}
+						chips={['JPG', 'PNG']}
+					/>
+				</div>
 			</AuthBranding>
 
 			<div class="mx-auto w-full max-w-[480px] lg:mx-0 lg:ml-auto">
@@ -77,9 +75,7 @@
 				/>
 
 				<AuthFormCard title={tx('auth.login.form.title')} subtitle={tx('auth.login.form.subtitle')}>
-					{#snippet children()}
-						<LoginFormSection />
-					{/snippet}
+					<LoginFormSection />
 				</AuthFormCard>
 
 				<TrustBadges />

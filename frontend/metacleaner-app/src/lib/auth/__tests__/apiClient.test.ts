@@ -4,8 +4,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // mockRefresh / mockLogout must be hoisted so vi.mock factories can close over them.
 
 const { mockRefresh, mockLogout, mockState } = vi.hoisted(() => ({
-	mockRefresh: vi.fn<[], Promise<void>>(),
-	mockLogout: vi.fn<[], Promise<void>>(),
+	mockRefresh: vi.fn<() => Promise<void>>(),
+	mockLogout: vi.fn<() => Promise<void>>(),
 	mockState: {
 		accessToken: null as string | null,
 		refreshToken: null as string | null,
@@ -205,9 +205,7 @@ describe('apiFetch — redirect to /login when refresh fails', () => {
 	});
 
 	it('calls authStore.logout() and throws when refresh returns 401', async () => {
-		mockRefresh.mockRejectedValue(
-			Object.assign(new Error('Unauthorized'), { status: 401 })
-		);
+		mockRefresh.mockRejectedValue(Object.assign(new Error('Unauthorized'), { status: 401 }));
 
 		await expect(apiFetch('/api/jobs', {})).rejects.toThrow('Session expired');
 

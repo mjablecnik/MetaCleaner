@@ -28,7 +28,7 @@
 {#if score > 0}
 	<div class="mt-1 flex flex-col gap-1 lg:gap-1.5">
 		<div class="flex gap-1 lg:gap-1.5">
-			{#each [1, 2, 3, 4] as bar}
+			{#each [1, 2, 3, 4] as bar (bar)}
 				<div
 					class="h-1 flex-1 rounded-sm transition-all duration-300"
 					style="background: {bar <= score ? activeColor : 'var(--color-gray-700)'};"

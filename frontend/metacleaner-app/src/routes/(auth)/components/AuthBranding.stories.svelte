@@ -29,36 +29,34 @@
 				{ value: '100%', labelKey: 'auth.common.stats.securityLabel' }
 			]}
 		>
-			{#snippet children()}
-				<div class="flex flex-col gap-3">
-					<AuthFeatureCard
-						icon="fa-solid fa-lock"
-						iconClass="text-brand-blue"
-						iconBgClass="bg-brand-blue/15"
-						title="End-to-end encryption"
-						desc="Your files are protected with military-grade encryption"
-						badge="AES-256"
-						badgeClass="bg-brand-blue/10 text-brand-blue"
-					/>
-					<AuthFeatureCard
-						icon="fa-solid fa-bolt"
-						iconClass="text-brand-green"
-						iconBgClass="bg-brand-green/15"
-						title="Lightning fast processing"
-						desc="Clean metadata from hundreds of files in seconds"
-						badge="Instant"
-						badgeClass="bg-brand-green/10 text-brand-green"
-					/>
-					<AuthFeatureCard
-						icon="fa-solid fa-file-image"
-						iconClass="text-brand-orange"
-						iconBgClass="bg-brand-orange/15"
-						title="All popular formats"
-						desc="Supports images, documents, and audio files"
-						chips={['JPG', 'PNG', 'PDF']}
-					/>
-				</div>
-			{/snippet}
+			<div class="flex flex-col gap-3">
+				<AuthFeatureCard
+					icon="fa-solid fa-lock"
+					iconClass="text-brand-blue"
+					iconBgClass="bg-brand-blue/15"
+					title="End-to-end encryption"
+					desc="Your files are protected with military-grade encryption"
+					badge="AES-256"
+					badgeClass="bg-brand-blue/10 text-brand-blue"
+				/>
+				<AuthFeatureCard
+					icon="fa-solid fa-bolt"
+					iconClass="text-brand-green"
+					iconBgClass="bg-brand-green/15"
+					title="Lightning fast processing"
+					desc="Clean metadata from hundreds of files in seconds"
+					badge="Instant"
+					badgeClass="bg-brand-green/10 text-brand-green"
+				/>
+				<AuthFeatureCard
+					icon="fa-solid fa-file-image"
+					iconClass="text-brand-orange"
+					iconBgClass="bg-brand-orange/15"
+					title="All popular formats"
+					desc="Supports images, documents, and audio files"
+					chips={['JPG', 'PNG', 'PDF']}
+				/>
+			</div>
 		</AuthBranding>
 	</div>
 </Story>

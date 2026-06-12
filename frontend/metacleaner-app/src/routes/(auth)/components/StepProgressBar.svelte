@@ -27,7 +27,7 @@
 </script>
 
 <div class="mb-5 flex items-center gap-2 lg:mb-6">
-	{#each { length: steps } as _, i}
+	{#each { length: steps } as _, i (i)}
 		{@const stepNum = i + 1}
 		{@const isLast = stepNum === steps}
 		<div class="flex {isLast ? '' : 'flex-1'} items-center gap-2">

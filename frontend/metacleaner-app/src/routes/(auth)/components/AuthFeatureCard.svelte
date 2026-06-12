@@ -27,8 +27,11 @@
 		</div>
 	{:else if chips && chips.length > 0}
 		<div class="ml-auto flex gap-1">
-			{#each chips as chip}
-				<span class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">{chip}</span>
+			{#each chips as chip (chip)}
+				<span
+					class="rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-white uppercase"
+					>{chip}</span
+				>
 			{/each}
 		</div>
 	{/if}

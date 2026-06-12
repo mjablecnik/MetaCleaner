@@ -36,7 +36,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Implement consistent error response helper matching existing `{"error", "message", "timestamp"}` format
     - _Requirements: 11.2, 11.3, 11.4, 16.1_
 
-- [ ] 2. Backend auth handlers
+- [x] 2. Backend auth handlers
   - [x] 2.1 Implement register handler
     - POST `/api/auth/register` — validate email format, password length (8–72), non-empty first/last name
     - Call `SupabaseAuthClient.SignUp` with email, password, metadata
@@ -95,7 +95,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Update existing handlers to extract user_id from middleware context and include in DB queries
     - _Requirements: 7.3, 7.5, 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 3. Checkpoint — Backend auth complete
+- [x] 3. Checkpoint — Backend auth complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 4. Database schema and RLS
@@ -130,7 +130,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Work in both web browser context and Capacitor deep link context
     - _Requirements: 15.2, 15.4, 18.6, 18.7, 19.5, 19.6_
 
-- [ ] 6. Frontend auth pages (wire auth logic into existing pages)
+- [x] 6. Frontend auth pages (wire auth logic into existing pages)
   - [x] 6.1 Wire auth logic into login page (`src/routes/(auth)/login/+page.svelte`)
     - Pages and UI components already exist — DO NOT recreate or restructure
     - Connect login form submission to auth store `login()` method
@@ -173,7 +173,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify visual match with `.design/auth-forgot-password-*.html`, `.design/auth-check-code-*.html`, `.design/auth-new-password-*.html`
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 10.11, 10.12, 10.13_
 
-- [ ] 7. Frontend auth guard and deep link handler
+- [x] 7. Frontend auth guard and deep link handler
   - [x] 7.1 Create auth guard (`src/lib/auth/auth-guard.ts`)
     - SvelteKit load function guard for protected routes
     - Redirect to `/login` if no valid token on protected routes
@@ -198,7 +198,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
 - [x] 8. Checkpoint — Frontend auth complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Backend testing
+- [x] 9. Backend testing
   - [x]* 9.1 Write unit tests for auth middleware
     - Test JWT validation: valid token, expired token, malformed token, missing token, wrong signature
     - Test exempt paths are not blocked
@@ -243,7 +243,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify credits=3 on creation, then verify login/refresh does not modify credits
     - **Validates: Requirements 16.6**
 
-- [ ] 10. Frontend testing
+- [x] 10. Frontend testing
   - [x]* 10.1 Write unit tests for auth store (Vitest)
     - Test token storage/retrieval from localStorage
     - Test state transitions: login, logout, refresh
@@ -275,7 +275,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify exactly 1 refresh call is made and all N requests resolve with new token
     - **Validates: Requirements 12.7**
 
-- [ ] 11. Final checkpoint — Ensure all tests pass
+- [x] 11. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

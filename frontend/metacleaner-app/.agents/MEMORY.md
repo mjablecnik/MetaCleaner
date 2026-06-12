@@ -1,5 +1,17 @@
 # Memory
 
+## vi.fn<> type signature changed in Vitest 4.x
+
+- Problem: `vi.fn<[], Promise<void>>()` (old 2-arg syntax: params array + return type) fails TypeScript in Vitest 4.x with "Expected 0-1 type arguments, but got 2." This cascades to "Argument of type '[]' is not assignable to parameter of type 'never'" on every call site using the mock.
+- Solution: Use the single function-type syntax: `vi.fn<() => Promise<void>>()`. Vitest 4.x `vi.fn<T>` takes one type arg that is the function signature itself.
+- Source: create-code, 2026-06-12
+
+## svelte/no-useless-children-snippet: drop {#snippet children()} wrapper
+
+- Problem: When passing children to a Svelte 5 component that declares `children?: Snippet` in Props, wrapping the content in `{#snippet children()}...{/snippet}` triggers the `svelte/no-useless-children-snippet` ESLint error. ESLint considers it redundant.
+- Solution: Remove the `{#snippet children()}` and `{/snippet}` wrappers; write the content directly inside the component tags. Svelte 5 automatically creates the `children` snippet from inline content.
+- Source: create-code, 2026-06-12
+
 ## Node Response constructor rejects status 204 with a body
 
 - Problem: `new Response('', { status: 204 })` throws `TypeError: Response constructor: Invalid response status code 204` in Node.js's native `fetch` implementation. Status 204 (No Content) disallows a body per spec, and Node enforces this strictly.

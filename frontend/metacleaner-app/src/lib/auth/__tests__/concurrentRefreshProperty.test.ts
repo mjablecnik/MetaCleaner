@@ -5,8 +5,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Must use vi.hoisted() so the factories below can close over these refs.
 
 const { mockRefresh, mockLogout, mockState } = vi.hoisted(() => ({
-	mockRefresh: vi.fn<[], Promise<void>>(),
-	mockLogout: vi.fn<[], Promise<void>>(),
+	mockRefresh: vi.fn<() => Promise<void>>(),
+	mockLogout: vi.fn<() => Promise<void>>(),
 	mockState: {
 		accessToken: null as string | null,
 		refreshToken: null as string | null,
@@ -72,9 +72,7 @@ describe('property — concurrent refresh deduplication (Req 12.7)', () => {
 				});
 				mockRefresh.mockReturnValueOnce(refreshBarrier);
 
-				const mockFetch = vi
-					.fn()
-					.mockResolvedValue(new Response('{}', { status: 200 }));
+				const mockFetch = vi.fn().mockResolvedValue(new Response('{}', { status: 200 }));
 				vi.stubGlobal('fetch', mockFetch);
 
 				// Launch N concurrent requests before releasing the refresh barrier
@@ -109,14 +107,10 @@ describe('property — concurrent refresh deduplication (Req 12.7)', () => {
 						mockState.accessToken = newToken;
 					});
 
-					const mockFetch = vi
-						.fn()
-						.mockResolvedValue(new Response('{}', { status: 200 }));
+					const mockFetch = vi.fn().mockResolvedValue(new Response('{}', { status: 200 }));
 					vi.stubGlobal('fetch', mockFetch);
 
-					const promises = Array.from({ length: n }, (_, i) =>
-						apiFetch(`/api/resource-${i}`, {})
-					);
+					const promises = Array.from({ length: n }, (_, i) => apiFetch(`/api/resource-${i}`, {}));
 					await Promise.all(promises);
 
 					// Every request must inject the new token, not the stale one

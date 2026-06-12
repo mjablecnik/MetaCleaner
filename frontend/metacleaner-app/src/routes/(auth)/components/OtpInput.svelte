@@ -42,7 +42,10 @@
 
 	function handlePaste(e: ClipboardEvent) {
 		const text = e.clipboardData?.getData('text') ?? '';
-		const digits = text.replace(/[^0-9]/g, '').slice(0, 6).split('');
+		const digits = text
+			.replace(/[^0-9]/g, '')
+			.slice(0, 6)
+			.split('');
 		const next = [...values];
 		digits.forEach((d, i) => {
 			next[i] = d;
@@ -56,7 +59,7 @@
 
 <div class="flex flex-col gap-1.5">
 	<div class="otp-wrapper {shaking ? 'shake' : ''}">
-		{#each values as val, idx}
+		{#each values as val, idx (idx)}
 			<input
 				bind:this={inputEls[idx]}
 				type="text"
