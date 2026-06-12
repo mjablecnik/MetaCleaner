@@ -7,7 +7,7 @@ vi.mock('mediainfo.js', () => ({
 
 import * as MediaInfoModule from 'mediainfo.js';
 
-const mockFactory = vi.mocked(MediaInfoModule.default);
+const _mockFactory = vi.mocked(MediaInfoModule.default);
 
 // ─── Bug Condition 7: parseVideo should handle mediainfo.js failures gracefully
 

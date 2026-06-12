@@ -470,7 +470,6 @@ describe('Preservation 3.2: Non-success app states at "/" keep no logo action', 
 	});
 
 	it('only success state gets a logo action at root path', () => {
-		const result = computeNavPropsForRoot('success');
 		// Success state gets a callback (Bug 2 fix) — not present in unfixed code
 		// but the preservation test is that non-success states DON'T get it
 		const nonSuccessResult = computeNavPropsForRoot('idle');

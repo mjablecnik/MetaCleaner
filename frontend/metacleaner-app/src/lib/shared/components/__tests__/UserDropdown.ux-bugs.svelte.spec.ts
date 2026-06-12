@@ -2,7 +2,7 @@
 // EXPECTED OUTCOME: FAILS on unfixed code (only Settings and Logout are present).
 // Requires browser/Playwright to run (vitest --project=client).
 import { page } from 'vitest/browser';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import UserDropdown from '../UserDropdown.svelte';
 

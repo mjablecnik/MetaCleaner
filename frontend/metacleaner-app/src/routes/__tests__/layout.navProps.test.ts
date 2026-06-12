@@ -3,7 +3,7 @@
 // NavBar configuration for the success state.
 // EXPECTED OUTCOME: FAILS on unfixed code (navProps returns {} when path === '/',
 // meaning logoHref is undefined and logo has no click action).
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import * as fc from 'fast-check';
 
 // Test the navProps computation logic in isolation.

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
-	import { ringColorMap, severityBadgeClass, dotColorClass, severityTextClass, severityLabelKey, barSeverity, type RingColor, type BarSeverity } from '$lib/shared/utils/riskStyles';
+	import { ringColorMap, severityBadgeClass, dotColorClass, severityLabelKey, barSeverity } from '$lib/shared/utils/riskStyles';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import RiskScoreRing from '../components/RiskScoreRing.svelte';
 	import RiskBreakdownBar from '../components/RiskBreakdownBar.svelte';
@@ -107,7 +107,7 @@
 				<p class="text-xs font-bold tracking-widest text-text-muted uppercase">
 					{tx('step2.risk.analysisTitle')}
 				</p>
-				{#each sortedBars as bar}
+				{#each sortedBars as bar (bar.labelKey)}
 					<RiskBreakdownBar
 						icon={bar.icon}
 						label={tx(bar.labelKey)}

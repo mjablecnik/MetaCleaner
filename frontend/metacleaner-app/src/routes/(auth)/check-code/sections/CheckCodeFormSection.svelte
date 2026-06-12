@@ -29,7 +29,6 @@
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
 	let countdownKey = $state(0);
-	let progressBarVisible = $state(true);
 
 	let otpRef: OtpInput;
 
@@ -80,7 +79,6 @@
 		submitState = 'loading';
 		setTimeout(() => {
 			submitState = 'idle';
-			progressBarVisible = false;
 			goToStep(4);
 		}, 1200);
 	}

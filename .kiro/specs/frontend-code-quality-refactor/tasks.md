@@ -134,7 +134,7 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Set anchor `href` to `resolve(rightHref)` instead of bare `rightHref`
     - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ] 10. Final checkpoint - Full verification
+- [x] 10. Final checkpoint - Full verification
   - Run `bun run check` — must pass with zero TypeScript errors
   - Run `bun run lint` — must pass with no unused variable warnings
   - Grep audit: confirm no inline `tx()`, `formatSize()`, `tagStyle()`, `iconStyle()` remaining in component files
