@@ -262,7 +262,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test redirect to `/` for authenticated access to auth routes
     - _Requirements: 6.4, 6.5_
 
-  - [ ]* 10.4 Write property test — anti-enumeration consistency (fast-check)
+  - [x]* 10.4 Write property test — anti-enumeration consistency (fast-check)
     - **Property 2: Anti-enumeration consistency**
     - Generate random emails (registered and unregistered)
     - Verify forgot-password response shape is identical regardless of email existence
