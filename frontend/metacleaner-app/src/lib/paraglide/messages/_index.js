@@ -323,6 +323,13 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Login_Footer_Noaccount1Inputs */
 /** @typedef {{}} Auth_Login_Footer_Registerfree1Inputs */
 /** @typedef {{}} Auth_Login_Validation_Passwordshort1Inputs */
+/** @typedef {{}} Auth_Login_Validation_Passwordempty1Inputs */
+/** @typedef {{}} Auth_Login_Magic_DividerInputs */
+/** @typedef {{}} Auth_Login_Magic_SendInputs */
+/** @typedef {{}} Auth_Login_Magic_SendingInputs */
+/** @typedef {{}} Auth_Login_Magic_Successtitle1Inputs */
+/** @typedef {{}} Auth_Login_Magic_Successdesc1Inputs */
+/** @typedef {{}} Auth_Login_Magic_Backtologin2Inputs */
 /** @typedef {{}} Auth_Register_Meta_TitleInputs */
 /** @typedef {{}} Auth_Register_Nav_Hasaccount1Inputs */
 /** @typedef {{}} Auth_Register_Badge_Freeforever1Inputs */
@@ -5267,6 +5274,111 @@ const auth_login_validation_passwordshort1 = /** @type {((inputs?: Auth_Login_Va
 	return __cs.auth_login_validation_passwordshort1(inputs)
 });
 export { auth_login_validation_passwordshort1 as "auth.login.validation.passwordShort" }
+/**
+* | output |
+* | --- |
+* | "Please enter your password." |
+*
+* @param {Auth_Login_Validation_Passwordempty1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_validation_passwordempty1 = /** @type {((inputs?: Auth_Login_Validation_Passwordempty1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Validation_Passwordempty1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_validation_passwordempty1(inputs)
+	return __cs.auth_login_validation_passwordempty1(inputs)
+});
+export { auth_login_validation_passwordempty1 as "auth.login.validation.passwordEmpty" }
+/**
+* | output |
+* | --- |
+* | "or" |
+*
+* @param {Auth_Login_Magic_DividerInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_divider = /** @type {((inputs?: Auth_Login_Magic_DividerInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_DividerInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_divider(inputs)
+	return __cs.auth_login_magic_divider(inputs)
+});
+export { auth_login_magic_divider as "auth.login.magic.divider" }
+/**
+* | output |
+* | --- |
+* | "Send magic link" |
+*
+* @param {Auth_Login_Magic_SendInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_send = /** @type {((inputs?: Auth_Login_Magic_SendInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_SendInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_send(inputs)
+	return __cs.auth_login_magic_send(inputs)
+});
+export { auth_login_magic_send as "auth.login.magic.send" }
+/**
+* | output |
+* | --- |
+* | "Sending..." |
+*
+* @param {Auth_Login_Magic_SendingInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_sending = /** @type {((inputs?: Auth_Login_Magic_SendingInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_SendingInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_sending(inputs)
+	return __cs.auth_login_magic_sending(inputs)
+});
+export { auth_login_magic_sending as "auth.login.magic.sending" }
+/**
+* | output |
+* | --- |
+* | "Check your email" |
+*
+* @param {Auth_Login_Magic_Successtitle1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_successtitle1 = /** @type {((inputs?: Auth_Login_Magic_Successtitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_Successtitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_successtitle1(inputs)
+	return __cs.auth_login_magic_successtitle1(inputs)
+});
+export { auth_login_magic_successtitle1 as "auth.login.magic.successTitle" }
+/**
+* | output |
+* | --- |
+* | "We sent a magic link to" |
+*
+* @param {Auth_Login_Magic_Successdesc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_successdesc1 = /** @type {((inputs?: Auth_Login_Magic_Successdesc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_Successdesc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_successdesc1(inputs)
+	return __cs.auth_login_magic_successdesc1(inputs)
+});
+export { auth_login_magic_successdesc1 as "auth.login.magic.successDesc" }
+/**
+* | output |
+* | --- |
+* | "Back to sign in" |
+*
+* @param {Auth_Login_Magic_Backtologin2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_login_magic_backtologin2 = /** @type {((inputs?: Auth_Login_Magic_Backtologin2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Magic_Backtologin2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_login_magic_backtologin2(inputs)
+	return __cs.auth_login_magic_backtologin2(inputs)
+});
+export { auth_login_magic_backtologin2 as "auth.login.magic.backToLogin" }
 /**
 * | output |
 * | --- |

@@ -131,7 +131,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - _Requirements: 15.2, 15.4, 18.6, 18.7, 19.5, 19.6_
 
 - [ ] 6. Frontend auth pages (wire auth logic into existing pages)
-  - [ ] 6.1 Wire auth logic into login page (`src/routes/(auth)/login/+page.svelte`)
+  - [x] 6.1 Wire auth logic into login page (`src/routes/(auth)/login/+page.svelte`)
     - Pages and UI components already exist — DO NOT recreate or restructure
     - Connect login form submission to auth store `login()` method
     - Connect "Sign in with Google" / "Sign in with Apple" buttons to OAuth flow (redirect to `/api/auth/oauth/{provider}`)

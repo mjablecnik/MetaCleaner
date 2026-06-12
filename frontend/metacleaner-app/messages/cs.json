@@ -323,6 +323,13 @@
 	"auth.login.footer.noAccount": "Nemáte účet?",
 	"auth.login.footer.registerFree": "Zaregistrujte se zdarma",
 	"auth.login.validation.passwordShort": "Heslo musí mít alespoň 6 znaků.",
+	"auth.login.validation.passwordEmpty": "Prosím zadejte heslo.",
+	"auth.login.magic.divider": "nebo",
+	"auth.login.magic.send": "Odeslat magic link",
+	"auth.login.magic.sending": "Odesílám...",
+	"auth.login.magic.successTitle": "Zkontrolujte e-mail",
+	"auth.login.magic.successDesc": "Odeslali jsme magic link na",
+	"auth.login.magic.backToLogin": "Zpět na přihlášení",
 
 	"auth.register.meta.title": "Vytvořit účet – MetaCleaner",
 	"auth.register.nav.hasAccount": "Již máte účet?",

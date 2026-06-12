@@ -323,6 +323,13 @@
 	"auth.login.footer.noAccount": "Don't have an account?",
 	"auth.login.footer.registerFree": "Sign up for free",
 	"auth.login.validation.passwordShort": "Password must be at least 6 characters.",
+	"auth.login.validation.passwordEmpty": "Please enter your password.",
+	"auth.login.magic.divider": "or",
+	"auth.login.magic.send": "Send magic link",
+	"auth.login.magic.sending": "Sending...",
+	"auth.login.magic.successTitle": "Check your email",
+	"auth.login.magic.successDesc": "We sent a magic link to",
+	"auth.login.magic.backToLogin": "Back to sign in",
 
 	"auth.register.meta.title": "Create Account – MetaCleaner",
 	"auth.register.nav.hasAccount": "Already have an account?",
