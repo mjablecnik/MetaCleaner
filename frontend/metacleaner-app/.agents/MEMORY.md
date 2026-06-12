@@ -1,5 +1,17 @@
 # Memory
 
+## auth.svelte.ts vi.mock path was wrong in authStore.test.ts
+
+- Problem: `authStore.test.ts` mocked `'$lib/clients/metaCleanerApi.js'` but `auth.svelte.ts` imports `buildApiUrl` from `'$lib/clients/api-config.js'`. The wrong mock path means fetch URLs are not intercepted correctly.
+- Solution: Changed mock to `vi.mock('$lib/clients/api-config.js', ...)`.
+- Source: code-review-fix, 2026-06-12
+
+## _restore() async refresh: must clear localStorage before calling refresh()
+
+- Problem: Adding async token refresh in `_restore()` breaks the test "clears localStorage when expired tokens are found on init" — the test asserts all localStorage keys are null after `importFresh()`, but if we clear tokens only after async refresh fails, the assertion runs before the async completes.
+- Solution: Clear all three localStorage keys synchronously at the start of the `else if (storedRefresh)` branch, BEFORE starting the async refresh. Set `_refreshToken` in-memory state so `refresh()` can still use it. This way the localStorage check is satisfied immediately and new tokens are written only if refresh succeeds.
+- Source: code-review-fix, 2026-06-12
+
 ## vi.fn<> type signature changed in Vitest 4.x
 
 - Problem: `vi.fn<[], Promise<void>>()` (old 2-arg syntax: params array + return type) fails TypeScript in Vitest 4.x with "Expected 0-1 type arguments, but got 2." This cascades to "Argument of type '[]' is not assignable to parameter of type 'never'" on every call site using the mock.
@@ -353,3 +365,39 @@
 - Problem: `downloadResults` and `getReportDetail` catch blocks throw `new Error('message')` without `{ cause: err }`, losing the original ApiHttpError stack. Triggers `preserve-caught-error` ESLint rule.
 - Solution: Change to `throw new Error('message', { cause: err })` in all three locations (lines ~591, 592, 612).
 - Source: code-review, 2026-06-12T09:59:43+00:00
+
+## resendCode() in forgot-password does not actually resend API call
+
+- Problem: `resendCode()` in `ForgotPasswordFormSection.svelte` only resets OTP inputs and countdown timer but never calls `/api/auth/forgot-password` to trigger a new email. Users clicking "Resend" get no new code.
+- Solution: Add a `fetch(buildApiUrl('/api/auth/forgot-password'), { method: 'POST', body: JSON.stringify({ email: sentEmail }) })` call inside `resendCode()`. Swallow errors silently (anti-enumeration).
+- Source: code-review, 2026-06-12T16:50:30+00:00
+
+## Password reset max length validates 72 instead of spec's 128
+
+- Problem: `ForgotPasswordFormSection.svelte` line 131 uses `newPassword.length > 72` for the reset-password step. Requirement 5.7 specifies the reset-password max is 128 characters (different from registration's 72 per Req 1.4).
+- Solution: Change the condition to `newPassword.length > 128` in the password reset validation. Registration should stay at 72.
+- Source: code-review, 2026-06-12T16:50:30+00:00
+
+## Circular import: auth.svelte.ts → metaCleanerApi.js → api-client.ts → auth.svelte.ts
+
+- Problem: `auth.svelte.ts` imports `buildApiUrl` from `$lib/clients/metaCleanerApi.js`. That module imports `apiFetch` from `$lib/auth/api-client.js`, which imports `authStore` from `$lib/auth/auth.svelte.js`. This creates a circular dependency chain.
+- Solution: Change `auth.svelte.ts` to import `buildApiUrl` directly from `$lib/clients/api-config.js` (the source module). The metaCleanerApi re-export is unnecessary for the auth store.
+- Source: code-review, 2026-06-12T16:50:30+00:00
+
+## NavBar does not pass onLogout/onSettings to UserDropdown and MobileHamburgerMenu
+
+- Problem: `NavBar.svelte` renders `UserDropdown` and `MobileHamburgerMenu` without passing `onLogout` or `onSettings` callbacks. Clicking Logout in the dropdown does nothing — `authStore.logout()` is never called from the UI.
+- Solution: Add `onLogout` (and optionally `onSettings`) prop to `NavBar.svelte`. In `+layout.svelte`, pass `onLogout={() => authStore.logout()}`. NavBar forwards the callback to both `UserDropdown` and `MobileHamburgerMenu`.
+- Source: code-review, 2026-06-12T17:10:50+00:00
+
+## Auth guard flash-of-content on SPA page restore
+
+- Problem: `guardProtectedRoute()` in `auth-guard.ts` returns early on server (`if (!browser) return`) and then calls `redirect()`. On client-side hard refresh, the page template renders briefly before the guard fires during hydration, causing a momentary flash of protected content for unauthenticated users.
+- Solution: Add a reactive loading gate in root layout (or a global `isAuthReady` state) that prevents rendering children until auth state is resolved. Alternatively, use `$effect` in a shared layout to redirect reactively.
+- Source: code-review, 2026-06-12T17:10:50+00:00
+
+## Token restore does not attempt refresh when access token expired
+
+- Problem: `_restore()` in `auth.svelte.ts` checks `expiresAt > Date.now()` and clears tokens if expired. It doesn't attempt `authStore.refresh()` using the (potentially still valid) refresh token. Users returning after access token expiry get silently logged out.
+- Solution: In `_restore()`, if access token is expired but refresh token exists, set an `isRestoring` flag and call `refresh()`. Clear tokens only if refresh fails.
+- Source: code-review, 2026-06-12T17:10:50+00:00
