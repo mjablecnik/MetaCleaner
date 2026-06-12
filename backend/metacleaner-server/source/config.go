@@ -11,14 +11,19 @@ import (
 )
 
 type Config struct {
-	Port            int
-	FrontendOrigin  string
-	MaxFileSize     int64
-	RetentionPeriod time.Duration
-	TempStoragePath string
-	SupabaseURL     string
-	SupabaseAPIKey  string
-	RateLimitRPM    int
+	Port                   int
+	FrontendOrigin         string
+	MaxFileSize            int64
+	RetentionPeriod        time.Duration
+	TempStoragePath        string
+	SupabaseURL            string
+	SupabaseAPIKey         string
+	SupabaseServiceRoleKey string
+	SupabaseJWTSecret      string
+	OAuthCallbackURL       string
+	MagicLinkCallbackURL   string
+	FrontendURL            string
+	RateLimitRPM           int
 }
 
 func LoadConfig() Config {
@@ -66,6 +71,11 @@ func LoadConfig() Config {
 
 	cfg.SupabaseURL = os.Getenv("SUPABASE_URL")
 	cfg.SupabaseAPIKey = os.Getenv("SUPABASE_API_KEY")
+	cfg.SupabaseServiceRoleKey = os.Getenv("SUPABASE_SERVICE_ROLE_KEY")
+	cfg.SupabaseJWTSecret = os.Getenv("SUPABASE_JWT_SECRET")
+	cfg.OAuthCallbackURL = os.Getenv("OAUTH_CALLBACK_URL")
+	cfg.MagicLinkCallbackURL = os.Getenv("MAGIC_LINK_CALLBACK_URL")
+	cfg.FrontendURL = os.Getenv("FRONTEND_URL")
 
 	if cfg.SupabaseURL == "" {
 		log.Fatal("SUPABASE_URL environment variable is required")

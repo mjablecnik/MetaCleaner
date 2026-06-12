@@ -7,7 +7,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
 ## Tasks
 
 - [ ] 1. Backend auth infrastructure
-  - [ ] 1.1 Create Supabase Auth client (`source/supabase_auth.go`)
+  - [x] 1.1 Create Supabase Auth client (`source/supabase_auth.go`)
     - Implement `SupabaseAuthClient` struct with `httpClient`, `baseURL`, `apiKey`, `serviceKey`, `jwtSecret` fields
     - Implement methods: `SignUp`, `SignInWithPassword`, `SignInWithOtp`, `RefreshToken`, `SignOut`, `ResetPasswordForEmail`, `VerifyOTP`, `UpdateUser`, `GetOAuthURL`, `ExchangeCodeForSession`, `GetUser`
     - Load new env vars: `SUPABASE_JWT_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `OAUTH_CALLBACK_URL`, `MAGIC_LINK_CALLBACK_URL`, `FRONTEND_URL`
