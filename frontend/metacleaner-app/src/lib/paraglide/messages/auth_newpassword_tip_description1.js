@@ -6,17 +6,17 @@ import { getLocale, experimentalStaticLocale } from '../runtime.js';
 /** @typedef {{}} Auth_Newpassword_Tip_Description1Inputs */
 
 const en_auth_newpassword_tip_description1 = /** @type {(inputs: Auth_Newpassword_Tip_Description1Inputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Use at least 12 characters...`)
+	return /** @type {LocalizedString} */ (`Use at least 12 characters, uppercase and lowercase letters, numbers and special characters like !@#$%`)
 };
 
 const cs_auth_newpassword_tip_description1 = /** @type {(inputs: Auth_Newpassword_Tip_Description1Inputs) => LocalizedString} */ () => {
-	return /** @type {LocalizedString} */ (`Použijte alespoň 12 znaků...`)
+	return /** @type {LocalizedString} */ (`Použijte alespoň 12 znaků, velká i malá písmena, čísla a speciální znaky jako !@#$%`)
 };
 
 /**
 * | output |
 * | --- |
-* | "Use at least 12 characters..." |
+* | "Use at least 12 characters, uppercase and lowercase letters, numbers and special characters like !@#$%" |
 *
 * @param {Auth_Newpassword_Tip_Description1Inputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
