@@ -1,5 +1,23 @@
 # AI Log
 
+## 2026-06-12 10:01 — create-code
+- Spec: frontend-code-quality-refactor
+- Created shared utility module `src/lib/shared/utils/i18n.ts` with `tx()` function
+- Created shared utility module `src/lib/shared/utils/format.ts` with `formatSize()` function
+- Created shared utility module `src/lib/shared/utils/reportStyles.ts` with `tagStyle()` and `iconStyle()` functions
+- Created shared utility module `src/lib/shared/utils/riskStyles.ts` with `ringColorMap`, `severityBadgeClass`, `dotColorClass`, `severityTextClass`, `severityLabelKey`, `barSeverity()`
+- Created property tests: `src/lib/shared/utils/__tests__/i18n.test.ts`, `format.test.ts`, `reportStyles.test.ts`, `riskStyles.test.ts`
+- Replaced inline `tx()` definitions across 21+ component files with shared import
+- Replaced inline `formatSize()` in `FileListItemRisk.svelte`, `ProcessingFilesCard.svelte`, `FileResultsCard.svelte`
+- Replaced inline `tagStyle()`/`iconStyle()` in `ReportTableRow.svelte`, `ReportCard.svelte`
+- Replaced inline risk severity utilities in `RiskScannerCard.svelte`, `MobileRiskBanner.svelte`
+- Renamed `MetadataField` to `ReportMetadataField` in `src/lib/types/report.ts` and updated all consuming imports
+- Fixed `UserDropdown.svelte` accessibility: added `onSettings`/`onLogout` callback props with `onclick` handlers
+- Fixed `appState.svelte.ts` reactivity: changed `_currentState` from `$derived` to `$derived.by()`
+- Fixed `AuthNavbar.svelte` path resolution: wrapped `rightHref` with `resolve()` from `$app/paths`
+- Fixed unused imports and passed lint/type/test verification
+- Code review fixes applied: replaced inline `riskScoreLabel()` in `RiskScoreRing.svelte` with shared `tx()`, added `onSettings`/`onLogout` callbacks to `MobileHamburgerMenu.svelte`, imported `severityTextClass` in `RiskBreakdownBar.svelte`, removed unsupported DE/SK languages from `languageRepository.ts`, replaced `href="#"` with `<button>` in `RegisterFormSection.svelte`, declared `otpRef` with `$state()` in `CheckCodeFormSection.svelte`
+
 ## 2026-06-12 07:49 — ui-refactor
 - Created `--shadow-focus-blue` theme token in `src/routes/layout.css` @theme block
 - Replaced hardcoded `focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]` with `focus:shadow-focus-blue` in `src/lib/shared/elements/AuthTextInput.svelte` and `src/routes/(auth)/components/PasswordInput.svelte`
