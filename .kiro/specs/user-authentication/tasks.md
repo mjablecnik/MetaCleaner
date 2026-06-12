@@ -29,7 +29,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Return HTTP 429 with `Retry-After` header when exceeded
     - _Requirements: 2.5, 11.5, 11.6, 11.7, 17.6_
 
-  - [ ] 1.4 Create auth models and error codes (`source/auth_models.go`)
+  - [x] 1.4 Create auth models and error codes (`source/auth_models.go`)
     - Define `AuthSession`, `AuthUser`, `Profile` structs
     - Define registration/login request/response structs
     - Define all auth error codes as constants (`AUTH_INVALID_REQUEST`, `AUTH_INVALID_EMAIL`, etc.)
