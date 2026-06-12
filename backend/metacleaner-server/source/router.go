@@ -183,7 +183,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /api/jobs/{id}/download", HandleJobDownload(cfg, db))
 
 	// GET /api/files/{id}/download
-	mux.Handle("GET /api/files/{id}/download", HandleFileDownload(cfg))
+	mux.Handle("GET /api/files/{id}/download", HandleFileDownload(cfg, db))
 
 	// GET /api/reports
 	mux.Handle("GET /api/reports", HandleListReports(db))
@@ -204,5 +204,6 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
 
 	cors := corsMiddleware(cfg.FrontendOrigin)
-	return cors(mux)
+	authMW := NewAuthMiddleware(cfg)
+	return cors(authMW.Middleware(mux))
 }

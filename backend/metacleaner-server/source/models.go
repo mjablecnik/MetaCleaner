@@ -21,6 +21,7 @@ var (
 // Job represents a cleaning job
 type Job struct {
 	ID                  string     `json:"jobId"`
+	UserID              string     `json:"-"`
 	Status              string     `json:"status"`
 	TotalFiles          int        `json:"totalFiles"`
 	FilesCompleted      int        `json:"filesCompleted"`
@@ -36,6 +37,7 @@ type FileRecord struct {
 	ID                string          `json:"id"`
 	LocalID           string          `json:"-"` // internal file ID for disk path lookup, not persisted to DB
 	JobID             string          `json:"jobId"`
+	UserID            string          `json:"-"`
 	FileName          string          `json:"name"`
 	OriginalName      string          `json:"originalName,omitempty"` // original upload filename from the client
 	FileExtension     string          `json:"extension"`
@@ -149,6 +151,7 @@ type ReportFileDetail struct {
 type Report struct {
 	ID                  string           `json:"id"`
 	JobID               string           `json:"jobId"`
+	UserID              string           `json:"-"`
 	ReportID            string           `json:"reportId"`
 	Date                time.Time        `json:"date"`
 	FilesProcessed      int              `json:"filesProcessed"`

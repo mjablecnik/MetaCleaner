@@ -20,6 +20,7 @@ import (
 // Test download of a completed (cleaned) file → 200 with correct headers
 func TestHandleFileDownloadCompleted(t *testing.T) {
 	cfg := newTestConfig(t)
+	db := src.NewSupabaseClient(cfg)
 
 	fileID := "f-download1"
 	cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
@@ -34,7 +35,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg, db)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
@@ -52,6 +53,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 // Test download of a file that is still being processed → 409
 func TestHandleFileDownloadInProgress(t *testing.T) {
 	cfg := newTestConfig(t)
+	db := src.NewSupabaseClient(cfg)
 
 	fileID := "f-inprogress1"
 	uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
@@ -66,7 +68,7 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg, db)(rr, req)
 
 	if rr.Code != http.StatusConflict {
 		t.Fatalf("expected 409, got %d: %s", rr.Code, rr.Body.String())
@@ -81,11 +83,12 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 // Test download of an expired or never-uploaded file → 404
 func TestHandleFileDownloadNotFound(t *testing.T) {
 	cfg := newTestConfig(t)
+	db := src.NewSupabaseClient(cfg)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/files/f-missing/download", nil)
 	req.SetPathValue("id", "f-missing")
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg)(rr, req)
+	src.HandleFileDownload(cfg, db)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())

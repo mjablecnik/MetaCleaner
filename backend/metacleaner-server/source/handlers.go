@@ -162,6 +162,8 @@ type CreateJobResponse struct {
 // HandleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
 func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+
 		var req createJobRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid request body")
@@ -204,6 +206,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		}
 
 		job := &Job{
+			UserID:     userID,
 			Status:     "processing",
 			TotalFiles: len(files),
 		}
@@ -213,6 +216,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		}
 		for i := range files {
 			files[i].JobID = job.ID
+			files[i].UserID = userID
 		}
 		if err := db.CreateFileRecords(r.Context(), files); err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to create file records")
@@ -294,12 +298,22 @@ func contentTypeForExt(ext string) string {
 }
 
 // HandleFileDownload handles GET /api/files/{id}/download — serves the cleaned file.
-func HandleFileDownload(cfg Config) http.HandlerFunc {
+func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileID := r.PathValue("id")
 		if fileID == "" {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing file ID")
 			return
+		}
+
+		// Verify that the file belongs to the authenticated user.
+		userID := UserIDFromContext(r.Context())
+		if userID != "" {
+			owned, err := db.VerifyFileOwnership(r.Context(), fileID, userID)
+			if err != nil || !owned {
+				WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+				return
+			}
 		}
 
 		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
@@ -343,7 +357,8 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 
-		job, err := db.GetJob(r.Context(), jobID)
+		userID := UserIDFromContext(r.Context())
+		job, err := db.GetJob(r.Context(), jobID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch job")
 			return
@@ -499,6 +514,7 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 
 	return &Report{
 		JobID:               job.ID,
+		UserID:              job.UserID,
 		ReportID:            generateReportID(now),
 		Date:                now,
 		FilesProcessed:      job.FilesCompleted,
@@ -552,7 +568,8 @@ func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub,
 // HandleListReports handles GET /api/reports — returns all reports with summary stats.
 func HandleListReports(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		reports, err := db.ListReports(r.Context())
+		userID := UserIDFromContext(r.Context())
+		reports, err := db.ListReports(r.Context(), userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch reports")
 			return
@@ -577,7 +594,8 @@ func HandleGetReport(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
 			return
 		}
-		_, detail, err := db.GetReportByHumanID(r.Context(), reportID)
+		userID := UserIDFromContext(r.Context())
+		_, detail, err := db.GetReportByHumanID(r.Context(), reportID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
 			return
@@ -599,7 +617,8 @@ func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
 			return
 		}
-		report, _, err := db.GetReportByHumanID(r.Context(), reportID)
+		userID := UserIDFromContext(r.Context())
+		report, _, err := db.GetReportByHumanID(r.Context(), reportID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
 			return
@@ -629,7 +648,8 @@ func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
 			return
 		}
-		job, err := db.GetJob(r.Context(), jobID)
+		userID := UserIDFromContext(r.Context())
+		job, err := db.GetJob(r.Context(), jobID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch job")
 			return

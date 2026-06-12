@@ -30,6 +30,7 @@ func NewSupabaseClient(cfg Config) *SupabaseClient {
 
 type dbJob struct {
 	ID                  string     `json:"id,omitempty"`
+	UserID              string     `json:"user_id,omitempty"`
 	Status              string     `json:"status"`
 	TotalFiles          int        `json:"total_files"`
 	FilesCompleted      int        `json:"files_completed"`
@@ -43,6 +44,7 @@ type dbJob struct {
 type dbFileRecord struct {
 	ID                string          `json:"id,omitempty"`
 	JobID             string          `json:"job_id"`
+	UserID            string          `json:"user_id,omitempty"`
 	FileName          string          `json:"file_name"`
 	OriginalName      string          `json:"original_name,omitempty"`
 	FileExtension     string          `json:"file_extension"`
@@ -63,6 +65,7 @@ type dbFileRecord struct {
 type dbReport struct {
 	ID                  string          `json:"id,omitempty"`
 	JobID               string          `json:"job_id"`
+	UserID              string          `json:"user_id,omitempty"`
 	ReportID            string          `json:"report_id"`
 	Date                time.Time       `json:"date"`
 	FilesProcessed      int             `json:"files_processed"`
@@ -164,6 +167,7 @@ func (c *SupabaseClient) Ping(ctx context.Context) error {
 // CreateJob inserts a new job record and populates ID and CreatedAt from the response.
 func (c *SupabaseClient) CreateJob(ctx context.Context, job *Job) error {
 	rec := dbJob{
+		UserID:              job.UserID,
 		Status:              job.Status,
 		TotalFiles:          job.TotalFiles,
 		FilesCompleted:      job.FilesCompleted,
@@ -203,10 +207,13 @@ func (c *SupabaseClient) UpdateJob(ctx context.Context, job *Job) error {
 	return c.doJSON(ctx, http.MethodPatch, url, rec, nil)
 }
 
-// GetJob fetches a job by ID.
-func (c *SupabaseClient) GetJob(ctx context.Context, jobID string) (*Job, error) {
+// GetJob fetches a job by ID, optionally filtering by user ID.
+func (c *SupabaseClient) GetJob(ctx context.Context, jobID, userID string) (*Job, error) {
 	var rows []dbJob
 	url := c.restURL("cleaning_jobs?id=eq." + jobID)
+	if userID != "" {
+		url += "&user_id=eq." + userID
+	}
 	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
 		return nil, err
 	}
@@ -239,6 +246,7 @@ func (c *SupabaseClient) CreateFileRecords(ctx context.Context, files []FileReco
 	recs := make([]dbFileRecord, len(files))
 	for i, f := range files {
 		recs[i] = fileRecordToDB(f)
+		recs[i].UserID = f.UserID
 	}
 	var rows []dbFileRecord
 	if err := c.doJSON(ctx, http.MethodPost, c.restURL("job_files"), recs, &rows); err != nil {
@@ -274,6 +282,17 @@ func (c *SupabaseClient) GetFileRecords(ctx context.Context, jobID string) ([]Fi
 	return files, nil
 }
 
+// VerifyFileOwnership checks that a file (identified by local ID prefix) belongs to the given user.
+// Returns false if not found or if the file belongs to a different user.
+func (c *SupabaseClient) VerifyFileOwnership(ctx context.Context, localID, userID string) (bool, error) {
+	var rows []dbFileRecord
+	url := c.restURL("job_files?file_name=like." + localID + "%25&user_id=eq." + userID)
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return false, err
+	}
+	return len(rows) > 0, nil
+}
+
 // --- Report operations ---
 
 // CreateReport inserts a new report record.
@@ -284,6 +303,7 @@ func (c *SupabaseClient) CreateReport(ctx context.Context, report *Report) error
 	}
 	rec := dbReport{
 		JobID:               report.JobID,
+		UserID:              report.UserID,
 		ReportID:            report.ReportID,
 		Date:                report.Date,
 		FilesProcessed:      report.FilesProcessed,
@@ -400,11 +420,14 @@ func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*Repor
 	return c.buildReportDetail(ctx, rows[0])
 }
 
-// GetReportByHumanID fetches a report by its human-readable MCR-... ID.
+// GetReportByHumanID fetches a report by its human-readable MCR-... ID, optionally filtered by user ID.
 // Returns both the raw Report (with PDFPath/PDFStatus) and the full ReportDetail.
-func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID string) (*Report, *ReportDetail, error) {
+func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID string) (*Report, *ReportDetail, error) {
 	var rows []dbReport
 	url := c.restURL("cleaning_reports?report_id=eq." + humanID)
+	if userID != "" {
+		url += "&user_id=eq." + userID
+	}
 	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
 		return nil, nil, err
 	}
@@ -420,10 +443,13 @@ func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID string)
 	return report, detail, nil
 }
 
-// ListReports returns all reports ordered by date descending.
-func (c *SupabaseClient) ListReports(ctx context.Context) ([]ReportSummary, error) {
+// ListReports returns all reports ordered by date descending, optionally filtered by user ID.
+func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]ReportSummary, error) {
 	var rows []dbReport
 	url := c.restURL("cleaning_reports?order=date.desc")
+	if userID != "" {
+		url += "&user_id=eq." + userID
+	}
 	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
 		return nil, err
 	}

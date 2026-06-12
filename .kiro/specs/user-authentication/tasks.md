@@ -88,7 +88,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Both endpoints: Content-Type `application/json`, no authentication required
     - _Requirements: 19.2, 19.3, 19.7, 19.8_
 
-  - [ ] 2.8 Wire auth routes into router (`source/router.go`)
+  - [x] 2.8 Wire auth routes into router (`source/router.go`)
     - Register all `/api/auth/*` routes and `/.well-known/*` routes
     - Apply auth rate limiter middleware to auth endpoints
     - Apply auth middleware to all protected endpoints (exclude auth, health, well-known)
