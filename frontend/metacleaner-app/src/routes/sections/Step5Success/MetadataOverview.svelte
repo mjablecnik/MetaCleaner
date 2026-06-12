@@ -2,6 +2,7 @@
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
 	import type { MetadataBreakdown } from '$lib/types/processing';
+	import MetadataFieldList from './components/MetadataFieldList.svelte';
 
 	interface Props {
 		beforeBreakdown: MetadataBreakdown;
@@ -44,67 +45,7 @@
 					<p class="text-sm font-semibold text-white">{tx('step5.metadata.beforeDesc')}</p>
 				</div>
 			</div>
-			<div class="flex flex-col gap-2">
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-location-dot text-brand-red"></i>
-						{tx('step5.metadata.gps')}</span
-					>
-					<span class="font-mono text-xs text-white"
-						>{tx('step5.metadata.filesCount', { count: gpsLocationsRemoved })}</span
-					>
-				</div>
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-camera text-brand-red"></i>
-						{tx('step5.metadata.exif')}</span
-					>
-					<span class="font-mono text-xs text-white"
-						>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.exifFields })}</span
-					>
-				</div>
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-tag text-brand-red"></i>
-						{tx('step5.metadata.xmp')}</span
-					>
-					<span class="font-mono text-xs text-white"
-						>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.xmpFields })}</span
-					>
-				</div>
-				{#if beforeBreakdown.id3mp4Fields > 0}
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-film text-brand-red"></i>
-							{tx('step5.metadata.id3mp4')}</span
-						>
-						<span class="font-mono text-xs text-white"
-							>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.id3mp4Fields })}</span
-						>
-					</div>
-				{/if}
-				{#if beforeBreakdown.otherFields > 0}
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-ellipsis text-brand-red"></i>
-							{tx('step5.metadata.other')}</span
-						>
-						<span class="font-mono text-xs text-white"
-							>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.otherFields })}</span
-						>
-					</div>
-				{/if}
-			</div>
+			<MetadataFieldList breakdown={beforeBreakdown} gpsCount={gpsLocationsRemoved} mode="before" />
 			<p class="mt-1 flex items-center gap-2 text-xs text-brand-red/80">
 				<i class="fa-solid fa-circle-exclamation"></i>
 				{tx('step5.metadata.totalExposed', { count: totalFieldsBefore })}
@@ -126,72 +67,7 @@
 					<p class="text-sm font-semibold text-white">{tx('step5.metadata.afterDesc')}</p>
 				</div>
 			</div>
-			<div class="flex flex-col gap-2">
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-location-dot text-brand-green"></i>
-						{tx('step5.metadata.gps')}</span
-					>
-					<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-						><i class="fa-solid fa-check"></i>
-						{tx('step5.metadata.removed')}</span
-					>
-				</div>
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-camera text-brand-green"></i>
-						{tx('step5.metadata.exif')}</span
-					>
-					<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-						><i class="fa-solid fa-check"></i>
-						{tx('step5.metadata.removed')}</span
-					>
-				</div>
-				<div
-					class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-				>
-					<span class="flex items-center gap-2 text-xs text-text-muted"
-						><i class="fa-solid fa-tag text-brand-green"></i>
-						{tx('step5.metadata.xmp')}</span
-					>
-					<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-						><i class="fa-solid fa-check"></i>
-						{tx('step5.metadata.removed')}</span
-					>
-				</div>
-				{#if beforeBreakdown.id3mp4Fields > 0}
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-film text-brand-green"></i>
-							{tx('step5.metadata.id3mp4')}</span
-						>
-						<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-							><i class="fa-solid fa-check"></i>
-							{tx('step5.metadata.removed')}</span
-						>
-					</div>
-				{/if}
-				{#if beforeBreakdown.otherFields > 0}
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-card px-4 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-ellipsis text-brand-green"></i>
-							{tx('step5.metadata.other')}</span
-						>
-						<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-							><i class="fa-solid fa-check"></i>
-							{tx('step5.metadata.removed')}</span
-						>
-					</div>
-				{/if}
-			</div>
+			<MetadataFieldList breakdown={beforeBreakdown} gpsCount={gpsLocationsRemoved} mode="after" />
 			<p class="mt-1 flex items-center gap-2 text-xs text-brand-green/80">
 				<i class="fa-solid fa-circle-check"></i>
 				{tx('step5.metadata.allClean')}
@@ -251,67 +127,12 @@
 							{tx('step5.metadata.highRiskWarning', { count: totalFieldsBefore })}
 						</p>
 					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-location-dot text-brand-red"></i>
-							{tx('step5.metadata.gps')}</span
-						>
-						<span class="font-mono text-xs text-white"
-							>{tx('step5.metadata.filesCount', { count: gpsLocationsRemoved })}</span
-						>
-					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-camera text-brand-red"></i>
-							{tx('step5.metadata.exif')}</span
-						>
-						<span class="font-mono text-xs text-white"
-							>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.exifFields })}</span
-						>
-					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-tag text-brand-red"></i>
-							{tx('step5.metadata.xmp')}</span
-						>
-						<span class="font-mono text-xs text-white"
-							>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.xmpFields })}</span
-						>
-					</div>
-					{#if beforeBreakdown.id3mp4Fields > 0}
-						<div
-							class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-						>
-							<span class="flex items-center gap-2 text-xs text-text-muted"
-								><i class="fa-solid fa-film text-brand-red"></i>
-								{tx('step5.metadata.id3mp4')}</span
-							>
-							<span class="font-mono text-xs text-white"
-								>{tx('step5.metadata.fieldsCount', {
-									count: beforeBreakdown.id3mp4Fields
-								})}</span
-							>
-						</div>
-					{/if}
-					{#if beforeBreakdown.otherFields > 0}
-						<div
-							class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-						>
-							<span class="flex items-center gap-2 text-xs text-text-muted"
-								><i class="fa-solid fa-ellipsis text-brand-red"></i>
-								{tx('step5.metadata.other')}</span
-							>
-							<span class="font-mono text-xs text-white"
-								>{tx('step5.metadata.fieldsCount', { count: beforeBreakdown.otherFields })}</span
-							>
-						</div>
-					{/if}
+					<MetadataFieldList
+						breakdown={beforeBreakdown}
+						gpsCount={gpsLocationsRemoved}
+						mode="before"
+						compact
+					/>
 					<!-- Risk bar -->
 					<div class="mt-1">
 						<div class="mb-1 flex justify-between text-[10px] text-text-muted">
@@ -338,70 +159,12 @@
 							{tx('step5.metadata.allRemovedSuccess')}
 						</p>
 					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-location-dot text-brand-green"></i>
-							{tx('step5.metadata.gps')}</span
-						>
-						<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-							><i class="fa-solid fa-check"></i>
-							{tx('step5.metadata.removed')}</span
-						>
-					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-camera text-brand-green"></i>
-							{tx('step5.metadata.exif')}</span
-						>
-						<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-							><i class="fa-solid fa-check"></i>
-							{tx('step5.metadata.removed')}</span
-						>
-					</div>
-					<div
-						class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-					>
-						<span class="flex items-center gap-2 text-xs text-text-muted"
-							><i class="fa-solid fa-tag text-brand-green"></i>
-							{tx('step5.metadata.xmp')}</span
-						>
-						<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-							><i class="fa-solid fa-check"></i>
-							{tx('step5.metadata.removed')}</span
-						>
-					</div>
-					{#if beforeBreakdown.id3mp4Fields > 0}
-						<div
-							class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-						>
-							<span class="flex items-center gap-2 text-xs text-text-muted"
-								><i class="fa-solid fa-film text-brand-green"></i>
-								{tx('step5.metadata.id3mp4')}</span
-							>
-							<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-								><i class="fa-solid fa-check"></i>
-								{tx('step5.metadata.removed')}</span
-							>
-						</div>
-					{/if}
-					{#if beforeBreakdown.otherFields > 0}
-						<div
-							class="flex items-center justify-between rounded-lg border border-gray-800 bg-navy-main px-3 py-2.5"
-						>
-							<span class="flex items-center gap-2 text-xs text-text-muted"
-								><i class="fa-solid fa-ellipsis text-brand-green"></i>
-								{tx('step5.metadata.other')}</span
-							>
-							<span class="flex items-center gap-1 font-mono text-xs text-brand-green"
-								><i class="fa-solid fa-check"></i>
-								{tx('step5.metadata.removed')}</span
-							>
-						</div>
-					{/if}
+					<MetadataFieldList
+						breakdown={beforeBreakdown}
+						gpsCount={gpsLocationsRemoved}
+						mode="after"
+						compact
+					/>
 					<!-- Risk bar after -->
 					<div class="mt-1">
 						<div class="mb-1 flex justify-between text-[10px] text-text-muted">

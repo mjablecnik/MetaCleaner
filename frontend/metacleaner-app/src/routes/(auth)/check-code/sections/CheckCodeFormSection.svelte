@@ -7,6 +7,7 @@
 	import PasswordInput from '../../components/PasswordInput.svelte';
 	import PasswordStrengthMeter from '../../components/PasswordStrengthMeter.svelte';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
+	import CountdownTimer from '../../components/CountdownTimer.svelte';
 
 	function tx(key: string, params: Record<string, unknown> = {}): string {
 		void locale.current;
@@ -34,8 +35,7 @@
 	let confirmPasswordVisible = $state(false);
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
-	let countdown = $state('14:59');
-	let countdownInterval: ReturnType<typeof setInterval> | null = null;
+	let countdownKey = $state(0);
 	let progressBarVisible = $state(true);
 
 	let otpRef: OtpInput;
@@ -46,10 +46,6 @@
 
 	function goToStep(n: number) {
 		currentStep = n as 1 | 2 | 3 | 4;
-		if (n !== 2 && countdownInterval) {
-			clearInterval(countdownInterval);
-			countdownInterval = null;
-		}
 	}
 
 	function handleEmailSubmit(e: SubmitEvent) {
@@ -61,7 +57,6 @@
 		}
 		sentEmail = emailInput.trim();
 		goToStep(2);
-		startCountdown();
 		setTimeout(() => { otpRef?.focus(); }, 100);
 	}
 
@@ -73,13 +68,12 @@
 			otpError = tx('auth.common.validation.otpIncomplete');
 			return;
 		}
-		if (countdownInterval) clearInterval(countdownInterval);
 		goto('/new-password');
 	}
 
 	function resendCode() {
 		otpValues = ['', '', '', '', '', ''];
-		startCountdown();
+		countdownKey++;
 		setTimeout(() => { otpRef?.focus(); }, 100);
 	}
 
@@ -98,21 +92,7 @@
 		}, 1200);
 	}
 
-	function startCountdown() {
-		let total = 899;
-		if (countdownInterval) clearInterval(countdownInterval);
-		countdown = '14:59';
-		countdownInterval = setInterval(() => {
-			const min = Math.floor(total / 60);
-			const s = total % 60;
-			countdown = min + ':' + String(s).padStart(2, '0');
-			if (total <= 0) { clearInterval(countdownInterval!); countdownInterval = null; }
-			total--;
-		}, 1000);
-	}
-
 	onMount(() => {
-		startCountdown();
 		setTimeout(() => { otpRef?.focus(); }, 100);
 	});
 
@@ -193,7 +173,9 @@
 				<div class="flex items-center gap-2">
 					<i class="fa-regular fa-clock text-sm text-text-muted"></i>
 					<span class="text-xs text-text-muted">{tx('auth.checkCode.countdown.label')}</span>
-					<span class="tabular-nums text-sm font-bold text-white">{countdown}</span>
+					{#key countdownKey}
+						<CountdownTimer durationSeconds={899} class="text-sm font-bold text-white" />
+					{/key}
 				</div>
 				<button type="button" onclick={resendCode} class="flex items-center gap-1.5 text-xs font-semibold text-brand-blue transition-colors hover:text-blue-400">
 					<i class="fa-solid fa-rotate-right text-xs"></i> {tx('auth.common.action.resend')}

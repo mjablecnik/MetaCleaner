@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { locale } from '$lib/locale.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import CountdownTimer from '../../components/CountdownTimer.svelte';
 
 	interface Props {
 		email: string;
@@ -9,11 +10,14 @@
 
 	let { email }: Props = $props();
 
-	let countdown = $state(86387);
+	let countdownKey = $state(0);
 	let resendLoading = $state(false);
 	let showToast = $state(false);
 
-	const progressPct = $derived((countdown / 86400) * 100);
+	const totalSeconds = 86400;
+	let remaining = $state(86387);
+
+	const progressPct = $derived((remaining / totalSeconds) * 100);
 	const progressColor = $derived(
 		progressPct > 50 ? 'var(--color-brand-green)' : progressPct > 20 ? 'var(--color-brand-orange)' : 'var(--color-brand-red)'
 	);
@@ -24,16 +28,9 @@
 		return fn ? fn(params) : key;
 	}
 
-	function formatTime(seconds: number): string {
-		const h = Math.floor(seconds / 3600);
-		const min = Math.floor((seconds % 3600) / 60);
-		const s = seconds % 60;
-		return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-	}
-
 	onMount(() => {
 		const interval = setInterval(() => {
-			if (countdown > 0) countdown--;
+			if (remaining > 0) remaining--;
 		}, 1000);
 		return () => clearInterval(interval);
 	});
@@ -44,6 +41,8 @@
 		setTimeout(() => {
 			resendLoading = false;
 			showToast = true;
+			countdownKey++;
+			remaining = 86387;
 			setTimeout(() => { showToast = false; }, 3000);
 		}, 1500);
 	}
@@ -143,7 +142,13 @@
 		<div class="flex flex-col gap-2">
 			<div class="flex items-center justify-between">
 				<span class="text-xs text-text-muted">{tx('auth.checkEmail.progress.linkValidity')}</span>
-				<span class="text-xs font-semibold tabular-nums text-white">{formatTime(countdown)}</span>
+				{#key countdownKey}
+					<CountdownTimer
+						durationSeconds={86387}
+						onExpire={() => { remaining = 0; }}
+						class="text-xs font-semibold tabular-nums text-white"
+					/>
+				{/key}
 			</div>
 			<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-main">
 				<div class="h-full rounded-full transition-[width,background-color] duration-1000" style="width: {progressPct}%; background-color: {progressColor};"></div>
