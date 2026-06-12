@@ -370,6 +370,101 @@ func HandleResetPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 	}
 }
 
+// --- Magic link handlers ---
+
+// HandleMagicLink handles POST /api/auth/magic-link.
+// Validates the email format and triggers a Supabase magic link email.
+// Always returns 200 for valid emails (Supabase creates accounts for new addresses).
+func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req MagicLinkRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if strings.TrimSpace(req.Email) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "email is required")
+			return
+		}
+		if !emailRegex.MatchString(req.Email) {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidEmail, "invalid email format")
+			return
+		}
+
+		if err := authClient.SignInWithOtp(r.Context(), req.Email); err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
+				WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+				return
+			}
+			// Non-5xx errors are intentionally swallowed.
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(MagicLinkResponse{
+			Message: "If an account with that email exists, a magic link has been sent.",
+		})
+	}
+}
+
+// HandleMagicLinkCallback handles GET /api/auth/magic-link/callback.
+// Supabase redirects here with token_hash and type query parameters after the user
+// clicks the magic link. The handler verifies the token, creates a profile for new
+// users, and redirects to the frontend with tokens as query parameters.
+func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		frontendLogin := authClient.frontendURL + "/login"
+
+		if errParam := r.URL.Query().Get("error"); errParam != "" {
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape(errParam), http.StatusFound)
+			return
+		}
+
+		tokenHash := r.URL.Query().Get("token_hash")
+		if tokenHash == "" {
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("Magic link is invalid or expired"), http.StatusFound)
+			return
+		}
+
+		tokenType := r.URL.Query().Get("type")
+		if tokenType == "" {
+			tokenType = "magiclink"
+		}
+
+		session, err := authClient.VerifyTokenHash(r.Context(), tokenHash, tokenType)
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
+				http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("Authentication service temporarily unavailable"), http.StatusFound)
+				return
+			}
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("Magic link is invalid or expired"), http.StatusFound)
+			return
+		}
+
+		// Create profile only for first-time magic link users (empty first/last name, credits=3).
+		existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
+		if existing == nil {
+			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
+				ID:               session.User.ID,
+				FirstName:        "",
+				LastName:         "",
+				Email:            session.User.Email,
+				SubscriptionType: "free",
+				Credits:          3,
+			}); createErr != nil {
+				log.Printf("magic link callback: failed to create profile for user %s: %v", session.User.ID, createErr)
+			}
+		}
+
+		params := url.Values{}
+		params.Set("access_token", session.AccessToken)
+		params.Set("refresh_token", session.RefreshToken)
+		params.Set("expires_in", strconv.Itoa(session.ExpiresIn))
+		http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+	}
+}
+
 // isEmailNotConfirmedError reports whether the Supabase error indicates an unconfirmed email.
 func isEmailNotConfirmedError(e *SupabaseAuthError) bool {
 	if e.ErrorCode == "email_not_confirmed" {

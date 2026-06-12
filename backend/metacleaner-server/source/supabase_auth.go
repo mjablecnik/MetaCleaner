@@ -299,6 +299,25 @@ func (c *SupabaseAuthClient) VerifyOTP(ctx context.Context, email, token, tokenT
 	return &session, nil
 }
 
+// VerifyTokenHash verifies a magic link token_hash received as a query parameter
+// in the callback URL. tokenType should be "magiclink" or "email".
+func (c *SupabaseAuthClient) VerifyTokenHash(ctx context.Context, tokenHash, tokenType string) (*SupabaseAuthSession, error) {
+	payload := map[string]string{
+		"token_hash": tokenHash,
+		"type":       tokenType,
+	}
+	data, _ := json.Marshal(payload)
+	req, err := c.newAnonRequest(ctx, http.MethodPost, c.authURL("verify"), bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	var session SupabaseAuthSession
+	if err := c.doRequest(req, &session); err != nil {
+		return nil, err
+	}
+	return &session, nil
+}
+
 // UpdateUser updates the authenticated user's attributes (e.g., password).
 // Pass attrs as a map, e.g., {"password": "new_password"}.
 func (c *SupabaseAuthClient) UpdateUser(ctx context.Context, accessToken string, attrs map[string]interface{}) (*SupabaseAuthUser, error) {

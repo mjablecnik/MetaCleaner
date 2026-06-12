@@ -161,6 +161,12 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/auth/oauth/{provider} — initiates the OAuth flow
 	mux.Handle("GET /api/auth/oauth/{provider}", HandleOAuthInitiate(authClient))
 
+	// POST /api/auth/magic-link — rate limited per email+IP
+	mux.Handle("POST /api/auth/magic-link", authRL.MagicLinkMiddleware(HandleMagicLink(authClient)))
+
+	// GET /api/auth/magic-link/callback — receives token_hash from Supabase magic link email
+	mux.Handle("GET /api/auth/magic-link/callback", HandleMagicLinkCallback(authClient))
+
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 
