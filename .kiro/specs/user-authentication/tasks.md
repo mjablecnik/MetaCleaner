@@ -205,7 +205,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test user ID extraction from `sub` claim
     - _Requirements: 6.1, 6.2, 6.3, 6.6_
 
-  - [ ]* 9.2 Write unit tests for auth handlers
+  - [x]* 9.2 Write unit tests for auth handlers
     - Test register: success, duplicate email, invalid input, Supabase error
     - Test login: success, bad credentials, unconfirmed email, missing fields
     - Test refresh: success, invalid token
