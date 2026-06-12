@@ -139,6 +139,103 @@ func HandleLogin(authClient *SupabaseAuthClient) http.HandlerFunc {
 	}
 }
 
+// HandleLogout handles POST /api/auth/logout.
+// Requires a valid Bearer token in the Authorization header. Invalidates the session
+// via Supabase and returns HTTP 200. Returns HTTP 401 for missing or invalid tokens.
+func HandleLogout(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			WriteError(w, http.StatusUnauthorized, ErrAuthTokenInvalid, "missing or invalid Authorization header")
+			return
+		}
+		accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+
+		if err := authClient.SignOut(r.Context(), accessToken); err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok {
+				if authErr.StatusCode == http.StatusUnauthorized || authErr.StatusCode == http.StatusForbidden {
+					WriteError(w, http.StatusUnauthorized, ErrAuthTokenInvalid, "token is invalid or expired")
+					return
+				}
+			}
+			WriteError(w, http.StatusUnauthorized, ErrAuthTokenInvalid, "token is invalid or expired")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(LogoutResponse{Message: "Logged out successfully"})
+	}
+}
+
+// HandleRefresh handles POST /api/auth/refresh.
+// Accepts a JSON body with refresh_token and exchanges it for a new session via Supabase.
+func HandleRefresh(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req RefreshRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if strings.TrimSpace(req.RefreshToken) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "refresh_token is required")
+			return
+		}
+
+		session, err := authClient.RefreshToken(r.Context(), req.RefreshToken)
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok {
+				if authErr.StatusCode >= 500 {
+					WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+					return
+				}
+			}
+			WriteError(w, http.StatusUnauthorized, ErrAuthSessionExpired, "session has expired")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(AuthSession{
+			AccessToken:  session.AccessToken,
+			RefreshToken: session.RefreshToken,
+			ExpiresIn:    session.ExpiresIn,
+			User: AuthUser{
+				ID:    session.User.ID,
+				Email: session.User.Email,
+			},
+		})
+	}
+}
+
+// HandleMe handles GET /api/auth/me.
+// Requires a valid Bearer token (enforced by AuthMiddleware on non-exempt paths).
+// Returns the authenticated user's profile from the profiles table.
+func HandleMe(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "unauthorized")
+			return
+		}
+
+		profile, err := authClient.GetProfile(r.Context(), userID)
+		if err != nil {
+			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+			return
+		}
+		if profile == nil {
+			WriteError(w, http.StatusNotFound, ErrAuthInvalidRequest, "user profile not found")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(profile)
+	}
+}
+
 // isEmailNotConfirmedError reports whether the Supabase error indicates an unconfirmed email.
 func isEmailNotConfirmedError(e *SupabaseAuthError) bool {
 	if e.ErrorCode == "email_not_confirmed" {

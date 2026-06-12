@@ -53,7 +53,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Return HTTP 403 if email not confirmed
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 11.8_
 
-  - [ ] 2.3 Implement logout, refresh, and me handlers
+  - [x] 2.3 Implement logout, refresh, and me handlers
     - POST `/api/auth/logout` — invalidate session via Supabase, return 200
     - POST `/api/auth/refresh` — exchange refresh token for new session, return 200 with new tokens
     - GET `/api/auth/me` — return authenticated user's profile data from `profiles` table
