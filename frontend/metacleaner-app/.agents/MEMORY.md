@@ -1,5 +1,11 @@
 # Memory
 
+## vitest strict mock: arbitrary key access on mocked modules throws
+
+- Problem: `vi.mock('$lib/paraglide/messages', () => ({ 'known.key': () => '...' }))` creates a strict module namespace — accessing any property not in the factory return (e.g., `m['unknown.key']` inside `tx()`) throws `[vitest] No "unknown.key" export is defined on the mock`. This blocks property-based tests with `fc.string()` that generate arbitrary key names.
+- Solution: Add explicitly absent keys as `undefined` values in the mock factory (e.g., `'absent.key': undefined`). Vitest allows undefined exports; `tx()` treats them as missing and returns the key unchanged. For property tests, use `fc.constantFrom(...ABSENT_KEYS)` over a fixed list of known-absent keys rather than `fc.string()`.
+- Source: create-code, 2026-06-12
+
 ## Step5Success.download test: must mock API client, not apiCleaningService
 
 - Problem: `Step5Success.svelte` imports `downloadFile` directly from `$lib/clients/metaCleanerApi.js` (not from `apiCleaningService`). The original test mocked `$lib/services/apiCleaningService.downloadFile` — a method that doesn't exist on the service and is never called by the component. The assertion `expect(mockDownloadFile).toHaveBeenCalledWith(...)` was vacuous (the mock was never triggered).

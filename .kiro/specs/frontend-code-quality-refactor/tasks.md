@@ -31,26 +31,26 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Export `RingColor` and `BarSeverity` type aliases
     - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 2. Write property tests for shared utilities
-  - [ ]* 2.1 Write property test for `tx()` key lookup and passthrough
+- [x] 2. Write property tests for shared utilities
+  - [x]* 2.1 Write property test for `tx()` key lookup and passthrough
     - **Property 1: tx() key lookup and passthrough**
     - **Validates: Requirements 1.1, 1.3, 1.4**
     - Test file: `src/lib/shared/utils/__tests__/i18n.test.ts`
     - Use `fc.string()` for keys, verify passthrough for unknown keys and invocation for known keys
 
-  - [ ]* 2.2 Write property test for `formatSize()` range correctness
+  - [x]* 2.2 Write property test for `formatSize()` range correctness
     - **Property 2: formatSize range correctness**
     - **Validates: Requirements 2.2, 2.3, 2.4**
     - Test file: `src/lib/shared/utils/__tests__/format.test.ts`
     - Use `fc.double()` covering negative, zero, small, and large values
 
-  - [ ]* 2.3 Write property test for style functions
+  - [x]* 2.3 Write property test for style functions
     - **Property 3: Style functions always return non-empty valid class strings**
     - **Validates: Requirements 3.3, 3.4, 3.6**
     - Test file: `src/lib/shared/utils/__tests__/reportStyles.test.ts`
     - Use `fc.string()` for arbitrary inputs, verify non-empty return and known-input mappings
 
-  - [ ]* 2.4 Write property test for `barSeverity()` threshold mapping
+  - [x]* 2.4 Write property test for `barSeverity()` threshold mapping
     - **Property 4: barSeverity threshold mapping**
     - **Validates: Requirements 4.2**
     - Test file: `src/lib/shared/utils/__tests__/riskStyles.test.ts`
