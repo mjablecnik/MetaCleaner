@@ -116,7 +116,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - On page load: restore tokens from localStorage, check expiration
     - _Requirements: 12.1, 12.5, 12.6_
 
-  - [ ] 5.2 Create API client (`src/lib/auth/api-client.ts`)
+  - [x] 5.2 Create API client (`src/lib/auth/api-client.ts`)
     - Wrap `fetch` with automatic `Authorization: Bearer <token>` injection for protected endpoints
     - Implement proactive refresh when token expires within 60 seconds
     - Implement single-flight pattern: queue concurrent requests during refresh, resolve all with new token
