@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
 	interface Props {
 		durationSeconds: number;
@@ -9,7 +9,8 @@
 
 	let { durationSeconds, onExpire, class: className = '' }: Props = $props();
 
-	let remaining = $state(durationSeconds);
+	// untrack: intentionally capture only the initial value for countdown initialization
+	let remaining = $state(untrack(() => durationSeconds));
 
 	function formatTime(seconds: number): string {
 		if (durationSeconds >= 3600) {
