@@ -14,7 +14,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Update `.env.example` with new keys
     - _Requirements: 11.1, 14.2, 17.4, 1.1, 2.1, 3.1, 5.1_
 
-  - [ ] 1.2 Create auth middleware (`source/auth_middleware.go`)
+  - [x] 1.2 Create auth middleware (`source/auth_middleware.go`)
     - Implement `AuthMiddleware` struct with `jwtSecret` and `supabaseURL`
     - Implement `Authenticate(r *http.Request) (string, error)` — extract Bearer token, validate JWT signature and expiry, return `sub` claim as user ID
     - Implement `Middleware(next http.Handler) http.Handler` — wrap handler with auth check
