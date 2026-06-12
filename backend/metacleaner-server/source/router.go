@@ -134,6 +134,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// POST /api/auth/register — rate limited
 	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient)))
 
+	// POST /api/auth/login — rate limited
+	mux.Handle("POST /api/auth/login", authRateLimited(HandleLogin(authClient)))
+
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 

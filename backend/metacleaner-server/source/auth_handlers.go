@@ -90,6 +90,64 @@ func HandleRegister(authClient *SupabaseAuthClient) http.HandlerFunc {
 	}
 }
 
+// HandleLogin handles POST /api/auth/login.
+// Validates email and password, authenticates via Supabase, and returns a session.
+func HandleLogin(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req LoginRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if strings.TrimSpace(req.Email) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "email is required")
+			return
+		}
+		if req.Password == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "password is required")
+			return
+		}
+
+		session, err := authClient.SignInWithPassword(r.Context(), req.Email, req.Password)
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok {
+				if isEmailNotConfirmedError(authErr) {
+					WriteError(w, http.StatusForbidden, ErrAuthEmailNotConfirmed, "email confirmation required")
+					return
+				}
+				if authErr.StatusCode >= 500 {
+					WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+					return
+				}
+			}
+			WriteError(w, http.StatusUnauthorized, ErrAuthInvalidCredentials, "invalid email or password")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(AuthSession{
+			AccessToken:  session.AccessToken,
+			RefreshToken: session.RefreshToken,
+			ExpiresIn:    session.ExpiresIn,
+			User: AuthUser{
+				ID:    session.User.ID,
+				Email: session.User.Email,
+			},
+		})
+	}
+}
+
+// isEmailNotConfirmedError reports whether the Supabase error indicates an unconfirmed email.
+func isEmailNotConfirmedError(e *SupabaseAuthError) bool {
+	if e.ErrorCode == "email_not_confirmed" {
+		return true
+	}
+	msg := strings.ToLower(e.Message)
+	return strings.Contains(msg, "email not confirmed") || strings.Contains(msg, "confirm your email")
+}
+
 // isEmailExistsError reports whether the Supabase error indicates a duplicate email.
 func isEmailExistsError(e *SupabaseAuthError) bool {
 	if e.StatusCode == 422 {

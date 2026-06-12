@@ -45,7 +45,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Handle errors: 409 email exists, 400 validation, 503 Supabase unreachable
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.7, 1.8, 1.9, 16.2, 16.6_
 
-  - [ ] 2.2 Implement login handler
+  - [x] 2.2 Implement login handler
     - POST `/api/auth/login` — validate email/password present
     - Call `SupabaseAuthClient.SignInWithPassword`
     - Return HTTP 200 with `access_token`, `refresh_token`, `expires_in`, user data
