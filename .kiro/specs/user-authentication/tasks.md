@@ -188,7 +188,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Update `AndroidManifest.xml` intent filters for callback URLs with `autoVerify="true"`
     - _Requirements: 19.1, 19.4, 19.5, 19.6, 19.9, 19.10_
 
-  - [ ] 7.3 Wire auth into existing pages
+  - [x] 7.3 Wire auth into existing pages
     - Apply auth guard to all protected routes (step1–5, reports, report)
     - Update existing API calls to use the new API client with token injection
     - Ensure existing handlers pass user_id in requests

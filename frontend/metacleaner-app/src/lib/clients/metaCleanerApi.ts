@@ -1,23 +1,8 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+import { buildApiUrl, buildWsUrl } from './api-config.js';
+import { apiFetch } from '$lib/auth/api-client.js';
 
-// ─── URL Builders ───────────────────────────────────────────────
-
-// Strip trailing slashes so URL construction never produces double slashes.
-// Warn at module init if the variable is unset (all requests go to relative paths).
-const API_BASE_URL: string = PUBLIC_API_URL.replace(/\/+$/, '');
-if (!API_BASE_URL) {
-	console.warn('[MetaCleanerApi] PUBLIC_API_URL is not set — API requests will use relative paths');
-}
-
-export function buildApiUrl(path: string): string {
-	return `${API_BASE_URL}${path}`;
-}
-
-export function buildWsUrl(path: string): string {
-	const wsProtocol = API_BASE_URL.startsWith('https://') ? 'wss://' : 'ws://';
-	const host = API_BASE_URL.replace(/^https?:\/\//, '');
-	return `${wsProtocol}${host}${path}`;
-}
+// Re-export URL builders so existing callers don't need to change their imports.
+export { buildApiUrl, buildWsUrl };
 
 // ─── Response Types ─────────────────────────────────────────────
 
@@ -105,10 +90,7 @@ export async function uploadFiles(files: File[]): Promise<UploadResponse> {
 		formData.append('files', file, file.name);
 	}
 
-	const res = await fetch(buildApiUrl('/api/upload'), {
-		method: 'POST',
-		body: formData
-	});
+	const res = await apiFetch('/api/upload', { method: 'POST', body: formData });
 
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json();
@@ -118,7 +100,7 @@ export async function createJob(
 	fileIds: string[],
 	fileNames?: Record<string, string>
 ): Promise<CreateJobResponse> {
-	const res = await fetch(buildApiUrl('/api/jobs'), {
+	const res = await apiFetch('/api/jobs', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ fileIds, ...(fileNames ? { fileNames } : {}) })
@@ -129,7 +111,7 @@ export async function createJob(
 }
 
 export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
-	const res = await fetch(buildApiUrl(`/api/jobs/${jobId}`));
+	const res = await apiFetch(`/api/jobs/${jobId}`);
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json();
 }
@@ -140,13 +122,13 @@ export function connectJobProgress(jobId: string): WebSocket {
 }
 
 export async function downloadFile(fileId: string): Promise<Blob> {
-	const res = await fetch(buildApiUrl(`/api/files/${fileId}/download`));
+	const res = await apiFetch(`/api/files/${fileId}/download`);
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.blob();
 }
 
 export async function downloadJobZip(jobId: string): Promise<Blob> {
-	const res = await fetch(buildApiUrl(`/api/jobs/${jobId}/download`));
+	const res = await apiFetch(`/api/jobs/${jobId}/download`);
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.blob();
 }
@@ -155,21 +137,19 @@ export async function getReports(): Promise<{
 	summary: { totalReports: number; fieldsRemoved: number; filesProcessed: number; gpsRemoved: number };
 	reports: unknown[];
 }> {
-	const res = await fetch(buildApiUrl('/api/reports'));
+	const res = await apiFetch('/api/reports');
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json();
 }
 
 export async function getReportDetail(reportId: string): Promise<unknown> {
-	const res = await fetch(buildApiUrl(`/api/reports/${reportId}`));
+	const res = await apiFetch(`/api/reports/${reportId}`);
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json();
 }
 
 export async function getReportPdf(reportId: string): Promise<string> {
-	const res = await fetch(buildApiUrl(`/api/reports/${reportId}/pdf`), {
-		redirect: 'manual'
-	});
+	const res = await apiFetch(`/api/reports/${reportId}/pdf`, { redirect: 'manual' });
 
 	if (res.status === 302) {
 		return res.headers.get('Location') ?? '';

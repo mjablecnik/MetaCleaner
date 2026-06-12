@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
+import { buildApiUrl } from '$lib/clients/api-config.js';
 import { authStore } from './auth.svelte.js';
 
 const REFRESH_BUFFER_MS = 60_000;
