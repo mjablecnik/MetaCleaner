@@ -98,8 +98,8 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
 - [ ] 3. Checkpoint — Backend auth complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Database schema and RLS
-  - [ ] 4.1 Create auth migration script (`scripts/migration002.sql`)
+- [x] 4. Database schema and RLS
+  - [x] 4.1 Create auth migration script (`scripts/migration002.sql`)
     - Create `profiles` table with all columns (id UUID PK FK, first_name, last_name, email, subscription_type, credits, created_at, updated_at)
     - Add `user_id` column (UUID NOT NULL FK) to `cleaning_jobs`, `job_files`, `cleaning_reports`
     - Enable RLS on all four tables
