@@ -109,7 +109,7 @@
 <SocialLoginButtons
 	googleLabel={tx('auth.login.social.google')}
 	appleLabel={tx('auth.login.social.apple')}
-	disabled={oauthLoading}
+	disabled={oauthLoading || isSubmitting || magicState === 'loading'}
 	onGoogle={handleGoogle}
 	onApple={handleApple}
 />

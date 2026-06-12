@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
-	import { getAuthStats, getAuthPlans } from '$lib/repositories/authRepository';
+	import { getAuthStats } from '$lib/repositories/authRepository';
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import AuthNavbar from '../components/AuthNavbar.svelte';
 	import AuthBranding from '../components/AuthBranding.svelte';
@@ -10,29 +10,13 @@
 	import TrustBadges from '../components/TrustBadges.svelte';
 
 	const stats = getAuthStats();
-	const plans = getAuthPlans();
 
-	let selectedPlan = $state<'free' | 'pro'>('free');
 	let step = $state<1 | 2>(1);
 	let submittedEmail = $state('');
 
 	function handleRegistrationSuccess(email: string) {
 		submittedEmail = email;
 		step = 2;
-	}
-
-	function planColors(color: 'green' | 'orange') {
-		return color === 'green'
-			? {
-					hex: 'var(--color-brand-green)',
-					bg: 'var(--color-brand-green-6)',
-					bg15: 'var(--color-brand-green-15)'
-				}
-			: {
-					hex: 'var(--color-brand-orange)',
-					bg: 'var(--color-brand-orange-6)',
-					bg15: 'var(--color-brand-orange-15)'
-				};
 	}
 </script>
 
@@ -65,43 +49,34 @@
 				>
 					<div class="flex flex-col gap-3">
 						<p class="text-sm font-semibold text-white">{tx('auth.register.plan.title')}</p>
-						{#each plans as plan (plan.id)}
-							{@const c = planColors(plan.color)}
-							{@const isSelected = selectedPlan === plan.id}
-							<button
-								type="button"
-								onclick={() => (selectedPlan = plan.id)}
-								class="flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all"
-								style="border-color: {isSelected
-									? c.hex
-									: 'var(--color-navy-lighter)'}; background: {isSelected ? c.bg : 'transparent'};"
+						<div
+							class="flex items-center gap-4 rounded-xl border-2 p-4"
+							style="border-color: var(--color-brand-green); background: var(--color-brand-green-6);"
+						>
+							<div
+								class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg"
+								style="background: var(--color-brand-green-15);"
 							>
-								<div
-									class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg"
-									style="background: {c.bg15};"
-								>
-									<i class={plan.icon} style="color: {c.hex};"></i>
+								<i class="fa-solid fa-seedling" style="color: var(--color-brand-green);"></i>
+							</div>
+							<div class="flex-1 text-left">
+								<div class="flex items-center gap-2">
+									<p class="text-sm font-bold text-white">{tx('auth.register.plan.freeName')}</p>
+									<span
+										class="rounded px-2 py-0.5 text-[10px] font-bold uppercase"
+										style="background: var(--color-brand-green-15); color: var(--color-brand-green);"
+										>{tx('auth.register.plan.freeBadge')}</span
+									>
 								</div>
-								<div class="flex-1 text-left">
-									<div class="flex items-center gap-2">
-										<p class="text-sm font-bold text-white">{tx(plan.nameKey)}</p>
-										<span
-											class="rounded px-2 py-0.5 text-[10px] font-bold uppercase"
-											style="background: {c.bg15}; color: {c.hex};">{tx(plan.badgeKey)}</span
-										>
-									</div>
-									<p class="mt-0.5 text-xs text-text-muted">{tx(plan.descriptionKey)}</p>
-								</div>
-								<div
-									class="flex h-5 w-5 items-center justify-center rounded-full"
-									style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected
-										? 'none'
-										: '1px solid var(--color-gray-600)'};"
-								>
-									{#if isSelected}<i class="fa-solid fa-check text-[10px] text-white"></i>{/if}
-								</div>
-							</button>
-						{/each}
+								<p class="mt-0.5 text-xs text-text-muted">{tx('auth.register.plan.freeDesc')}</p>
+							</div>
+							<div
+								class="flex h-5 w-5 items-center justify-center rounded-full"
+								style="background: var(--color-brand-green);"
+							>
+								<i class="fa-solid fa-check text-[10px] text-white"></i>
+							</div>
+						</div>
 					</div>
 
 					<div class="flex flex-col gap-2.5">
@@ -137,7 +112,7 @@
 						title={tx('auth.register.form.title')}
 						subtitle={tx('auth.register.form.subtitle')}
 					>
-						<RegisterFormSection bind:selectedPlan onSuccess={handleRegistrationSuccess} />
+						<RegisterFormSection onSuccess={handleRegistrationSuccess} />
 					</AuthFormCard>
 
 					<div class="mt-3 grid grid-cols-3 gap-2 border-t border-gray-800 pt-3 lg:hidden">

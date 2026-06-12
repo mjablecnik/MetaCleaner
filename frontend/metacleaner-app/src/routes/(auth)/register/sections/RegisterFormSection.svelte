@@ -5,34 +5,16 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { authStore } from '$lib/auth/auth.svelte.js';
 	import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
-	import { getAuthPlans } from '$lib/repositories/authRepository';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
 	import PasswordStrengthMeter from '../../components/PasswordStrengthMeter.svelte';
 	import SocialLoginButtons from '../../components/SocialLoginButtons.svelte';
 
 	interface Props {
-		selectedPlan?: 'free' | 'pro';
 		onSuccess?: (email: string) => void;
 	}
 
-	let { selectedPlan = $bindable('free'), onSuccess }: Props = $props();
-
-	const plans = getAuthPlans();
-
-	function planColors(color: 'green' | 'orange') {
-		return color === 'green'
-			? {
-					hex: 'var(--color-brand-green)',
-					bg: 'var(--color-brand-green-6)',
-					bg15: 'var(--color-brand-green-15)'
-				}
-			: {
-					hex: 'var(--color-brand-orange)',
-					bg: 'var(--color-brand-orange-6)',
-					bg15: 'var(--color-brand-orange-15)'
-				};
-	}
+	let { onSuccess }: Props = $props();
 
 	let firstName = $state('');
 	let lastName = $state('');
@@ -40,15 +22,13 @@
 	let password = $state('');
 	let confirmPassword = $state('');
 	let passwordVisible = $state(false);
-	let termsAccepted = $state(false);
-	let planOpen = $state(true);
+	let oauthLoading = $state(false);
 
 	let firstNameError = $state('');
 	let lastNameError = $state('');
 	let emailError = $state('');
 	let passwordError = $state('');
 	let confirmError = $state('');
-	let termsError = $state('');
 	let apiError = $state('');
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
@@ -68,10 +48,12 @@
 	}
 
 	function handleGoogle() {
+		oauthLoading = true;
 		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/google');
 	}
 
 	function handleApple() {
+		oauthLoading = true;
 		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/apple');
 	}
 
@@ -82,7 +64,6 @@
 		emailError = '';
 		passwordError = '';
 		confirmError = '';
-		termsError = '';
 		apiError = '';
 
 		let valid = true;
@@ -110,10 +91,6 @@
 			confirmError = tx('auth.common.validation.passwordsMismatch');
 			valid = false;
 		}
-		if (!termsAccepted) {
-			termsError = tx('auth.register.validation.termsRequired');
-			valid = false;
-		}
 		if (!valid) return;
 
 		submitState = 'loading';
@@ -131,6 +108,7 @@
 <SocialLoginButtons
 	googleLabel={tx('auth.register.social.google')}
 	appleLabel={tx('auth.register.social.apple')}
+	disabled={oauthLoading || submitState === 'loading'}
 	onGoogle={handleGoogle}
 	onApple={handleApple}
 />
@@ -216,95 +194,6 @@
 			error={confirmError}
 		/>
 	</div>
-
-	<div class="flex flex-col gap-2 lg:hidden">
-		<button
-			type="button"
-			onclick={() => (planOpen = !planOpen)}
-			class="flex w-full items-center justify-between py-2"
-		>
-			<span class="text-xs font-semibold text-white">{tx('auth.register.plan.titleMobile')}</span>
-			<i
-				class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform"
-				style="transform: {planOpen ? 'rotate(0deg)' : 'rotate(-90deg)'};"
-			></i>
-		</button>
-		{#if planOpen}
-			<div class="flex flex-col gap-2">
-				{#each plans as plan (plan.id)}
-					{@const c = planColors(plan.color)}
-					{@const isSelected = selectedPlan === plan.id}
-					<button
-						type="button"
-						onclick={() => (selectedPlan = plan.id)}
-						class="flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all"
-						style="border-color: {isSelected
-							? c.hex
-							: 'var(--color-navy-lighter)'}; background: {isSelected ? c.bg : 'transparent'};"
-					>
-						<div
-							class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-							style="background: {c.bg15};"
-						>
-							<i class="{plan.icon} text-sm" style="color: {c.hex};"></i>
-						</div>
-						<div class="min-w-0 flex-1 text-left">
-							<div class="flex items-center gap-1.5">
-								<p class="text-sm font-bold text-white">{tx(plan.nameKey)}</p>
-								<span
-									class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase"
-									style="background: {c.bg15}; color: {c.hex};">{tx(plan.badgeKey)}</span
-								>
-							</div>
-							<p class="mt-0.5 text-[11px] text-text-muted">{tx(plan.descriptionKey)}</p>
-						</div>
-						<div
-							class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
-							style="background: {isSelected ? c.hex : 'transparent'}; border: {isSelected
-								? 'none'
-								: '1px solid var(--color-gray-600)'};"
-						>
-							{#if isSelected}<i class="fa-solid fa-check text-[9px] text-white"></i>{/if}
-						</div>
-					</button>
-				{/each}
-			</div>
-		{/if}
-	</div>
-
-	<div class="flex items-start gap-2.5">
-		<button
-			type="button"
-			onclick={() => {
-				termsAccepted = !termsAccepted;
-				if (termsAccepted) termsError = '';
-			}}
-			class="mt-0.5 flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-[20px] {termsAccepted
-				? 'border-brand-blue bg-brand-blue'
-				: 'border-gray-600 bg-navy-main'}"
-		>
-			{#if termsAccepted}<i class="fa-solid fa-check text-[9px] text-white lg:text-[10px]"></i>{/if}
-		</button>
-		<span class="text-xs leading-relaxed text-text-muted lg:text-sm">
-			{tx('auth.register.terms.agree')}
-			<button
-				type="button"
-				class="font-medium text-brand-blue transition-colors hover:text-blue-400"
-				>{tx('auth.register.terms.tos')}</button
-			>
-			{tx('auth.register.terms.and')}
-			<button
-				type="button"
-				class="font-medium text-brand-blue transition-colors hover:text-blue-400"
-				>{tx('auth.register.terms.privacy')}</button
-			>
-		</span>
-	</div>
-	{#if termsError}
-		<span class="-mt-2 text-[12px] text-brand-red"
-			><i class="fa-solid fa-circle-exclamation mr-1"></i>{termsError}</span
-		>
-	{/if}
 
 	{#if apiError}
 		<div
