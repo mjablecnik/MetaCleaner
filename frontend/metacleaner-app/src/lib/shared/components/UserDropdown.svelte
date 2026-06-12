@@ -8,10 +8,12 @@
 		user: User | null;
 		open?: boolean;
 		onToggle?: () => void;
+		onSettings?: () => void;
+		onLogout?: () => void;
 		wrapperId?: string;
 	}
 
-	let { user, open = $bindable(false), onToggle, wrapperId = 'userDropdown' }: Props = $props();
+	let { user, open = $bindable(false), onToggle, onSettings, onLogout, wrapperId = 'userDropdown' }: Props = $props();
 
 	function handleToggle() {
 		open = !open;
@@ -50,7 +52,8 @@
 			class="lang-option"
 			role="button"
 			tabindex="0"
-			onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
+			onclick={() => onSettings?.()}
+			onkeydown={(e) => e.key === 'Enter' && onSettings?.()}
 		>
 			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 			<span>{tx('common.nav.settings')}</span>
@@ -59,7 +62,8 @@
 			class="lang-option lang-option-danger"
 			role="button"
 			tabindex="0"
-			onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
+			onclick={() => onLogout?.()}
+			onkeydown={(e) => e.key === 'Enter' && onLogout?.()}
 		>
 			<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 			<span>{tx('common.nav.logout')}</span>

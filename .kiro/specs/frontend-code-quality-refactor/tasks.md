@@ -99,15 +99,15 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
 - [x] 6. Checkpoint - Verify type rename and utility replacements
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Fix UserDropdown accessibility
-  - [ ] 7.1 Add `onSettings` and `onLogout` callback props and onclick handlers to `UserDropdown.svelte`
+- [x] 7. Fix UserDropdown accessibility
+  - [x] 7.1 Add `onSettings` and `onLogout` callback props and onclick handlers to `UserDropdown.svelte`
     - Add `onSettings?: () => void` and `onLogout?: () => void` to the Props interface
     - Add `onclick={() => onSettings?.()}` to the Settings div element
     - Add `onclick={() => onLogout?.()}` to the Logout div element
     - Update `onkeydown` handlers to invoke callbacks directly instead of `e.currentTarget.click()`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
 
-  - [ ]* 7.2 Write unit tests for UserDropdown accessibility
+  - [x]* 7.2 Write unit tests for UserDropdown accessibility
     - Test file: `src/lib/shared/components/__tests__/UserDropdown.test.ts`
     - Test click invokes `onSettings`/`onLogout` callbacks
     - Test Enter keydown invokes callbacks
