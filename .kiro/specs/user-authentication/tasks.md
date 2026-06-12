@@ -124,7 +124,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Retry refresh once after 5s on network error before clearing
     - _Requirements: 12.2, 12.3, 12.4, 12.7, 3.3, 3.4, 3.5_
 
-  - [ ] 5.3 Create token extraction utility (`src/lib/auth/token-utils.ts`)
+  - [x] 5.3 Create token extraction utility (`src/lib/auth/token-utils.ts`)
     - Extract tokens from URL query parameters (access_token, refresh_token, expires_in, error)
     - Clean tokens from URL after extraction (remove from address bar and history)
     - Work in both web browser context and Capacitor deep link context
