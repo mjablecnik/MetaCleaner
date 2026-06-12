@@ -199,7 +199,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Backend testing
-  - [ ]* 9.1 Write unit tests for auth middleware
+  - [x]* 9.1 Write unit tests for auth middleware
     - Test JWT validation: valid token, expired token, malformed token, missing token, wrong signature
     - Test exempt paths are not blocked
     - Test user ID extraction from `sub` claim
