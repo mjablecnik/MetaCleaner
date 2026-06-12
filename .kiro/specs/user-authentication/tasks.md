@@ -143,7 +143,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify visual match with `.design/auth-login-form-desktop.html` and `.design/auth-login-form-mobile.html`
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 18.1, 18.2, 18.3, 18.4, 18.5, 18.9_
 
-  - [ ] 6.2 Refactor registration into single-page multi-step flow (`src/routes/(auth)/register/+page.svelte`)
+  - [x] 6.2 Refactor registration into single-page multi-step flow (`src/routes/(auth)/register/+page.svelte`)
     - Consolidate existing `(auth)/check-email/` route into `(auth)/register/` as step 2
     - Remove `(auth)/check-email/` route folder after migration
     - Implement step state management with Svelte 5 runes (step 1: form, step 2: email confirmation)

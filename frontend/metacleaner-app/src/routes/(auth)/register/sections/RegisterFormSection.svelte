@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { tx } from '$lib/shared/utils/i18n';
-	import { goto } from '$app/navigation';
+	import { authStore } from '$lib/auth/auth.svelte.js';
+	import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
 	import { getAuthPlans } from '$lib/repositories/authRepository';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
@@ -9,9 +11,10 @@
 
 	interface Props {
 		selectedPlan?: 'free' | 'pro';
+		onSuccess?: (email: string) => void;
 	}
 
-	let { selectedPlan = $bindable('free') }: Props = $props();
+	let { selectedPlan = $bindable('free'), onSuccess }: Props = $props();
 
 	const plans = getAuthPlans();
 
@@ -36,6 +39,7 @@
 	let passwordError = $state('');
 	let confirmError = $state('');
 	let termsError = $state('');
+	let apiError = $state('');
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
 	function getStrengthScore(val: string) {
@@ -53,7 +57,15 @@
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 	}
 
-	function handleSubmit(e: SubmitEvent) {
+	function handleGoogle() {
+		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/google');
+	}
+
+	function handleApple() {
+		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/apple');
+	}
+
+	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		firstNameError = '';
 		lastNameError = '';
@@ -61,27 +73,35 @@
 		passwordError = '';
 		confirmError = '';
 		termsError = '';
+		apiError = '';
 
 		let valid = true;
 		if (!firstName.trim()) { firstNameError = tx('auth.register.validation.firstNameRequired'); valid = false; }
 		if (!lastName.trim()) { lastNameError = tx('auth.register.validation.lastNameRequired'); valid = false; }
 		if (!validateEmail(email)) { emailError = tx('auth.common.validation.emailInvalid'); valid = false; }
 		if (password.length < 8) { passwordError = tx('auth.common.validation.passwordMin8'); valid = false; }
+		if (password.length > 72) { passwordError = tx('auth.common.validation.passwordMax72'); valid = false; }
 		if (password !== confirmPassword) { confirmError = tx('auth.common.validation.passwordsMismatch'); valid = false; }
 		if (!termsAccepted) { termsError = tx('auth.register.validation.termsRequired'); valid = false; }
 		if (!valid) return;
 
 		submitState = 'loading';
-		setTimeout(() => {
+		try {
+			await authStore.register(email, password, firstName, lastName);
 			submitState = 'success';
-			goto('/check-email');
-		}, 1500);
+			onSuccess?.(email);
+		} catch (err: unknown) {
+			submitState = 'idle';
+			apiError = err instanceof Error ? err.message : tx('auth.common.error.unknown');
+		}
 	}
 </script>
 
 <SocialLoginButtons
 	googleLabel={tx('auth.register.social.google')}
 	appleLabel={tx('auth.register.social.apple')}
+	onGoogle={handleGoogle}
+	onApple={handleApple}
 />
 
 <div class="flex items-center gap-3">
@@ -210,6 +230,12 @@
 	</div>
 	{#if termsError}
 		<span class="-mt-2 text-[12px] text-brand-red"><i class="fa-solid fa-circle-exclamation mr-1"></i>{termsError}</span>
+	{/if}
+
+	{#if apiError}
+		<div class="rounded-lg border border-brand-red/30 bg-brand-red/10 px-3 py-2.5 text-sm text-brand-red">
+			<i class="fa-solid fa-circle-exclamation mr-2"></i>{apiError}
+		</div>
 	{/if}
 
 	<button
