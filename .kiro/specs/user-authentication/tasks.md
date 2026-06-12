@@ -257,7 +257,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test retry on network error
     - _Requirements: 12.2, 12.3, 12.4, 3.3, 3.4, 3.5_
 
-  - [ ]* 10.3 Write unit tests for auth guard (Vitest)
+  - [x]* 10.3 Write unit tests for auth guard (Vitest)
     - Test redirect to `/login` for unauthenticated access to protected routes
     - Test redirect to `/` for authenticated access to auth routes
     - _Requirements: 6.4, 6.5_
