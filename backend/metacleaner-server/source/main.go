@@ -64,8 +64,11 @@ func Run() {
 	hub := NewWebSocketHub()
 	pl := NewCleaningPipeline(cfg)
 
+	// Initialize Supabase Auth client.
+	authClient := NewSupabaseAuthClient(cfg)
+
 	// Build router.
-	router := NewRouter(cfg, db, hub, pl)
+	router := NewRouter(cfg, db, hub, pl, authClient)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.Port),

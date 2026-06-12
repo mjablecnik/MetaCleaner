@@ -122,11 +122,17 @@ func jsonMiddleware(next http.Handler) http.Handler {
 }
 
 // NewRouter builds and returns the HTTP mux with all routes registered.
-func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.Handler {
+func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, authClient *SupabaseAuthClient) http.Handler {
 	mux := http.NewServeMux()
 
 	rl := newIPRateLimiter(cfg.RateLimitRPM)
 	rateLimited := rateLimitMiddleware(rl)
+
+	authRL := NewAuthRateLimiter()
+	authRateLimited := authRL.Middleware
+
+	// POST /api/auth/register — rate limited
+	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient)))
 
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))

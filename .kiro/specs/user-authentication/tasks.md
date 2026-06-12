@@ -37,7 +37,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - _Requirements: 11.2, 11.3, 11.4, 16.1_
 
 - [ ] 2. Backend auth handlers
-  - [ ] 2.1 Implement register handler
+  - [x] 2.1 Implement register handler
     - POST `/api/auth/register` — validate email format, password length (8–72), non-empty first/last name
     - Call `SupabaseAuthClient.SignUp` with email, password, metadata
     - On success: create profile record in `profiles` table with default `subscription_type="free"` and `credits=3`
