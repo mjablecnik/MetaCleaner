@@ -6,26 +6,26 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
 
 ## Tasks
 
-- [ ] 1. Create shared utility modules
-  - [ ] 1.1 Create `src/lib/shared/utils/i18n.ts` with the shared `tx()` function
+- [x] 1. Create shared utility modules
+  - [x] 1.1 Create `src/lib/shared/utils/i18n.ts` with the shared `tx()` function
     - Export `tx(key: string, params?: Record<string, unknown>): string`
     - Read `locale.current` via `void locale.current;` for reactivity
     - Look up key in Paraglide messages module, return key unchanged if not found
     - Support both parameterized and parameterless message calls
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 1.2 Create `src/lib/shared/utils/format.ts` with the shared `formatSize()` function
+  - [x] 1.2 Create `src/lib/shared/utils/format.ts` with the shared `formatSize()` function
     - Export `formatSize(bytes: number): string`
     - Return `"0.0 KB"` for zero or negative values
     - Return KB format for values < 1,048,576, MB format otherwise
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [ ] 1.3 Create `src/lib/shared/utils/reportStyles.ts` with `tagStyle()` and `iconStyle()`
+  - [x] 1.3 Create `src/lib/shared/utils/reportStyles.ts` with `tagStyle()` and `iconStyle()`
     - Export `tagStyle(tag: string): string` with brand-red (GPS), brand-orange (EXIF), brand-blue (XMP), neutral default
     - Export `iconStyle(color: string): string` with brand-green (green), brand-orange (orange), brand-blue default
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [ ] 1.4 Create `src/lib/shared/utils/riskStyles.ts` with risk severity utilities
+  - [x] 1.4 Create `src/lib/shared/utils/riskStyles.ts` with risk severity utilities
     - Export `ringColorMap`, `severityBadgeClass`, `dotColorClass`, `severityTextClass`, `severityLabelKey` lookup objects keyed by `SeverityLevel`
     - Export `barSeverity(value: number): BarSeverity` function with threshold logic
     - Export `RingColor` and `BarSeverity` type aliases
