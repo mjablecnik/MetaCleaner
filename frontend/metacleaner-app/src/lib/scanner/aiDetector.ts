@@ -240,10 +240,7 @@ export function detectAIInJpegBytes(data: ArrayBuffer): AISignal[] {
 /**
  * Detect AI generation indicators in parsed metadata fields (from exifr/ExifReader output).
  */
-export function detectAIInMetadata(
-	raw: Record<string, unknown>,
-	fileName: string
-): AISignal[] {
+export function detectAIInMetadata(raw: Record<string, unknown>, fileName: string): AISignal[] {
 	const signals: AISignal[] = [];
 
 	for (const [key, value] of Object.entries(raw)) {
@@ -350,7 +347,10 @@ export function detectAIInMetadata(
 				continue;
 			}
 
-			if (keyLower === 'workflow' && (strValue.includes('nodes') || strValue.includes('class_type'))) {
+			if (
+				keyLower === 'workflow' &&
+				(strValue.includes('nodes') || strValue.includes('class_type'))
+			) {
 				signals.push({
 					type: 'confirmed',
 					source: `Metadata key '${key}'`,
@@ -368,7 +368,16 @@ export function detectAIInMetadata(
 				continue;
 			}
 
-			if (['sd-metadata', 'invokeai_metadata', 'dream', 'aesthetic_score', 'generation_data', 'postprocessing'].includes(keyLower)) {
+			if (
+				[
+					'sd-metadata',
+					'invokeai_metadata',
+					'dream',
+					'aesthetic_score',
+					'generation_data',
+					'postprocessing'
+				].includes(keyLower)
+			) {
 				signals.push({
 					type: 'confirmed',
 					source: `Metadata key '${key}'`,
@@ -438,10 +447,7 @@ export function detectAIInMetadata(
  * Analyze structural properties to detect AI-generated images.
  * Checks for missing camera indicators, thumbnail absence, and ICC profile absence.
  */
-export function detectAIByStructure(
-	raw: Record<string, unknown>,
-	fileName: string
-): AISignal[] {
+export function detectAIByStructure(raw: Record<string, unknown>, fileName: string): AISignal[] {
 	const signals: AISignal[] = [];
 
 	const hasMake = !!raw['Make'];

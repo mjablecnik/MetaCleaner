@@ -9,7 +9,6 @@
 	const { logEntries }: Props = $props();
 
 	let open = $state(true);
-
 </script>
 
 <div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card">

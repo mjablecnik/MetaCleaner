@@ -72,14 +72,22 @@ describe('Integration: FileAccordionItem renders original filenames (Bug 9)', ()
 
 	it('renders original image filename — not a hashed ID', async () => {
 		const originalName = 'holiday-photo.jpg';
-		render(FileAccordionItem, { file: makeImageFile(originalName), open: false, onToggle: () => {} });
+		render(FileAccordionItem, {
+			file: makeImageFile(originalName),
+			open: false,
+			onToggle: () => {}
+		});
 		// The filename renders in both mobile and desktop <p> slots — use .first() to avoid strict mode
 		await expect.element(page.getByText(originalName).first()).toBeInTheDocument();
 	});
 
 	it('renders original video filename — not a hashed ID', async () => {
 		const originalName = 'firefly-kling-3.0.mp4';
-		render(FileAccordionItem, { file: makeVideoFile(originalName), open: false, onToggle: () => {} });
+		render(FileAccordionItem, {
+			file: makeVideoFile(originalName),
+			open: false,
+			onToggle: () => {}
+		});
 		await expect.element(page.getByText(originalName).first()).toBeInTheDocument();
 	});
 
@@ -87,7 +95,11 @@ describe('Integration: FileAccordionItem renders original filenames (Bug 9)', ()
 		const hashedName = 'f-fbe455fb.jpg';
 		const originalName = 'my-photo.jpg';
 		// With the Bug 9 fix, `file.name` is the original name — the component never receives the hashed ID
-		render(FileAccordionItem, { file: makeImageFile(originalName), open: false, onToggle: () => {} });
+		render(FileAccordionItem, {
+			file: makeImageFile(originalName),
+			open: false,
+			onToggle: () => {}
+		});
 		// The hashed form must not appear anywhere in the DOM
 		await expect.element(page.getByText(hashedName)).not.toBeInTheDocument();
 		// And the original name must be shown
@@ -97,7 +109,11 @@ describe('Integration: FileAccordionItem renders original filenames (Bug 9)', ()
 	it('hashed ID is never visible when original filename is provided (video)', async () => {
 		const hashedName = 'f-abc12345.mp4';
 		const originalName = 'firefly-kling-3.0.mp4';
-		render(FileAccordionItem, { file: makeVideoFile(originalName), open: false, onToggle: () => {} });
+		render(FileAccordionItem, {
+			file: makeVideoFile(originalName),
+			open: false,
+			onToggle: () => {}
+		});
 		await expect.element(page.getByText(hashedName)).not.toBeInTheDocument();
 		await expect.element(page.getByText(originalName).first()).toBeInTheDocument();
 	});

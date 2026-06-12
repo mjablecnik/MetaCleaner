@@ -41,9 +41,7 @@ test.describe('Mobile hamburger menu — main page (/)', () => {
 		await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
 	});
 
-	test('open menu contains language options: Czech, English, German, Slovak', async ({
-		page
-	}) => {
+	test('open menu contains language options: Czech, English, German, Slovak', async ({ page }) => {
 		await openHamburger(page);
 
 		const menu = page.locator('#nav-hamburgerDropdown .lang-dropdown-menu');

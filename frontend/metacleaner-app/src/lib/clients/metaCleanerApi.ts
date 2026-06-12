@@ -134,7 +134,12 @@ export async function downloadJobZip(jobId: string): Promise<Blob> {
 }
 
 export async function getReports(): Promise<{
-	summary: { totalReports: number; fieldsRemoved: number; filesProcessed: number; gpsRemoved: number };
+	summary: {
+		totalReports: number;
+		fieldsRemoved: number;
+		filesProcessed: number;
+		gpsRemoved: number;
+	};
 	reports: unknown[];
 }> {
 	const res = await apiFetch('/api/reports');

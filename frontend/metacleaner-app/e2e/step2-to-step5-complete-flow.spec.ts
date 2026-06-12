@@ -31,9 +31,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			expect(page.url()).toMatch(/\/$/);
 
 			// Wait for success state
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			expect(page.url()).toMatch(/\/$/);
 		});
 
@@ -64,9 +64,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			});
 			await startBtn.click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
@@ -79,9 +79,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			});
 			await startBtn.click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			await expect(page.getByText('photo.jpg')).toBeVisible();
 		});
 
@@ -94,9 +94,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			});
 			await startBtn.click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			await expect(page.getByText('Files processed')).toBeVisible();
 			await expect(page.getByText('Metadata fields removed')).toBeVisible();
 		});
@@ -110,9 +110,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			});
 			await startBtn.click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 
 			// URL must remain at / throughout — SPA state machine does not change URLs
 			expect(page.url()).toMatch(/\/$/);
@@ -162,9 +162,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 			expect(page.url()).toMatch(/\/$/);
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			expect(page.url()).toMatch(/\/$/);
 		});
 
@@ -187,9 +187,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			const mobileBar = page.locator('.fixed.bottom-0');
 			await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
@@ -200,9 +200,9 @@ test.describe('Step 2 → Step 3 → Step 5 complete SPA flow', () => {
 			const mobileBar = page.locator('.fixed.bottom-0');
 			await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 
-			await expect(
-				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
-			).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 
 			// Step5Success has no fixed bottom bar — action buttons are inline in FileResultsCard
 			await expect(page.getByRole('button', { name: /download all/i }).first()).toBeVisible();

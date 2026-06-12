@@ -8,7 +8,6 @@
 	}
 
 	let { stats, bordered = false }: Props = $props();
-
 </script>
 
 <div class="grid grid-cols-3 gap-4 {bordered ? 'border-t border-gray-800 pt-2' : ''}">

@@ -10,10 +10,11 @@
 	}
 
 	let { rightText, rightHref, rightLabel }: Props = $props();
-
 </script>
 
-<nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6">
+<nav
+	class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6"
+>
 	<div class="flex items-center gap-2.5 lg:gap-3">
 		<div
 			class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue lg:h-10 lg:w-10"

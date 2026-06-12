@@ -197,7 +197,10 @@ test.describe('File removal and last-file idle transition', () => {
 			await expect(page.getByText('alpha.jpg')).not.toBeVisible();
 			await expect(page.getByText('beta.jpg')).toBeVisible();
 			// Still files-ready — MobileRiskBanner present
-			const riskBanner = page.locator('button[type="button"]').filter({ hasText: 'Risk Scanner' }).first();
+			const riskBanner = page
+				.locator('button[type="button"]')
+				.filter({ hasText: 'Risk Scanner' })
+				.first();
 			await expect(riskBanner).toBeVisible();
 
 			// Remove beta

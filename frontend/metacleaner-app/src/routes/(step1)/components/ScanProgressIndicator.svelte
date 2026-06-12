@@ -7,7 +7,6 @@
 	}
 
 	const { status }: Props = $props();
-
 </script>
 
 {#if status === 'pending'}

@@ -23,17 +23,31 @@
 	{#each [1, 2, 3] as stepNum (stepNum)}
 		{@const state = stepState(stepNum as 1 | 2 | 3)}
 		{@const icons = ['fa-solid fa-envelope', 'fa-solid fa-shield-halved', 'fa-solid fa-lock']}
-		{@const titles = ['auth.forgotPassword.step1.title', 'auth.forgotPassword.step2.title', 'auth.forgotPassword.step3.title']}
-		{@const defaultDescs = ['auth.forgotPassword.step1.desc', 'auth.forgotPassword.step2.desc', 'auth.forgotPassword.step3.desc']}
+		{@const titles = [
+			'auth.forgotPassword.step1.title',
+			'auth.forgotPassword.step2.title',
+			'auth.forgotPassword.step3.title'
+		]}
+		{@const defaultDescs = [
+			'auth.forgotPassword.step1.desc',
+			'auth.forgotPassword.step2.desc',
+			'auth.forgotPassword.step3.desc'
+		]}
 		{@const doneDescOverrides = [step1DoneDesc, step2DoneDesc, undefined]}
-		{@const desc = state === 'done' && doneDescOverrides[stepNum - 1] ? doneDescOverrides[stepNum - 1]! : tx(defaultDescs[stepNum - 1])}
+		{@const desc =
+			state === 'done' && doneDescOverrides[stepNum - 1]
+				? doneDescOverrides[stepNum - 1]!
+				: tx(defaultDescs[stepNum - 1])}
 		<div
 			class="step-info-card flex items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4"
 			class:done-card={state === 'done'}
 			class:active-card={state === 'active'}
 		>
 			<div
-				class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold {state === 'active' ? 'ring-2 ring-brand-blue/30' : ''}"
+				class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold {state ===
+				'active'
+					? 'ring-2 ring-brand-blue/30'
+					: ''}"
 				style={state === 'done'
 					? 'background: var(--color-brand-green-15);'
 					: state === 'active'

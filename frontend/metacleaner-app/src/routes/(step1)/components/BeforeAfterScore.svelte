@@ -7,7 +7,6 @@
 	}
 
 	const { beforeScore, afterScore }: Props = $props();
-
 </script>
 
 <div class="grid grid-cols-2 gap-3">

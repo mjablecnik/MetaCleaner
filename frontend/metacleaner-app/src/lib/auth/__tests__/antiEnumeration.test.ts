@@ -150,9 +150,7 @@ describe('anti-enumeration — forgot-password response shape (Req 5.2)', () => 
 		await fc.assert(
 			fc.asyncProperty(fc.emailAddress(), async (email) => {
 				// Backend anti-enumeration: 200 for both registered AND unregistered emails
-				mockFetch.mockResolvedValueOnce(
-					new Response(JSON.stringify(successBody), { status: 200 })
-				);
+				mockFetch.mockResolvedValueOnce(new Response(JSON.stringify(successBody), { status: 200 }));
 
 				const res = await fetch(mockBuildApiUrl('/api/auth/forgot-password'), {
 					method: 'POST',
@@ -179,9 +177,7 @@ describe('anti-enumeration — forgot-password response shape (Req 5.2)', () => 
 
 		await fc.assert(
 			fc.asyncProperty(fc.emailAddress(), async (email) => {
-				mockFetch.mockResolvedValueOnce(
-					new Response(JSON.stringify(successBody), { status: 200 })
-				);
+				mockFetch.mockResolvedValueOnce(new Response(JSON.stringify(successBody), { status: 200 }));
 
 				await fetch(mockBuildApiUrl('/api/auth/forgot-password'), {
 					method: 'POST',

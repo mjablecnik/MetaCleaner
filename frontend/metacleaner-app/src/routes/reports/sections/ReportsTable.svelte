@@ -10,7 +10,6 @@
 	}
 
 	const { reports, totalCount, onDownload }: Props = $props();
-
 </script>
 
 <div

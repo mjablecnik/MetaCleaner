@@ -80,7 +80,10 @@ export async function getMediaInfo(): Promise<MediaInfoInstance> {
 	}
 }
 
-function extractFieldsFromTrack(track: Record<string, unknown>): { fields: MetadataField[]; raw: Record<string, string> } {
+function extractFieldsFromTrack(track: Record<string, unknown>): {
+	fields: MetadataField[];
+	raw: Record<string, string>;
+} {
 	const fields: MetadataField[] = [];
 	const raw: Record<string, string> = {};
 	const seen = new Set<string>();
@@ -168,7 +171,9 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 	const allRaw: Record<string, string> = {};
 	for (const track of media.track) {
 		if (typeof track !== 'object' || track === null) continue;
-		const { fields: trackFields, raw: trackRaw } = extractFieldsFromTrack(track as Record<string, unknown>);
+		const { fields: trackFields, raw: trackRaw } = extractFieldsFromTrack(
+			track as Record<string, unknown>
+		);
 		allFields.push(...trackFields);
 		Object.assign(allRaw, trackRaw);
 	}

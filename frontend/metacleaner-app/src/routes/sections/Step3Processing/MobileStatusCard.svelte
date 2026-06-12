@@ -9,7 +9,6 @@
 	}
 
 	const { currentFileName, totalFiles, fieldsRemoved, filesCompleted }: Props = $props();
-
 </script>
 
 <div class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card">

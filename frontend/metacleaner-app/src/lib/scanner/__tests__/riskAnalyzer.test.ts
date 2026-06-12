@@ -148,7 +148,13 @@ describe('Feature: client-side-risk-scanner, Property 4: aggregated score equals
 					const results = scores.map((s) =>
 						makeScanResult({
 							fileScore: s,
-							categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 }
+							categoryScores: {
+								gps: 0,
+								deviceIdentity: 0,
+								personalData: 0,
+								timestamps: 0,
+								aiOrigin: 0
+							}
 						})
 					);
 					const aggregated = computeAggregatedRisk(results);

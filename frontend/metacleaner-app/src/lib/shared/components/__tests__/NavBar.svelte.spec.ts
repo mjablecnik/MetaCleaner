@@ -145,11 +145,15 @@ describe('Bug Condition 4: NavBar backAction callback — history.back() integra
 		});
 		// Desktop buttons have text content — find button containing "Back to results"
 		const buttons = container.querySelectorAll('button');
-		const backButtons = Array.from(buttons).filter((b) => b.textContent?.includes('Back to results'));
+		const backButtons = Array.from(buttons).filter((b) =>
+			b.textContent?.includes('Back to results')
+		);
 		expect(backButtons.length).toBeGreaterThan(0);
 		// None of them should be anchor tags
 		const backLinks = container.querySelectorAll('a');
-		const backAsLink = Array.from(backLinks).filter((a) => a.textContent?.includes('Back to results'));
+		const backAsLink = Array.from(backLinks).filter((a) =>
+			a.textContent?.includes('Back to results')
+		);
 		expect(backAsLink).toHaveLength(0);
 	});
 

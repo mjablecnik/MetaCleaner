@@ -64,7 +64,13 @@
 <Story name="Mixed">
 	<div class="w-full max-w-sm p-4">
 		<MetadataFieldList
-			breakdown={{ gpsLocations: 5, exifFields: 32, xmpFields: 11, id3mp4Fields: 0, otherFields: 0 }}
+			breakdown={{
+				gpsLocations: 5,
+				exifFields: 32,
+				xmpFields: 11,
+				id3mp4Fields: 0,
+				otherFields: 0
+			}}
 			gpsCount={5}
 			mode="before"
 			compact

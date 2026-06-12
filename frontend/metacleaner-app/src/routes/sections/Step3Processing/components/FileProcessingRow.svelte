@@ -54,9 +54,10 @@
 		)}"
 	>
 		<i
-			class="fa-solid {file.type === 'video'
-				? 'fa-video'
-				: 'fa-image'} text-sm {iconColorClass(state.status, file.type)}"
+			class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-sm {iconColorClass(
+				state.status,
+				file.type
+			)}"
 		></i>
 	</div>
 
@@ -68,7 +69,9 @@
 			<div class="mt-0.5 flex flex-wrap items-center gap-1.5">
 				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
-				<span class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]">
+				<span
+					class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
+				>
 					<i class="fa-solid fa-circle-check text-[8px] lg:text-[9px]"></i>
 					{#if state.gpsRemoved}
 						{tx('step3.files.gpsAndFieldsRemovedMobile', { count: state.fieldsRemoved })}
@@ -81,11 +84,14 @@
 		{:else if state.status === 'in_progress'}
 			<div class="mt-1 flex flex-col gap-1">
 				<div class="flex items-center justify-between">
-					<span class="flex items-center gap-1 text-[10px] font-medium text-brand-blue lg:text-[11px]">
+					<span
+						class="flex items-center gap-1 text-[10px] font-medium text-brand-blue lg:text-[11px]"
+					>
 						<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
 						{tx('step3.files.processing')}
 					</span>
-					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state.progress}%</span>
+					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state.progress}%</span
+					>
 				</div>
 				<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-lighter">
 					<div

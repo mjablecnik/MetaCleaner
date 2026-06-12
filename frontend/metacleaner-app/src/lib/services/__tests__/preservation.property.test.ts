@@ -69,16 +69,13 @@ describe('Preservation 3.1: downloadResults always delegates to downloadJobZip',
 
 	it('downloadResults returns the blob from downloadJobZip unchanged', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.string({ minLength: 1, maxLength: 20 }),
-				async (jobId) => {
-					const blob = new Blob(['zip-content'], { type: 'application/zip' });
-					vi.mocked(api.downloadJobZip).mockResolvedValueOnce(blob);
+			fc.asyncProperty(fc.string({ minLength: 1, maxLength: 20 }), async (jobId) => {
+				const blob = new Blob(['zip-content'], { type: 'application/zip' });
+				vi.mocked(api.downloadJobZip).mockResolvedValueOnce(blob);
 
-					const result = await apiCleaningService.downloadResults(jobId);
-					expect(result).toBe(blob);
-				}
-			),
+				const result = await apiCleaningService.downloadResults(jobId);
+				expect(result).toBe(blob);
+			}),
 			{ numRuns: 30 }
 		);
 	});
@@ -288,7 +285,12 @@ describe('Preservation 3.8: mapMetadataDetail preserves GPS/EXIF/XMP for image f
 								type: 'image',
 								hasGps: true,
 								fieldsRemoved: gpsFields.length,
-								metadata: { gpsFields, exifFields: [], xmpFields: [], totalRemoved: gpsFields.length }
+								metadata: {
+									gpsFields,
+									exifFields: [],
+									xmpFields: [],
+									totalRemoved: gpsFields.length
+								}
 							}
 						]
 					} as never);
@@ -352,9 +354,7 @@ describe('Preservation 3.9: Report file detail scalar fields pass through unchan
 	it('file name without original_name field maps to the name field unchanged', async () => {
 		await fc.assert(
 			fc.asyncProperty(
-				fc
-					.string({ minLength: 1, maxLength: 80 })
-					.filter((n) => !n.match(/^f-[a-f0-9]+\./)),
+				fc.string({ minLength: 1, maxLength: 80 }).filter((n) => !n.match(/^f-[a-f0-9]+\./)),
 				async (name) => {
 					vi.mocked(api.getReportDetail).mockResolvedValueOnce({
 						reportId: 'RPT-NAME-PRES',
@@ -409,7 +409,17 @@ describe('Preservation 3.9: Report file detail scalar fields pass through unchan
 						totalTimeSeconds: 1,
 						chartData: [],
 						files: [
-							{ name, extension, sizeMB, format, device, type, hasGps, fieldsRemoved: 1, metadata: null }
+							{
+								name,
+								extension,
+								sizeMB,
+								format,
+								device,
+								type,
+								hasGps,
+								fieldsRemoved: 1,
+								metadata: null
+							}
 						]
 					} as never);
 
@@ -452,12 +462,7 @@ describe('Preservation 3.2: Non-success app states at "/" keep no logo action', 
 	it('property: for all non-success states, no logoHref and no onLogoClick at root path', () => {
 		fc.assert(
 			fc.property(
-				fc.constantFrom(
-					'idle',
-					'files-ready',
-					'processing',
-					'error'
-				) as fc.Arbitrary<AppState>,
+				fc.constantFrom('idle', 'files-ready', 'processing', 'error') as fc.Arbitrary<AppState>,
 				(appState) => {
 					const result = computeNavPropsForRoot(appState);
 					// Preservation: non-success states have no logo action at root path

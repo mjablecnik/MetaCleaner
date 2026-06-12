@@ -37,7 +37,15 @@ const PERSONAL_EXACT = new Set([
 	'Credit',
 	'Source'
 ]);
-const PERSONAL_PATTERNS = [/^Owner/i, /^By-line/i, /^dc:creator/i, /^dc:rights/i, /^xmpRights/i, /^photoshop:Credit/i, /^photoshop:AuthorsPosition/i];
+const PERSONAL_PATTERNS = [
+	/^Owner/i,
+	/^By-line/i,
+	/^dc:creator/i,
+	/^dc:rights/i,
+	/^xmpRights/i,
+	/^photoshop:Credit/i,
+	/^photoshop:AuthorsPosition/i
+];
 
 // Exact keys and patterns for timestamps
 const TIMESTAMP_EXACT = new Set([

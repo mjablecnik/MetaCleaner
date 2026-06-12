@@ -38,7 +38,7 @@
 	{/if}
 	<div class="relative">
 		{#if icon}
-			<span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-muted">
+			<span class="absolute top-1/2 left-3.5 -translate-y-1/2 text-sm text-text-muted">
 				<i class={icon}></i>
 			</span>
 		{/if}
@@ -48,8 +48,8 @@
 			{disabled}
 			bind:value
 			{placeholder}
-			class="min-h-[44px] w-full rounded-xl border py-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:outline-none focus:shadow-focus-blue lg:min-h-0 {icon
-				? 'pl-10 pr-4'
+			class="min-h-[44px] w-full rounded-xl border py-3 text-sm font-medium text-white transition-[border-color,box-shadow] placeholder:text-text-muted focus:shadow-focus-blue focus:outline-none lg:min-h-0 {icon
+				? 'pr-4 pl-10'
 				: 'px-4'}"
 			style="background: var(--color-navy-main); border-color: {borderColor};"
 			onfocus={() => (isFocused = true)}

@@ -54,14 +54,18 @@ test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
 			await enterFilesReadyState(page);
 
 			// Desktop CTA button is inside .hidden.lg:block section
-			const desktopCta = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+			const desktopCta = page
+				.locator('.hidden.lg\\:block')
+				.getByRole('button', { name: /start cleaning/i });
 			await expect(desktopCta).toBeVisible();
 		});
 
 		test('"Start cleaning" button transitions to processing state', async ({ page }) => {
 			await enterFilesReadyState(page);
 
-			const cleanButton = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+			const cleanButton = page
+				.locator('.hidden.lg\\:block')
+				.getByRole('button', { name: /start cleaning/i });
 			await cleanButton.click();
 
 			// Processing state appears on same URL

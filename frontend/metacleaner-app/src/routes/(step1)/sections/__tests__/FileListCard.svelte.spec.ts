@@ -103,7 +103,13 @@ describe('FileListCard', () => {
 					fields: [],
 					hasGps: true,
 					fieldCount: 3,
-					categoryScores: { gps: 80, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
+					categoryScores: {
+						gps: 80,
+						deviceIdentity: 0,
+						personalData: 0,
+						timestamps: 0,
+						aiOrigin: 0
+					},
 					fileScore: 80
 				}
 			})
@@ -122,7 +128,13 @@ describe('FileListCard', () => {
 					fields: [],
 					hasGps: false,
 					fieldCount: 0,
-					categoryScores: { gps: 0, deviceIdentity: 0, personalData: 0, timestamps: 0, aiOrigin: 0 },
+					categoryScores: {
+						gps: 0,
+						deviceIdentity: 0,
+						personalData: 0,
+						timestamps: 0,
+						aiOrigin: 0
+					},
 					fileScore: 0
 				}
 			})

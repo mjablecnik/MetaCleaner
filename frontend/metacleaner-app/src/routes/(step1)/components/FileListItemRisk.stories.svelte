@@ -39,7 +39,13 @@
 			hasGps: true,
 			device: 'iPhone 15 Pro',
 			fieldCount: 22,
-			categoryScores: { gps: 100, deviceIdentity: 80, personalData: 60, timestamps: 40, aiOrigin: 0 },
+			categoryScores: {
+				gps: 100,
+				deviceIdentity: 80,
+				personalData: 60,
+				timestamps: 40,
+				aiOrigin: 0
+			},
 			fileScore: 85
 		}
 	};

@@ -26,13 +26,17 @@ async function enterFilesReadyState(page: Page) {
 async function enterSuccessState(page: Page, viewport: 'desktop' | 'mobile' = 'desktop') {
 	await enterFilesReadyState(page);
 	if (viewport === 'desktop') {
-		const startBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const startBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await startBtn.click();
 	} else {
 		const mobileBar = page.locator('.fixed.bottom-0');
 		await mobileBar.getByRole('button', { name: /start cleaning/i }).click();
 	}
-	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({ timeout: 10000 });
+	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({
+		timeout: 10000
+	});
 }
 
 async function enterErrorState(page: Page, viewport: 'desktop' | 'mobile' = 'desktop') {
@@ -40,7 +44,9 @@ async function enterErrorState(page: Page, viewport: 'desktop' | 'mobile' = 'des
 	await page.locator('#dropzone-file-input').setInputFiles(ERROR_FILE);
 	await expect(page.getByText('error-trigger.jpg')).toBeVisible();
 	if (viewport === 'desktop') {
-		const startBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const startBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await startBtn.click();
 	} else {
 		const mobileBar = page.locator('.fixed.bottom-0');
@@ -64,10 +70,14 @@ test.describe('Navigation — SPA state transitions (no URL changes)', () => {
 		await expect(page.getByText('Files to process')).toBeVisible();
 	});
 
-	test('clicking Start Cleaning transitions to processing state without URL change', async ({ page }) => {
+	test('clicking Start Cleaning transitions to processing state without URL change', async ({
+		page
+	}) => {
 		await enterFilesReadyState(page);
 
-		const startBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const startBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await startBtn.click();
 
 		// URL stays at /
@@ -91,7 +101,10 @@ test.describe('Navigation — SPA state transitions (no URL changes)', () => {
 	test('Try again in error state returns to files-ready without URL change', async ({ page }) => {
 		await enterErrorState(page);
 
-		await page.locator('.hidden.gap-6').getByRole('button', { name: /try again/i }).click();
+		await page
+			.locator('.hidden.gap-6')
+			.getByRole('button', { name: /try again/i })
+			.click();
 
 		expect(page.url()).toMatch(/\/$/);
 		await expect(page.getByRole('heading', { level: 3, name: 'Risk Scanner' })).toBeVisible();
@@ -100,7 +113,10 @@ test.describe('Navigation — SPA state transitions (no URL changes)', () => {
 	test('Clear all in error state returns to idle without URL change', async ({ page }) => {
 		await enterErrorState(page);
 
-		await page.locator('.hidden.gap-6').getByRole('button', { name: /clear all/i }).click();
+		await page
+			.locator('.hidden.gap-6')
+			.getByRole('button', { name: /clear all/i })
+			.click();
 
 		expect(page.url()).toMatch(/\/$/);
 		await expect(page.getByText('Waiting for files')).toBeVisible();
@@ -120,7 +136,10 @@ test.describe('Navigation — SPA state transitions (no URL changes)', () => {
 	test('"View report" button in Step 5 navigates to /report', async ({ page }) => {
 		await enterSuccessState(page);
 
-		await page.getByRole('button', { name: /view report/i }).first().click();
+		await page
+			.getByRole('button', { name: /view report/i })
+			.first()
+			.click();
 
 		await page.waitForURL('**/report**');
 		expect(page.url()).toMatch(/\/report/);
@@ -132,12 +151,16 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 
 	test('/reports page loads successfully', async ({ page }) => {
 		await page.goto('/reports');
-		await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+		await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+			timeout: 8000
+		});
 	});
 
 	test('/reports → /report/[id] on view-report link click', async ({ page }) => {
 		await page.goto('/reports');
-		await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+		await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+			timeout: 8000
+		});
 
 		// Wait for reports to load (mock service has 200ms delay)
 		const viewLink = page.locator('a[title="View report"]').first();
@@ -150,7 +173,10 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 
 	test('/reports → / on New Cleaning link click', async ({ page }) => {
 		await page.goto('/reports');
-		await page.getByRole('link', { name: /new cleaning/i }).first().click();
+		await page
+			.getByRole('link', { name: /new cleaning/i })
+			.first()
+			.click();
 
 		await page.waitForURL('**/');
 		await expect(page).toHaveURL(/\/$/);
@@ -173,10 +199,16 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 		await page.goto('/report/rpt-001');
 		await expect(page.getByText('MC-2025-001')).toBeVisible({ timeout: 8000 });
 
-		await page.getByRole('link', { name: /back to results/i }).first().click();
+		await page
+			.getByRole('link', { name: /back to results/i })
+			.first()
+			.click();
 		await page.waitForURL('**/reports');
 
-		await page.getByRole('link', { name: /back to cleaning/i }).first().click();
+		await page
+			.getByRole('link', { name: /back to cleaning/i })
+			.first()
+			.click();
 		await page.waitForURL('**/');
 		await expect(page).toHaveURL(/\/$/);
 		// Navigating back to / from reports resets app state to idle
@@ -187,7 +219,9 @@ test.describe('Navigation — URL navigations (reports and report detail)', () =
 test.describe('Navigation — mobile SPA state transitions', () => {
 	test.use({ viewport: { width: 375, height: 812 } });
 
-	test('uploading files on mobile transitions to files-ready without URL change', async ({ page }) => {
+	test('uploading files on mobile transitions to files-ready without URL change', async ({
+		page
+	}) => {
 		await page.goto('/');
 		await uploadFile(page);
 
@@ -195,7 +229,9 @@ test.describe('Navigation — mobile SPA state transitions', () => {
 		await expect(page.getByText('Files to process')).toBeVisible();
 	});
 
-	test('mobile Start Cleaning transitions to processing state without URL change', async ({ page }) => {
+	test('mobile Start Cleaning transitions to processing state without URL change', async ({
+		page
+	}) => {
 		await enterFilesReadyState(page);
 
 		const mobileBar = page.locator('.fixed.bottom-0');

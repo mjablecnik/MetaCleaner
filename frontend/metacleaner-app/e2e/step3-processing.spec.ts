@@ -14,7 +14,9 @@ async function navigateToProcessing(page: Page, viewport: 'desktop' | 'mobile') 
 	await expect(page.getByText('photo.jpg').first()).toBeVisible();
 
 	if (viewport === 'desktop') {
-		const cleanBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const cleanBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await cleanBtn.click();
 		// Wait for processing badge (desktop longer text)
 		await expect(page.getByText('Cleaning in progress...')).toBeVisible();
@@ -37,14 +39,18 @@ test.describe('Step 3 — Processing', () => {
 			// Badge text confirmed by navigateToProcessing; also verify in assertion
 			await expect(page.getByText('Cleaning in progress...')).toBeVisible();
 			// ProcessingFilesCard has h3 "Processing status"
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' }).first()
+			).toBeVisible();
 		});
 
 		test('shows Processing status heading and uploaded file', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
 
 			// ProcessingFilesCard uses h3 "Processing status" (step3.status.title), not "Files to process"
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' }).first()
+			).toBeVisible();
 			// photo.jpg appears multiple times in DOM during processing — use .first()
 			await expect(page.getByText('photo.jpg').first()).toBeVisible();
 		});
@@ -59,16 +65,25 @@ test.describe('Step 3 — Processing', () => {
 			await navigateToProcessing(page, 'desktop');
 
 			// ProcessingStatusCard is inside hidden lg:flex wrapper — scope to avoid strict mode
-			await expect(page.locator('.hidden.lg\\:flex').getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page
+					.locator('.hidden.lg\\:flex')
+					.getByRole('heading', { level: 3, name: 'Processing status' })
+					.first()
+			).toBeVisible();
 			// Both MobileStatusCard and ProcessingStatusCard render this text — scope to desktop container
-			await expect(page.locator('.hidden.lg\\:flex').getByText('Metadata cleaning in progress').first()).toBeVisible();
+			await expect(
+				page.locator('.hidden.lg\\:flex').getByText('Metadata cleaning in progress').first()
+			).toBeVisible();
 		});
 
 		test('shows processing stats on desktop', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
 
 			// ProcessingStatusCard stats are inside hidden lg:flex — scope to avoid picking MobileStatusCard
-			await expect(page.locator('.hidden.lg\\:flex').getByText('Fields deleted').first()).toBeVisible();
+			await expect(
+				page.locator('.hidden.lg\\:flex').getByText('Fields deleted').first()
+			).toBeVisible();
 			await expect(page.locator('.hidden.lg\\:flex').getByText('Done').first()).toBeVisible();
 		});
 
@@ -80,7 +95,9 @@ test.describe('Step 3 — Processing', () => {
 		test('transitions to success state after mock service completes', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({ timeout: 10000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 10000 }
+			);
 			// URL still at /
 			expect(page.url()).toMatch(/\/$/);
 		});
@@ -96,14 +113,18 @@ test.describe('Step 3 — Processing', () => {
 			// Mobile badge uses shorter text — use exact match to avoid matching desktop badge
 			await expect(page.getByText('In progress...', { exact: true })).toBeVisible();
 			// MobileStatusCard has h3 "Processing status"
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' }).first()
+			).toBeVisible();
 		});
 
 		test('shows Processing status heading and uploaded file on mobile', async ({ page }) => {
 			await navigateToProcessing(page, 'mobile');
 
 			// ProcessingFilesCard uses h3 "Processing status" (step3.status.title), not "Files to process"
-			await expect(page.getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 3, name: 'Processing status' }).first()
+			).toBeVisible();
 			await expect(page.getByText('photo.jpg').first()).toBeVisible();
 		});
 
@@ -134,10 +155,14 @@ test.describe('Step 3 — Processing', () => {
 			expect(page.url()).toMatch(/\/$/);
 		});
 
-		test('transitions to success state on mobile after mock service completes', async ({ page }) => {
+		test('transitions to success state on mobile after mock service completes', async ({
+			page
+		}) => {
 			await navigateToProcessing(page, 'mobile');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({ timeout: 15000 });
+			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible(
+				{ timeout: 15000 }
+			);
 			expect(page.url()).toMatch(/\/$/);
 		});
 	});

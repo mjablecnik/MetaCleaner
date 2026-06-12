@@ -13,7 +13,14 @@
 		wrapperId?: string;
 	}
 
-	let { user, open = $bindable(false), onToggle, onSettings, onLogout, wrapperId = 'userDropdown' }: Props = $props();
+	let {
+		user,
+		open = $bindable(false),
+		onToggle,
+		onSettings,
+		onLogout,
+		wrapperId = 'userDropdown'
+	}: Props = $props();
 
 	function handleToggle() {
 		open = !open;
@@ -51,7 +58,12 @@
 		<a
 			class="lang-option"
 			href={resolve('/settings' as Pathname)}
-			onclick={(e) => { if (onSettings) { e.preventDefault(); onSettings(); } }}
+			onclick={(e) => {
+				if (onSettings) {
+					e.preventDefault();
+					onSettings();
+				}
+			}}
 		>
 			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 			<span>{tx('common.nav.settings')}</span>

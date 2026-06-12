@@ -7,7 +7,6 @@
 	}
 
 	const { fileCount, onUploadNew }: Props = $props();
-
 </script>
 
 <div class="fade-in-up mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

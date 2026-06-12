@@ -391,7 +391,14 @@ describe('Feature: api-integration, Property 12: File name map completeness from
 
 	it('known file ID from upload response resolves to its original name', async () => {
 		const uploadedFiles = [
-			{ id: 'f-abc', name: 'holiday.jpg', size: 2000, extension: '.jpg', type: 'image', format: 'jpeg' },
+			{
+				id: 'f-abc',
+				name: 'holiday.jpg',
+				size: 2000,
+				extension: '.jpg',
+				type: 'image',
+				format: 'jpeg'
+			},
 			{ id: 'f-def', name: 'clip.mp4', size: 5000, extension: '.mp4', type: 'video', format: 'mp4' }
 		];
 		let capturedWs: MockWebSocket | null = null;
@@ -673,35 +680,32 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 
 	it('beforeBreakdown.gpsLocations equals the count of file_complete events with gpsRemoved=true', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.array(fc.boolean(), { maxLength: 20 }),
-				async (gpsFlags) => {
-					const { ws, callbacks } = await setupWsScenario();
+			fc.asyncProperty(fc.array(fc.boolean(), { maxLength: 20 }), async (gpsFlags) => {
+				const { ws, callbacks } = await setupWsScenario();
 
-					gpsFlags.forEach((gpsRemoved, i) => {
-						ws.triggerMessage({
-							type: 'file_complete',
-							fileId: `f-${String(i).padStart(3, '0')}`,
-							fieldsRemoved: 5,
-							gpsRemoved,
-							overallProgress: 50,
-							filesCompleted: i + 1,
-							totalFiles: gpsFlags.length
-						});
-					});
-
+				gpsFlags.forEach((gpsRemoved, i) => {
 					ws.triggerMessage({
-						type: 'job_complete',
-						filesProcessed: gpsFlags.length,
-						fieldsRemoved: gpsFlags.length * 5,
-						gpsLocationsRemoved: gpsFlags.filter(Boolean).length,
-						totalTimeSeconds: 3
+						type: 'file_complete',
+						fileId: `f-${String(i).padStart(3, '0')}`,
+						fieldsRemoved: 5,
+						gpsRemoved,
+						overallProgress: 50,
+						filesCompleted: i + 1,
+						totalFiles: gpsFlags.length
 					});
+				});
 
-					const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
-					expect(result.beforeBreakdown.gpsLocations).toBe(gpsFlags.filter(Boolean).length);
-				}
-			),
+				ws.triggerMessage({
+					type: 'job_complete',
+					filesProcessed: gpsFlags.length,
+					fieldsRemoved: gpsFlags.length * 5,
+					gpsLocationsRemoved: gpsFlags.filter(Boolean).length,
+					totalTimeSeconds: 3
+				});
+
+				const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
+				expect(result.beforeBreakdown.gpsLocations).toBe(gpsFlags.filter(Boolean).length);
+			}),
 			{ numRuns: 50 }
 		);
 	});
@@ -889,32 +893,29 @@ describe('Feature: api-integration, Property 8: HTTP error status code mapping',
 
 	it('phase is always upload when uploadFiles throws ApiHttpError', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.integer({ min: 400, max: 599 }),
-				async (status) => {
-					const callbacks = makeCallbacks();
+			fc.asyncProperty(fc.integer({ min: 400, max: 599 }), async (status) => {
+				const callbacks = makeCallbacks();
 
-					vi.mocked(api.uploadFiles).mockRejectedValueOnce(
-						new api.ApiHttpError(status, 'SOME_CODE', 'Error message', '2024-01-01T00:00:00Z')
-					);
+				vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+					new api.ApiHttpError(status, 'SOME_CODE', 'Error message', '2024-01-01T00:00:00Z')
+				);
 
-					apiCleaningService.startCleaning(
-						[makeQueuedFile('f-003', 5, false)],
-						noopOptions,
-						callbacks
-					);
+				apiCleaningService.startCleaning(
+					[makeQueuedFile('f-003', 5, false)],
+					noopOptions,
+					callbacks
+				);
 
-					await vi.waitFor(
-						() => {
-							expect(callbacks.onError).toHaveBeenCalledTimes(1);
-						},
-						{ timeout: 1000 }
-					);
+				await vi.waitFor(
+					() => {
+						expect(callbacks.onError).toHaveBeenCalledTimes(1);
+					},
+					{ timeout: 1000 }
+				);
 
-					const error = vi.mocked(callbacks.onError).mock.calls[0][0];
-					expect(error.phase).toBe('upload');
-				}
-			),
+				const error = vi.mocked(callbacks.onError).mock.calls[0][0];
+				expect(error.phase).toBe('upload');
+			}),
 			{ numRuns: 50 }
 		);
 	});
@@ -941,32 +942,29 @@ describe('Feature: api-integration, Property 8: HTTP error status code mapping',
 
 	it('onError is called exactly once per HTTP error — no duplicate error callbacks', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.constantFrom(413, 415, 429, 400, 404),
-				async (status) => {
-					const callbacks = makeCallbacks();
+			fc.asyncProperty(fc.constantFrom(413, 415, 429, 400, 404), async (status) => {
+				const callbacks = makeCallbacks();
 
-					vi.mocked(api.uploadFiles).mockRejectedValueOnce(
-						new api.ApiHttpError(status, 'ANY_CODE', 'msg', '2024-01-01T00:00:00Z')
-					);
+				vi.mocked(api.uploadFiles).mockRejectedValueOnce(
+					new api.ApiHttpError(status, 'ANY_CODE', 'msg', '2024-01-01T00:00:00Z')
+				);
 
-					apiCleaningService.startCleaning(
-						[makeQueuedFile('f-005', 5, false)],
-						noopOptions,
-						callbacks
-					);
+				apiCleaningService.startCleaning(
+					[makeQueuedFile('f-005', 5, false)],
+					noopOptions,
+					callbacks
+				);
 
-					await vi.waitFor(
-						() => {
-							expect(callbacks.onError).toHaveBeenCalledTimes(1);
-						},
-						{ timeout: 1000 }
-					);
+				await vi.waitFor(
+					() => {
+						expect(callbacks.onError).toHaveBeenCalledTimes(1);
+					},
+					{ timeout: 1000 }
+				);
 
-					expect(callbacks.onError).toHaveBeenCalledTimes(1);
-					expect(callbacks.onComplete).not.toHaveBeenCalled();
-				}
-			),
+				expect(callbacks.onError).toHaveBeenCalledTimes(1);
+				expect(callbacks.onComplete).not.toHaveBeenCalled();
+			}),
 			{ numRuns: 20 }
 		);
 	});
@@ -1214,7 +1212,12 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 	// getReports
 
 	it('getReports passes summary through unchanged from backend', async () => {
-		const backendSummary = { totalReports: 5, fieldsRemoved: 42, filesProcessed: 10, gpsRemoved: 3 };
+		const backendSummary = {
+			totalReports: 5,
+			fieldsRemoved: 42,
+			filesProcessed: 10,
+			gpsRemoved: 3
+		};
 		vi.mocked(api.getReports).mockResolvedValueOnce({
 			summary: backendSummary,
 			reports: []
@@ -1663,9 +1666,9 @@ describe('Bug Condition 9: Report detail should show original upload filename', 
 			fc.asyncProperty(
 				fc.record({
 					hashedName: fc.stringMatching(/^[0-9a-f]{8}$/).map((h) => `f-${h}.mp4`),
-					originalName: fc.string({ minLength: 1, maxLength: 80 }).filter(
-						(s) => !s.match(/^f-[a-f0-9]+\./)
-					)
+					originalName: fc
+						.string({ minLength: 1, maxLength: 80 })
+						.filter((s) => !s.match(/^f-[a-f0-9]+\./))
 				}),
 				async ({ hashedName, originalName }) => {
 					vi.mocked(api.getReportDetail).mockResolvedValueOnce({
@@ -1808,9 +1811,9 @@ describe('Feature: api-integration, Property 11: Bar width percentage computatio
 	it('sum of barWidthPercents differs from 100 by at most N (rounding error bound) when total > 0', async () => {
 		await fc.assert(
 			fc.asyncProperty(
-				fc.array(fc.nat({ max: 500 }), { minLength: 1, maxLength: 10 }).filter((arr) =>
-					arr.some((n) => n > 0)
-				),
+				fc
+					.array(fc.nat({ max: 500 }), { minLength: 1, maxLength: 10 })
+					.filter((arr) => arr.some((n) => n > 0)),
 				async (fieldCounts) => {
 					mockReportDetail(fieldCounts.map((n) => makeBackendFile(n)));
 					const result = await apiCleaningService.getReportDetail('RPT-001');
@@ -1936,13 +1939,22 @@ describe('Feature: api-integration, Property 13: mapMetadataDetail complete fiel
 					const meta = result.files[0].metadata as unknown as Record<string, unknown>;
 					type Field = { label: string; value: string };
 
-					expect((meta['gpsFields'] as Field[])[0]).toMatchObject({ label: gpsLabel, value: gpsValue });
+					expect((meta['gpsFields'] as Field[])[0]).toMatchObject({
+						label: gpsLabel,
+						value: gpsValue
+					});
 					expect((meta['exifFields'] as Field[])[0]).toMatchObject({
 						label: exifLabel,
 						value: exifValue
 					});
-					expect((meta['xmpFields'] as Field[])[0]).toMatchObject({ label: xmpLabel, value: xmpValue });
-					expect((meta['id3Fields'] as Field[])[0]).toMatchObject({ label: id3Label, value: id3Value });
+					expect((meta['xmpFields'] as Field[])[0]).toMatchObject({
+						label: xmpLabel,
+						value: xmpValue
+					});
+					expect((meta['id3Fields'] as Field[])[0]).toMatchObject({
+						label: id3Label,
+						value: id3Value
+					});
 					expect((meta['mp4AtomFields'] as Field[])[0]).toMatchObject({
 						label: mp4Label,
 						value: mp4Value

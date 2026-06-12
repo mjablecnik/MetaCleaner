@@ -24,7 +24,9 @@ async function uploadAndEnterFilesReady(page: Page) {
 // Click Start Cleaning and wait for the processing badge
 async function clickStartCleaning(page: Page, viewport: 'desktop' | 'mobile') {
 	if (viewport === 'desktop') {
-		const cleanBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const cleanBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await cleanBtn.click();
 	} else {
 		const mobileBar = page.locator('.fixed.bottom-0');
@@ -57,7 +59,9 @@ async function navigateToErrorState(page: Page, viewport: 'desktop' | 'mobile') 
 async function navigateToSuccess(page: Page, viewport: 'desktop' | 'mobile') {
 	await uploadAndEnterFilesReady(page);
 	await clickStartCleaning(page, viewport);
-	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({ timeout: 10000 });
+	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({
+		timeout: 10000
+	});
 }
 
 // ─── Step 1 ───────────────────────────────────────────────────────────────────
@@ -157,13 +161,20 @@ test.describe('Responsive — Step 3 (Processing)', () => {
 		test('processing status sidebar is visible on desktop', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
 			// ProcessingStatusCard is inside hidden lg:flex — scope to avoid strict mode (MobileStatusCard also has same heading)
-			await expect(page.locator('.hidden.lg\\:flex').getByRole('heading', { level: 3, name: 'Processing status' }).first()).toBeVisible();
+			await expect(
+				page
+					.locator('.hidden.lg\\:flex')
+					.getByRole('heading', { level: 3, name: 'Processing status' })
+					.first()
+			).toBeVisible();
 		});
 
 		test('desktop shows "Fields deleted" label', async ({ page }) => {
 			await navigateToProcessing(page, 'desktop');
 			// ProcessingStatusCard stats are inside hidden lg:flex — scope to pick desktop element (not MobileStatusCard)
-			await expect(page.locator('.hidden.lg\\:flex').getByText('Fields deleted').first()).toBeVisible();
+			await expect(
+				page.locator('.hidden.lg\\:flex').getByText('Fields deleted').first()
+			).toBeVisible();
 		});
 	});
 });
@@ -219,7 +230,9 @@ test.describe('Responsive — Step 5 (Results)', () => {
 
 		test('success header is visible on mobile', async ({ page }) => {
 			await navigateToSuccess(page, 'mobile');
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 		});
 
 		test('summary stats are visible on mobile', async ({ page }) => {
@@ -234,7 +247,9 @@ test.describe('Responsive — Step 5 (Results)', () => {
 
 		test('success header is visible on desktop', async ({ page }) => {
 			await navigateToSuccess(page, 'desktop');
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 		});
 
 		test('summary stats are visible on desktop', async ({ page }) => {
@@ -254,7 +269,9 @@ test.describe('Responsive — Reports', () => {
 		test('report cards list (ReportsList) is visible on mobile', async ({ page }) => {
 			await page.goto('/reports');
 			// Mock cleaning service has 200ms delay — wait for data to load
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 			// Wait for reports to appear
 			await page.waitForTimeout(500);
 
@@ -264,7 +281,9 @@ test.describe('Responsive — Reports', () => {
 
 		test('reports table is hidden on mobile', async ({ page }) => {
 			await page.goto('/reports');
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 
 			const table = page.locator('.hidden.lg\\:block').filter({ hasText: 'Report list' });
 			await expect(table).not.toBeVisible();
@@ -272,7 +291,9 @@ test.describe('Responsive — Reports', () => {
 
 		test('mobile filter pills are visible', async ({ page }) => {
 			await page.goto('/reports');
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 
 			const mobileFilters = page.locator('.lg\\:hidden').filter({ hasText: 'Photos' }).first();
 			await expect(mobileFilters).toBeVisible();
@@ -290,7 +311,9 @@ test.describe('Responsive — Reports', () => {
 
 		test('reports table (ReportsTable) is visible on desktop', async ({ page }) => {
 			await page.goto('/reports');
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 			await page.waitForTimeout(500);
 
 			const table = page.locator('.hidden.lg\\:block').filter({ hasText: 'Report list' });
@@ -299,7 +322,9 @@ test.describe('Responsive — Reports', () => {
 
 		test('report cards list is hidden on desktop', async ({ page }) => {
 			await page.goto('/reports');
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 
 			const reportsList = page.locator('.lg\\:hidden').filter({ hasText: 'Report list' }).first();
 			await expect(reportsList).not.toBeVisible();
@@ -307,7 +332,9 @@ test.describe('Responsive — Reports', () => {
 
 		test('desktop filters bar is visible', async ({ page }) => {
 			await page.goto('/reports');
-			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /report history/i })).toBeVisible({
+				timeout: 8000
+			});
 
 			const desktopFilters = page.locator('.hidden.lg\\:block').filter({ hasText: 'Filter:' });
 			await expect(desktopFilters).toBeVisible();
@@ -332,7 +359,9 @@ test.describe('Responsive — Report Detail', () => {
 			await page.goto('/report/rpt-001');
 			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
-			await expect(page.getByRole('heading', { name: /distribution of removed metadata/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /distribution of removed metadata/i })
+			).toBeVisible();
 			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
 		});
 
@@ -341,7 +370,9 @@ test.describe('Responsive — Report Detail', () => {
 			await page.goto('/report/rpt-001');
 			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
-			const pdfBtn = page.locator('.hidden.lg\\:flex').getByRole('button', { name: /download pdf/i });
+			const pdfBtn = page
+				.locator('.hidden.lg\\:flex')
+				.getByRole('button', { name: /download pdf/i });
 			await expect(pdfBtn).not.toBeVisible();
 		});
 	});
@@ -354,7 +385,9 @@ test.describe('Responsive — Report Detail', () => {
 			await page.goto('/report/rpt-001');
 			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
-			await expect(page.getByRole('heading', { name: /distribution of removed metadata/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { name: /distribution of removed metadata/i })
+			).toBeVisible();
 			await expect(page.getByRole('heading', { name: /detailed file overview/i })).toBeVisible();
 		});
 
@@ -363,7 +396,9 @@ test.describe('Responsive — Report Detail', () => {
 			await page.goto('/report/rpt-001');
 			await expect(page.getByText(mockReportDetail.reportId)).toBeVisible({ timeout: 8000 });
 
-			const pdfBtn = page.locator('.hidden.lg\\:flex').getByRole('button', { name: /download pdf/i });
+			const pdfBtn = page
+				.locator('.hidden.lg\\:flex')
+				.getByRole('button', { name: /download pdf/i });
 			await expect(pdfBtn).toBeVisible();
 		});
 	});

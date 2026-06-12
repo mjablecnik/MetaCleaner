@@ -13,7 +13,6 @@
 
 	const { currentFileName, totalFiles, fieldsRemoved, filesCompleted, logEntries }: Props =
 		$props();
-
 </script>
 
 <div class="flex flex-col gap-5 rounded-2xl border border-gray-800 bg-navy-card p-6 shadow-card">

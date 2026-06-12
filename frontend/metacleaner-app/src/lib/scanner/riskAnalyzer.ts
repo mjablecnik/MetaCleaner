@@ -41,7 +41,10 @@ function computeCategoryScore(
 	return Math.min(100, baseScore + bonus);
 }
 
-export function computeFileScore(fields: MetadataField[], aiDetection?: AIDetectionInfo): {
+export function computeFileScore(
+	fields: MetadataField[],
+	aiDetection?: AIDetectionInfo
+): {
 	score: number;
 	categories: RiskCategory;
 } {

@@ -13,7 +13,9 @@ async function navigateToSuccess(page: Page, viewport: 'desktop' | 'mobile') {
 	await expect(page.getByText('photo.jpg')).toBeVisible();
 
 	if (viewport === 'desktop') {
-		const cleanBtn = page.locator('.hidden.lg\\:block').getByRole('button', { name: /start cleaning/i });
+		const cleanBtn = page
+			.locator('.hidden.lg\\:block')
+			.getByRole('button', { name: /start cleaning/i });
 		await cleanBtn.click();
 	} else {
 		const mobileBar = page.locator('.fixed.bottom-0');
@@ -21,7 +23,9 @@ async function navigateToSuccess(page: Page, viewport: 'desktop' | 'mobile') {
 	}
 
 	// Wait for mock service to complete (uses simulated delays per file ~800ms)
-	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({ timeout: 10000 });
+	await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible({
+		timeout: 10000
+	});
 }
 
 test.describe('Step 5 — Results', () => {
@@ -31,7 +35,9 @@ test.describe('Step 5 — Results', () => {
 		test('renders success header with title and badge', async ({ page }) => {
 			await navigateToSuccess(page, 'desktop');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
@@ -89,7 +95,10 @@ test.describe('Step 5 — Results', () => {
 		test('"View report" button navigates to /report', async ({ page }) => {
 			await navigateToSuccess(page, 'desktop');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 
 			await page.waitForURL('**/report**');
 			expect(page.url()).toMatch(/\/report/);
@@ -112,7 +121,9 @@ test.describe('Step 5 — Results', () => {
 		test('renders success header with title and badge on mobile', async ({ page }) => {
 			await navigateToSuccess(page, 'mobile');
 
-			await expect(page.getByRole('heading', { level: 1, name: /cleaning complete/i })).toBeVisible();
+			await expect(
+				page.getByRole('heading', { level: 1, name: /cleaning complete/i })
+			).toBeVisible();
 			await expect(page.getByText('100% Successfully completed').first()).toBeVisible();
 		});
 
@@ -132,7 +143,9 @@ test.describe('Step 5 — Results', () => {
 			await navigateToSuccess(page, 'mobile');
 
 			// Mobile MetadataOverview is an accordion (lg:hidden wrapper)
-			const accordionBtn = page.locator('.lg\\:hidden').getByRole('button', { name: /metadata overview/i });
+			const accordionBtn = page
+				.locator('.lg\\:hidden')
+				.getByRole('button', { name: /metadata overview/i });
 			await expect(accordionBtn).toBeVisible();
 
 			// Collapse accordion

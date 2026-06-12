@@ -35,7 +35,11 @@
 
 <Story name="WithError">
 	<div class="w-80 p-4">
-		<PasswordInput value="short" error="Password must be at least 8 characters" onToggle={() => {}} />
+		<PasswordInput
+			value="short"
+			error="Password must be at least 8 characters"
+			onToggle={() => {}}
+		/>
 	</div>
 </Story>
 

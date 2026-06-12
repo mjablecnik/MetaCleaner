@@ -13,12 +13,13 @@
 
 	let { headline, highlightedWord, beforeHighlight, afterWord, description, stats }: Props =
 		$props();
-
 </script>
 
 <div class="mb-6 flex flex-col items-center text-center lg:hidden">
-	<h1 class="mb-2 text-2xl font-black leading-tight text-white">
-		{headline}{#if beforeHighlight} {beforeHighlight}{/if} <span class="text-brand-green">{highlightedWord}</span>{#if afterWord} {afterWord}{/if}
+	<h1 class="mb-2 text-2xl leading-tight font-black text-white">
+		{headline}{#if beforeHighlight}
+			{beforeHighlight}{/if} <span class="text-brand-green">{highlightedWord}</span>{#if afterWord}
+			{afterWord}{/if}
 	</h1>
 	<p class="max-w-xs text-xs leading-relaxed text-text-muted">{description}</p>
 

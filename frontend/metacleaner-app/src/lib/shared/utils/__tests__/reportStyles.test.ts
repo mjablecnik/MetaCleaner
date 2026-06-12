@@ -65,9 +65,7 @@ describe('Style functions always return non-empty valid class strings', () => {
 				fc.property(
 					fc.string().filter((c) => c !== 'green' && c !== 'orange'),
 					(color) => {
-						expect(iconStyle(color)).toBe(
-							'bg-brand-blue/10 border-brand-blue/20 text-brand-blue'
-						);
+						expect(iconStyle(color)).toBe('bg-brand-blue/10 border-brand-blue/20 text-brand-blue');
 					}
 				),
 				{ numRuns: 100 }

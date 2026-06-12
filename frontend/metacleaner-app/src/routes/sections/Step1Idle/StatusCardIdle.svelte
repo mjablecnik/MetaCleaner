@@ -9,7 +9,6 @@
 	}
 
 	const { class: extraClass = '' }: Props = $props();
-
 </script>
 
 <Card class="flex flex-col items-center justify-center gap-5 py-12 lg:h-full lg:py-16 {extraClass}">

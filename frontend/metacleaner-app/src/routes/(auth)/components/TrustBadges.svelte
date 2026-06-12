@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
-
 </script>
 
 <div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">

@@ -3,7 +3,6 @@
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import UploadZoneCard from '../../(step1)/sections/UploadZoneCard.svelte';
 	import StatusCardIdle from './StatusCardIdle.svelte';
-
 </script>
 
 <!-- Desktop: two-column grid 55%/43% | Mobile: single column -->

@@ -9,7 +9,6 @@
 	}
 
 	let { reportDetail, userEmail, onDownloadPdf }: Props = $props();
-
 </script>
 
 <!-- Title row with icon, heading, and action buttons -->

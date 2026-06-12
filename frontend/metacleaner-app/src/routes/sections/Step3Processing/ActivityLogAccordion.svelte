@@ -10,7 +10,6 @@
 	const { entries }: Props = $props();
 
 	let open = $state(false);
-
 </script>
 
 <div class="rounded-2xl border border-gray-800 bg-navy-card shadow-card">

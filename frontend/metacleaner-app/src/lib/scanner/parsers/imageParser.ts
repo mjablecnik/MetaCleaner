@@ -2,11 +2,7 @@ import exifr from 'exifr';
 import ExifReader from 'exifreader';
 import type { MetadataField, ScanResult } from '../types.js';
 import type { ImageFormat } from '../types.js';
-import {
-	FILE_SIZE_THRESHOLD,
-	MAX_IMAGE_HEADER_BYTES,
-	categorizeField
-} from '../constants.js';
+import { FILE_SIZE_THRESHOLD, MAX_IMAGE_HEADER_BYTES, categorizeField } from '../constants.js';
 import { computeFileScore } from '../riskAnalyzer.js';
 import {
 	detectAIInPngBytes,
@@ -46,7 +42,11 @@ function rawToFields(raw: Record<string, unknown>): MetadataField[] {
 	return fields;
 }
 
-async function parseWithExifr(input: Blob, fileId: string, format: ImageFormat): Promise<ScanResult> {
+async function parseWithExifr(
+	input: Blob,
+	fileId: string,
+	format: ImageFormat
+): Promise<ScanResult> {
 	// Read raw bytes for binary-level AI detection (C2PA chunks)
 	const rawBytes = await input.arrayBuffer();
 	let byteSignals: AISignal[] = [];

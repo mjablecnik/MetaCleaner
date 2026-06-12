@@ -16,19 +16,11 @@
 </script>
 
 <Story name="WithRegisterLink">
-	<AuthNavbar
-		rightText="Don't have an account?"
-		rightHref="/register"
-		rightLabel="Register"
-	/>
+	<AuthNavbar rightText="Don't have an account?" rightHref="/register" rightLabel="Register" />
 </Story>
 
 <Story name="WithLoginLink">
-	<AuthNavbar
-		rightText="Already have an account?"
-		rightHref="/login"
-		rightLabel="Login"
-	/>
+	<AuthNavbar rightText="Already have an account?" rightHref="/login" rightLabel="Login" />
 </Story>
 
 <Story name="NoRightAction">

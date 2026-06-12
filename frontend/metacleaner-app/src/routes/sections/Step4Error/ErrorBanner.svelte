@@ -8,7 +8,6 @@
 	}
 
 	const { code, description, onDismiss }: Props = $props();
-
 </script>
 
 <div

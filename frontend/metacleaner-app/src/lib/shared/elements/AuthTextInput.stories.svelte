@@ -23,13 +23,23 @@
 
 <Story name="WithIcon">
 	<div class="w-80 p-4">
-		<AuthTextInput label="Email" icon="fa-regular fa-envelope" placeholder="you@example.com" value="" />
+		<AuthTextInput
+			label="Email"
+			icon="fa-regular fa-envelope"
+			placeholder="you@example.com"
+			value=""
+		/>
 	</div>
 </Story>
 
 <Story name="Focused">
 	<div class="w-80 p-4">
-		<AuthTextInput label="Email" icon="fa-regular fa-envelope" placeholder="you@example.com" value="jan@example.com" />
+		<AuthTextInput
+			label="Email"
+			icon="fa-regular fa-envelope"
+			placeholder="you@example.com"
+			value="jan@example.com"
+		/>
 	</div>
 </Story>
 
@@ -47,6 +57,12 @@
 
 <Story name="Disabled">
 	<div class="w-80 p-4">
-		<AuthTextInput label="Email" icon="fa-regular fa-envelope" placeholder="you@example.com" value="" disabled />
+		<AuthTextInput
+			label="Email"
+			icon="fa-regular fa-envelope"
+			placeholder="you@example.com"
+			value=""
+			disabled
+		/>
 	</div>
 </Story>

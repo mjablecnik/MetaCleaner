@@ -335,6 +335,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Register_Badge_Freeforever1Inputs */
 /** @typedef {{}} Auth_Register_Branding_HeadlineInputs */
 /** @typedef {{}} Auth_Register_Branding_Headlinehighlight1Inputs */
+/** @typedef {{}} Auth_Register_Branding_Headlineafterword2Inputs */
+/** @typedef {{}} Auth_Register_Branding_Headlinebeforehighlight2Inputs */
 /** @typedef {{}} Auth_Register_Branding_DescriptionInputs */
 /** @typedef {{}} Auth_Register_Plan_TitleInputs */
 /** @typedef {{}} Auth_Register_Plan_Freename1Inputs */
@@ -5454,6 +5456,36 @@ const auth_register_branding_headlinehighlight1 = /** @type {((inputs?: Auth_Reg
 	return __cs.auth_register_branding_headlinehighlight1(inputs)
 });
 export { auth_register_branding_headlinehighlight1 as "auth.register.branding.headlineHighlight" }
+/**
+* | output |
+* | --- |
+* | "today" |
+*
+* @param {Auth_Register_Branding_Headlineafterword2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_register_branding_headlineafterword2 = /** @type {((inputs?: Auth_Register_Branding_Headlineafterword2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Branding_Headlineafterword2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_register_branding_headlineafterword2(inputs)
+	return __cs.auth_register_branding_headlineafterword2(inputs)
+});
+export { auth_register_branding_headlineafterword2 as "auth.register.branding.headlineAfterWord" }
+/**
+* | output |
+* | --- |
+* | "your" |
+*
+* @param {Auth_Register_Branding_Headlinebeforehighlight2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_register_branding_headlinebeforehighlight2 = /** @type {((inputs?: Auth_Register_Branding_Headlinebeforehighlight2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Branding_Headlinebeforehighlight2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_register_branding_headlinebeforehighlight2(inputs)
+	return __cs.auth_register_branding_headlinebeforehighlight2(inputs)
+});
+export { auth_register_branding_headlinebeforehighlight2 as "auth.register.branding.headlineBeforeHighlight" }
 /**
 * | output |
 * | --- |

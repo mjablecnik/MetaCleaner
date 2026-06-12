@@ -8,7 +8,6 @@
 	}
 
 	const { totalReports }: Props = $props();
-
 </script>
 
 <div

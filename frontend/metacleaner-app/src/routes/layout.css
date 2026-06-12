@@ -57,8 +57,12 @@
 	--shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 	--shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.5); /* dropdowns, popovers */
 	--shadow-drop-red: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); /* red glow for error SVGs */
-	--shadow-drop-orange: drop-shadow(0 0 6px rgba(249, 115, 22, 0.6)); /* orange glow for warning SVGs */
-	--shadow-drop-green: drop-shadow(0 0 6px rgba(34, 197, 94, 0.6)); /* green glow for success SVGs */
+	--shadow-drop-orange: drop-shadow(
+		0 0 6px rgba(249, 115, 22, 0.6)
+	); /* orange glow for warning SVGs */
+	--shadow-drop-green: drop-shadow(
+		0 0 6px rgba(34, 197, 94, 0.6)
+	); /* green glow for success SVGs */
 	--shadow-drop-blue: drop-shadow(0 0 6px rgba(59, 130, 246, 0.6)); /* blue glow for info SVGs */
 
 	/* ─── Border radii (non-standard values not covered by Tailwind defaults) */
@@ -313,8 +317,13 @@ button,
 }
 
 @keyframes float {
-	0%, 100% { transform: translateY(0); }
-	50% { transform: translateY(-8px); }
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-8px);
+	}
 }
 
 .floating-icon {

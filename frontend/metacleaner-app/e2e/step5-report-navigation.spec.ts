@@ -35,7 +35,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('"View report" button navigates to /report', async ({ page }) => {
 			await navigateToStep5(page, 'desktop');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 
 			await page.waitForURL('**/report**');
 			expect(page.url()).toMatch(/\/report/);
@@ -46,7 +49,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		}) => {
 			await navigateToStep5(page, 'desktop');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// Report page title
@@ -58,7 +64,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('report page shows stat cards after navigation from Step 5', async ({ page }) => {
 			await navigateToStep5(page, 'desktop');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// Wait for loading to complete (mock service has 200ms delay)
@@ -67,9 +76,7 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 			).toBeVisible({ timeout: 5000 });
 
 			// Summary stats from the report — use exact match to avoid "Metadata fields removed per file"
-			await expect(
-				page.getByText('Files processed', { exact: true }).first()
-			).toBeVisible();
+			await expect(page.getByText('Files processed', { exact: true }).first()).toBeVisible();
 			await expect(
 				page.getByText('Metadata fields removed', { exact: true }).first()
 			).toBeVisible();
@@ -78,7 +85,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('"Back to results" link on /report navigates to /reports', async ({ page }) => {
 			await navigateToStep5(page, 'desktop');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// Desktop NavBar back button — shown as <a> with text "Back to results"
@@ -92,7 +102,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 			await navigateToStep5(page, 'desktop');
 
 			// Navigate to /report via "View report" button
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// Navigate back to /reports via "Back to results"
@@ -113,7 +126,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 			// Confirm we're at / before clicking
 			expect(page.url()).toMatch(/\/$/);
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// URL must have changed
@@ -128,7 +144,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('"View report" button navigates to /report on mobile', async ({ page }) => {
 			await navigateToStep5(page, 'mobile');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 
 			await page.waitForURL('**/report**');
 			expect(page.url()).toMatch(/\/report/);
@@ -137,7 +156,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('report page shows heading on mobile', async ({ page }) => {
 			await navigateToStep5(page, 'mobile');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			await expect(
@@ -148,7 +170,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 		test('mobile back arrow on /report navigates to /reports', async ({ page }) => {
 			await navigateToStep5(page, 'mobile');
 
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// Mobile NavBar back button — shown as <a aria-label="Go back">
@@ -162,7 +187,10 @@ test.describe('Step 5 → Report navigation (SPA)', () => {
 			await navigateToStep5(page, 'mobile');
 
 			// Step 5 → /report
-			await page.getByRole('button', { name: /view report/i }).first().click();
+			await page
+				.getByRole('button', { name: /view report/i })
+				.first()
+				.click();
 			await page.waitForURL('**/report**');
 
 			// /report → /reports (via mobile back arrow)

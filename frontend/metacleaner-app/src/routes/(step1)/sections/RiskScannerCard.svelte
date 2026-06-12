@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
-	import { ringColorMap, severityBadgeClass, dotColorClass, severityLabelKey, barSeverity } from '$lib/shared/utils/riskStyles';
+	import {
+		ringColorMap,
+		severityBadgeClass,
+		dotColorClass,
+		severityLabelKey,
+		barSeverity
+	} from '$lib/shared/utils/riskStyles';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import RiskScoreRing from '../components/RiskScoreRing.svelte';
 	import RiskBreakdownBar from '../components/RiskBreakdownBar.svelte';
@@ -23,10 +29,26 @@
 	const sortedBars = $derived(
 		(
 			[
-				{ icon: 'fa-solid fa-location-dot', labelKey: 'step2.risk.gpsCoordinates', value: categories.gps },
-				{ icon: 'fa-solid fa-mobile-screen', labelKey: 'step2.risk.deviceIdentity', value: categories.deviceIdentity },
-				{ icon: 'fa-solid fa-user', labelKey: 'step2.risk.personalData', value: categories.personalData },
-				{ icon: 'fa-solid fa-clock', labelKey: 'step2.risk.timestamp', value: categories.timestamps },
+				{
+					icon: 'fa-solid fa-location-dot',
+					labelKey: 'step2.risk.gpsCoordinates',
+					value: categories.gps
+				},
+				{
+					icon: 'fa-solid fa-mobile-screen',
+					labelKey: 'step2.risk.deviceIdentity',
+					value: categories.deviceIdentity
+				},
+				{
+					icon: 'fa-solid fa-user',
+					labelKey: 'step2.risk.personalData',
+					value: categories.personalData
+				},
+				{
+					icon: 'fa-solid fa-clock',
+					labelKey: 'step2.risk.timestamp',
+					value: categories.timestamps
+				},
 				{ icon: 'fa-solid fa-robot', labelKey: 'step2.risk.aiOrigin', value: categories.aiOrigin }
 			] satisfies RiskBar[]
 		).toSorted((a, b) => b.value - a.value)

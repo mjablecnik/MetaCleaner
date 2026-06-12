@@ -279,7 +279,15 @@ describe('Property: navProps logoHref invariants across random routes and states
 
 	// I1 variant: explicit common non-root paths always get logoHref = '/'
 	it('for any of the specific known non-root paths, logoHref is "/" for all states', () => {
-		const knownPaths = ['/reports', '/report/abc', '/report', '/step2', '/step3', '/step4', '/step5'];
+		const knownPaths = [
+			'/reports',
+			'/report/abc',
+			'/report',
+			'/step2',
+			'/step3',
+			'/step4',
+			'/step5'
+		];
 		fc.assert(
 			fc.property(
 				fc.constantFrom(...knownPaths),
@@ -327,13 +335,10 @@ describe('Property: navProps logoHref invariants across random routes and states
 	// I3 corollary: the onLogoClick callback passed in is the exact one returned
 	it('onLogoClick returned for success state is the same callback passed as onLogoReset', () => {
 		fc.assert(
-			fc.property(
-				fc.func(fc.constant(undefined as void)),
-				(onReset) => {
-					const props = computeNavProps({ path: '/', appState: 'success' }, onReset);
-					expect(props.onLogoClick).toBe(onReset);
-				}
-			),
+			fc.property(fc.func(fc.constant(undefined as void)), (onReset) => {
+				const props = computeNavProps({ path: '/', appState: 'success' }, onReset);
+				expect(props.onLogoClick).toBe(onReset);
+			}),
 			{ numRuns: 50 }
 		);
 	});

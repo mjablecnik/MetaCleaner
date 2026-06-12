@@ -116,7 +116,10 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 		test('MobileRiskBanner accordion appears after uploading files', async ({ page }) => {
 			await page.goto('/');
 			// Banner is not visible before files are added
-			const riskBannerToggle = page.locator('button[type="button"]').filter({ hasText: 'Risk Scanner' }).first();
+			const riskBannerToggle = page
+				.locator('button[type="button"]')
+				.filter({ hasText: 'Risk Scanner' })
+				.first();
 			await expect(riskBannerToggle).not.toBeVisible();
 
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
@@ -147,7 +150,10 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 			await page.goto('/');
 			await page.locator('#dropzone-file-input').setInputFiles(TEST_FILE);
 
-			const bannerToggle = page.locator('button[type="button"]').filter({ hasText: 'Risk Scanner' }).first();
+			const bannerToggle = page
+				.locator('button[type="button"]')
+				.filter({ hasText: 'Risk Scanner' })
+				.first();
 			await expect(bannerToggle).toBeVisible();
 
 			// Expand the accordion
@@ -168,7 +174,10 @@ test.describe('Step 1 → Step 2 in-place SPA transition', () => {
 
 			// RiskScannerCard is inside a .hidden.lg\\:flex wrapper — not visible on 375px
 			// Use .first() because both the Step2FilesReady wrapper and RiskScannerCard's inner div have hidden+lg:flex
-			const desktopSidebar = page.locator('.hidden.lg\\:flex').filter({ hasText: 'Risk Scanner' }).first();
+			const desktopSidebar = page
+				.locator('.hidden.lg\\:flex')
+				.filter({ hasText: 'Risk Scanner' })
+				.first();
 			await expect(desktopSidebar).not.toBeVisible();
 		});
 	});

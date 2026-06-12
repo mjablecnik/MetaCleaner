@@ -9,7 +9,6 @@
 	}
 
 	let { activeFilter, searchQuery = $bindable(''), onFilterChange }: Props = $props();
-
 </script>
 
 <!-- Search — Mobile -->

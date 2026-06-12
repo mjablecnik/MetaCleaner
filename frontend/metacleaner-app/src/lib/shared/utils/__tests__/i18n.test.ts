@@ -15,7 +15,7 @@ vi.mock('$lib/paraglide/messages', async (importOriginal) => {
 		'test.greet': () => 'Hello',
 		'test.greet.param': (p: Record<string, unknown>) => `Hello ${p.name}`,
 		// Absent keys defined as undefined so vitest doesn't throw on property access
-		'__nonexistent__': undefined,
+		__nonexistent__: undefined,
 		'no.such.key': undefined,
 		'totally.unknown.abc123': undefined,
 		'missing.translation': undefined,

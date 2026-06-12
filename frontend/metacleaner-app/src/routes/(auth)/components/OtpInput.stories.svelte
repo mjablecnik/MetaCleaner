@@ -35,6 +35,9 @@
 
 <Story name="WithError">
 	<div class="w-80 p-4">
-		<OtpInput values={['1', '2', '3', '', '', '']} error="Code is incomplete. Please enter all 6 digits." />
+		<OtpInput
+			values={['1', '2', '3', '', '', '']}
+			error="Code is incomplete. Please enter all 6 digits."
+		/>
 	</div>
 </Story>

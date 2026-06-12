@@ -1,378 +1,617 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
-            brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
-            text: { main: '#ffffff', muted: '#94a3b8' }
-          },
-          fontFamily: { sans: ['Inter', 'sans-serif'] },
-          boxShadow: {
-            'glow-green': '0 0 24px rgba(34,197,94,0.25)',
-            'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-            'card': '0 4px 32px rgba(0,0,0,0.5)'
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { margin: 0; padding: 0; background-color: #0a1628; color: #fff; font-family: 'Inter', sans-serif; }
-    ::-webkit-scrollbar { display: none; }
-    .input-field { background: #0a1628; border: 1px solid #1e293b; color: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
-    .input-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-    .input-field::placeholder { color: #94a3b8; }
-    .social-btn { background: #1e293b; border: 1px solid #374151; color: #fff; transition: background 0.2s, border-color 0.2s; }
-    .divider-line { flex: 1; height: 1px; background: #1e293b; }
-    .bg-mesh { background-image: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34,197,94,0.06) 0%, transparent 50%); }
-    .error-msg { display: none; color: #ef4444; font-size: 12px; margin-top: 4px; }
-    .error-msg.show { display: block; }
-    .input-error { border-color: #ef4444 !important; }
-    .strength-bar { height: 4px; border-radius: 2px; transition: background 0.3s; }
-    .plan-card { border: 2px solid #1e293b; transition: border-color 0.2s, background 0.2s; cursor: pointer; }
-    .plan-card.selected { border-color: #22c55e; background: rgba(34,197,94,0.06); }
-    .plan-card-pro.selected { border-color: #f97316; background: rgba(249,115,22,0.06); }
-  </style>
-</head>
-<body class="bg-mesh">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Register</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+							brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+							text: { main: '#ffffff', muted: '#94a3b8' }
+						},
+						fontFamily: { sans: ['Inter', 'sans-serif'] },
+						boxShadow: {
+							'glow-green': '0 0 24px rgba(34,197,94,0.25)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							card: '0 4px 32px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+			.input-field {
+				background: #0a1628;
+				border: 1px solid #1e293b;
+				color: #fff;
+				transition:
+					border-color 0.2s,
+					box-shadow 0.2s;
+			}
+			.input-field:focus {
+				outline: none;
+				border-color: #3b82f6;
+				box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+			}
+			.input-field::placeholder {
+				color: #94a3b8;
+			}
+			.social-btn {
+				background: #1e293b;
+				border: 1px solid #374151;
+				color: #fff;
+				transition:
+					background 0.2s,
+					border-color 0.2s;
+			}
+			.divider-line {
+				flex: 1;
+				height: 1px;
+				background: #1e293b;
+			}
+			.bg-mesh {
+				background-image:
+					radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
+					radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+			}
+			.error-msg {
+				display: none;
+				color: #ef4444;
+				font-size: 12px;
+				margin-top: 4px;
+			}
+			.error-msg.show {
+				display: block;
+			}
+			.input-error {
+				border-color: #ef4444 !important;
+			}
+			.strength-bar {
+				height: 4px;
+				border-radius: 2px;
+				transition: background 0.3s;
+			}
+			.plan-card {
+				border: 2px solid #1e293b;
+				transition:
+					border-color 0.2s,
+					background 0.2s;
+				cursor: pointer;
+			}
+			.plan-card.selected {
+				border-color: #22c55e;
+				background: rgba(34, 197, 94, 0.06);
+			}
+			.plan-card-pro.selected {
+				border-color: #f97316;
+				background: rgba(249, 115, 22, 0.06);
+			}
+		</style>
+	</head>
+	<body class="bg-mesh">
+		<!-- Navbar -->
+		<nav id="navbar" class="flex w-full items-center justify-between px-4 pt-5 pb-3">
+			<div class="flex items-center gap-2">
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-base"></i>
+				</div>
+				<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+			</div>
+			<a
+				href="#"
+				class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white"
+				>Přihlásit se</a
+			>
+		</nav>
 
-  <!-- Navbar -->
-  <nav id="navbar" class="w-full px-4 pt-5 pb-3 flex justify-between items-center">
-    <div class="flex items-center gap-2">
-      <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-        <i class="fa-solid fa-shield-halved text-base"></i>
-      </div>
-      <span class="text-lg font-bold tracking-tight">MetaCleaner</span>
-    </div>
-    <a href="#" class="px-3 py-2 rounded-lg border border-gray-700 text-xs font-semibold text-white">Přihlásit se</a>
-  </nav>
+		<!-- Main -->
+		<main id="register-main" class="w-full px-4 pb-10">
+			<!-- Hero header -->
+			<div id="mobile-hero" class="flex flex-col items-center gap-2 pt-4 pb-5 text-center">
+				<div
+					class="inline-flex items-center gap-1.5 rounded-full border border-brand-green/20 bg-brand-green/10 px-3 py-1"
+				>
+					<i class="fa-solid fa-circle-check text-[10px] text-brand-green"></i>
+					<span class="text-[10px] font-semibold text-brand-green"
+						>Zdarma navždy · Bez kreditní karty</span
+					>
+				</div>
+				<h1 class="text-2xl leading-tight font-black text-white">
+					Chraňte své <span class="text-brand-green">soukromí</span>
+				</h1>
+				<p class="max-w-xs text-xs leading-relaxed text-text-muted">
+					Odstraňte metadata z fotek a videí. Žádné poplatky, žádné sledování.
+				</p>
+			</div>
 
-  <!-- Main -->
-  <main id="register-main" class="w-full px-4 pb-10">
+			<!-- Form Card -->
+			<div
+				id="register-form-container"
+				class="flex w-full flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-5 shadow-card"
+			>
+				<!-- Form header -->
+				<div id="form-header" class="flex flex-col gap-0.5">
+					<h2 class="text-xl font-bold text-white">Vytvořit účet</h2>
+					<p class="text-xs text-text-muted">Zaregistrujte se za méně než minutu.</p>
+				</div>
 
-    <!-- Hero header -->
-    <div id="mobile-hero" class="flex flex-col items-center text-center gap-2 pt-4 pb-5">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-green/10 border border-brand-green/20">
-        <i class="fa-solid fa-circle-check text-brand-green text-[10px]"></i>
-        <span class="text-brand-green text-[10px] font-semibold">Zdarma navždy · Bez kreditní karty</span>
-      </div>
-      <h1 class="text-2xl font-black text-white leading-tight">Chraňte své <span class="text-brand-green">soukromí</span></h1>
-      <p class="text-text-muted text-xs leading-relaxed max-w-xs">Odstraňte metadata z fotek a videí. Žádné poplatky, žádné sledování.</p>
-    </div>
+				<!-- Social buttons -->
+				<div id="social-register" class="flex flex-col gap-2.5">
+					<button
+						class="social-btn flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl py-3.5 text-sm font-semibold"
+					>
+						<svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+							<path
+								d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+								fill="#4285F4"
+							/>
+							<path
+								d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+								fill="#34A853"
+							/>
+							<path
+								d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"
+								fill="#FBBC05"
+							/>
+							<path
+								d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z"
+								fill="#EA4335"
+							/>
+						</svg>
+						Registrovat přes Google
+					</button>
+					<button
+						class="social-btn flex min-h-[44px] w-full items-center justify-center gap-2.5 rounded-xl py-3.5 text-sm font-semibold"
+					>
+						<i class="fa-brands fa-apple text-base"></i>
+						Registrovat přes Apple
+					</button>
+				</div>
 
-    <!-- Form Card -->
-    <div id="register-form-container" class="w-full bg-navy-card rounded-2xl border border-gray-800 shadow-card flex flex-col gap-4 p-5">
+				<div class="flex items-center gap-3">
+					<div class="divider-line"></div>
+					<span class="text-xs font-medium whitespace-nowrap text-text-muted">nebo emailem</span>
+					<div class="divider-line"></div>
+				</div>
 
-      <!-- Form header -->
-      <div id="form-header" class="flex flex-col gap-0.5">
-        <h2 class="text-xl font-bold text-white">Vytvořit účet</h2>
-        <p class="text-text-muted text-xs">Zaregistrujte se za méně než minutu.</p>
-      </div>
+				<!-- Form -->
+				<form id="register-form" onsubmit="handleRegister(event)" class="flex flex-col gap-3.5">
+					<!-- Name row -->
+					<div class="grid grid-cols-2 gap-2.5">
+						<div class="flex flex-col gap-1">
+							<label class="text-xs font-medium text-white">Jméno</label>
+							<div class="relative">
+								<span class="absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+									><i class="fa-regular fa-user"></i
+								></span>
+								<input
+									id="fname-input"
+									type="text"
+									placeholder="Jan"
+									class="input-field min-h-[44px] w-full rounded-xl py-3 pr-3 pl-9 text-sm"
+								/>
+							</div>
+							<span id="fname-error" class="error-msg"
+								><i class="fa-solid fa-circle-exclamation mr-1"></i>Vyplňte jméno.</span
+							>
+						</div>
+						<div class="flex flex-col gap-1">
+							<label class="text-xs font-medium text-white">Příjmení</label>
+							<div class="relative">
+								<input
+									id="lname-input"
+									type="text"
+									placeholder="Novák"
+									class="input-field min-h-[44px] w-full rounded-xl px-3 py-3 text-sm"
+								/>
+							</div>
+							<span id="lname-error" class="error-msg"
+								><i class="fa-solid fa-circle-exclamation mr-1"></i>Vyplňte příjmení.</span
+							>
+						</div>
+					</div>
 
-      <!-- Social buttons -->
-      <div id="social-register" class="flex flex-col gap-2.5">
-        <button class="social-btn w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-semibold text-sm min-h-[44px]">
-          <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
-            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-            <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/>
-            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-          </svg>
-          Registrovat přes Google
-        </button>
-        <button class="social-btn w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-semibold text-sm min-h-[44px]">
-          <i class="fa-brands fa-apple text-base"></i>
-          Registrovat přes Apple
-        </button>
-      </div>
+					<!-- Email -->
+					<div class="flex flex-col gap-1">
+						<label class="text-xs font-medium text-white">E-mailová adresa</label>
+						<div class="relative">
+							<span class="absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+								><i class="fa-regular fa-envelope"></i
+							></span>
+							<input
+								id="email-input"
+								type="email"
+								placeholder="vas@email.cz"
+								class="input-field min-h-[44px] w-full rounded-xl py-3 pr-3 pl-9 text-sm"
+							/>
+						</div>
+						<span id="email-error" class="error-msg"
+							><i class="fa-solid fa-circle-exclamation mr-1"></i>Zadejte platnou e-mailovou
+							adresu.</span
+						>
+					</div>
 
-      <div class="flex items-center gap-3">
-        <div class="divider-line"></div>
-        <span class="text-text-muted text-xs font-medium whitespace-nowrap">nebo emailem</span>
-        <div class="divider-line"></div>
-      </div>
+					<!-- Password -->
+					<div class="flex flex-col gap-1">
+						<label class="text-xs font-medium text-white">Heslo</label>
+						<div class="relative">
+							<span class="absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+								><i class="fa-solid fa-lock"></i
+							></span>
+							<input
+								id="password-input"
+								type="password"
+								placeholder="Min. 8 znaků"
+								oninput="checkStrength()"
+								class="input-field min-h-[44px] w-full rounded-xl py-3 pr-11 pl-9 text-sm"
+							/>
+							<button
+								type="button"
+								onclick="togglePassword()"
+								class="absolute top-1/2 right-3 flex min-h-[24px] min-w-[24px] -translate-y-1/2 items-center justify-center text-sm text-text-muted"
+							>
+								<i id="eye-icon" class="fa-regular fa-eye"></i>
+							</button>
+						</div>
+						<div id="strength-wrap" class="mt-1 flex hidden flex-col gap-1">
+							<div class="flex gap-1">
+								<div id="s1" class="strength-bar flex-1 bg-gray-700"></div>
+								<div id="s2" class="strength-bar flex-1 bg-gray-700"></div>
+								<div id="s3" class="strength-bar flex-1 bg-gray-700"></div>
+								<div id="s4" class="strength-bar flex-1 bg-gray-700"></div>
+							</div>
+							<p id="strength-label" class="text-[11px] text-text-muted"></p>
+						</div>
+						<span id="password-error" class="error-msg"
+							><i class="fa-solid fa-circle-exclamation mr-1"></i>Heslo musí mít alespoň 8
+							znaků.</span
+						>
+					</div>
 
-      <!-- Form -->
-      <form id="register-form" onsubmit="handleRegister(event)" class="flex flex-col gap-3.5">
+					<!-- Confirm Password -->
+					<div class="flex flex-col gap-1">
+						<label class="text-xs font-medium text-white">Potvrdit heslo</label>
+						<div class="relative">
+							<span class="absolute top-1/2 left-3 -translate-y-1/2 text-xs text-text-muted"
+								><i class="fa-solid fa-lock"></i
+							></span>
+							<input
+								id="confirm-input"
+								type="password"
+								placeholder="Zopakujte heslo"
+								class="input-field min-h-[44px] w-full rounded-xl py-3 pr-3 pl-9 text-sm"
+							/>
+						</div>
+						<span id="confirm-error" class="error-msg"
+							><i class="fa-solid fa-circle-exclamation mr-1"></i>Hesla se neshodují.</span
+						>
+					</div>
 
-        <!-- Name row -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-medium text-white">Jméno</label>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"><i class="fa-regular fa-user"></i></span>
-              <input id="fname-input" type="text" placeholder="Jan" class="input-field w-full pl-9 pr-3 py-3 rounded-xl text-sm min-h-[44px]">
-            </div>
-            <span id="fname-error" class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>Vyplňte jméno.</span>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-medium text-white">Příjmení</label>
-            <div class="relative">
-              <input id="lname-input" type="text" placeholder="Novák" class="input-field w-full px-3 py-3 rounded-xl text-sm min-h-[44px]">
-            </div>
-            <span id="lname-error" class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>Vyplňte příjmení.</span>
-          </div>
-        </div>
+					<!-- Plan selector (mobile collapsible) -->
+					<div id="plan-section" class="flex flex-col gap-2">
+						<button
+							type="button"
+							onclick="togglePlanSection()"
+							class="flex w-full items-center justify-between py-2"
+						>
+							<span class="text-xs font-semibold text-white">Vyberte plán</span>
+							<i
+								id="plan-chevron"
+								class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform"
+							></i>
+						</button>
+						<div id="plan-cards" class="flex flex-col gap-2">
+							<div
+								id="plan-free"
+								onclick="selectPlan('free')"
+								class="plan-card selected flex items-center gap-3 rounded-xl p-3"
+							>
+								<div
+									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green/15"
+								>
+									<i class="fa-solid fa-seedling text-sm text-brand-green"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex items-center gap-1.5">
+										<p class="text-sm font-bold text-white">Free</p>
+										<span
+											class="rounded bg-brand-green/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-green uppercase"
+											>Zdarma</span
+										>
+									</div>
+									<p class="mt-0.5 text-[11px] text-text-muted">50 souborů / měsíc · JPG, PNG</p>
+								</div>
+								<div
+									id="free-check"
+									class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-green"
+								>
+									<i class="fa-solid fa-check text-[9px] text-white"></i>
+								</div>
+							</div>
+							<div
+								id="plan-pro"
+								onclick="selectPlan('pro')"
+								class="plan-card plan-card-pro flex items-center gap-3 rounded-xl p-3"
+							>
+								<div
+									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-orange/15"
+								>
+									<i class="fa-solid fa-bolt text-sm text-brand-orange"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex items-center gap-1.5">
+										<p class="text-sm font-bold text-white">Pro</p>
+										<span
+											class="rounded bg-brand-orange/15 px-1.5 py-0.5 text-[9px] font-bold text-brand-orange uppercase"
+											>Nejoblíbenější</span
+										>
+									</div>
+									<p class="mt-0.5 text-[11px] text-text-muted">
+										Neomezeno · Všechny formáty · Priority
+									</p>
+								</div>
+								<div
+									id="pro-check"
+									class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-gray-600"
+								>
+									<i class="fa-solid fa-check hidden text-[9px] text-white"></i>
+								</div>
+							</div>
+						</div>
+					</div>
 
-        <!-- Email -->
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-white">E-mailová adresa</label>
-          <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"><i class="fa-regular fa-envelope"></i></span>
-            <input id="email-input" type="email" placeholder="vas@email.cz" class="input-field w-full pl-9 pr-3 py-3 rounded-xl text-sm min-h-[44px]">
-          </div>
-          <span id="email-error" class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>Zadejte platnou e-mailovou adresu.</span>
-        </div>
+					<!-- Terms -->
+					<div class="flex items-start gap-2.5">
+						<button
+							type="button"
+							id="terms-toggle"
+							onclick="toggleTerms()"
+							class="mt-0.5 flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border border-gray-600 bg-navy-main transition-all"
+						>
+							<i id="terms-check" class="fa-solid fa-check hidden text-[9px] text-white"></i>
+						</button>
+						<span class="text-xs leading-relaxed text-text-muted"
+							>Souhlasím s <a href="#" class="font-medium text-brand-blue">podmínkami použití</a> a
+							<a href="#" class="font-medium text-brand-blue">zásadami ochrany soukromí</a></span
+						>
+					</div>
+					<span id="terms-error" class="error-msg -mt-2"
+						><i class="fa-solid fa-circle-exclamation mr-1"></i>Musíte souhlasit s podmínkami.</span
+					>
 
-        <!-- Password -->
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-white">Heslo</label>
-          <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"><i class="fa-solid fa-lock"></i></span>
-            <input id="password-input" type="password" placeholder="Min. 8 znaků" oninput="checkStrength()" class="input-field w-full pl-9 pr-11 py-3 rounded-xl text-sm min-h-[44px]">
-            <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm min-w-[24px] min-h-[24px] flex items-center justify-center">
-              <i id="eye-icon" class="fa-regular fa-eye"></i>
-            </button>
-          </div>
-          <div id="strength-wrap" class="hidden flex flex-col gap-1 mt-1">
-            <div class="flex gap-1">
-              <div id="s1" class="strength-bar flex-1 bg-gray-700"></div>
-              <div id="s2" class="strength-bar flex-1 bg-gray-700"></div>
-              <div id="s3" class="strength-bar flex-1 bg-gray-700"></div>
-              <div id="s4" class="strength-bar flex-1 bg-gray-700"></div>
-            </div>
-            <p id="strength-label" class="text-[11px] text-text-muted"></p>
-          </div>
-          <span id="password-error" class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>Heslo musí mít alespoň 8 znaků.</span>
-        </div>
+					<!-- Submit -->
+					<button
+						type="submit"
+						id="submit-btn"
+						class="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-4 text-sm font-bold text-white shadow-glow-green"
+					>
+						<i class="fa-solid fa-user-plus"></i>
+						Vytvořit účet zdarma
+					</button>
+				</form>
 
-        <!-- Confirm Password -->
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium text-white">Potvrdit heslo</label>
-          <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs"><i class="fa-solid fa-lock"></i></span>
-            <input id="confirm-input" type="password" placeholder="Zopakujte heslo" class="input-field w-full pl-9 pr-3 py-3 rounded-xl text-sm min-h-[44px]">
-          </div>
-          <span id="confirm-error" class="error-msg"><i class="fa-solid fa-circle-exclamation mr-1"></i>Hesla se neshodují.</span>
-        </div>
+				<!-- Footer link -->
+				<div class="border-t border-gray-800 pt-1 text-center">
+					<p class="text-xs text-text-muted">
+						Již máte účet? <a href="#" class="font-semibold text-brand-blue">Přihlásit se</a>
+					</p>
+				</div>
+			</div>
 
-        <!-- Plan selector (mobile collapsible) -->
-        <div id="plan-section" class="flex flex-col gap-2">
-          <button type="button" onclick="togglePlanSection()" class="flex items-center justify-between w-full py-2">
-            <span class="text-xs font-semibold text-white">Vyberte plán</span>
-            <i id="plan-chevron" class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform"></i>
-          </button>
-          <div id="plan-cards" class="flex flex-col gap-2">
-            <div id="plan-free" onclick="selectPlan('free')" class="plan-card selected rounded-xl p-3 flex items-center gap-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-green/15 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-seedling text-brand-green text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <p class="text-sm font-bold text-white">Free</p>
-                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-brand-green/15 text-brand-green uppercase">Zdarma</span>
-                </div>
-                <p class="text-[11px] text-text-muted mt-0.5">50 souborů / měsíc · JPG, PNG</p>
-              </div>
-              <div id="free-check" class="w-5 h-5 rounded-full bg-brand-green flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-white text-[9px]"></i>
-              </div>
-            </div>
-            <div id="plan-pro" onclick="selectPlan('pro')" class="plan-card plan-card-pro rounded-xl p-3 flex items-center gap-3">
-              <div class="w-9 h-9 rounded-lg bg-brand-orange/15 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-bolt text-brand-orange text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5">
-                  <p class="text-sm font-bold text-white">Pro</p>
-                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-brand-orange/15 text-brand-orange uppercase">Nejoblíbenější</span>
-                </div>
-                <p class="text-[11px] text-text-muted mt-0.5">Neomezeno · Všechny formáty · Priority</p>
-              </div>
-              <div id="pro-check" class="w-5 h-5 rounded-full border border-gray-600 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-check text-white text-[9px] hidden"></i>
-              </div>
-            </div>
-          </div>
-        </div>
+			<!-- Trust Badges -->
+			<div id="trust-badges" class="mt-4 flex items-center justify-center gap-4 pb-2">
+				<div class="flex items-center gap-1 text-[10px] text-text-muted">
+					<i class="fa-solid fa-shield-halved text-xs text-brand-green"></i>
+					<span>SSL</span>
+				</div>
+				<div class="h-3 w-px bg-gray-700"></div>
+				<div class="flex items-center gap-1 text-[10px] text-text-muted">
+					<i class="fa-solid fa-user-shield text-xs text-brand-blue"></i>
+					<span>GDPR</span>
+				</div>
+				<div class="h-3 w-px bg-gray-700"></div>
+				<div class="flex items-center gap-1 text-[10px] text-text-muted">
+					<i class="fa-solid fa-lock text-xs text-text-muted"></i>
+					<span>Bez sledování</span>
+				</div>
+			</div>
 
-        <!-- Terms -->
-        <div class="flex items-start gap-2.5">
-          <button type="button" id="terms-toggle" onclick="toggleTerms()" class="w-6 h-6 rounded border border-gray-600 bg-navy-main flex items-center justify-center transition-all flex-shrink-0 mt-0.5 min-w-[24px]">
-            <i id="terms-check" class="fa-solid fa-check text-[9px] text-white hidden"></i>
-          </button>
-          <span class="text-xs text-text-muted leading-relaxed">Souhlasím s <a href="#" class="text-brand-blue font-medium">podmínkami použití</a> a <a href="#" class="text-brand-blue font-medium">zásadami ochrany soukromí</a></span>
-        </div>
-        <span id="terms-error" class="error-msg -mt-2"><i class="fa-solid fa-circle-exclamation mr-1"></i>Musíte souhlasit s podmínkami.</span>
+			<!-- Stats row -->
+			<div id="stats-row" class="mt-3 grid grid-cols-3 gap-2 border-t border-gray-800 pt-3">
+				<div class="text-center">
+					<p class="text-lg font-black text-white">50K+</p>
+					<p class="text-[10px] text-text-muted">Uživatelů</p>
+				</div>
+				<div class="border-x border-gray-800 text-center">
+					<p class="text-lg font-black text-brand-green">2M+</p>
+					<p class="text-[10px] text-text-muted">Vyčištěno</p>
+				</div>
+				<div class="text-center">
+					<p class="text-lg font-black text-brand-blue">100%</p>
+					<p class="text-[10px] text-text-muted">Bezpečnost</p>
+				</div>
+			</div>
+		</main>
 
-        <!-- Submit -->
-        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl bg-brand-green text-white font-bold text-sm shadow-glow-green flex items-center justify-center gap-2 min-h-[52px]">
-          <i class="fa-solid fa-user-plus"></i>
-          Vytvořit účet zdarma
-        </button>
-      </form>
+		<script>
+			let termsAccepted = false;
+			let passwordVisible = false;
+			let selectedPlan = 'free';
+			let planOpen = true;
 
-      <!-- Footer link -->
-      <div class="text-center pt-1 border-t border-gray-800">
-        <p class="text-text-muted text-xs">Již máte účet? <a href="#" class="text-brand-blue font-semibold">Přihlásit se</a></p>
-      </div>
-    </div>
+			function togglePlanSection() {
+				planOpen = !planOpen;
+				const cards = document.getElementById('plan-cards');
+				const chevron = document.getElementById('plan-chevron');
+				cards.style.display = planOpen ? 'flex' : 'none';
+				chevron.style.transform = planOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
+			}
 
-    <!-- Trust Badges -->
-    <div id="trust-badges" class="flex items-center justify-center gap-4 mt-4 pb-2">
-      <div class="flex items-center gap-1 text-text-muted text-[10px]">
-        <i class="fa-solid fa-shield-halved text-brand-green text-xs"></i>
-        <span>SSL</span>
-      </div>
-      <div class="w-px h-3 bg-gray-700"></div>
-      <div class="flex items-center gap-1 text-text-muted text-[10px]">
-        <i class="fa-solid fa-user-shield text-brand-blue text-xs"></i>
-        <span>GDPR</span>
-      </div>
-      <div class="w-px h-3 bg-gray-700"></div>
-      <div class="flex items-center gap-1 text-text-muted text-[10px]">
-        <i class="fa-solid fa-lock text-text-muted text-xs"></i>
-        <span>Bez sledování</span>
-      </div>
-    </div>
+			function selectPlan(plan) {
+				selectedPlan = plan;
+				const freeCard = document.getElementById('plan-free');
+				const proCard = document.getElementById('plan-pro');
+				const freeCheck = document.getElementById('free-check');
+				const proCheck = document.getElementById('pro-check');
+				if (plan === 'free') {
+					freeCard.classList.add('selected');
+					proCard.classList.remove('selected');
+					freeCheck.classList.remove('hidden');
+					proCheck.querySelector('i').classList.add('hidden');
+					proCheck.classList.remove('bg-brand-orange');
+					proCheck.classList.add('border', 'border-gray-600');
+				} else {
+					proCard.classList.add('selected');
+					freeCard.classList.remove('selected');
+					proCheck.querySelector('i').classList.remove('hidden');
+					proCheck.classList.add('bg-brand-orange');
+					proCheck.classList.remove('border-gray-600');
+					freeCheck.classList.add('hidden');
+				}
+			}
 
-    <!-- Stats row -->
-    <div id="stats-row" class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-800">
-      <div class="text-center">
-        <p class="text-lg font-black text-white">50K+</p>
-        <p class="text-[10px] text-text-muted">Uživatelů</p>
-      </div>
-      <div class="text-center border-x border-gray-800">
-        <p class="text-lg font-black text-brand-green">2M+</p>
-        <p class="text-[10px] text-text-muted">Vyčištěno</p>
-      </div>
-      <div class="text-center">
-        <p class="text-lg font-black text-brand-blue">100%</p>
-        <p class="text-[10px] text-text-muted">Bezpečnost</p>
-      </div>
-    </div>
+			function toggleTerms() {
+				termsAccepted = !termsAccepted;
+				const toggle = document.getElementById('terms-toggle');
+				const check = document.getElementById('terms-check');
+				if (termsAccepted) {
+					toggle.classList.add('bg-brand-blue', 'border-brand-blue');
+					toggle.classList.remove('border-gray-600', 'bg-navy-main');
+					check.classList.remove('hidden');
+				} else {
+					toggle.classList.remove('bg-brand-blue', 'border-brand-blue');
+					toggle.classList.add('border-gray-600', 'bg-navy-main');
+					check.classList.add('hidden');
+				}
+			}
 
-  </main>
+			function togglePassword() {
+				passwordVisible = !passwordVisible;
+				const input = document.getElementById('password-input');
+				const icon = document.getElementById('eye-icon');
+				input.type = passwordVisible ? 'text' : 'password';
+				icon.className = passwordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+			}
 
-  <script>
-    let termsAccepted = false;
-    let passwordVisible = false;
-    let selectedPlan = 'free';
-    let planOpen = true;
+			function checkStrength() {
+				const val = document.getElementById('password-input').value;
+				const wrap = document.getElementById('strength-wrap');
+				const label = document.getElementById('strength-label');
+				const bars = ['s1', 's2', 's3', 's4'].map((id) => document.getElementById(id));
+				if (val.length === 0) {
+					wrap.classList.add('hidden');
+					return;
+				}
+				wrap.classList.remove('hidden');
+				let score = 0;
+				if (val.length >= 8) score++;
+				if (/[A-Z]/.test(val)) score++;
+				if (/[0-9]/.test(val)) score++;
+				if (/[^A-Za-z0-9]/.test(val)) score++;
+				const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+				const labels = ['Velmi slabé', 'Slabé', 'Dobré', 'Silné'];
+				bars.forEach((b, i) => {
+					b.style.background = i < score ? colors[score - 1] : '#374151';
+				});
+				label.textContent = labels[score - 1] || '';
+				label.style.color = colors[score - 1] || '#94a3b8';
+			}
 
-    function togglePlanSection() {
-      planOpen = !planOpen;
-      const cards = document.getElementById('plan-cards');
-      const chevron = document.getElementById('plan-chevron');
-      cards.style.display = planOpen ? 'flex' : 'none';
-      chevron.style.transform = planOpen ? 'rotate(0deg)' : 'rotate(-90deg)';
-    }
-
-    function selectPlan(plan) {
-      selectedPlan = plan;
-      const freeCard = document.getElementById('plan-free');
-      const proCard = document.getElementById('plan-pro');
-      const freeCheck = document.getElementById('free-check');
-      const proCheck = document.getElementById('pro-check');
-      if (plan === 'free') {
-        freeCard.classList.add('selected');
-        proCard.classList.remove('selected');
-        freeCheck.classList.remove('hidden');
-        proCheck.querySelector('i').classList.add('hidden');
-        proCheck.classList.remove('bg-brand-orange');
-        proCheck.classList.add('border', 'border-gray-600');
-      } else {
-        proCard.classList.add('selected');
-        freeCard.classList.remove('selected');
-        proCheck.querySelector('i').classList.remove('hidden');
-        proCheck.classList.add('bg-brand-orange');
-        proCheck.classList.remove('border-gray-600');
-        freeCheck.classList.add('hidden');
-      }
-    }
-
-    function toggleTerms() {
-      termsAccepted = !termsAccepted;
-      const toggle = document.getElementById('terms-toggle');
-      const check = document.getElementById('terms-check');
-      if (termsAccepted) {
-        toggle.classList.add('bg-brand-blue', 'border-brand-blue');
-        toggle.classList.remove('border-gray-600', 'bg-navy-main');
-        check.classList.remove('hidden');
-      } else {
-        toggle.classList.remove('bg-brand-blue', 'border-brand-blue');
-        toggle.classList.add('border-gray-600', 'bg-navy-main');
-        check.classList.add('hidden');
-      }
-    }
-
-    function togglePassword() {
-      passwordVisible = !passwordVisible;
-      const input = document.getElementById('password-input');
-      const icon = document.getElementById('eye-icon');
-      input.type = passwordVisible ? 'text' : 'password';
-      icon.className = passwordVisible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
-    }
-
-    function checkStrength() {
-      const val = document.getElementById('password-input').value;
-      const wrap = document.getElementById('strength-wrap');
-      const label = document.getElementById('strength-label');
-      const bars = ['s1','s2','s3','s4'].map(id => document.getElementById(id));
-      if (val.length === 0) { wrap.classList.add('hidden'); return; }
-      wrap.classList.remove('hidden');
-      let score = 0;
-      if (val.length >= 8) score++;
-      if (/[A-Z]/.test(val)) score++;
-      if (/[0-9]/.test(val)) score++;
-      if (/[^A-Za-z0-9]/.test(val)) score++;
-      const colors = ['#ef4444','#f97316','#eab308','#22c55e'];
-      const labels = ['Velmi slabé','Slabé','Dobré','Silné'];
-      bars.forEach((b, i) => { b.style.background = i < score ? colors[score-1] : '#374151'; });
-      label.textContent = labels[score-1] || '';
-      label.style.color = colors[score-1] || '#94a3b8';
-    }
-
-    function handleRegister(e) {
-      e.preventDefault();
-      const fname = document.getElementById('fname-input').value.trim();
-      const lname = document.getElementById('lname-input').value.trim();
-      const email = document.getElementById('email-input').value.trim();
-      const password = document.getElementById('password-input').value;
-      const confirm = document.getElementById('confirm-input').value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      let valid = true;
-      ['fname-error','lname-error','email-error','password-error','confirm-error','terms-error'].forEach(id => document.getElementById(id).classList.remove('show'));
-      ['fname-input','lname-input','email-input','password-input','confirm-input'].forEach(id => document.getElementById(id).classList.remove('input-error'));
-      if (!fname) { document.getElementById('fname-input').classList.add('input-error'); document.getElementById('fname-error').classList.add('show'); valid = false; }
-      if (!lname) { document.getElementById('lname-input').classList.add('input-error'); document.getElementById('lname-error').classList.add('show'); valid = false; }
-      if (!email || !emailRegex.test(email)) { document.getElementById('email-input').classList.add('input-error'); document.getElementById('email-error').classList.add('show'); valid = false; }
-      if (!password || password.length < 8) { document.getElementById('password-input').classList.add('input-error'); document.getElementById('password-error').classList.add('show'); valid = false; }
-      if (password !== confirm) { document.getElementById('confirm-input').classList.add('input-error'); document.getElementById('confirm-error').classList.add('show'); valid = false; }
-      if (!termsAccepted) { document.getElementById('terms-error').classList.add('show'); valid = false; }
-      if (valid) {
-        const btn = document.getElementById('submit-btn');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Vytvářím účet...';
-        btn.disabled = true;
-        setTimeout(() => {
-          btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Účet vytvořen!';
-          btn.classList.remove('bg-brand-green');
-          btn.classList.add('bg-green-600');
-        }, 1500);
-      }
-    }
-  </script>
-</body>
+			function handleRegister(e) {
+				e.preventDefault();
+				const fname = document.getElementById('fname-input').value.trim();
+				const lname = document.getElementById('lname-input').value.trim();
+				const email = document.getElementById('email-input').value.trim();
+				const password = document.getElementById('password-input').value;
+				const confirm = document.getElementById('confirm-input').value;
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				let valid = true;
+				[
+					'fname-error',
+					'lname-error',
+					'email-error',
+					'password-error',
+					'confirm-error',
+					'terms-error'
+				].forEach((id) => document.getElementById(id).classList.remove('show'));
+				['fname-input', 'lname-input', 'email-input', 'password-input', 'confirm-input'].forEach(
+					(id) => document.getElementById(id).classList.remove('input-error')
+				);
+				if (!fname) {
+					document.getElementById('fname-input').classList.add('input-error');
+					document.getElementById('fname-error').classList.add('show');
+					valid = false;
+				}
+				if (!lname) {
+					document.getElementById('lname-input').classList.add('input-error');
+					document.getElementById('lname-error').classList.add('show');
+					valid = false;
+				}
+				if (!email || !emailRegex.test(email)) {
+					document.getElementById('email-input').classList.add('input-error');
+					document.getElementById('email-error').classList.add('show');
+					valid = false;
+				}
+				if (!password || password.length < 8) {
+					document.getElementById('password-input').classList.add('input-error');
+					document.getElementById('password-error').classList.add('show');
+					valid = false;
+				}
+				if (password !== confirm) {
+					document.getElementById('confirm-input').classList.add('input-error');
+					document.getElementById('confirm-error').classList.add('show');
+					valid = false;
+				}
+				if (!termsAccepted) {
+					document.getElementById('terms-error').classList.add('show');
+					valid = false;
+				}
+				if (valid) {
+					const btn = document.getElementById('submit-btn');
+					btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Vytvářím účet...';
+					btn.disabled = true;
+					setTimeout(() => {
+						btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Účet vytvořen!';
+						btn.classList.remove('bg-brand-green');
+						btn.classList.add('bg-green-600');
+					}, 1500);
+				}
+			}
+		</script>
+	</body>
 </html>

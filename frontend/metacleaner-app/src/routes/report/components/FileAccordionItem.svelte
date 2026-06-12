@@ -150,7 +150,8 @@
 								>
 									<i class="fa-solid {section.icon} {section.iconClass}"></i>
 									{tx(section.txKey)}
-									<span class="ml-auto rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted"
+									<span
+										class="ml-auto rounded bg-navy-lighter px-1.5 py-0.5 text-[10px] font-bold text-text-muted"
 										>{sectionFields.length}</span
 									>
 								</p>
