@@ -336,6 +336,8 @@
 	"auth.register.badge.freeForever": "Free forever · No credit card",
 	"auth.register.branding.headline": "Start protecting",
 	"auth.register.branding.headlineHighlight": "privacy",
+	"auth.register.branding.headlineAfterWord": "today",
+	"auth.register.branding.headlineBeforeHighlight": "your",
 	"auth.register.branding.description": "Create a free account and start removing metadata from photos and videos. No hidden fees, no tracking.",
 	"auth.register.plan.title": "Choose your plan",
 	"auth.register.plan.freeName": "Free",

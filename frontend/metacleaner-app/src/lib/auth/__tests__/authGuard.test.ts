@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const { mockRedirect, mockResolve, authState } = vi.hoisted(() => ({
 	mockRedirect: vi.fn(),
 	mockResolve: vi.fn((path: string) => path),
-	authState: { isAuthenticated: false }
+	authState: { isAuthenticated: false, isAuthReady: true }
 }));
 
 vi.mock('@sveltejs/kit', () => ({ redirect: mockRedirect }));
@@ -18,6 +18,9 @@ vi.mock('$lib/auth/auth.svelte.js', () => ({
 	authStore: {
 		get isAuthenticated() {
 			return authState.isAuthenticated;
+		},
+		get isAuthReady() {
+			return authState.isAuthReady;
 		}
 	}
 }));
@@ -29,23 +32,24 @@ import { guardProtectedRoute, guardAuthRoute } from '../auth-guard.js';
 describe('guardProtectedRoute', () => {
 	beforeEach(() => {
 		authState.isAuthenticated = false;
+		authState.isAuthReady = true;
 		mockRedirect.mockClear();
 		mockResolve.mockClear();
 	});
 
-	it('calls redirect(302) to /login when user is not authenticated', () => {
-		guardProtectedRoute();
+	it('calls redirect(302) to /login when user is not authenticated', async () => {
+		await guardProtectedRoute();
 		expect(mockRedirect).toHaveBeenCalledWith(302, '/login');
 	});
 
-	it('resolves /login path through resolve() before redirecting', () => {
-		guardProtectedRoute();
+	it('resolves /login path through resolve() before redirecting', async () => {
+		await guardProtectedRoute();
 		expect(mockResolve).toHaveBeenCalledWith('/login');
 	});
 
-	it('does not redirect when user is authenticated', () => {
+	it('does not redirect when user is authenticated', async () => {
 		authState.isAuthenticated = true;
-		guardProtectedRoute();
+		await guardProtectedRoute();
 		expect(mockRedirect).not.toHaveBeenCalled();
 	});
 });
@@ -55,23 +59,24 @@ describe('guardProtectedRoute', () => {
 describe('guardAuthRoute', () => {
 	beforeEach(() => {
 		authState.isAuthenticated = true;
+		authState.isAuthReady = true;
 		mockRedirect.mockClear();
 		mockResolve.mockClear();
 	});
 
-	it('calls redirect(302) to / when user is already authenticated', () => {
-		guardAuthRoute();
+	it('calls redirect(302) to / when user is already authenticated', async () => {
+		await guardAuthRoute();
 		expect(mockRedirect).toHaveBeenCalledWith(302, '/');
 	});
 
-	it('resolves / path through resolve() before redirecting', () => {
-		guardAuthRoute();
+	it('resolves / path through resolve() before redirecting', async () => {
+		await guardAuthRoute();
 		expect(mockResolve).toHaveBeenCalledWith('/');
 	});
 
-	it('does not redirect when user is not authenticated', () => {
+	it('does not redirect when user is not authenticated', async () => {
 		authState.isAuthenticated = false;
-		guardAuthRoute();
+		await guardAuthRoute();
 		expect(mockRedirect).not.toHaveBeenCalled();
 	});
 });

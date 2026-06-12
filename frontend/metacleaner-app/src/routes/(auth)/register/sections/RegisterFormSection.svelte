@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
+	import { onMount } from 'svelte';
 	import { tx } from '$lib/shared/utils/i18n';
 	import { authStore } from '$lib/auth/auth.svelte.js';
 	import { buildApiUrl } from '$lib/clients/api-config.js';
@@ -56,6 +57,14 @@
 		oauthLoading = true;
 		if (browser) window.location.href = buildApiUrl('/api/auth/oauth/apple');
 	}
+
+	onMount(() => {
+		function handleVisibilityChange() {
+			if (document.visibilityState === 'visible') oauthLoading = false;
+		}
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+		return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+	});
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();

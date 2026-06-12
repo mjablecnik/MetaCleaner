@@ -132,6 +132,17 @@ function _restore(): void {
 // Restore on module init (browser only)
 _restore();
 
+// Proactive refresh: every 30s, refresh token if within 60s of expiry
+if (browser) {
+	setInterval(async () => {
+		if (!_refreshToken) return;
+		const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
+		if (expiresAt > 0 && expiresAt - Date.now() < 60_000) {
+			await refresh().catch(() => {});
+		}
+	}, 30_000);
+}
+
 // ─── Actions ─────────────────────────────────────────────────────
 
 async function login(email: string, password: string): Promise<void> {

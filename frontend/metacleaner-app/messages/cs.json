@@ -336,6 +336,8 @@
 	"auth.register.badge.freeForever": "Zdarma navždy · Bez kreditní karty",
 	"auth.register.branding.headline": "Začněte chránit",
 	"auth.register.branding.headlineHighlight": "soukromí",
+	"auth.register.branding.headlineAfterWord": "dnes",
+	"auth.register.branding.headlineBeforeHighlight": "své",
 	"auth.register.branding.description": "Vytvořte si bezplatný účet a začněte odstraňovat metadata z fotek a videí. Žádné skryté poplatky, žádné sledování.",
 	"auth.register.plan.title": "Vyberte svůj plán",
 	"auth.register.plan.freeName": "Free",

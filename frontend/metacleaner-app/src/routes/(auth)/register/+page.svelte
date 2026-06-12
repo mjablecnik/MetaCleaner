@@ -39,8 +39,8 @@
 				<AuthBranding
 					headline={tx('auth.register.branding.headline')}
 					highlightedWord={tx('auth.register.branding.headlineHighlight')}
-					afterWord="dnes"
-					beforeHighlight="své"
+					afterWord={tx('auth.register.branding.headlineAfterWord')}
+					beforeHighlight={tx('auth.register.branding.headlineBeforeHighlight')}
 					description={tx('auth.register.branding.description')}
 					badge={{ icon: 'fa-solid fa-circle-check', text: tx('auth.register.badge.freeForever') }}
 					{stats}

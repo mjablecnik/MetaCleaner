@@ -98,11 +98,18 @@
 		magicEmailError = '';
 	}
 
-	onMount(async () => {
-		const urlError = await handleAuthCallback(window.location.href, true);
-		const deepLinkError = sessionStorage.getItem('mc_deep_link_error');
-		if (deepLinkError) sessionStorage.removeItem('mc_deep_link_error');
-		if (urlError || deepLinkError) apiError = urlError ?? deepLinkError ?? '';
+	onMount(() => {
+		handleAuthCallback(window.location.href, true).then((urlError) => {
+			const deepLinkError = sessionStorage.getItem('mc_deep_link_error');
+			if (deepLinkError) sessionStorage.removeItem('mc_deep_link_error');
+			if (urlError || deepLinkError) apiError = urlError ?? deepLinkError ?? '';
+		});
+
+		function handleVisibilityChange() {
+			if (document.visibilityState === 'visible') oauthLoading = false;
+		}
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+		return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
 	});
 </script>
 

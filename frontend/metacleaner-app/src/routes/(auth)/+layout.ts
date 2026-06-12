@@ -1,5 +1,5 @@
 import { guardAuthRoute } from '$lib/auth/auth-guard.js';
 
-export function load() {
-	guardAuthRoute();
+export async function load() {
+	await guardAuthRoute();
 }

@@ -75,7 +75,7 @@
 			<i class="fa-solid fa-spinner fa-spin text-2xl text-brand-blue"></i>
 		</div>
 	{:else}
-		{#if !['/login', '/register', '/forgot-password'].includes(page.url.pathname)}
+		{#if !page.route.id?.startsWith('/(auth)')}
 			<NavBar {user} {langOptions} {...navProps} onLogout={() => authStore.logout()} />
 		{/if}
 		{@render children()}
