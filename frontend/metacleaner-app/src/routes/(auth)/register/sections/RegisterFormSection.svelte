@@ -204,8 +204,8 @@
 			{#if termsAccepted}<i class="fa-solid fa-check text-[9px] text-white lg:text-[10px]"></i>{/if}
 		</button>
 		<span class="text-xs leading-relaxed text-text-muted lg:text-sm">
-			{tx('auth.register.terms.agree')} <a href="#" class="font-medium text-brand-blue transition-colors hover:text-blue-400">{tx('auth.register.terms.tos')}</a>
-			{tx('auth.register.terms.and')} <a href="#" class="font-medium text-brand-blue transition-colors hover:text-blue-400">{tx('auth.register.terms.privacy')}</a>
+			{tx('auth.register.terms.agree')} <button type="button" class="font-medium text-brand-blue transition-colors hover:text-blue-400">{tx('auth.register.terms.tos')}</button>
+			{tx('auth.register.terms.and')} <button type="button" class="font-medium text-brand-blue transition-colors hover:text-blue-400">{tx('auth.register.terms.privacy')}</button>
 		</span>
 	</div>
 	{#if termsError}

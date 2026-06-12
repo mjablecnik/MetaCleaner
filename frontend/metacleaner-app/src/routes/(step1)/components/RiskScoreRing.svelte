@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	type Color = 'red' | 'orange' | 'green' | 'blue';
 	type Size = 'sm' | 'lg';
@@ -13,12 +12,6 @@
 	}
 
 	const { score, color = 'red', size = 'lg', showLabel = false }: Props = $props();
-
-	function riskScoreLabel(): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)['step2.risk.score'];
-		return fn ? fn() : 'step2.risk.score';
-	}
 
 	const clampedScore = $derived(Math.min(100, Math.max(0, score)));
 	const dasharray = $derived(`${clampedScore} ${100 - clampedScore}`);
@@ -81,7 +74,7 @@
 	<div class="z-10 text-center">
 		<span class="{scoreTextClass[size]} {textColorClass[color]}">{clampedScore}</span>
 		{#if showLabel}
-			<p class="mt-0.5 text-[9px] tracking-wider text-text-muted uppercase">{riskScoreLabel()}</p>
+			<p class="mt-0.5 text-[9px] tracking-wider text-text-muted uppercase">{tx('step2.risk.score')}</p>
 		{/if}
 	</div>
 </div>

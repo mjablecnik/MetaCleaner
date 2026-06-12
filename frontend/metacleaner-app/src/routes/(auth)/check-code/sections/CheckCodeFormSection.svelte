@@ -30,7 +30,7 @@
 
 	let countdownKey = $state(0);
 
-	let otpRef: OtpInput;
+	let otpRef = $state<OtpInput | undefined>(undefined);
 
 	function validateEmail(v: string) {
 		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());

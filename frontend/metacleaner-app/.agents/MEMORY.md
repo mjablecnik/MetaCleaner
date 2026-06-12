@@ -275,3 +275,15 @@
 - Problem: `getLanguages()` returns 4 options (CS, EN, DE, SK) but only EN and CS have Paraglide message files. Selecting an unsupported language shows raw key names.
 - Solution: Filter the dropdown to only show languages with actual message files in `messages/` directory, or remove DE/SK from the repository until translations are provided.
 - Source: code-review, 2026-06-10T16:32:29+00:00
+
+## RiskScoreRing inline riskScoreLabel() not extracted to shared tx()
+
+- Problem: `RiskScoreRing.svelte` defines a local `riskScoreLabel()` function that reimplements the same logic as `tx()` — imports `locale` and `* as m`, reads `void locale.current`, looks up a key. This was missed during the bulk extraction in Task 4.1 because the function is named `riskScoreLabel` not `tx`, so grep for `function tx(` didn't catch it.
+- Solution: Replace the entire function with `tx('step2.risk.score')` from the shared import. Remove the direct imports of `$lib/locale.svelte` and `$lib/paraglide/messages`.
+- Source: code-review, 2026-06-12T09:44:53+00:00
+
+## MobileHamburgerMenu Settings/Logout same a11y bug as UserDropdown
+
+- Problem: `MobileHamburgerMenu.svelte` Settings and Logout divs have `onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}` but no `onclick` handler and no callback props. The fix from Requirement 6 (UserDropdown) was not applied to the parallel component.
+- Solution: Add `onSettings?: () => void` and `onLogout?: () => void` to Props. Add `onclick={() => onSettings?.()}` and `onclick={() => onLogout?.()}`. Replace `e.currentTarget.click()` with direct callback invocation.
+- Source: code-review, 2026-06-12T09:44:53+00:00

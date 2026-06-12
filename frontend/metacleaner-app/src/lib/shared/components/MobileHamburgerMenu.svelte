@@ -9,6 +9,8 @@
 		langOptions: Language[];
 		open?: boolean;
 		onSelect: (code: string) => void;
+		onSettings?: () => void;
+		onLogout?: () => void;
 		wrapperId?: string;
 	}
 
@@ -17,6 +19,8 @@
 		langOptions,
 		open = $bindable(false),
 		onSelect,
+		onSettings,
+		onLogout,
 		wrapperId = 'hamburgerDropdown'
 	}: Props = $props();
 
@@ -68,7 +72,8 @@
 				class="lang-option"
 				role="button"
 				tabindex="0"
-				onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
+				onclick={() => onSettings?.()}
+				onkeydown={(e) => e.key === 'Enter' && onSettings?.()}
 			>
 				<i class="fa-solid fa-gear text-sm text-text-muted"></i>
 				<span>{tx('common.nav.settings')}</span>
@@ -77,7 +82,8 @@
 				class="lang-option lang-option-danger"
 				role="button"
 				tabindex="0"
-				onkeydown={(e) => e.key === 'Enter' && e.currentTarget.click()}
+				onclick={() => onLogout?.()}
+				onkeydown={(e) => e.key === 'Enter' && onLogout?.()}
 			>
 				<i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i>
 				<span>{tx('common.nav.logout')}</span>
