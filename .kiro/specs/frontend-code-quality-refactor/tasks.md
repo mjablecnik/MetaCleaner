@@ -96,7 +96,7 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Verify `MetadataField` in `src/lib/scanner/types.ts` remains unchanged
     - _Requirements: 5.2, 5.3_
 
-- [ ] 6. Checkpoint - Verify type rename and utility replacements
+- [x] 6. Checkpoint - Verify type rename and utility replacements
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Fix UserDropdown accessibility

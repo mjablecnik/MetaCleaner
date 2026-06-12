@@ -15,7 +15,7 @@ describe('Bug Condition 5: UserDropdown — Report history menu item', () => {
 		// Bug 5: currently only Settings and Logout exist — Report history is missing
 		const reportHistoryLink = page.getByRole('link', { name: /report history/i });
 		await expect.element(reportHistoryLink).toBeInTheDocument();
-		const href = await reportHistoryLink.getAttribute('href');
+		const href = reportHistoryLink.element().getAttribute('href');
 		expect(href).toContain('/reports');
 	});
 
@@ -33,9 +33,9 @@ describe('Bug Condition 5: UserDropdown — Report history menu item', () => {
 		render(UserDropdown, { user: mockUser, open: true });
 		const links = page.getByRole('link');
 		const linkTexts: string[] = [];
-		const count = await links.count();
-		for (let i = 0; i < count; i++) {
-			const text = await links.nth(i).textContent();
+		const linkElements = links.elements();
+		for (const el of linkElements) {
+			const text = el.textContent;
 			if (text) linkTexts.push(text.trim());
 		}
 		const reportHistoryIdx = linkTexts.findIndex((t) => /report history/i.test(t));
