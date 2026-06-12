@@ -14,8 +14,13 @@
 		return fn ? fn(params) : key;
 	}
 
-	let currentStep = $state(2);
-	let sentEmail = $state('vas@email.cz');
+	interface Props {
+		currentStep?: 1 | 2 | 3 | 4;
+		sentEmail?: string;
+	}
+
+	let { currentStep = $bindable(2), sentEmail = $bindable('vas@email.cz') }: Props = $props();
+
 	let emailInput = $state('');
 	let emailError = $state('');
 
@@ -40,7 +45,7 @@
 	}
 
 	function goToStep(n: number) {
-		currentStep = n;
+		currentStep = n as 1 | 2 | 3 | 4;
 		if (n !== 2 && countdownInterval) {
 			clearInterval(countdownInterval);
 			countdownInterval = null;
