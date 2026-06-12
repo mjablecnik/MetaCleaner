@@ -1,5 +1,11 @@
 # Memory
 
+## Node Response constructor rejects status 204 with a body
+
+- Problem: `new Response('', { status: 204 })` throws `TypeError: Response constructor: Invalid response status code 204` in Node.js's native `fetch` implementation. Status 204 (No Content) disallows a body per spec, and Node enforces this strictly.
+- Solution: Use `new Response('{}', { status: 200 })` when mocking a successful no-content response. Since `callAuthApi` swallows logout errors anyway, any 2xx mock suffices for logout tests.
+- Source: create-code, 2026-06-12
+
 ## vi.mock hoisting: top-level const vi.fn() must use vi.hoisted()
 
 - Problem: `const mockFn = vi.fn()` declared BEFORE `vi.mock(...)` factories causes an "error when mocking a module" unhandled rejection. `vi.mock()` is hoisted to run before any module code, so `const mockFn` is undefined when the factory executes. Browser tests produce an unhandled rejection with no test results.

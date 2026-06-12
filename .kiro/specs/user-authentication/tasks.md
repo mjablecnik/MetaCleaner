@@ -244,7 +244,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - **Validates: Requirements 16.6**
 
 - [ ] 10. Frontend testing
-  - [ ]* 10.1 Write unit tests for auth store (Vitest)
+  - [x]* 10.1 Write unit tests for auth store (Vitest)
     - Test token storage/retrieval from localStorage
     - Test state transitions: login, logout, refresh
     - Test `setTokensFromCallback` with valid and missing params
