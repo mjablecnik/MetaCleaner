@@ -1,10 +1,15 @@
 package source
 
 import (
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -387,4 +392,187 @@ func isEmailExistsError(e *SupabaseAuthError) bool {
 		}
 	}
 	return false
+}
+
+// --- PKCE helpers ---
+
+const pkceVerifierCookie = "mc_pkce_verifier"
+
+// generateCodeVerifier returns a cryptographically random base64url-encoded string
+// suitable for use as a PKCE code verifier.
+func generateCodeVerifier() (string, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(b), nil
+}
+
+// generateCodeChallenge returns the S256 code challenge derived from verifier.
+func generateCodeChallenge(verifier string) string {
+	h := sha256.Sum256([]byte(verifier))
+	return base64.RawURLEncoding.EncodeToString(h[:])
+}
+
+// --- OAuth handlers ---
+
+// HandleOAuthInitiate handles GET /api/auth/oauth/{provider}.
+// Validates the provider, generates PKCE credentials, stores the verifier in a
+// short-lived cookie, and redirects the user to the Supabase OAuth authorize URL.
+func HandleOAuthInitiate(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		provider := r.PathValue("provider")
+		if provider != "google" && provider != "apple" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidProvider, "unsupported OAuth provider")
+			return
+		}
+
+		verifier, err := generateCodeVerifier()
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrAuthInvalidRequest, "failed to initiate OAuth flow")
+			return
+		}
+		challenge := generateCodeChallenge(verifier)
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     pkceVerifierCookie,
+			Value:    verifier,
+			Path:     "/api/auth/oauth",
+			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
+			MaxAge:   600,
+		})
+
+		oauthURL := authClient.GetOAuthURL(provider, challenge)
+		http.Redirect(w, r, oauthURL, http.StatusFound)
+	}
+}
+
+// HandleOAuthCallback handles GET /api/auth/oauth/callback.
+// Reads the PKCE verifier from the cookie, exchanges the authorization code for a
+// session, creates a profile for new OAuth users, and redirects to the frontend
+// with tokens as query parameters.
+func HandleOAuthCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		frontendLogin := authClient.frontendURL + "/login"
+
+		// Handle error from OAuth provider or Supabase.
+		if errParam := r.URL.Query().Get("error"); errParam != "" {
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape(errParam), http.StatusFound)
+			return
+		}
+
+		code := r.URL.Query().Get("code")
+		if code == "" {
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("OAuth authentication failed"), http.StatusFound)
+			return
+		}
+
+		cookie, err := r.Cookie(pkceVerifierCookie)
+		if err != nil || cookie.Value == "" {
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("OAuth session expired, please try again"), http.StatusFound)
+			return
+		}
+		verifier := cookie.Value
+
+		// Clear the PKCE cookie immediately.
+		http.SetCookie(w, &http.Cookie{
+			Name:     pkceVerifierCookie,
+			Value:    "",
+			Path:     "/api/auth/oauth",
+			HttpOnly: true,
+			MaxAge:   -1,
+		})
+
+		session, err := authClient.ExchangeCodeForSession(r.Context(), code, verifier)
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
+				http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("Authentication service temporarily unavailable"), http.StatusFound)
+				return
+			}
+			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("OAuth authentication failed"), http.StatusFound)
+			return
+		}
+
+		// Create profile only for first-time OAuth logins.
+		existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
+		if existing == nil {
+			firstName, lastName := extractOAuthName(session.User)
+			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
+				ID:               session.User.ID,
+				FirstName:        firstName,
+				LastName:         lastName,
+				Email:            session.User.Email,
+				SubscriptionType: "free",
+				Credits:          3,
+			}); createErr != nil {
+				log.Printf("oauth callback: failed to create profile for user %s: %v", session.User.ID, createErr)
+			}
+		}
+
+		params := url.Values{}
+		params.Set("access_token", session.AccessToken)
+		params.Set("refresh_token", session.RefreshToken)
+		params.Set("expires_in", strconv.Itoa(session.ExpiresIn))
+		http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+	}
+}
+
+// extractOAuthName returns first and last name from Supabase OAuth user metadata.
+// Falls back to identity data, then empty strings if not available.
+func extractOAuthName(user SupabaseAuthUser) (firstName, lastName string) {
+	tryFullName := func(name string) (string, string, bool) {
+		name = strings.TrimSpace(name)
+		if name == "" {
+			return "", "", false
+		}
+		parts := strings.SplitN(name, " ", 2)
+		fn := parts[0]
+		ln := ""
+		if len(parts) > 1 {
+			ln = parts[1]
+		}
+		return fn, ln, true
+	}
+
+	// Try user_metadata fields that OAuth providers typically populate.
+	for _, key := range []string{"full_name", "name"} {
+		if v, ok := user.UserMetadata[key].(string); ok {
+			if fn, ln, ok := tryFullName(v); ok {
+				return fn, ln
+			}
+		}
+	}
+	if v, ok := user.UserMetadata["first_name"].(string); ok {
+		firstName = strings.TrimSpace(v)
+	}
+	if v, ok := user.UserMetadata["last_name"].(string); ok {
+		lastName = strings.TrimSpace(v)
+	}
+	if firstName != "" || lastName != "" {
+		return
+	}
+
+	// Fall back to identity data (Google sends given_name / family_name).
+	for _, identity := range user.Identities {
+		if v, ok := identity.IdentityData["full_name"].(string); ok {
+			if fn, ln, ok := tryFullName(v); ok {
+				return fn, ln
+			}
+		}
+		if firstName == "" {
+			if v, ok := identity.IdentityData["given_name"].(string); ok {
+				firstName = strings.TrimSpace(v)
+			}
+		}
+		if lastName == "" {
+			if v, ok := identity.IdentityData["family_name"].(string); ok {
+				lastName = strings.TrimSpace(v)
+			}
+		}
+		if firstName != "" || lastName != "" {
+			return
+		}
+	}
+	return
 }

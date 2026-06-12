@@ -317,10 +317,15 @@ func (c *SupabaseAuthClient) UpdateUser(ctx context.Context, accessToken string,
 // GetOAuthURL returns the Supabase Auth URL to which the user should be redirected to
 // initiate the OAuth flow for the given provider ("google" or "apple"). The configured
 // OAuthCallbackURL will receive the authorization code on completion.
-func (c *SupabaseAuthClient) GetOAuthURL(provider string) string {
+// If codeChallenge is non-empty, PKCE S256 params are included in the URL.
+func (c *SupabaseAuthClient) GetOAuthURL(provider, codeChallenge string) string {
 	params := url.Values{}
 	params.Set("provider", provider)
 	params.Set("redirect_to", c.oauthCallback)
+	if codeChallenge != "" {
+		params.Set("code_challenge", codeChallenge)
+		params.Set("code_challenge_method", "s256")
+	}
 	return c.authURL("authorize") + "?" + params.Encode()
 }
 

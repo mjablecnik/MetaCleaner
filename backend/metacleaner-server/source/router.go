@@ -155,6 +155,12 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// POST /api/auth/reset-password
 	mux.Handle("POST /api/auth/reset-password", HandleResetPassword(authClient))
 
+	// GET /api/auth/oauth/callback — must be registered before the {provider} wildcard
+	mux.Handle("GET /api/auth/oauth/callback", HandleOAuthCallback(authClient))
+
+	// GET /api/auth/oauth/{provider} — initiates the OAuth flow
+	mux.Handle("GET /api/auth/oauth/{provider}", HandleOAuthInitiate(authClient))
+
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 

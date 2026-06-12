@@ -66,7 +66,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - POST `/api/auth/reset-password` — update password via Supabase using verified token, validate length 8–128
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9_
 
-  - [ ] 2.5 Implement OAuth handlers
+  - [x] 2.5 Implement OAuth handlers
     - GET `/api/auth/oauth/{provider}` — validate provider (google/apple), redirect to Supabase OAuth URL
     - GET `/api/auth/oauth/callback` — exchange code for session, redirect to frontend with tokens as query params
     - Create profile on first OAuth login (extract name from identity data, fallback to empty strings)
