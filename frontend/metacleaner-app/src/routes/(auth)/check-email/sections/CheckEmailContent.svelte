@@ -1,7 +1,6 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import CountdownTimer from '../../components/CountdownTimer.svelte';
 
 	interface Props {
@@ -21,12 +20,6 @@
 	const progressColor = $derived(
 		progressPct > 50 ? 'var(--color-brand-green)' : progressPct > 20 ? 'var(--color-brand-orange)' : 'var(--color-brand-red)'
 	);
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 
 	onMount(() => {
 		const interval = setInterval(() => {

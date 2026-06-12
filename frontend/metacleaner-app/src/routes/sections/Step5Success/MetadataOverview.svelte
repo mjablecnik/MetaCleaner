@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { MetadataBreakdown } from '$lib/types/processing';
 	import MetadataFieldList from './components/MetadataFieldList.svelte';
 
@@ -11,14 +10,6 @@
 	}
 
 	const { beforeBreakdown, totalFieldsBefore, gpsLocationsRemoved }: Props = $props();
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	let accordionOpen = $state(true);
 	let activeTab = $state<'before' | 'after'>('before');

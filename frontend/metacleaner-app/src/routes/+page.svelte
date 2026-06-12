@@ -1,18 +1,11 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import { appState } from '$lib/stores/appState.svelte';
 	import Step1Idle from './sections/Step1Idle/Step1Idle.svelte';
 	import Step2FilesReady from './sections/Step2FilesReady/Step2FilesReady.svelte';
 	import Step3Processing from './sections/Step3Processing/Step3Processing.svelte';
 	import Step4Error from './sections/Step4Error/Step4Error.svelte';
 	import Step5Success from './sections/Step5Success/Step5Success.svelte';
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	const state = $derived(appState.current);
 	const metaTitleKey = $derived(

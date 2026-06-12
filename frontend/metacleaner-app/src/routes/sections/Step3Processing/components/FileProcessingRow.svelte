@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
+	import { formatSize } from '$lib/shared/utils/format';
 	import type { QueuedFile } from '$lib/scanner/types';
 
 	export interface FileRowState {
@@ -17,19 +17,6 @@
 	}
 
 	const { file, state, class: className = '' }: Props = $props();
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
-
-	function formatSize(bytes: number): string {
-		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-		return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-	}
 
 	function rowBorderClass(status: string): string {
 		if (status === 'done') return 'border-brand-green/20 bg-navy-main/60';

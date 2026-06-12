@@ -1,18 +1,11 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		score: number;
 	}
 
 	let { score }: Props = $props();
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	const barColors = [
 		'var(--color-brand-red)',

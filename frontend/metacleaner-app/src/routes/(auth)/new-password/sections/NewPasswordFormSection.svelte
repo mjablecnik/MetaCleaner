@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import PasswordInput from '../../components/PasswordInput.svelte';
 	import PasswordStrengthMeter from '../../components/PasswordStrengthMeter.svelte';
 
@@ -15,12 +14,6 @@
 	let newPasswordVisible = $state(false);
 	let confirmPasswordVisible = $state(false);
 	let submitState = $state<'idle' | 'loading'>('idle');
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 
 	const hasLen = $derived(newPassword.length >= 8);
 	const hasUpper = $derived(/[A-Z]/.test(newPassword));

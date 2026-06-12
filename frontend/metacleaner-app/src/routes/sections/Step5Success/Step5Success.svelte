@@ -1,10 +1,9 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
@@ -24,14 +23,6 @@
 			clearTimeout(downloadErrorTimer);
 		};
 	});
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	function formatTime(seconds: number): string {
 		const m = Math.floor(seconds / 60);

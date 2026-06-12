@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import Badge from '$lib/shared/elements/Badge.svelte';
 	import Card from '$lib/shared/elements/Card.svelte';
 	import IconContainer from '$lib/shared/elements/IconContainer.svelte';
@@ -11,11 +10,6 @@
 
 	const { class: extraClass = '' }: Props = $props();
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <Card class="flex flex-col items-center justify-center gap-5 py-12 lg:h-full lg:py-16 {extraClass}">

@@ -1,8 +1,7 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import { getReportPdf } from '$lib/clients/metaCleanerApi';
 	import type { ReportDetail } from '$lib/types/report';
@@ -16,14 +15,6 @@
 	let loadError = $state<string | null>(null);
 
 	const reportId = $derived(page.params.id);
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	const stats = $derived([
 		{

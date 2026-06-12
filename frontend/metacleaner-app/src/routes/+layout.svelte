@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
-	import { initLocale, locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { initLocale } from '$lib/locale.svelte';
 	import { page } from '$app/state';
 	import { App } from '@capacitor/app';
 	import NavBar from '$lib/shared/components/NavBar.svelte';
@@ -15,12 +15,6 @@
 
 	let user = $state<User | null>(null);
 	let langOptions = $state<Language[]>([]);
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	const navProps = $derived.by(() => {
 		const path = page.url.pathname;

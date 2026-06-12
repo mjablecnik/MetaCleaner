@@ -1,19 +1,12 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import OtpInput from '../../components/OtpInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
 	import PasswordStrengthMeter from '../../components/PasswordStrengthMeter.svelte';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import CountdownTimer from '../../components/CountdownTimer.svelte';
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 
 	interface Props {
 		currentStep?: 1 | 2 | 3 | 4;

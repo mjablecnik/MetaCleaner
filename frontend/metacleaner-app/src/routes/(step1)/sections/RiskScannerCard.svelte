@@ -1,19 +1,10 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
+	import { ringColorMap, severityBadgeClass, dotColorClass, severityTextClass, severityLabelKey, barSeverity, type RingColor, type BarSeverity } from '$lib/shared/utils/riskStyles';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import RiskScoreRing from '../components/RiskScoreRing.svelte';
 	import RiskBreakdownBar from '../components/RiskBreakdownBar.svelte';
 	import BeforeAfterScore from '../components/BeforeAfterScore.svelte';
-	import type { SeverityLevel } from '$lib/scanner/types';
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	const risk = $derived(scannerStore.aggregatedRisk);
 	const score = $derived(risk.overallScore);
@@ -22,44 +13,6 @@
 	const allFilesErrored = $derived(
 		risk.fileCount > 0 && risk.scannedCount === 0 && !risk.isScanning
 	);
-
-	type RingColor = 'red' | 'orange' | 'green' | 'blue';
-	type BarSeverity = 'critical' | 'high' | 'medium' | 'low';
-
-	const ringColorMap: Record<SeverityLevel, RingColor> = {
-		critical: 'red',
-		high: 'orange',
-		medium: 'orange',
-		low: 'green'
-	};
-
-	const severityBadgeClass: Record<SeverityLevel, string> = {
-		critical: 'border-brand-red/20 bg-brand-red/10 text-brand-red',
-		high: 'border-brand-orange/20 bg-brand-orange/10 text-brand-orange',
-		medium: 'border-brand-orange/20 bg-brand-orange/10 text-brand-orange',
-		low: 'border-gray-700 bg-navy-lighter text-text-muted'
-	};
-
-	const dotColorClass: Record<SeverityLevel, string> = {
-		critical: 'bg-brand-red',
-		high: 'bg-brand-orange',
-		medium: 'bg-brand-orange',
-		low: 'bg-gray-500'
-	};
-
-	const severityLabelKey: Record<SeverityLevel, string> = {
-		critical: 'step2.risk.critical',
-		high: 'step2.risk.high',
-		medium: 'step2.risk.medium',
-		low: 'step2.risk.low'
-	};
-
-	function barSeverity(v: number): BarSeverity {
-		if (v >= 75) return 'critical';
-		if (v >= 50) return 'high';
-		if (v >= 25) return 'medium';
-		return 'low';
-	}
 
 	interface RiskBar {
 		icon: string;

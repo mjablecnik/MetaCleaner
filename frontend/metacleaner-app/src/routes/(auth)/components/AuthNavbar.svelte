@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		rightText?: string;
@@ -10,11 +9,6 @@
 
 	let { rightText, rightHref, rightLabel }: Props = $props();
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <nav class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6">

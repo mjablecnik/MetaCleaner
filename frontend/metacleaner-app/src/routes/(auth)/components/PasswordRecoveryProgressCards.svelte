@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		/** 2 = step 1 done, step 2 active; 3 = steps 1–2 done, step 3 active; 4 = all done */
@@ -12,12 +11,6 @@
 	}
 
 	let { currentStep, step1DoneDesc, step2DoneDesc }: Props = $props();
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	function stepState(stepNum: 1 | 2 | 3): 'done' | 'active' | 'pending' {
 		if (currentStep > stepNum) return 'done';

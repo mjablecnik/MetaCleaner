@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { ReportDetail } from '$lib/types/report';
 
 	interface Props {
@@ -11,13 +10,6 @@
 
 	let { reportDetail, userEmail, onDownloadPdf }: Props = $props();
 
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 </script>
 
 <!-- Title row with icon, heading, and action buttons -->

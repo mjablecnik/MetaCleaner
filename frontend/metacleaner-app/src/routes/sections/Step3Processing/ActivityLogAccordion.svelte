@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import ActivityLog from '$lib/shared/components/ActivityLog.svelte';
 	import type { ActivityLogEntry } from '$lib/shared/components/ActivityLog.svelte';
 
@@ -12,13 +11,6 @@
 
 	let open = $state(false);
 
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 </script>
 
 <div class="rounded-2xl border border-gray-800 bg-navy-card shadow-card">

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import { getAuthStats } from '$lib/repositories/authRepository';
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import AuthNavbar from '../components/AuthNavbar.svelte';
@@ -13,11 +12,6 @@
 
 	const stats = getAuthStats();
 
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 </script>
 
 <svelte:head>

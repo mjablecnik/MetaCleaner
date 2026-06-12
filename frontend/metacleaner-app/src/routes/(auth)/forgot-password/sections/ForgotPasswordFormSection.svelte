@@ -1,14 +1,7 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { goto } from '$app/navigation';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 
 	let email = $state('');
 	let emailError = $state('');

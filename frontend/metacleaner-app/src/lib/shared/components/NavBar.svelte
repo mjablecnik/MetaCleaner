@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { locale, switchLocale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
 	import LanguageDropdown from './LanguageDropdown.svelte';
@@ -49,12 +49,6 @@
 	let langDropdownOpen = $state(false);
 	let userDropdownOpen = $state(false);
 	let hamburgerMenuOpen = $state(false);
-
-	function tx(key: string): string {
-		void locale.current; // reactive dependency
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	function handleLangSelect(code: string) {
 		switchLocale(code);

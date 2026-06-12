@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
@@ -8,12 +7,6 @@
 	import FileListCard from '../../(step1)/sections/FileListCard.svelte';
 	import RiskScannerCard from '../../(step1)/sections/RiskScannerCard.svelte';
 	import MobileRiskBanner from '../../(step1)/sections/MobileRiskBanner.svelte';
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	function startCleaning() {
 		if (scannerStore.hasFiles) appState.transitionTo('processing');

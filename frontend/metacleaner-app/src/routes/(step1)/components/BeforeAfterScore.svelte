@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		beforeScore: number;
@@ -9,11 +8,6 @@
 
 	const { beforeScore, afterScore }: Props = $props();
 
-	function tx(key: string): string {
-		void locale.current; // reactive dependency
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <div class="grid grid-cols-2 gap-3">

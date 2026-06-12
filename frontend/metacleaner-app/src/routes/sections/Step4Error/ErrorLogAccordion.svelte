@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { SimpleLogEntry } from './ErrorStateCard.svelte';
 
 	interface Props {
@@ -11,11 +10,6 @@
 
 	let open = $state(true);
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card">

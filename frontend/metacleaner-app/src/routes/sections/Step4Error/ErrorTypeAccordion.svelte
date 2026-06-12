@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { ErrorType } from './ErrorStateCard.svelte';
 
 	interface Props {
@@ -11,12 +10,6 @@
 	const { selectedErrorType, onSelectErrorType }: Props = $props();
 
 	let open = $state(true);
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	const errorTypes: { id: ErrorType; icon: string; title: string; description: string }[] = [
 		{

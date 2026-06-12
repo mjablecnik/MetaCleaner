@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
@@ -13,14 +12,6 @@
 	import ErrorDetailAccordion from './ErrorDetailAccordion.svelte';
 	import ErrorTypeAccordion from './ErrorTypeAccordion.svelte';
 	import ErrorLogAccordion from './ErrorLogAccordion.svelte';
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	let bannerVisible = $state(true);
 	let selectedErrorType = $state<ErrorType>('cleaning');

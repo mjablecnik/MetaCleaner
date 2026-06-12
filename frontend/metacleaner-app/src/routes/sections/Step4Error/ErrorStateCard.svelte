@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { CleaningError } from '$lib/services/cleaningService';
 
 	export type ErrorType = 'cleaning' | 'connection' | 'timeout';
@@ -18,12 +17,6 @@
 	}
 
 	const { error, selectedErrorType, onSelectErrorType, logEntries }: Props = $props();
-
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	const errorTypes: { id: ErrorType; icon: string; title: string; description: string }[] = [
 		{

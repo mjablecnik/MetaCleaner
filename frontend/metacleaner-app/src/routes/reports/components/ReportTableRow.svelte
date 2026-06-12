@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
+	import { tagStyle, iconStyle } from '$lib/shared/utils/reportStyles';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import type { Report } from '$lib/types/report';
 
 	interface Props {
@@ -12,31 +12,10 @@
 
 	const { report, onDownload }: Props = $props();
 
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
-
 	function fileCountLabel(n: number): string {
 		if (n === 1) return tx('reports.fileCount.one');
 		if (n >= 2 && n <= 4) return tx('reports.fileCount.few', { count: n });
 		return tx('reports.fileCount.many', { count: n });
-	}
-
-	function tagStyle(tag: string): string {
-		if (tag === 'GPS') return 'bg-brand-red/10 border-brand-red/20 text-brand-red';
-		if (tag === 'EXIF') return 'bg-brand-orange/10 border-brand-orange/20 text-brand-orange';
-		if (tag === 'XMP') return 'bg-brand-blue/10 border-brand-blue/20 text-brand-blue';
-		return 'bg-navy-lighter text-text-muted';
-	}
-
-	function iconStyle(color: string): string {
-		if (color === 'green') return 'bg-brand-green/10 border-brand-green/20 text-brand-green';
-		if (color === 'orange') return 'bg-brand-orange/10 border-brand-orange/20 text-brand-orange';
-		return 'bg-brand-blue/10 border-brand-blue/20 text-brand-blue';
 	}
 
 	const fieldsTextClass = $derived(

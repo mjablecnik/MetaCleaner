@@ -1,8 +1,7 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import type { User } from '$lib/repositories/userRepository';
 
 	interface Props {
@@ -13,12 +12,6 @@
 	}
 
 	let { user, open = $bindable(false), onToggle, wrapperId = 'userDropdown' }: Props = $props();
-
-	function tx(key: string): string {
-		void locale.current; // reactive dependency
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 
 	function handleToggle() {
 		open = !open;

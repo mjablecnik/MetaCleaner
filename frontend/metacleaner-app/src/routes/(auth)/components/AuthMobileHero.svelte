@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { AuthStat } from '$lib/repositories/authRepository';
 
 	interface Props {
@@ -15,11 +14,6 @@
 	let { headline, highlightedWord, beforeHighlight, afterWord, description, stats }: Props =
 		$props();
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <div class="mb-6 flex flex-col items-center text-center lg:hidden">

@@ -1,7 +1,6 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { goto } from '$app/navigation';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import { getAuthPlans } from '$lib/repositories/authRepository';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
@@ -15,12 +14,6 @@
 	let { selectedPlan = $bindable('free') }: Props = $props();
 
 	const plans = getAuthPlans();
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>)[key];
-		return fn ? fn(params) : key;
-	}
 
 	function planColors(color: 'green' | 'orange') {
 		return color === 'green'

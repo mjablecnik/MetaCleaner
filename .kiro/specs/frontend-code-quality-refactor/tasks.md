@@ -59,26 +59,26 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
 - [x] 3. Checkpoint - Verify shared utilities
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Replace inline utilities across components
-  - [ ] 4.1 Remove all inline `tx()` definitions from component files and import from `src/lib/shared/utils/i18n.ts`
+- [x] 4. Replace inline utilities across components
+  - [x] 4.1 Remove all inline `tx()` definitions from component files and import from `src/lib/shared/utils/i18n.ts`
     - Update all 21+ component files that declare a local `tx()` function
     - Add `import { tx } from '$lib/shared/utils/i18n'` to each file
     - Remove the local function declaration and any local imports of `locale`/`m` that are no longer needed
     - _Requirements: 1.5_
 
-  - [ ] 4.2 Remove inline `formatSize()` from components and import from `src/lib/shared/utils/format.ts`
+  - [x] 4.2 Remove inline `formatSize()` from components and import from `src/lib/shared/utils/format.ts`
     - Update `FileListItemRisk.svelte`, `ProcessingFilesCard.svelte`, `FileResultsCard.svelte`
     - Add `import { formatSize } from '$lib/shared/utils/format'`
     - Remove local `formatSize` function declarations
     - _Requirements: 2.5_
 
-  - [ ] 4.3 Remove inline `tagStyle()`/`iconStyle()` from components and import from `src/lib/shared/utils/reportStyles.ts`
+  - [x] 4.3 Remove inline `tagStyle()`/`iconStyle()` from components and import from `src/lib/shared/utils/reportStyles.ts`
     - Update `ReportTableRow.svelte` and `ReportCard.svelte`
     - Add `import { tagStyle, iconStyle } from '$lib/shared/utils/reportStyles'`
     - Remove local function declarations
     - _Requirements: 3.5, 3.6_
 
-  - [ ] 4.4 Remove inline risk severity utilities from components and import from `src/lib/shared/utils/riskStyles.ts`
+  - [x] 4.4 Remove inline risk severity utilities from components and import from `src/lib/shared/utils/riskStyles.ts`
     - Update `RiskScannerCard.svelte` and `MobileRiskBanner.svelte`
     - Import `ringColorMap`, `severityBadgeClass`, `dotColorClass`, `severityTextClass`, `severityLabelKey`, `barSeverity`, `RingColor`, `BarSeverity`
     - Remove all local declarations of those mappings, types, and functions

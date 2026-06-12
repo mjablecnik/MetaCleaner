@@ -1,7 +1,6 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { ScanStatus } from '$lib/scanner/types';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 
 	interface Props {
 		status: ScanStatus;
@@ -9,11 +8,6 @@
 
 	const { status }: Props = $props();
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 {#if status === 'pending'}

@@ -1,7 +1,6 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte';
@@ -13,14 +12,6 @@
 	import ProcessingStatusCard from './ProcessingStatusCard.svelte';
 	import MobileStatusCard from './MobileStatusCard.svelte';
 	import ActivityLogAccordion from './ActivityLogAccordion.svelte';
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	interface FileProcessState {
 		status: 'waiting' | 'in_progress' | 'done' | 'error';

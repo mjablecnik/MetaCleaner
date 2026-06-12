@@ -1,15 +1,9 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import UploadZoneCard from '../../(step1)/sections/UploadZoneCard.svelte';
 	import StatusCardIdle from './StatusCardIdle.svelte';
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <!-- Desktop: two-column grid 55%/43% | Mobile: single column -->

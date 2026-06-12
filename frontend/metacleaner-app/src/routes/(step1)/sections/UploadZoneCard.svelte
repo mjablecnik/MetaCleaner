@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import Card from '$lib/shared/elements/Card.svelte';
 	import DropZone from '../components/DropZone.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -27,14 +26,6 @@
 	let showRejectionToast = $state(false);
 	let rejectionMessage = $state('');
 	let toastTimer: ReturnType<typeof setTimeout>;
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	function isAllowedFile(file: File): boolean {
 		const dotIdx = file.name.lastIndexOf('.');

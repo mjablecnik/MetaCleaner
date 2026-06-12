@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { AuthStat } from '$lib/repositories/authRepository';
 
 	interface Props {
@@ -10,11 +9,6 @@
 
 	let { stats, bordered = false }: Props = $props();
 
-	function tx(key: string): string {
-		void locale.current;
-		const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-		return fn ? fn() : key;
-	}
 </script>
 
 <div class="grid grid-cols-3 gap-4 {bordered ? 'border-t border-gray-800 pt-2' : ''}">

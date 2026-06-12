@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 	import type { ReportFileDetail, ReportIconColor } from '$lib/types/report';
 	import MetadataTable from './MetadataTable.svelte';
 
@@ -11,14 +10,6 @@
 	}
 
 	let { file, open, onToggle }: Props = $props();
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	const iconColors: Record<ReportIconColor, { bg: string; border: string; text: string }> = {
 		green: { bg: 'bg-brand-green/10', border: 'border-brand-green/20', text: 'text-brand-green' },

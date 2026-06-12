@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
+	import { tx } from '$lib/shared/utils/i18n';
 
 	interface Props {
 		currentFileName: string;
@@ -11,13 +10,6 @@
 
 	const { currentFileName, totalFiles, fieldsRemoved, filesCompleted }: Props = $props();
 
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 </script>
 
 <div class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-4 shadow-card">

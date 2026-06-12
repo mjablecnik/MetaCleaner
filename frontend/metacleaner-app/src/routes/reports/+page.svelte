@@ -1,10 +1,9 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { locale } from '$lib/locale.svelte';
-	import * as m from '$lib/paraglide/messages';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import type { Report, ReportSummaryStats } from '$lib/types/report';
@@ -26,14 +25,6 @@
 
 	let reports = $state<Report[]>([]);
 	let stats = $state<ReportSummaryStats | null>(null);
-
-	function tx(key: string, params: Record<string, unknown> = {}): string {
-		void locale.current;
-		const fn = (
-			m as unknown as Record<string, ((p: Record<string, unknown>) => string) | undefined>
-		)[key];
-		return fn ? fn(params) : key;
-	}
 
 	// Reset app state when navigating back to the main cleaning page so the user
 	// sees the idle state rather than the previous success/error result.
