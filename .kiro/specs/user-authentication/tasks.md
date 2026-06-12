@@ -107,7 +107,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Add CHECK constraint on subscription_type (free/pro/premium)
     - _Requirements: 7.1, 7.2, 7.4, 7.6, 7.7, 16.1, 16.9_
 
-- [ ] 5. Frontend auth store and API client
+- [x] 5. Frontend auth store and API client
   - [x] 5.1 Create auth store (`src/lib/auth/auth.svelte.ts`)
     - Implement reactive auth state using Svelte 5 runes: `accessToken`, `refreshToken`, `user`, `isAuthenticated`, `isLoading`
     - Store tokens in localStorage with `mc_` prefix (`mc_access_token`, `mc_refresh_token`)
