@@ -97,7 +97,9 @@
 
 	onMount(async () => {
 		const urlError = await handleAuthCallback(window.location.href, true);
-		if (urlError) apiError = urlError;
+		const deepLinkError = sessionStorage.getItem('mc_deep_link_error');
+		if (deepLinkError) sessionStorage.removeItem('mc_deep_link_error');
+		if (urlError || deepLinkError) apiError = urlError ?? deepLinkError ?? '';
 	});
 </script>
 

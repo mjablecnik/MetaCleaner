@@ -180,7 +180,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Redirect to `/` if authenticated user visits `/login`, `/register`, `/forgot-password`
     - _Requirements: 6.4, 6.5, 12.5_
 
-  - [ ] 7.2 Create deep link handler (`src/lib/auth/deep-link.ts`)
+  - [x] 7.2 Create deep link handler (`src/lib/auth/deep-link.ts`)
     - Capacitor `App.addListener('appUrlOpen', ...)` handler
     - Intercept OAuth and magic link callback URLs
     - Extract tokens using shared token-utils, store in localStorage
