@@ -213,7 +213,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test OAuth and magic link handlers
     - _Requirements: 1.1–1.9, 2.1–2.5, 3.1–3.2, 4.1, 4.3, 5.1–5.9, 14.1–14.9, 17.1–17.12_
 
-  - [ ]* 9.3 Write unit tests for auth rate limiter
+  - [x]* 9.3 Write unit tests for auth rate limiter
     - Test per-IP limit enforcement and reset
     - Test Retry-After header value
     - Test magic link per-email+IP tracking
