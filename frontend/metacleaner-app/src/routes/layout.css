@@ -9,6 +9,7 @@
 	--color-navy-lighter: #1e293b; /* badges, inputs, lighter surfaces */
 	--color-navy-lighter-50: rgba(30, 41, 59, 0.5); /* semi-transparent lighter surface */
 	--color-navy-lighter-60: rgba(30, 41, 59, 0.6); /* semi-transparent lighter surface, stronger */
+	--color-navy-hover: #263347; /* social login button hover background */
 
 	/* ─── Brand / semantic colors ───────────────────────────────────────── */
 	--color-brand-green: #22c55e; /* success states, CTA buttons */
