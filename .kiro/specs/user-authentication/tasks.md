@@ -269,7 +269,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify failed login error message is identical regardless of email existence
     - **Validates: Requirements 2.2, 5.2**
 
-  - [ ]* 10.5 Write property test — concurrent refresh deduplication (fast-check)
+  - [x]* 10.5 Write property test — concurrent refresh deduplication (fast-check)
     - **Property 6: Concurrent refresh deduplication**
     - Generate N concurrent API requests with an expired token
     - Verify exactly 1 refresh call is made and all N requests resolve with new token
