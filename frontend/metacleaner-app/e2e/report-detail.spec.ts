@@ -91,10 +91,13 @@ test.describe('Report Detail page', () => {
 
 		test('collapse all button collapses open accordion', async ({ page }) => {
 			await navigateToReportDetail(page);
+			// Wait for $effect to run and open first accordion, making allOpen=true → button = "Collapse all"
 			const toggleBtn = page.getByRole('button', { name: /collapse all/i });
+			await expect(toggleBtn).toBeVisible({ timeout: 5000 });
 			await toggleBtn.click();
-			const expandBtn = page.getByRole('button', { name: /expand all/i });
-			await expect(expandBtn).toBeVisible();
+			await expect(page.getByRole('button', { name: /expand all/i })).toBeVisible({
+				timeout: 5000
+			});
 		});
 
 		test('back button in navbar links to /reports', async ({ page }) => {
