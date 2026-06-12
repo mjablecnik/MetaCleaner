@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-12 03:00 — ui-refactor
+- Created `--color-navy-hover: #263347` theme token in `src/routes/layout.css` and replaced `hover:bg-[#263347]` with `hover:bg-navy-hover` in login and register pages
+- Created `AuthTextInput` shared element in `src/lib/shared/elements/AuthTextInput.svelte` with co-located `AuthTextInput.stories.svelte`
+- Created `SocialLoginButtons` component in `src/routes/(auth)/components/SocialLoginButtons.svelte` with co-located `SocialLoginButtons.stories.svelte`
+- Created page-specific form sections: `LoginFormSection` (`src/routes/(auth)/login/sections/`), `RegisterFormSection` (`src/routes/(auth)/register/sections/`), `CheckEmailContent` (`src/routes/(auth)/check-email/sections/`), `ForgotPasswordFormSection` (`src/routes/(auth)/forgot-password/sections/`), `CheckCodeFormSection` (`src/routes/(auth)/check-code/sections/`), `NewPasswordFormSection` (`src/routes/(auth)/new-password/sections/`)
+- Refactored all 6 auth pages (`login`, `register`, `check-email`, `forgot-password`, `check-code`, `new-password`) to compose sections — each page reduced to ≤80 lines
+- Eliminated remaining duplicate code with extracted `TrustBadges` and `PasswordRecoveryProgressCards` shared auth components
+
 ## 2026-06-11 23:32 — ui-refactor
 - Created theme tokens in `src/routes/layout.css`: `--color-brand-yellow`, `--color-page-gradient-blue`, `--color-page-gradient-green`, `--shadow-glow-green-strong`
 - Replaced 172 hardcoded color hex/rgba values in auth pages with theme token references (`var(--color-*)` / Tailwind utilities)
