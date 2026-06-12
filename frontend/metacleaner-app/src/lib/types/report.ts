@@ -24,18 +24,18 @@ export interface ReportSummaryStats {
 	gpsRemoved: number;
 }
 
-export interface MetadataField {
+export interface ReportMetadataField {
 	label: string;
 	value: string;
 	moreCount?: number;
 }
 
 export interface FileMetadataSection {
-	gpsFields: MetadataField[];
-	exifFields: MetadataField[];
-	xmpFields: MetadataField[];
-	id3Fields: MetadataField[];
-	mp4AtomFields: MetadataField[];
+	gpsFields: ReportMetadataField[];
+	exifFields: ReportMetadataField[];
+	xmpFields: ReportMetadataField[];
+	id3Fields: ReportMetadataField[];
+	mp4AtomFields: ReportMetadataField[];
 	totalRemoved: number;
 }
 

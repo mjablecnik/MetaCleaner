@@ -84,13 +84,13 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Remove all local declarations of those mappings, types, and functions
     - _Requirements: 4.4_
 
-- [ ] 5. Resolve MetadataField type naming conflict
-  - [ ] 5.1 Rename `MetadataField` to `ReportMetadataField` in `src/lib/types/report.ts`
+- [x] 5. Resolve MetadataField type naming conflict
+  - [x] 5.1 Rename `MetadataField` to `ReportMetadataField` in `src/lib/types/report.ts`
     - Rename the interface declaration
     - Update all internal references within `report.ts` (e.g., `FileMetadataSection` interface properties)
     - _Requirements: 5.1_
 
-  - [ ] 5.2 Update all consuming files that import `MetadataField` from `report.ts` to use `ReportMetadataField`
+  - [x] 5.2 Update all consuming files that import `MetadataField` from `report.ts` to use `ReportMetadataField`
     - Find and update all import statements referencing `MetadataField` from `src/lib/types/report.ts`
     - Update type annotations in consuming components
     - Verify `MetadataField` in `src/lib/scanner/types.ts` remains unchanged

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
-	import type { MetadataField } from '$lib/types/report';
+	import type { ReportMetadataField } from '$lib/types/report';
 
 	interface Props {
-		fields: MetadataField[];
+		fields: ReportMetadataField[];
 	}
 
 	const { fields }: Props = $props();
