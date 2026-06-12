@@ -71,6 +71,7 @@ let _accessToken = $state<string | null>(null);
 let _refreshToken = $state<string | null>(null);
 let _user = $state<AuthUser | null>(null);
 let _isLoading = $state(false);
+let _isAuthReady = $state(false);
 
 const _isAuthenticated = $derived(_accessToken !== null);
 
@@ -96,15 +97,35 @@ function _clear(): void {
 }
 
 function _restore(): void {
-	if (!browser) return;
+	if (!browser) {
+		_isAuthReady = true;
+		return;
+	}
 	const token = localStorage.getItem(TOKEN_KEY);
-	const refresh = localStorage.getItem(REFRESH_KEY);
+	const storedRefresh = localStorage.getItem(REFRESH_KEY);
 	const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
 	if (token && expiresAt > Date.now()) {
 		_accessToken = token;
-		_refreshToken = refresh;
+		_refreshToken = storedRefresh;
+		_isAuthReady = true;
+	} else if (storedRefresh) {
+		// Access token expired but refresh token exists — attempt silent refresh.
+		// Clear stale tokens from storage immediately; new tokens arrive via _persist().
+		localStorage.removeItem(TOKEN_KEY);
+		localStorage.removeItem(REFRESH_KEY);
+		localStorage.removeItem(EXPIRES_KEY);
+		_refreshToken = storedRefresh;
+		refresh()
+			.then(() => {
+				_isAuthReady = true;
+			})
+			.catch(() => {
+				_clear();
+				_isAuthReady = true;
+			});
 	} else {
 		_clear();
+		_isAuthReady = true;
 	}
 }
 
@@ -195,6 +216,9 @@ export const authStore = {
 	},
 	get isLoading(): boolean {
 		return _isLoading;
+	},
+	get isAuthReady(): boolean {
+		return _isAuthReady;
 	},
 	get expiresAt(): number {
 		if (!browser) return 0;

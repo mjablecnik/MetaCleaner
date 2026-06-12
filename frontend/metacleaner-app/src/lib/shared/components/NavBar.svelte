@@ -29,6 +29,7 @@
 		reducedDesktopPadding?: boolean;
 		/** Add no-print CSS class to the nav element (report detail page). */
 		noPrint?: boolean;
+		onLogout?: () => void;
 	}
 
 	let {
@@ -43,7 +44,8 @@
 		onLogoClick,
 		compact = false,
 		reducedDesktopPadding = false,
-		noPrint = false
+		noPrint = false,
+		onLogout
 	}: Props = $props();
 
 	let langDropdownOpen = $state(false);
@@ -118,7 +120,10 @@
 					{@render logoContent()}
 				</a>
 			{:else if onLogoClick}
-				<button onclick={onLogoClick} class="flex cursor-pointer items-center gap-2 bg-transparent p-0 lg:gap-3">
+				<button
+					onclick={onLogoClick}
+					class="flex cursor-pointer items-center gap-2 bg-transparent p-0 lg:gap-3"
+				>
 					{@render logoContent()}
 				</button>
 			{:else}
@@ -158,7 +163,7 @@
 					wrapperId="nav-langDropdown"
 				/>
 			{/if}
-			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" />
+			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" {onLogout} />
 		</div>
 
 		<!-- Mobile hamburger menu (always shown on mobile) -->
@@ -168,6 +173,7 @@
 			bind:open={hamburgerMenuOpen}
 			onSelect={handleLangSelect}
 			wrapperId="nav-hamburgerDropdown"
+			{onLogout}
 		/>
 	</div>
 </nav>

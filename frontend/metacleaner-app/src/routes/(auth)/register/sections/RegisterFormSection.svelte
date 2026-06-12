@@ -4,7 +4,7 @@
 	import type { Pathname } from '$app/types';
 	import { tx } from '$lib/shared/utils/i18n';
 	import { authStore } from '$lib/auth/auth.svelte.js';
-	import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
+	import { buildApiUrl } from '$lib/clients/api-config.js';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
 	import PasswordStrengthMeter from '../../components/PasswordStrengthMeter.svelte';

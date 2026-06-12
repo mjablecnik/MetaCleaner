@@ -10,7 +10,7 @@ const { mockGoto, mockResolve, mockBuildApiUrl } = vi.hoisted(() => ({
 vi.mock('$app/environment', () => ({ browser: true }));
 vi.mock('$app/navigation', () => ({ goto: mockGoto }));
 vi.mock('$app/paths', () => ({ resolve: mockResolve }));
-vi.mock('$lib/clients/metaCleanerApi.js', () => ({ buildApiUrl: mockBuildApiUrl }));
+vi.mock('$lib/clients/api-config.js', () => ({ buildApiUrl: mockBuildApiUrl }));
 
 const TOKEN_KEY = 'mc_access_token';
 const REFRESH_KEY = 'mc_refresh_token';
@@ -86,9 +86,71 @@ describe('authStore — token storage and retrieval', () => {
 		mockStorage.setItem(EXPIRES_KEY, String(Date.now() - 1));
 
 		await importFresh();
+		// All stale tokens cleared from localStorage immediately even during async refresh
 		expect(mockStorage.getItem(TOKEN_KEY)).toBeNull();
 		expect(mockStorage.getItem(REFRESH_KEY)).toBeNull();
 		expect(mockStorage.getItem(EXPIRES_KEY)).toBeNull();
+	});
+
+	it('isAuthReady is true synchronously when valid tokens exist', async () => {
+		mockStorage.setItem(TOKEN_KEY, 'stored-access');
+		mockStorage.setItem(REFRESH_KEY, 'stored-refresh');
+		mockStorage.setItem(EXPIRES_KEY, String(Date.now() + 3_600_000));
+
+		const { authStore } = await importFresh();
+		expect(authStore.isAuthReady).toBe(true);
+	});
+
+	it('isAuthReady is true synchronously when no tokens exist', async () => {
+		const { authStore } = await importFresh();
+		expect(authStore.isAuthReady).toBe(true);
+	});
+
+	it('attempts refresh and sets isAuthReady after completion when access token expired with refresh token', async () => {
+		mockStorage.setItem(TOKEN_KEY, 'expired-access');
+		mockStorage.setItem(REFRESH_KEY, 'valid-refresh');
+		mockStorage.setItem(EXPIRES_KEY, String(Date.now() - 1));
+
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValueOnce(
+				new Response(
+					JSON.stringify({
+						access_token: 'new-access',
+						refresh_token: 'new-refresh',
+						expires_in: 3600
+					}),
+					{ status: 200 }
+				)
+			)
+		);
+
+		const { authStore } = await importFresh();
+		// Not yet ready — async refresh in progress
+		// Wait for refresh to complete
+		await vi.waitFor(() => expect(authStore.isAuthReady).toBe(true));
+		expect(authStore.isAuthenticated).toBe(true);
+		expect(authStore.accessToken).toBe('new-access');
+	});
+
+	it('clears auth and sets isAuthReady when refresh fails on init', async () => {
+		mockStorage.setItem(TOKEN_KEY, 'expired-access');
+		mockStorage.setItem(REFRESH_KEY, 'invalid-refresh');
+		mockStorage.setItem(EXPIRES_KEY, String(Date.now() - 1));
+
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValueOnce(
+				new Response(JSON.stringify({ error: 'invalid_token', message: 'Token expired' }), {
+					status: 401
+				})
+			)
+		);
+
+		const { authStore } = await importFresh();
+		await vi.waitFor(() => expect(authStore.isAuthReady).toBe(true));
+		expect(authStore.isAuthenticated).toBe(false);
+		expect(authStore.accessToken).toBeNull();
 	});
 
 	it('setTokensFromCallback stores tokens in state and localStorage', async () => {
@@ -352,7 +414,11 @@ describe('authStore — refresh state transition', () => {
 
 		mockFetch.mockResolvedValueOnce(
 			new Response(
-				JSON.stringify({ access_token: 'new-access', refresh_token: 'new-refresh', expires_in: 7200 }),
+				JSON.stringify({
+					access_token: 'new-access',
+					refresh_token: 'new-refresh',
+					expires_in: 7200
+				}),
 				{ status: 200 }
 			)
 		);
@@ -487,16 +553,15 @@ describe('authStore — register', () => {
 
 	it('register() throws on 409 conflict and resets isLoading', async () => {
 		mockFetch.mockResolvedValueOnce(
-			new Response(
-				JSON.stringify({ error: 'email_exists', message: 'Email already registered' }),
-				{ status: 409 }
-			)
+			new Response(JSON.stringify({ error: 'email_exists', message: 'Email already registered' }), {
+				status: 409
+			})
 		);
 
 		const { authStore } = await importFresh();
-		await expect(
-			authStore.register('existing@example.com', 'pass', 'Jane', 'Doe')
-		).rejects.toThrow('Email already registered');
+		await expect(authStore.register('existing@example.com', 'pass', 'Jane', 'Doe')).rejects.toThrow(
+			'Email already registered'
+		);
 		expect(authStore.isLoading).toBe(false);
 	});
 });

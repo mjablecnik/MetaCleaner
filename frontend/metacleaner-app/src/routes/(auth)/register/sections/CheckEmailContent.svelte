@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { onMount } from 'svelte';
+	import { buildApiUrl } from '$lib/clients/api-config.js';
 	import CountdownTimer from '../../components/CountdownTimer.svelte';
 
 	interface Props {
@@ -16,7 +17,7 @@
 	let showToast = $state(false);
 
 	const totalSeconds = 86400;
-	let remaining = $state(86387);
+	let remaining = $state(totalSeconds);
 
 	const progressPct = $derived((remaining / totalSeconds) * 100);
 	const progressColor = $derived(
@@ -34,18 +35,25 @@
 		return () => clearInterval(interval);
 	});
 
-	function resendEmail() {
+	async function resendEmail() {
 		if (resendLoading) return;
 		resendLoading = true;
-		setTimeout(() => {
+		try {
+			// Silently swallow errors (anti-enumeration: always show success)
+			await fetch(buildApiUrl('/api/auth/resend-confirmation'), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email })
+			}).catch(() => {});
+		} finally {
 			resendLoading = false;
 			showToast = true;
 			countdownKey++;
-			remaining = 86387;
+			remaining = totalSeconds;
 			setTimeout(() => {
 				showToast = false;
 			}, 3000);
-		}, 1500);
+		}
 	}
 </script>
 

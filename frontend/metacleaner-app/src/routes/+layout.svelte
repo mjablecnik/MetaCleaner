@@ -10,6 +10,7 @@
 	import { getCurrentUser, type User } from '$lib/repositories/userRepository';
 	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
 	import { appState } from '$lib/stores/appState.svelte';
+	import { authStore } from '$lib/auth/auth.svelte.js';
 
 	let { children } = $props();
 
@@ -69,8 +70,14 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="flex min-h-screen flex-col bg-navy-main font-sans text-white">
-	{#if !['/login', '/register', '/forgot-password'].includes(page.url.pathname)}
-		<NavBar {user} {langOptions} {...navProps} />
+	{#if !authStore.isAuthReady}
+		<div class="flex flex-1 items-center justify-center">
+			<i class="fa-solid fa-spinner fa-spin text-2xl text-brand-blue"></i>
+		</div>
+	{:else}
+		{#if !['/login', '/register', '/forgot-password'].includes(page.url.pathname)}
+			<NavBar {user} {langOptions} {...navProps} onLogout={() => authStore.logout()} />
+		{/if}
+		{@render children()}
 	{/if}
-	{@render children()}
 </div>

@@ -3,7 +3,7 @@
 	import type { Pathname } from '$app/types';
 	import { onMount } from 'svelte';
 	import { tx } from '$lib/shared/utils/i18n';
-	import { buildApiUrl } from '$lib/clients/metaCleanerApi.js';
+	import { buildApiUrl } from '$lib/clients/api-config.js';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
 	import OtpInput from '../../components/OtpInput.svelte';
 	import PasswordInput from '../../components/PasswordInput.svelte';
