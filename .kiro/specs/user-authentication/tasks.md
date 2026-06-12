@@ -250,7 +250,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test `setTokensFromCallback` with valid and missing params
     - _Requirements: 12.1, 12.5, 12.6_
 
-  - [ ]* 10.2 Write unit tests for API client (Vitest)
+  - [x]* 10.2 Write unit tests for API client (Vitest)
     - Test token injection in Authorization header
     - Test proactive refresh trigger at 60s before expiry
     - Test redirect to login on 401 after failed refresh
