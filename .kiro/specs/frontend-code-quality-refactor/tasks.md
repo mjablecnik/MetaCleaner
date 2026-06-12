@@ -114,14 +114,14 @@ This plan implements an internal code quality refactoring of the MetaCleaner Sve
     - Test no-op when callbacks not provided
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.6_
 
-- [ ] 8. Fix appState store reactivity
-  - [ ] 8.1 Change `_currentState` in `appState.svelte.ts` from `$derived` to `$derived.by()`
+- [x] 8. Fix appState store reactivity
+  - [x] 8.1 Change `_currentState` in `appState.svelte.ts` from `$derived` to `$derived.by()`
     - Replace `$derived((): AppState => { ... })` with `$derived.by((): AppState => { ... })`
     - Update all internal references from `_currentState()` to `_currentState` (in `isProcessing`, `hasFiles` derived values and `current` getter)
     - Preserve the auto-correction logic unchanged
     - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ]* 8.2 Write unit tests for appState store reactivity
+  - [x]* 8.2 Write unit tests for appState store reactivity
     - Test file: `src/lib/stores/__tests__/appState.test.ts`
     - Test auto-correction logic (idle + hasFiles → files-ready, files-ready + !hasFiles → idle)
     - Test `current`, `isProcessing`, `hasFiles` getter values per state
