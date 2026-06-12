@@ -237,7 +237,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify every error response has exactly `error`, `message`, `timestamp` fields
     - **Validates: Requirements 11.2**
 
-  - [ ]* 9.7 Write property test — trial credits assigned exactly once (rapid)
+  - [x]* 9.7 Write property test — trial credits assigned exactly once (rapid)
     - **Property 7: Trial credits assigned exactly once**
     - Register users via email, OAuth, and magic link
     - Verify credits=3 on creation, then verify login/refresh does not modify credits
