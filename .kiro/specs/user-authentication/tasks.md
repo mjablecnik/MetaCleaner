@@ -159,7 +159,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Verify visual match with `.design/auth-registration-form-*.html` (step 1) and `.design/auth-check-email-*.html` (step 2)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 9.10, 9.11, 9.12, 9.13_
 
-  - [ ] 6.3 Refactor password reset into single-page multi-step flow (`src/routes/(auth)/forgot-password/+page.svelte`)
+  - [x] 6.3 Refactor password reset into single-page multi-step flow (`src/routes/(auth)/forgot-password/+page.svelte`)
     - Consolidate existing separate routes (`check-code/`, `new-password/`) into a single multi-step page at `(auth)/forgot-password/`
     - Remove `(auth)/check-code/` and `(auth)/new-password/` route folders after migration
     - Implement step state management with Svelte 5 runes (step 1: email, step 2: code, step 3: new password, step 4: success)
@@ -174,7 +174,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 10.11, 10.12, 10.13_
 
 - [ ] 7. Frontend auth guard and deep link handler
-  - [ ] 7.1 Create auth guard (`src/lib/auth/auth-guard.ts`)
+  - [x] 7.1 Create auth guard (`src/lib/auth/auth-guard.ts`)
     - SvelteKit load function guard for protected routes
     - Redirect to `/login` if no valid token on protected routes
     - Redirect to `/` if authenticated user visits `/login`, `/register`, `/forgot-password`
