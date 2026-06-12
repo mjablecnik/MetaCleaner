@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-12 12:53 — create-code
+- Spec: user-authentication
+- Created specification files for user authentication feature in `.kiro/specs/user-authentication/`
+- Created `requirements.md` with 19 requirements covering: user registration, login, token refresh, logout, password reset flow, protected route access, RLS configuration, frontend login/register/password-reset pages, session storage, OAuth backend/frontend flows, magic link backend/frontend integration, user profile, mobile deep link configuration
+- Created `design.md` with architecture design: backend auth handlers (`auth_handlers.go`, `auth_middleware.go`, `auth_rate_limiter.go`, `supabase_auth.go`, `well_known.go`), frontend auth store (`auth.svelte.ts`), API client (`api-client.ts`), auth guard (`auth-guard.ts`), deep link handler (`deep-link.ts`), token utilities (`token-utils.ts`), database schema (`profiles` table, RLS policies, `user_id` columns), 7 correctness properties
+- Created `tasks.md` with 11 task groups (37 subtasks) covering: backend auth infrastructure, backend auth handlers, database schema/RLS migration, frontend auth store/API client, frontend auth page wiring, auth guard/deep link handler, backend tests (unit + property), frontend tests (unit + property)
+- No code review fixes applied (spec-only pipeline run)
+- No tests created (implementation pending)
+
 ## 2026-06-12 10:01 — create-code
 - Spec: frontend-code-quality-refactor
 - Created shared utility module `src/lib/shared/utils/i18n.ts` with `tx()` function
