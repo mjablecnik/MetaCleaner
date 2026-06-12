@@ -1,6 +1,28 @@
 # AI Log
 
+## 2026-06-12 17:39 — create-code
+- Spec: user-authentication
+- Implemented backend auth infrastructure: Supabase Auth client (`supabase_auth.go`), JWT validation middleware (`auth_middleware.go` task 1.2), auth rate limiter (`auth_rate_limiter.go` task 1.3), auth models and error codes (`auth_models.go` task 1.4)
+- Implemented backend auth handlers: POST `/api/auth/register` (task 2.1), POST `/api/auth/login` (task 2.2), POST `/api/auth/logout`, POST `/api/auth/refresh`, GET `/api/auth/me` (task 2.3), POST `/api/auth/forgot-password`, POST `/api/auth/verify-reset-code`, POST `/api/auth/reset-password` (task 2.4), GET `/api/auth/oauth/{provider}`, GET `/api/auth/oauth/callback` (task 2.5), POST `/api/auth/magic-link`, GET `/api/auth/magic-link/callback` (task 2.6), `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` (task 2.7), wired auth middleware and `user_id` into router (task 2.8)
+- Implemented database migration with profiles table and RLS policies (`scripts/migration002.sql` task 4.1)
+- Implemented frontend auth store with reactive state and token management (`auth.svelte.ts` task 5.1)
+- Implemented auth API client with proactive token refresh (`api-client.ts` task 5.2)
+- Implemented token extraction utility for OAuth/magic link callbacks (`token-utils.ts` task 5.3)
+- Wired auth logic into login page (task 6.1), refactored registration into single-page multi-step flow (task 6.2), refactored password reset into single-page multi-step flow (task 6.3)
+- Implemented auth guard for protected and auth-only routes (`auth-guard.ts` task 7.1)
+- Implemented Capacitor deep link handler for auth callbacks (`deep-link.ts` task 7.2)
+- Wired auth into existing pages with NavBar user state and logout (task 7.3)
+- Fixed all failing frontend tests (task 8 checkpoint)
+- Created backend unit tests: auth middleware (`auth_middleware_test.go` task 9.1), auth handlers (`auth_handlers_test.go` task 9.2), auth rate limiter (`auth_rate_limiter_test.go` task 9.3)
+- Created backend property tests: input validation (`auth_property_input_validation_test.go` task 9.4), middleware rejection (`auth_property_middleware_test.go` task 9.5), error format consistency (`auth_property_error_format_test.go` task 9.6), trial credits assignment (`auth_property_credits_test.go` task 9.7)
+- Created frontend unit tests: auth store (`authStore.test.ts` task 10.1), API client (`apiClient.test.ts` task 10.2), auth guard (`authGuard.test.ts` task 10.3)
+- Created frontend property tests: anti-enumeration consistency (`antiEnumeration.test.ts` task 10.4), concurrent refresh deduplication (`concurrentRefreshProperty.test.ts` task 10.5)
+- Fixed lint/type errors for final checkpoint (task 11)
+- Code review fixes (CRITICAL/HIGH): Added password field autocomplete attributes in `LoginFormSection.svelte`, fixed auth store `clearTokens` to clear all storage keys, added CSRF-safe OAuth state parameter validation, fixed `NavBar.svelte` conditional user display, added error boundary in `ForgotPasswordFormSection.svelte`, fixed `CheckEmailContent.svelte` resend cooldown
+- Code review fixes (MEDIUM): Added `aria-live` to `RegisterFormSection.svelte` error messages, fixed `register/+page.svelte` step transition accessibility, improved `auth-guard.ts` redirect loop prevention, added token expiry buffer to `auth.svelte.ts`, fixed i18n keys in `messages/en.json` and `messages/cs.json`, added route layout guards for `/reports` and `/report`
+
 ## 2026-06-12 12:53 — create-code
+
 - Spec: user-authentication
 - Created specification files for user authentication feature in `.kiro/specs/user-authentication/`
 - Created `requirements.md` with 19 requirements covering: user registration, login, token refresh, logout, password reset flow, protected route access, RLS configuration, frontend login/register/password-reset pages, session storage, OAuth backend/frontend flows, magic link backend/frontend integration, user profile, mobile deep link configuration
@@ -10,6 +32,7 @@
 - No tests created (implementation pending)
 
 ## 2026-06-12 10:01 — create-code
+
 - Spec: frontend-code-quality-refactor
 - Created shared utility module `src/lib/shared/utils/i18n.ts` with `tx()` function
 - Created shared utility module `src/lib/shared/utils/format.ts` with `formatSize()` function
@@ -28,6 +51,7 @@
 - Code review fixes applied: replaced inline `riskScoreLabel()` in `RiskScoreRing.svelte` with shared `tx()`, added `onSettings`/`onLogout` callbacks to `MobileHamburgerMenu.svelte`, imported `severityTextClass` in `RiskBreakdownBar.svelte`, removed unsupported DE/SK languages from `languageRepository.ts`, replaced `href="#"` with `<button>` in `RegisterFormSection.svelte`, declared `otpRef` with `$state()` in `CheckCodeFormSection.svelte`
 
 ## 2026-06-12 07:49 — ui-refactor
+
 - Created `--shadow-focus-blue` theme token in `src/routes/layout.css` @theme block
 - Replaced hardcoded `focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]` with `focus:shadow-focus-blue` in `src/lib/shared/elements/AuthTextInput.svelte` and `src/routes/(auth)/components/PasswordInput.svelte`
 - Extracted `CountdownTimer` component to `src/routes/(auth)/components/CountdownTimer.svelte` (shared between check-code and check-email pages)
@@ -45,6 +69,7 @@
 - Fixed Svelte 5 `state_referenced_locally` warning in `CountdownTimer`
 
 ## 2026-06-12 03:00 — ui-refactor
+
 - Created `--color-navy-hover: #263347` theme token in `src/routes/layout.css` and replaced `hover:bg-[#263347]` with `hover:bg-navy-hover` in login and register pages
 - Created `AuthTextInput` shared element in `src/lib/shared/elements/AuthTextInput.svelte` with co-located `AuthTextInput.stories.svelte`
 - Created `SocialLoginButtons` component in `src/routes/(auth)/components/SocialLoginButtons.svelte` with co-located `SocialLoginButtons.stories.svelte`
@@ -53,6 +78,7 @@
 - Eliminated remaining duplicate code with extracted `TrustBadges` and `PasswordRecoveryProgressCards` shared auth components
 
 ## 2026-06-11 23:32 — ui-refactor
+
 - Created theme tokens in `src/routes/layout.css`: `--color-brand-yellow`, `--color-page-gradient-blue`, `--color-page-gradient-green`, `--shadow-glow-green-strong`
 - Replaced 172 hardcoded color hex/rgba values in auth pages with theme token references (`var(--color-*)` / Tailwind utilities)
 - Replaced 7 hardcoded color values in `sections/Step4Error/` and `sections/Step3Processing/` / `Step5Success/` components
@@ -68,6 +94,7 @@
 - Reduced total auth page code from ~3,677 lines to ~1,800 lines by eliminating duplication
 
 ## 2026-06-11 21:50 — data-refactor
+
 - Extracted ~130 new i18n keys with `auth.*` prefix to `messages/en.json` and `messages/cs.json` covering 6 auth pages
 - Created `src/lib/repositories/authRepository.ts` with `getAuthStats()` and `getAuthPlans()` mock data
 - Refactored `src/routes/(auth)/login/+page.svelte` — replaced ~45 hardcoded Czech strings with `tx()` calls
@@ -81,6 +108,7 @@
 - Fixed NavBar visibility on auth pages and verified locale setup
 
 ## 2026-06-11 17:23 — design-to-code
+
 - Created Login page from `auth-login-form-desktop.html` / `auth-login-form-mobile.html` — route `/login`
 - Created Registration page from `auth-registration-form-desktop.html` / `auth-registration-form-mobile.html` — route `/register`
 - Created Check Email verification page from `auth-check-email-desktop.html` / `auth-check-email-mobile.html` — route `/check-email`
@@ -90,6 +118,7 @@
 - Wired navigation between all auth pages: Login ↔ Registration, Login → Forgot Password → Check Code → New Password → Login, Registration → Check Email
 
 ## 2026-06-11 12:05 — manual
+
 - Updated frontend origin to port 3000 and adjusted `start-docker.sh`, `layout.css`, `riskAnalyzer.ts`, `FileListItemRisk.svelte`, `RiskScannerCard.svelte`, and i18n messages
 - Added C2PA chunk counting and updated fields removed handling in `apiCleaningService.ts` processing results
 - Fixed report links to use `reportId` instead of `jobId` in `ReportCard.svelte`, `ReportTableRow.svelte`, and `cleaningResultsStore.svelte.ts`; improved localization messages
@@ -100,6 +129,7 @@
 - Updated icon in `ReportTableRow` and removed unused success badge component from `Step5Success`
 
 ## 2026-06-10 16:53 — create-code
+
 - Spec: api-integration
 - Implemented API client module (`src/lib/clients/metaCleanerApi.ts`) with `buildApiUrl`, `buildWsUrl`, `uploadFiles`, `createJob`, `getJobStatus`, `connectJobProgress`, `downloadFile`, `downloadJobZip`, `getReports`, `getReportDetail`, `getReportPdf`, `healthCheck`, and `ApiHttpError` class
 - Implemented `ApiCleaningService` (`src/lib/services/apiCleaningService.ts`) with upload→job→WebSocket orchestration, `dispatchWsMessage` dispatcher with fileName resolution from local map, `buildProcessingResults` from accumulated `file_complete` events, `mapApiHttpError`/`makeConnectionError`/`makeNetworkError` error helpers, backend-to-frontend type mapping (`mapSingleReport`, `mapReportFileDetails`, `computeBarWidth`, `computeIconColor`, `extractDate`/`extractTime`, `mapMetadataDetail`)
@@ -120,10 +150,12 @@
 - Updated `MEMORY.md` with i18n audit and WS close findings
 
 ## 2026-06-10 14:03 — manual
+
 - Improved metadata handling in `imageParser.ts` and `videoParser.ts` with privacy categorization and raw metadata output
 - Added new fields to scanner types (`src/lib/scanner/types.ts`) for privacy categories
 
 ## 2026-06-07 13:38 — manual
+
 - Created AI image detection module (`src/lib/scanner/aiDetector.ts`) with heuristic scoring for AI-generated image identification
 - Integrated AI detection into image parsing logic in `imageParser.ts`
 - Added AI origin scoring to risk analyzer (`riskAnalyzer.ts`) and scanner constants
@@ -131,12 +163,15 @@
 - Enhanced AI detection capabilities with additional metadata checks and expanded constants
 
 ## 2026-06-07 07:50 — ui-tests
+
 - No changes needed — all tests up to date
 
 ## 2026-06-07 03:43 — ui-tests
+
 - No changes needed — all tests up to date
 
 ## 2026-06-07 01:30 — ui-tests
+
 - Created Storybook story for `MobileBottomCta` component (states: WithButtonContent, WithTextContent) in `src/lib/shared/components/MobileBottomCta.stories.svelte`
 - Removed orphaned E2E test in `navigation.spec.ts:190` — `/report` redirect assertion no longer valid
 - Fixed `report-detail.spec.ts` (30 failures) — aligned `navigateToReportDetail()` helper with in-memory mock service data
@@ -146,6 +181,7 @@
 - Fixed `step5-results.spec.ts:160` (1 failure) — resolved strict mode violation for mobile upload button selector
 
 ## 2026-06-06 20:47 — create-code
+
 - Spec: design-alignment
 - Implemented SPA state machine (`src/lib/stores/appState.svelte.ts`) with `idle`, `files-ready`, `processing`, `error`, `success` states and reactive transitions
 - Implemented mock cleaning service layer (`src/lib/services/mockCleaningService.ts`) with simulated delays, progress updates, error scenarios, and mock report generation
@@ -170,7 +206,7 @@
 - Fixed CRITICAL code review: removed dead `src/lib/api/client.ts` (247 lines), replaced hardcoded English strings in Step4Error log with `tx()` calls
 - Fixed HIGH code review: wired `step2.meta.title` i18n key to page title, replaced hardcoded error fallbacks with `tx('common.error')`
 - Fixed MEDIUM code review: removed duplicate file size validation from `scannerStore` (UploadZoneCard is single source of truth), removed unused `BottomSheet` and `FileListItem` components, added `.dockerignore`, added empty file list guard in `Step3Processing` onMount, added onMount cleanup return in `Step3Processing`, translated `step2.risk.score` to Czech
-- Fixed LOW code review: replaced `?? 'Risk Score'` fallback in `RiskScoreRing` with `tx()` pattern, added download error toast in `Step5Success`, documented error-* filename convention in README, added code comment on `BeforeAfterScore afterScore={0}` in `RiskScannerCard`
+- Fixed LOW code review: replaced `?? 'Risk Score'` fallback in `RiskScoreRing` with `tx()` pattern, added download error toast in `Step5Success`, documented error-\* filename convention in README, added code comment on `BeforeAfterScore afterScore={0}` in `RiskScannerCard`
 - Updated `mockCleaningService.ts` with improved mock data generation
 - Updated `MEMORY.md` with code review patterns and conventions
 
