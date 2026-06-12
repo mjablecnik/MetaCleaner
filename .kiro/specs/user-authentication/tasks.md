@@ -60,7 +60,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Handle 401 for invalid/expired tokens
     - _Requirements: 3.1, 3.2, 4.1, 4.3, 16.7, 16.8_
 
-  - [ ] 2.4 Implement password reset handlers
+  - [x] 2.4 Implement password reset handlers
     - POST `/api/auth/forgot-password` — trigger Supabase password reset email, always return 200 (anti-enumeration)
     - POST `/api/auth/verify-reset-code` — verify OTP code, return short-lived access token
     - POST `/api/auth/reset-password` — update password via Supabase using verified token, validate length 8–128

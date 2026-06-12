@@ -236,6 +236,135 @@ func HandleMe(authClient *SupabaseAuthClient) http.HandlerFunc {
 	}
 }
 
+// HandleForgotPassword handles POST /api/auth/forgot-password.
+// Validates the email format and triggers a Supabase password-reset email.
+// Always returns 200 for valid email formats (even unregistered emails) to prevent enumeration.
+func HandleForgotPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req ForgotPasswordRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if strings.TrimSpace(req.Email) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "email is required")
+			return
+		}
+		if !emailRegex.MatchString(req.Email) {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidEmail, "invalid email format")
+			return
+		}
+
+		if err := authClient.ResetPasswordForEmail(r.Context(), req.Email); err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
+				WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+				return
+			}
+			// Non-5xx errors (e.g. unregistered email) are swallowed to prevent enumeration.
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(ForgotPasswordResponse{
+			Message: "If an account with that email exists, a password reset code has been sent.",
+		})
+	}
+}
+
+// HandleVerifyResetCode handles POST /api/auth/verify-reset-code.
+// Verifies the OTP code sent by Supabase and returns a short-lived access token
+// that authorises only the /api/auth/reset-password endpoint.
+func HandleVerifyResetCode(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req VerifyResetCodeRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if strings.TrimSpace(req.Email) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "email is required")
+			return
+		}
+		if strings.TrimSpace(req.Code) == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "code is required")
+			return
+		}
+
+		session, err := authClient.VerifyOTP(r.Context(), req.Email, req.Code, "recovery")
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok {
+				if authErr.StatusCode >= 500 {
+					WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+					return
+				}
+			}
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidCode, "invalid or expired reset code")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(VerifyResetCodeResponse{
+			AccessToken: session.AccessToken,
+		})
+	}
+}
+
+// HandleResetPassword handles POST /api/auth/reset-password.
+// Requires a valid Bearer token obtained from /api/auth/verify-reset-code.
+// Validates the new password length (8–128) and updates the user's password via Supabase.
+func HandleResetPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+			WriteError(w, http.StatusUnauthorized, ErrAuthResetTokenInvalid, "missing or invalid Authorization header")
+			return
+		}
+		accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+
+		var req ResetPasswordRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
+			return
+		}
+
+		if req.Password == "" {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "password is required")
+			return
+		}
+
+		passLen := utf8.RuneCountInString(req.Password)
+		if passLen < 8 || passLen > 128 {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidPassword, "password must be between 8 and 128 characters")
+			return
+		}
+
+		_, err := authClient.UpdateUser(r.Context(), accessToken, map[string]interface{}{
+			"password": req.Password,
+		})
+		if err != nil {
+			if authErr, ok := err.(*SupabaseAuthError); ok {
+				if authErr.StatusCode >= 500 {
+					WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+					return
+				}
+				if authErr.StatusCode == http.StatusUnauthorized || authErr.StatusCode == http.StatusForbidden {
+					WriteError(w, http.StatusUnauthorized, ErrAuthResetTokenInvalid, "reset session is invalid or expired")
+					return
+				}
+			}
+			WriteError(w, http.StatusUnauthorized, ErrAuthResetTokenInvalid, "reset session is invalid or expired")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(ResetPasswordResponse{Message: "Password has been reset successfully."})
+	}
+}
+
 // isEmailNotConfirmedError reports whether the Supabase error indicates an unconfirmed email.
 func isEmailNotConfirmedError(e *SupabaseAuthError) bool {
 	if e.ErrorCode == "email_not_confirmed" {

@@ -11,7 +11,8 @@ const (
 	ErrAuthSessionExpired      = "AUTH_SESSION_EXPIRED"
 	ErrAuthProviderUnavailable = "AUTH_PROVIDER_UNAVAILABLE"
 	ErrAuthInvalidCode         = "AUTH_INVALID_CODE"
-	ErrAuthInvalidProvider     = "AUTH_INVALID_PROVIDER"
+	ErrAuthInvalidProvider   = "AUTH_INVALID_PROVIDER"
+	ErrAuthResetTokenInvalid = "AUTH_RESET_TOKEN_INVALID"
 )
 
 // --- Request structs ---

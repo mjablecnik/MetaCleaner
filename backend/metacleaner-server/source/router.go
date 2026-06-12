@@ -137,6 +137,24 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// POST /api/auth/login — rate limited
 	mux.Handle("POST /api/auth/login", authRateLimited(HandleLogin(authClient)))
 
+	// POST /api/auth/logout
+	mux.Handle("POST /api/auth/logout", HandleLogout(authClient))
+
+	// POST /api/auth/refresh
+	mux.Handle("POST /api/auth/refresh", HandleRefresh(authClient))
+
+	// GET /api/auth/me
+	mux.Handle("GET /api/auth/me", HandleMe(authClient))
+
+	// POST /api/auth/forgot-password — rate limited
+	mux.Handle("POST /api/auth/forgot-password", authRateLimited(HandleForgotPassword(authClient)))
+
+	// POST /api/auth/verify-reset-code — rate limited
+	mux.Handle("POST /api/auth/verify-reset-code", authRateLimited(HandleVerifyResetCode(authClient)))
+
+	// POST /api/auth/reset-password
+	mux.Handle("POST /api/auth/reset-password", HandleResetPassword(authClient))
+
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 
