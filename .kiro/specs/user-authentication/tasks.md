@@ -219,7 +219,7 @@ This plan implements user authentication for MetaCleaner spanning the Go backend
     - Test magic link per-email+IP tracking
     - _Requirements: 11.6, 11.7, 17.6_
 
-  - [ ]* 9.4 Write property test — input validation rejects invalid payloads (rapid)
+  - [x]* 9.4 Write property test — input validation rejects invalid payloads (rapid)
     - **Property 1: Input validation rejects invalid payloads**
     - Generate random invalid emails, passwords outside 8–72 range, whitespace-only names
     - Verify all return HTTP 400 and no account is created
