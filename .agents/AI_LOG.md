@@ -1,6 +1,7 @@
 # AI Log
 
 ## 2026-06-13 01:52 — ui-tests
+- Project: metacleaner-app
 - Created Storybook story for `PasswordRecoveryProgressCards` component (states: Step2Active, Step3Active, AllDone) in `src/routes/(auth)/components/PasswordRecoveryProgressCards.stories.svelte`
 - Created Storybook story for `TrustBadges` component (states: Default) in `src/routes/(auth)/components/TrustBadges.stories.svelte`
 - Fixed `report-detail.spec.ts` — resolved accordion toggle test timeout by adding wait for animation completion
@@ -11,6 +12,7 @@
 - Created E2E test for auth responsive layout (`e2e/auth-responsive.spec.ts`) — mobile 375px and desktop 1280px viewport assertions
 
 ## 2026-06-12 17:39 — create-code
+- Project: metacleaner-app
 - Spec: user-authentication
 - Implemented backend auth infrastructure: Supabase Auth client (`supabase_auth.go`), JWT validation middleware (`auth_middleware.go` task 1.2), auth rate limiter (`auth_rate_limiter.go` task 1.3), auth models and error codes (`auth_models.go` task 1.4)
 - Implemented backend auth handlers: POST `/api/auth/register` (task 2.1), POST `/api/auth/login` (task 2.2), POST `/api/auth/logout`, POST `/api/auth/refresh`, GET `/api/auth/me` (task 2.3), POST `/api/auth/forgot-password`, POST `/api/auth/verify-reset-code`, POST `/api/auth/reset-password` (task 2.4), GET `/api/auth/oauth/{provider}`, GET `/api/auth/oauth/callback` (task 2.5), POST `/api/auth/magic-link`, GET `/api/auth/magic-link/callback` (task 2.6), `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` (task 2.7), wired auth middleware and `user_id` into router (task 2.8)
@@ -32,6 +34,7 @@
 - Code review fixes (MEDIUM): Added `aria-live` to `RegisterFormSection.svelte` error messages, fixed `register/+page.svelte` step transition accessibility, improved `auth-guard.ts` redirect loop prevention, added token expiry buffer to `auth.svelte.ts`, fixed i18n keys in `messages/en.json` and `messages/cs.json`, added route layout guards for `/reports` and `/report`
 
 ## 2026-06-12 12:53 — create-code
+- Project: metacleaner-app
 
 - Spec: user-authentication
 - Created specification files for user authentication feature in `.kiro/specs/user-authentication/`
@@ -42,6 +45,7 @@
 - No tests created (implementation pending)
 
 ## 2026-06-12 10:01 — create-code
+- Project: metacleaner-app
 
 - Spec: frontend-code-quality-refactor
 - Created shared utility module `src/lib/shared/utils/i18n.ts` with `tx()` function
@@ -61,6 +65,7 @@
 - Code review fixes applied: replaced inline `riskScoreLabel()` in `RiskScoreRing.svelte` with shared `tx()`, added `onSettings`/`onLogout` callbacks to `MobileHamburgerMenu.svelte`, imported `severityTextClass` in `RiskBreakdownBar.svelte`, removed unsupported DE/SK languages from `languageRepository.ts`, replaced `href="#"` with `<button>` in `RegisterFormSection.svelte`, declared `otpRef` with `$state()` in `CheckCodeFormSection.svelte`
 
 ## 2026-06-12 07:49 — ui-refactor
+- Project: metacleaner-app
 
 - Created `--shadow-focus-blue` theme token in `src/routes/layout.css` @theme block
 - Replaced hardcoded `focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]` with `focus:shadow-focus-blue` in `src/lib/shared/elements/AuthTextInput.svelte` and `src/routes/(auth)/components/PasswordInput.svelte`
@@ -79,6 +84,7 @@
 - Fixed Svelte 5 `state_referenced_locally` warning in `CountdownTimer`
 
 ## 2026-06-12 03:00 — ui-refactor
+- Project: metacleaner-app
 
 - Created `--color-navy-hover: #263347` theme token in `src/routes/layout.css` and replaced `hover:bg-[#263347]` with `hover:bg-navy-hover` in login and register pages
 - Created `AuthTextInput` shared element in `src/lib/shared/elements/AuthTextInput.svelte` with co-located `AuthTextInput.stories.svelte`
@@ -88,6 +94,7 @@
 - Eliminated remaining duplicate code with extracted `TrustBadges` and `PasswordRecoveryProgressCards` shared auth components
 
 ## 2026-06-11 23:32 — ui-refactor
+- Project: metacleaner-app
 
 - Created theme tokens in `src/routes/layout.css`: `--color-brand-yellow`, `--color-page-gradient-blue`, `--color-page-gradient-green`, `--shadow-glow-green-strong`
 - Replaced 172 hardcoded color hex/rgba values in auth pages with theme token references (`var(--color-*)` / Tailwind utilities)
@@ -104,6 +111,7 @@
 - Reduced total auth page code from ~3,677 lines to ~1,800 lines by eliminating duplication
 
 ## 2026-06-11 21:50 — data-refactor
+- Project: metacleaner-app
 
 - Extracted ~130 new i18n keys with `auth.*` prefix to `messages/en.json` and `messages/cs.json` covering 6 auth pages
 - Created `src/lib/repositories/authRepository.ts` with `getAuthStats()` and `getAuthPlans()` mock data
@@ -118,6 +126,7 @@
 - Fixed NavBar visibility on auth pages and verified locale setup
 
 ## 2026-06-11 17:23 — design-to-code
+- Project: metacleaner-app
 
 - Created Login page from `auth-login-form-desktop.html` / `auth-login-form-mobile.html` — route `/login`
 - Created Registration page from `auth-registration-form-desktop.html` / `auth-registration-form-mobile.html` — route `/register`
@@ -128,6 +137,7 @@
 - Wired navigation between all auth pages: Login ↔ Registration, Login → Forgot Password → Check Code → New Password → Login, Registration → Check Email
 
 ## 2026-06-11 12:05 — manual
+- Project: metacleaner-app
 
 - Updated frontend origin to port 3000 and adjusted `start-docker.sh`, `layout.css`, `riskAnalyzer.ts`, `FileListItemRisk.svelte`, `RiskScannerCard.svelte`, and i18n messages
 - Added C2PA chunk counting and updated fields removed handling in `apiCleaningService.ts` processing results
@@ -138,7 +148,15 @@
 - Improved layout and spacing in `FileAccordionItem` and `MetadataTable` components
 - Updated icon in `ReportTableRow` and removed unused success badge component from `Step5Success`
 
+## 2026-06-11 11:53 — manual
+- Project: metacleaner-server
+- Added C2PA chunk counting and fields-removed handling in pipeline.go
+- Improved progress event handling with LocalID for files in pipeline and handlers
+- Enhanced job creation with optional file names in handlers.go, then simplified createJob function
+- Updated frontend origin to port 3000 in .env.example
+
 ## 2026-06-10 16:53 — create-code
+- Project: metacleaner-app
 
 - Spec: api-integration
 - Implemented API client module (`src/lib/clients/metaCleanerApi.ts`) with `buildApiUrl`, `buildWsUrl`, `uploadFiles`, `createJob`, `getJobStatus`, `connectJobProgress`, `downloadFile`, `downloadJobZip`, `getReports`, `getReportDetail`, `getReportPdf`, `healthCheck`, and `ApiHttpError` class
@@ -159,12 +177,35 @@
 - Removed 63 dead i18n keys from `en.json` and `cs.json` identified during i18n audit
 - Updated `MEMORY.md` with i18n audit and WS close findings
 
+## 2026-06-10 15:20 — manual
+- Project: metacleaner-server
+- Implemented batch ZIP download endpoint (handlers.go, router.go, errors.go) with tests
+- Fixed pipeline test fixtures and exiftool script args
+
 ## 2026-06-10 14:03 — manual
+- Project: metacleaner-server
+- Improved metadata handling with privacy categorization and raw output support
+- Generated meaningful download filenames with IMG_/VID_ prefix
+- Removed iconColor field from report and related structures
+- Renamed ID field to LocalID in FileRecord structure for clarity
+
+## 2026-06-10 14:03 — manual
+- Project: metacleaner-app
 
 - Improved metadata handling in `imageParser.ts` and `videoParser.ts` with privacy categorization and raw metadata output
 - Added new fields to scanner types (`src/lib/scanner/types.ts`) for privacy categories
 
+## 2026-06-10T14:03 — manual
+- Project: metacleaner-cli
+- Improved metadata handling in `src/formatter.ts` with privacy categorization and raw metadata output support
+
+## 2026-06-10T11:19 — manual
+- Project: metacleaner-cli
+- Added meaningful download filename generation with IMG_/VID_ prefix in `src/formatter.ts`
+- Updated formatter tests in `tests/formatter.test.ts`
+
 ## 2026-06-07 13:38 — manual
+- Project: metacleaner-app
 
 - Created AI image detection module (`src/lib/scanner/aiDetector.ts`) with heuristic scoring for AI-generated image identification
 - Integrated AI detection into image parsing logic in `imageParser.ts`
@@ -172,15 +213,31 @@
 - Updated `metadataParser.ts`, `videoParser.ts`, and `scannerStore.svelte.ts` to support AI origin score field
 - Enhanced AI detection capabilities with additional metadata checks and expanded constants
 
+## 2026-06-07T13:38 — manual
+- Project: metacleaner-cli
+- Added metadata scanner for image files (`scripts/check_metadata.py`) with AI detection capabilities
+- Added AI image detection module and integrated into image parsing logic
+- Added AI origin scoring to metadata processing (`src/types.ts`, `src/formatter.ts`)
+- Enhanced AI detection with additional metadata checks in `scripts/check_metadata.py`
+
 ## 2026-06-07 07:50 — ui-tests
+- Project: metacleaner-app
 
 - No changes needed — all tests up to date
 
 ## 2026-06-07 03:43 — ui-tests
+- Project: metacleaner-app
 
 - No changes needed — all tests up to date
 
+## 2026-06-07T01:50 — manual
+- Project: metacleaner-cli
+- Added Dockerfile for the CLI project
+- Added `.gitignore` with build/dependency exclusions
+- Updated `.agents/MEMORY.md` with project documentation
+
 ## 2026-06-07 01:30 — ui-tests
+- Project: metacleaner-app
 
 - Created Storybook story for `MobileBottomCta` component (states: WithButtonContent, WithTextContent) in `src/lib/shared/components/MobileBottomCta.stories.svelte`
 - Removed orphaned E2E test in `navigation.spec.ts:190` — `/report` redirect assertion no longer valid
@@ -190,7 +247,26 @@
 - Fixed `responsive.spec.ts` report detail tests (4 failures) — aligned with in-memory mock service
 - Fixed `step5-results.spec.ts:160` (1 failure) — resolved strict mode violation for mobile upload button selector
 
+## 2026-06-06T23:46 — create-code
+- Project: metacleaner-cli
+- Spec: metadata-inspect-cli
+- Implemented CLI entry point with manual argument parsing (`src/index.ts`) — parses commands (scan, clean, compare, help, version) and global flags (--server, --json, --verbose, --quiet, --output, --timeout, --version)
+- Implemented command router and handlers (`src/commands.ts`) — routes to scan, clean, compare, help, version commands
+- Implemented file adapter and scanner module (`src/scanner.ts`) — creates File objects from disk paths, delegates to frontend scanner via bun workspace link
+- Implemented server client module (`src/serverClient.ts`) — HTTP client for backend API (upload, job creation, polling, download)
+- Implemented output formatter (`src/formatter.ts`) — human-readable and JSON output with emoji indicators, category grouping, risk scores, before/after comparison
+- Implemented progress indicator (`src/progress.ts`) — stderr spinner with elapsed time for server operations
+- Implemented CLI types (`src/types.ts`) — CLIOptions, CommandResult, FileResult interfaces
+- Created project structure with package.json, tsconfig.json, .env.example, README.md, vitest.config.ts
+- Created property tests for scanner (`tests/scanner.test.ts`) — extension detection, file adapter createFileFromPath
+- Created property tests for formatter (`tests/formatter.test.ts`) — category grouping, score/severity display, conditional metadata display, aggregation summary, default cleaned file path, clean formatter, compare formatter, JSON round-trip, JSON multi-file structure, quiet mode format
+- Created property tests for progress indicator (`tests/progress.test.ts`)
+- Created unit tests for server client (`tests/serverClient.test.ts`)
+- Created unit tests for command handlers (`tests/commands.test.ts`)
+- Fixed code review findings: added vitest.config.ts with coverage settings, improved error handling in commands.ts with proper cleanup for compare failures, added input validation in scanner.ts, fixed formatter.ts string interpolation, added package description in package.json, documented backend service standards exception in README.md
+
 ## 2026-06-06 20:47 — create-code
+- Project: metacleaner-app
 
 - Spec: design-alignment
 - Implemented SPA state machine (`src/lib/stores/appState.svelte.ts`) with `idle`, `files-ready`, `processing`, `error`, `success` states and reactive transitions
@@ -221,10 +297,12 @@
 - Updated `MEMORY.md` with code review patterns and conventions
 
 ## 2026-06-06 09:02 — ui-tests
+- Project: metacleaner-app
 
 - No changes needed — all tests up to date
 
 ## 2026-06-06 07:16 — ui-tests
+- Project: metacleaner-app
 
 - Removed orphaned Storybook demo stories: `src/stories/Button.stories.svelte`, `src/stories/Header.stories.svelte`, `src/stories/Page.stories.svelte`
 - Removed orphaned Storybook demo components and assets from `src/stories/`
@@ -244,7 +322,18 @@
 - Created E2E test `e2e/responsive.spec.ts` for responsive layout verification
 - All 212 Storybook stories pass; 189 E2E tests created but cannot run in current environment (missing Chromium system libs)
 
+## 2026-06-06 00:25 — manual
+- Project: metacleaner-server
+- Updated documentation with architectural diagrams and improved section structure
+- Renamed src directory to source and updated all imports accordingly
+- Restructured project to support new command structure and improved code organization
+
 ## 2026-06-05 23:30 — manual
+- Project: metacleaner-server
+- Reorganized backend source files and updated Docker configuration
+
+## 2026-06-05 23:30 — manual
+- Project: metacleaner-app
 
 - Updated `.agents/MEMORY.md` with code review findings on WebSocket and state handling issues
 - Documented `$state<Date>` lint error workaround (use `$state<number>` with `Date.now()` instead)
@@ -256,6 +345,7 @@
 - Documented WebSocket polling fallback 30s timeout being too aggressive for large file batches
 
 ## 2026-06-05 18:07 — create-code
+- Project: metacleaner-app
 
 - Spec: metacleaner-backend
 - Implemented Go backend service in `backend/metacleaner-server/`
@@ -285,13 +375,36 @@
 - Created cleanup scheduler tests (`cleanup_test.go`)
 - Code review identified: PUBLIC_API_URL baked empty at Docker build time, no file download expiration UX, step2 page not implemented, missing i18n keys, aggressive WebSocket polling timeout
 
+## 2026-06-05 16:54 — manual
+- Project: metacleaner-server
+- Added README.md and DOCS.md for metacleaner backend
+- Added deployment files (Dockerfile, fly.toml, start-docker.sh, fly-setup.sh)
+- Added SQL database migration script for Supabase schema setup
+
+## 2026-06-05 16:45 — manual
+- Project: metacleaner-server
+- Implemented CORS middleware, rate limiter, and HTTP router (task 14)
+- Implemented health endpoint and startup validation (task 13)
+- Implemented cleanup scheduler (task 12)
+- Implemented report generation and PDF creation (task 11)
+- Implemented file download handler (task 10)
+- Implemented job creation and orchestration (task 8)
+- Implemented WebSocket progress handler (task 7)
+- Implemented cleaning pipeline (task 6)
+- Implemented file upload handler (task 5)
+- Implemented Supabase client (task 3)
+- Implemented data models and property tests (task 2)
+- Initialized metacleaner-server Go backend (task 1)
+
 ## 2026-06-05 15:09 — from-brief
+- Project: metacleaner-app
 
 - Brief: BRIEF.md
 - Added package manager detection logic to `sync-android.sh` (checks `command -v bun`, sets `RUN_CMD`/`EXEC_CMD` variables to bun/bunx or npm/npx)
 - Replaced hardcoded `bun run build` with `$RUN_CMD run build` and `bunx cap sync android` with `$EXEC_CMD cap sync android` in `sync-android.sh`
 
 ## 2026-06-05 14:28 — check-build
+- Project: metacleaner-app
 
 - Fixed formatting in 17 files (scanner module, Svelte components, agents docs) via prettier
 - Fixed test script to run only server-side tests by default (browser tests require system libs unavailable without sudo)
@@ -299,6 +412,7 @@
 - Updated README: added Prerequisites section with bun install instructions, removed reference to non-existent `.env.example`, documented browser test setup requirement
 
 ## 2026-06-05 13:14 — create-code
+- Project: metacleaner-app
 
 - Spec: client-side-risk-scanner
 - Implemented scanner module types and constants (`src/lib/scanner/types.ts`, `src/lib/scanner/constants.ts`)
@@ -325,6 +439,7 @@
 - All 40 server tests pass, clean build and lint
 
 ## 2026-06-05 11:13 — manual
+- Project: metacleaner-app
 
 - Added Android back button handling with Capacitor `@capacitor/app` plugin in `src/routes/+layout.svelte`
 - Created `sync-android.sh` script for Android project deployment and set executable permissions
@@ -332,18 +447,21 @@
 - Added `@capacitor/app` dependency to `package.json`
 
 ## 2026-06-05 10:56 — manual
+- Project: metacleaner-app
 
 - Updated language flag representation in `languageRepository.ts` from emoji to SVG image paths
 - Added flag SVG files (`cs.svg`, `de.svg`, `en.svg`, `sk.svg`) to `static/flags/`
 - Updated `LanguageDropdown.svelte`, `MobileHamburgerMenu.svelte`, and `NavBar.svelte` to render SVG flags
 
 ## 2026-06-05 10:18 — manual
+- Project: metacleaner-app
 
 - Added architectural and convention guidelines in `.kiro/steering/metacleaner-frontend.md`
 - Added `CLAUDE.md` with project context for AI assistants
 - Added `prettier-plugin-tailwindcss` dependency to `package.json`
 
 ## 2026-06-05 07:31 — check-build
+- Project: metacleaner-app
 
 - Resolved all build and lint errors for clean first-checkout experience
 - Ran prettier on 143 files to fix formatting
@@ -355,6 +473,7 @@
 - Created `.agents/MEMORY.md` documenting non-obvious build issues for future agents
 
 ## 2026-06-05 06:47 — ui-refactor
+- Project: metacleaner-app
 
 - Added theme tokens `--shadow-drop-red`, `--color-navy-lighter-50`, `--color-navy-lighter-60` to `src/routes/layout.css` @theme block
 - Replaced inline `rgba(239,68,68,0.6)` in step2 SVG with `--shadow-drop-red` token
@@ -377,6 +496,7 @@
 - Verified Storybook builds with zero errors (`npm run build-storybook`)
 
 ## 2026-06-05 00:50 — ui-refactor
+- Project: metacleaner-app
 
 - Extended `@theme` block in `src/routes/layout.css` with missing tokens (gray-700, border-radius vars, glow shadows)
 - Replaced all inline `style="color:#ef4444"`, `style="background:rgba(...)"`, and `style="border:..."` with Tailwind theme utility classes
@@ -396,6 +516,7 @@
 - Created stories for page-specific components: DropZone, RiskScoreRing, ProcessingVisual, ErrorVisual, FileItemProcessing, FileResultItem
 
 ## 2026-06-04 16:26 — data-refactor
+- Project: metacleaner-app
 
 - Extracted ~200 i18n keys per locale from 7 pages (step1–step5, reports, report) into `messages/en.json` and `messages/cs.json` using Paraglide
 - Created translation files: `messages/en.json` (200+ keys), `messages/cs.json` (200+ keys)
@@ -412,6 +533,7 @@
 - Added language switcher to report page nav bar
 
 ## 2026-06-04 12:26 — design-to-code
+- Project: metacleaner-app
 
 - Created Step 1 — Upload (Idle State) page from `MetacleanerApp-step1-desktop.html` / `MetacleanerApp-step1-mobile.html`
 - Created Step 2 — Files Loaded (Risk Scanner) page from `MetacleanerApp-step2-desktop.html` / `MetacleanerApp-step2-mobile.html`
@@ -421,3 +543,4 @@
 - Created Report List (History) page from `MetacleanerApp-reportlist-desktop.html` / `MetacleanerApp-reportlist-mobile.html`
 - Created Report Detail page from `MetacleanerApp-report-desktop.html` / `MetacleanerApp-report-mobile.html`
 - Wired navigation between all pages: Step 1→2→3→5 (success flow), Step 3→4 (error flow), Step 5→Report Detail/List, Report List→Report Detail, Report List→Step 1, Report Detail→Step 5
+
