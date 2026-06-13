@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-13 01:52 — ui-tests
+- Created Storybook story for `PasswordRecoveryProgressCards` component (states: Step2Active, Step3Active, AllDone) in `src/routes/(auth)/components/PasswordRecoveryProgressCards.stories.svelte`
+- Created Storybook story for `TrustBadges` component (states: Default) in `src/routes/(auth)/components/TrustBadges.stories.svelte`
+- Fixed `report-detail.spec.ts` — resolved accordion toggle test timeout by adding wait for animation completion
+- Created E2E test for `/login` page (`e2e/login.spec.ts`) — email input, password input, social login buttons, submit button, error messages
+- Created E2E test for `/register` page (`e2e/register.spec.ts`) — registration form, password strength meter, terms checkbox, check-email transition
+- Created E2E test for `/forgot-password` page (`e2e/forgot-password.spec.ts`) — step progress, email/OTP/new-password multi-step flow
+- Created E2E test for auth navigation (`e2e/auth-navigation.spec.ts`) — cross-page link verification between login, register, forgot-password
+- Created E2E test for auth responsive layout (`e2e/auth-responsive.spec.ts`) — mobile 375px and desktop 1280px viewport assertions
+
 ## 2026-06-12 17:39 — create-code
 - Spec: user-authentication
 - Implemented backend auth infrastructure: Supabase Auth client (`supabase_auth.go`), JWT validation middleware (`auth_middleware.go` task 1.2), auth rate limiter (`auth_rate_limiter.go` task 1.3), auth models and error codes (`auth_models.go` task 1.4)
