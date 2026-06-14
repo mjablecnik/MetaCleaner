@@ -1,0 +1,341 @@
+<html lang="cs"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 32px rgba(34,197,94,0.3)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 32px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .bg-mesh
+      {
+        background-image: radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(34, 197, 94, 0.07) 0%, transparent 50%);
+      }
+
+      .fade-in
+      {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+
+      .fade-in-delay
+      {
+        animation: fadeIn 0.6s ease-out 0.25s both;
+      }
+
+      @keyframes fadeIn
+      {
+        from
+        {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+
+        to
+        {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .success-ring
+      {
+        animation: successRing 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+      }
+
+      @keyframes successRing
+      {
+        from
+        {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+
+        to
+        {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .pulse-glow
+      {
+        animation: pulseGlow 2.5s ease-in-out infinite;
+      }
+
+      @keyframes pulseGlow
+      {
+
+        0%,
+        100%
+        {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3), 0 0 24px rgba(34, 197, 94, 0.15);
+        }
+
+        50%
+        {
+          box-shadow: 0 0 0 16px rgba(34, 197, 94, 0), 0 0 40px rgba(34, 197, 94, 0.3);
+        }
+      }
+
+      .cta-btn
+      {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        transition: all 0.2s ease;
+      }
+
+      .cta-btn:active
+      {
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        transform: scale(0.98);
+        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+      }
+
+      .step-row
+      {
+        transition: border-color 0.2s ease;
+      }
+
+      .step-row:active
+      {
+        border-color: rgba(34, 197, 94, 0.4);
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #navbar
+      {
+        background-image: initial;
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: rgba(10, 22, 40, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+      }
+
+      #i83e8
+      {
+        background-image: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.04));
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: initial;
+        border-top-width: 2px;
+        border-right-width: 2px;
+        border-bottom-width: 2px;
+        border-left-width: 2px;
+        border-top-style: solid;
+        border-right-style: solid;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        border-top-color: rgba(34, 197, 94, 0.35);
+        border-right-color: rgba(34, 197, 94, 0.35);
+        border-bottom-color: rgba(34, 197, 94, 0.35);
+        border-left-color: rgba(34, 197, 94, 0.35);
+        border-image-source: initial;
+        border-image-slice: initial;
+        border-image-width: initial;
+        border-image-outset: initial;
+        border-image-repeat: initial;
+      }
+
+      #ibc3u
+      {
+        font-size: 2.5rem;
+      }
+    </style>
+  </head>
+
+  <body class="bg-mesh flex flex-col">
+    <!-- Navbar -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <nav id="navbar" class="w-full px-5 py-4 flex justify-between items-center sticky top-0 z-10">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-base"></i></div><span class="text-base font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-green/10 border border-brand-green/20">
+        <span class="w-2 h-2 rounded-full bg-brand-green inline-block"></span><span class="text-brand-green text-xs font-semibold">Ověřen</span></div>
+    </nav><!-- Main -->
+    <main id="verified-main" class="w-full px-4 pb-10 pt-6 flex flex-col gap-5 fade-in">
+      <!-- Success Hero -->
+      <div id="success-hero" class="flex flex-col items-center gap-3 pt-4 pb-2">
+        <div class="relative success-ring">
+          <div class="absolute inset-0 rounded-full pulse-glow"></div>
+          <div id="i83e8" class="w-20 h-20 rounded-full flex items-center justify-center relative z-10">
+            <i id="ibc3u" class="fa-solid fa-circle-check text-brand-green"></i>
+          </div>
+        </div>
+        <div class="text-center flex flex-col items-center gap-1.5">
+          <h1 class="text-2xl font-black text-white leading-tight">E-mail
+            ověřen!</h1>
+          <p class="text-text-muted text-sm leading-relaxed max-w-xs">Váš účet
+            Clickpage je nyní plně aktivní a připraven k použití.</p>
+          <div class="inline-flex items-center gap-2 mt-1 px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700">
+            <i class="fa-regular fa-envelope text-brand-green text-xs"></i><span class="text-white text-sm font-semibold">jan.novak@email.cz</span><i class="fa-solid fa-circle-check text-brand-green text-xs"></i>
+          </div>
+        </div>
+      </div><!-- Progress Steps -->
+      <div id="steps-card" class="bg-navy-card rounded-2xl border border-gray-800 px-4 py-4 flex items-center justify-between shadow-card">
+        <div class="flex flex-col items-center gap-1 flex-1">
+          <div class="w-8 h-8 rounded-full bg-brand-green border-2 border-brand-green flex items-center justify-center">
+            <i class="fa-solid fa-check text-white text-xs"></i></div><span class="text-[10px] text-brand-green font-semibold text-center leading-tight">Účet<br>vytvořen</span>
+        </div>
+        <div class="flex-1 h-px bg-brand-green/30 mx-1"></div>
+        <div class="flex flex-col items-center gap-1 flex-1">
+          <div class="w-8 h-8 rounded-full bg-brand-green border-2 border-brand-green flex items-center justify-center">
+            <i class="fa-solid fa-check text-white text-xs"></i></div>
+          <div class="flex flex-col items-center gap-0.5"><span class="text-[10px] text-brand-green font-semibold text-center leading-tight">E-mail<br>ověřen</span><span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-brand-green/15 text-brand-green uppercase">Hotovo</span>
+          </div>
+        </div>
+        <div class="flex-1 h-px bg-brand-blue/30 mx-1"></div>
+        <div class="flex flex-col items-center gap-1 flex-1">
+          <div class="w-8 h-8 rounded-full bg-brand-blue border-2 border-brand-blue flex items-center justify-center">
+            <i class="fa-solid fa-rocket text-white text-xs"></i></div>
+          <div class="flex flex-col items-center gap-0.5"><span class="text-[10px] text-text-muted font-semibold text-center leading-tight">Začít<br>čistit</span><span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-brand-blue/15 text-brand-blue uppercase">Dál</span>
+          </div>
+        </div>
+      </div><!-- Stats Row -->
+      <div id="stats-row" class="grid grid-cols-3 gap-3">
+        <div class="bg-navy-card rounded-xl border border-gray-800 py-3 flex flex-col items-center gap-0.5">
+          <p class="text-xl font-black text-white">50K+</p>
+          <p class="text-[10px] text-text-muted text-center leading-tight">
+            Uživatelů</p>
+        </div>
+        <div class="bg-navy-card rounded-xl border border-gray-800 py-3 flex flex-col items-center gap-0.5">
+          <p class="text-xl font-black text-brand-green">2M+</p>
+          <p class="text-[10px] text-text-muted text-center leading-tight">
+            Souborů<br>vyčištěno</p>
+        </div>
+        <div class="bg-navy-card rounded-xl border border-gray-800 py-3 flex flex-col items-center gap-0.5">
+          <p class="text-xl font-black text-brand-blue">100%</p>
+          <p class="text-[10px] text-text-muted text-center leading-tight">
+            Bezpečnost</p>
+        </div>
+      </div><!-- What's Next -->
+      <div id="next-steps-section" class="flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <div class="flex-1 h-px bg-gray-800"></div><span class="text-text-muted text-xs font-medium">co dál?</span>
+          <div class="flex-1 h-px bg-gray-800"></div>
+        </div>
+        <div class="step-row bg-navy-card border border-brand-green/25 rounded-xl p-4 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform">
+          <div class="w-11 h-11 rounded-xl bg-brand-green/10 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-broom text-brand-green text-base"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-white">Vyčistěte první soubor
+            </p>
+            <p class="text-xs text-text-muted mt-0.5">Nahrajte soubor a
+              odstraňte metadata</p>
+          </div><i class="fa-solid fa-chevron-right text-text-muted text-xs flex-shrink-0"></i>
+        </div>
+        <div class="step-row bg-navy-card border border-gray-800 rounded-xl p-4 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform">
+          <div class="w-11 h-11 rounded-xl bg-brand-orange/10 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-crown text-brand-orange text-base"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-white">Vyzkoušejte Pro</p>
+            <p class="text-xs text-text-muted mt-0.5">14 dní zdarma · Žádná
+              platební karta</p>
+          </div><span class="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-orange/15 text-brand-orange uppercase flex-shrink-0">Zdarma</span>
+        </div>
+      </div><!-- CTA Buttons -->
+      <div id="cta-section" class="flex flex-col gap-3 pt-1">
+  <button class="cta-btn w-full py-4 rounded-xl text-white font-bold text-base flex items-center justify-center gap-2.5 shadow-glow-green min-h-[52px]">
+    <i class="fa-solid fa-shield-halved"></i>
+    Přihlásit se do MetaCleaneru
+  </button>
+  <button class="w-full py-3.5 rounded-xl border border-gray-700 bg-navy-lighter text-white font-semibold text-sm flex items-center justify-center gap-2 min-h-[48px] active:bg-gray-800 transition-colors">
+    <i class="fa-solid fa-download text-text-muted"></i>
+    Stáhnout ebook
+  </button>
+</div><!-- Trust Badges -->
+      <div id="trust-badges" class="flex items-center justify-center gap-4 pb-2 flex-wrap">
+        <div class="flex items-center gap-1.5 text-text-muted text-xs"><i class="fa-solid fa-shield-halved text-brand-green text-sm"></i><span>SSL
+            šifrování</span></div>
+        <div class="w-px h-3 bg-gray-700"></div>
+        <div class="flex items-center gap-1.5 text-text-muted text-xs"><i class="fa-solid fa-user-shield text-brand-blue text-sm"></i><span>GDPR
+            soulad</span></div>
+        <div class="w-px h-3 bg-gray-700"></div>
+        <div class="flex items-center gap-1.5 text-text-muted text-xs"><i class="fa-solid fa-lock text-text-muted text-sm"></i><span>Bez
+            sledování</span></div>
+      </div>
+    </main>
+  
+
+</body></html>
