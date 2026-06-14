@@ -16,11 +16,11 @@ No failing Storybook stories detected.
 - [x] Create story for ErrorLogAccordion (`src/routes/sections/Step4Error/ErrorLogAccordion.svelte`) — states: expanded, collapsed
 - [x] Create story for ErrorTypeAccordion (`src/routes/sections/Step4Error/ErrorTypeAccordion.svelte`) — states: timeout, connection, cleaning
 - [x] Create story for ProcessingStatusCard (`src/routes/sections/Step3Processing/ProcessingStatusCard.svelte`) — states: in-progress, near-completion
-- [ ] Create story for ProcessingFilesCard (`src/routes/sections/Step3Processing/ProcessingFilesCard.svelte`) — states: processing, some-completed
-- [ ] Create story for MobileStatusCard (`src/routes/sections/Step3Processing/MobileStatusCard.svelte`) — states: in-progress, near-completion
-- [ ] Create story for ActivityLogAccordion (`src/routes/sections/Step3Processing/ActivityLogAccordion.svelte`) — states: expanded, collapsed
-- [ ] Create story for SuccessHeader (`src/routes/sections/Step5Success/SuccessHeader.svelte`) — states: default
-- [ ] Create story for FileResultsCard (`src/routes/sections/Step5Success/FileResultsCard.svelte`) — states: single file, multiple files
+- [x] Create story for ProcessingFilesCard (`src/routes/sections/Step3Processing/ProcessingFilesCard.svelte`) — states: processing, some-completed
+- [x] Create story for MobileStatusCard (`src/routes/sections/Step3Processing/MobileStatusCard.svelte`) — states: in-progress, near-completion
+- [x] Create story for ActivityLogAccordion (`src/routes/sections/Step3Processing/ActivityLogAccordion.svelte`) — states: expanded, collapsed
+- [x] Create story for SuccessHeader (`src/routes/sections/Step5Success/SuccessHeader.svelte`) — states: default
+- [x] Create story for FileResultsCard (`src/routes/sections/Step5Success/FileResultsCard.svelte`) — states: single file, multiple files
 - [ ] Create story for MetadataOverview (`src/routes/sections/Step5Success/MetadataOverview.svelte`) — states: with GPS, without GPS
 - [ ] Create story for ReportDetailHeader (`src/routes/report/sections/ReportDetailHeader.svelte`) — states: default
 - [ ] Create story for ReportChartCard (`src/routes/report/sections/ReportChartCard.svelte`) — states: default, varying chart data
