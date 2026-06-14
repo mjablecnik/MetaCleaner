@@ -109,8 +109,7 @@
 								{tx('auth.emailVerified.step.emailVerified')}
 							</p>
 							<span
-								class="rounded px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
-								style="background: rgba(34,197,94,0.15);"
+								class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
 							>
 								{tx('auth.emailVerified.step.doneBadge')}
 							</span>
@@ -129,8 +128,7 @@
 								{tx('auth.emailVerified.step.startCleaning')}
 							</p>
 							<span
-								class="rounded px-2 py-0.5 text-[10px] font-bold uppercase text-brand-blue"
-								style="background: rgba(59,130,246,0.15);"
+								class="rounded bg-brand-blue-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-blue"
 							>
 								{tx('auth.emailVerified.step.currentBadge')}
 							</span>
@@ -164,8 +162,7 @@
 					<div class="success-ring relative">
 						<div class="pulse-glow absolute inset-0 rounded-full"></div>
 						<div
-							class="relative z-10 flex h-20 w-20 items-center justify-center rounded-full"
-							style="background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.04)); border: 2px solid rgba(34,197,94,0.35);"
+							class="success-circle relative z-10 flex h-20 w-20 items-center justify-center rounded-full"
 						>
 							<i class="fa-solid fa-circle-check text-brand-green" style="font-size: 2.5rem;"></i>
 						</div>
@@ -214,8 +211,7 @@
 								>{tx('auth.emailVerified.step.emailVerified')}</span
 							>
 							<span
-								class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
-								style="background: rgba(34,197,94,0.15);"
+								class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
 							>
 								{tx('auth.emailVerified.step.doneBadge')}
 							</span>
@@ -233,8 +229,7 @@
 								>{tx('auth.emailVerified.step.startCleaning')}</span
 							>
 							<span
-								class="rounded px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-blue"
-								style="background: rgba(59,130,246,0.15);"
+								class="rounded bg-brand-blue-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-blue"
 							>
 								{tx('auth.emailVerified.step.nextBadge')}
 							</span>
@@ -280,8 +275,7 @@
 							<div class="success-ring relative">
 								<div class="pulse-glow absolute inset-0 rounded-full"></div>
 								<div
-									class="relative z-10 flex h-24 w-24 items-center justify-center rounded-full"
-									style="background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.04)); border: 2px solid rgba(34,197,94,0.35);"
+									class="success-circle relative z-10 flex h-24 w-24 items-center justify-center rounded-full"
 								>
 									<i
 										class="fa-solid fa-circle-check text-brand-green"
@@ -322,8 +316,7 @@
 								class="step-row flex cursor-pointer items-center gap-4 rounded-xl border border-brand-green/20 bg-navy-main p-4"
 							>
 								<div
-									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-									style="background: rgba(34,197,94,0.1);"
+									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-green-10"
 								>
 									<i class="fa-solid fa-broom text-sm text-brand-green"></i>
 								</div>
@@ -341,8 +334,7 @@
 								class="step-row flex cursor-pointer items-center gap-4 rounded-xl border border-gray-800 bg-navy-main p-4"
 							>
 								<div
-									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-									style="background: rgba(249,115,22,0.1);"
+									class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-brand-orange-10"
 								>
 									<i class="fa-solid fa-crown text-sm text-brand-orange"></i>
 								</div>
@@ -355,8 +347,7 @@
 									</p>
 								</div>
 								<span
-									class="rounded px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
-									style="background: rgba(249,115,22,0.15);"
+									class="rounded bg-brand-orange-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
 								>
 									{tx('auth.emailVerified.action.proBadge')}
 								</span>
@@ -396,8 +387,7 @@
 						class="step-row flex cursor-pointer items-center gap-4 rounded-xl border border-brand-green/25 bg-navy-card p-4 active:scale-[0.98]"
 					>
 						<div
-							class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl"
-							style="background: rgba(34,197,94,0.1);"
+							class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-brand-green-10"
 						>
 							<i class="fa-solid fa-broom text-base text-brand-green"></i>
 						</div>
@@ -415,8 +405,7 @@
 						class="step-row flex cursor-pointer items-center gap-4 rounded-xl border border-gray-800 bg-navy-card p-4 active:scale-[0.98]"
 					>
 						<div
-							class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl"
-							style="background: rgba(249,115,22,0.1);"
+							class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-brand-orange-10"
 						>
 							<i class="fa-solid fa-crown text-base text-brand-orange"></i>
 						</div>
@@ -429,8 +418,7 @@
 							</p>
 						</div>
 						<span
-							class="flex-shrink-0 rounded px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
-							style="background: rgba(249,115,22,0.15);"
+							class="flex-shrink-0 rounded bg-brand-orange-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-orange"
 						>
 							{tx('auth.emailVerified.action.proBadge')}
 						</span>
@@ -487,6 +475,11 @@
 			backdrop-filter: none;
 			border-bottom: none;
 		}
+	}
+
+	.success-circle {
+		background: linear-gradient(135deg, var(--color-brand-green-15), var(--color-brand-green-4));
+		border: 2px solid var(--color-brand-green-35);
 	}
 
 	.success-ring {
