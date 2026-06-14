@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-14 13:15 — manual
+- Project: metacleaner-app (frontend)
+- Extracted 3 hardcoded strings from `src/routes/+error.svelte` to i18n keys (`error.page.title`, `error.page.defaultMessage`, `error.page.goHome`) with Czech translations
+- Replaced 6 hardcoded stat values (50K+, 2M+, 100%) in `src/routes/(auth)/email-verified/+page.svelte` with `getAuthStats()` from authRepository
+- Replaced hardcoded `demoEmail` in email-verified page with `getCurrentUser()` from userRepository
+- Verified all strings are translated and no hardcoded text remains across the project
+
 ## 2026-06-14 13:02 — manual
 - Project: metacleaner-app (frontend)
 - Created Auth Email Verification success page with responsive layout (mobile single-column, desktop two-column with left info panel and right success card)
