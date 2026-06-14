@@ -235,7 +235,6 @@
 	"common.closeMenu": "Zavřít menu",
 	"common.goBack": "Zpět",
 	"step2.risk.srAnnouncement": "Rizikové skóre: {score} ze 100. Závažnost: {severity}.",
-
 	"auth.common.trust.ssl": "SSL šifrování",
 	"auth.common.trust.gdpr": "GDPR soulad",
 	"auth.common.trust.noTracking": "Bez sledování",
@@ -291,7 +290,6 @@
 	"auth.common.success.passwordChangedDesc": "Vaše heslo bylo úspěšně nastaveno. Nyní se můžete přihlásit.",
 	"auth.common.success.encrypted": "Vaše heslo je bezpečně zašifrováno a uloženo.",
 	"auth.common.tip.prefix": "Tip:",
-
 	"auth.login.meta.title": "Přihlásit se – MetaCleaner",
 	"auth.login.nav.noAccount": "Nemáte účet?",
 	"auth.login.nav.register": "Registrovat se",
@@ -330,7 +328,6 @@
 	"auth.login.magic.successTitle": "Zkontrolujte e-mail",
 	"auth.login.magic.successDesc": "Odeslali jsme magic link na",
 	"auth.login.magic.backToLogin": "Zpět na přihlášení",
-
 	"auth.register.meta.title": "Vytvořit účet – MetaCleaner",
 	"auth.register.nav.hasAccount": "Již máte účet?",
 	"auth.register.badge.freeForever": "Zdarma navždy · Bez kreditní karty",
@@ -375,7 +372,6 @@
 	"auth.register.validation.firstNameRequired": "Vyplňte jméno.",
 	"auth.register.validation.lastNameRequired": "Vyplňte příjmení.",
 	"auth.register.validation.termsRequired": "Musíte souhlasit s podmínkami.",
-
 	"auth.checkEmail.meta.title": "Ověřte e-mail – MetaCleaner",
 	"auth.checkEmail.badge.created": "Účet byl vytvořen · Poslední krok",
 	"auth.checkEmail.heading.almostDone": "Skoro hotovo!",
@@ -412,7 +408,6 @@
 	"auth.checkEmail.mobile.stepVerify": "Ověření e-mailu",
 	"auth.checkEmail.mobile.stepStart": "Spustit app",
 	"auth.checkEmail.toast.resent": "E-mail byl znovu odeslán!",
-
 	"auth.forgotPassword.meta.title": "Zapomenuté heslo – MetaCleaner",
 	"auth.forgotPassword.branding.headline": "Obnova",
 	"auth.forgotPassword.branding.headlineHighlight": "přístupu",
@@ -445,14 +440,12 @@
 	"auth.forgotPassword.newPassword.description": "Zvolte silné heslo pro váš účet.",
 	"auth.forgotPassword.success.title": "Hotovo!",
 	"auth.forgotPassword.success.description": "Vaše heslo bylo úspěšně změněno. Nyní se můžete přihlásit.",
-
 	"auth.checkCode.meta.title": "Ověřte kód – MetaCleaner",
 	"auth.checkCode.hint.title": "Kód odeslán na",
 	"auth.checkCode.hint.description": "Kód byl odeslán na {email}. Zkontrolujte také složku spam.",
 	"auth.checkCode.otp.sentTo": "Zadejte 6místný kód, který jsme odeslali na",
 	"auth.checkCode.countdown.label": "Kód vyprší za",
 	"auth.checkCode.help.description": "Kód jsme odeslali na váš e-mail. Pokud jej nevidíte, zkontrolujte složku Spam nebo Hromadné.",
-
 	"auth.newPassword.meta.title": "Nové heslo – MetaCleaner",
 	"auth.newPassword.branding.headline": "Nastavte nové heslo",
 	"auth.newPassword.branding.description": "Jste skoro hotovi. Zvolte silné heslo, které bude chránit váš účet. Doporučujeme kombinaci písmen, číslic a symbolů.",
@@ -463,5 +456,26 @@
 	"auth.newPassword.mobile.headline": "Nové heslo nastavte",
 	"auth.newPassword.mobile.subtitle": "Krok 3 ze 3 · Zvolte silné heslo",
 	"auth.newPassword.form.description": "Zvolte silné heslo pro ochranu vašeho účtu MetaCleaner.",
-	"auth.newPassword.mobile.tip": "Použijte 12+ znaků, velká i malá písmena, čísla a znaky !@#$%"
+	"auth.newPassword.mobile.tip": "Použijte 12+ znaků, velká i malá písmena, čísla a znaky !@#$%",
+	"auth.emailVerified.meta.title": "E-mail ověřen – MetaCleaner",
+	"auth.emailVerified.nav.verified": "Ověřen",
+	"auth.emailVerified.nav.accountVerified": "Účet ověřen",
+	"auth.emailVerified.left.headline": "Váš účet je plně",
+	"auth.emailVerified.left.headlineHighlight": "aktivní!",
+	"auth.emailVerified.left.description": "Váš e-mail byl úspěšně ověřen. Nyní máte plný přístup ke všem funkcím MetaCleaner.",
+	"auth.emailVerified.step.emailVerified": "E-mail ověřen",
+	"auth.emailVerified.step.startCleaning": "Začít čistit",
+	"auth.emailVerified.step.doneBadge": "Hotovo",
+	"auth.emailVerified.step.currentBadge": "Aktuální",
+	"auth.emailVerified.step.nextBadge": "Dál",
+	"auth.emailVerified.hero.title": "E-mail ověřen!",
+	"auth.emailVerified.hero.subtitle": "Váš účet MetaCleaner je nyní plně aktivní.",
+	"auth.emailVerified.whatsNext.divider": "co dál?",
+	"auth.emailVerified.action.cleanTitle": "Vyčistěte první soubor",
+	"auth.emailVerified.action.cleanDesc": "Nahrajte soubor a odstraňte metadata",
+	"auth.emailVerified.action.proTitle": "Vyzkoušejte Pro",
+	"auth.emailVerified.action.proDesc": "14 dní zdarma · Žádná platební karta",
+	"auth.emailVerified.action.proBadge": "Zdarma",
+	"auth.emailVerified.cta.login": "Přihlásit se do MetaCleaneru",
+	"auth.emailVerified.cta.ebook": "Stáhnout ebook"
 }

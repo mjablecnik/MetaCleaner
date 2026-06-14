@@ -235,7 +235,6 @@
 	"common.closeMenu": "Close menu",
 	"common.goBack": "Go back",
 	"step2.risk.srAnnouncement": "Risk score: {score} out of 100. Severity: {severity}.",
-
 	"auth.common.trust.ssl": "SSL encryption",
 	"auth.common.trust.gdpr": "GDPR compliant",
 	"auth.common.trust.noTracking": "No tracking",
@@ -291,7 +290,6 @@
 	"auth.common.success.passwordChangedDesc": "Your password has been successfully set. You can now sign in.",
 	"auth.common.success.encrypted": "Your password is securely encrypted and stored.",
 	"auth.common.tip.prefix": "Tip:",
-
 	"auth.login.meta.title": "Sign In – MetaCleaner",
 	"auth.login.nav.noAccount": "Don't have an account?",
 	"auth.login.nav.register": "Sign up",
@@ -330,7 +328,6 @@
 	"auth.login.magic.successTitle": "Check your email",
 	"auth.login.magic.successDesc": "We sent a magic link to",
 	"auth.login.magic.backToLogin": "Back to sign in",
-
 	"auth.register.meta.title": "Create Account – MetaCleaner",
 	"auth.register.nav.hasAccount": "Already have an account?",
 	"auth.register.badge.freeForever": "Free forever · No credit card",
@@ -375,7 +372,6 @@
 	"auth.register.validation.firstNameRequired": "Please enter your first name.",
 	"auth.register.validation.lastNameRequired": "Please enter your last name.",
 	"auth.register.validation.termsRequired": "You must agree to the terms.",
-
 	"auth.checkEmail.meta.title": "Verify Email – MetaCleaner",
 	"auth.checkEmail.badge.created": "Account created · Last step",
 	"auth.checkEmail.heading.almostDone": "Almost done!",
@@ -412,7 +408,6 @@
 	"auth.checkEmail.mobile.stepVerify": "Email verification",
 	"auth.checkEmail.mobile.stepStart": "Start app",
 	"auth.checkEmail.toast.resent": "Email resent!",
-
 	"auth.forgotPassword.meta.title": "Forgot Password – MetaCleaner",
 	"auth.forgotPassword.branding.headline": "Recover",
 	"auth.forgotPassword.branding.headlineHighlight": "access",
@@ -445,14 +440,12 @@
 	"auth.forgotPassword.newPassword.description": "Choose a strong password for your account.",
 	"auth.forgotPassword.success.title": "Done!",
 	"auth.forgotPassword.success.description": "Your password has been successfully changed. You can now sign in.",
-
 	"auth.checkCode.meta.title": "Verify Code – MetaCleaner",
 	"auth.checkCode.hint.title": "Code sent to",
 	"auth.checkCode.hint.description": "Code sent to {email}. Please also check your spam folder.",
 	"auth.checkCode.otp.sentTo": "Enter the 6-digit code we sent to",
 	"auth.checkCode.countdown.label": "Code expires in",
 	"auth.checkCode.help.description": "We sent the code to your email. If you don't see it, check the Spam or Bulk folder.",
-
 	"auth.newPassword.meta.title": "New Password – MetaCleaner",
 	"auth.newPassword.branding.headline": "Set new password",
 	"auth.newPassword.branding.description": "You're almost done. Choose a strong password to protect your account. We recommend a combination of letters, numbers and symbols.",
@@ -463,5 +456,26 @@
 	"auth.newPassword.mobile.headline": "Set new password",
 	"auth.newPassword.mobile.subtitle": "Step 3 of 3 · Choose a strong password",
 	"auth.newPassword.form.description": "Choose a strong password to protect your MetaCleaner account.",
-	"auth.newPassword.mobile.tip": "Use 12+ characters, uppercase and lowercase letters, numbers and !@#$% characters"
+	"auth.newPassword.mobile.tip": "Use 12+ characters, uppercase and lowercase letters, numbers and !@#$% characters",
+	"auth.emailVerified.meta.title": "Email Verified – MetaCleaner",
+	"auth.emailVerified.nav.verified": "Verified",
+	"auth.emailVerified.nav.accountVerified": "Account verified",
+	"auth.emailVerified.left.headline": "Your account is fully",
+	"auth.emailVerified.left.headlineHighlight": "active!",
+	"auth.emailVerified.left.description": "Your email was successfully verified. You now have full access to all MetaCleaner features.",
+	"auth.emailVerified.step.emailVerified": "Email verified",
+	"auth.emailVerified.step.startCleaning": "Start cleaning",
+	"auth.emailVerified.step.doneBadge": "Done",
+	"auth.emailVerified.step.currentBadge": "Current",
+	"auth.emailVerified.step.nextBadge": "Next",
+	"auth.emailVerified.hero.title": "Email verified!",
+	"auth.emailVerified.hero.subtitle": "Your MetaCleaner account is now fully active.",
+	"auth.emailVerified.whatsNext.divider": "what's next?",
+	"auth.emailVerified.action.cleanTitle": "Clean your first file",
+	"auth.emailVerified.action.cleanDesc": "Upload a file and remove metadata",
+	"auth.emailVerified.action.proTitle": "Try Pro",
+	"auth.emailVerified.action.proDesc": "14 days free · No credit card",
+	"auth.emailVerified.action.proBadge": "Free",
+	"auth.emailVerified.cta.login": "Sign in to MetaCleaner",
+	"auth.emailVerified.cta.ebook": "Download ebook"
 }
