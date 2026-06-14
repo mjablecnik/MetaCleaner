@@ -37,8 +37,13 @@
 	--color-brand-green-30: rgba(34, 197, 94, 0.3); /* glow animation color */
 	--color-brand-green-40: rgba(34, 197, 94, 0.4); /* glow animation color */
 	--color-brand-green-4: rgba(34, 197, 94, 0.04); /* step-info done-card background */
+	--color-brand-green-10: rgba(34, 197, 94, 0.1); /* action card icon container bg */
+	--color-brand-green-35: rgba(34, 197, 94, 0.35); /* checkmark circle border */
+	--color-brand-green-darker: #15803d; /* CTA button hover/active gradient end */
 	--color-brand-orange-6: rgba(249, 115, 22, 0.06); /* plan/selection subtle bg */
+	--color-brand-orange-10: rgba(249, 115, 22, 0.1); /* action card icon container bg */
 	--color-brand-orange-15: rgba(249, 115, 22, 0.15); /* icon container bg, badge bg */
+	--color-brand-blue-15: rgba(59, 130, 246, 0.15); /* step badge bg */
 	--color-navy-main-95: rgba(10, 22, 40, 0.95); /* navbar backdrop on mobile */
 	--color-brand-blue-5: rgba(59, 130, 246, 0.05); /* step-info active-card background */
 	--color-brand-blue-20: rgba(59, 130, 246, 0.2); /* step progress circle active bg */
