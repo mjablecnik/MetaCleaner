@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-14 14:05 — manual
+- Project: metacleaner-app (frontend)
+- Refactored `src/routes/(auth)/email-verified/+page.svelte` — decomposed monolithic ~520-line page into 4 sections (EmailVerifiedHeroSection, EmailVerifiedProgressSection, EmailVerifiedStatsSection, EmailVerifiedActionsSection)
+- Created 3 page-specific components with Storybook stories: AnimatedCheckmark, VerificationStepper, ActionCard
+- Added 5 missing theme tokens to `layout.css`: `brand-green-10`, `brand-green-35`, `brand-green-darker`, `brand-blue-15`, `brand-orange-10`
+- Replaced ~30 hardcoded inline color values and `<style>` block hex colors with theme token references
+- Verified Storybook builds successfully with all new stories
+
 ## 2026-06-14 13:15 — manual
 - Project: metacleaner-app (frontend)
 - Extracted 3 hardcoded strings from `src/routes/+error.svelte` to i18n keys (`error.page.title`, `error.page.defaultMessage`, `error.page.goHome`) with Czech translations
