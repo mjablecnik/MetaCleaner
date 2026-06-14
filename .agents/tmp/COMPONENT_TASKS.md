@@ -26,7 +26,7 @@ No failing Storybook stories detected.
 - [x] Create story for ReportChartCard (`src/routes/report/sections/ReportChartCard.svelte`) — states: default, varying chart data
 - [x] Create story for FileAccordionList (`src/routes/report/sections/FileAccordionList.svelte`) — states: single file, multiple files
 - [x] Create story for ReportsHeader (`src/routes/reports/sections/ReportsHeader.svelte`) — states: default
-- [ ] Create story for FiltersBar (`src/routes/reports/sections/FiltersBar.svelte`) — states: no filter, filter active
-- [ ] Create story for MobileFilters (`src/routes/reports/sections/MobileFilters.svelte`) — states: no filter, filter active
-- [ ] Create story for ReportsTable (`src/routes/reports/sections/ReportsTable.svelte`) — states: with data, empty
-- [ ] Create story for ReportsList (`src/routes/reports/sections/ReportsList.svelte`) — states: with data, empty
+- [x] Create story for FiltersBar (`src/routes/reports/sections/FiltersBar.svelte`) — states: no filter, filter active
+- [x] Create story for MobileFilters (`src/routes/reports/sections/MobileFilters.svelte`) — states: no filter, filter active
+- [x] Create story for ReportsTable (`src/routes/reports/sections/ReportsTable.svelte`) — states: with data, empty
+- [x] Create story for ReportsList (`src/routes/reports/sections/ReportsList.svelte`) — states: with data, empty
