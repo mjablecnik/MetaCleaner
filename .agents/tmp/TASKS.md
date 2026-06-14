@@ -23,7 +23,7 @@ No new shared components needed — the email-verified page reuses existing `Aut
 - [x] 8. [HIGH] Create `ActionCard` component in `src/routes/(auth)/email-verified/components/` — card with icon, title, description, optional badge for "what's next" actions
 - [x] 9. [HIGH] Create `ActionCard.stories.svelte` — states: CleanAction, ProUpgradeAction
 - [x] 10. [HIGH] Create `EmailVerifiedHeroSection` in `src/routes/(auth)/email-verified/sections/` — composes AnimatedCheckmark with title/subtitle
-- [ ] 11. [HIGH] Create `EmailVerifiedProgressSection` in `src/routes/(auth)/email-verified/sections/` — composes VerificationStepper with responsive layout (horizontal on desktop, vertical on mobile)
+- [x] 11. [HIGH] Create `EmailVerifiedProgressSection` in `src/routes/(auth)/email-verified/sections/` — composes VerificationStepper with responsive layout (horizontal on desktop, vertical on mobile)
 - [ ] 12. [HIGH] Create `EmailVerifiedStatsSection` in `src/routes/(auth)/email-verified/sections/` — stats row using AuthStatsRow pattern with data from authRepository
 - [ ] 13. [HIGH] Create `EmailVerifiedActionsSection` in `src/routes/(auth)/email-verified/sections/` — composes ActionCard instances and CTA buttons
 
