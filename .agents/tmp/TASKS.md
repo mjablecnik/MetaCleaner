@@ -4,7 +4,7 @@
 
 - [x] 1. [HIGH] Add missing theme tokens to `src/routes/layout.css` @theme block: `--color-brand-green-10`, `--color-brand-green-35`, `--color-brand-green-darker`, `--color-brand-blue-15`, `--color-brand-orange-10`
 - [x] 2. [HIGH] Replace all hardcoded inline color values in `src/routes/(auth)/email-verified/+page.svelte` with Tailwind theme utilities or CSS custom property references (30 inline style attributes)
-- [ ] 3. [HIGH] Replace hardcoded hex colors in `email-verified/+page.svelte` `<style>` block (#22c55e, #16a34a, #15803d) with `var(--color-*)` references
+- [x] 3. [HIGH] Replace hardcoded hex colors in `email-verified/+page.svelte` `<style>` block (#22c55e, #16a34a, #15803d) with `var(--color-*)` references
 
 ## Phase 1 — Shared Elements
 

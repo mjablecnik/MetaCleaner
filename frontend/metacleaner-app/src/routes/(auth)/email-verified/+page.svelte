@@ -465,7 +465,7 @@
 	}
 
 	.verified-nav {
-		background-color: rgba(10, 22, 40, 0.95);
+		background-color: var(--color-navy-main-95);
 		backdrop-filter: blur(12px);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	}
@@ -503,35 +503,35 @@
 		0%,
 		100% {
 			box-shadow:
-				0 0 0 0 rgba(34, 197, 94, 0.3),
-				0 0 24px rgba(34, 197, 94, 0.15);
+				0 0 0 0 var(--color-brand-green-30),
+				0 0 24px var(--color-brand-green-15);
 		}
 		50% {
 			box-shadow:
 				0 0 0 16px rgba(34, 197, 94, 0),
-				0 0 40px rgba(34, 197, 94, 0.3);
+				0 0 40px var(--color-brand-green-30);
 		}
 	}
 
 	.cta-btn {
-		background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+		background: linear-gradient(135deg, var(--color-brand-green) 0%, var(--color-brand-green-dark) 100%);
 		transition: all 0.2s ease;
 	}
 	.cta-btn:hover {
-		background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+		background: linear-gradient(135deg, var(--color-brand-green-dark) 0%, var(--color-brand-green-darker) 100%);
 		transform: translateY(-1px);
-		box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+		box-shadow: 0 8px 24px var(--color-brand-green-40);
 	}
 	.cta-btn:active {
-		background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+		background: linear-gradient(135deg, var(--color-brand-green-dark) 0%, var(--color-brand-green-darker) 100%);
 		transform: scale(0.98);
-		box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+		box-shadow: 0 8px 24px var(--color-brand-green-40);
 	}
 
 	.step-row {
 		transition: border-color 0.2s ease;
 	}
 	.step-row:hover {
-		border-color: rgba(34, 197, 94, 0.3);
+		border-color: var(--color-brand-green-30);
 	}
 </style>
