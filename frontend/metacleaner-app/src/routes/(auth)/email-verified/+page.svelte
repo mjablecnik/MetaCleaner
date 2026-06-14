@@ -8,17 +8,20 @@
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import TrustBadges from '../components/TrustBadges.svelte';
 	import { getAuthStats } from '$lib/repositories/authRepository';
+	import { getCurrentUser } from '$lib/repositories/userRepository';
 
-	const demoEmail = 'jan.novak@email.cz';
 	const stats = getAuthStats();
+	let userEmail = $state('');
 
-	onMount(() => {
+	onMount(async () => {
 		if (!browser) return;
 		// Process tokens from the email confirmation callback URL and persist them.
 		// On error, redirect to login so the user can try again.
 		handleAuthCallback(window.location.href, true).then((urlError) => {
 			if (urlError) goto(resolve('/login' as import('$app/types').Pathname));
 		});
+		const user = await getCurrentUser();
+		userEmail = user.email;
 	});
 </script>
 
@@ -178,7 +181,7 @@
 							class="mt-1 inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-1.5"
 						>
 							<i class="fa-regular fa-envelope text-xs text-brand-green"></i>
-							<span class="text-sm font-semibold text-white">{demoEmail}</span>
+							<span class="text-sm font-semibold text-white">{userEmail}</span>
 							<i class="fa-solid fa-circle-check text-xs text-brand-green"></i>
 						</div>
 					</div>
@@ -297,7 +300,7 @@
 									class="mt-3 inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-1.5"
 								>
 									<i class="fa-regular fa-envelope text-xs text-brand-green"></i>
-									<span class="text-sm font-semibold text-white">{demoEmail}</span>
+									<span class="text-sm font-semibold text-white">{userEmail}</span>
 									<i class="fa-solid fa-circle-check text-xs text-brand-green"></i>
 								</div>
 							</div>

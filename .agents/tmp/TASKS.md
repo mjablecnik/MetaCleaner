@@ -23,7 +23,7 @@ Already complete. Repositories exist in `src/lib/repositories/` (authRepository,
 ## Phase 4 — Replace API data with repository calls
 
 - [x] 8. [MEDIUM] Replace hardcoded stats (50K+, 2M+, 100%) in `src/routes/(auth)/email-verified/+page.svelte` with `getAuthStats()` from authRepository — 6 occurrences (desktop + mobile)
-- [ ] 9. [MEDIUM] Replace hardcoded `demoEmail` in `src/routes/(auth)/email-verified/+page.svelte` with authenticated user email from auth store or a page prop
+- [x] 9. [MEDIUM] Replace hardcoded `demoEmail` in `src/routes/(auth)/email-verified/+page.svelte` with authenticated user email from auth store or a page prop
 
 ## Phase 5 — Language switching
 
