@@ -16,8 +16,8 @@ No new shared components needed — the email-verified page reuses existing `Aut
 
 ## Phase 3 — Page-Specific Components and Sections
 
-- [ ] 4. [HIGH] Create `AnimatedCheckmark` component in `src/routes/(auth)/email-verified/components/` — animated SVG checkmark with pulsing green ring, accepts size prop
-- [ ] 5. [HIGH] Create `AnimatedCheckmark.stories.svelte` — states: SmallSize, LargeSize
+- [x] 4. [HIGH] Create `AnimatedCheckmark` component in `src/routes/(auth)/email-verified/components/` — animated SVG checkmark with pulsing green ring, accepts size prop
+- [x] 5. [HIGH] Create `AnimatedCheckmark.stories.svelte` — states: SmallSize, LargeSize
 - [ ] 6. [HIGH] Create `VerificationStepper` component in `src/routes/(auth)/email-verified/components/` — 3-step progress indicator with horizontal/vertical orientation
 - [ ] 7. [HIGH] Create `VerificationStepper.stories.svelte` — states: Step1Active, Step2Active, AllDone, Vertical, Horizontal
 - [ ] 8. [HIGH] Create `ActionCard` component in `src/routes/(auth)/email-verified/components/` — card with icon, title, description, optional badge for "what's next" actions
