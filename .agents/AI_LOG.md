@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-14 13:02 — manual
+- Project: metacleaner-app (frontend)
+- Created Auth Email Verification success page with responsive layout (mobile single-column, desktop two-column with left info panel and right success card)
+- Added design reference files: `.design/auth-email-verification-mobile.html`, `.design/auth-email-verification-desktop.html`
+- Implemented animated checkmark hero, horizontal/vertical progress stepper, stats row, "what's next" action cards, CTA buttons, and trust badges
+- Wired up navigation so all pages link correctly to the new `/email-verified` route
+- Key commits: `feat: add email verified success page with responsive layout`, `feat: wire up email verification navigation to /email-verified page`
+
 ## 2026-06-13 01:52 — ui-tests
 - Project: metacleaner-app
 - Created Storybook story for `PasswordRecoveryProgressCards` component (states: Step2Active, Step3Active, AllDone) in `src/routes/(auth)/components/PasswordRecoveryProgressCards.stories.svelte`
