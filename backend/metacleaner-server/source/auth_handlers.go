@@ -410,11 +410,14 @@ func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
 
 // HandleMagicLinkCallback handles GET /api/auth/magic-link/callback.
 // Supabase redirects here with token_hash and type query parameters after the user
-// clicks the magic link. The handler verifies the token, creates a profile for new
-// users, and redirects to the frontend with tokens as query parameters.
+// clicks the magic link or email confirmation link. The handler verifies the token,
+// creates a profile for new users, and redirects to the frontend with tokens as query
+// parameters. Email confirmations (type=signup) redirect to /email-verified; all other
+// types (magic link, etc.) redirect to /login.
 func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		frontendLogin := authClient.frontendURL + "/login"
+		frontendEmailVerified := authClient.frontendURL + "/email-verified"
 
 		if errParam := r.URL.Query().Get("error"); errParam != "" {
 			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape(errParam), http.StatusFound)
@@ -461,7 +464,14 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 		params.Set("access_token", session.AccessToken)
 		params.Set("refresh_token", session.RefreshToken)
 		params.Set("expires_in", strconv.Itoa(session.ExpiresIn))
-		http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+
+		// Email confirmations (signup) land on the email-verified success page;
+		// magic links and other types go to the login page to complete sign-in.
+		if tokenType == "signup" {
+			http.Redirect(w, r, frontendEmailVerified+"?"+params.Encode(), http.StatusFound)
+		} else {
+			http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+		}
 	}
 }
 

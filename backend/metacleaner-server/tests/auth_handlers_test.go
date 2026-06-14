@@ -851,6 +851,38 @@ func TestHandleMagicLinkCallback_Success(t *testing.T) {
 	}
 }
 
+func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T) {
+	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/auth/v1/verify":
+			writeJSONResp(w, http.StatusOK, map[string]interface{}{
+				"access_token": "at", "refresh_token": "rt", "expires_in": 3600,
+				"user": map[string]interface{}{"id": "user-new", "email": "new@example.com"},
+			})
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") && r.Method == http.MethodGet:
+			writeJSONResp(w, http.StatusOK, []interface{}{}) // new user
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") && r.Method == http.MethodPost:
+			w.WriteHeader(http.StatusCreated)
+		}
+	}))
+
+	handler := src.HandleMagicLinkCallback(authClient)
+	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?token_hash=abc123&type=signup", nil)
+	rr := httptest.NewRecorder()
+	handler(rr, req)
+
+	if rr.Code != http.StatusFound {
+		t.Fatalf("expected 302 redirect, got %d: %s", rr.Code, rr.Body.String())
+	}
+	loc := rr.Header().Get("Location")
+	if !strings.Contains(loc, "/email-verified") {
+		t.Fatalf("expected redirect to /email-verified, got: %s", loc)
+	}
+	if !strings.Contains(loc, "access_token=at") {
+		t.Fatalf("expected access_token in redirect URL, got: %s", loc)
+	}
+}
+
 func TestHandleMagicLinkCallback_ErrorParam(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
 	handler := src.HandleMagicLinkCallback(authClient)

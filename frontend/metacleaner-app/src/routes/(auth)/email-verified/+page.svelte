@@ -1,10 +1,23 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
+	import { onMount } from 'svelte';
+	import { handleAuthCallback } from '$lib/auth/token-utils.js';
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import TrustBadges from '../components/TrustBadges.svelte';
 
 	const demoEmail = 'jan.novak@email.cz';
+
+	onMount(() => {
+		if (!browser) return;
+		// Process tokens from the email confirmation callback URL and persist them.
+		// On error, redirect to login so the user can try again.
+		handleAuthCallback(window.location.href, true).then((urlError) => {
+			if (urlError) goto(resolve('/login' as import('$app/types').Pathname));
+		});
+	});
 </script>
 
 <svelte:head>

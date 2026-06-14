@@ -32,12 +32,14 @@ export async function guardProtectedRoute(): Promise<void> {
 /**
  * Call from a +layout.ts load() on auth pages (login, register, forgot-password).
  * Redirects already-authenticated users to the main app.
+ * Exception: /email-verified is allowed for authenticated users so that the
+ * email confirmation callback can land and display the success page.
  * Waits for async token restore/refresh to complete before deciding.
  */
 export async function guardAuthRoute(): Promise<void> {
 	if (!browser) return;
 	await waitForAuthReady();
-	if (authStore.isAuthenticated) {
+	if (authStore.isAuthenticated && window.location.pathname !== '/email-verified') {
 		redirect(302, resolve('/' as Pathname));
 	}
 }
