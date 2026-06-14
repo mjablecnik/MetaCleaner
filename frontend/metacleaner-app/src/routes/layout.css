@@ -45,6 +45,7 @@
 	--color-brand-orange-15: rgba(249, 115, 22, 0.15); /* icon container bg, badge bg */
 	--color-brand-blue-15: rgba(59, 130, 246, 0.15); /* step badge bg */
 	--color-navy-main-95: rgba(10, 22, 40, 0.95); /* navbar backdrop on mobile */
+	--color-white-5: rgba(255, 255, 255, 0.05); /* subtle white border on dark surfaces */
 	--color-brand-blue-5: rgba(59, 130, 246, 0.05); /* step-info active-card background */
 	--color-brand-blue-20: rgba(59, 130, 246, 0.2); /* step progress circle active bg */
 	--color-brand-blue-40: rgba(59, 130, 246, 0.4); /* step-info active-card border */

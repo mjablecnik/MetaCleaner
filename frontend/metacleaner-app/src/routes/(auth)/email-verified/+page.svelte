@@ -119,7 +119,7 @@
 	.verified-nav {
 		background-color: var(--color-navy-main-95);
 		backdrop-filter: blur(12px);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		border-bottom: 1px solid var(--color-white-5);
 	}
 	@media (min-width: 1024px) {
 		.verified-nav {

@@ -30,7 +30,7 @@
 		default: 'border-gray-800'
 	};
 
-	const sharedClass = `step-row flex cursor-pointer items-center gap-4 rounded-xl border ${borderClass[variant]} bg-navy-card lg:bg-navy-main p-4 active:scale-[0.98]`;
+	const sharedClass = $derived(`step-row flex cursor-pointer items-center gap-4 rounded-xl border ${borderClass[variant]} bg-navy-card lg:bg-navy-main p-4 active:scale-[0.98]`);
 </script>
 
 {#if href}

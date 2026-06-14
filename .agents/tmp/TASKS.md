@@ -33,5 +33,5 @@ No new shared components needed — the email-verified page reuses existing `Aut
 
 ## Final
 
-- [ ] 15. Verify email-verified page renders correctly — no visual regressions, all theme tokens applied, no hardcoded color values remain
+- [x] 15. Verify email-verified page renders correctly — no visual regressions, all theme tokens applied, no hardcoded color values remain
 - [ ] 16. Verify Storybook builds successfully with all new stories (`bun run build-storybook`)
