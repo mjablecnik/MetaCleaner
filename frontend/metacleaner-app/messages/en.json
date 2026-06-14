@@ -477,5 +477,8 @@
 	"auth.emailVerified.action.proDesc": "14 days free · No credit card",
 	"auth.emailVerified.action.proBadge": "Free",
 	"auth.emailVerified.cta.login": "Sign in to MetaCleaner",
-	"auth.emailVerified.cta.ebook": "Download ebook"
+	"auth.emailVerified.cta.ebook": "Download ebook",
+	"error.page.title": "Something went wrong",
+	"error.page.defaultMessage": "An unexpected error occurred",
+	"error.page.goHome": "Go Home"
 }

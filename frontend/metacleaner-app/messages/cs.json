@@ -477,5 +477,8 @@
 	"auth.emailVerified.action.proDesc": "14 dní zdarma · Žádná platební karta",
 	"auth.emailVerified.action.proBadge": "Zdarma",
 	"auth.emailVerified.cta.login": "Přihlásit se do MetaCleaneru",
-	"auth.emailVerified.cta.ebook": "Stáhnout ebook"
+	"auth.emailVerified.cta.ebook": "Stáhnout ebook",
+	"error.page.title": "Něco se pokazilo",
+	"error.page.defaultMessage": "Došlo k neočekávané chybě",
+	"error.page.goHome": "Zpět domů"
 }
