@@ -7,8 +7,10 @@
 	import { handleAuthCallback } from '$lib/auth/token-utils.js';
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import TrustBadges from '../components/TrustBadges.svelte';
+	import { getAuthStats } from '$lib/repositories/authRepository';
 
 	const demoEmail = 'jan.novak@email.cz';
+	const stats = getAuthStats();
 
 	onMount(() => {
 		if (!browser) return;
@@ -136,17 +138,17 @@
 				<!-- Stats row -->
 				<div class="grid grid-cols-3 gap-4 border-t border-gray-800 pt-5">
 					<div class="text-center">
-						<p class="text-2xl font-black text-white">50K+</p>
+						<p class="text-2xl font-black text-white">{stats[0].value}</p>
 						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.usersLabel')}</p>
 					</div>
 					<div class="border-x border-gray-800 text-center">
-						<p class="text-2xl font-black text-brand-green">2M+</p>
+						<p class="text-2xl font-black text-brand-green">{stats[1].value}</p>
 						<p class="mt-1 text-xs text-text-muted">
 							{tx('auth.common.stats.filesCleanedLabel')}
 						</p>
 					</div>
 					<div class="text-center">
-						<p class="text-2xl font-black text-brand-blue">100%</p>
+						<p class="text-2xl font-black text-brand-blue">{stats[2].value}</p>
 						<p class="mt-1 text-xs text-text-muted">{tx('auth.common.stats.securityLabel')}</p>
 					</div>
 				</div>
@@ -242,7 +244,7 @@
 					<div
 						class="flex flex-col items-center gap-0.5 rounded-xl border border-gray-800 bg-navy-card py-3"
 					>
-						<p class="text-xl font-black text-white">50K+</p>
+						<p class="text-xl font-black text-white">{stats[0].value}</p>
 						<p class="text-center text-[10px] leading-tight text-text-muted">
 							{tx('auth.common.stats.usersLabel')}
 						</p>
@@ -250,7 +252,7 @@
 					<div
 						class="flex flex-col items-center gap-0.5 rounded-xl border border-gray-800 bg-navy-card py-3"
 					>
-						<p class="text-xl font-black text-brand-green">2M+</p>
+						<p class="text-xl font-black text-brand-green">{stats[1].value}</p>
 						<p class="text-center text-[10px] leading-tight text-text-muted">
 							{tx('auth.common.stats.filesCleanedLabel')}
 						</p>
@@ -258,7 +260,7 @@
 					<div
 						class="flex flex-col items-center gap-0.5 rounded-xl border border-gray-800 bg-navy-card py-3"
 					>
-						<p class="text-xl font-black text-brand-blue">100%</p>
+						<p class="text-xl font-black text-brand-blue">{stats[2].value}</p>
 						<p class="text-center text-[10px] leading-tight text-text-muted">
 							{tx('auth.common.stats.securityLabel')}
 						</p>
