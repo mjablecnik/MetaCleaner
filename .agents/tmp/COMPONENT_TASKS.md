@@ -21,11 +21,11 @@ No failing Storybook stories detected.
 - [x] Create story for ActivityLogAccordion (`src/routes/sections/Step3Processing/ActivityLogAccordion.svelte`) — states: expanded, collapsed
 - [x] Create story for SuccessHeader (`src/routes/sections/Step5Success/SuccessHeader.svelte`) — states: default
 - [x] Create story for FileResultsCard (`src/routes/sections/Step5Success/FileResultsCard.svelte`) — states: single file, multiple files
-- [ ] Create story for MetadataOverview (`src/routes/sections/Step5Success/MetadataOverview.svelte`) — states: with GPS, without GPS
-- [ ] Create story for ReportDetailHeader (`src/routes/report/sections/ReportDetailHeader.svelte`) — states: default
-- [ ] Create story for ReportChartCard (`src/routes/report/sections/ReportChartCard.svelte`) — states: default, varying chart data
-- [ ] Create story for FileAccordionList (`src/routes/report/sections/FileAccordionList.svelte`) — states: single file, multiple files
-- [ ] Create story for ReportsHeader (`src/routes/reports/sections/ReportsHeader.svelte`) — states: default
+- [x] Create story for MetadataOverview (`src/routes/sections/Step5Success/MetadataOverview.svelte`) — states: with GPS, without GPS
+- [x] Create story for ReportDetailHeader (`src/routes/report/sections/ReportDetailHeader.svelte`) — states: default
+- [x] Create story for ReportChartCard (`src/routes/report/sections/ReportChartCard.svelte`) — states: default, varying chart data
+- [x] Create story for FileAccordionList (`src/routes/report/sections/FileAccordionList.svelte`) — states: single file, multiple files
+- [x] Create story for ReportsHeader (`src/routes/reports/sections/ReportsHeader.svelte`) — states: default
 - [ ] Create story for FiltersBar (`src/routes/reports/sections/FiltersBar.svelte`) — states: no filter, filter active
 - [ ] Create story for MobileFilters (`src/routes/reports/sections/MobileFilters.svelte`) — states: no filter, filter active
 - [ ] Create story for ReportsTable (`src/routes/reports/sections/ReportsTable.svelte`) — states: with data, empty
