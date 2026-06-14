@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -58,10 +58,15 @@ describe('guardProtectedRoute', () => {
 
 describe('guardAuthRoute', () => {
 	beforeEach(() => {
+		vi.stubGlobal('window', { location: { pathname: '/' } });
 		authState.isAuthenticated = true;
 		authState.isAuthReady = true;
 		mockRedirect.mockClear();
 		mockResolve.mockClear();
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
 	});
 
 	it('calls redirect(302) to / when user is already authenticated', async () => {
