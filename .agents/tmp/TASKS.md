@@ -33,4 +33,4 @@ Already complete. `LanguageDropdown` component exists in NavBar, `switchLocale()
 
 ## Final
 
-- [ ] 11. [LOW] Verify all strings are translated, no hardcoded text remains, language switching works
+- [x] 11. [LOW] Verify all strings are translated, no hardcoded text remains, language switching works
