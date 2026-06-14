@@ -25,11 +25,11 @@ No new shared components needed — the email-verified page reuses existing `Aut
 - [x] 10. [HIGH] Create `EmailVerifiedHeroSection` in `src/routes/(auth)/email-verified/sections/` — composes AnimatedCheckmark with title/subtitle
 - [x] 11. [HIGH] Create `EmailVerifiedProgressSection` in `src/routes/(auth)/email-verified/sections/` — composes VerificationStepper with responsive layout (horizontal on desktop, vertical on mobile)
 - [x] 12. [HIGH] Create `EmailVerifiedStatsSection` in `src/routes/(auth)/email-verified/sections/` — stats row using AuthStatsRow pattern with data from authRepository
-- [ ] 13. [HIGH] Create `EmailVerifiedActionsSection` in `src/routes/(auth)/email-verified/sections/` — composes ActionCard instances and CTA buttons
+- [x] 13. [HIGH] Create `EmailVerifiedActionsSection` in `src/routes/(auth)/email-verified/sections/` — composes ActionCard instances and CTA buttons
 
 ## Phase 4 — Refactor Pages
 
-- [ ] 14. [MEDIUM] Refactor `src/routes/(auth)/email-verified/+page.svelte` to compose sections (EmailVerifiedHeroSection, EmailVerifiedProgressSection, EmailVerifiedStatsSection, EmailVerifiedActionsSection) instead of inline code — reduce from ~520 lines to ~60 lines
+- [x] 14. [MEDIUM] Refactor `src/routes/(auth)/email-verified/+page.svelte` to compose sections (EmailVerifiedHeroSection, EmailVerifiedProgressSection, EmailVerifiedStatsSection, EmailVerifiedActionsSection) instead of inline code — reduce from ~520 lines to ~60 lines
 
 ## Final
 
