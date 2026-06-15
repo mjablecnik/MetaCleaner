@@ -51,16 +51,21 @@ func TestHandleUploadMultiFile(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp map[string][]src.UploadedFileInfo
+	var resp struct {
+		Files      []src.UploadedFileInfo  `json:"files"`
+		FileErrors []src.UploadedFileError `json:"fileErrors"`
+	}
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatal(err)
 	}
-	uploadedFiles := resp["files"]
-	if len(uploadedFiles) != 2 {
-		t.Fatalf("expected 2 files in response, got %d", len(uploadedFiles))
+	if len(resp.Files) != 2 {
+		t.Fatalf("expected 2 files in response, got %d", len(resp.Files))
+	}
+	if len(resp.FileErrors) != 0 {
+		t.Fatalf("expected 0 fileErrors, got %d: %v", len(resp.FileErrors), resp.FileErrors)
 	}
 	uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
-	for _, f := range uploadedFiles {
+	for _, f := range resp.Files {
 		if len(f.ID) < 4 {
 			t.Errorf("file ID %q looks too short", f.ID)
 		}
@@ -81,13 +86,19 @@ func TestHandleUploadFileTooLarge(t *testing.T) {
 	rr := httptest.NewRecorder()
 	src.HandleUpload(cfg)(rr, req)
 
-	if rr.Code != http.StatusRequestEntityTooLarge {
-		t.Fatalf("expected 413, got %d: %s", rr.Code, rr.Body.String())
+	// Files exceeding the size limit are now reported as per-file errors (status 200).
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp src.ErrorResponse
+	var resp map[string]interface{}
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != src.ErrFileTooLarge {
-		t.Errorf("expected error code %q, got %q", src.ErrFileTooLarge, resp.Error)
+	fileErrors, _ := resp["fileErrors"].([]interface{})
+	if len(fileErrors) != 1 {
+		t.Fatalf("expected 1 fileError, got %d: %v", len(fileErrors), resp)
+	}
+	fe := fileErrors[0].(map[string]interface{})
+	if fe["error"] != src.ErrFileTooLarge {
+		t.Errorf("expected error code %q, got %q", src.ErrFileTooLarge, fe["error"])
 	}
 }
 
@@ -100,13 +111,49 @@ func TestHandleUploadUnsupportedFormat(t *testing.T) {
 	rr := httptest.NewRecorder()
 	src.HandleUpload(cfg)(rr, req)
 
-	if rr.Code != http.StatusUnsupportedMediaType {
-		t.Fatalf("expected 415, got %d: %s", rr.Code, rr.Body.String())
+	// Unsupported formats are now reported as per-file errors (status 200).
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp src.ErrorResponse
+	var resp map[string]interface{}
 	json.NewDecoder(rr.Body).Decode(&resp)
-	if resp.Error != src.ErrUnsupportedFormat {
-		t.Errorf("expected error code %q, got %q", src.ErrUnsupportedFormat, resp.Error)
+	fileErrors, _ := resp["fileErrors"].([]interface{})
+	if len(fileErrors) != 1 {
+		t.Fatalf("expected 1 fileError, got %d: %v", len(fileErrors), resp)
+	}
+	fe := fileErrors[0].(map[string]interface{})
+	if fe["error"] != src.ErrUnsupportedFormat {
+		t.Errorf("expected error code %q, got %q", src.ErrUnsupportedFormat, fe["error"])
+	}
+}
+
+func TestHandleUploadMixedBatch(t *testing.T) {
+	cfg := newTestConfig(t)
+
+	req := buildUploadRequest(t, map[string][]byte{
+		"photo.jpg":    []byte("fake jpeg content"),
+		"document.pdf": []byte("fake pdf content"),
+	})
+	rr := httptest.NewRecorder()
+	src.HandleUpload(cfg)(rr, req)
+
+	// Mixed batch: valid file accepted, unsupported format reported as per-file error.
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp map[string]interface{}
+	json.NewDecoder(rr.Body).Decode(&resp)
+	files, _ := resp["files"].([]interface{})
+	fileErrors, _ := resp["fileErrors"].([]interface{})
+	if len(files) != 1 {
+		t.Fatalf("expected 1 accepted file, got %d", len(files))
+	}
+	if len(fileErrors) != 1 {
+		t.Fatalf("expected 1 fileError, got %d", len(fileErrors))
+	}
+	fe := fileErrors[0].(map[string]interface{})
+	if fe["error"] != src.ErrUnsupportedFormat {
+		t.Errorf("expected error code %q, got %q", src.ErrUnsupportedFormat, fe["error"])
 	}
 }
 
@@ -142,13 +189,15 @@ func TestHandleUploadResponseFields(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp map[string][]src.UploadedFileInfo
-	json.NewDecoder(rr.Body).Decode(&resp)
-	uploadedFiles := resp["files"]
-	if len(uploadedFiles) != 1 {
-		t.Fatalf("expected 1 file, got %d", len(uploadedFiles))
+	var resp struct {
+		Files      []src.UploadedFileInfo  `json:"files"`
+		FileErrors []src.UploadedFileError `json:"fileErrors"`
 	}
-	f := uploadedFiles[0]
+	json.NewDecoder(rr.Body).Decode(&resp)
+	if len(resp.Files) != 1 {
+		t.Fatalf("expected 1 file, got %d", len(resp.Files))
+	}
+	f := resp.Files[0]
 	if f.Name != "IMG_4821.jpg" {
 		t.Errorf("name mismatch: got %q", f.Name)
 	}

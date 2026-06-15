@@ -287,6 +287,20 @@ func (c *SupabaseClient) GetFileRecords(ctx context.Context, jobID string) ([]Fi
 	return files, nil
 }
 
+// GetReportIDByJobID returns the human-readable reportId for the report associated with jobID.
+// Returns an empty string if no report exists yet (report creation is asynchronous).
+func (c *SupabaseClient) GetReportIDByJobID(ctx context.Context, jobID string) (string, error) {
+	var rows []dbReport
+	url := c.restURL("cleaning_reports?job_id=eq." + jobID + "&select=report_id&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return "", err
+	}
+	if len(rows) == 0 {
+		return "", nil
+	}
+	return rows[0].ReportID, nil
+}
+
 // VerifyFileOwnership checks that a file (identified by local ID prefix) belongs to the given user.
 // Returns false if not found or if the file belongs to a different user.
 func (c *SupabaseClient) VerifyFileOwnership(ctx context.Context, localID, userID string) (bool, error) {

@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -26,6 +27,13 @@ type UploadedFileInfo struct {
 	Extension string `json:"extension"`
 	Type      string `json:"type"`
 	Format    string `json:"format"`
+}
+
+// UploadedFileError is returned for each file that failed validation or processing during upload.
+type UploadedFileError struct {
+	Name    string `json:"name"`
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
 
 // generateFileID creates a unique file ID in the format "f-{8hex}".
@@ -75,33 +83,48 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 		}
 
 		accepted := make([]UploadedFileInfo, 0, len(fileHeaders))
+		fileErrors := make([]UploadedFileError, 0)
 
 		for _, fh := range fileHeaders {
 			// Validate size from multipart header when available.
 			if fh.Size > cfg.MaxFileSize {
-				WriteError(w, http.StatusRequestEntityTooLarge, ErrFileTooLarge,
-					fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)))
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrFileTooLarge,
+					Message: fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)),
+				})
+				continue
 			}
 
 			// Validate file format by extension.
 			ext := strings.ToLower(filepath.Ext(fh.Filename))
 			if ext == "" || !ValidateFileFormat(ext) {
-				WriteError(w, http.StatusUnsupportedMediaType, ErrUnsupportedFormat,
-					fmt.Sprintf("File format %q is not supported", ext))
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrUnsupportedFormat,
+					Message: fmt.Sprintf("File format %q is not supported", ext),
+				})
+				continue
 			}
 
 			fileID, err := generateFileID()
 			if err != nil {
-				WriteError(w, http.StatusInternalServerError, ErrInsufficientStorage, "Failed to generate file identifier")
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrInsufficientStorage,
+					Message: "Failed to generate file identifier",
+				})
+				continue
 			}
 
 			src, err := fh.Open()
 			if err != nil {
-				WriteError(w, http.StatusInsufficientStorage, ErrInsufficientStorage, "Failed to read uploaded file")
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrInsufficientStorage,
+					Message: "Failed to read uploaded file",
+				})
+				continue
 			}
 
 			extNoDot := strings.TrimPrefix(ext, ".")
@@ -109,8 +132,12 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 			dst, err := os.Create(destPath)
 			if err != nil {
 				src.Close()
-				WriteError(w, http.StatusInsufficientStorage, ErrInsufficientStorage, "Failed to create storage file")
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrInsufficientStorage,
+					Message: "Failed to create storage file",
+				})
+				continue
 			}
 
 			// LimitReader acts as a safety net if Content-Length header was missing or spoofed.
@@ -121,14 +148,21 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 
 			if copyErr != nil {
 				os.Remove(destPath)
-				WriteError(w, http.StatusInsufficientStorage, ErrInsufficientStorage, "Failed to write file to storage")
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrInsufficientStorage,
+					Message: "Failed to write file to storage",
+				})
+				continue
 			}
 			if written > cfg.MaxFileSize {
 				os.Remove(destPath)
-				WriteError(w, http.StatusRequestEntityTooLarge, ErrFileTooLarge,
-					fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)))
-				return
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrFileTooLarge,
+					Message: fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)),
+				})
+				continue
 			}
 
 			accepted = append(accepted, UploadedFileInfo{
@@ -142,7 +176,10 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string][]UploadedFileInfo{"files": accepted})
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"files":      accepted,
+			"fileErrors": fileErrors,
+		})
 	}
 }
 
@@ -230,10 +267,29 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 
 			ctx := context.Background()
 			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
-			_ = pl.ProcessJob(ctx, job, files, progressFn)
-			_ = db.UpdateJob(ctx, job)
+			if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
+				log.Printf("job %s: pipeline error: %v", job.ID, err)
+			}
+
+			// Retry UpdateJob once — a transient DB error here leaves the job
+			// stuck in "processing" with no way for the user to recover.
+			if err := db.UpdateJob(ctx, job); err != nil {
+				log.Printf("job %s: UpdateJob failed, retrying: %v", job.ID, err)
+				if err2 := db.UpdateJob(ctx, job); err2 != nil {
+					log.Printf("job %s: UpdateJob retry failed, broadcasting error: %v", job.ID, err2)
+					hub.Broadcast(job.ID, ProgressEvent{
+						Type:    "job_error",
+						JobID:   job.ID,
+						Message: "Failed to save job results",
+					})
+					return
+				}
+			}
+
 			for i := range files {
-				_ = db.UpdateFileRecord(ctx, &files[i])
+				if err := db.UpdateFileRecord(ctx, &files[i]); err != nil {
+					log.Printf("job %s: UpdateFileRecord failed for file %s: %v", job.ID, files[i].LocalID, err)
+				}
 			}
 			createJobReport(ctx, db, hub, job, files)
 		}()
@@ -643,6 +699,8 @@ func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 }
 
 // HandleGetJob handles GET /api/jobs/{id} — returns current job state.
+// For completed jobs, also looks up the associated reportId so the frontend
+// polling fallback can navigate to the report without relying on the WS report_ready event.
 func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
@@ -659,6 +717,11 @@ func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 		if job == nil {
 			WriteError(w, http.StatusNotFound, ErrJobNotFound, "Job not found")
 			return
+		}
+		if job.Status == "completed" {
+			if reportID, err := db.GetReportIDByJobID(r.Context(), job.ID); err == nil {
+				job.ReportID = reportID
+			}
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(job)

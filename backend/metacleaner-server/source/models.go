@@ -30,6 +30,7 @@ type Job struct {
 	TotalTimeSeconds    int        `json:"totalTimeSeconds,omitempty"`
 	CreatedAt           time.Time  `json:"createdAt"`
 	CompletedAt         *time.Time `json:"completedAt,omitempty"`
+	ReportID            string     `json:"reportId,omitempty"` // populated on-the-fly from cleaning_reports; not stored on the job row
 }
 
 // FileRecord represents a file within a job
