@@ -219,6 +219,11 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		files := make([]FileRecord, 0, len(req.FileIDs))
 
 		for _, fileID := range req.FileIDs {
+			if !localIDPattern.MatchString(fileID) {
+				WriteError(w, http.StatusBadRequest, ErrInvalidRequest,
+					fmt.Sprintf("Invalid file ID format: %q", fileID))
+				return
+			}
 			matches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
 			if len(matches) == 0 {
 				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
@@ -361,8 +366,8 @@ func contentTypeForExt(ext string) string {
 func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileID := r.PathValue("id")
-		if fileID == "" {
-			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing file ID")
+		if fileID == "" || !localIDPattern.MatchString(fileID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid file ID")
 			return
 		}
 
