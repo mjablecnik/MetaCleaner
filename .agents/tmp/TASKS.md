@@ -17,10 +17,10 @@
 - [x] [MEDIUM] Create unit tests for `backend/metacleaner-server/source/well_known.go` — test HandleAssetLinks and HandleAppleAppSiteAssociation with configured and empty config values (`tests/well_known_test.go`)
 - [x] [MEDIUM] Create unit tests for `backend/metacleaner-server/source/pdf.go` GenerateReportPDF — test valid output (PDF magic bytes), empty file list, multi-file report (`tests/pdf_test.go`)
 - [x] [MEDIUM] Create unit tests for `backend/metacleaner-server/source/router.go` ipRateLimiter — test same IP returns same limiter, different IPs isolated, cleanup removes stale entries (`tests/rate_limiter_test.go`)
-- [ ] [MEDIUM] Create dedicated unit tests for `frontend/metacleaner-app/src/lib/scanner/parsers/imageParser.ts` — test format detection, GPS extraction, corrupt file handling, AI integration (`src/lib/scanner/parsers/__tests__/imageParser.test.ts`)
-- [ ] [MEDIUM] Add edge case tests for CLI `terminal/metacleaner-cli/src/commands.ts` executeClean — test format validation rejects unsupported extensions, no-extension files, mixed valid/invalid batches (`tests/commands.test.ts` — extend existing)
+- [x] [MEDIUM] Create dedicated unit tests for `frontend/metacleaner-app/src/lib/scanner/parsers/imageParser.ts` — test format detection, GPS extraction, corrupt file handling, AI integration (`src/lib/scanner/parsers/__tests__/imageParser.test.ts`)
+- [x] [MEDIUM] Add edge case tests for CLI `terminal/metacleaner-cli/src/commands.ts` executeClean — test format validation rejects unsupported extensions, no-extension files, mixed valid/invalid batches (`tests/commands.test.ts` — extend existing)
 - [x] [MEDIUM] Create unit tests for `frontend/metacleaner-app/src/lib/locale.svelte.ts` — test initLocale reads localStorage, switchLocale persists, default fallback (`src/lib/__tests__/locale.test.ts`)
 
 ## Phase 3 — Low Priority (utilities, simple logic)
 
-- [ ] [LOW] Create unit tests for `backend/metacleaner-server/source/config.go` formatBytes and `handlers.go` formatBytesHuman — test size formatting across ranges (0, bytes, KB, MB, GB) (`tests/format_helpers_test.go`)
+- [x] [LOW] Create unit tests for `backend/metacleaner-server/source/config.go` formatBytes and `handlers.go` formatBytesHuman — test size formatting across ranges (0, bytes, KB, MB, GB) (`source/format_helpers_test.go` — placed in source package to access unexported functions)

@@ -337,6 +337,67 @@ describe('clean command', () => {
     expect(result.results).toHaveLength(1);
     expect(result.results[0].error).toBeDefined();
   });
+
+  it('rejects file with unsupported extension and includes extension in error message', async () => {
+    vi.mocked(checkHealth).mockResolvedValue(true);
+
+    const result = await executeCommand(
+      makeOptions({ command: 'clean', files: ['/tmp/document.txt'] }),
+    );
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].error).toContain('Unsupported file format');
+    expect(result.results[0].error).toContain('.txt');
+    expect(uploadFiles).not.toHaveBeenCalled();
+  });
+
+  it('rejects .pdf file with unsupported format error', async () => {
+    vi.mocked(checkHealth).mockResolvedValue(true);
+
+    const result = await executeCommand(
+      makeOptions({ command: 'clean', files: ['/tmp/report.pdf'] }),
+    );
+    expect(result.results[0].error).toContain('.pdf');
+    expect(uploadFiles).not.toHaveBeenCalled();
+  });
+
+  it('rejects file with no extension and shows (no extension) in error message', async () => {
+    vi.mocked(checkHealth).mockResolvedValue(true);
+
+    const result = await executeCommand(
+      makeOptions({ command: 'clean', files: ['/tmp/photo'] }),
+    );
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0].error).toContain('(no extension)');
+    expect(uploadFiles).not.toHaveBeenCalled();
+  });
+
+  it('returns exit code 2 when all files are unsupported', async () => {
+    vi.mocked(checkHealth).mockResolvedValue(true);
+
+    const result = await executeCommand(
+      makeOptions({ command: 'clean', files: ['/tmp/a.txt', '/tmp/b.pdf'] }),
+    );
+    expect(result.exitCode).toBe(2);
+    expect(result.results).toHaveLength(2);
+    expect(result.results.every((r) => !!r.error)).toBe(true);
+    expect(uploadFiles).not.toHaveBeenCalled();
+  });
+
+  it('continues processing valid files after rejecting unsupported format files', async () => {
+    vi.mocked(checkHealth).mockResolvedValue(true);
+    vi.mocked(uploadFiles).mockResolvedValue([UPLOADED_FILE]);
+    vi.mocked(createJob).mockResolvedValue(JOB_RESPONSE);
+    vi.mocked(waitForJob).mockResolvedValue(makeJobStatus('completed'));
+    vi.mocked(downloadFile).mockResolvedValue(undefined);
+
+    const result = await executeCommand(
+      makeOptions({ command: 'clean', files: ['/tmp/document.txt', '/tmp/photo.jpg'] }),
+    );
+    expect(result.results).toHaveLength(2);
+    expect(result.results[0].error).toContain('Unsupported file format');
+    expect(result.results[1].cleanResult).toBeDefined();
+    expect(uploadFiles).toHaveBeenCalledOnce();
+  });
 });
 
 describe('compare command', () => {
