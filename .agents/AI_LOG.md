@@ -1,5 +1,20 @@
 # AI Log
 
+## 2026-06-15 12:17 — manual
+- Project: frontend, backend, terminal (full stack)
+- Implemented code review fixes from full-codebase audit (8 of 12 tasks completed)
+- [HIGH] Secured WebSocket `/api/jobs/{id}/progress` endpoint with JWT authentication — removed `/progress` exemption from `isExemptPath()`, token passed as query param and validated before upgrade
+- [HIGH] Fixed Storybook story mock data to use `iconColor: 'blue'` for image type entries across ReportTableRow, ReportCard, ReportsList, ReportsTable stories
+- [MEDIUM] Added `onSettings`/`onLogout` callback props and `onclick` handlers to `MobileHamburgerMenu.svelte`
+- [MEDIUM] Wrapped all `goto('/path')` and `href="/path"` in auth route components with `resolve()` from `$app/paths`
+- [MEDIUM] Replaced local `riskScoreLabel()` in `RiskScoreRing.svelte` with shared `tx()` i18n import
+- [MEDIUM] Removed 28 dead i18n keys from `messages/en.json` and `messages/cs.json`
+- [MEDIUM] Added client-side format validation in CLI `clean` command before uploading
+- [MEDIUM] Fixed CLI `compare` command temp file path to preserve original file extension
+- Fixed `authGuard.test.ts` — resolved `window is not defined` ReferenceError by moving to client test environment
+- Created E2E test for `/email-verified` page (responsive checks, navigation, hero, stepper, stats, action cards)
+- Created 24 new Storybook stories for sections across Step1, Step3, Step4, Step5, Report, and Reports pages
+
 ## 2026-06-14 14:05 — manual
 - Project: metacleaner-app (frontend)
 - Refactored `src/routes/(auth)/email-verified/+page.svelte` — decomposed monolithic ~520-line page into 4 sections (EmailVerifiedHeroSection, EmailVerifiedProgressSection, EmailVerifiedStatsSection, EmailVerifiedActionsSection)
