@@ -50,8 +50,38 @@ func (h *WebSocketHub) Unregister(jobID string, conn *websocket.Conn) {
 	}
 }
 
+// batchUnregister removes all dead connections for jobID in a single lock acquisition.
+func (h *WebSocketHub) batchUnregister(jobID string, dead []*websocket.Conn) {
+	if len(dead) == 0 {
+		return
+	}
+	deadSet := make(map[*websocket.Conn]struct{}, len(dead))
+	for _, c := range dead {
+		deadSet[c] = struct{}{}
+	}
+
+	h.mu.Lock()
+	conns := h.conns[jobID]
+	live := conns[:0]
+	for _, c := range conns {
+		if _, isDead := deadSet[c]; !isDead {
+			live = append(live, c)
+		}
+	}
+	if len(live) == 0 {
+		delete(h.conns, jobID)
+	} else {
+		h.conns[jobID] = live
+	}
+	h.mu.Unlock()
+
+	for _, c := range dead {
+		c.Close()
+	}
+}
+
 // Broadcast sends a JSON-encoded event to all connections registered for jobID.
-// Dead connections are silently removed.
+// Dead connections are removed in a single batch lock acquisition.
 func (h *WebSocketHub) Broadcast(jobID string, event ProgressEvent) {
 	data, err := json.Marshal(event)
 	if err != nil {
@@ -70,10 +100,7 @@ func (h *WebSocketHub) Broadcast(jobID string, event ProgressEvent) {
 		}
 	}
 
-	for _, c := range dead {
-		h.Unregister(jobID, c)
-		c.Close()
-	}
+	h.batchUnregister(jobID, dead)
 }
 
 // HandleJobProgress upgrades the connection to WebSocket and streams events

@@ -10,6 +10,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// ErrConfig is returned by LoadConfig when a required environment variable is missing.
+type ErrConfig struct {
+	VarName string
+	Hint    string
+}
+
+func (e *ErrConfig) Error() string {
+	return fmt.Sprintf("missing required environment variable %s — %s", e.VarName, e.Hint)
+}
+
 type Config struct {
 	Port                   int
 	FrontendOrigin         string
@@ -28,7 +38,7 @@ type Config struct {
 	AppleTeamID            string
 }
 
-func LoadConfig() Config {
+func LoadConfig() (Config, error) {
 	_ = godotenv.Load()
 
 	cfg := Config{
@@ -82,16 +92,22 @@ func LoadConfig() Config {
 	cfg.AppleTeamID = os.Getenv("APPLE_TEAM_ID")
 
 	if cfg.SupabaseURL == "" {
-		log.Fatal("SUPABASE_URL environment variable is required")
+		return Config{}, &ErrConfig{
+			VarName: "SUPABASE_URL",
+			Hint:    "set it in .env or as an environment variable (e.g. SUPABASE_URL=https://xxx.supabase.co)",
+		}
 	}
 	if cfg.SupabaseAPIKey == "" {
-		log.Fatal("SUPABASE_API_KEY environment variable is required")
+		return Config{}, &ErrConfig{
+			VarName: "SUPABASE_API_KEY",
+			Hint:    "set it in .env or as an environment variable; find it in the Supabase dashboard under Settings → API",
+		}
 	}
 
 	log.Printf("Config loaded: port=%d, maxFileSize=%s, retentionPeriod=%s",
 		cfg.Port, formatBytes(cfg.MaxFileSize), cfg.RetentionPeriod)
 
-	return cfg
+	return cfg, nil
 }
 
 func formatBytes(b int64) string {

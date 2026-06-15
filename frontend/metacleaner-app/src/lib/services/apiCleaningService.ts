@@ -352,14 +352,37 @@ function makeNetworkError(err: unknown): CleaningError {
 
 function extractDate(dateStr: string): string {
 	if (dateStr.includes('T')) return dateStr.split('T')[0];
+	// Normalize space-separated datetime (e.g. PostgreSQL "YYYY-MM-DD HH:MM:SS+00")
+	if (dateStr.includes(' ')) {
+		try {
+			const d = new Date(dateStr);
+			if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+		} catch {
+			// ignore — return raw string unchanged
+		}
+	}
 	return dateStr;
 }
 
 function extractTime(dateStr: string): string {
-	if (!dateStr.includes('T')) return '';
-	const timePart = dateStr.split('T')[1];
-	if (!timePart) return '';
-	return timePart.replace('Z', '').substring(0, 5);
+	if (dateStr.includes('T')) {
+		const timePart = dateStr.split('T')[1];
+		if (!timePart) return '';
+		return timePart.replace('Z', '').substring(0, 5);
+	}
+	// Normalize space-separated datetime (e.g. PostgreSQL "YYYY-MM-DD HH:MM:SS+00")
+	if (dateStr.includes(' ')) {
+		try {
+			const d = new Date(dateStr);
+			if (!isNaN(d.getTime())) {
+				const timePart = d.toISOString().split('T')[1];
+				return timePart ? timePart.replace('Z', '').substring(0, 5) : '';
+			}
+		} catch {
+			// ignore — return empty string
+		}
+	}
+	return '';
 }
 
 function computeIconColor(type: string): 'blue' | 'orange' {

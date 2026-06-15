@@ -279,7 +279,7 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
     const fileName = filePath.split('/').pop() ?? filePath;
     const fileSize = existsSync(filePath) ? statSync(filePath).size : 0;
     const ext = extname(filePath).toLowerCase();
-    const format = IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext] ?? ext.slice(1);
+    const format = IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext] ?? '';
 
     try {
       const [beforeResult] = await scanFiles([filePath]);

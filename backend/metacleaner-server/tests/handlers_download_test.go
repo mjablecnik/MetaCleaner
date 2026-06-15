@@ -205,7 +205,7 @@ func TestHandleJobDownloadFilesExpired(t *testing.T) {
 // Test HandleJobDownload: successful download → 200 with ZIP headers and correct file contents
 func TestHandleJobDownloadSuccess(t *testing.T) {
 	jobID := "job-success"
-	fileID := "f-success1"
+	fileID := "f-aabb1234"
 	fileRecords := fmt.Sprintf(`[{"id":"fr-002","job_id":%q,"file_name":%q,"file_extension":".jpg","file_size_bytes":2048,"file_type":"image","format":"jpeg","status":"done","fields_removed":3,"gps_removed":false}]`,
 		jobID, fileID+".jpg")
 	srv := newJobDownloadMockSupabase(t, jobID, "completed", fileRecords)

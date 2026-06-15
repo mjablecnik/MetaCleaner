@@ -13,11 +13,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"syscall"
 	"time"
 )
+
+// localIDPattern validates the expected on-disk file ID format (f-{hex}).
+var localIDPattern = regexp.MustCompile(`^f-[0-9a-f]+$`)
 
 // UploadedFileInfo is the metadata returned for each accepted file on upload.
 type UploadedFileInfo struct {
@@ -448,6 +452,10 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			}
 			// LocalID is not persisted to DB — derive it from FileName by stripping the extension
 			localID := strings.TrimSuffix(f.FileName, f.FileExtension)
+			if !localIDPattern.MatchString(localID) {
+				log.Printf("HandleJobDownload: derived localID %q from FileName %q does not match expected pattern f-[hex]; skipping file %s", localID, f.FileName, f.ID)
+				continue
+			}
 			matches, _ := filepath.Glob(filepath.Join(cleanedDir, localID+"_cleaned.*"))
 			if len(matches) == 0 {
 				continue

@@ -22,7 +22,10 @@ func checkTool(name string, args ...string) error {
 
 // Run is the main entry point for the metacleaner server.
 func Run() {
-	cfg := LoadConfig()
+	cfg, err := LoadConfig()
+	if err != nil {
+		log.Fatalf("startup: configuration error: %v", err)
+	}
 
 	// Startup: verify ExifTool in PATH.
 	if err := checkTool("exiftool", "-ver"); err != nil {

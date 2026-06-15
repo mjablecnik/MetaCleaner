@@ -8,13 +8,13 @@
 - [x] 6. [HIGH] Create unit tests for `src/lib/auth/deep-link.ts` covering Capacitor URL interception and token extraction
 - [x] 7. [HIGH] Add file format validation in CLI `clean` command before uploading (same check as `scan` command)
 - [x] 8. [HIGH] Fix `callAuthApi` return type for 204/empty responses — use `null` return instead of unsafe `{} as T` cast
-- [ ] 9. [MEDIUM] Add input format validation in `extractDate`/`extractTime` to handle non-ISO date strings from backend
-- [ ] 10. [MEDIUM] Add localID format validation in `HandleJobDownload` and fallback strategy if derived ID doesn't match expected pattern
-- [ ] 11. [MEDIUM] Fix CLI `executeCompare` format field to use `IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext]` instead of `ext.slice(1)`
-- [ ] 12. [MEDIUM] Make `api-config.ts` throw a clear error when `PUBLIC_API_URL` is empty instead of silent console.warn
-- [ ] 13. [MEDIUM] Refactor `LoadConfig` to return errors instead of calling `log.Fatal` — add actionable error messages
-- [ ] 14. [MEDIUM] Batch dead connection removal in `WebSocketHub.Broadcast` to reduce lock contention
-- [ ] 15. [MEDIUM] Add dedicated tests for `token-utils.ts` `extractCallbackParams` with edge-case URL formats
+- [x] 9. [MEDIUM] Add input format validation in `extractDate`/`extractTime` to handle non-ISO date strings from backend
+- [x] 10. [MEDIUM] Add localID format validation in `HandleJobDownload` and fallback strategy if derived ID doesn't match expected pattern
+- [x] 11. [MEDIUM] Fix CLI `executeCompare` format field to use `IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext]` instead of `ext.slice(1)`
+- [x] 12. [MEDIUM] Make `api-config.ts` throw a clear error when `PUBLIC_API_URL` is empty instead of silent console.warn
+- [x] 13. [MEDIUM] Refactor `LoadConfig` to return errors instead of calling `log.Fatal` — add actionable error messages
+- [x] 14. [MEDIUM] Batch dead connection removal in `WebSocketHub.Broadcast` to reduce lock contention
+- [x] 15. [MEDIUM] Add dedicated tests for `token-utils.ts` `extractCallbackParams` with edge-case URL formats
 - [ ] 16. [LOW] Update Storybook stories to use `iconColor: 'blue'` for image-type report entries
 - [ ] 17. [LOW] Remove unsupported languages (DE, SK) from `languageRepository` dropdown
 - [ ] 18. [LOW] Handle gopdf errors in `pdf.go` instead of discarding with `_ =`
