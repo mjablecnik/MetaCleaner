@@ -18,11 +18,16 @@ type SupabaseClient struct {
 }
 
 // NewSupabaseClient creates a new SupabaseClient from the given config.
+// Uses the service role key for DB operations to bypass RLS (server-side only).
 func NewSupabaseClient(cfg Config) *SupabaseClient {
+	key := cfg.SupabaseServiceRoleKey
+	if key == "" {
+		key = cfg.SupabaseAPIKey // fallback if service role not configured
+	}
 	return &SupabaseClient{
 		httpClient: &http.Client{Timeout: 30 * time.Second},
 		baseURL:    cfg.SupabaseURL,
-		apiKey:     cfg.SupabaseAPIKey,
+		apiKey:     key,
 	}
 }
 
