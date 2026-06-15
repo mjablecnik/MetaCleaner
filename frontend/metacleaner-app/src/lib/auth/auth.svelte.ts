@@ -41,7 +41,7 @@ async function callAuthApi<T>(
 	path: string,
 	body: unknown,
 	accessToken?: string | null
-): Promise<T> {
+): Promise<T | null> {
 	const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 	if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
 
@@ -61,7 +61,7 @@ async function callAuthApi<T>(
 		});
 	}
 
-	if (res.status === 204 || res.headers.get('content-length') === '0') return {} as T;
+	if (res.status === 204 || res.headers.get('content-length') === '0') return null;
 	return res.json() as Promise<T>;
 }
 
@@ -152,6 +152,7 @@ async function login(email: string, password: string): Promise<void> {
 			email,
 			password
 		} satisfies LoginRequest);
+		if (!data) throw new Error('Login returned empty response');
 		_user = data.user ?? null;
 		_persist(data.access_token, data.refresh_token, data.expires_in);
 		await goto(resolve('/' as Pathname));
@@ -196,6 +197,7 @@ async function refresh(): Promise<void> {
 	const token = _refreshToken ?? (browser ? localStorage.getItem(REFRESH_KEY) : null);
 	if (!token) throw new Error('No refresh token');
 	const data = await callAuthApi<AuthResponse>('/api/auth/refresh', { refresh_token: token });
+	if (!data) throw new Error('Refresh returned empty response');
 	_user = data.user ?? _user;
 	_persist(data.access_token, data.refresh_token, data.expires_in);
 }

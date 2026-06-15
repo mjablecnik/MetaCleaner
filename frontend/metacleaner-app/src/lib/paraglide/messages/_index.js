@@ -257,24 +257,13 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Common_Validation_Passwordsmismatch1Inputs */
 /** @typedef {{}} Auth_Common_Validation_Passwordsmatch1Inputs */
 /** @typedef {{}} Auth_Common_Validation_Otpincomplete1Inputs */
-/** @typedef {{}} Auth_Common_Validation_Passwordsmismatchorshort3Inputs */
-/** @typedef {{}} Auth_Common_Strength_Veryweak1Inputs */
 /** @typedef {{}} Auth_Common_Strength_WeakInputs */
 /** @typedef {{}} Auth_Common_Strength_AverageInputs */
 /** @typedef {{}} Auth_Common_Strength_GoodInputs */
 /** @typedef {{}} Auth_Common_Strength_StrongInputs */
-/** @typedef {{}} Auth_Common_Strength_Weakpassword1Inputs */
-/** @typedef {{}} Auth_Common_Strength_Addmore1Inputs */
-/** @typedef {{}} Auth_Common_Strength_Averagepassword1Inputs */
-/** @typedef {{}} Auth_Common_Strength_Couldbestronger2Inputs */
-/** @typedef {{}} Auth_Common_Strength_Strongpassword1Inputs */
-/** @typedef {{}} Auth_Common_Strength_Almostperfect1Inputs */
-/** @typedef {{}} Auth_Common_Strength_Verystrongpassword2Inputs */
-/** @typedef {{}} Auth_Common_Strength_ExcellentInputs */
 /** @typedef {{}} Auth_Common_Requirements_TitleInputs */
 /** @typedef {{}} Auth_Common_Requirements_Min8Inputs */
 /** @typedef {{}} Auth_Common_Requirements_UppercaseInputs */
-/** @typedef {{}} Auth_Common_Requirements_NumberInputs */
 /** @typedef {{}} Auth_Common_Requirements_Uppercasefull1Inputs */
 /** @typedef {{}} Auth_Common_Requirements_LowercaseInputs */
 /** @typedef {{}} Auth_Common_Requirements_Numberfull1Inputs */
@@ -319,10 +308,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Login_Field_RememberInputs */
 /** @typedef {{}} Auth_Login_Submit_IdleInputs */
 /** @typedef {{}} Auth_Login_Submit_LoadingInputs */
-/** @typedef {{}} Auth_Login_Submit_SuccessInputs */
 /** @typedef {{}} Auth_Login_Footer_Noaccount1Inputs */
 /** @typedef {{}} Auth_Login_Footer_Registerfree1Inputs */
-/** @typedef {{}} Auth_Login_Validation_Passwordshort1Inputs */
 /** @typedef {{}} Auth_Login_Validation_Passwordempty1Inputs */
 /** @typedef {{}} Auth_Login_Magic_DividerInputs */
 /** @typedef {{}} Auth_Login_Magic_SendInputs */
@@ -345,7 +332,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Register_Plan_Proname1Inputs */
 /** @typedef {{}} Auth_Register_Plan_Probadge1Inputs */
 /** @typedef {{}} Auth_Register_Plan_Prodesc1Inputs */
-/** @typedef {{}} Auth_Register_Plan_Titlemobile1Inputs */
 /** @typedef {{}} Auth_Register_Benefit_Nocard1Inputs */
 /** @typedef {{}} Auth_Register_Benefit_GdprInputs */
 /** @typedef {{}} Auth_Register_Benefit_E2eInputs */
@@ -361,10 +347,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Register_Field_Lastnameplaceholder2Inputs */
 /** @typedef {{}} Auth_Register_Field_Passwordplaceholder1Inputs */
 /** @typedef {{}} Auth_Register_Field_Confirmplaceholder1Inputs */
-/** @typedef {{}} Auth_Register_Terms_AgreeInputs */
-/** @typedef {{}} Auth_Register_Terms_TosInputs */
-/** @typedef {{}} Auth_Register_Terms_AndInputs */
-/** @typedef {{}} Auth_Register_Terms_PrivacyInputs */
 /** @typedef {{}} Auth_Register_Submit_IdleInputs */
 /** @typedef {{}} Auth_Register_Submit_LoadingInputs */
 /** @typedef {{}} Auth_Register_Submit_SuccessInputs */
@@ -373,7 +355,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Register_Stats_Cleanedlabel1Inputs */
 /** @typedef {{}} Auth_Register_Validation_Firstnamerequired2Inputs */
 /** @typedef {{}} Auth_Register_Validation_Lastnamerequired2Inputs */
-/** @typedef {{}} Auth_Register_Validation_Termsrequired1Inputs */
 /** @typedef {{}} Auth_Checkemail_Meta_Title1Inputs */
 /** @typedef {{}} Auth_Checkemail_Badge_Created1Inputs */
 /** @typedef {{}} Auth_Checkemail_Heading_Almostdone2Inputs */
@@ -414,7 +395,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Forgotpassword_Branding_Headline1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Branding_Headlinehighlight2Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Branding_Headlineafter2Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Branding_Subtitle1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Branding_Description1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Step1_Title1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Step1_Desc1Inputs */
@@ -434,15 +414,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Forgotpassword_Mobile_Step3desc2Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Otp_Title1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Otp_Steplabel2Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Otp_Sentto2Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Otp_Expiresin2Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Otp_Verify1Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Newpassword_Title2Inputs */
 /** @typedef {{}} Auth_Forgotpassword_Newpassword_Steplabel3Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Newpassword_Description2Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Success_Title1Inputs */
-/** @typedef {{}} Auth_Forgotpassword_Success_Description1Inputs */
-/** @typedef {{}} Auth_Checkcode_Meta_Title1Inputs */
 /** @typedef {{}} Auth_Checkcode_Hint_Title1Inputs */
 /** @typedef {{ email: NonNullable<unknown> }} Auth_Checkcode_Hint_Description1Inputs */
 /** @typedef {{}} Auth_Checkcode_Otp_Sentto2Inputs */
@@ -455,8 +429,6 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Newpassword_Step2_Donedesc2Inputs */
 /** @typedef {{}} Auth_Newpassword_Tip_Title1Inputs */
 /** @typedef {{}} Auth_Newpassword_Tip_Description1Inputs */
-/** @typedef {{}} Auth_Newpassword_Mobile_Headline1Inputs */
-/** @typedef {{}} Auth_Newpassword_Mobile_Subtitle1Inputs */
 /** @typedef {{}} Auth_Newpassword_Form_Description1Inputs */
 /** @typedef {{}} Auth_Newpassword_Mobile_Tip1Inputs */
 /** @typedef {{}} Auth_Emailverified_Meta_Title1Inputs */
@@ -4313,36 +4285,6 @@ export { auth_common_validation_otpincomplete1 as "auth.common.validation.otpInc
 /**
 * | output |
 * | --- |
-* | "Passwords do not match or are too short." |
-*
-* @param {Auth_Common_Validation_Passwordsmismatchorshort3Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_validation_passwordsmismatchorshort3 = /** @type {((inputs?: Auth_Common_Validation_Passwordsmismatchorshort3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Validation_Passwordsmismatchorshort3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_validation_passwordsmismatchorshort3(inputs)
-	return __cs.auth_common_validation_passwordsmismatchorshort3(inputs)
-});
-export { auth_common_validation_passwordsmismatchorshort3 as "auth.common.validation.passwordsMismatchOrShort" }
-/**
-* | output |
-* | --- |
-* | "Very weak" |
-*
-* @param {Auth_Common_Strength_Veryweak1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_veryweak1 = /** @type {((inputs?: Auth_Common_Strength_Veryweak1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Veryweak1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_veryweak1(inputs)
-	return __cs.auth_common_strength_veryweak1(inputs)
-});
-export { auth_common_strength_veryweak1 as "auth.common.strength.veryWeak" }
-/**
-* | output |
-* | --- |
 * | "Weak" |
 *
 * @param {Auth_Common_Strength_WeakInputs} inputs
@@ -4403,126 +4345,6 @@ export { auth_common_strength_strong as "auth.common.strength.strong" }
 /**
 * | output |
 * | --- |
-* | "Weak password" |
-*
-* @param {Auth_Common_Strength_Weakpassword1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_weakpassword1 = /** @type {((inputs?: Auth_Common_Strength_Weakpassword1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Weakpassword1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_weakpassword1(inputs)
-	return __cs.auth_common_strength_weakpassword1(inputs)
-});
-export { auth_common_strength_weakpassword1 as "auth.common.strength.weakPassword" }
-/**
-* | output |
-* | --- |
-* | "Add more characters" |
-*
-* @param {Auth_Common_Strength_Addmore1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_addmore1 = /** @type {((inputs?: Auth_Common_Strength_Addmore1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Addmore1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_addmore1(inputs)
-	return __cs.auth_common_strength_addmore1(inputs)
-});
-export { auth_common_strength_addmore1 as "auth.common.strength.addMore" }
-/**
-* | output |
-* | --- |
-* | "Average password" |
-*
-* @param {Auth_Common_Strength_Averagepassword1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_averagepassword1 = /** @type {((inputs?: Auth_Common_Strength_Averagepassword1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Averagepassword1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_averagepassword1(inputs)
-	return __cs.auth_common_strength_averagepassword1(inputs)
-});
-export { auth_common_strength_averagepassword1 as "auth.common.strength.averagePassword" }
-/**
-* | output |
-* | --- |
-* | "Could be stronger" |
-*
-* @param {Auth_Common_Strength_Couldbestronger2Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_couldbestronger2 = /** @type {((inputs?: Auth_Common_Strength_Couldbestronger2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Couldbestronger2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_couldbestronger2(inputs)
-	return __cs.auth_common_strength_couldbestronger2(inputs)
-});
-export { auth_common_strength_couldbestronger2 as "auth.common.strength.couldBeStronger" }
-/**
-* | output |
-* | --- |
-* | "Strong password" |
-*
-* @param {Auth_Common_Strength_Strongpassword1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_strongpassword1 = /** @type {((inputs?: Auth_Common_Strength_Strongpassword1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Strongpassword1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_strongpassword1(inputs)
-	return __cs.auth_common_strength_strongpassword1(inputs)
-});
-export { auth_common_strength_strongpassword1 as "auth.common.strength.strongPassword" }
-/**
-* | output |
-* | --- |
-* | "Almost perfect!" |
-*
-* @param {Auth_Common_Strength_Almostperfect1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_almostperfect1 = /** @type {((inputs?: Auth_Common_Strength_Almostperfect1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Almostperfect1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_almostperfect1(inputs)
-	return __cs.auth_common_strength_almostperfect1(inputs)
-});
-export { auth_common_strength_almostperfect1 as "auth.common.strength.almostPerfect" }
-/**
-* | output |
-* | --- |
-* | "Very strong password" |
-*
-* @param {Auth_Common_Strength_Verystrongpassword2Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_verystrongpassword2 = /** @type {((inputs?: Auth_Common_Strength_Verystrongpassword2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_Verystrongpassword2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_verystrongpassword2(inputs)
-	return __cs.auth_common_strength_verystrongpassword2(inputs)
-});
-export { auth_common_strength_verystrongpassword2 as "auth.common.strength.veryStrongPassword" }
-/**
-* | output |
-* | --- |
-* | "Excellent!" |
-*
-* @param {Auth_Common_Strength_ExcellentInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_strength_excellent = /** @type {((inputs?: Auth_Common_Strength_ExcellentInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Strength_ExcellentInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_strength_excellent(inputs)
-	return __cs.auth_common_strength_excellent(inputs)
-});
-export { auth_common_strength_excellent as "auth.common.strength.excellent" }
-/**
-* | output |
-* | --- |
 * | "Password requirements" |
 *
 * @param {Auth_Common_Requirements_TitleInputs} inputs
@@ -4565,21 +4387,6 @@ const auth_common_requirements_uppercase = /** @type {((inputs?: Auth_Common_Req
 	return __cs.auth_common_requirements_uppercase(inputs)
 });
 export { auth_common_requirements_uppercase as "auth.common.requirements.uppercase" }
-/**
-* | output |
-* | --- |
-* | "Number" |
-*
-* @param {Auth_Common_Requirements_NumberInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_common_requirements_number = /** @type {((inputs?: Auth_Common_Requirements_NumberInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Requirements_NumberInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_common_requirements_number(inputs)
-	return __cs.auth_common_requirements_number(inputs)
-});
-export { auth_common_requirements_number as "auth.common.requirements.number" }
 /**
 * | output |
 * | --- |
@@ -5243,21 +5050,6 @@ export { auth_login_submit_loading as "auth.login.submit.loading" }
 /**
 * | output |
 * | --- |
-* | "Signed in!" |
-*
-* @param {Auth_Login_Submit_SuccessInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_login_submit_success = /** @type {((inputs?: Auth_Login_Submit_SuccessInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Submit_SuccessInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_login_submit_success(inputs)
-	return __cs.auth_login_submit_success(inputs)
-});
-export { auth_login_submit_success as "auth.login.submit.success" }
-/**
-* | output |
-* | --- |
 * | "Don't have an account?" |
 *
 * @param {Auth_Login_Footer_Noaccount1Inputs} inputs
@@ -5285,21 +5077,6 @@ const auth_login_footer_registerfree1 = /** @type {((inputs?: Auth_Login_Footer_
 	return __cs.auth_login_footer_registerfree1(inputs)
 });
 export { auth_login_footer_registerfree1 as "auth.login.footer.registerFree" }
-/**
-* | output |
-* | --- |
-* | "Password must be at least 6 characters." |
-*
-* @param {Auth_Login_Validation_Passwordshort1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_login_validation_passwordshort1 = /** @type {((inputs?: Auth_Login_Validation_Passwordshort1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Login_Validation_Passwordshort1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_login_validation_passwordshort1(inputs)
-	return __cs.auth_login_validation_passwordshort1(inputs)
-});
-export { auth_login_validation_passwordshort1 as "auth.login.validation.passwordShort" }
 /**
 * | output |
 * | --- |
@@ -5633,21 +5410,6 @@ export { auth_register_plan_prodesc1 as "auth.register.plan.proDesc" }
 /**
 * | output |
 * | --- |
-* | "Choose plan" |
-*
-* @param {Auth_Register_Plan_Titlemobile1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_plan_titlemobile1 = /** @type {((inputs?: Auth_Register_Plan_Titlemobile1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Plan_Titlemobile1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_plan_titlemobile1(inputs)
-	return __cs.auth_register_plan_titlemobile1(inputs)
-});
-export { auth_register_plan_titlemobile1 as "auth.register.plan.titleMobile" }
-/**
-* | output |
-* | --- |
 * | "No credit card required" |
 *
 * @param {Auth_Register_Benefit_Nocard1Inputs} inputs
@@ -5873,66 +5635,6 @@ export { auth_register_field_confirmplaceholder1 as "auth.register.field.confirm
 /**
 * | output |
 * | --- |
-* | "I agree to the" |
-*
-* @param {Auth_Register_Terms_AgreeInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_terms_agree = /** @type {((inputs?: Auth_Register_Terms_AgreeInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Terms_AgreeInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_terms_agree(inputs)
-	return __cs.auth_register_terms_agree(inputs)
-});
-export { auth_register_terms_agree as "auth.register.terms.agree" }
-/**
-* | output |
-* | --- |
-* | "terms of use" |
-*
-* @param {Auth_Register_Terms_TosInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_terms_tos = /** @type {((inputs?: Auth_Register_Terms_TosInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Terms_TosInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_terms_tos(inputs)
-	return __cs.auth_register_terms_tos(inputs)
-});
-export { auth_register_terms_tos as "auth.register.terms.tos" }
-/**
-* | output |
-* | --- |
-* | "and" |
-*
-* @param {Auth_Register_Terms_AndInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_terms_and = /** @type {((inputs?: Auth_Register_Terms_AndInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Terms_AndInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_terms_and(inputs)
-	return __cs.auth_register_terms_and(inputs)
-});
-export { auth_register_terms_and as "auth.register.terms.and" }
-/**
-* | output |
-* | --- |
-* | "privacy policy" |
-*
-* @param {Auth_Register_Terms_PrivacyInputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_terms_privacy = /** @type {((inputs?: Auth_Register_Terms_PrivacyInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Terms_PrivacyInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_terms_privacy(inputs)
-	return __cs.auth_register_terms_privacy(inputs)
-});
-export { auth_register_terms_privacy as "auth.register.terms.privacy" }
-/**
-* | output |
-* | --- |
 * | "Create free account" |
 *
 * @param {Auth_Register_Submit_IdleInputs} inputs
@@ -6050,21 +5752,6 @@ const auth_register_validation_lastnamerequired2 = /** @type {((inputs?: Auth_Re
 	return __cs.auth_register_validation_lastnamerequired2(inputs)
 });
 export { auth_register_validation_lastnamerequired2 as "auth.register.validation.lastNameRequired" }
-/**
-* | output |
-* | --- |
-* | "You must agree to the terms." |
-*
-* @param {Auth_Register_Validation_Termsrequired1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_register_validation_termsrequired1 = /** @type {((inputs?: Auth_Register_Validation_Termsrequired1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Validation_Termsrequired1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_register_validation_termsrequired1(inputs)
-	return __cs.auth_register_validation_termsrequired1(inputs)
-});
-export { auth_register_validation_termsrequired1 as "auth.register.validation.termsRequired" }
 /**
 * | output |
 * | --- |
@@ -6668,21 +6355,6 @@ export { auth_forgotpassword_branding_headlineafter2 as "auth.forgotPassword.bra
 /**
 * | output |
 * | --- |
-* | "Account access recovery" |
-*
-* @param {Auth_Forgotpassword_Branding_Subtitle1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_branding_subtitle1 = /** @type {((inputs?: Auth_Forgotpassword_Branding_Subtitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Branding_Subtitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_branding_subtitle1(inputs)
-	return __cs.auth_forgotpassword_branding_subtitle1(inputs)
-});
-export { auth_forgotpassword_branding_subtitle1 as "auth.forgotPassword.branding.subtitle" }
-/**
-* | output |
-* | --- |
 * | "Forgot your password? No worries. We'll send you a secure code to your email and you'll be back in no time." |
 *
 * @param {Auth_Forgotpassword_Branding_Description1Inputs} inputs
@@ -6968,36 +6640,6 @@ export { auth_forgotpassword_otp_steplabel2 as "auth.forgotPassword.otp.stepLabe
 /**
 * | output |
 * | --- |
-* | "Enter the 6-digit code sent to" |
-*
-* @param {Auth_Forgotpassword_Otp_Sentto2Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_otp_sentto2 = /** @type {((inputs?: Auth_Forgotpassword_Otp_Sentto2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Otp_Sentto2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_otp_sentto2(inputs)
-	return __cs.auth_forgotpassword_otp_sentto2(inputs)
-});
-export { auth_forgotpassword_otp_sentto2 as "auth.forgotPassword.otp.sentTo" }
-/**
-* | output |
-* | --- |
-* | "Expires in" |
-*
-* @param {Auth_Forgotpassword_Otp_Expiresin2Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_otp_expiresin2 = /** @type {((inputs?: Auth_Forgotpassword_Otp_Expiresin2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Otp_Expiresin2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_otp_expiresin2(inputs)
-	return __cs.auth_forgotpassword_otp_expiresin2(inputs)
-});
-export { auth_forgotpassword_otp_expiresin2 as "auth.forgotPassword.otp.expiresIn" }
-/**
-* | output |
-* | --- |
 * | "Verify code" |
 *
 * @param {Auth_Forgotpassword_Otp_Verify1Inputs} inputs
@@ -7040,66 +6682,6 @@ const auth_forgotpassword_newpassword_steplabel3 = /** @type {((inputs?: Auth_Fo
 	return __cs.auth_forgotpassword_newpassword_steplabel3(inputs)
 });
 export { auth_forgotpassword_newpassword_steplabel3 as "auth.forgotPassword.newPassword.stepLabel" }
-/**
-* | output |
-* | --- |
-* | "Choose a strong password for your account." |
-*
-* @param {Auth_Forgotpassword_Newpassword_Description2Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_newpassword_description2 = /** @type {((inputs?: Auth_Forgotpassword_Newpassword_Description2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Newpassword_Description2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_newpassword_description2(inputs)
-	return __cs.auth_forgotpassword_newpassword_description2(inputs)
-});
-export { auth_forgotpassword_newpassword_description2 as "auth.forgotPassword.newPassword.description" }
-/**
-* | output |
-* | --- |
-* | "Done!" |
-*
-* @param {Auth_Forgotpassword_Success_Title1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_success_title1 = /** @type {((inputs?: Auth_Forgotpassword_Success_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Success_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_success_title1(inputs)
-	return __cs.auth_forgotpassword_success_title1(inputs)
-});
-export { auth_forgotpassword_success_title1 as "auth.forgotPassword.success.title" }
-/**
-* | output |
-* | --- |
-* | "Your password has been successfully changed. You can now sign in." |
-*
-* @param {Auth_Forgotpassword_Success_Description1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_forgotpassword_success_description1 = /** @type {((inputs?: Auth_Forgotpassword_Success_Description1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Forgotpassword_Success_Description1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_forgotpassword_success_description1(inputs)
-	return __cs.auth_forgotpassword_success_description1(inputs)
-});
-export { auth_forgotpassword_success_description1 as "auth.forgotPassword.success.description" }
-/**
-* | output |
-* | --- |
-* | "Verify Code – MetaCleaner" |
-*
-* @param {Auth_Checkcode_Meta_Title1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_checkcode_meta_title1 = /** @type {((inputs?: Auth_Checkcode_Meta_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Checkcode_Meta_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_checkcode_meta_title1(inputs)
-	return __cs.auth_checkcode_meta_title1(inputs)
-});
-export { auth_checkcode_meta_title1 as "auth.checkCode.meta.title" }
 /**
 * | output |
 * | --- |
@@ -7280,36 +6862,6 @@ const auth_newpassword_tip_description1 = /** @type {((inputs?: Auth_Newpassword
 	return __cs.auth_newpassword_tip_description1(inputs)
 });
 export { auth_newpassword_tip_description1 as "auth.newPassword.tip.description" }
-/**
-* | output |
-* | --- |
-* | "Set new password" |
-*
-* @param {Auth_Newpassword_Mobile_Headline1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_newpassword_mobile_headline1 = /** @type {((inputs?: Auth_Newpassword_Mobile_Headline1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Newpassword_Mobile_Headline1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_newpassword_mobile_headline1(inputs)
-	return __cs.auth_newpassword_mobile_headline1(inputs)
-});
-export { auth_newpassword_mobile_headline1 as "auth.newPassword.mobile.headline" }
-/**
-* | output |
-* | --- |
-* | "Step 3 of 3 · Choose a strong password" |
-*
-* @param {Auth_Newpassword_Mobile_Subtitle1Inputs} inputs
-* @param {{ locale?: "en" | "cs" }} options
-* @returns {LocalizedString}
-*/
-const auth_newpassword_mobile_subtitle1 = /** @type {((inputs?: Auth_Newpassword_Mobile_Subtitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Newpassword_Mobile_Subtitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
-	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
-	if (locale === "en") return __en.auth_newpassword_mobile_subtitle1(inputs)
-	return __cs.auth_newpassword_mobile_subtitle1(inputs)
-});
-export { auth_newpassword_mobile_subtitle1 as "auth.newPassword.mobile.subtitle" }
 /**
 * | output |
 * | --- |

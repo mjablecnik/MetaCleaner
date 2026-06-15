@@ -90,7 +90,8 @@ async function pollUntilComplete(
 	callbacks: CleaningCallbacks,
 	accumulatedResults: AccumulatedFileResult[],
 	isCancelled: () => boolean,
-	isCompleted: () => boolean
+	isCompleted: () => boolean,
+	setReportId: (id: string) => void
 ): Promise<void> {
 	for (let i = 0; i < MAX_POLLS; i++) {
 		if (isCancelled() || isCompleted()) return;
@@ -103,6 +104,7 @@ async function pollUntilComplete(
 			const status = await api.getJobStatus(jobId);
 
 			if (status.status === 'completed') {
+				if (status.reportId) setReportId(status.reportId);
 				callbacks.onComplete(buildResultsFromStatus(status, accumulatedResults));
 				return;
 			}
@@ -176,15 +178,19 @@ function dispatchWsMessage(
 ): void {
 	switch (msg.type) {
 		case 'file_progress': {
-			const fileId = msg.fileId as string;
+			const fileId = typeof msg.fileId === 'string' && msg.fileId ? msg.fileId : null;
+			if (!fileId) {
+				console.warn('WS file_progress: missing or invalid fileId', msg);
+				break;
+			}
 			const fileName = fileNameMap.get(fileId) ?? fileId;
 			callbacks.onFileStart(fileId, fileName);
 
 			// Progress is embedded in file_progress events — no separate job_progress message (Req 4.5)
 			callbacks.onProgress(
-				(msg.overallProgress as number) ?? 0,
-				(msg.filesCompleted as number) ?? 0,
-				(msg.totalFiles as number) ?? 0,
+				typeof msg.overallProgress === 'number' ? msg.overallProgress : 0,
+				typeof msg.filesCompleted === 'number' ? msg.filesCompleted : 0,
+				typeof msg.totalFiles === 'number' ? msg.totalFiles : 0,
 				0,
 				0
 			);
@@ -192,38 +198,44 @@ function dispatchWsMessage(
 		}
 
 		case 'file_complete': {
-			const fileId = msg.fileId as string;
-			const fieldsRemoved = (msg.fieldsRemoved as number) ?? 0;
-			const gpsRemoved = (msg.gpsRemoved as boolean) ?? false;
+			const fileId = typeof msg.fileId === 'string' && msg.fileId ? msg.fileId : null;
+			if (!fileId) {
+				console.warn('WS file_complete: missing or invalid fileId', msg);
+				break;
+			}
+			const fieldsRemoved = typeof msg.fieldsRemoved === 'number' ? msg.fieldsRemoved : 0;
+			const gpsRemoved = typeof msg.gpsRemoved === 'boolean' ? msg.gpsRemoved : false;
 
 			accumulatedResults.push({ fileId, fieldsRemoved, gpsRemoved });
 			callbacks.onFileComplete(fileId, fieldsRemoved, gpsRemoved);
 
 			callbacks.onProgress(
-				(msg.overallProgress as number) ?? 0,
-				(msg.filesCompleted as number) ?? 0,
-				(msg.totalFiles as number) ?? 0,
+				typeof msg.overallProgress === 'number' ? msg.overallProgress : 0,
+				typeof msg.filesCompleted === 'number' ? msg.filesCompleted : 0,
+				typeof msg.totalFiles === 'number' ? msg.totalFiles : 0,
 				fieldsRemoved,
 				0
 			);
 			break;
 		}
 
-		case 'file_error':
+		case 'file_error': {
+			const fileId = typeof msg.fileId === 'string' ? msg.fileId : undefined;
 			callbacks.onError({
-				code: (msg.errorCode as string) ?? 'FILE_ERROR',
-				hexCode: (msg.errorCode as string) ?? 'FILE_ERROR',
-				message: (msg.message as string) ?? 'File processing failed',
-				fileId: msg.fileId as string,
-				fileName: fileNameMap.get(msg.fileId as string) ?? undefined,
+				code: typeof msg.errorCode === 'string' ? msg.errorCode : 'FILE_ERROR',
+				hexCode: typeof msg.errorCode === 'string' ? msg.errorCode : 'FILE_ERROR',
+				message: typeof msg.message === 'string' ? msg.message : 'File processing failed',
+				fileId,
+				fileName: fileId ? (fileNameMap.get(fileId) ?? undefined) : undefined,
 				phase: 'cleaning',
 				timestamp: new Date().toISOString()
 			});
 			break;
+		}
 
 		case 'job_complete': {
 			// job_complete embeds reportId — capture it before onComplete triggers WS close (Req 4.10, 11.7)
-			const jobCompleteReportId = (msg.reportId as string) ?? '';
+			const jobCompleteReportId = typeof msg.reportId === 'string' ? msg.reportId : '';
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			setJobCompleted();
 			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
@@ -232,7 +244,7 @@ function dispatchWsMessage(
 
 		case 'report_ready': {
 			// report_ready may arrive after job_complete; store/override reportId silently (Req 4.10, 11.7)
-			const reportReadyId = (msg.reportId as string) ?? '';
+			const reportReadyId = typeof msg.reportId === 'string' ? msg.reportId : '';
 			if (reportReadyId) setReportId(reportReadyId);
 			break;
 		}
@@ -517,6 +529,20 @@ class ApiCleaningService implements CleaningService {
 			try {
 				const rawFiles = files.map((f) => f.file);
 				const uploadResponse = await api.uploadFiles(rawFiles);
+
+				// Report any per-file validation errors from the server.
+				if (uploadResponse.fileErrors && uploadResponse.fileErrors.length > 0) {
+					for (const fe of uploadResponse.fileErrors) {
+						callbacks.onError({
+							code: fe.error,
+							hexCode: '0x000',
+							message: fe.message,
+							phase: 'upload',
+							timestamp: new Date().toISOString()
+						});
+					}
+				}
+
 				const fileIds = uploadResponse.files.map((f) => f.id);
 				const fileNames: Record<string, string> = {};
 
@@ -575,7 +601,11 @@ class ApiCleaningService implements CleaningService {
 							callbacks,
 							accumulatedResults,
 							() => cancelled,
-							() => jobCompleted
+							() => jobCompleted,
+							(id) => {
+								jobHandle.reportId = id;
+								cleaningResultsStore.setReportId(id);
+							}
 						);
 					}
 				};
@@ -587,7 +617,11 @@ class ApiCleaningService implements CleaningService {
 							callbacks,
 							accumulatedResults,
 							() => cancelled,
-							() => jobCompleted
+							() => jobCompleted,
+							(id) => {
+								jobHandle.reportId = id;
+								cleaningResultsStore.setReportId(id);
+							}
 						);
 					}
 				};

@@ -15,8 +15,15 @@ export interface UploadedFileInfo {
 	format: string;
 }
 
+export interface UploadedFileError {
+	name: string;
+	error: string;
+	message: string;
+}
+
 export interface UploadResponse {
 	files: UploadedFileInfo[];
+	fileErrors?: UploadedFileError[];
 }
 
 export interface CreateJobResponse {
@@ -36,6 +43,7 @@ export interface JobStatusResponse {
 	totalTimeSeconds: number;
 	createdAt: string;
 	completedAt?: string;
+	reportId?: string;
 }
 
 export interface ApiErrorResponse {

@@ -1,14 +1,22 @@
-# Tasks — MetaCleaner Code Review (2026-06-15)
+# Tasks
 
-- [x] 1. [HIGH] Add JWT authentication to WebSocket `/api/jobs/{id}/progress` endpoint — remove `/progress` exemption from `isExemptPath()`, pass token as query param, validate before upgrade
-- [x] 2. [HIGH] Update Storybook story mock data to use `iconColor: 'blue'` for image type entries (not `'green'`) across ReportTableRow, ReportCard, ReportsList, ReportsTable stories
-- [x] 3. [MEDIUM] Add `onSettings`/`onLogout` callback props and `onclick` handlers to `MobileHamburgerMenu.svelte` (same pattern as UserDropdown fix)
-- [x] 4. [MEDIUM] Wrap all `goto('/path')` and `href="/path"` in auth route components with `resolve()` from `$app/paths`
-- [x] 5. [MEDIUM] Replace local `riskScoreLabel()` in `RiskScoreRing.svelte` with shared `tx('step2.risk.score')` import
-- [x] 6. [MEDIUM] Audit and remove dead i18n keys from `messages/en.json` and `messages/cs.json` that have zero references in source
-- [x] 7. [MEDIUM] Add client-side format validation in CLI `clean` command before uploading (same logic as `scan` command)
-- [x] 8. [MEDIUM] Fix CLI `compare` command temp file path to preserve original file extension
-- [ ] 9. [LOW] Replace hardcoded English text in `ScanProgressIndicator.svelte` and `RiskScoreRing.svelte` with `tx()` i18n calls
-- [ ] 10. [LOW] Add `(key)` expressions to `{#each}` blocks in auth components (OtpInput, PasswordStrengthMeter, StepProgressBar)
-- [ ] 11. [LOW] Fix CLI `compare` command `format` field to use `IMAGE_EXTENSIONS`/`VIDEO_EXTENSIONS` mapping consistently
-- [ ] 12. [LOW] Replace hardcoded `aria-label` and `.sr-only` English text with `tx()` i18n calls across all components
+- [x] 1. [CRITICAL] Add error logging and retry logic for DB updates in background job goroutine (`handlers.go` lines 233–236)
+- [x] 2. [CRITICAL] Increase `MAX_POLLS` in `apiCleaningService.ts` polling fallback from 10 to 100+ and add exponential backoff
+- [x] 3. [CRITICAL] Add `reportId` polling fallback when `report_ready` WS event is missed — poll `GET /api/jobs/{id}` for reportId after job completion
+- [x] 4. [HIGH] Add runtime validation in `dispatchWsMessage` before unsafe `as string`/`as number` casts on WebSocket message fields
+- [x] 5. [HIGH] Fix `HandleUpload` to process each file independently — return per-file errors instead of rejecting entire batch on first failure
+- [x] 6. [HIGH] Create unit tests for `src/lib/auth/deep-link.ts` covering Capacitor URL interception and token extraction
+- [x] 7. [HIGH] Add file format validation in CLI `clean` command before uploading (same check as `scan` command)
+- [x] 8. [HIGH] Fix `callAuthApi` return type for 204/empty responses — use `null` return instead of unsafe `{} as T` cast
+- [ ] 9. [MEDIUM] Add input format validation in `extractDate`/`extractTime` to handle non-ISO date strings from backend
+- [ ] 10. [MEDIUM] Add localID format validation in `HandleJobDownload` and fallback strategy if derived ID doesn't match expected pattern
+- [ ] 11. [MEDIUM] Fix CLI `executeCompare` format field to use `IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext]` instead of `ext.slice(1)`
+- [ ] 12. [MEDIUM] Make `api-config.ts` throw a clear error when `PUBLIC_API_URL` is empty instead of silent console.warn
+- [ ] 13. [MEDIUM] Refactor `LoadConfig` to return errors instead of calling `log.Fatal` — add actionable error messages
+- [ ] 14. [MEDIUM] Batch dead connection removal in `WebSocketHub.Broadcast` to reduce lock contention
+- [ ] 15. [MEDIUM] Add dedicated tests for `token-utils.ts` `extractCallbackParams` with edge-case URL formats
+- [ ] 16. [LOW] Update Storybook stories to use `iconColor: 'blue'` for image-type report entries
+- [ ] 17. [LOW] Remove unsupported languages (DE, SK) from `languageRepository` dropdown
+- [ ] 18. [LOW] Handle gopdf errors in `pdf.go` instead of discarding with `_ =`
+- [ ] 19. [LOW] Fix CLI `executeCompare` temp file path to preserve file extension for extensionless inputs
+- [ ] 20. [LOW] Add actual API call in `resendCode()` in forgot-password flow to trigger new verification email
