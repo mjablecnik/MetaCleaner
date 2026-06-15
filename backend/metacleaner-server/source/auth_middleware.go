@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
@@ -167,22 +168,29 @@ func parseECPublicKey(k jwkKey) (*ecdsa.PublicKey, error) {
 
 // --- AuthMiddleware ---
 
-// AuthMiddleware validates JWT Bearer tokens on protected routes using JWKS (ES256).
+// AuthMiddleware validates JWT Bearer tokens on protected routes.
+// Supports HS256 (via SupabaseJWTSecret) and ES256 (via JWKS from SupabaseURL).
 type AuthMiddleware struct {
-	cache *keyCache
+	cache     *keyCache
+	jwtSecret []byte
 }
 
-// NewAuthMiddleware creates an AuthMiddleware that fetches public keys from Supabase JWKS endpoint.
+// NewAuthMiddleware creates an AuthMiddleware.
+// If cfg.SupabaseJWTSecret is set, HS256 tokens are validated using HMAC-SHA256.
+// ES256 tokens are always validated via the Supabase JWKS endpoint.
 func NewAuthMiddleware(cfg Config) *AuthMiddleware {
 	jwksURL := strings.TrimRight(cfg.SupabaseURL, "/") + "/auth/v1/.well-known/jwks.json"
 	cache := newKeyCache(jwksURL)
 
-	// Pre-fetch keys at startup
+	// Pre-fetch keys at startup (may fail in tests with no SupabaseURL — that's OK)
 	if err := cache.refresh(); err != nil {
 		log.Printf("[auth-middleware] WARNING: initial JWKS fetch failed: %v (will retry on first request)", err)
 	}
 
-	return &AuthMiddleware{cache: cache}
+	return &AuthMiddleware{
+		cache:     cache,
+		jwtSecret: []byte(cfg.SupabaseJWTSecret),
+	}
 }
 
 // jwtHeader holds the JWT header fields we need.
@@ -210,14 +218,15 @@ func (m *AuthMiddleware) Authenticate(r *http.Request) (string, error) {
 	return m.validateJWT(token)
 }
 
-// validateJWT parses and verifies an ES256 JWT using JWKS, returning the sub claim on success.
+// validateJWT parses and verifies a JWT, returning the sub claim on success.
+// Supports HS256 (when jwtSecret is set) and ES256 (via JWKS).
 func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token"}
 	}
 
-	// Parse header to get kid and alg
+	// Parse header to get alg (and kid for ES256)
 	headerBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
 	if err != nil {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token header"}
@@ -227,41 +236,48 @@ func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token header"}
 	}
 
-	if header.Alg != "ES256" {
-		return "", &authError{code: ErrAuthTokenInvalid, message: "unsupported signing algorithm: " + header.Alg}
-	}
-
-	if header.KID == "" {
-		return "", &authError{code: ErrAuthTokenInvalid, message: "token missing kid header"}
-	}
-
-	// Get public key from cache/JWKS
-	pubKey, err := m.cache.getKey(header.KID)
-	if err != nil {
-		return "", &authError{code: ErrAuthTokenInvalid, message: "unable to verify token: " + err.Error()}
-	}
-
-	// Verify ES256 signature
 	signingInput := parts[0] + "." + parts[1]
-	hash := sha256.Sum256([]byte(signingInput))
-
 	sigBytes, err := base64.RawURLEncoding.DecodeString(parts[2])
 	if err != nil {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token signature"}
 	}
 
-	// ES256 signature is r || s, each 32 bytes
-	if len(sigBytes) != 64 {
-		return "", &authError{code: ErrAuthTokenInvalid, message: "invalid signature length"}
-	}
-	r := new(big.Int).SetBytes(sigBytes[:32])
-	s := new(big.Int).SetBytes(sigBytes[32:])
+	switch header.Alg {
+	case "HS256":
+		if len(m.jwtSecret) == 0 {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "unsupported signing algorithm: HS256"}
+		}
+		mac := hmac.New(sha256.New, m.jwtSecret)
+		mac.Write([]byte(signingInput))
+		expected := mac.Sum(nil)
+		if !hmac.Equal(expected, sigBytes) {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "invalid token signature"}
+		}
 
-	if !ecdsa.Verify(pubKey, hash[:], r, s) {
-		return "", &authError{code: ErrAuthTokenInvalid, message: "invalid token signature"}
+	case "ES256":
+		if header.KID == "" {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "token missing kid header"}
+		}
+		pubKey, err := m.cache.getKey(header.KID)
+		if err != nil {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "unable to verify token: " + err.Error()}
+		}
+		hash := sha256.Sum256([]byte(signingInput))
+		// ES256 signature is r || s, each 32 bytes
+		if len(sigBytes) != 64 {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "invalid signature length"}
+		}
+		r := new(big.Int).SetBytes(sigBytes[:32])
+		s := new(big.Int).SetBytes(sigBytes[32:])
+		if !ecdsa.Verify(pubKey, hash[:], r, s) {
+			return "", &authError{code: ErrAuthTokenInvalid, message: "invalid token signature"}
+		}
+
+	default:
+		return "", &authError{code: ErrAuthTokenInvalid, message: "unsupported signing algorithm: " + header.Alg}
 	}
 
-	// Decode and parse payload claims
+	// Parse payload claims
 	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token payload"}

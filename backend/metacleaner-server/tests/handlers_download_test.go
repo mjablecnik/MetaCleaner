@@ -22,7 +22,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 	cfg := newTestConfig(t)
 	db := src.NewSupabaseClient(cfg)
 
-	fileID := "f-download1"
+	fileID := "f-aa1234bb"
 	cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
 	if err := os.MkdirAll(cleanedDir, 0755); err != nil {
 		t.Fatal(err)
@@ -55,7 +55,7 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 	cfg := newTestConfig(t)
 	db := src.NewSupabaseClient(cfg)
 
-	fileID := "f-inprogress1"
+	fileID := "f-cc5678dd"
 	uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
 	if err := os.MkdirAll(uploadsDir, 0755); err != nil {
 		t.Fatal(err)
@@ -85,8 +85,8 @@ func TestHandleFileDownloadNotFound(t *testing.T) {
 	cfg := newTestConfig(t)
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/files/f-missing/download", nil)
-	req.SetPathValue("id", "f-missing")
+	req := httptest.NewRequest(http.MethodGet, "/api/files/f-ffffffff/download", nil)
+	req.SetPathValue("id", "f-ffffffff")
 	rr := httptest.NewRecorder()
 	src.HandleFileDownload(cfg, db)(rr, req)
 
