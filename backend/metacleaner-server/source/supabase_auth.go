@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -145,16 +144,13 @@ func (c *SupabaseAuthClient) newAdminRequest(ctx context.Context, method, rawURL
 // --- Response handler ---
 
 func (c *SupabaseAuthClient) doRequest(req *http.Request, result interface{}) error {
-	log.Printf("[supabase-auth] %s %s", req.Method, req.URL.String())
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		log.Printf("[supabase-auth] request error: %v", err)
 		return fmt.Errorf("supabase auth request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
-	log.Printf("[supabase-auth] response: %d %s", resp.StatusCode, string(body))
 
 	if resp.StatusCode >= 400 {
 		var errBody supabaseAuthErrBody

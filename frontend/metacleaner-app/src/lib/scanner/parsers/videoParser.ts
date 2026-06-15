@@ -143,13 +143,10 @@ function makeEmptyResult(fileId: string): ScanResult {
 }
 
 export async function parseVideo(file: File, fileId: string): Promise<ScanResult> {
-	console.debug('[videoParser] parseVideo called for:', file.name, file.size, file.type);
 	let mi: MediaInfoInstance;
 	try {
 		mi = await getMediaInfo();
-		console.debug('[videoParser] MediaInfo loaded OK');
-	} catch (err) {
-		console.debug('[videoParser] MediaInfo FAILED to load:', err);
+	} catch {
 		return makeEmptyResult(fileId);
 	}
 
@@ -173,9 +170,6 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 
 	const media = (result as { media?: { track?: unknown[] } }).media;
 	if (!media?.track) return makeEmptyResult(fileId);
-
-	// DEBUG: log raw MediaInfo output to see what fields are available
-	console.debug('[videoParser] MediaInfo tracks:', JSON.stringify(media.track, null, 2));
 
 	const allFields: MetadataField[] = [];
 	const allRaw: Record<string, string> = {};
