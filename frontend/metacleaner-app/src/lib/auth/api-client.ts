@@ -8,6 +8,7 @@ const REFRESH_BUFFER_MS = 60_000;
 let refreshPromise: Promise<void> | null = null;
 
 function isProtectedEndpoint(path: string): boolean {
+	if (path === '/api/auth/me') return true;
 	return !path.startsWith('/api/auth/') && path !== '/api/health';
 }
 

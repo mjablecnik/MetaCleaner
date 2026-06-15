@@ -310,6 +310,10 @@ func (m *AuthMiddleware) Middleware(next http.Handler) http.Handler {
 
 // isExemptPath returns true for paths that do not require authentication.
 func isExemptPath(path string) bool {
+	// /api/auth/me requires authentication (user profile endpoint)
+	if path == "/api/auth/me" {
+		return false
+	}
 	return strings.HasPrefix(path, "/api/auth/") ||
 		path == "/api/health" ||
 		strings.HasPrefix(path, "/.well-known/") ||

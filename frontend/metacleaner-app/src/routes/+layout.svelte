@@ -56,10 +56,25 @@
 			langOptions = langs;
 		});
 
-		if (authStore.isAuthenticated) {
-			getCurrentUser().then((u) => {
-				user = u;
-			});
+		// Wait for auth to be ready before fetching user profile
+		const checkAndLoadUser = () => {
+			if (authStore.isAuthenticated) {
+				getCurrentUser().then((u) => {
+					user = u;
+				});
+			}
+		};
+
+		if (authStore.isAuthReady) {
+			checkAndLoadUser();
+		} else {
+			// Poll until auth is ready (restore/refresh completes)
+			const interval = setInterval(() => {
+				if (authStore.isAuthReady) {
+					clearInterval(interval);
+					checkAndLoadUser();
+				}
+			}, 50);
 		}
 
 		// Handle Android hardware back button

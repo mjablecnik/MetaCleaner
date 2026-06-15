@@ -1,4 +1,5 @@
 import { apiFetch } from '$lib/auth/api-client.js';
+import { authStore } from '$lib/auth/auth.svelte.js';
 
 export interface User {
 	name: string;
@@ -15,6 +16,9 @@ interface ProfileResponse {
 }
 
 export async function getCurrentUser(): Promise<User> {
+	if (!authStore.isAuthenticated) {
+		return { name: '', email: '' };
+	}
 	const res = await apiFetch('/api/auth/me');
 	if (!res.ok) {
 		return { name: '', email: '' };
