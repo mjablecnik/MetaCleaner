@@ -14,7 +14,7 @@
 		<div class="h-px flex-1 bg-gray-800"></div>
 	</div>
 	<ActionCard
-		href={resolve('/' as import('$app/types').Pathname)}
+		href="/"
 		icon="fa-solid fa-broom"
 		iconColorClass="text-brand-green"
 		bgClass="bg-brand-green-10"
@@ -61,7 +61,7 @@
 	</div>
 	<div class="flex flex-col gap-2.5">
 		<ActionCard
-			href={resolve('/' as import('$app/types').Pathname)}
+			href="/"
 			icon="fa-solid fa-broom"
 			iconColorClass="text-brand-green"
 			bgClass="bg-brand-green-10"
