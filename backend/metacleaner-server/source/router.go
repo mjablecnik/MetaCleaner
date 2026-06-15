@@ -131,6 +131,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	authRL := NewAuthRateLimiter()
 	authRateLimited := authRL.Middleware
 
+	authMW := NewAuthMiddleware(cfg)
+
 	// POST /api/auth/register — rate limited
 	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient)))
 
@@ -177,7 +179,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))
 
 	// GET /api/jobs/{id}/progress — WebSocket
-	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub))
+	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub, authMW))
 
 	// GET /api/jobs/{id}/download
 	mux.Handle("GET /api/jobs/{id}/download", HandleJobDownload(cfg, db))
@@ -204,6 +206,5 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
 
 	cors := corsMiddleware(cfg.FrontendOrigin)
-	authMW := NewAuthMiddleware(cfg)
 	return cors(authMW.Middleware(mux))
 }

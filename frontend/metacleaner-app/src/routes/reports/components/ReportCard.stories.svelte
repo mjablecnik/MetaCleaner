@@ -27,7 +27,7 @@
 		fields: 87,
 		tags: ['EXIF', 'XMP'],
 		reportId: 'MCR-2025-0602-A1',
-		iconColor: 'green'
+		iconColor: 'blue'
 	} satisfies Report;
 
 	const videoReport = {
@@ -73,7 +73,7 @@
 		fieldsColor: 'orange',
 		tags: ['GPS', 'EXIF', 'XMP'],
 		reportId: 'MCR-2025-0401-D4',
-		iconColor: 'green'
+		iconColor: 'blue'
 	} satisfies Report;
 </script>
 

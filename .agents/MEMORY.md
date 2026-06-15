@@ -528,3 +528,21 @@
 - Problem: `scanner.ts` constructs MIME type as `video/${VIDEO_EXTENSIONS[ext]}` which produces `video/3gp` and `video/ogv` — the correct types are `video/3gpp` and `video/ogg`.
 - Solution: Add entries to `MIME_TYPE_OVERRIDES`: `'.3gp': 'video/3gpp'` and `'.ogv': 'video/ogg'`.
 - Source: code-review, 2026-06-06T23:28:34Z
+
+## WebSocket progress endpoint exempt from auth — intentional but spec-violating
+- Project: metacleaner-server
+- Problem: `isExemptPath()` in `auth_middleware.go` exempts all paths ending with `/progress` from JWT validation. This allows unauthenticated WebSocket connections to `/api/jobs/{id}/progress`. The User Authentication spec (Req 6.1) only exempts `/api/auth/*` and `/api/health`.
+- Solution: Remove the `/progress` suffix exemption. Pass JWT as WebSocket URL query parameter (`?token=...`), validate in `HandleJobProgress` before upgrading. Frontend `connectJobProgress` must append `?token=${authStore.accessToken}` to the WS URL.
+- Source: code-review, 2026-06-15T11:35:25+00:00
+
+## Storybook stories use outdated iconColor 'green' for images
+- Project: metacleaner-app
+- Problem: After bugfix 1.6 changed `computeIconColor('image')` from `'green'` to `'blue'`, the Storybook stories for ReportTableRow, ReportCard, ReportsList, and ReportsTable were not updated. They still pass `iconColor: 'green'` in mock data.
+- Solution: Update all story mock data from `iconColor: 'green'` to `iconColor: 'blue'` for image-type entries. Video entries should use `'orange'`.
+- Source: code-review, 2026-06-15T11:35:25+00:00
+
+## WS auth fix: authMW must be instantiated before route registrations in NewRouter
+- Project: metacleaner-server
+- Problem: `HandleJobProgress` now takes `*AuthMiddleware` as a parameter. `NewRouter` originally instantiated `authMW` after all `mux.Handle()` calls at the bottom of the function. Passing `authMW` to `HandleJobProgress` before it's declared caused a compile error.
+- Solution: Move `authMW := NewAuthMiddleware(cfg)` to the top of `NewRouter` (just after the rate limiters), before any `mux.Handle()` registrations. The line at the bottom becomes just `return cors(authMW.Middleware(mux))`.
+- Source: code-review-fix, 2026-06-15

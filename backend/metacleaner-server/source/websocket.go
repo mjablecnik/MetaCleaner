@@ -77,9 +77,24 @@ func (h *WebSocketHub) Broadcast(jobID string, event ProgressEvent) {
 }
 
 // HandleJobProgress upgrades the connection to WebSocket and streams events
-// for the job identified by the {id} path parameter.
-func HandleJobProgress(hub *WebSocketHub) http.HandlerFunc {
+// for the job identified by the {id} path parameter. The JWT must be passed
+// as a ?token= query parameter (browsers cannot set custom headers on WebSocket).
+func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		token := r.URL.Query().Get("token")
+		if token == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "missing token")
+			return
+		}
+		if _, err := auth.validateJWT(token); err != nil {
+			if ae, ok := err.(*authError); ok {
+				WriteError(w, http.StatusUnauthorized, ae.code, ae.message)
+			} else {
+				WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "unauthorized")
+			}
+			return
+		}
+
 		jobID := r.PathValue("id")
 		if jobID == "" {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")

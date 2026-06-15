@@ -316,8 +316,7 @@ func isExemptPath(path string) bool {
 	}
 	return strings.HasPrefix(path, "/api/auth/") ||
 		path == "/api/health" ||
-		strings.HasPrefix(path, "/.well-known/") ||
-		strings.HasSuffix(path, "/progress")
+		strings.HasPrefix(path, "/.well-known/")
 }
 
 // authError carries an error code and human-readable message for auth failures.

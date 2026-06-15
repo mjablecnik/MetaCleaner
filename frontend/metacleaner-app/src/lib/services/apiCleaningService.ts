@@ -20,6 +20,7 @@ import type {
 	FileMetadataSection
 } from '$lib/types/report.js';
 import * as api from '$lib/clients/metaCleanerApi.js';
+import { authStore } from '$lib/auth/auth.svelte.js';
 import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte.js';
 
 // ─── Accumulated per-file data during WebSocket progress ────────
@@ -531,7 +532,7 @@ class ApiCleaningService implements CleaningService {
 
 				if (cancelled) return;
 
-				ws = api.connectJobProgress(jobHandle.jobId);
+				ws = api.connectJobProgress(jobHandle.jobId, authStore.accessToken);
 
 				ws.onmessage = (event) => {
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;

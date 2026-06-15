@@ -116,8 +116,9 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
 	return res.json();
 }
 
-export function connectJobProgress(jobId: string): WebSocket {
-	const url = buildWsUrl(`/api/jobs/${jobId}/progress`);
+export function connectJobProgress(jobId: string, token: string | null): WebSocket {
+	const tokenParam = token ? `?token=${encodeURIComponent(token)}` : '';
+	const url = buildWsUrl(`/api/jobs/${jobId}/progress${tokenParam}`);
 	return new WebSocket(url);
 }
 
