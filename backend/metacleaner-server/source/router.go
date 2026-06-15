@@ -9,14 +9,16 @@ import (
 )
 
 // corsMiddleware adds CORS headers and handles OPTIONS preflight requests.
+// If origin is empty (FRONTEND_ORIGIN not configured), cross-origin requests are denied
+// by omitting all CORS headers — browsers will block them by default.
 func corsMiddleware(origin string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if origin != "" {
-				w.Header().Set("Access-Control-Allow-Origin", origin)
-			} else {
-				w.Header().Set("Access-Control-Allow-Origin", "*")
+			if origin == "" {
+				next.ServeHTTP(w, r)
+				return
 			}
+			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
