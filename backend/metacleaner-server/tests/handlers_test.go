@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"regexp"
 	"testing"
 
 	src "metacleaner-server/source"
@@ -212,5 +213,74 @@ func TestHandleUploadResponseFields(t *testing.T) {
 	}
 	if f.Size <= 0 {
 		t.Errorf("size should be positive, got %d", f.Size)
+	}
+}
+
+// --- Task 9: generateFileID entropy ---
+
+// fileIDPattern validates that a file ID is "f-" followed by exactly 32 hex chars
+// (16 bytes of random data), confirming the high-entropy ID generation.
+var fileIDPattern = regexp.MustCompile(`^f-[0-9a-f]{32}$`)
+
+// TestUploadFileIDHas32HexChars verifies that every file ID assigned during upload
+// consists of "f-" + 32 lowercase hex characters (16 bytes = high entropy).
+func TestUploadFileIDHas32HexChars(t *testing.T) {
+	cfg := newTestConfig(t)
+	handler := src.HandleUpload(cfg)
+
+	req := buildUploadRequest(t, map[string][]byte{
+		"photo.jpg": []byte("fake jpeg content"),
+	})
+	rr := httptest.NewRecorder()
+	handler(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Files []src.UploadedFileInfo `json:"files"`
+	}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(resp.Files) == 0 {
+		t.Fatal("expected at least one file in response")
+	}
+
+	for _, f := range resp.Files {
+		if !fileIDPattern.MatchString(f.ID) {
+			t.Errorf("file ID %q does not match expected pattern f-{32hex}", f.ID)
+		}
+	}
+}
+
+// TestUploadMultipleFilesHaveUniqueIDs verifies that every file in a batch gets a
+// distinct ID (no collision on high-entropy random generation).
+func TestUploadMultipleFilesHaveUniqueIDs(t *testing.T) {
+	cfg := newTestConfig(t)
+	handler := src.HandleUpload(cfg)
+
+	req := buildUploadRequest(t, map[string][]byte{
+		"photo1.jpg": []byte("fake jpeg 1"),
+		"photo2.jpg": []byte("fake jpeg 2"),
+		"clip.mp4":   []byte("fake mp4"),
+	})
+	rr := httptest.NewRecorder()
+	handler(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp struct {
+		Files []src.UploadedFileInfo `json:"files"`
+	}
+	json.NewDecoder(rr.Body).Decode(&resp)
+
+	seen := make(map[string]bool)
+	for _, f := range resp.Files {
+		if seen[f.ID] {
+			t.Errorf("duplicate file ID %q assigned in single upload batch", f.ID)
+		}
+		seen[f.ID] = true
 	}
 }
