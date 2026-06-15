@@ -143,15 +143,16 @@ function makeEmptyResult(fileId: string): ScanResult {
 }
 
 export async function parseVideo(file: File, fileId: string): Promise<ScanResult> {
+	const useSlice = file.size > FILE_SIZE_THRESHOLD;
+	const slice = useSlice ? file.slice(0, MAX_VIDEO_HEADER_BYTES) : file;
+	const sliceSize = useSlice ? MAX_VIDEO_HEADER_BYTES : file.size;
+
 	let mi: MediaInfoInstance;
 	try {
 		mi = await getMediaInfo();
 	} catch {
 		return makeEmptyResult(fileId);
 	}
-
-	const slice = file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_VIDEO_HEADER_BYTES) : file;
-	const sliceSize = file.size > FILE_SIZE_THRESHOLD ? MAX_VIDEO_HEADER_BYTES : file.size;
 
 	let result: unknown;
 	try {
