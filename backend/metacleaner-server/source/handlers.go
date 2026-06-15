@@ -636,7 +636,9 @@ func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to generate PDF URL")
 			return
 		}
-		http.Redirect(w, r, signedURL, http.StatusFound)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"url": signedURL})
 	}
 }
 

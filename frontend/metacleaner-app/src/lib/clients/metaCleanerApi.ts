@@ -153,10 +153,11 @@ export async function getReportDetail(reportId: string): Promise<unknown> {
 	return res.json();
 }
 
-export async function getReportPdf(reportId: string): Promise<Blob> {
+export async function getReportPdf(reportId: string): Promise<string> {
 	const res = await apiFetch(`/api/reports/${reportId}/pdf`);
 	if (!res.ok) throw await parseErrorResponse(res);
-	return res.blob();
+	const data: { url: string } = await res.json();
+	return data.url;
 }
 
 export async function healthCheck(): Promise<HealthResponse> {

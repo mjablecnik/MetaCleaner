@@ -49,13 +49,10 @@
 	async function handleDownloadPdf() {
 		if (!reportId) return;
 		try {
-			const blob = await getReportPdf(reportId);
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = `report-${reportId}.pdf`;
-			a.click();
-			URL.revokeObjectURL(url);
+			const url = await getReportPdf(reportId);
+			if (url) {
+				window.open(url, '_blank');
+			}
 		} catch (err) {
 			console.error('PDF download failed:', err);
 		}

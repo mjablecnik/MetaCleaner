@@ -548,7 +548,7 @@ func (c *SupabaseClient) GetPDFSignedURL(ctx context.Context, path string) (stri
 	}
 	// The signedURL may be relative; prepend the base URL if so.
 	if len(result.SignedURL) > 0 && result.SignedURL[0] == '/' {
-		return c.baseURL + result.SignedURL, nil
+		return c.baseURL + "/storage/v1" + result.SignedURL, nil
 	}
 	return result.SignedURL, nil
 }
