@@ -70,9 +70,13 @@ export async function getMediaInfo(): Promise<MediaInfoInstance> {
 	try {
 		const MediaInfoFactory = (await import('mediainfo.js')).default as (options: {
 			format: string;
+			locateFile?: (path: string) => string;
 		}) => Promise<MediaInfoInstance>;
 
-		mediaInfoInstance = await MediaInfoFactory({ format: 'object' });
+		mediaInfoInstance = await MediaInfoFactory({
+			format: 'object',
+			locateFile: (path: string) => `/${path}`
+		});
 		return mediaInfoInstance;
 	} catch (err) {
 		mediaInfoInstance = null;
@@ -139,10 +143,13 @@ function makeEmptyResult(fileId: string): ScanResult {
 }
 
 export async function parseVideo(file: File, fileId: string): Promise<ScanResult> {
+	console.debug('[videoParser] parseVideo called for:', file.name, file.size, file.type);
 	let mi: MediaInfoInstance;
 	try {
 		mi = await getMediaInfo();
-	} catch {
+		console.debug('[videoParser] MediaInfo loaded OK');
+	} catch (err) {
+		console.debug('[videoParser] MediaInfo FAILED to load:', err);
 		return makeEmptyResult(fileId);
 	}
 
@@ -166,6 +173,9 @@ export async function parseVideo(file: File, fileId: string): Promise<ScanResult
 
 	const media = (result as { media?: { track?: unknown[] } }).media;
 	if (!media?.track) return makeEmptyResult(fileId);
+
+	// DEBUG: log raw MediaInfo output to see what fields are available
+	console.debug('[videoParser] MediaInfo tracks:', JSON.stringify(media.track, null, 2));
 
 	const allFields: MetadataField[] = [];
 	const allRaw: Record<string, string> = {};

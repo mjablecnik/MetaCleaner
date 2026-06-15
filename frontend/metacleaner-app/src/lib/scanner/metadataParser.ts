@@ -38,6 +38,7 @@ function makeErrorResult(fileId: string, error: unknown): ScanResult {
 
 export async function parseFile(file: File, fileId: string): Promise<ScanResult> {
 	const detected = detectFormat(file);
+	console.debug('[metadataParser] parseFile:', file.name, 'detected:', detected);
 
 	if (!detected) {
 		return makeEmptyResult(fileId);
