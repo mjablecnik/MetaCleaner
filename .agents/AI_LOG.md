@@ -1,5 +1,24 @@
 # AI Log
 
+## 2026-06-15 13:32 — manual
+- Project: frontend, backend, terminal (full stack)
+- Applied code review improvements from IMPROVEMENTS.md analysis (15 of 20 tasks completed, remaining 5 LOW deferred)
+- [CRITICAL] Added error logging and retry logic for DB updates in background job goroutine (`backend/handlers.go`)
+- [CRITICAL] Increased `MAX_POLLS` in `apiCleaningService.ts` polling fallback and added exponential backoff
+- [CRITICAL] Added `reportId` polling fallback when `report_ready` WS event is missed — polls `GET /api/jobs/{id}` after job completion
+- [HIGH] Added runtime validation in `dispatchWsMessage` before unsafe type casts on WebSocket message fields (`metaCleanerApi.ts`)
+- [HIGH] Fixed `HandleUpload` to process each file independently with per-file errors (`backend/handlers.go`, `models.go`, `supabase.go`)
+- [HIGH] Created unit tests for `deep-link.ts` covering Capacitor URL interception and token extraction (`deepLink.test.ts`)
+- [HIGH] Added file format validation in CLI `clean` command before uploading (`terminal/commands.ts`)
+- [HIGH] Fixed `callAuthApi` return type for 204/empty responses — uses `null` return instead of `{} as T` cast (`auth.svelte.ts`)
+- [MEDIUM] Added input format validation in `extractDate`/`extractTime` with `new Date()` fallback (`apiCleaningService.ts`)
+- [MEDIUM] Added localID format validation in `HandleJobDownload` with fallback strategy (`backend/handlers.go`)
+- [MEDIUM] Fixed CLI `executeCompare` format field to use `IMAGE_EXTENSIONS[ext] ?? VIDEO_EXTENSIONS[ext]` (`terminal/commands.ts`)
+- [MEDIUM] Made `api-config.ts` throw a clear error when `PUBLIC_API_URL` is empty instead of silent console.warn
+- [MEDIUM] Refactored `LoadConfig` to return errors instead of calling `log.Fatal` (`backend/config.go`, `main.go`)
+- [MEDIUM] Batched dead connection removal in `WebSocketHub.Broadcast` to reduce lock contention (`backend/websocket.go`)
+- [MEDIUM] Added dedicated tests for `token-utils.ts` `extractCallbackParams` with edge-case URL formats (`tokenUtils.test.ts`)
+
 ## 2026-06-15 12:17 — manual
 - Project: frontend, backend, terminal (full stack)
 - Implemented code review fixes from full-codebase audit (8 of 12 tasks completed)
