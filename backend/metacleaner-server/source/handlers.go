@@ -40,9 +40,9 @@ type UploadedFileError struct {
 	Message string `json:"message"`
 }
 
-// generateFileID creates a unique file ID in the format "f-{8hex}".
+// generateFileID creates a unique file ID in the format "f-{32hex}".
 func generateFileID() (string, error) {
-	b := make([]byte, 4)
+	b := make([]byte, 16)
 	if _, err := rand.Read(b); err != nil {
 		return "", err
 	}
