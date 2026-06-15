@@ -111,6 +111,17 @@ func rateLimitMiddleware(rl *ipRateLimiter) func(http.Handler) http.Handler {
 	}
 }
 
+// securityHeadersMiddleware adds defensive HTTP security headers to every response.
+func securityHeadersMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		w.Header().Set("X-XSS-Protection", "0")
+		next.ServeHTTP(w, r)
+	})
+}
+
 // jsonMiddleware sets Content-Type: application/json for all non-WebSocket responses.
 func jsonMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -208,5 +219,5 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
 
 	cors := corsMiddleware(cfg.FrontendOrigin)
-	return cors(authMW.Middleware(mux))
+	return securityHeadersMiddleware(cors(authMW.Middleware(mux)))
 }
