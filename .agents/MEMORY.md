@@ -541,6 +541,12 @@
 - Solution: Update all story mock data from `iconColor: 'green'` to `iconColor: 'blue'` for image-type entries. Video entries should use `'orange'`.
 - Source: code-review, 2026-06-15T11:35:25+00:00
 
+## ipRateLimiter tests blocked by ES256-only auth middleware
+- Project: metacleaner-server
+- Problem: `ipRateLimiter` wraps only `/api/files/{id}/download` and `/api/jobs/{id}/download`. These endpoints go through `authMW.Middleware(mux)` which rejects HS256 tokens (only accepts ES256 via JWKS). The test helper `buildJWT` creates HS256 tokens. So tests using `newTestRouter` with `buildJWT` never reach the rate limiter (they get 401 first). The existing security_test.go `TestRateLimit_*` tests have the same bug.
+- Solution: Test per-IP rate limiting behavior through auth endpoints instead (`POST /api/auth/register`, `POST /api/auth/login`), which are exempt from JWT auth and use `AuthRateLimiter`. For true `ipRateLimiter` unit testing, either: (a) create a mock JWKS server with an ES256 key pair, or (b) write package-level tests in `source/` directory that can access unexported types.
+- Source: create-tests, 2026-06-15T20:20:00+00:00
+
 ## WS auth fix: authMW must be instantiated before route registrations in NewRouter
 - Project: metacleaner-server
 - Problem: `HandleJobProgress` now takes `*AuthMiddleware` as a parameter. `NewRouter` originally instantiated `authMW` after all `mux.Handle()` calls at the bottom of the function. Passing `authMW` to `HandleJobProgress` before it's declared caused a compile error.
