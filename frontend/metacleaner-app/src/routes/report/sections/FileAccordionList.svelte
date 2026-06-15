@@ -13,7 +13,7 @@
 
 	$effect(() => {
 		if (files.length > 0 && accordionOpen.length === 0) {
-			accordionOpen = files.map((_, i) => i === 0);
+			accordionOpen = files.map(() => false);
 		}
 	});
 
