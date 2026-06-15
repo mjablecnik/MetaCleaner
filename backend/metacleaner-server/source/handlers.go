@@ -205,6 +205,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20) // 1 MB limit
 		var req createJobRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid request body")
