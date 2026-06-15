@@ -153,14 +153,10 @@ export async function getReportDetail(reportId: string): Promise<unknown> {
 	return res.json();
 }
 
-export async function getReportPdf(reportId: string): Promise<string> {
-	const res = await apiFetch(`/api/reports/${reportId}/pdf`, { redirect: 'manual' });
-
-	if (res.status === 302) {
-		return res.headers.get('Location') ?? '';
-	}
+export async function getReportPdf(reportId: string): Promise<Blob> {
+	const res = await apiFetch(`/api/reports/${reportId}/pdf`);
 	if (!res.ok) throw await parseErrorResponse(res);
-	return '';
+	return res.blob();
 }
 
 export async function healthCheck(): Promise<HealthResponse> {

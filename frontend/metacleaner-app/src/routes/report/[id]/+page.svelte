@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import { getReportPdf } from '$lib/clients/metaCleanerApi';
+	import { getCurrentUser } from '$lib/repositories/userRepository';
 	import type { ReportDetail } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
@@ -13,6 +14,7 @@
 	let reportDetail = $state<ReportDetail | null>(null);
 	let isLoading = $state(true);
 	let loadError = $state<string | null>(null);
+	let userEmail = $state('');
 
 	const reportId = $derived(page.params.id);
 
@@ -46,12 +48,16 @@
 
 	async function handleDownloadPdf() {
 		if (!reportId) return;
-		const url = await getReportPdf(reportId);
-		if (url) {
+		try {
+			const blob = await getReportPdf(reportId);
+			const url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
 			a.href = url;
 			a.download = `report-${reportId}.pdf`;
 			a.click();
+			URL.revokeObjectURL(url);
+		} catch (err) {
+			console.error('PDF download failed:', err);
 		}
 	}
 
@@ -67,6 +73,10 @@
 			.finally(() => {
 				isLoading = false;
 			});
+
+		getCurrentUser().then((u) => {
+			userEmail = u.email || u.name;
+		});
 	});
 </script>
 
@@ -95,7 +105,7 @@
 			<p class="text-xs text-text-muted">{loadError}</p>
 		</div>
 	{:else}
-		<ReportDetailHeader {reportDetail} userEmail="" onDownloadPdf={handleDownloadPdf} />
+		<ReportDetailHeader {reportDetail} {userEmail} onDownloadPdf={handleDownloadPdf} />
 		<SummaryStatsRow {stats} class="fade-in-up delay-1" />
 		<ReportChartCard {reportDetail} />
 		<FileAccordionList files={reportDetail?.files ?? []} />

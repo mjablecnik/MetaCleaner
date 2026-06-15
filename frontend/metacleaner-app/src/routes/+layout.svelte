@@ -52,10 +52,15 @@
 
 	onMount(() => {
 		initLocale();
-		Promise.all([getLanguages(), getCurrentUser()]).then(([langs, u]) => {
+		getLanguages().then((langs) => {
 			langOptions = langs;
-			user = u;
 		});
+
+		if (authStore.isAuthenticated) {
+			getCurrentUser().then((u) => {
+				user = u;
+			});
+		}
 
 		// Handle Android hardware back button
 		App.addListener('backButton', ({ canGoBack }) => {
