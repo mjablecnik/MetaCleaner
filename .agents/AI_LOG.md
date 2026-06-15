@@ -1,5 +1,20 @@
 # AI Log
 
+## 2026-06-15 14:05 — manual
+- Project: backend (metacleaner-server)
+- Performed full security audit of the codebase, identifying 15 findings (4 HIGH, 6 MEDIUM, 5 LOW)
+- Implemented all 9 actionable security fixes from the audit:
+  - Validated fileID against localIDPattern in HandleCreateJob and HandleFileDownload to prevent path traversal (handlers.go)
+  - Rejected CORS requests when FRONTEND_ORIGIN is empty instead of allowing wildcard (router.go)
+  - Deleted old-code/ecosystem.config.js and old-code/.env containing live Stripe/Brevo keys
+  - Added security headers middleware: X-Content-Type-Options, X-Frame-Options, HSTS (router.go)
+  - Restricted WebSocket Upgrader CheckOrigin to configured FRONTEND_ORIGIN (websocket.go)
+  - Added rate limiting to file and job download endpoints (router.go)
+  - Added http.MaxBytesReader to HandleCreateJob to cap JSON body size (handlers.go)
+  - Increased generateFileID entropy from 4 bytes to 16 bytes (handlers.go)
+- Performed full code review against .kiro/specs/ specifications, identifying 1 CRITICAL, 2 HIGH, 3 MEDIUM, 3 LOW issues
+- Generated CODE_REVIEW.md and SECURITY_AUDIT.md reports in .agents/tmp/
+
 ## 2026-06-15 13:32 — manual
 - Project: frontend, backend, terminal (full stack)
 - Applied code review improvements from IMPROVEMENTS.md analysis (15 of 20 tasks completed, remaining 5 LOW deferred)
