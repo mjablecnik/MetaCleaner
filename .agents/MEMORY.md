@@ -1,5 +1,17 @@
 # Memory
 
+## computeAggregatedRisk used category score maxima instead of max(fileScore)
+- Project: metacleaner-app
+- Problem: `computeAggregatedRisk` computed `overallScore` as a weighted sum of per-category maxima across files. Tests that set `fileScore` directly with all-zero `categoryScores` (the common mock pattern) got `overallScore = 0` instead of `max(fileScore)`.
+- Solution: Changed `overallScore` to `Math.min(100, Math.max(0, ...doneResults.map(r => r.fileScore)))`. Categories are still derived from category score maxima for the categories breakdown, but the top-level score now reflects the worst individual file directly.
+- Source: create-tests, 2026-06-15
+
+## parseVideo calls file.slice after getMediaInfo — slice never called when WASM fails
+- Project: metacleaner-app
+- Problem: `parseVideo` in `videoParser.ts` called `file.slice(0, MAX_VIDEO_HEADER_BYTES)` only after `getMediaInfo()` succeeded. In the test environment, `getMediaInfo()` throws (WASM not available), so the function returned early before any slice, causing the `sliceSpy` assertion to fail.
+- Solution: Moved `file.slice()` call to before `getMediaInfo()` so the size-guard optimization is applied regardless of WASM availability.
+- Source: create-tests, 2026-06-15
+
 ## auth.svelte.ts vi.mock path was wrong in authStore.test.ts
 - Project: metacleaner-app
 
