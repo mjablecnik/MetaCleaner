@@ -16,7 +16,7 @@
 		<span class="text-[10px] font-bold tracking-widest text-brand-red uppercase">
 			{tx('step2.risk.now')}
 		</span>
-		<span class="text-2xl font-black text-brand-red">{beforeScore}</span>
+		<span class="text-2xl font-black text-brand-red">{Math.floor(beforeScore)}/100</span>
 		<span class="text-[10px] text-text-muted">{tx('step2.risk.score')}</span>
 	</div>
 	<div
@@ -25,7 +25,7 @@
 		<span class="text-[10px] font-bold tracking-widest text-brand-green uppercase">
 			{tx('step2.risk.afterCleaning')}
 		</span>
-		<span class="text-2xl font-black text-brand-green">{afterScore}</span>
+		<span class="text-2xl font-black text-brand-green">{Math.floor(afterScore)}/100</span>
 		<span class="text-[10px] text-text-muted">{tx('step2.risk.cleanScore')}</span>
 	</div>
 </div>

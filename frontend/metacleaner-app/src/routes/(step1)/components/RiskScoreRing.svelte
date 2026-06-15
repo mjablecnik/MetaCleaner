@@ -72,7 +72,7 @@
 		></circle>
 	</svg>
 	<div class="z-10 text-center">
-		<span class="{scoreTextClass[size]} {textColorClass[color]}">{clampedScore}</span>
+		<span class="{scoreTextClass[size]} {textColorClass[color]}">{Math.floor(clampedScore)}</span>
 		{#if showLabel}
 			<p class="mt-0.5 text-[9px] tracking-wider text-text-muted uppercase">
 				{tx('step2.risk.score')}

@@ -2,19 +2,23 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { goto } from '$app/navigation';
 	import { buildApiUrl } from '$lib/clients/api-config.js';
+	import { authStore } from '$lib/auth/auth.svelte.js';
 	import CountdownTimer from '../../components/CountdownTimer.svelte';
 
 	interface Props {
 		email: string;
+		password?: string;
 	}
 
-	let { email }: Props = $props();
+	let { email, password }: Props = $props();
 
 	let countdownKey = $state(0);
 	let resendLoading = $state(false);
 	let showToast = $state(false);
+	let pollInterval: ReturnType<typeof setInterval> | null = null;
 
 	const totalSeconds = 86400;
 	let remaining = $state(totalSeconds);
@@ -32,7 +36,29 @@
 		const interval = setInterval(() => {
 			if (remaining > 0) remaining--;
 		}, 1000);
-		return () => clearInterval(interval);
+
+		// Auto-login polling: try to login every 5 seconds
+		if (password) {
+			pollInterval = setInterval(async () => {
+				try {
+					await authStore.login(email, password!);
+					// Login succeeded — email was confirmed, redirect to main app
+					if (pollInterval) clearInterval(pollInterval);
+					await goto(resolve('/' as Pathname));
+				} catch {
+					// 403 (not confirmed) or other error — keep polling
+				}
+			}, 5000);
+		}
+
+		return () => {
+			clearInterval(interval);
+			if (pollInterval) clearInterval(pollInterval);
+		};
+	});
+
+	onDestroy(() => {
+		if (pollInterval) clearInterval(pollInterval);
 	});
 
 	async function resendEmail() {

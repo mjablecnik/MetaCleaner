@@ -13,9 +13,11 @@
 
 	let step = $state<1 | 2>(1);
 	let submittedEmail = $state('');
+	let submittedPassword = $state('');
 
-	function handleRegistrationSuccess(email: string) {
+	function handleRegistrationSuccess(email: string, password: string) {
 		submittedEmail = email;
+		submittedPassword = password;
 		step = 2;
 	}
 </script>
@@ -268,7 +270,7 @@
 
 				<!-- Right: Verify area -->
 				<div class="mx-auto flex w-full max-w-[480px] flex-col gap-4 lg:mx-0 lg:ml-auto lg:gap-0">
-					<CheckEmailContent email={submittedEmail} />
+					<CheckEmailContent email={submittedEmail} password={submittedPassword} />
 				</div>
 			</div>
 		</main>

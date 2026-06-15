@@ -12,7 +12,7 @@
 	import SocialLoginButtons from '../../components/SocialLoginButtons.svelte';
 
 	interface Props {
-		onSuccess?: (email: string) => void;
+		onSuccess?: (email: string, password: string) => void;
 	}
 
 	let { onSuccess }: Props = $props();
@@ -106,7 +106,7 @@
 		try {
 			await authStore.register(email, password, firstName, lastName);
 			submitState = 'success';
-			onSuccess?.(email);
+			onSuccess?.(email, password);
 		} catch (err: unknown) {
 			submitState = 'idle';
 			apiError = err instanceof Error ? err.message : tx('auth.common.error.unknown');
