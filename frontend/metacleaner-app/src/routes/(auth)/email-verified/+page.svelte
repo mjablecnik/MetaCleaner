@@ -55,7 +55,7 @@
 	</nav>
 
 	<main
-		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-4 pb-10 pt-6 lg:px-6 lg:pb-16"
+		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-4 pt-6 pb-10 lg:px-6 lg:pb-16"
 	>
 		<!-- Mobile layout (single-column, hidden on desktop) -->
 		<div class="flex w-full flex-col lg:hidden">
@@ -73,11 +73,9 @@
 			<!-- Left: headline + vertical stepper + stats -->
 			<div class="fade-in flex flex-col gap-8">
 				<div class="flex flex-col gap-3">
-					<h1 class="text-4xl font-black leading-tight text-white">
+					<h1 class="text-4xl leading-tight font-black text-white">
 						{tx('auth.emailVerified.left.headline')}<br />
-						<span class="text-brand-green"
-							>{tx('auth.emailVerified.left.headlineHighlight')}</span
-						>
+						<span class="text-brand-green">{tx('auth.emailVerified.left.headlineHighlight')}</span>
 					</h1>
 					<p class="max-w-sm text-base leading-relaxed text-text-muted">
 						{tx('auth.emailVerified.left.description')}

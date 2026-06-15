@@ -21,7 +21,9 @@
 <div class="success-ring relative">
 	<div class="pulse-glow absolute inset-0 rounded-full"></div>
 	<div
-		class="success-circle relative z-10 flex items-center justify-center rounded-full {containerClass[size]}"
+		class="success-circle relative z-10 flex items-center justify-center rounded-full {containerClass[
+			size
+		]}"
 	>
 		<i class="fa-solid fa-circle-check text-brand-green {iconClass[size]}"></i>
 	</div>

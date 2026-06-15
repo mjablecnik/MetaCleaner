@@ -29,20 +29,12 @@
 
 <Story name="Default">
 	<div class="w-full max-w-4xl p-4">
-		<ReportDetailHeader
-			{reportDetail}
-			userEmail="user@example.com"
-			onDownloadPdf={() => {}}
-		/>
+		<ReportDetailHeader {reportDetail} userEmail="user@example.com" onDownloadPdf={() => {}} />
 	</div>
 </Story>
 
 <Story name="No Report Data">
 	<div class="w-full max-w-4xl p-4">
-		<ReportDetailHeader
-			reportDetail={null}
-			userEmail="user@example.com"
-			onDownloadPdf={() => {}}
-		/>
+		<ReportDetailHeader reportDetail={null} userEmail="user@example.com" onDownloadPdf={() => {}} />
 	</div>
 </Story>

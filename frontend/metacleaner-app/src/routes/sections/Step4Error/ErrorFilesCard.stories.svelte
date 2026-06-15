@@ -29,7 +29,15 @@
 
 	const singleFileState: FileWithErrorState[] = [
 		{
-			file: { ...base, id: 'file-001', name: 'vacation_beach.heic', size: 9_175_040, extension: '.heic', format: 'heic', scanResult: null },
+			file: {
+				...base,
+				id: 'file-001',
+				name: 'vacation_beach.heic',
+				size: 9_175_040,
+				extension: '.heic',
+				format: 'heic',
+				scanResult: null
+			},
 			status: 'error',
 			fieldsRemoved: 0,
 			gpsRemoved: false
@@ -38,25 +46,58 @@
 
 	const multipleFilesState: FileWithErrorState[] = [
 		{
-			file: { ...base, id: 'file-001', name: 'portrait.jpg', size: 4_194_304, extension: '.jpg', format: 'jpeg', scanResult: null },
+			file: {
+				...base,
+				id: 'file-001',
+				name: 'portrait.jpg',
+				size: 4_194_304,
+				extension: '.jpg',
+				format: 'jpeg',
+				scanResult: null
+			},
 			status: 'done',
 			fieldsRemoved: 12,
 			gpsRemoved: true
 		},
 		{
-			file: { ...base, id: 'file-002', name: 'IMG_5623.heic', size: 9_175_040, extension: '.heic', format: 'heic', scanResult: null },
+			file: {
+				...base,
+				id: 'file-002',
+				name: 'IMG_5623.heic',
+				size: 9_175_040,
+				extension: '.heic',
+				format: 'heic',
+				scanResult: null
+			},
 			status: 'error',
 			fieldsRemoved: 0,
 			gpsRemoved: false
 		},
 		{
-			file: { ...base, id: 'file-003', name: 'screenshot.png', size: 512_000, extension: '.png', format: 'png', scanResult: null },
+			file: {
+				...base,
+				id: 'file-003',
+				name: 'screenshot.png',
+				size: 512_000,
+				extension: '.png',
+				format: 'png',
+				scanResult: null
+			},
 			status: 'skipped',
 			fieldsRemoved: 0,
 			gpsRemoved: false
 		},
 		{
-			file: { ...base, id: 'file-004', name: 'walk_prague.mp4', size: 149_946_368, extension: '.mp4', type: 'video', format: 'mp4', scanResult: null },
+			file: {
+				...base,
+				id: 'file-004',
+				name: 'walk_prague.mp4',
+				size: 149_946_368,
+				extension: '.mp4',
+				type: 'video',
+				format: 'mp4',
+				scanResult: null
+			},
 			status: 'done',
 			fieldsRemoved: 6,
 			gpsRemoved: false

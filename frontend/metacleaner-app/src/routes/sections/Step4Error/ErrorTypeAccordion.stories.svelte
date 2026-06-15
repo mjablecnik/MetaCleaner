@@ -3,7 +3,6 @@
 	import { fn } from 'storybook/test';
 	import { userEvent } from 'storybook/test';
 	import ErrorTypeAccordion from './ErrorTypeAccordion.svelte';
-	import type { ErrorType } from './ErrorStateCard.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Step4/ErrorTypeAccordion',

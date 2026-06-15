@@ -63,12 +63,8 @@ test.describe('Login page', () => {
 
 		test('shows social login buttons', async ({ page }) => {
 			await navigateToLogin(page);
-			await expect(
-				page.getByRole('button', { name: /continue with google/i })
-			).toBeVisible();
-			await expect(
-				page.getByRole('button', { name: /continue with apple/i })
-			).toBeVisible();
+			await expect(page.getByRole('button', { name: /continue with google/i })).toBeVisible();
+			await expect(page.getByRole('button', { name: /continue with apple/i })).toBeVisible();
 		});
 
 		test('shows email input', async ({ page }) => {
@@ -116,9 +112,7 @@ test.describe('Login page', () => {
 		test('email validation error on empty submit', async ({ page }) => {
 			await navigateToLogin(page);
 			await page.getByRole('button', { name: /^sign in$/i }).click();
-			await expect(
-				page.getByText('Please enter a valid email address.')
-			).toBeVisible();
+			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
 		test('password validation error when email is valid but password empty', async ({ page }) => {
@@ -201,12 +195,8 @@ test.describe('Login page', () => {
 
 		test('shows social login buttons on mobile', async ({ page }) => {
 			await navigateToLogin(page);
-			await expect(
-				page.getByRole('button', { name: /continue with google/i })
-			).toBeVisible();
-			await expect(
-				page.getByRole('button', { name: /continue with apple/i })
-			).toBeVisible();
+			await expect(page.getByRole('button', { name: /continue with google/i })).toBeVisible();
+			await expect(page.getByRole('button', { name: /continue with apple/i })).toBeVisible();
 		});
 
 		test('shows submit button on mobile', async ({ page }) => {

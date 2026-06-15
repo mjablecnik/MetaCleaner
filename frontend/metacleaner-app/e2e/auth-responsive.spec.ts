@@ -79,7 +79,10 @@ test.describe('Auth Responsive — Register', () => {
 
 		test('mobile hero is visible on mobile', async ({ page }) => {
 			await navigateToRegister(page);
-			const mobileHero = page.locator('.lg\\:hidden').filter({ hasText: 'Remove metadata' }).first();
+			const mobileHero = page
+				.locator('.lg\\:hidden')
+				.filter({ hasText: 'Remove metadata' })
+				.first();
 			await expect(mobileHero).toBeVisible();
 		});
 
@@ -110,7 +113,10 @@ test.describe('Auth Responsive — Register', () => {
 
 		test('mobile hero is hidden on desktop', async ({ page }) => {
 			await navigateToRegister(page);
-			const mobileHero = page.locator('.lg\\:hidden').filter({ hasText: 'Remove metadata' }).first();
+			const mobileHero = page
+				.locator('.lg\\:hidden')
+				.filter({ hasText: 'Remove metadata' })
+				.first();
 			await expect(mobileHero).not.toBeVisible();
 		});
 

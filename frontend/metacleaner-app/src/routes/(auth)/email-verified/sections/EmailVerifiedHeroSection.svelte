@@ -10,10 +10,10 @@
 </script>
 
 <!-- Mobile hero (standalone, outside card) -->
-<div class="flex flex-col items-center gap-3 pb-2 pt-4 lg:hidden">
+<div class="flex flex-col items-center gap-3 pt-4 pb-2 lg:hidden">
 	<AnimatedCheckmark size="sm" />
 	<div class="flex flex-col items-center gap-1.5 text-center">
-		<h1 class="text-2xl font-black leading-tight text-white">
+		<h1 class="text-2xl leading-tight font-black text-white">
 			{tx('auth.emailVerified.hero.title')}
 		</h1>
 		<p class="max-w-xs text-sm leading-relaxed text-text-muted">

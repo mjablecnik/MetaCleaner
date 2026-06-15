@@ -19,7 +19,9 @@ test.describe('Email Verified — core content', () => {
 
 	test('nav shows brand name and "Account verified" badge', async ({ page }) => {
 		await navigateToEmailVerified(page);
-		await expect(page.locator('nav').getByText('MetaCleaner', { exact: true }).first()).toBeVisible();
+		await expect(
+			page.locator('nav').getByText('MetaCleaner', { exact: true }).first()
+		).toBeVisible();
 		await expect(page.locator('nav').getByText('Account verified', { exact: true })).toBeVisible();
 	});
 
@@ -97,7 +99,10 @@ test.describe('Email Verified — mobile viewport (375px)', () => {
 
 	test('mobile single-column layout is visible', async ({ page }) => {
 		await navigateToEmailVerified(page);
-		const mobileLayout = page.locator('.lg\\:hidden').filter({ hasText: 'Email verified!' }).first();
+		const mobileLayout = page
+			.locator('.lg\\:hidden')
+			.filter({ hasText: 'Email verified!' })
+			.first();
 		await expect(mobileLayout).toBeVisible();
 	});
 

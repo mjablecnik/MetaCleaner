@@ -82,7 +82,10 @@ test.describe('Register page', () => {
 
 		test('mobile hero is hidden on desktop', async ({ page }) => {
 			await navigateToRegister(page);
-			const mobileHero = page.locator('.lg\\:hidden').filter({ hasText: 'Remove metadata' }).first();
+			const mobileHero = page
+				.locator('.lg\\:hidden')
+				.filter({ hasText: 'Remove metadata' })
+				.first();
 			await expect(mobileHero).not.toBeVisible();
 		});
 
@@ -161,9 +164,7 @@ test.describe('Register page', () => {
 		test('footer login link points to /login', async ({ page }) => {
 			await navigateToRegister(page);
 			const loginLinks = page.getByRole('link', { name: /sign in/i });
-			const hrefs = await loginLinks.evaluateAll((els) =>
-				els.map((el) => el.getAttribute('href'))
-			);
+			const hrefs = await loginLinks.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
 			expect(hrefs.some((h) => h?.includes('login'))).toBe(true);
 		});
 
@@ -185,7 +186,10 @@ test.describe('Register page', () => {
 
 		test('shows mobile hero section on mobile', async ({ page }) => {
 			await navigateToRegister(page);
-			const mobileHero = page.locator('.lg\\:hidden').filter({ hasText: 'Remove metadata' }).first();
+			const mobileHero = page
+				.locator('.lg\\:hidden')
+				.filter({ hasText: 'Remove metadata' })
+				.first();
 			await expect(mobileHero).toBeVisible();
 		});
 

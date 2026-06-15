@@ -51,7 +51,9 @@
 		<div class="flex items-start gap-4">
 			<div class="flex flex-col items-center">
 				<div
-					class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full {circleClass(1)}"
+					class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full {circleClass(
+						1
+					)}"
 				>
 					<i class={iconClass(1)}></i>
 				</div>
@@ -71,7 +73,9 @@
 		<div class="flex items-start gap-4">
 			<div class="flex flex-col items-center">
 				<div
-					class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full {circleClass(2)}"
+					class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full {circleClass(
+						2
+					)}"
 				>
 					<i class={iconClass(2)}></i>
 				</div>
@@ -83,13 +87,13 @@
 				</p>
 				{#if s2 === 'completed'}
 					<span
-						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.doneBadge')}
 					</span>
 				{:else if s2 === 'active'}
 					<span
-						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.currentBadge')}
 					</span>
@@ -110,13 +114,13 @@
 				</p>
 				{#if s3 === 'active'}
 					<span
-						class="rounded bg-brand-blue-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-blue"
+						class="rounded bg-brand-blue-15 px-2 py-0.5 text-[10px] font-bold text-brand-blue uppercase"
 					>
 						{tx('auth.emailVerified.step.currentBadge')}
 					</span>
 				{:else if s3 === 'completed'}
 					<span
-						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-2 py-0.5 text-[10px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.doneBadge')}
 					</span>
@@ -135,7 +139,7 @@
 				<i class={iconClass(1)}></i>
 			</div>
 			<span
-				class="text-center text-[10px] font-semibold leading-tight {s1 === 'upcoming'
+				class="text-center text-[10px] leading-tight font-semibold {s1 === 'upcoming'
 					? 'text-text-muted'
 					: 'text-brand-green'}"
 			>
@@ -152,7 +156,7 @@
 			</div>
 			<div class="flex flex-col items-center gap-0.5">
 				<span
-					class="text-center text-[10px] font-semibold leading-tight {s2 === 'upcoming'
+					class="text-center text-[10px] leading-tight font-semibold {s2 === 'upcoming'
 						? 'text-text-muted'
 						: 'text-brand-green'}"
 				>
@@ -160,13 +164,13 @@
 				</span>
 				{#if s2 === 'completed'}
 					<span
-						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.doneBadge')}
 					</span>
 				{:else if s2 === 'active'}
 					<span
-						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.currentBadge')}
 					</span>
@@ -183,7 +187,7 @@
 			</div>
 			<div class="flex flex-col items-center gap-0.5">
 				<span
-					class="text-center text-[10px] font-semibold leading-tight {s3 === 'completed'
+					class="text-center text-[10px] leading-tight font-semibold {s3 === 'completed'
 						? 'text-brand-green'
 						: 'text-text-muted'}"
 				>
@@ -191,13 +195,13 @@
 				</span>
 				{#if s3 === 'active'}
 					<span
-						class="rounded bg-brand-blue-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-blue"
+						class="rounded bg-brand-blue-15 px-1.5 py-0.5 text-[9px] font-bold text-brand-blue uppercase"
 					>
 						{tx('auth.emailVerified.step.nextBadge')}
 					</span>
 				{:else if s3 === 'completed'}
 					<span
-						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold uppercase text-brand-green"
+						class="rounded bg-brand-green-15 px-1.5 py-0.5 text-[9px] font-bold text-brand-green uppercase"
 					>
 						{tx('auth.emailVerified.step.doneBadge')}
 					</span>

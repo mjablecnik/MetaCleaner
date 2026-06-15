@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
+
 	type Variant = 'highlighted' | 'default';
 
 	interface Props {
@@ -9,7 +12,7 @@
 		description: string;
 		badge?: string;
 		badgeBgClass?: string;
-		href?: string;
+		href?: Pathname;
 		variant?: Variant;
 	}
 
@@ -30,11 +33,13 @@
 		default: 'border-gray-800'
 	};
 
-	const sharedClass = $derived(`step-row flex cursor-pointer items-center gap-4 rounded-xl border ${borderClass[variant]} bg-navy-card lg:bg-navy-main p-4 active:scale-[0.98]`);
+	const sharedClass = $derived(
+		`step-row flex cursor-pointer items-center gap-4 rounded-xl border ${borderClass[variant]} bg-navy-card lg:bg-navy-main p-4 active:scale-[0.98]`
+	);
 </script>
 
 {#if href}
-	<a {href} class={sharedClass}>
+	<a href={resolve(href!)} class={sharedClass}>
 		<div
 			class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl lg:h-9 lg:w-9 lg:rounded-lg {bgClass}"
 		>

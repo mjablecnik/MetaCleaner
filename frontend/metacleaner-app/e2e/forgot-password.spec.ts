@@ -44,9 +44,9 @@ async function mockResetPasswordApi(page: Page) {
 
 async function navigateToForgotPassword(page: Page) {
 	await page.goto('/forgot-password');
-	await expect(
-		page.getByRole('heading', { level: 2, name: /forgot password/i })
-	).toBeVisible({ timeout: 8000 });
+	await expect(page.getByRole('heading', { level: 2, name: /forgot password/i })).toBeVisible({
+		timeout: 8000
+	});
 }
 
 async function advanceToStep2(page: Page) {
@@ -82,9 +82,7 @@ test.describe('Forgot Password page', () => {
 
 		test('renders forgot password heading on step 1', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await expect(
-				page.getByRole('heading', { level: 2, name: /forgot password/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { level: 2, name: /forgot password/i })).toBeVisible();
 		});
 
 		test('renders brand name in navbar', async ({ page }) => {
@@ -171,17 +169,13 @@ test.describe('Forgot Password page', () => {
 		test('step 2 OTP incomplete validation error', async ({ page }) => {
 			await advanceToStep2(page);
 			await page.getByRole('button', { name: /verify code/i }).click();
-			await expect(
-				page.getByText('Please enter the complete 6-digit code.')
-			).toBeVisible();
+			await expect(page.getByText('Please enter the complete 6-digit code.')).toBeVisible();
 		});
 
 		test('step 2 back button returns to step 1', async ({ page }) => {
 			await advanceToStep2(page);
 			await page.getByRole('button', { name: /^back$/i }).click();
-			await expect(
-				page.getByRole('heading', { level: 2, name: /forgot password/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { level: 2, name: /forgot password/i })).toBeVisible();
 		});
 
 		test('advances to step 3 after OTP verification', async ({ page }) => {
@@ -267,9 +261,7 @@ test.describe('Forgot Password page', () => {
 
 		test('renders forgot password heading on mobile', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await expect(
-				page.getByRole('heading', { level: 2, name: /forgot password/i })
-			).toBeVisible();
+			await expect(page.getByRole('heading', { level: 2, name: /forgot password/i })).toBeVisible();
 		});
 
 		test('shows mobile step cards on mobile step 1', async ({ page }) => {

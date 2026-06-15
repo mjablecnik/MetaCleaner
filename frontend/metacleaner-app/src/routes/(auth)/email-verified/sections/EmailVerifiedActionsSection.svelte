@@ -8,7 +8,9 @@
 <div class="mt-5 flex flex-col gap-3 lg:hidden">
 	<div class="flex items-center gap-3">
 		<div class="h-px flex-1 bg-gray-800"></div>
-		<span class="text-xs font-medium text-text-muted">{tx('auth.emailVerified.whatsNext.divider')}</span>
+		<span class="text-xs font-medium text-text-muted"
+			>{tx('auth.emailVerified.whatsNext.divider')}</span
+		>
 		<div class="h-px flex-1 bg-gray-800"></div>
 	</div>
 	<ActionCard
@@ -52,7 +54,9 @@
 <div class="hidden flex-col gap-7 lg:flex">
 	<div class="flex items-center gap-3">
 		<div class="h-px flex-1 bg-gray-800"></div>
-		<span class="text-xs font-medium text-text-muted">{tx('auth.emailVerified.whatsNext.divider')}</span>
+		<span class="text-xs font-medium text-text-muted"
+			>{tx('auth.emailVerified.whatsNext.divider')}</span
+		>
 		<div class="h-px flex-1 bg-gray-800"></div>
 	</div>
 	<div class="flex flex-col gap-2.5">
@@ -94,7 +98,11 @@
 
 <style>
 	.cta-btn {
-		background: linear-gradient(135deg, var(--color-brand-green) 0%, var(--color-brand-green-dark) 100%);
+		background: linear-gradient(
+			135deg,
+			var(--color-brand-green) 0%,
+			var(--color-brand-green-dark) 100%
+		);
 		transition: all 0.2s ease;
 	}
 	.cta-btn:hover {

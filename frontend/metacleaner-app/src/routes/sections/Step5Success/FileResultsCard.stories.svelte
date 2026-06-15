@@ -16,7 +16,13 @@
 		}
 	});
 
-	const makeFile = (id: string, name: string, ext: string, type: 'image' | 'video', size: number): QueuedFile => ({
+	const makeFile = (
+		id: string,
+		name: string,
+		ext: string,
+		type: 'image' | 'video',
+		size: number
+	): QueuedFile => ({
 		id,
 		file: null as unknown as File,
 		name,
@@ -27,7 +33,12 @@
 		scanResult: null
 	});
 
-	const makeResult = (fileId: string, gpsRemoved: boolean, exifCount: number, totalFields: number): FileMetadataResult => ({
+	const makeResult = (
+		fileId: string,
+		gpsRemoved: boolean,
+		exifCount: number,
+		totalFields: number
+	): FileMetadataResult => ({
 		fileId,
 		gpsRemoved,
 		exifCount,
@@ -38,13 +49,9 @@
 		totalFields
 	});
 
-	const singleFile: QueuedFile[] = [
-		makeFile('f1', 'portrait.jpg', '.jpg', 'image', 2457600)
-	];
+	const singleFile: QueuedFile[] = [makeFile('f1', 'portrait.jpg', '.jpg', 'image', 2457600)];
 
-	const singleResult: FileMetadataResult[] = [
-		makeResult('f1', true, 14, 14)
-	];
+	const singleResult: FileMetadataResult[] = [makeResult('f1', true, 14, 14)];
 
 	const multipleFiles: QueuedFile[] = [
 		makeFile('g1', 'portrait.jpg', '.jpg', 'image', 2457600),
@@ -59,7 +66,16 @@
 		makeResult('g2', false, 22, 22),
 		makeResult('g3', true, 31, 31),
 		makeResult('g4', false, 3, 3),
-		{ fileId: 'g5', gpsRemoved: false, exifCount: 0, xmpCount: 0, id3Count: 0, mp4AtomsCount: 12, pngChunksCount: 0, totalFields: 12 }
+		{
+			fileId: 'g5',
+			gpsRemoved: false,
+			exifCount: 0,
+			xmpCount: 0,
+			id3Count: 0,
+			mp4AtomsCount: 12,
+			pngChunksCount: 0,
+			totalFields: 12
+		}
 	];
 </script>
 

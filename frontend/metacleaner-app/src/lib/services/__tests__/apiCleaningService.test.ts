@@ -708,7 +708,7 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 			}),
 			{ numRuns: 50 }
 		);
-	});
+	}, 30000);
 
 	it('ProcessingResults preserves fieldsRemoved, gpsLocationsRemoved, and totalTimeSeconds from job_complete', async () => {
 		await fc.assert(

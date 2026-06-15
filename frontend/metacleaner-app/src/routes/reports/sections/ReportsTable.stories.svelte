@@ -90,6 +90,10 @@
 
 <Story name="Filtered — Single Result">
 	<div class="w-full max-w-5xl p-4">
-		<ReportsTable reports={[mockReports[0]]} totalCount={mockReports.length} onDownload={() => {}} />
+		<ReportsTable
+			reports={[mockReports[0]]}
+			totalCount={mockReports.length}
+			onDownload={() => {}}
+		/>
 	</div>
 </Story>

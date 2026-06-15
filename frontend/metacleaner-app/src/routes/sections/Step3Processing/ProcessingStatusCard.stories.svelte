@@ -26,7 +26,11 @@
 		{ timestamp: '14:22:01', text: 'Processing started', status: 'success' },
 		{ timestamp: '14:22:03', text: 'Cleaned portrait.jpg — 8 fields removed', status: 'success' },
 		{ timestamp: '14:22:05', text: 'Cleaned IMG_5623.heic — 22 fields removed', status: 'success' },
-		{ timestamp: '14:22:07', text: 'Cleaned vacation_beach.heic — 31 fields removed', status: 'success' },
+		{
+			timestamp: '14:22:07',
+			text: 'Cleaned vacation_beach.heic — 31 fields removed',
+			status: 'success'
+		},
 		{ timestamp: '14:22:09', text: 'Cleaned screenshot.png — 3 fields removed', status: 'success' },
 		{ timestamp: '14:22:11', text: 'Cleaning walk_prague.mp4', status: 'in_progress' }
 	];
