@@ -2,12 +2,18 @@ package source
 
 import (
 	"context"
-	"crypto/hmac"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"io"
+	"log"
+	"math/big"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -29,16 +35,161 @@ func UserIDFromContext(ctx context.Context) string {
 	return v
 }
 
-// AuthMiddleware validates JWT Bearer tokens on protected routes.
-type AuthMiddleware struct {
-	jwtSecret []byte
+// --- JWKS types ---
+
+type jwksResponse struct {
+	Keys []jwkKey `json:"keys"`
 }
 
-// NewAuthMiddleware creates an AuthMiddleware from the given config.
-func NewAuthMiddleware(cfg Config) *AuthMiddleware {
-	return &AuthMiddleware{
-		jwtSecret: []byte(cfg.SupabaseJWTSecret),
+type jwkKey struct {
+	KTY string `json:"kty"`
+	CRV string `json:"crv"`
+	X   string `json:"x"`
+	Y   string `json:"y"`
+	KID string `json:"kid"`
+	Use string `json:"use"`
+}
+
+// --- Key cache ---
+
+type keyCache struct {
+	mu        sync.RWMutex
+	keys      map[string]*ecdsa.PublicKey // kid -> public key
+	fetchedAt time.Time
+	jwksURL   string
+	ttl       time.Duration
+}
+
+func newKeyCache(jwksURL string) *keyCache {
+	return &keyCache{
+		keys:    make(map[string]*ecdsa.PublicKey),
+		jwksURL: jwksURL,
+		ttl:     1 * time.Hour,
 	}
+}
+
+func (kc *keyCache) getKey(kid string) (*ecdsa.PublicKey, error) {
+	kc.mu.RLock()
+	key, found := kc.keys[kid]
+	expired := time.Since(kc.fetchedAt) > kc.ttl
+	kc.mu.RUnlock()
+
+	if found && !expired {
+		return key, nil
+	}
+
+	// Refresh JWKS
+	if err := kc.refresh(); err != nil {
+		// If refresh fails but we have a cached key, use it
+		if found {
+			return key, nil
+		}
+		return nil, fmt.Errorf("failed to fetch JWKS: %w", err)
+	}
+
+	kc.mu.RLock()
+	key, found = kc.keys[kid]
+	kc.mu.RUnlock()
+
+	if !found {
+		return nil, fmt.Errorf("key with kid %q not found in JWKS", kid)
+	}
+	return key, nil
+}
+
+func (kc *keyCache) refresh() error {
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Get(kc.jwksURL)
+	if err != nil {
+		return fmt.Errorf("JWKS fetch: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("JWKS fetch returned %d: %s", resp.StatusCode, string(body))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("JWKS read body: %w", err)
+	}
+
+	var jwks jwksResponse
+	if err := json.Unmarshal(body, &jwks); err != nil {
+		return fmt.Errorf("JWKS parse: %w", err)
+	}
+
+	newKeys := make(map[string]*ecdsa.PublicKey)
+	for _, k := range jwks.Keys {
+		if k.KTY != "EC" || k.CRV != "P-256" {
+			continue
+		}
+		pubKey, err := parseECPublicKey(k)
+		if err != nil {
+			log.Printf("[auth-middleware] skipping JWKS key %s: %v", k.KID, err)
+			continue
+		}
+		newKeys[k.KID] = pubKey
+	}
+
+	kc.mu.Lock()
+	kc.keys = newKeys
+	kc.fetchedAt = time.Now()
+	kc.mu.Unlock()
+
+	log.Printf("[auth-middleware] JWKS refreshed: %d keys loaded", len(newKeys))
+	return nil
+}
+
+func parseECPublicKey(k jwkKey) (*ecdsa.PublicKey, error) {
+	xBytes, err := base64.RawURLEncoding.DecodeString(k.X)
+	if err != nil {
+		return nil, fmt.Errorf("decode x: %w", err)
+	}
+	yBytes, err := base64.RawURLEncoding.DecodeString(k.Y)
+	if err != nil {
+		return nil, fmt.Errorf("decode y: %w", err)
+	}
+
+	pubKey := &ecdsa.PublicKey{
+		Curve: elliptic.P256(),
+		X:     new(big.Int).SetBytes(xBytes),
+		Y:     new(big.Int).SetBytes(yBytes),
+	}
+
+	if !pubKey.Curve.IsOnCurve(pubKey.X, pubKey.Y) {
+		return nil, fmt.Errorf("point not on curve")
+	}
+
+	return pubKey, nil
+}
+
+// --- AuthMiddleware ---
+
+// AuthMiddleware validates JWT Bearer tokens on protected routes using JWKS (ES256).
+type AuthMiddleware struct {
+	cache *keyCache
+}
+
+// NewAuthMiddleware creates an AuthMiddleware that fetches public keys from Supabase JWKS endpoint.
+func NewAuthMiddleware(cfg Config) *AuthMiddleware {
+	jwksURL := strings.TrimRight(cfg.SupabaseURL, "/") + "/auth/v1/.well-known/jwks.json"
+	cache := newKeyCache(jwksURL)
+
+	// Pre-fetch keys at startup
+	if err := cache.refresh(); err != nil {
+		log.Printf("[auth-middleware] WARNING: initial JWKS fetch failed: %v (will retry on first request)", err)
+	}
+
+	return &AuthMiddleware{cache: cache}
+}
+
+// jwtHeader holds the JWT header fields we need.
+type jwtHeader struct {
+	Alg string `json:"alg"`
+	KID string `json:"kid"`
+	Typ string `json:"typ"`
 }
 
 // jwtClaims holds the standard JWT claims we care about.
@@ -59,19 +210,54 @@ func (m *AuthMiddleware) Authenticate(r *http.Request) (string, error) {
 	return m.validateJWT(token)
 }
 
-// validateJWT parses and verifies a HS256 JWT, returning the sub claim on success.
+// validateJWT parses and verifies an ES256 JWT using JWKS, returning the sub claim on success.
 func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token"}
 	}
 
-	// Verify signature: HMAC-SHA256 over "header.payload"
+	// Parse header to get kid and alg
+	headerBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
+	if err != nil {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token header"}
+	}
+	var header jwtHeader
+	if err := json.Unmarshal(headerBytes, &header); err != nil {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token header"}
+	}
+
+	if header.Alg != "ES256" {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "unsupported signing algorithm: " + header.Alg}
+	}
+
+	if header.KID == "" {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "token missing kid header"}
+	}
+
+	// Get public key from cache/JWKS
+	pubKey, err := m.cache.getKey(header.KID)
+	if err != nil {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "unable to verify token: " + err.Error()}
+	}
+
+	// Verify ES256 signature
 	signingInput := parts[0] + "." + parts[1]
-	mac := hmac.New(sha256.New, m.jwtSecret)
-	mac.Write([]byte(signingInput))
-	expectedSig := base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
-	if !hmac.Equal([]byte(expectedSig), []byte(parts[2])) {
+	hash := sha256.Sum256([]byte(signingInput))
+
+	sigBytes, err := base64.RawURLEncoding.DecodeString(parts[2])
+	if err != nil {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token signature"}
+	}
+
+	// ES256 signature is r || s, each 32 bytes
+	if len(sigBytes) != 64 {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "invalid signature length"}
+	}
+	r := new(big.Int).SetBytes(sigBytes[:32])
+	s := new(big.Int).SetBytes(sigBytes[32:])
+
+	if !ecdsa.Verify(pubKey, hash[:], r, s) {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "invalid token signature"}
 	}
 
