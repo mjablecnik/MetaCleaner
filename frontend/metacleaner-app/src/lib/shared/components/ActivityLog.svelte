@@ -18,7 +18,7 @@
 <div
 	class="flex flex-col gap-1.5 overflow-y-auto rounded-xl border border-gray-800 bg-navy-main/80 p-3 font-mono {extraClass}"
 >
-	{#each entries as entry (entry.timestamp)}
+	{#each entries as entry, i (i)}
 		<div
 			class="flex items-start gap-2"
 			class:opacity-40={entry.status === 'waiting' || entry.status === 'skipped'}
