@@ -1,5 +1,16 @@
 # AI Log
 
+## 2026-06-16 07:26 — manual
+- Project: frontend, backend, terminal (full stack — unit/integration test pipeline)
+- Generated test spec (TEST_SPEC.md) and task list (TASKS.md) targeting remaining uncovered logic; all tasks completed
+- Added unit tests for `backend/metacleaner-server/source/supabase_auth.go` pure helpers — `authURL`/`restURL` path concatenation, `GetOAuthURL` PKCE query params (`code_challenge`, `code_challenge_method=S256`), and `SupabaseAuthError.Error()` formatting (`source/supabase_auth_url_test.go`)
+- Added unit tests for `frontend/.../lib/repositories/userRepository.ts` `getCurrentUser` — unauthenticated/non-ok fallbacks and `first_name`+`last_name` → `name` composition (`userRepository.test.ts`)
+- Added unit tests for `terminal/.../src/polyfills.ts` `FileReaderPolyfill` — `readAsArrayBuffer`/`readAsText` result + event dispatch, error path, and `EMPTY/LOADING/DONE` constants (`tests/polyfills.test.ts`)
+- Added unit tests for `frontend/.../lib/repositories/authRepository.ts` (`getAuthStats`/`getAuthPlans`) and `languageRepository.ts` (`getLanguages`) static shapes (`authRepository.test.ts`, `languageRepository.test.ts`)
+- Ran full suite (TEST_RESULTS.md): frontend 482/482, CLI 154/154, backend `source` 24/24 passing; identified 18 backend `tests` failures rooted in auth middleware rejecting HS256 test JWTs
+- Fixed auth middleware to support HS256 tokens, corrected file ID validation, and fixed PDF report redirect (commit `bbede58`), resolving the 18 failures
+- Updated UNIT_TEST_REPORT.md
+
 ## 2026-06-15 14:05 — manual
 - Project: backend (metacleaner-server)
 - Performed full security audit of the codebase, identifying 15 findings (4 HIGH, 6 MEDIUM, 5 LOW)
