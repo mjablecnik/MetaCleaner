@@ -96,9 +96,16 @@ describe('detectAIInJpegBytes', () => {
 		// FF D8 SOI + FF EB APP11 with length=6, then "jumb"
 		// segData = bytes.slice(offset+4, offset+2+segLength) = bytes.slice(6, 10) = "jumb"
 		const buf = makeBuffer([
-			0xff, 0xd8, // SOI
-			0xff, 0xeb, 0x00, 0x06, // APP11, segmentLength=6
-			0x6a, 0x75, 0x6d, 0x62 // "jumb"
+			0xff,
+			0xd8, // SOI
+			0xff,
+			0xeb,
+			0x00,
+			0x06, // APP11, segmentLength=6
+			0x6a,
+			0x75,
+			0x6d,
+			0x62 // "jumb"
 		]);
 		const signals = detectAIInJpegBytes(buf);
 		expect(signals).toHaveLength(1);
@@ -108,9 +115,16 @@ describe('detectAIInJpegBytes', () => {
 
 	it('returns confirmed signal for APP11 segment containing "c2pa"', () => {
 		const buf = makeBuffer([
-			0xff, 0xd8, // SOI
-			0xff, 0xeb, 0x00, 0x06, // APP11, segmentLength=6
-			0x63, 0x32, 0x70, 0x61 // "c2pa"
+			0xff,
+			0xd8, // SOI
+			0xff,
+			0xeb,
+			0x00,
+			0x06, // APP11, segmentLength=6
+			0x63,
+			0x32,
+			0x70,
+			0x61 // "c2pa"
 		]);
 		const signals = detectAIInJpegBytes(buf);
 		expect(signals).toHaveLength(1);
@@ -119,9 +133,14 @@ describe('detectAIInJpegBytes', () => {
 
 	it('returns no signals for JPEG with only APP1 (no C2PA)', () => {
 		const buf = makeBuffer([
-			0xff, 0xd8, // SOI
-			0xff, 0xe1, 0x00, 0x04, // APP1, segmentLength=4
-			0x45, 0x78 // "Ex" - Exif start (not C2PA)
+			0xff,
+			0xd8, // SOI
+			0xff,
+			0xe1,
+			0x00,
+			0x04, // APP1, segmentLength=4
+			0x45,
+			0x78 // "Ex" - Exif start (not C2PA)
 		]);
 		const signals = detectAIInJpegBytes(buf);
 		expect(signals).toHaveLength(0);
@@ -130,9 +149,14 @@ describe('detectAIInJpegBytes', () => {
 	it('returns confirmed signal for "c2pa" found after SOS (fallback scan)', () => {
 		// SOS breaks the segment loop; fallback scans first 50KB for "c2pa"
 		const buf = makeBuffer([
-			0xff, 0xd8, // SOI
-			0xff, 0xda, // SOS → breaks segment scan
-			0x63, 0x32, 0x70, 0x61 // "c2pa" in body
+			0xff,
+			0xd8, // SOI
+			0xff,
+			0xda, // SOS → breaks segment scan
+			0x63,
+			0x32,
+			0x70,
+			0x61 // "c2pa" in body
 		]);
 		const signals = detectAIInJpegBytes(buf);
 		expect(signals).toHaveLength(1);
@@ -151,7 +175,9 @@ describe('detectAIInMetadata', () => {
 
 	it('returns confirmed signal for IPTC DigitalSourceType with AI value', () => {
 		const signals = detectAIInMetadata(
-			{ DigitalSourceType: 'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia' },
+			{
+				DigitalSourceType: 'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia'
+			},
 			'image.jpg'
 		);
 		const confirmed = signals.filter((s) => s.type === 'confirmed');

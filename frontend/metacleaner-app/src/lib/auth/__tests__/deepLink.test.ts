@@ -2,18 +2,23 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockAddListener, mockGoto, mockResolve, mockExtractCallbackParams, mockHandleAuthCallback } =
-	vi.hoisted(() => {
-		const removeListener = vi.fn();
-		return {
-			mockAddListener: vi.fn().mockResolvedValue({ remove: removeListener }),
-			mockGoto: vi.fn().mockResolvedValue(undefined),
-			mockResolve: vi.fn((path: string) => path),
-			mockExtractCallbackParams: vi.fn(),
-			mockHandleAuthCallback: vi.fn().mockResolvedValue(null),
-			mockRemoveListener: removeListener
-		};
-	});
+const {
+	mockAddListener,
+	mockGoto,
+	mockResolve,
+	mockExtractCallbackParams,
+	mockHandleAuthCallback
+} = vi.hoisted(() => {
+	const removeListener = vi.fn();
+	return {
+		mockAddListener: vi.fn().mockResolvedValue({ remove: removeListener }),
+		mockGoto: vi.fn().mockResolvedValue(undefined),
+		mockResolve: vi.fn((path: string) => path),
+		mockExtractCallbackParams: vi.fn(),
+		mockHandleAuthCallback: vi.fn().mockResolvedValue(null),
+		mockRemoveListener: removeListener
+	};
+});
 
 vi.mock('@capacitor/app', () => ({
 	App: { addListener: mockAddListener }

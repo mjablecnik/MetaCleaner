@@ -121,9 +121,7 @@ export function computeAggregatedRisk(results: ScanResult[]): AggregatedRisk {
 	};
 
 	const overallScore =
-		doneResults.length > 0
-			? Math.min(100, Math.max(0, ...doneResults.map((r) => r.fileScore)))
-			: 0;
+		doneResults.length > 0 ? Math.min(100, Math.max(0, ...doneResults.map((r) => r.fileScore))) : 0;
 	const severity = classifySeverity(overallScore);
 
 	return { overallScore, severity, categories, fileCount, scannedCount, isScanning };

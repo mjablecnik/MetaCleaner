@@ -244,8 +244,6 @@ describe('parseImage — error handling', () => {
 			throw new Error('ExifReader load failed');
 		});
 		const file = makeFile('corrupt data', 'broken.webp');
-		await expect(parseImage(file, 'broken-webp', 'webp')).rejects.toThrow(
-			'ExifReader load failed'
-		);
+		await expect(parseImage(file, 'broken-webp', 'webp')).rejects.toThrow('ExifReader load failed');
 	});
 });
