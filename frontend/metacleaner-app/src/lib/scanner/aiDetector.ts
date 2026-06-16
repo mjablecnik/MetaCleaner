@@ -458,24 +458,10 @@ export function detectAIByStructure(raw: Record<string, unknown>, fileName: stri
 	const hasFocalLength = !!raw['FocalLength'];
 	const hasFlash = raw['Flash'] !== undefined;
 
-	// If there's truly no camera data at all and it's not a screenshot-like format
+	// Only flag structural anomalies when metadata IS present but looks fake/incomplete.
+	// Missing metadata entirely = clean/safe file, not an AI indicator.
 	const hasAnyExif = Object.keys(raw).length > 0;
-	if (!hasAnyExif) {
-		const fileNameLower = fileName.toLowerCase();
-		const looksLikePhoto =
-			fileNameLower.startsWith('img_') ||
-			fileNameLower.startsWith('dsc') ||
-			fileNameLower.startsWith('dcim') ||
-			fileNameLower.startsWith('photo') ||
-			fileNameLower.startsWith('pic_');
-		if (!looksLikePhoto) {
-			signals.push({
-				type: 'heuristic',
-				source: 'Structure',
-				detail: 'No EXIF metadata present (common for AI-generated images)'
-			});
-		}
-	} else if (hasAnyExif && !hasMake && !hasModel && !hasExposure && !hasFNumber && !hasISO) {
+	if (hasAnyExif && !hasMake && !hasModel && !hasExposure && !hasFNumber && !hasISO) {
 		signals.push({
 			type: 'heuristic',
 			source: 'Structure',

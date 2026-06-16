@@ -286,13 +286,13 @@ describe('detectAIInMetadata', () => {
 // ─── detectAIByStructure ─────────────────────────────────────────────────────
 
 describe('detectAIByStructure', () => {
-	it('returns heuristic signal for completely empty metadata with non-photo filename', () => {
+	it('returns no signal for completely empty metadata (clean file is safe)', () => {
 		const signals = detectAIByStructure({}, 'image_ai_output.png');
 		const heuristic = signals.filter((s) => s.type === 'heuristic' && s.source === 'Structure');
-		expect(heuristic.length).toBeGreaterThan(0);
+		expect(heuristic).toHaveLength(0);
 	});
 
-	it('returns no heuristic for empty metadata when filename looks like camera photo', () => {
+	it('returns no signal for empty metadata regardless of filename', () => {
 		const signals = detectAIByStructure({}, 'IMG_1234.jpg');
 		const structureSignals = signals.filter((s) => s.source === 'Structure');
 		expect(structureSignals).toHaveLength(0);
