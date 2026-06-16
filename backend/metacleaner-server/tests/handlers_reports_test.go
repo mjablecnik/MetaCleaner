@@ -154,7 +154,7 @@ func TestHandleGetReportNotFound(t *testing.T) {
 	}
 }
 
-// Test PDF download redirect → 302 with Location header
+// Test PDF download → 200 with JSON URL
 func TestHandleGetReportPDFRedirect(t *testing.T) {
 	srv := newMockSupabaseReports(t)
 	defer srv.Close()
@@ -168,12 +168,15 @@ func TestHandleGetReportPDFRedirect(t *testing.T) {
 	rr := httptest.NewRecorder()
 	src.HandleGetReportPDF(db)(rr, req)
 
-	if rr.Code != http.StatusFound {
-		t.Fatalf("expected 302, got %d: %s", rr.Code, rr.Body.String())
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	loc := rr.Header().Get("Location")
-	if !strings.Contains(loc, "signed") {
-		t.Errorf("expected signed URL in Location header, got %q", loc)
+	var resp struct{ URL string `json:"url"` }
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("failed to decode JSON response: %v", err)
+	}
+	if !strings.Contains(resp.URL, "signed") {
+		t.Errorf("expected signed URL in response, got %q", resp.URL)
 	}
 }
 

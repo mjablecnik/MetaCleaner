@@ -269,7 +269,93 @@ func countJpegC2PASegments(data []byte) int {
 	return count
 }
 
+// safeMetadataWhitelist contains metadata field keys that are NOT privacy-relevant.
+// These are purely technical/structural fields that do not reveal personal information.
+// Fields NOT in this whitelist are considered risky and will be reported as removed.
+var safeMetadataWhitelist = map[string]bool{
+	// Image dimensions and structure
+	"ImageWidth":        true,
+	"ImageHeight":       true,
+	"ImageSize":         true,
+	"Megapixels":        true,
+	"BitDepth":          true,
+	"BitsPerSample":     true,
+	"ColorComponents":   true,
+	"ColorSpace":        true,
+	"ColorType":         true,
+	"Compression":       true,
+	"EncodingProcess":   true,
+	"Filter":            true,
+	"Interlace":         true,
+	"XResolution":       true,
+	"YResolution":       true,
+	"ResolutionUnit":    true,
+	"YCbCrSubSampling":  true,
+	"YCbCrPositioning":  true,
+	"SamplesPerPixel":   true,
+	"PhotometricInterpretation": true,
+	"PlanarConfiguration":       true,
+	"RowsPerStrip":      true,
+	"StripOffsets":       true,
+	"StripByteCounts":    true,
+
+	// File type/format identification
+	"FileType":          true,
+	"FileTypeExtension": true,
+	"MIMEType":          true,
+	"ExifByteOrder":     true,
+	"JFIFVersion":       true,
+
+	// Color profile (ICC)
+	"ProfileCMMType":          true,
+	"ProfileVersion":          true,
+	"ProfileClass":            true,
+	"ColorSpaceData":          true,
+	"ProfileConnectionSpace":  true,
+	"ProfileCreator":          true,
+	"ProfileDescription":      true,
+	"MediaWhitePoint":         true,
+	"MediaBlackPoint":         true,
+	"RedMatrixColumn":         true,
+	"GreenMatrixColumn":       true,
+	"BlueMatrixColumn":        true,
+	"RedTRC":                  true,
+	"GreenTRC":                true,
+	"BlueTRC":                 true,
+	"DeviceModelDesc":         true,
+	"DeviceMfgDesc":           true,
+	"ChromaticAdaptation":     true,
+	"ProfileFileSignature":    true,
+
+	// PNG structural
+	"BackgroundColor": true,
+	"PixelsPerUnitX":  true,
+	"PixelsPerUnitY":  true,
+	"PixelUnits":      true,
+	"Gamma":           true,
+	"SRGBRendering":   true,
+
+	// Video/audio codec parameters (technical, not personal)
+	"Duration":         true,
+	"VideoFrameRate":   true,
+	"AudioBitrate":     true,
+	"AudioSampleRate":  true,
+	"AudioChannels":    true,
+	"VideoCodec":       true,
+	"AudioCodec":       true,
+	"BitRate":          true,
+	"AvgBitrate":       true,
+	"ImagePixelWidth":  true,
+	"ImagePixelHeight": true,
+}
+
+// isWhitelistedField returns true if the field is safe (non-privacy) metadata.
+func isWhitelistedField(key string) bool {
+	return safeMetadataWhitelist[key]
+}
+
 // exifReadMetadata runs `exiftool -json <file>` and returns the flat key-value map + device string.
+// Only privacy-relevant fields (not in whitelist) are returned.
 func exifReadMetadata(ctx context.Context, path string) (map[string]string, string, error) {
 	out, err := exec.CommandContext(ctx, "exiftool", "-json", path).Output()
 	if err != nil {
@@ -292,14 +378,22 @@ func exifReadMetadata(ctx context.Context, path string) (map[string]string, stri
 			k == "FileAccessDate" || k == "FileInodeChangeDate" || k == "FilePermissions" {
 			continue
 		}
-		strVal := fmt.Sprintf("%v", v)
-		fields[k] = strVal
 
+		strVal := fmt.Sprintf("%v", v)
+
+		// Extract device info before filtering
 		if k == "Model" || k == "DeviceModel" {
 			device = strVal
 		} else if device == "" && k == "Make" {
 			device = strVal
 		}
+
+		// Skip whitelisted (safe/technical) fields — don't report them as removed
+		if isWhitelistedField(k) {
+			continue
+		}
+
+		fields[k] = strVal
 	}
 
 	return fields, device, nil
