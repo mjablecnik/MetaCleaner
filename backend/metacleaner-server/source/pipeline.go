@@ -272,6 +272,8 @@ func countJpegC2PASegments(data []byte) int {
 // safeMetadataWhitelist contains metadata field keys that are NOT privacy-relevant.
 // These are purely technical/structural fields that do not reveal personal information.
 // Fields NOT in this whitelist are considered risky and will be reported as removed.
+// This whitelist is aligned with the frontend scanner's categorizeField() logic —
+// any field that frontend does NOT categorize as risky should be whitelisted here.
 var safeMetadataWhitelist = map[string]bool{
 	// Image dimensions and structure
 	"ImageWidth":        true,
@@ -298,6 +300,57 @@ var safeMetadataWhitelist = map[string]bool{
 	"RowsPerStrip":      true,
 	"StripOffsets":       true,
 	"StripByteCounts":    true,
+	"Orientation":       true,
+
+	// EXIF technical fields (non-personal)
+	"ExifImageWidth":          true,
+	"ExifImageHeight":         true,
+	"ExifVersion":             true,
+	"FlashpixVersion":         true,
+	"ComponentsConfiguration": true,
+	"CompressedBitsPerPixel":  true,
+	"InteropIndex":            true,
+	"InteropVersion":          true,
+	"ThumbnailOffset":         true,
+	"ThumbnailLength":         true,
+	"ThumbnailImage":          true,
+	"PreviewImage":            true,
+	"ExifToolVersion":         true,
+	"Flash":                   true,
+	"FocalLength":             true,
+	"FocalLengthIn35mmFormat": true,
+	"FocalPlaneXResolution":   true,
+	"FocalPlaneYResolution":   true,
+	"FocalPlaneResolutionUnit": true,
+	"ExposureTime":            true,
+	"FNumber":                 true,
+	"ISO":                     true,
+	"ISOSpeed":                true,
+	"ExposureProgram":         true,
+	"ExposureMode":            true,
+	"ExposureCompensation":    true,
+	"MeteringMode":            true,
+	"WhiteBalance":            true,
+	"LightSource":             true,
+	"SceneCaptureType":        true,
+	"SceneType":               true,
+	"SensingMethod":           true,
+	"SharpnessFrequency":      true,
+	"Sharpness":               true,
+	"Saturation":              true,
+	"Contrast":                true,
+	"GainControl":             true,
+	"SubjectDistanceRange":    true,
+	"FileSource":              true,
+	"CustomRendered":          true,
+	"DigitalZoomRatio":        true,
+	"MaxApertureValue":        true,
+	"ApertureValue":           true,
+	"BrightnessValue":         true,
+	"ShutterSpeedValue":       true,
+	"LightValue":              true,
+	"CFAPattern":              true,
+	"ColorFilter":             true,
 
 	// File type/format identification
 	"FileType":          true,
@@ -326,6 +379,12 @@ var safeMetadataWhitelist = map[string]bool{
 	"DeviceMfgDesc":           true,
 	"ChromaticAdaptation":     true,
 	"ProfileFileSignature":    true,
+	"ProfileDateTime":         true,
+	"PrimaryPlatform":         true,
+	"CMMFlags":                true,
+	"DeviceAttributes":        true,
+	"RenderingIntent":         true,
+	"ConnectionSpaceIlluminant": true,
 
 	// PNG structural
 	"BackgroundColor": true,
