@@ -45,7 +45,8 @@ function rawToFields(raw: Record<string, unknown>): MetadataField[] {
 async function parseWithExifr(
 	input: Blob,
 	fileId: string,
-	format: ImageFormat
+	format: ImageFormat,
+	fileName: string
 ): Promise<ScanResult> {
 	// Read raw bytes for binary-level AI detection (C2PA chunks)
 	const rawBytes = await input.arrayBuffer();
@@ -73,7 +74,6 @@ async function parseWithExifr(
 
 	if (!data) {
 		// No metadata at all — check for AI via bytes and filename
-		const fileName = fileId.split('/').pop() ?? fileId;
 		const structureSignals = detectAIByStructure({}, fileName);
 		const allSignals = [...byteSignals, ...structureSignals];
 		const aiDetection = buildAIDetectionResult(allSignals);
@@ -107,7 +107,6 @@ async function parseWithExifr(
 	}
 
 	// AI detection from metadata + bytes + structure
-	const fileName = fileId.split('/').pop() ?? fileId;
 	const metadataSignals = detectAIInMetadata(raw, fileName);
 	const structureSignals = detectAIByStructure(raw, fileName);
 	const allSignals = [...byteSignals, ...metadataSignals, ...structureSignals];
@@ -130,7 +129,11 @@ async function parseWithExifr(
 	};
 }
 
-async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanResult> {
+async function parseWithExifReader(
+	input: Blob,
+	fileId: string,
+	fileName: string
+): Promise<ScanResult> {
 	const buffer = await input.arrayBuffer();
 	const tags = ExifReader.load(buffer);
 
@@ -148,7 +151,6 @@ async function parseWithExifReader(input: Blob, fileId: string): Promise<ScanRes
 	const device = [makePart, modelPart].filter(Boolean).join(' ') || undefined;
 
 	// AI detection from metadata + structure
-	const fileName = fileId.split('/').pop() ?? fileId;
 	const metadataSignals = detectAIInMetadata(raw, fileName);
 	const structureSignals = detectAIByStructure(raw, fileName);
 	const allSignals = [...metadataSignals, ...structureSignals];
@@ -177,13 +179,14 @@ export async function parseImage(
 ): Promise<ScanResult> {
 	const input: Blob =
 		file.size > FILE_SIZE_THRESHOLD ? file.slice(0, MAX_IMAGE_HEADER_BYTES) : file;
+	const fileName = file.name;
 
 	if (EXIFR_FORMATS.has(format)) {
-		return parseWithExifr(input, fileId, format);
+		return parseWithExifr(input, fileId, format, fileName);
 	}
 
 	if (EXIFREADER_FORMATS.has(format)) {
-		return parseWithExifReader(input, fileId);
+		return parseWithExifReader(input, fileId, fileName);
 	}
 
 	return makeEmptyResult(fileId);
