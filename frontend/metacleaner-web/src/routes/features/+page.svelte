@@ -1,31 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import * as m from '$lib/paraglide/messages';
 
-	const langConfig: Record<string, { flag: string; label: string; name: string }> = {
-		cs: { flag: '🇨🇿', label: 'CS', name: 'Čeština' },
-		en: { flag: '🇬🇧', label: 'EN', name: 'English' },
-		de: { flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
-		fr: { flag: '🇫🇷', label: 'FR', name: 'Français' },
-		sk: { flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
-	};
-
-	let currentLang = $state('cs');
-	let langDropdownOpen = $state(false);
 	let mobileMenuOpen = $state(false);
-
-	function setLang(lang: string) {
-		const cfg = langConfig[lang];
-		if (!cfg) return;
-		currentLang = lang;
-		langDropdownOpen = false;
-		if (typeof localStorage !== 'undefined') {
-			localStorage.setItem('lang', lang);
-		}
-	}
-
-	function toggleLangDropdown() {
-		langDropdownOpen = !langDropdownOpen;
-	}
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
@@ -34,78 +10,10 @@
 	function closeMobileMenu() {
 		mobileMenuOpen = false;
 	}
-
-	function handleDocumentClick(event: MouseEvent) {
-		const dropdown = document.getElementById('langDropdown');
-		if (dropdown && !dropdown.contains(event.target as Node)) {
-			langDropdownOpen = false;
-		}
-	}
-
-	onMount(() => {
-		const saved = localStorage.getItem('lang') || 'cs';
-		currentLang = langConfig[saved] ? saved : 'cs';
-		document.addEventListener('click', handleDocumentClick);
-		return () => document.removeEventListener('click', handleDocumentClick);
-	});
-
-	const t = $derived({
-		howItWorks:
-			currentLang === 'en'
-				? 'How it Works'
-				: currentLang === 'de'
-					? 'Wie es funktioniert'
-					: currentLang === 'fr'
-						? 'Comment ça marche'
-						: currentLang === 'sk'
-							? 'Ako to funguje'
-							: 'Jak to funguje',
-		features:
-			currentLang === 'en'
-				? 'Features'
-				: currentLang === 'de'
-					? 'Funktionen'
-					: currentLang === 'fr'
-						? 'Fonctionnalités'
-						: currentLang === 'sk'
-							? 'Funkcie'
-							: 'Funkce',
-		pricing:
-			currentLang === 'en'
-				? 'Pricing'
-				: currentLang === 'de'
-					? 'Preise'
-					: currentLang === 'fr'
-						? 'Tarifs'
-						: currentLang === 'sk'
-							? 'Cenník'
-							: 'Ceník',
-		faq: 'FAQ',
-		login:
-			currentLang === 'en'
-				? 'Log In'
-				: currentLang === 'de'
-					? 'Anmelden'
-					: currentLang === 'fr'
-						? 'Connexion'
-						: currentLang === 'sk'
-							? 'Prihlásiť'
-							: 'Přihlásit',
-		tryFree:
-			currentLang === 'en'
-				? 'Try for Free'
-				: currentLang === 'de'
-					? 'Kostenlos testen'
-					: currentLang === 'fr'
-						? 'Essayer gratuitement'
-						: currentLang === 'sk'
-							? 'Vyskúšať zadarmo'
-							: 'Vyzkoušet zdarma'
-	});
 </script>
 
 <svelte:head>
-	<title>MetaCleaner — Funkce</title>
+	<title>{m.meta_features_title()}</title>
 </svelte:head>
 
 <div class="flex flex-col items-center w-full">
@@ -120,48 +28,18 @@
 			<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
 		</a>
 		<div class="flex items-center gap-8 text-sm font-medium text-text-muted">
-			<a href="/#how-it-works" class="hover:text-white transition-colors">{t.howItWorks}</a>
-			<a href="/features" class="text-white transition-colors">{t.features}</a>
-			<a href="/pricing" class="hover:text-white transition-colors">{t.pricing}</a>
-			<a href="/#faq" class="hover:text-white transition-colors">{t.faq}</a>
+			<a href="/#how-it-works" class="hover:text-white transition-colors">{m.nav_how_it_works()}</a>
+			<a href="/features" class="text-white transition-colors">{m.nav_features()}</a>
+			<a href="/pricing" class="hover:text-white transition-colors">{m.nav_pricing()}</a>
+			<a href="/#faq" class="hover:text-white transition-colors">{m.nav_faq()}</a>
 		</div>
 		<div class="flex items-center gap-3">
-			<div id="langDropdown" class="lang-dropdown">
-				<button
-					onclick={toggleLangDropdown}
-					class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
-				>
-					<span>{langConfig[currentLang].flag}</span>
-					<span>{langConfig[currentLang].label}</span>
-					<i
-						class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 {langDropdownOpen
-							? 'rotate-180'
-							: ''}"
-					></i>
-				</button>
-				<div class="lang-dropdown-menu {langDropdownOpen ? 'open' : ''}">
-					{#each Object.entries(langConfig) as [lang, cfg]}
-						<div
-							onclick={() => setLang(lang)}
-							class="lang-option {currentLang === lang ? 'active' : ''}"
-							role="button"
-							tabindex="0"
-							onkeydown={(e) => e.key === 'Enter' && setLang(lang)}
-						>
-							<span class="lang-flag">{cfg.flag}</span>
-							{cfg.name}
-							<span class="lang-check {currentLang === lang ? '' : 'hidden'}">
-								<i class="fa-solid fa-check text-xs"></i>
-							</span>
-						</div>
-					{/each}
-				</div>
-			</div>
+			<!-- LanguageSwitcher will be mounted here in Task 27 -->
 			<a
 				href="#"
 				class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
 			>
-				{t.login}
+				{m.nav_login()}
 			</a>
 		</div>
 	</nav>
@@ -197,34 +75,34 @@
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			{t.howItWorks} <i class="fa-solid fa-chevron-right text-xs"></i>
+			{m.nav_how_it_works()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/features"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			{t.features} <i class="fa-solid fa-chevron-right text-xs"></i>
+			{m.nav_features()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/pricing"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			{t.pricing} <i class="fa-solid fa-chevron-right text-xs"></i>
+			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/#faq"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			{t.faq} <i class="fa-solid fa-chevron-right text-xs"></i>
+			{m.nav_faq()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="#"
 			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
 		>
-			{t.login}
+			{m.nav_login()}
 		</a>
 	</div>
 
@@ -233,17 +111,16 @@
 		<!-- Page Header -->
 		<section id="features-header" class="text-center pt-8">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
-				>Funkce</span
+				>{m.features_eyebrow()}</span
 			>
 			<h1 class="text-5xl font-bold mb-4 leading-tight">
-				Kompletní sada nástrojů<br />
+				{m.features_title_line1()}<br />
 				<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green"
-					>pro ochranu soukromí</span
+					>{m.features_title_line2()}</span
 				>
 			</h1>
 			<p class="text-text-muted max-w-2xl mx-auto text-lg leading-relaxed">
-				Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a získejte
-				plnou kontrolu nad svými soubory.
+				{m.features_subtitle()}
 			</p>
 		</section>
 
@@ -637,7 +514,7 @@
 						<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
 					</div>
 					<p class="text-text-muted text-sm leading-relaxed">
-						Kompletní ochrana soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.
+						{m.footer_tagline_features()}
 					</p>
 					<div class="flex items-center gap-3 mt-1">
 						<a
@@ -662,23 +539,23 @@
 				</div>
 				<!-- Produkt -->
 				<div class="flex flex-col gap-4">
-					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">Produkt</span>
+					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">{m.footer_col_product()}</span>
 					<div class="flex flex-col gap-3">
 						<a href="/#how-it-works" class="text-sm text-text-muted hover:text-white transition-colors"
-							>Jak to funguje</a
+							>{m.footer_link_how()}</a
 						>
 						<a href="/features" class="text-sm text-text-muted hover:text-white transition-colors"
-							>Funkce</a
+							>{m.footer_link_features()}</a
 						>
 						<a href="/pricing" class="text-sm text-text-muted hover:text-white transition-colors"
-							>Ceník</a
+							>{m.footer_link_pricing()}</a
 						>
-						<a href="/#faq" class="text-sm text-text-muted hover:text-white transition-colors">FAQ</a>
+						<a href="/#faq" class="text-sm text-text-muted hover:text-white transition-colors">{m.footer_link_faq()}</a>
 					</div>
 				</div>
 				<!-- Funkce Links -->
 				<div class="flex flex-col gap-4">
-					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">Funkce</span>
+					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">{m.footer_col_features()}</span>
 					<div class="flex flex-col gap-3">
 						<a href="#feature-exif" class="text-sm text-text-muted hover:text-white transition-colors"
 							>EXIF Removal</a
@@ -702,27 +579,27 @@
 				</div>
 				<!-- Právní -->
 				<div class="flex flex-col gap-4">
-					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">Právní</span>
+					<span class="text-xs font-bold uppercase tracking-widest text-text-muted">{m.footer_col_legal()}</span>
 					<div class="flex flex-col gap-3">
 						<a href="#" class="text-sm text-text-muted hover:text-white transition-colors"
-							>Ochrana soukromí</a
+							>{m.footer_legal_privacy()}</a
 						>
 						<a href="#" class="text-sm text-text-muted hover:text-white transition-colors"
-							>Podmínky použití</a
+							>{m.footer_legal_terms()}</a
 						>
 						<a href="#" class="text-sm text-text-muted hover:text-white transition-colors">GDPR</a>
-						<a href="#" class="text-sm text-text-muted hover:text-white transition-colors">Kontakt</a>
+						<a href="#" class="text-sm text-text-muted hover:text-white transition-colors">{m.footer_link_contact()}</a>
 					</div>
 				</div>
 			</div>
 			<div
 				class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
 			>
-				<span class="text-xs text-text-muted">© 2024 MetaCleaner. Všechna práva vyhrazena.</span>
+				<span class="text-xs text-text-muted">{m.footer_copyright()}</span>
 				<div class="flex items-center gap-2">
-					<span class="text-xs text-text-muted">Vyrobeno s</span>
+					<span class="text-xs text-text-muted">{m.footer_made_with_1()}</span>
 					<i class="fa-solid fa-heart text-brand-red text-xs"></i>
-					<span class="text-xs text-text-muted">pro ochranu vašeho soukromí</span>
+					<span class="text-xs text-text-muted">{m.footer_made_with_2()}</span>
 				</div>
 			</div>
 		</div>
@@ -733,17 +610,16 @@
 		<!-- Page Header -->
 		<section class="text-center pt-8 pb-6 px-2">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
-				>Funkce</span
+				>{m.features_eyebrow()}</span
 			>
 			<h1 class="text-3xl font-bold mb-3 leading-tight">
-				Kompletní sada nástrojů<br />
+				{m.features_title_line1()}<br />
 				<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green"
-					>pro ochranu soukromí</span
+					>{m.features_title_line2()}</span
 				>
 			</h1>
 			<p class="text-text-muted text-sm leading-relaxed">
-				Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a získejte
-				plnou kontrolu nad svými soubory.
+				{m.features_subtitle()}
 			</p>
 		</section>
 
@@ -1040,13 +916,13 @@
 			<div
 				class="bg-gradient-to-br from-brand-blue/20 to-brand-green/10 rounded-2xl border border-brand-blue/30 p-6 text-center"
 			>
-				<h2 class="text-xl font-bold mb-2">Začněte zdarma</h2>
-				<p class="text-text-muted text-sm mb-5">Vyzkoušejte všechny funkce bez registrace.</p>
+				<h2 class="text-xl font-bold mb-2">{m.features_cta_title()}</h2>
+				<p class="text-text-muted text-sm mb-5">{m.features_cta_subtitle()}</p>
 				<a
 					href="#"
 					class="w-full py-3.5 rounded-xl bg-brand-green text-white font-semibold text-sm shadow-glow-green block text-center"
 				>
-					{t.tryFree}
+					{m.cta_try_free()}
 				</a>
 			</div>
 		</section>
@@ -1064,7 +940,7 @@
 				<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
 			</div>
 			<p class="text-text-muted text-sm leading-relaxed mb-4">
-				Kompletní ochrana soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.
+				{m.footer_tagline_features()}
 			</p>
 			<div class="flex items-center gap-2 mb-6">
 				<a
