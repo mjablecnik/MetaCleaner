@@ -118,4 +118,4 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 - [x] 83. [HIGH] Run `npm run check` and `vite build` — 0 type errors, clean build.
 - [x] 84. [HIGH] Run `npm run build-storybook` — all new stories build.
-- [ ] 85. [HIGH] Visually verify Home, Features, Pricing (desktop + mobile) — no visual regressions, language switch + billing toggle + FAQ accordion + mobile menu still work, and no duplicated UI code remains.
+- [x] 85. [HIGH] Visually verify Home, Features, Pricing (desktop + mobile) — no visual regressions, language switch + billing toggle + FAQ accordion + mobile menu still work, and no duplicated UI code remains.
