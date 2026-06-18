@@ -19,7 +19,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 6. [HIGH] Create `BrandLogo.svelte` — logo tile + “MetaCleaner” wordmark; props `size` ('sm'|'md'|'lg'), `href='/'`.
 - [x] 7. [HIGH] Create `BrandLogo.stories.svelte` — sizes sm/md/lg.
 - [x] 8. [HIGH] Create `IconBadge.svelte` — tinted rounded icon container; props `icon`, `color`, `size`, `shape` ('circle'|'rounded'), `tint`.
-- [ ] 9. [HIGH] Create `IconBadge.stories.svelte` — color/shape/size variants.
+- [x] 9. [HIGH] Create `IconBadge.stories.svelte` — color/shape/size variants.
 - [ ] 10. [HIGH] Create `SectionHeading.svelte` — eyebrow + title + subtitle; props `eyebrow`, `eyebrowColor`, `title`, `subtitle`, `size` ('lg'|'sm').
 - [ ] 11. [HIGH] Create `SectionHeading.stories.svelte` — with/without eyebrow, lg/sm.
 - [ ] 12. [HIGH] Create `CtaButton.svelte` — button/link; props `variant` ('primary'|'secondary'|'blue'|'outline'), `icon`, `label`, `href`, `disabled`, `fullWidth`.
