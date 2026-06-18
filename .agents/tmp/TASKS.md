@@ -23,7 +23,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 14. [MEDIUM] Extract Home How-It-Works, Who-It's-For, and FAQ section headings (eyebrow/title/subtitle) to `home_steps_*` / `home_audience_*` / `home_faq_*` keys. — ~9 strings
 - [x] 15. [MEDIUM] Set `meta_home_title` and extract the Home `<title>`; verify no hardcoded copy remains in `+page.svelte` except brand/format literals. — 1 string + sweep
 - [x] 16. [MEDIUM] Extract `src/routes/features/+page.svelte` header, mobile CTA, and footer copy to `features_*` / `footer_*` keys; delete inline `t` object; set `meta_features_title`. — ~12 strings
-- [ ] 17. [MEDIUM] Extract `src/routes/pricing/+page.svelte` header, billing toggle, enterprise banner, and footer copy to `pricing_*` / `footer_*` keys; set `meta_pricing_title`. — ~10 strings
+- [x] 17. [MEDIUM] Extract `src/routes/pricing/+page.svelte` header, billing toggle, enterprise banner, and footer copy to `pricing_*` / `footer_*` keys; set `meta_pricing_title`. — ~10 strings
 - [ ] 18. [MEDIUM] Backfill `messages/cs.json` for every key added in Phase 3 and verify en/cs key parity (no missing keys in either file).
 
 ## Phase 4 — Replace API data with repository calls
