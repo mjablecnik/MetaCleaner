@@ -1,22 +1,14 @@
-# Test Tasks — MetaCleaner (Unit & Integration)
+# MetaCleaner Web — Page Build Tasks
 
-_Derived from TEST_SPEC.md (2026-06-15). Prior pipeline tasks all complete; these cover the remaining uncovered logic._
+Reproduce each design pixel-perfectly. Mobile + desktop variants of the same page are ONE responsive page. Shared design system (colors, Inter font, navbar, footer, language switcher) is documented in `PAGES.md`. Default language Czech; keep `data-cs`/`data-en` multilingual text.
 
-## Phase 0 — Cleanup
+- [x] 1. Create the **Home** page — responsive landing page with navbar, hero (gradient headline + animated dashed upload card + Try-free/Download CTAs), "Why It Matters" before/after metadata comparison + risk stats, "How It Works" 3 steps, "Who Is It For" (6 cards desktop / 4 mobile), FAQ accordion, and footer. Mobile adds a sticky navbar + slide-in menu drawer with overlay, language selector and Přihlásit/Registrace buttons.
+  Design: `.design/home-desktop.html`, `.design/home-mobile.html`, `.design/menu-mobile.html` (mobile nav drawer open-state).
 
-- [x] No orphaned/broken tests found — `vitest-examples/{greet,Welcome.svelte}` retain live sources; no tests reference deleted code. Nothing to remove.
+- [ ] 2. Create the **Features** page — responsive showcase of 6 tools (01 EXIF Metadata Removal, 02 AI Tool Detection, 03 C2PA Removal, 04 Risk Scanner, 05 Batch Processing, 06 PDF Report), each with eyebrow/title/description and chips or check-bullets. Desktop: alternating 2-column rows with CSS + PNG illustrations. Mobile: stacked feature cards (no illustrations) + a "Začněte zdarma" CTA card. Includes header, navbar (Funkce active) and multi-column footer with social icons.
+  Design: `.design/features-desktop.html`, `.design/features-mobile.html`.
 
-## Phase 1 — High Priority (core logic without coverage)
+- [ ] 3. Create the **Pricing** (Ceník) page — responsive pricing with monthly/yearly billing toggle (−20%) and 4 plan cards (Zdarma €0, 50 fotek €4, Pro €5,99 featured w/ glow + "Nejoblíbenější", Pro+ €12,99 "Připravujeme"), plus an Enterprise banner and slim footer. Wire `setBilling()` to swap Pro/Pro+ prices to yearly totals and reveal struck-through original + green savings. Desktop: 4-col grid with raised Pro card; mobile: stacked compact cards.
+  Design: `.design/pricing-desktop.html`, `.design/pricing-mobile.html`.
 
-_None. All core logic without coverage was addressed in prior runs; remaining gaps are medium/low._
-
-## Phase 2 — Medium Priority (edge cases, error handling)
-
-- [x] [MEDIUM] Create unit tests for `backend/metacleaner-server/source/supabase_auth.go` pure helpers — `authURL`/`restURL` path concatenation, `GetOAuthURL` PKCE query params (`code_challenge`, `code_challenge_method=S256`, provider, encoding), and `SupabaseAuthError.Error()` formatting; no network (`source/supabase_auth_url_test.go`, package `source` for unexported funcs)
-- [x] [MEDIUM] Create unit tests for `frontend/metacleaner-app/src/lib/repositories/userRepository.ts` `getCurrentUser` — unauthenticated returns empty user (no fetch), non-ok response returns empty user, success maps `first_name`+`last_name` → `name` (incl. missing/empty part) and `email`; mock `apiFetch` and `authStore` (`src/lib/repositories/__tests__/userRepository.test.ts`)
-- [x] [MEDIUM] Create unit tests for `terminal/metacleaner-cli/src/polyfills.ts` `FileReaderPolyfill` — `readAsArrayBuffer`/`readAsText` set `result` + `readyState=DONE` and fire `load`/`loadend` with `event.target===reader`, error path fires `error`+`loadend`, static `EMPTY/LOADING/DONE` constants (`tests/polyfills.test.ts`)
-
-## Phase 3 — Low Priority (utilities, simple logic)
-
-- [x] [LOW] Create unit tests for `frontend/metacleaner-app/src/lib/repositories/authRepository.ts` — `getAuthStats` returns 3 expected stats; `getAuthPlans` returns `free`/`pro` plans with expected ids, colors, and i18n keys (`src/lib/repositories/__tests__/authRepository.test.ts`)
-- [x] [LOW] Create unit tests for `frontend/metacleaner-app/src/lib/repositories/languageRepository.ts` — `getLanguages` resolves `cs`/`en` entries with expected `code`/`flag`/`label`/`name` shape (`src/lib/repositories/__tests__/languageRepository.test.ts`)
+- [ ] 4. Wire up navigation — ensure the shared navbar (logo → Home; Jak to funguje → Home `#how-it-works`; Funkce → Features; Ceník → Pricing; FAQ → Home `#faq`), footer links, mobile menu drawer, and CTAs route correctly across all pages, the active link is highlighted per page, and the language switcher + localStorage persistence work site-wide.
