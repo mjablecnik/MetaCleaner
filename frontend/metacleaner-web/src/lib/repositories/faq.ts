@@ -4,7 +4,7 @@ export interface FaqItem {
 	answerKey: string;
 }
 
-export function getFaq(layout: 'desktop' | 'mobile'): FaqItem[] {
+export function getFaq(layout?: 'desktop' | 'mobile'): FaqItem[] {
 	if (layout === 'mobile') {
 		return [
 			{ id: 'm1', questionKey: 'home_faq_m1_question', answerKey: 'home_faq_m1_answer' },
