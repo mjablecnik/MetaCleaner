@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import IconBadge from '$lib/components/elements/IconBadge.svelte';
 	import type { Audience } from '$lib/repositories';
 
 	interface Props {
 		audience: Audience;
-		compact?: boolean;
 	}
 
-	const { audience, compact = false }: Props = $props();
+	const { audience }: Props = $props();
 
 	const hoverBorderMap: Record<string, string> = {
 		'brand-blue': 'hover:border-brand-blue/50',
@@ -33,29 +31,19 @@
 	const iconText = $derived(iconTextMap[audience.color] ?? 'text-brand-blue');
 </script>
 
-{#if compact}
-	<div class="bg-navy-card rounded-2xl border border-border p-4 flex items-start gap-4">
-		<!-- w-11 h-11 with flex-shrink-0 is not in IconBadge sizeMap, so the badge is inlined -->
-		<div
-			class="w-11 h-11 rounded-xl {iconBg} flex items-center justify-center {iconText} text-lg flex-shrink-0"
-		>
-			<i class="fa-solid {audience.icon}"></i>
-		</div>
-		<div>
-			<h3 class="font-bold text-sm mb-1">{t(audience.titleKey)}</h3>
-			<p class="text-xs text-text-muted leading-relaxed">{t(audience.descKey)}</p>
-		</div>
-	</div>
-{:else}
+<div
+	class="bg-navy-card rounded-2xl border border-border p-4 md:p-7 flex items-start gap-4 md:flex-col {hoverBorder} transition-colors"
+>
 	<div
-		class="bg-navy-card rounded-2xl border border-border p-7 flex flex-col gap-4 {hoverBorder} transition-colors"
+		class="w-10 h-10 md:w-12 md:h-12 rounded-xl {iconBg} flex items-center justify-center {iconText} text-base md:text-xl flex-shrink-0"
 	>
-		<IconBadge icon={audience.icon} color={audience.color} size="lg" shape="rounded" />
-		<h3 class="text-lg font-bold">{t(audience.titleKey)}</h3>
-		<p class="text-sm text-text-muted leading-relaxed">{t(audience.descKey)}</p>
+		<i class="fa-solid {audience.icon}"></i>
+	</div>
+	<div class="flex-1 md:flex-none">
+		<h3 class="font-bold text-sm md:text-lg mb-1 md:mb-2">{t(audience.titleKey)}</h3>
+		<p class="text-xs md:text-sm text-text-muted leading-relaxed">{t(audience.descKey)}</p>
 		{#if audience.bulletKeys}
-			<!-- Bullets use text-xs (smaller than CheckBullet's text-sm) to match the original page markup -->
-			<ul class="flex flex-col gap-1.5 mt-auto">
+			<ul class="hidden md:flex flex-col gap-1.5 mt-4">
 				{#each audience.bulletKeys as bulletKey (bulletKey)}
 					<li class="flex items-center gap-2 text-xs text-text-muted">
 						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{t(bulletKey)}
@@ -64,4 +52,4 @@
 			</ul>
 		{/if}
 	</div>
-{/if}
+</div>

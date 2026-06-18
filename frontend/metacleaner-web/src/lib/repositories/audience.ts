@@ -7,40 +7,7 @@ export interface Audience {
 	bulletKeys?: string[];
 }
 
-export function getAudience(mode: 'full' | 'compact'): Audience[] {
-	if (mode === 'compact') {
-		return [
-			{
-				id: 'journalists',
-				icon: 'fa-newspaper',
-				color: 'brand-blue',
-				titleKey: 'home_audience_journalists_title_mobile',
-				descKey: 'home_audience_journalists_desc_mobile'
-			},
-			{
-				id: 'photographers',
-				icon: 'fa-camera',
-				color: 'brand-green',
-				titleKey: 'home_audience_photographers_title_mobile',
-				descKey: 'home_audience_photographers_desc_mobile'
-			},
-			{
-				id: 'business',
-				icon: 'fa-briefcase',
-				color: 'brand-orange',
-				titleKey: 'home_audience_business_title_mobile',
-				descKey: 'home_audience_business_desc_mobile'
-			},
-			{
-				id: 'users',
-				icon: 'fa-users',
-				color: 'brand-blue',
-				titleKey: 'home_audience_users_title_mobile',
-				descKey: 'home_audience_users_desc_mobile'
-			}
-		];
-	}
-
+export function getAudience(): Audience[] {
 	return [
 		{
 			id: 'journalists',

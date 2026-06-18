@@ -4,37 +4,19 @@
 	import AudienceCard from '../components/AudienceCard.svelte';
 	import { getAudience } from '$lib/repositories';
 
-	const audienceFull = getAudience('full');
-	const audienceCompact = getAudience('compact');
+	const audience = getAudience();
 </script>
 
-<!-- Desktop Who Is It For -->
-<section id="who-its-for" class="hidden md:block w-full max-w-site mx-auto px-6 pb-16">
+<section id="who-its-for" class="w-full max-w-site mx-auto px-4 md:px-6 pb-8 md:pb-16">
 	<SectionHeading
 		eyebrow={m.home_audience_eyebrow()}
 		eyebrowColor="brand-blue"
 		title={m.home_audience_title()}
 		subtitle={m.home_audience_subtitle()}
 	/>
-	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-		{#each audienceFull as audience, i (i)}
-			<AudienceCard {audience} />
-		{/each}
-	</div>
-</section>
-
-<!-- Mobile Who Is It For -->
-<section id="who-its-for-mobile" class="md:hidden w-full max-w-md mx-auto px-4">
-	<SectionHeading
-		eyebrow={m.home_audience_eyebrow()}
-		eyebrowColor="brand-orange"
-		title={m.home_audience_title_mobile()}
-		subtitle={m.home_audience_subtitle_mobile()}
-		size="sm"
-	/>
-	<div class="flex flex-col gap-3">
-		{#each audienceCompact as audience, i (i)}
-			<AudienceCard {audience} compact />
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+		{#each audience as item, i (i)}
+			<AudienceCard audience={item} />
 		{/each}
 	</div>
 </section>
