@@ -57,7 +57,7 @@
 
 	<!-- Mobile Navbar -->
 	<nav
-		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800"
+		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-border"
 	>
 		<a href="/" class="flex items-center gap-2">
 			<div
@@ -69,7 +69,7 @@
 		</a>
 		<button
 			onclick={toggleMobileMenu}
-			class="w-9 h-9 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center text-white"
+			class="w-9 h-9 rounded-lg bg-navy-lighter border border-border-strong flex items-center justify-center text-white"
 		>
 			<i class="fa-solid {mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} text-sm"></i>
 		</button>
@@ -79,39 +79,39 @@
 	<div
 		class="mobile-menu {mobileMenuOpen
 			? 'open'
-			: ''} md:hidden w-full flex-col bg-navy-card border-b border-gray-800 px-4 py-4 gap-3 z-40"
+			: ''} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
 	>
 		<a
 			href="/#how-it-works"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_how_it_works()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/features"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_features()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/pricing"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-white py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/#faq"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_faq()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
-		<div class="border-t border-gray-800 my-1"></div>
+		<div class="border-t border-border my-1"></div>
 		<LanguageSwitcher variant="mobile" />
-		<div class="border-t border-gray-800 my-1"></div>
+		<div class="border-t border-border my-1"></div>
 		<a
 			href="#"
 			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
@@ -130,7 +130,7 @@
 			<p class="text-text-muted text-lg mb-8">{m.pricing_subtitle()}</p>
 			<!-- Billing Toggle -->
 			<div
-				class="inline-flex items-center bg-navy-card border border-gray-800 rounded-xl p-1 gap-1"
+				class="inline-flex items-center bg-navy-card border border-border rounded-xl p-1 gap-1"
 			>
 				<button
 					onclick={() => (currentBilling = 'monthly')}
@@ -159,7 +159,7 @@
 				<div
 					class="bg-navy-card rounded-2xl {plan.featured
 						? 'border-2 border-brand-blue transform scale-105 z-10 shadow-glow-blue'
-						: 'border border-gray-800'} p-8 flex flex-col relative h-full"
+						: 'border border-border'} p-8 flex flex-col relative h-full"
 				>
 					{#if plan.featured}
 						<div
@@ -208,7 +208,7 @@
 					{:else if plan.disabled}
 						<button
 							disabled
-							class="w-full py-3 rounded-lg border border-gray-700 text-text-muted font-semibold cursor-not-allowed mt-auto"
+							class="w-full py-3 rounded-lg border border-border-strong text-text-muted font-semibold cursor-not-allowed mt-auto"
 						>
 							{t(plan.ctaKey)}
 						</button>
@@ -220,7 +220,7 @@
 						</button>
 					{:else}
 						<button
-							class="w-full py-3 rounded-lg border border-gray-700 text-white font-semibold hover:bg-navy-lighter transition-colors mt-auto"
+							class="w-full py-3 rounded-lg border border-border-strong text-white font-semibold hover:bg-navy-lighter transition-colors mt-auto"
 						>
 							{t(plan.ctaKey)}
 						</button>
@@ -231,14 +231,14 @@
 
 		<!-- Enterprise Banner -->
 		<div
-			class="w-full bg-navy-card border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6"
+			class="w-full bg-navy-card border border-border rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6"
 		>
 			<div>
 				<h4 class="text-lg font-bold mb-2">{t(enterprise.titleKey)}</h4>
 				<p class="text-sm text-text-muted">{t(enterprise.descKey)}</p>
 			</div>
 			<button
-				class="px-6 py-3 rounded-lg border border-gray-700 text-white font-semibold hover:bg-navy-lighter transition-colors whitespace-nowrap"
+				class="px-6 py-3 rounded-lg border border-border-strong text-white font-semibold hover:bg-navy-lighter transition-colors whitespace-nowrap"
 			>
 				{t(enterprise.ctaKey)}
 			</button>
@@ -253,7 +253,7 @@
 			<p class="text-text-muted text-sm mb-5">{m.pricing_subtitle()}</p>
 			<!-- Billing Toggle -->
 			<div
-				class="inline-flex items-center bg-navy-card border border-gray-800 rounded-xl p-1 gap-1"
+				class="inline-flex items-center bg-navy-card border border-border rounded-xl p-1 gap-1"
 			>
 				<button
 					onclick={() => (currentBilling = 'monthly')}
@@ -282,7 +282,7 @@
 				<div
 					class="bg-navy-card rounded-2xl {plan.featured
 						? 'border-2 border-brand-blue shadow-glow-blue relative'
-						: 'border border-gray-800'} p-5 flex flex-col"
+						: 'border border-border'} p-5 flex flex-col"
 				>
 					{#if plan.featured}
 						<div
@@ -342,7 +342,7 @@
 					{:else if plan.disabled}
 						<button
 							disabled
-							class="w-full py-3 rounded-xl border border-gray-700 text-text-muted font-semibold text-sm cursor-not-allowed"
+							class="w-full py-3 rounded-xl border border-border-strong text-text-muted font-semibold text-sm cursor-not-allowed"
 						>
 							{t(plan.ctaKey)}
 						</button>
@@ -354,7 +354,7 @@
 						</button>
 					{:else}
 						<button
-							class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
+							class="w-full py-3 rounded-xl border border-border-strong text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
 						>
 							{t(plan.ctaKey)}
 						</button>
@@ -365,14 +365,14 @@
 
 		<!-- Enterprise Banner -->
 		<div
-			class="w-full bg-navy-card border border-gray-800 rounded-2xl p-5 flex flex-col gap-4 mb-6"
+			class="w-full bg-navy-card border border-border rounded-2xl p-5 flex flex-col gap-4 mb-6"
 		>
 			<div>
 				<h4 class="text-base font-bold mb-1">{t(enterprise.titleKey)}</h4>
 				<p class="text-xs text-text-muted leading-relaxed">{t(enterprise.descKey)}</p>
 			</div>
 			<button
-				class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
+				class="w-full py-3 rounded-xl border border-border-strong text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
 			>
 				{t(enterprise.ctaKey)}
 			</button>
@@ -380,7 +380,7 @@
 	</main>
 
 	<!-- Footer -->
-	<footer class="w-full bg-navy-card border-t border-gray-800 mt-auto">
+	<footer class="w-full bg-navy-card border-t border-border mt-auto">
 		<div class="max-w-[1100px] mx-auto px-6 py-8">
 			<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
 				<p class="text-xs text-text-muted">{m.footer_copyright()}</p>

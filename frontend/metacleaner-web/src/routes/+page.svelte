@@ -74,10 +74,10 @@
 	id="mobileMenu"
 	class="slide-menu {mobileMenuOpen
 		? 'open'
-		: ''} fixed top-0 right-0 h-full w-full z-40 bg-navy-card border-l border-gray-800 flex flex-col shadow-2xl md:hidden"
+		: ''} fixed top-0 right-0 h-full w-full z-40 bg-navy-card border-l border-border flex flex-col shadow-2xl md:hidden"
 >
 	<!-- Drawer Header -->
-	<div class="flex items-center justify-between px-5 py-5 border-b border-gray-800">
+	<div class="flex items-center justify-between px-5 py-5 border-b border-border">
 		<div class="flex items-center gap-2">
 			<div
 				class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue"
@@ -88,7 +88,7 @@
 		</div>
 		<button
 			onclick={closeMobileMenu}
-			class="w-9 h-9 flex items-center justify-center rounded-lg bg-navy-lighter border border-gray-700 text-white"
+			class="w-9 h-9 flex items-center justify-center rounded-lg bg-navy-lighter border border-border-strong text-white"
 		>
 			<i class="fa-solid fa-xmark text-sm"></i>
 		</button>
@@ -150,16 +150,16 @@
 			<span class="text-sm font-medium">{m.nav_faq()}</span>
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
-		<div class="border-t border-gray-800 my-3"></div>
+		<div class="border-t border-border my-3"></div>
 		<LanguageSwitcher variant="mobile" />
-		<div class="border-t border-gray-800 my-3"></div>
+		<div class="border-t border-border my-3"></div>
 	</div>
 	<!-- Auth Buttons -->
 	<div class="px-4 pb-4">
 		<div class="flex gap-2 mt-3">
 			<a
 				href="#"
-				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5"
+				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-border-strong text-white font-semibold text-xs flex items-center justify-center gap-1.5"
 			>
 				<i class="fa-solid fa-right-to-bracket text-text-muted"></i>
 				{m.nav_login()}
@@ -208,7 +208,7 @@
 
 	<!-- Mobile Navbar -->
 	<nav
-		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main/95 backdrop-blur border-b border-gray-800/50"
+		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main/95 backdrop-blur border-b border-border/50"
 	>
 		<a href="/" class="flex items-center gap-2">
 			<div
@@ -221,7 +221,7 @@
 		<div class="flex items-center gap-2">
 			<button
 				onclick={toggleMobileMenu}
-				class="w-9 h-9 flex items-center justify-center rounded-lg bg-navy-lighter border border-gray-700 text-white"
+				class="w-9 h-9 flex items-center justify-center rounded-lg bg-navy-lighter border border-border-strong text-white"
 			>
 				<i class="fa-solid {mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} text-sm"></i>
 			</button>
@@ -252,7 +252,7 @@
 					</a>
 					<a
 						href="#"
-						class="px-8 py-3.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-semibold hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
+						class="px-8 py-3.5 rounded-lg bg-navy-lighter border border-border-strong text-white font-semibold hover:bg-border transition-all flex items-center justify-center gap-2"
 					>
 						<i class="fa-brands fa-apple"></i>
 						<span>{m.cta_download_app()}</span>
@@ -261,7 +261,7 @@
 			</div>
 			<div class="w-full lg:w-[45%] h-[400px]">
 				<div
-					class="w-full h-full rounded-[16px] bg-navy-card border border-gray-800 p-[24px] flex flex-col shadow-card relative overflow-hidden"
+					class="w-full h-full rounded-[16px] bg-navy-card border border-border p-[24px] flex flex-col shadow-card relative overflow-hidden"
 				>
 					<div
 						class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-blue/10 blur-[50px] rounded-full pointer-events-none"
@@ -326,7 +326,7 @@
 					<div class="flex flex-col gap-2">
 						{#each desktopFields as field}
 							<div
-								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
+								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-border"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2">
 									<i class="fa-solid {field.icon} text-brand-red"></i> {t(field.labelKey)}
@@ -358,7 +358,7 @@
 					<div class="flex flex-col gap-2">
 						{#each desktopCleanedFields as field}
 							<div
-								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
+								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-border"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2">
 									<i class="fa-solid {field.icon} text-brand-green"></i>
@@ -381,7 +381,7 @@
 				{#each stats as stat}
 					{@const sc = statColorClasses[stat.color] ?? statColorClasses['brand-blue']}
 					<div
-						class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
+						class="bg-navy-card rounded-2xl border border-border p-6 flex flex-col items-center text-center gap-3"
 					>
 						<div
 							class="w-12 h-12 rounded-full {sc.iconBg} flex items-center justify-center {sc.iconText} text-xl"
@@ -407,7 +407,7 @@
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 				{#each steps as step}
 					<div
-						class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative"
+						class="bg-navy-card rounded-2xl border border-border p-8 flex flex-col items-center text-center gap-4 relative"
 					>
 						<div
 							class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2"
@@ -440,7 +440,7 @@
 			{#each audienceFull as audience}
 				{@const cc = audienceColorClasses[audience.color] ?? audienceColorClasses['brand-blue']}
 				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 {cc.hoverBorder} transition-colors"
+					class="bg-navy-card rounded-2xl border border-border p-7 flex flex-col gap-4 {cc.hoverBorder} transition-colors"
 				>
 					<div
 						class="w-12 h-12 rounded-xl {cc.iconBg} flex items-center justify-center {cc.iconText} text-xl"
@@ -478,7 +478,7 @@
 		</div>
 		<div class="max-w-3xl mx-auto flex flex-col gap-3">
 			{#each faqDesktop as item (item.id)}
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+				<div class="faq-item bg-navy-card rounded-2xl border border-border overflow-hidden">
 					<button
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
@@ -497,7 +497,7 @@
 	</section>
 
 	<!-- Desktop Footer -->
-	<footer class="hidden md:block w-full bg-navy-card border-t border-gray-800 mt-8">
+	<footer class="hidden md:block w-full bg-navy-card border-t border-border mt-8">
 		<div class="max-w-[1100px] mx-auto px-6 py-16">
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-12 gap-10 w-auto">
 				<!-- Brand -->
@@ -558,7 +558,7 @@
 			</div>
 			<!-- Divider -->
 			<div
-				class="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+				class="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
 			>
 				<p class="text-xs text-text-muted">{m.footer_copyright()}</p>
 				<div class="flex items-center gap-6">
@@ -597,7 +597,7 @@
 			</div>
 			<!-- Upload Card -->
 			<div
-				class="w-full rounded-2xl bg-navy-card border border-gray-800 p-5 flex flex-col shadow-card relative overflow-hidden"
+				class="w-full rounded-2xl bg-navy-card border border-border p-5 flex flex-col shadow-card relative overflow-hidden"
 			>
 				<div
 					class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/3 bg-brand-blue/10 blur-[40px] rounded-full pointer-events-none"
@@ -638,7 +638,7 @@
 				</a>
 				<a
 					href="#"
-					class="w-full py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2"
+					class="w-full py-4 rounded-xl bg-navy-lighter border border-border-strong text-white font-semibold text-sm flex items-center justify-center gap-2"
 				>
 					<i class="fa-brands fa-apple"></i>{m.cta_download_app()}
 				</a>
@@ -676,7 +676,7 @@
 				<div class="flex flex-col gap-1.5">
 					{#each mobileFields as field}
 						<div
-							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
+							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-border"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-1.5">
 								<i class="fa-solid {field.icon} text-brand-red text-[10px]"></i> {t(field.labelKey)}
@@ -709,7 +709,7 @@
 				<div class="flex flex-col gap-1.5">
 					{#each mobileCleanedFields as field}
 						<div
-							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
+							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-border"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-1.5">
 								<i class="fa-solid {field.icon} text-brand-green text-[10px]"></i>{t(field.labelKey)}
@@ -729,7 +729,7 @@
 				{#each stats as stat}
 					{@const sc = statColorClasses[stat.color] ?? statColorClasses['brand-blue']}
 					<div
-						class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
+						class="bg-navy-card rounded-xl border border-border p-3 flex flex-col items-center text-center gap-1.5"
 					>
 						<div
 							class="w-9 h-9 rounded-full {sc.iconBg} flex items-center justify-center {sc.iconText} text-sm"
@@ -757,7 +757,7 @@
 			<div class="flex flex-col gap-3">
 				{#each steps as step}
 					<div
-						class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex items-start gap-4 relative overflow-hidden"
+						class="bg-navy-card rounded-2xl border border-border p-5 flex items-start gap-4 relative overflow-hidden"
 					>
 						<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">{step.number}</span>
 						<div
@@ -792,7 +792,7 @@
 			<div class="flex flex-col gap-3">
 				{#each audienceCompact as audience}
 					{@const cc = audienceColorClasses[audience.color] ?? audienceColorClasses['brand-blue']}
-					<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
+					<div class="bg-navy-card rounded-2xl border border-border p-4 flex items-start gap-4">
 						<div
 							class="w-11 h-11 rounded-xl {cc.iconBg} flex items-center justify-center {cc.iconText} text-lg flex-shrink-0"
 						>
@@ -820,7 +820,7 @@
 			</div>
 			<div class="flex flex-col gap-2">
 				{#each faqMobile as item (item.id)}
-					<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+					<div class="faq-item bg-navy-card rounded-2xl border border-border overflow-hidden">
 						<button
 							onclick={toggleFaq}
 							class="w-full flex items-center justify-between p-4 text-left"
@@ -840,7 +840,7 @@
 	</main>
 
 	<!-- Mobile Footer -->
-	<footer class="md:hidden w-full max-w-md mx-auto px-4 pb-10 pt-8 border-t border-gray-800 mt-4">
+	<footer class="md:hidden w-full max-w-md mx-auto px-4 pb-10 pt-8 border-t border-border mt-4">
 		<div class="flex flex-col items-center gap-6">
 			<div class="flex items-center gap-2">
 				<div

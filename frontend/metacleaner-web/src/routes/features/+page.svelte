@@ -90,7 +90,7 @@
 
 	<!-- Mobile Navbar -->
 	<nav
-		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800/50"
+		class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-border/50"
 	>
 		<a href="/" class="flex items-center gap-2">
 			<div
@@ -102,7 +102,7 @@
 		</a>
 		<button
 			onclick={toggleMobileMenu}
-			class="w-9 h-9 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center text-white"
+			class="w-9 h-9 rounded-lg bg-navy-lighter border border-border-strong flex items-center justify-center text-white"
 		>
 			<i class="fa-solid {mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} text-sm"></i>
 		</button>
@@ -112,39 +112,39 @@
 	<div
 		class="mobile-menu {mobileMenuOpen
 			? 'open'
-			: ''} md:hidden w-full flex-col bg-navy-card border-b border-gray-800 px-4 py-4 gap-3 z-40"
+			: ''} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
 	>
 		<a
 			href="/#how-it-works"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_how_it_works()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/features"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-white py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_features()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/pricing"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/#faq"
 			onclick={closeMobileMenu}
-			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
+			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_faq()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
-		<div class="border-t border-gray-800 my-1"></div>
+		<div class="border-t border-border my-1"></div>
 		<LanguageSwitcher variant="mobile" />
-		<div class="border-t border-gray-800 my-1"></div>
+		<div class="border-t border-border my-1"></div>
 		<a
 			href="#"
 			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
@@ -199,7 +199,7 @@
 							<div class={desktopFormatsGrid(feature.formats.length)}>
 								{#each feature.formats as fmt}
 									<div
-										class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
+										class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-border"
 									>
 										<i class="fa-solid {fmt.icon} {formatColorClasses[fmt.color]}"></i>
 										<span class="text-sm font-medium">{fmt.key ? t(fmt.key) : fmt.label}</span>
@@ -312,7 +312,7 @@
 	</main>
 
 	<!-- Desktop Footer -->
-	<footer class="hidden md:block w-full border-t border-gray-800 mt-8">
+	<footer class="hidden md:block w-full border-t border-border mt-8">
 		<div class="w-full max-w-[1100px] mx-auto px-6 py-12">
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
 				<!-- Brand + Social -->
@@ -331,19 +331,19 @@
 					<div class="flex items-center gap-3 mt-1">
 						<a
 							href="#"
-							class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
+							class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
 						>
 							<i class="fa-brands fa-twitter text-sm"></i>
 						</a>
 						<a
 							href="#"
-							class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
+							class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
 						>
 							<i class="fa-brands fa-github text-sm"></i>
 						</a>
 						<a
 							href="#"
-							class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
+							class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"
 						>
 							<i class="fa-brands fa-linkedin text-sm"></i>
 						</a>
@@ -405,7 +405,7 @@
 				</div>
 			</div>
 			<div
-				class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+				class="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
 			>
 				<span class="text-xs text-text-muted">{m.footer_copyright()}</span>
 				<div class="flex items-center gap-2">
@@ -438,7 +438,7 @@
 		<!-- Feature Cards (mobile) -->
 		{#each features as feature}
 			<section class="w-full mb-3">
-				<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+				<div class="bg-navy-card rounded-2xl border border-border overflow-hidden">
 					<div class="w-full flex items-center gap-3 px-4 py-4">
 						<div
 							class="w-10 h-10 rounded-xl {colorClasses[feature.color].iconBg} flex items-center justify-center {colorClasses[feature.color].iconText} text-base flex-shrink-0"
@@ -461,7 +461,7 @@
 							<div class="grid grid-cols-2 gap-2">
 								{#each feature.formats as fmt}
 									<div
-										class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
+										class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-border"
 									>
 										<i class="fa-solid {fmt.icon} {formatColorClasses[fmt.color]} text-sm"></i>
 										<span class="text-xs font-medium">{fmt.key ? t(fmt.key) : fmt.label}</span>
@@ -501,7 +501,7 @@
 	</main>
 
 	<!-- Mobile Footer -->
-	<footer class="md:hidden w-full border-t border-gray-800">
+	<footer class="md:hidden w-full border-t border-border">
 		<div class="px-4 py-8">
 			<div class="flex items-center gap-3 mb-4">
 				<div
@@ -517,19 +517,19 @@
 			<div class="flex items-center gap-2 mb-6">
 				<a
 					href="#"
-					class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"
+					class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted"
 				>
 					<i class="fa-brands fa-twitter text-sm"></i>
 				</a>
 				<a
 					href="#"
-					class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"
+					class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted"
 				>
 					<i class="fa-brands fa-github text-sm"></i>
 				</a>
 				<a
 					href="#"
-					class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"
+					class="w-9 h-9 rounded-lg bg-navy-card border border-border flex items-center justify-center text-text-muted"
 				>
 					<i class="fa-brands fa-linkedin text-sm"></i>
 				</a>
