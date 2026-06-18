@@ -1,18 +1,15 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
-	import { getLocale } from '$lib/paraglide/runtime';
+	import { t } from '$lib/i18n';
+	import { pricingRepository, getEnterprise, getPlanPrice } from '$lib/repositories';
 
 	let mobileMenuOpen = $state(false);
 	let currentBilling = $state<'monthly' | 'yearly'>('monthly');
 
 	const isYearly = $derived(currentBilling === 'yearly');
 
-	const proPrice = $derived(isYearly ? '€57,51' : '€5,99');
-	const proplusPrice = $derived(isYearly ? '€124,71' : '€12,99');
-
-	const locale = getLocale();
-	const proSaveAmount = locale === 'cs' ? '€14,37' : '€14.37';
-	const proplusSaveAmount = locale === 'cs' ? '€31,17' : '€31.17';
+	const plans = pricingRepository();
+	const enterprise = getEnterprise();
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
@@ -154,173 +151,78 @@
 
 		<!-- Pricing Cards -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-10">
-			<!-- Zdarma -->
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col relative h-full"
-			>
-				<h3 class="text-xl font-bold text-center mb-6">{m.pricing_plan_free_name()}</h3>
-				<div class="text-center mb-2">
-					<span class="text-5xl font-black">€0</span>
-				</div>
-				<p class="text-sm text-text-muted text-center mb-8">{m.pricing_plan_free_subtitle()}</p>
-				<ul class="flex flex-col gap-4 mb-8 flex-1">
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_free_1()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_free_2()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_free_3()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_free_4()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-lg border border-gray-700 text-white font-semibold hover:bg-navy-lighter transition-colors mt-auto"
-				>
-					{m.pricing_cta_start_free()}
-				</button>
-			</div>
-
-			<!-- 50 fotek -->
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col relative h-full"
-			>
-				<h3 class="text-xl font-bold text-center mb-6">{m.pricing_plan_pack_name()}</h3>
-				<div class="text-center mb-2 flex justify-center items-end gap-1">
-					<span class="text-5xl font-black">€4</span>
-					<span class="text-text-muted mb-1 text-sm">{m.pricing_per_50()}</span>
-				</div>
-				<p class="text-sm text-text-muted text-center mb-8">{m.pricing_plan_pack_subtitle()}</p>
-				<ul class="flex flex-col gap-4 mb-8 flex-1">
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_pack_1()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pack_2()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pack_3()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pack_4()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pack_5()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-lg bg-brand-blue text-white font-semibold hover:bg-blue-600 transition-colors mt-auto"
-				>
-					{m.pricing_cta_buy()}
-				</button>
-			</div>
-
-			<!-- Pro (Featured) -->
-			<div
-				class="bg-navy-card rounded-2xl border-2 border-brand-blue p-8 flex flex-col relative h-full transform scale-105 z-10 shadow-glow-blue"
-			>
+			{#each plans as plan}
 				<div
-					class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
+					class="bg-navy-card rounded-2xl {plan.featured
+						? 'border-2 border-brand-blue transform scale-105 z-10 shadow-glow-blue'
+						: 'border border-gray-800'} p-8 flex flex-col relative h-full"
 				>
-					{m.pricing_badge_popular()}
-				</div>
-				<h3 class="text-xl font-bold text-center mb-6">Pro</h3>
-				<div class="text-center mb-1 flex justify-center items-end gap-1">
-					<span class="text-5xl font-black">{proPrice}</span>
-				</div>
-				{#if isYearly}
-					<div class="text-center mb-1">
-						<span class="text-xs text-text-muted line-through">€71,88</span>
-						<span class="text-xs text-brand-green font-bold ml-1">{m.pricing_save({ amount: proSaveAmount })}</span>
+					{#if plan.featured}
+						<div
+							class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
+						>
+							{m.pricing_badge_popular()}
+						</div>
+					{/if}
+					<h3 class="text-xl font-bold text-center mb-6">
+						{plan.nameText ?? t(plan.nameKey!)}
+					</h3>
+					<div
+						class="text-center {plan.originalYearly ? 'mb-1' : 'mb-2'} flex justify-center items-end gap-1"
+					>
+						<span class="text-5xl font-black">{getPlanPrice(plan, isYearly)}</span>
+						{#if plan.id === 'pack' && plan.perKey}
+							<span class="text-text-muted mb-1 text-sm">{t(plan.perKey)}</span>
+						{/if}
 					</div>
-				{/if}
-				<p class="text-sm text-text-muted text-center mb-8">{m.pricing_plan_pro_subtitle()}</p>
-				<ul class="flex flex-col gap-4 mb-8 flex-1">
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_pro_1()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pro_2()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pro_3()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pro_4()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pro_5()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_pro_6()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-lg bg-brand-blue text-white font-semibold hover:bg-blue-600 transition-colors mt-auto flex items-center justify-center gap-2"
-				>
-					<i class="fa-solid fa-bolt text-brand-orange"></i>
-					{m.pricing_cta_activate_pro()}
-				</button>
-			</div>
-
-			<!-- Pro+ -->
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col relative h-full"
-			>
-				<h3 class="text-xl font-bold text-center mb-6">Pro+</h3>
-				<div class="text-center mb-1 flex justify-center items-end gap-1">
-					<span class="text-5xl font-black">{proplusPrice}</span>
+					{#if plan.originalYearly && isYearly}
+						<div class="text-center mb-1">
+							<span class="text-xs text-text-muted line-through">{plan.originalYearly}</span>
+							<span class="text-xs text-brand-green font-bold ml-1"
+								>{m.pricing_save({ amount: plan.saveAmountYearly! })}</span
+							>
+						</div>
+					{/if}
+					<p class="text-sm text-text-muted text-center mb-8">{t(plan.subtitleKey)}</p>
+					<ul class="flex flex-col gap-4 mb-8 flex-1">
+						{#each plan.featureKeys as key, i}
+							<li class="flex items-start gap-3">
+								<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
+								<span class="text-sm {i === 0 ? 'font-medium' : 'font-medium text-text-muted'}"
+									>{t(key)}</span
+								>
+							</li>
+						{/each}
+					</ul>
+					{#if plan.featured}
+						<button
+							class="w-full py-3 rounded-lg bg-brand-blue text-white font-semibold hover:bg-blue-600 transition-colors mt-auto flex items-center justify-center gap-2"
+						>
+							<i class="fa-solid fa-bolt text-brand-orange"></i>
+							{t(plan.ctaKey)}
+						</button>
+					{:else if plan.disabled}
+						<button
+							disabled
+							class="w-full py-3 rounded-lg border border-gray-700 text-text-muted font-semibold cursor-not-allowed mt-auto"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{:else if plan.id === 'pack'}
+						<button
+							class="w-full py-3 rounded-lg bg-brand-blue text-white font-semibold hover:bg-blue-600 transition-colors mt-auto"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{:else}
+						<button
+							class="w-full py-3 rounded-lg border border-gray-700 text-white font-semibold hover:bg-navy-lighter transition-colors mt-auto"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{/if}
 				</div>
-				{#if isYearly}
-					<div class="text-center mb-1">
-						<span class="text-xs text-text-muted line-through">€155,88</span>
-						<span class="text-xs text-brand-green font-bold ml-1">{m.pricing_save({ amount: proplusSaveAmount })}</span>
-					</div>
-				{/if}
-				<p class="text-sm text-text-muted text-center mb-8">{m.pricing_plan_proplus_subtitle()}</p>
-				<ul class="flex flex-col gap-4 mb-8 flex-1">
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_proplus_1()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_proplus_2()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_proplus_3()}</span>
-					</li>
-					<li class="flex items-start gap-3">
-						<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
-						<span class="text-sm font-medium text-text-muted">{m.pricing_feat_proplus_4()}</span>
-					</li>
-				</ul>
-				<button
-					disabled
-					class="w-full py-3 rounded-lg border border-gray-700 text-text-muted font-semibold cursor-not-allowed mt-auto"
-				>
-					{m.pricing_cta_coming_soon()}
-				</button>
-			</div>
+			{/each}
 		</div>
 
 		<!-- Enterprise Banner -->
@@ -328,13 +230,13 @@
 			class="w-full bg-navy-card border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6"
 		>
 			<div>
-				<h4 class="text-lg font-bold mb-2">{m.pricing_enterprise_title()}</h4>
-				<p class="text-sm text-text-muted">{m.pricing_enterprise_desc()}</p>
+				<h4 class="text-lg font-bold mb-2">{t(enterprise.titleKey)}</h4>
+				<p class="text-sm text-text-muted">{t(enterprise.descKey)}</p>
 			</div>
 			<button
 				class="px-6 py-3 rounded-lg border border-gray-700 text-white font-semibold hover:bg-navy-lighter transition-colors whitespace-nowrap"
 			>
-				{m.pricing_cta_contact()}
+				{t(enterprise.ctaKey)}
 			</button>
 		</div>
 	</main>
@@ -372,181 +274,89 @@
 
 		<!-- Pricing Cards -->
 		<div class="flex flex-col gap-4 w-full mb-6">
-			<!-- Free -->
-			<div class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
-				<div class="flex items-center justify-between mb-3">
-					<h3 class="text-lg font-bold">{m.pricing_plan_free_name()}</h3>
-					<div class="flex items-end gap-1">
-						<span class="text-3xl font-black">€0</span>
-					</div>
-				</div>
-				<p class="text-xs text-text-muted mb-4">{m.pricing_plan_free_subtitle()}</p>
-				<ul class="flex flex-col gap-2.5 mb-4">
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_free_1()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_free_2()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_free_3()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_free_4()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
-				>
-					{m.pricing_cta_start_free()}
-				</button>
-			</div>
-
-			<!-- 50 fotek -->
-			<div class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
-				<div class="flex items-center justify-between mb-1">
-					<h3 class="text-lg font-bold">{m.pricing_plan_pack_name()}</h3>
-					<div class="flex items-end gap-1">
-						<span class="text-3xl font-black">€4</span>
-						<span class="text-text-muted text-xs mb-1">{m.pricing_per_50()}</span>
-					</div>
-				</div>
-				<p class="text-xs text-text-muted mb-4">{m.pricing_plan_pack_subtitle()}</p>
-				<ul class="flex flex-col gap-2.5 mb-4">
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_pack_1()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pack_2()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pack_3()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pack_4()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pack_5()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors"
-				>
-					{m.pricing_cta_buy()}
-				</button>
-			</div>
-
-			<!-- Pro (Featured) -->
-			<div
-				class="bg-navy-card rounded-2xl border-2 border-brand-blue p-5 flex flex-col relative shadow-glow-blue"
-			>
+			{#each plans as plan}
 				<div
-					class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
+					class="bg-navy-card rounded-2xl {plan.featured
+						? 'border-2 border-brand-blue shadow-glow-blue relative'
+						: 'border border-gray-800'} p-5 flex flex-col"
 				>
-					{m.pricing_badge_popular()}
-				</div>
-				<div class="flex items-center justify-between mb-1 mt-2">
-					<h3 class="text-lg font-bold">Pro</h3>
-					<div class="flex flex-col items-end">
-						<div class="flex items-end gap-1">
-							<span class="text-3xl font-black">{proPrice}</span>
-							<span class="text-text-muted text-xs mb-1">{m.pricing_per_month_short()}</span>
+					{#if plan.featured}
+						<div
+							class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
+						>
+							{m.pricing_badge_popular()}
 						</div>
-						{#if isYearly}
-							<div class="text-right">
-								<span class="text-xs text-text-muted line-through">€71,88</span>
-								<span class="text-xs text-brand-green font-bold ml-1">{m.pricing_save({ amount: proSaveAmount })}</span>
+					{/if}
+					<div
+						class="flex items-center justify-between {plan.perKey ? 'mb-1' : 'mb-3'} {plan.featured
+							? 'mt-2'
+							: ''}"
+					>
+						<h3 class="text-lg font-bold">{plan.nameText ?? t(plan.nameKey!)}</h3>
+						{#if plan.originalYearly}
+							<div class="flex flex-col items-end">
+								<div class="flex items-end gap-1">
+									<span class="text-3xl font-black">{getPlanPrice(plan, isYearly)}</span>
+									{#if plan.perKey}
+										<span class="text-text-muted text-xs mb-1">{t(plan.perKey)}</span>
+									{/if}
+								</div>
+								{#if isYearly}
+									<div class="text-right">
+										<span class="text-xs text-text-muted line-through">{plan.originalYearly}</span>
+										<span class="text-xs text-brand-green font-bold ml-1"
+											>{m.pricing_save({ amount: plan.saveAmountYearly! })}</span
+										>
+									</div>
+								{/if}
+							</div>
+						{:else}
+							<div class="flex items-end gap-1">
+								<span class="text-3xl font-black">{getPlanPrice(plan, isYearly)}</span>
+								{#if plan.perKey}
+									<span class="text-text-muted text-xs mb-1">{t(plan.perKey)}</span>
+								{/if}
 							</div>
 						{/if}
 					</div>
+					<p class="text-xs text-text-muted mb-4">{t(plan.subtitleKey)}</p>
+					<ul class="flex flex-col gap-2.5 mb-4">
+						{#each plan.featureKeys as key, i}
+							<li class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
+								<span class="text-sm {i === 0 ? 'font-medium' : 'text-text-muted'}">{t(key)}</span>
+							</li>
+						{/each}
+					</ul>
+					{#if plan.featured}
+						<button
+							class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+						>
+							<i class="fa-solid fa-bolt text-brand-orange"></i>
+							{t(plan.ctaKey)}
+						</button>
+					{:else if plan.disabled}
+						<button
+							disabled
+							class="w-full py-3 rounded-xl border border-gray-700 text-text-muted font-semibold text-sm cursor-not-allowed"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{:else if plan.id === 'pack'}
+						<button
+							class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{:else}
+						<button
+							class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
+						>
+							{t(plan.ctaKey)}
+						</button>
+					{/if}
 				</div>
-				<p class="text-xs text-text-muted mb-4">{m.pricing_plan_pro_subtitle()}</p>
-				<ul class="flex flex-col gap-2.5 mb-4">
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_pro_1()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pro_2()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pro_3()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pro_4()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pro_5()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_pro_6()}</span>
-					</li>
-				</ul>
-				<button
-					class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
-				>
-					<i class="fa-solid fa-bolt text-brand-orange"></i>
-					{m.pricing_cta_activate_pro()}
-				</button>
-			</div>
-
-			<!-- Pro+ -->
-			<div class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
-				<div class="flex items-center justify-between mb-1">
-					<h3 class="text-lg font-bold">Pro+</h3>
-					<div class="flex flex-col items-end">
-						<div class="flex items-end gap-1">
-							<span class="text-3xl font-black">{proplusPrice}</span>
-							<span class="text-text-muted text-xs mb-1">{m.pricing_per_month_short()}</span>
-						</div>
-						{#if isYearly}
-							<div class="text-right">
-								<span class="text-xs text-text-muted line-through">€155,88</span>
-								<span class="text-xs text-brand-green font-bold ml-1">{m.pricing_save({ amount: proplusSaveAmount })}</span>
-							</div>
-						{/if}
-					</div>
-				</div>
-				<p class="text-xs text-text-muted mb-4">{m.pricing_plan_proplus_subtitle()}</p>
-				<ul class="flex flex-col gap-2.5 mb-4">
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm font-medium">{m.pricing_feat_proplus_1()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_proplus_2()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_proplus_3()}</span>
-					</li>
-					<li class="flex items-start gap-2.5">
-						<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
-						<span class="text-sm text-text-muted">{m.pricing_feat_proplus_4()}</span>
-					</li>
-				</ul>
-				<button
-					disabled
-					class="w-full py-3 rounded-xl border border-gray-700 text-text-muted font-semibold text-sm cursor-not-allowed"
-				>
-					{m.pricing_cta_coming_soon()}
-				</button>
-			</div>
+			{/each}
 		</div>
 
 		<!-- Enterprise Banner -->
@@ -554,13 +364,13 @@
 			class="w-full bg-navy-card border border-gray-800 rounded-2xl p-5 flex flex-col gap-4 mb-6"
 		>
 			<div>
-				<h4 class="text-base font-bold mb-1">{m.pricing_enterprise_title()}</h4>
-				<p class="text-xs text-text-muted leading-relaxed">{m.pricing_enterprise_desc()}</p>
+				<h4 class="text-base font-bold mb-1">{t(enterprise.titleKey)}</h4>
+				<p class="text-xs text-text-muted leading-relaxed">{t(enterprise.descKey)}</p>
 			</div>
 			<button
 				class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
 			>
-				{m.pricing_cta_contact()}
+				{t(enterprise.ctaKey)}
 			</button>
 		</div>
 	</main>

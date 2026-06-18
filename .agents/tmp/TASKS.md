@@ -28,7 +28,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 
 ## Phase 4 — Replace API data with repository calls
 - [x] 19. [MEDIUM] Replace the 6 hardcoded feature sections (desktop + mobile) in `features/+page.svelte` with an `#each featuresRepository(...)` render using `t(key)`.
-- [ ] 20. [MEDIUM] Replace the 4 hardcoded plan cards (desktop + mobile) and the `t` plan map in `pricing/+page.svelte` with `pricingRepository` + billing helpers.
+- [x] 20. [MEDIUM] Replace the 4 hardcoded plan cards (desktop + mobile) and the `t` plan map in `pricing/+page.svelte` with `pricingRepository` + billing helpers.
 - [ ] 21. [MEDIUM] Replace the hardcoded "Who It's For" cards (desktop + mobile) in `+page.svelte` with `audienceRepository`.
 - [ ] 22. [MEDIUM] Replace the hardcoded FAQ items (desktop + mobile) in `+page.svelte` with `faqRepository`.
 - [ ] 23. [MEDIUM] Replace the hardcoded How-It-Works steps (desktop + mobile) in `+page.svelte` with `stepsRepository`.
