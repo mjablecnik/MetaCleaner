@@ -1,0 +1,531 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.3)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .lang-dropdown
+      {
+        position: relative;
+        display: inline-block;
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 150px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background 0.15s, color 0.15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col min-h-screen bg-navy-main">
+    <!-- Navbar -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800">
+      <div class="flex items-center gap-2">
+        <div
+          class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-base"></i></div><span
+          class="text-lg font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div id="langDropdown" class="lang-dropdown">
+          <div id="langDropdownMenu" class="lang-dropdown-menu">
+            <div id="opt-cs" onclick="setLang('cs')" class="lang-option active">
+              <span>🇨🇿</span> Čeština <span id="check-cs"><i
+                  class="fa-solid fa-check text-xs text-brand-blue"></i></span>
+            </div>
+            <div id="opt-en" onclick="setLang('en')" class="lang-option">
+              <span>🇬🇧</span> English <span id="check-en" class="hidden"><i
+                  class="fa-solid fa-check text-xs text-brand-blue"></i></span>
+            </div>
+          </div>
+        </div>
+        <button onclick="toggleMobileMenu()"
+          class="w-9 h-9 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center text-white">
+          <i id="hamburgerIcon" class="fa-solid fa-bars text-sm"></i>
+        </button>
+      </div>
+    </nav>
+    <!-- Mobile Menu Drawer -->
+    <div id="mobileMenu"
+      class="mobile-menu w-full flex-col bg-navy-card border-b border-gray-800 px-4 py-4 gap-3 z-40"
+      style="display:none;">
+      <a href="#"
+        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Jak to funguje <i class="fa-solid fa-chevron-right text-xs"></i></a>
+      <a href="#"
+        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Funkce <i class="fa-solid fa-chevron-right text-xs"></i></a>
+      <a href="#"
+        class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between">Ceník <i class="fa-solid fa-chevron-right text-xs"></i></a>
+      <a href="#"
+        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">FAQ <i class="fa-solid fa-chevron-right text-xs"></i></a>
+      <button class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold">Přihlásit</button>
+    </div>
+    <!-- Main -->
+    <main id="main-pricing"
+      class="w-full px-4 py-8 flex flex-col items-center flex-1">
+      <!-- Header -->
+      <div id="pricing-header" class="text-center mb-6 w-full">
+        <h1 data-cs="Ceník" data-en="Pricing" class="text-3xl font-bold mb-2">
+          Ceník</h1>
+        <p data-cs="Jednoduché ceny. Kredity nevyprší."
+          data-en="Simple pricing. Credits never expire."
+          class="text-text-muted text-sm mb-5">Jednoduché ceny. Kredity
+          nevyprší.</p><!-- Billing Toggle -->
+        <div id="billing-toggle"
+          class="inline-flex items-center bg-navy-card border border-gray-800 rounded-xl p-1 gap-1">
+          <button id="btn-monthly" onclick="setBilling('monthly')"
+            class="px-5 py-2 rounded-lg text-sm font-semibold transition-all bg-brand-blue text-white shadow"><span
+              data-cs="Měsíčně" data-en="Monthly">Měsíčně</span></button><button
+            id="btn-yearly" onclick="setBilling('yearly')"
+            class="px-5 py-2 rounded-lg text-sm font-semibold transition-all text-text-muted flex items-center gap-2"><span
+              data-cs="Ročně" data-en="Yearly">Ročně</span><span
+              id="yearly-badge"
+              class="bg-brand-green text-white text-xs font-bold px-2 py-0.5 rounded-full">−20%</span></button>
+        </div>
+      </div><!-- Pricing Cards -->
+      <div id="pricing-cards" class="flex flex-col gap-4 w-full mb-6">
+        <!-- Free -->
+        <div id="card-free"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
+          <div class="flex items-center justify-between mb-3">
+            <h3 data-cs="Zdarma" data-en="Free" class="text-lg font-bold">Zdarma
+            </h3>
+            <div class="flex items-end gap-1"><span
+                class="text-3xl font-black">€0</span></div>
+          </div>
+          <p data-cs="Pro začátek" data-en="For starters"
+            class="text-xs text-text-muted mb-4">Pro začátek</p>
+          <ul class="flex flex-col gap-2.5 mb-4">
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="3 fotky zdarma" data-en="3 free photos"
+                class="text-sm font-medium">3 fotky zdarma</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Všechny formáty (JPG, PNG, HEIC, WEBP)"
+                data-en="All formats (JPG, PNG, HEIC, WEBP)"
+                class="text-sm text-text-muted">Všechny formáty (JPG, PNG, HEIC,
+                WEBP)</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Odstranění EXIF + C2PA" data-en="Remove EXIF + C2PA"
+                class="text-sm text-text-muted">Odstranění EXIF + C2PA</span>
+            </li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Bez platební karty" data-en="No credit card required"
+                class="text-sm text-text-muted">Bez platební karty</span></li>
+          </ul><button data-cs="Začít zdarma" data-en="Start for free"
+            class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors">Začít
+            zdarma</button>
+        </div><!-- 50 fotek -->
+        <div id="card-starter"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
+          <div class="flex items-center justify-between mb-1">
+            <h3 data-cs="50 fotek" data-en="50 photos"
+              class="text-lg font-bold">50 fotek</h3>
+            <div class="flex items-end gap-1"><span id="price-starter"
+                class="text-3xl font-black">€4</span><span id="period-starter"
+                class="text-text-muted text-xs mb-1">/ 50 fotek</span></div>
+          </div>
+          <p id="note-starter" data-cs="Kredity nevyprší"
+            data-en="Credits never expire" class="text-xs text-text-muted mb-4">
+            Kredity nevyprší</p>
+          <ul class="flex flex-col gap-2.5 mb-4">
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="50 fotek v balíčku" data-en="50 photos in package"
+                class="text-sm font-medium">50 fotek v balíčku</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Odstranění EXIF + C2PA" data-en="Remove EXIF + C2PA"
+                class="text-sm text-text-muted">Odstranění EXIF + C2PA</span>
+            </li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Hromadné zpracování" data-en="Batch processing"
+                class="text-sm text-text-muted">Hromadné zpracování</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Všechny formáty" data-en="All formats"
+                class="text-sm text-text-muted">Všechny formáty</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="PDF report — €1,99 / report"
+                data-en="PDF report — €1.99 / report"
+                class="text-sm text-text-muted">PDF report — €1,99 /
+                report</span></li>
+          </ul><button data-cs="Koupit →" data-en="Buy →"
+            class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors">Koupit
+            →</button>
+        </div><!-- Pro (Featured) -->
+        <div id="card-pro"
+          class="bg-navy-card rounded-2xl border-2 border-brand-blue p-5 flex flex-col relative shadow-glow-blue">
+          <div data-cs="Nejoblíbenější" data-en="Most Popular"
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-blue text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
+            Nejoblíbenější</div>
+          <div class="flex items-center justify-between mb-1 mt-2">
+            <h3 data-cs="Pro" data-en="Pro" class="text-lg font-bold">Pro</h3>
+            <div class="flex flex-col items-end">
+              <div class="flex items-end gap-1"><span id="price-pro"
+                  class="text-3xl font-black">€5,99</span><span id="period-pro"
+                  class="text-text-muted text-xs mb-1">/ měs</span></div>
+              <div id="yearly-saving-pro" class="hidden text-right"><span
+                  id="original-pro"
+                  class="text-xs text-text-muted line-through">€71,88</span><span
+                  data-cs="Ušetříte €14,37" data-en="Save €14.37"
+                  class="text-xs text-brand-green font-bold ml-1">Ušetříte
+                  €14,37</span></div>
+            </div>
+          </div>
+          <p id="note-pro" data-cs="100 fotek / měsíc"
+            data-en="100 photos / month" class="text-xs text-text-muted mb-4">
+            100 fotek / měsíc</p>
+          <ul class="flex flex-col gap-2.5 mb-4">
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="100 fotek měsíčně" data-en="100 photos monthly"
+                class="text-sm font-medium">100 fotek měsíčně</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Odstranění EXIF + C2PA" data-en="Remove EXIF + C2PA"
+                class="text-sm text-text-muted">Odstranění EXIF + C2PA</span>
+            </li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Risk Scanner (Clean Score 0–100)"
+                data-en="Risk Scanner (Clean Score 0–100)"
+                class="text-sm text-text-muted">Risk Scanner (Clean Score
+                0–100)</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="PDF report v ceně" data-en="PDF report included"
+                class="text-sm text-text-muted">PDF report v ceně</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Historie čištění 30 dní"
+                data-en="30-day cleaning history"
+                class="text-sm text-text-muted">Historie čištění 30 dní</span>
+            </li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Hromadné zpracování" data-en="Batch processing"
+                class="text-sm text-text-muted">Hromadné zpracování</span></li>
+          </ul><button data-cs="Aktivovat Pro →" data-en="Activate Pro →"
+            class="w-full py-3 rounded-xl bg-brand-blue text-white font-semibold text-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"><i
+              class="fa-solid fa-bolt text-brand-orange"></i> Aktivovat Pro →
+          </button>
+        </div><!-- Pro+ -->
+        <div id="card-proplus"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex flex-col">
+          <div class="flex items-center justify-between mb-1">
+            <h3 data-cs="Pro+" data-en="Pro+" class="text-lg font-bold">Pro+
+            </h3>
+            <div class="flex flex-col items-end">
+              <div class="flex items-end gap-1"><span id="price-proplus"
+                  class="text-3xl font-black">€12,99</span><span
+                  id="period-proplus" class="text-text-muted text-xs mb-1">/
+                  měs</span></div>
+              <div id="yearly-saving-proplus" class="hidden text-right"><span
+                  id="original-proplus"
+                  class="text-xs text-text-muted line-through">€155,88</span><span
+                  data-cs="Ušetříte €31,17" data-en="Save €31.17"
+                  class="text-xs text-brand-green font-bold ml-1">Ušetříte
+                  €31,17</span></div>
+            </div>
+          </div>
+          <p id="note-proplus" data-cs="300 fotek / měsíc"
+            data-en="300 photos / month" class="text-xs text-text-muted mb-4">
+            300 fotek / měsíc</p>
+          <ul class="flex flex-col gap-2.5 mb-4">
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="300 fotek měsíčně" data-en="300 photos monthly"
+                class="text-sm font-medium">300 fotek měsíčně</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Vše z Pro plánu" data-en="Everything in Pro plan"
+                class="text-sm text-text-muted">Vše z Pro plánu</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Bulk API přístup" data-en="Bulk API access"
+                class="text-sm text-text-muted">Bulk API přístup</span></li>
+            <li class="flex items-start gap-2.5"><i
+                class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i><span
+                data-cs="Prioritní podpora" data-en="Priority support"
+                class="text-sm text-text-muted">Prioritní podpora</span></li>
+          </ul><button data-cs="Připravujeme" data-en="Coming soon" disabled=""
+            class="w-full py-3 rounded-xl border border-gray-700 text-text-muted font-semibold text-sm cursor-not-allowed">Připravujeme</button>
+        </div>
+      </div><!-- Enterprise Banner -->
+      <div id="enterprise-banner"
+        class="w-full bg-navy-card border border-gray-800 rounded-2xl p-5 flex flex-col gap-4 mb-6">
+        <div>
+          <h4 data-cs="Enterprise — na míru" data-en="Enterprise — custom"
+            class="text-base font-bold mb-1">Enterprise — na míru</h4>
+          <p data-cs="Velký objem fotek, API integrace, faktura, firemní účet. Domluvíme cenu a aktivujeme kredity přímo na váš účet."
+            data-en="High volume photos, API integration, invoicing, corporate account. We'll agree on a price and activate credits directly to your account."
+            class="text-xs text-text-muted leading-relaxed">Velký objem fotek,
+            API integrace, faktura, firemní účet. Domluvíme cenu a aktivujeme
+            kredity přímo na váš účet.</p>
+        </div><button data-cs="Kontaktujte nás →" data-en="Contact us →"
+          class="w-full py-3 rounded-xl border border-gray-700 text-white font-semibold text-sm hover:bg-navy-lighter transition-colors">Kontaktujte
+          nás →</button>
+      </div>
+    </main><!-- Footer -->
+    <footer id="footer" class="w-full bg-navy-card border-t border-gray-800">
+      <div class="px-4 py-6 flex flex-col items-center gap-3">
+        <p data-cs="© 2024 MetaCleaner. Všechna práva vyhrazena."
+          data-en="© 2024 MetaCleaner. All rights reserved."
+          class="text-xs text-text-muted text-center">© 2024 MetaCleaner.
+          Všechna práva vyhrazena.</p>
+        <div class="flex items-center gap-5"><a href="#"
+            data-cs="Zásady ochrany soukromí" data-en="Privacy Policy"
+            class="text-xs text-text-muted hover:text-white transition-colors">Zásady
+            ochrany soukromí</a><a href="#" data-cs="Podmínky použití"
+            data-en="Terms of Service"
+            class="text-xs text-text-muted hover:text-white transition-colors">Podmínky
+            použití</a></div>
+      </div>
+    </footer>
+    <script>
+      const langConfig = {
+        cs:
+        {
+          flag: '🇨🇿',
+          label: 'CS'
+        },
+        en:
+        {
+          flag: '🇬🇧',
+          label: 'EN'
+        }
+      };
+
+      function toggleLangDropdown()
+      {
+        const menu = document.getElementById('langDropdownMenu');
+        const chevron = document.getElementById('langDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.classList.toggle('rotate-180');
+      }
+
+      document.addEventListener('click', function(e)
+      {
+        const dropdown = document.getElementById('langDropdown');
+        if (dropdown && !dropdown.contains(e.target))
+        {
+          document.getElementById('langDropdownMenu').classList.remove(
+            'open');
+          document.getElementById('langDropdownChevron').classList.remove(
+            'rotate-180');
+        }
+      });
+
+      function setLang(lang)
+      {
+        const cfg = langConfig[lang];
+        if (!cfg) return;
+        document.getElementById('currentLangFlag').textContent = cfg.flag;
+        document.getElementById('currentLangLabel').textContent = cfg.label;
+        document.getElementById('langDropdownMenu').classList.remove('open');
+        document.getElementById('langDropdownChevron').classList.remove(
+          'rotate-180');
+        Object.keys(langConfig).forEach(l =>
+        {
+          const opt = document.getElementById('opt-' + l);
+          const check = document.getElementById('check-' + l);
+          if (opt) opt.classList.toggle('active', l === lang);
+          if (check) check.classList.toggle('hidden', l !== lang);
+        });
+        document.querySelectorAll('[data-cs]').forEach(el =>
+        {
+          const val = el.getAttribute('data-' + lang);
+          if (val) el.textContent = val;
+        });
+        localStorage.setItem('lang', lang);
+      }
+
+      document.addEventListener('DOMContentLoaded', () =>
+      {
+        const lang = localStorage.getItem('lang') || 'cs';
+        setLang(lang);
+      });
+
+      function setBilling(billing)
+      {
+        const monthlyBtn = document.getElementById('btn-monthly');
+        const yearlyBtn = document.getElementById('btn-yearly');
+        const isYearly = billing === 'yearly';
+
+        monthlyBtn.classList.toggle('bg-brand-blue', !isYearly);
+        monthlyBtn.classList.toggle('text-white', !isYearly);
+        monthlyBtn.classList.toggle('shadow', !isYearly);
+        monthlyBtn.classList.toggle('text-text-muted', isYearly);
+
+        yearlyBtn.classList.toggle('bg-brand-blue', isYearly);
+        yearlyBtn.classList.toggle('text-white', isYearly);
+        yearlyBtn.classList.toggle('shadow', isYearly);
+        yearlyBtn.classList.toggle('text-text-muted', !isYearly);
+
+        document.getElementById('price-starter').textContent = '€4';
+        document.getElementById('price-pro').textContent = isYearly ? '€57,51' :
+          '€5,99';
+        document.getElementById('price-proplus').textContent = isYearly ?
+          '€124,71' : '€12,99';
+
+        document.getElementById('period-pro').textContent = '/ měs';
+        document.getElementById('period-proplus').textContent = '/ měs';
+
+        const yearlySavingPro = document.getElementById('yearly-saving-pro');
+        const yearlySavingProplus = document.getElementById(
+          'yearly-saving-proplus');
+
+        if (isYearly)
+        {
+          yearlySavingPro.classList.remove('hidden');
+          yearlySavingProplus.classList.remove('hidden');
+          document.getElementById('original-pro').textContent = '€71,88';
+          document.getElementById('original-proplus').textContent = '€155,88';
+        }
+        else
+        {
+          yearlySavingPro.classList.add('hidden');
+          yearlySavingProplus.classList.add('hidden');
+        }
+
+        document.getElementById('yearly-badge').textContent = '−20%';
+      }
+
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const icon = document.getElementById('hamburgerIcon');
+        const isOpen = menu.style.display === 'flex';
+        menu.style.display = isOpen ? 'none' : 'flex';
+        menu.style.flexDirection = 'column';
+        icon.className = isOpen ? 'fa-solid fa-bars text-sm' : 'fa-solid fa-xmark text-sm';
+      }
+    </script>
+  </body>
+
+</html>

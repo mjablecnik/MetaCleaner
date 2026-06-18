@@ -1,0 +1,1007 @@
+<html lang="cs">
+
+  <head>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .dashed-border-anim
+      {
+        background-image: linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%);
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+        background-position: left top, right bottom, left bottom, right top;
+        animation: border-dance 1s infinite linear;
+      }
+
+      @keyframes border-dance
+      {
+        0%
+        {
+          background-position: left top, right bottom, left bottom, right top;
+        }
+
+        100%
+        {
+          background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
+        }
+      }
+
+      .lang-dropdown
+      {
+        position: relative;
+        display: inline-block;
+      }
+
+      .lang-dropdown-menu
+      {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        background: #111d33;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        min-width: 160px;
+        z-index: 200;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      }
+
+      .lang-dropdown-menu.open
+      {
+        display: block;
+      }
+
+      .lang-option
+      {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        transition: background 0.15s, color 0.15s;
+      }
+
+      .lang-option:hover
+      {
+        background: #1e293b;
+        color: #fff;
+      }
+
+      .lang-option.active
+      {
+        color: #fff;
+        background: #1e293b;
+      }
+
+      .lang-option .lang-flag
+      {
+        font-size: 18px;
+      }
+
+      .lang-option .lang-check
+      {
+        margin-left: auto;
+        color: #3b82f6;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col items-center">
+    <!-- Navigation -->
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full max-w-[1100px] mx-auto px-6 py-6 flex justify-between items-center z-50">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
+          class="text-xl font-bold tracking-tight">MetaCleaner</span>
+      </div>
+      <div
+        class="hidden md:flex items-center gap-8 text-sm font-medium text-text-muted">
+        <a href="#how-it-works" data-cs="Jak to funguje" data-en="How it Works"
+          class="hover:text-white transition-colors">Jak to funguje</a><a
+          href="#features" data-cs="Funkce" data-en="Features"
+          class="hover:text-white transition-colors">Funkce</a><a
+          href="#pricing" data-cs="Ceník" data-en="Pricing"
+          class="hover:text-white transition-colors">Ceník</a><a href="#faq"
+          data-cs="FAQ" data-en="FAQ"
+          class="hover:text-white transition-colors">FAQ</a></div>
+      <div class="flex items-center gap-3">
+        <div id="langDropdown" class="lang-dropdown"><button
+            onclick="toggleLangDropdown()"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
+              id="currentLangFlag">🇨🇿</span><span
+              id="currentLangLabel">CS</span><i id="langDropdownChevron"
+              class="fa-solid fa-chevron-down text-text-muted text-xs ml-1"></i></button>
+          <div id="langDropdownMenu" class="lang-dropdown-menu">
+            <div id="opt-cs" onclick="setLang('cs')" class="lang-option active">
+              <span class="lang-flag">🇨🇿</span> Čeština <span id="check-cs"
+                class="lang-check"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-en" onclick="setLang('en')" class="lang-option"><span
+                class="lang-flag">🇬🇧</span> English <span id="check-en"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-de" onclick="setLang('de')" class="lang-option"><span
+                class="lang-flag">🇩🇪</span> Deutsch <span id="check-de"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-fr" onclick="setLang('fr')" class="lang-option"><span
+                class="lang-flag">🇫🇷</span> Français <span id="check-fr"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+            <div id="opt-sk" onclick="setLang('sk')" class="lang-option"><span
+                class="lang-flag">🇸🇰</span> Slovenčina <span id="check-sk"
+                class="lang-check hidden"><i
+                  class="fa-solid fa-check text-xs"></i></span></div>
+          </div>
+        </div><button data-cs="Přihlásit" data-en="Log In" data-de="Anmelden"
+          data-fr="Connexion" data-sk="Prihlásiť"
+          class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors">Přihlásit</button>
+      </div>
+    </nav><!-- Main -->
+    <main
+      class="w-full max-w-[1100px] mx-auto px-6 flex flex-col gap-[48px] pb-24">
+      <!-- Hero -->
+      <section id="hero"
+        class="w-full pt-12 pb-8 flex flex-col lg:flex-row gap-12 items-center">
+        <div class="w-full lg:w-[55%] flex flex-col gap-6">
+          <h1 id="i8d58"
+            class="text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight w-[609px]">
+            <span data-cs="Sdílejte soubory bezpečně."
+              data-en="Share files safely." id="iaxo4">Chraňte své
+              soukromí</span><br><span data-cs="Odstraňte metadata"
+              data-en="Remove metadata"
+              class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green">Odstraňte
+              metadata</span></h1>
+          <p data-cs="Chraňte své soukromí odstraněním skrytých EXIF dat, GPS souřadnic a informací o zařízení z vašich fotek a videí před jejich sdílením online."
+            data-en="Protect your privacy by stripping hidden EXIF data, location tags, and device information from your photos and videos before sharing them online."
+            class="text-lg text-text-muted leading-relaxed max-w-xl">Chraňte své
+            soukromí odstraněním skrytých EXIF dat, GPS souřadnic a informací o
+            zařízení z vašich fotek a videí před jejich sdílením online.</p>
+          <div class="flex flex-col sm:flex-row gap-4 mt-4"><button
+              class="px-8 py-3.5 rounded-lg bg-brand-green text-white font-semibold shadow-glow-green hover:bg-green-500 transition-all flex items-center justify-center gap-2"><i
+                class="fa-solid fa-cloud-arrow-up"></i><span
+                data-cs="Vyzkoušet zdarma" data-en="Try for Free">Vyzkoušet
+                zdarma</span></button><button
+              class="px-8 py-3.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-semibold hover:bg-gray-800 transition-all flex items-center justify-center gap-2"><i
+                class="fa-brands fa-apple"></i><span data-cs="Stáhnout aplikaci"
+                data-en="Download App">Stáhnout aplikaci</span></button></div>
+        </div>
+        <div class="w-full lg:w-[45%] h-[400px]">
+          <div
+            class="w-full h-full rounded-[16px] bg-navy-card border border-gray-800 p-[24px] flex flex-col shadow-card relative overflow-hidden">
+            <div
+              class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-blue/10 blur-[50px] rounded-full pointer-events-none">
+            </div>
+            <div class="flex justify-between items-center mb-6 z-10">
+              <h3 data-cs="Vyčistit soubory" data-en="Clean Files"
+                class="font-semibold text-lg">Vyčistit soubory</h3>
+              <div class="flex gap-2"><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">JPG</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">PNG</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">HEIC</span><span
+                  class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">WEBP</span>
+              </div>
+            </div>
+            <div
+              class="flex-1 rounded-xl bg-navy-main/50 dashed-border-anim flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-navy-main/80 transition-colors z-10">
+              <div
+                class="w-16 h-16 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-2xl shadow-glow-blue">
+                <i class="fa-solid fa-file-arrow-up"></i></div>
+              <div class="text-center">
+                <p data-cs="Přetáhněte soubory sem"
+                  data-en="Drag &amp; Drop files here"
+                  class="font-semibold text-white mb-1">Přetáhněte soubory sem
+                </p>
+                <p data-cs="nebo klikněte pro výběr ze zařízení"
+                  data-en="or click to browse from your computer"
+                  class="text-xs text-text-muted">nebo klikněte pro výběr ze
+                  zařízení</p>
+              </div>
+              <p class="text-[10px] text-text-muted mt-2"><i
+                  class="fa-solid fa-lock mr-1"></i><span
+                  data-cs="Soubory se zpracovávají lokálně. Nikdy se nenahrávají."
+                  data-en="Files processed locally. Never uploaded.">Soubory se
+                  zpracovávají lokálně. Nikdy se nenahrávají.</span></p>
+            </div>
+          </div>
+        </div>
+      </section><!-- How It Works -->
+      <!-- Why It Matters -->
+      <section id="why-it-matters" class="w-full">
+        <div class="text-center mb-12"><span data-cs="Důležitost"
+            data-en="Importance"
+            class="text-xs font-bold uppercase tracking-widest text-brand-green mb-3 block">Důležitost</span>
+          <h2 data-cs="Proč je to důležité?" data-en="Why does it matter?"
+            class="text-4xl font-bold mb-4">Proč je to důležité?</h2>
+          <p data-cs="Každý soubor, který sdílíte, může obsahovat více informací, než si myslíte."
+            data-en="Every file you share may contain more information than you think."
+            class="text-text-muted max-w-xl mx-auto">Každý soubor, který
+            sdílíte, může obsahovat více informací, než si myslíte.</p>
+        </div><!-- Before/After comparison -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+          <div id="before-card"
+            class="bg-navy-card rounded-2xl border border-brand-red/40 p-6 flex flex-col gap-4">
+            <div class="flex items-center gap-3 mb-2">
+              <div
+                class="w-10 h-10 rounded-full bg-brand-red/20 flex items-center justify-center text-brand-red">
+                <i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div><span data-cs="Před čištěním" data-en="Before cleaning"
+                  class="text-xs font-bold uppercase tracking-wider text-brand-red">Před
+                  čištěním</span>
+                <p data-cs="Fotka obsahuje skrytá data"
+                  data-en="Photo contains hidden data"
+                  class="text-sm font-semibold text-white">Fotka obsahuje skrytá
+                  data</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-location-dot text-brand-red"></i> <span
+                    data-cs="GPS souřadnice" data-en="GPS Coordinates">GPS
+                    souřadnice</span></span><span
+                  class="text-xs font-mono text-white">50.0755°N,
+                  14.4378°E</span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-mobile-screen text-brand-red"></i> <span
+                    data-cs="Zařízení"
+                    data-en="Device">Zařízení</span></span><span
+                  class="text-xs font-mono text-white">Apple iPhone 15
+                  Pro</span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-calendar text-brand-red"></i> <span
+                    data-cs="Datum a čas" data-en="Date &amp; Time">Datum a
+                    čas</span></span><span
+                  class="text-xs font-mono text-white">2024-03-15
+                  14:32:07</span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-user text-brand-red"></i> <span
+                    data-cs="Autor" data-en="Author">Autor</span></span><span
+                  class="text-xs font-mono text-white">Jan Novák</span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-camera text-brand-red"></i> <span
+                    data-cs="Nastavení fotoaparátu"
+                    data-en="Camera Settings">Nastavení
+                    fotoaparátu</span></span><span
+                  class="text-xs font-mono text-white">f/1.8 · 1/120s · ISO
+                  64</span></div>
+            </div>
+            <p class="text-xs text-brand-red/80 flex items-center gap-2 mt-1"><i
+                class="fa-solid fa-circle-exclamation"></i> <span
+                data-cs="Tato data jsou viditelná každému, kdo soubor obdrží."
+                data-en="This data is visible to anyone who receives the file.">Tato
+                data jsou viditelná každému, kdo soubor obdrží.</span></p>
+          </div>
+          <div id="after-card"
+            class="bg-navy-card rounded-2xl border border-brand-green/40 p-6 flex flex-col gap-4">
+            <div class="flex items-center gap-3 mb-2">
+              <div
+                class="w-10 h-10 rounded-full bg-brand-green/20 flex items-center justify-center text-brand-green">
+                <i class="fa-solid fa-shield-halved"></i></div>
+              <div><span data-cs="Po čištění" data-en="After cleaning"
+                  class="text-xs font-bold uppercase tracking-wider text-brand-green">Po
+                  čištění</span>
+                <p data-cs="Fotka je bezpečná ke sdílení"
+                  data-en="Photo is safe to share"
+                  class="text-sm font-semibold text-white">Fotka je bezpečná ke
+                  sdílení</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-location-dot text-brand-green"></i> <span
+                    data-cs="GPS souřadnice" data-en="GPS Coordinates">GPS
+                    souřadnice</span></span><span
+                  class="text-xs font-mono text-brand-green flex items-center gap-1"><i
+                    class="fa-solid fa-check"></i> <span data-cs="Odstraněno"
+                    data-en="Removed">Odstraněno</span></span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-mobile-screen text-brand-green"></i><span
+                    data-cs="Zařízení"
+                    data-en="Device">Zařízení</span></span><span
+                  class="text-xs font-mono text-brand-green flex items-center gap-1"><i
+                    class="fa-solid fa-check"></i> <span data-cs="Odstraněno"
+                    data-en="Removed">Odstraněno</span></span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-calendar text-brand-green"></i> <span
+                    data-cs="Datum a čas" data-en="Date &amp; Time">Datum a
+                    čas</span></span><span
+                  class="text-xs font-mono text-brand-green flex items-center gap-1"><i
+                    class="fa-solid fa-check"></i> <span data-cs="Odstraněno"
+                    data-en="Removed">Odstraněno</span></span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-user text-brand-green"></i> <span
+                    data-cs="Autor" data-en="Author">Autor</span></span><span
+                  class="text-xs font-mono text-brand-green flex items-center gap-1"><i
+                    class="fa-solid fa-check"></i> <span data-cs="Odstraněno"
+                    data-en="Removed">Odstraněno</span></span></div>
+              <div
+                class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800">
+                <span class="text-xs text-text-muted flex items-center gap-2"><i
+                    class="fa-solid fa-camera text-brand-green"></i> <span
+                    data-cs="Nastavení fotoaparátu"
+                    data-en="Camera Settings">Nastavení
+                    fotoaparátu</span></span><span
+                  class="text-xs font-mono text-brand-green flex items-center gap-1"><i
+                    class="fa-solid fa-check"></i> <span data-cs="Odstraněno"
+                    data-en="Removed">Odstraněno</span></span></div>
+            </div>
+            <p class="text-xs text-brand-green/80 flex items-center gap-2 mt-1">
+              <i class="fa-solid fa-circle-check"></i> <span
+                data-cs="Soubor neobsahuje žádná citlivá metadata."
+                data-en="File contains no sensitive metadata.">Soubor neobsahuje
+                žádná citlivá metadata.</span></p>
+          </div>
+        </div><!-- Risk stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3">
+            <div
+              class="w-12 h-12 rounded-full bg-brand-red/20 flex items-center justify-center text-brand-red text-xl">
+              <i class="fa-solid fa-location-crosshairs"></i></div><span
+              class="text-3xl font-black text-white">94%</span>
+            <p data-cs="fotek sdílených online obsahuje GPS metadata"
+              data-en="of photos shared online contain GPS metadata"
+              class="text-sm text-text-muted">fotek sdílených online obsahuje
+              GPS metadata</p>
+          </div>
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3">
+            <div
+              class="w-12 h-12 rounded-full bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl">
+              <i class="fa-solid fa-eye"></i></div><span
+              class="text-3xl font-black text-white">200+</span>
+            <p data-cs="různých datových polí může být skryto v jednom souboru"
+              data-en="different data fields can be hidden in a single file"
+              class="text-sm text-text-muted">různých datových polí může být
+              skryto v jednom souboru</p>
+          </div>
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3">
+            <div
+              class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
+              <i class="fa-solid fa-users"></i></div><span
+              class="text-3xl font-black text-white">9 z 10</span>
+            <p data-cs="uživatelů neví, že jejich fotky obsahují osobní data"
+              data-en="users don't know their photos contain personal data"
+              class="text-sm text-text-muted">uživatelů neví, že jejich fotky
+              obsahují osobní data</p>
+          </div>
+        </div>
+      </section><!-- Main Features -->
+      <section id="how-it-works" class="w-full">
+        <div class="text-center mb-12"><span data-cs="Postup" data-en="Process"
+            class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block">Postup</span>
+          <h2 data-cs="Jak to funguje?" data-en="How does it work?"
+            class="text-4xl font-bold mb-4">Jak to funguje?</h2>
+          <p data-cs="Tři jednoduché kroky k ochraně vašeho soukromí."
+            data-en="Three simple steps to protect your privacy."
+            class="text-text-muted max-w-xl mx-auto">Tři jednoduché kroky k
+            ochraně vašeho soukromí.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative">
+            <div
+              class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2">
+              <i class="fa-solid fa-upload"></i></div><span
+              class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">01</span>
+            <h3 data-cs="Nahrajte soubory" data-en="Upload Files"
+              class="text-xl font-bold">Nahrajte soubory</h3>
+            <p data-cs="Přetáhněte fotky nebo videa
+                    do aplikace. Všechny soubory se zpracují
+                    na vašem zařízení. Vaše data nikdy
+                    neodpovídají na serverech." data-en="Upload photos or videos to the app. All files are processed
+                    on your device. Your data never reaches
+                    the servers."
+              class="text-text-muted text-sm leading-relaxed">Přetáhněte fotky
+              nebo videa
+              do aplikace. Všechny soubory se zpracují
+              na vašem zařízení. Vaše data nikdy
+              neodpovídají na serverech.</p>
+          </div>
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative">
+            <div
+              class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2">
+              <i class="fa-solid fa-clipboard"></i></div><span
+              class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">02</span>
+            <h3 data-cs="Odstraňte metadata" data-en="Remove Metadata"
+              class="text-xl font-bold">Odstraňte metadata</h3>
+            <p data-cs="Aplikace automaticky odstraňuje
+                    skryté EXIF data, GPS souřadnice a
+                    informace o zařízení z vašich souborů." data-en="The app automatically removes
+                    hidden EXIF data, GPS coordinates and
+                    device information from your files."
+              class="text-text-muted text-sm leading-relaxed">Aplikace
+              automaticky odstraňuje
+              skryté EXIF data, GPS souřadnice a
+              informace o zařízení z vašich souborů.</p>
+          </div>
+          <div
+            class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative">
+            <div
+              class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2">
+              <i class="fa-solid fa-download"></i></div><span
+              class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">03</span>
+            <h3 data-cs="Stáhni soubory" data-en="Download Files"
+              class="text-xl font-bold">Stáhni soubory</h3>
+            <p data-cs="Soubory se automaticky
+                    stáhnou do vašeho počítače
+                    nebo telefonu. Všechny soubory
+                    jsou bezpečně uloženy." data-en="Files are automatically
+                    downloaded to your computer or phone.
+                    All files are securely stored."
+              class="text-text-muted text-sm leading-relaxed">Soubory se
+              automaticky
+              stáhnou do vašeho počítače
+              nebo telefonu. Všechny soubory
+              jsou bezpečně uloženy.</p>
+          </div>
+        </div>
+      </section>
+    </main><!-- Who Is It For -->
+    <section id="who-its-for" class="w-full max-w-[1100px] mx-auto px-6 pb-16">
+      <div class="text-center mb-12"><span data-cs="Pro koho" data-en="For Who"
+          class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block">Pro
+          koho</span>
+        <h2 data-cs="Pro koho je MetaCleaner určen?"
+          data-en="Who Is MetaCleaner For?" class="text-4xl font-bold mb-4">Pro
+          koho je MetaCleaner určen?</h2>
+        <p data-cs="Ať jste novinář, fotograf nebo firemní uživatel – MetaCleaner chrání vaše soukromí."
+          data-en="Whether you're a journalist, photographer or enterprise user – MetaCleaner protects your privacy."
+          class="text-text-muted max-w-xl mx-auto">Ať jste novinář, fotograf
+          nebo firemní uživatel – MetaCleaner chrání vaše soukromí.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="for-journalists"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-blue/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
+            <i class="fa-solid fa-newspaper"></i></div>
+          <h3 data-cs="Novináři &amp; Aktivisté"
+            data-en="Journalists &amp; Activists" class="text-lg font-bold">
+            Novináři &amp; Aktivisté</h3>
+          <p data-cs="Ochraňte své zdroje a svou polohu. Sdílejte fotodokumentaci bez rizika prozrazení GPS souřadnic nebo identity zařízení."
+            data-en="Protect your sources and location. Share photo documentation without risking GPS exposure or device identity."
+            class="text-sm text-text-muted leading-relaxed">Ochraňte své zdroje
+            a svou polohu. Sdílejte fotodokumentaci bez rizika prozrazení GPS
+            souřadnic nebo identity zařízení.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Anonymní sdílení souborů"
+                data-en="Anonymous file sharing">Anonymní sdílení souborů</span>
+            </li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Ochrana zdrojů" data-en="Source protection">Ochrana
+                zdrojů</span></li>
+          </ul>
+        </div>
+        <div id="for-photographers"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-orange/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl">
+            <i class="fa-solid fa-camera-retro"></i></div>
+          <h3 data-cs="Fotografové &amp; Tvůrci"
+            data-en="Photographers &amp; Creators" class="text-lg font-bold">
+            Fotografové &amp; Tvůrci</h3>
+          <p data-cs="Sdílejte svá díla online bez prozrazení místa focení, nastavení fotoaparátu nebo osobních údajů skrytých v metadatech."
+            data-en="Share your work online without revealing shooting locations, camera settings or personal data hidden in metadata."
+            class="text-sm text-text-muted leading-relaxed">Sdílejte svá díla
+            online bez prozrazení místa focení, nastavení fotoaparátu nebo
+            osobních údajů v metadatech.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Skrytí místa focení"
+                data-en="Hide shooting location">Skrytí místa focení</span></li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Ochrana workflow" data-en="Workflow protection">Ochrana
+                workflow</span></li>
+          </ul>
+        </div>
+        <div id="for-business"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-green/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl">
+            <i class="fa-solid fa-building"></i></div>
+          <h3 data-cs="Firmy &amp; Právníci" data-en="Businesses &amp; Legal"
+            class="text-lg font-bold">Firmy &amp; Právníci</h3>
+          <p data-cs="Zajistěte GDPR compliance a chraňte citlivé firemní dokumenty. PDF reporty pro auditní záznamy a interní procesy."
+            data-en="Ensure GDPR compliance and protect sensitive company documents. PDF reports for audit records and internal processes."
+            class="text-sm text-text-muted leading-relaxed">Zajistěte GDPR
+            compliance a chraňte citlivé firemní dokumenty. PDF reporty pro
+            audit a interní procesy.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="GDPR compliance" data-en="GDPR compliance">GDPR
+                compliance</span></li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Auditní záznamy" data-en="Audit records">Auditní
+                záznamy</span></li>
+          </ul>
+        </div>
+        <div id="for-individuals"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-blue/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
+            <i class="fa-solid fa-user-shield"></i></div>
+          <h3 data-cs="Běžní uživatelé" data-en="Everyday Users"
+            class="text-lg font-bold">Běžní uživatelé</h3>
+          <p data-cs="Sdílejte fotky z dovolené, rodinné snímky nebo dokumenty bez obav, že prozradíte svou domácí adresu nebo rutinu."
+            data-en="Share holiday photos, family pictures or documents without worrying about revealing your home address or routine."
+            class="text-sm text-text-muted leading-relaxed">Sdílejte fotky z
+            dovolené nebo rodinné snímky bez obav, že prozradíte svou adresu
+            nebo rutinu.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Snadné použití" data-en="Easy to use">Snadné
+                použití</span></li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Žádná registrace" data-en="No registration">Žádná
+                registrace</span></li>
+          </ul>
+        </div>
+        <div id="for-researchers"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-orange/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl">
+            <i class="fa-solid fa-flask"></i></div>
+          <h3 data-cs="Výzkumníci &amp; Akademici"
+            data-en="Researchers &amp; Academics" class="text-lg font-bold">
+            Výzkumníci &amp; Akademici</h3>
+          <p data-cs="Anonymizujte výzkumná data a sdílejte vědecké materiály bez nechtěných metadat, která by mohla identifikovat účastníky studie."
+            data-en="Anonymize research data and share scientific materials without unwanted metadata that could identify study participants."
+            class="text-sm text-text-muted leading-relaxed">Anonymizujte
+            výzkumná data bez metadat, která by mohla identifikovat účastníky
+            studie.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Anonymizace dat"
+                data-en="Data anonymization">Anonymizace dat</span></li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Batch zpracování" data-en="Batch processing">Batch
+                zpracování</span></li>
+          </ul>
+        </div>
+        <div id="for-security"
+          class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-green/50 transition-colors">
+          <div
+            class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl">
+            <i class="fa-solid fa-lock"></i></div>
+          <h3 data-cs="IT &amp; Bezpečnostní týmy"
+            data-en="IT &amp; Security Teams" class="text-lg font-bold">IT &amp;
+            Bezpečnostní týmy</h3>
+          <p data-cs="Integrujte MetaCleaner do firemních procesů. Hromadné čištění, PDF audit logy a lokální zpracování bez cloudových rizik."
+            data-en="Integrate MetaCleaner into company workflows. Bulk cleaning, PDF audit logs and local processing without cloud risks."
+            class="text-sm text-text-muted leading-relaxed">Integrujte do
+            firemních procesů. Hromadné čištění, PDF audit logy a lokální
+            zpracování bez cloudových rizik.</p>
+          <ul class="flex flex-col gap-1.5 mt-auto">
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="Lokální zpracování" data-en="Local processing">Lokální
+                zpracování</span></li>
+            <li class="flex items-center gap-2 text-xs text-text-muted"><i
+                class="fa-solid fa-check text-brand-green text-[10px]"></i><span
+                data-cs="API integrace" data-en="API integration">API
+                integrace</span></li>
+          </ul>
+        </div>
+      </div>
+    </section><!-- FAQ -->
+    <section id="faq" class="w-full max-w-[1100px] mx-auto px-6 pb-16">
+      <div class="text-center mb-12"><span data-cs="Časté dotazy" data-en="FAQ"
+          class="text-xs font-bold uppercase tracking-widest text-brand-green mb-3 block">Časté
+          dotazy</span>
+        <h2 data-cs="Máte otázky?" data-en="Have Questions?"
+          class="text-4xl font-bold mb-4">Máte otázky?</h2>
+        <p data-cs="Odpovědi na nejčastěji kladené otázky o MetaCleaner."
+          data-en="Answers to the most frequently asked questions about MetaCleaner."
+          class="text-text-muted max-w-xl mx-auto">Odpovědi na nejčastěji
+          kladené otázky o MetaCleaner.</p>
+      </div>
+      <div class="max-w-3xl mx-auto flex flex-col gap-3">
+        <div
+          class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+          <button onclick="toggleFaq(this)"
+            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"><span
+              data-cs="Jsou moje soubory bezpečné? Nahrávají se na server?"
+              data-en="Are my files safe? Are they uploaded to a server?"
+              class="font-semibold text-white">Jsou moje soubory bezpečné?
+              Nahrávají se na server?</span><i
+              class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i></button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p data-cs="Ne. MetaCleaner zpracovává všechny soubory výhradně lokálně na vašem zařízení. Žádný soubor ani metadata se nikdy neodesílají na naše servery. Vaše data zůstávají 100% u vás."
+              data-en="No. MetaCleaner processes all files exclusively locally on your device. No file or metadata is ever sent to our servers. Your data remains 100% with you."
+              class="text-sm text-text-muted leading-relaxed">Ne. MetaCleaner
+              zpracovává všechny soubory výhradně lokálně na vašem zařízení.
+              Žádný soubor ani metadata se nikdy neodesílají na naše servery.
+              Vaše data zůstávají 100% u vás.</p>
+          </div>
+        </div>
+        <div
+          class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+          <button onclick="toggleFaq(this)"
+            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"><span
+              data-cs="Jaké metadaty odstraňuje MetaCleaner?"
+              data-en="What metadata does MetaCleaner remove?"
+              class="font-semibold text-white">Jaké metadaty odstraňuje
+              MetaCleaner?</span><i
+              class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i></button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p data-cs="MetaCleaner odstraňuje všechny typy EXIF metadat, včetně GPS souřadnic, informací o zařízení, datových polí, času a pořízení, a dalších skrytých polí, které mohou být zdrojem prozrazení."
+              data-en="MetaCleaner removes all types of EXIF metadata, including GPS coordinates, device information, data fields, timestamps, and capture details, as well as other hidden fields that could lead to exposure."
+              class="text-sm text-text-muted leading-relaxed">MetaCleaner
+              odstraňuje všechny typy EXIF metadat, včetně GPS souřadnic,
+              informací o zařízení, datových polí, času a pořízení, a dalších
+              skrytých polí, které mohou být zdrojem prozrazení.</p>
+          </div>
+        </div>
+        <div
+          class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+          <button onclick="toggleFaq(this)"
+            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"><span
+              data-cs="Je možné vytvořit vlastní metadaty nebo způsob sdílení?"
+              data-en="Can I create custom metadata or sharing methods?"
+              class="font-semibold text-white">Je možné vytvořit vlastní
+              metadaty nebo způsob sdílení?</span><i
+              class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i></button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p data-cs="Ne. MetaCleaner je určen pro bezpečné sdílení souborů, nikoli pro vytváření vlastních metadat nebo sdílení. Všechny soubory se zpracují lokálně a nejsou vytvářeny žádné metadaty."
+              data-en="No. MetaCleaner is designed for secure file sharing, not for creating custom metadata or sharing methods. All files are processed locally and no metadata is created."
+              class="text-sm text-text-muted leading-relaxed">Ne. MetaCleaner je
+              určen pro bezpečné sdílení souborů, nikoli pro vytváření vlastních
+              metadat nebo sdílení. Všechny soubory se zpracují lokálně a nejsou
+              vytvářeny žádné metadaty.</p>
+          </div>
+        </div>
+        <div
+          class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+          <button onclick="toggleFaq(this)"
+            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"><span
+              data-cs="Jaké soubory lze zpracovat?"
+              data-en="What file types can be processed?"
+              class="font-semibold text-white">Jaké soubory lze
+              zpracovat?</span><i
+              class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i></button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p data-cs="MetaCleaner podporuje zpracování všech typů obrázků, včetně JPG, PNG, HEIC, WebP, a dalších formátů, které obsahují EXIF metadaty. Všechny soubory se zpracují lokálně a bez ztráty kvality."
+              data-en="MetaCleaner supports processing all types of images, including JPG, PNG, HEIC, WebP, and other formats that contain EXIF metadata. All files are processed locally and without quality loss."
+              class="text-sm text-text-muted leading-relaxed">MetaCleaner
+              podporuje zpracování všech typů obrázků, včetně JPG, PNG, HEIC,
+              WebP, a dalších formátů, které obsahují EXIF metadaty. Všechny
+              soubory se zpracují lokálně a bez ztráty kvality.</p>
+          </div>
+        </div>
+        <div
+          class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+          <button onclick="toggleFaq(this)"
+            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"><span
+              data-cs="Je možné zpracovat soubory větší než 100 MB?"
+              data-en="Can I process files larger than 100 MB?"
+              class="font-semibold text-white">Je možné zpracovat soubory větší
+              než 100 MB?</span><i
+              class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i></button>
+          <div class="faq-answer hidden px-6 pb-5">
+            <p data-cs="Ano, MetaCleaner podporuje zpracování souborů větších než 100 MB. Všechny soubory se zpracují lokálně a bez ztráty kvality, až do maximální velikosti, kterou umožňuje vaše zařízení."
+              data-en="Yes, MetaCleaner supports processing files larger than 100 MB. All files are processed locally and without quality loss, up to the maximum size allowed by your device."
+              class="text-sm text-text-muted leading-relaxed">Ano, MetaCleaner
+              podporuje zpracování souborů větších než 100 MB. Všechny soubory
+              se zpracují lokálně a bez ztráty kvality, až do maximální
+              velikosti, kterou umožňuje vaše zařízení.</p>
+          </div>
+        </div>
+      </div>
+    </section><!-- Footer -->
+    <footer id="footer"
+      class="w-full bg-navy-card border-t border-gray-800 mt-8">
+      <div class="max-w-[1100px] mx-auto px-6 py-16">
+        <div id="i8ucon"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-12 gap-10 w-auto">
+          <!-- Brand -->
+          <div id="iiivhs" class="flex flex-col gap-5 lg:col-span-1 w-full">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+                <i class="fa-solid fa-shield-halved text-xl"></i></div><span
+                class="text-xl font-bold tracking-tight">MetaCleaner</span>
+            </div>
+            <p data-cs="Chraňte své soukromí odstraněním skrytých metadat z vašich souborů. 100% lokální zpracování."
+              data-en="Protect your privacy by removing hidden metadata from your files. 100% local processing."
+              class="text-sm text-text-muted leading-relaxed">Chraňte své
+              soukromí odstraněním skrytých metadat z vašich souborů. 100%
+              lokální zpracování.</p>
+          </div><!-- Product -->
+          <div id="ivgx8a" class="flex flex-col gap-4 w-full">
+            <h4 data-cs="Produkt" data-en="Product"
+              class="text-sm font-bold uppercase tracking-widest text-white">
+              Produkt</h4>
+            <ul class="flex flex-col gap-3">
+              <li><a href="#features" data-cs="Funkce" data-en="Features"
+                  class="text-sm text-text-muted hover:text-white transition-colors">Funkce</a>
+              </li>
+              <li><a href="#how-it-works" data-cs="Jak to funguje"
+                  data-en="How it Works"
+                  class="text-sm text-text-muted hover:text-white transition-colors">Jak
+                  to funguje</a></li>
+              <li><a href="#pricing" data-cs="Ceník" data-en="Pricing"
+                  class="text-sm text-text-muted hover:text-white transition-colors">Ceník</a>
+              </li>
+              <li></li>
+            </ul>
+          </div><!-- Company -->
+          <div id="id3xng" class="flex flex-col gap-4 w-full">
+            <h4 data-cs="Společnost" data-en="Company"
+              class="text-sm font-bold uppercase tracking-widest text-white">
+              Společnost</h4>
+            <ul class="flex flex-col gap-3">
+              <li><a href="#" data-cs="O nás" data-en="About Us"
+                  class="text-sm text-text-muted hover:text-white transition-colors">O
+                  nás</a></li>
+              <li><a href="#faq" data-cs="FAQ" data-en="FAQ"
+                  class="text-sm text-text-muted hover:text-white transition-colors">FAQ</a>
+              </li>
+              <li><a href="#" data-cs="Kontakt" data-en="Contact"
+                  class="text-sm text-text-muted hover:text-white transition-colors">Kontakt</a>
+              </li>
+            </ul>
+          </div><!-- CTA / App Download -->
+        </div><!-- Divider -->
+        <div
+          class="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p data-cs="© 2024 MetaCleaner. Všechna práva vyhrazena."
+            data-en="© 2024 MetaCleaner. All rights reserved."
+            class="text-xs text-text-muted">© 2024 MetaCleaner. Všechna práva
+            vyhrazena.</p>
+          <div class="flex items-center gap-6"><a href="#"
+              data-cs="Zásady ochrany soukromí" data-en="Privacy Policy"
+              class="text-xs text-text-muted hover:text-white transition-colors">Zásady
+              ochrany soukromí</a><a href="#" data-cs="Podmínky použití"
+              data-en="Terms of Service"
+              class="text-xs text-text-muted hover:text-white transition-colors">Podmínky
+              použití</a><a href="#" data-cs="Cookies" data-en="Cookies"
+              class="text-xs text-text-muted hover:text-white transition-colors">Cookies</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      const langConfig = {
+        cs:
+        {
+          flag: '🇨🇿',
+          label: 'CS'
+        },
+        en:
+        {
+          flag: '🇬🇧',
+          label: 'EN'
+        },
+        de:
+        {
+          flag: '🇩🇪',
+          label: 'DE'
+        },
+        fr:
+        {
+          flag: '🇫🇷',
+          label: 'FR'
+        },
+        sk:
+        {
+          flag: '🇸🇰',
+          label: 'SK'
+        }
+      };
+
+      function toggleLangDropdown()
+      {
+        const menu = document.getElementById('langDropdownMenu');
+        const chevron = document.getElementById('langDropdownChevron');
+        menu.classList.toggle('open');
+        chevron.classList.toggle('rotate-180');
+      }
+
+      document.addEventListener('click', function(e)
+      {
+        const dropdown = document.getElementById('langDropdown');
+        if (!dropdown.contains(e.target))
+        {
+          document.getElementById('langDropdownMenu').classList.remove(
+            'open');
+          document.getElementById('langDropdownChevron').classList.remove(
+            'rotate-180');
+        }
+      });
+
+      function setLang(lang)
+      {
+        const cfg = langConfig[lang];
+        if (!cfg) return;
+        document.getElementById('currentLangFlag').textContent = cfg.flag;
+        document.getElementById('currentLangLabel').textContent = cfg.label;
+        document.getElementById('langDropdownMenu').classList.remove('open');
+        document.getElementById('langDropdownChevron').classList.remove(
+          'rotate-180');
+
+        Object.keys(langConfig).forEach(l =>
+        {
+          const opt = document.getElementById('opt-' + l);
+          const check = document.getElementById('check-' + l);
+          if (opt) opt.classList.toggle('active', l === lang);
+          if (check) check.classList.toggle('hidden', l !== lang);
+        });
+
+        const textElements = document.querySelectorAll('[data-cs]');
+        textElements.forEach(el =>
+        {
+          const val = el.getAttribute('data-' + lang) || el.getAttribute(
+            'data-en') || el.getAttribute('data-cs');
+          if (val) el.textContent = val;
+        });
+
+        localStorage.setItem('lang', lang);
+      }
+
+      function toggleFaq(button)
+      {
+        const answer = button.nextElementSibling;
+        const isOpen = answer.classList.contains('hidden');
+        if (isOpen)
+        {
+          answer.classList.remove('hidden');
+          button.querySelector('i').classList.replace('fa-chevron-down',
+            'fa-chevron-up');
+        }
+        else
+        {
+          answer.classList.add('hidden');
+          button.querySelector('i').classList.replace('fa-chevron-up',
+            'fa-chevron-down');
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () =>
+      {
+        const lang = localStorage.getItem('lang') || 'cs';
+        setLang(lang);
+      });
+    </script>
+  </body>
+
+</html>
