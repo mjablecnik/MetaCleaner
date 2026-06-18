@@ -20,7 +20,7 @@ Refactor `frontend/metacleaner-web/` into a clean, responsive SvelteKit marketin
 - [x] 12. Refactor AudienceSection to single section: Merge blocks into one `<section>` with `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`. Make `AudienceCard` responsive. (Requirements: 2.4, 2.8, 2.10)
 - [x] 13. Refactor FaqSection to single section: Merge blocks into one `<section>`. Make `FaqAccordionItem` responsive. Use unified `getFaq()` call. (Requirements: 2.5, 2.8, 2.10)
 - [x] 14. Unify FAQ repository data: Update `faq.ts` to export `getFaq()` with no parameters returning combined deduplicated array. Create unified i18n keys. Remove old `home_faq_d*`/`home_faq_m*` keys. (Requirements: 3.1–3.4)
-- [ ] 15. Refactor Pricing page to single main block: Merge two `<main>` elements into one with `px-4 md:px-6 py-8 md:py-16`. (Requirements: 2.6, 2.8)
+- [x] 15. Refactor Pricing page to single main block: Merge two `<main>` elements into one with `px-4 md:px-6 py-8 md:py-16`. (Requirements: 2.6, 2.8)
 - [ ] 16. Refactor Features page sections: Review and merge any duplicated mobile/desktop blocks in `FeaturesHeaderSection`, `FeaturesShowcaseSection`, `FeaturesCtaSection`. (Requirements: 2.7, 2.8)
 - [ ] 17. Clean up orphaned i18n keys: Remove `footer_tagline_mobile`, `footer_tagline_features`, `home_audience_*_mobile`, `home_stat_*_short`, `home_faq_eyebrow_mobile`, `home_faq_title_mobile`, `home_faq_subtitle_mobile` and other unused keys from both `en.json` and `cs.json`. Keep `home_upload_drop_mobile` (genuinely different UX text). (Requirements: 3.5, 3.6)
 - [ ] 18. Verify CtaButton cursor behavior: Confirm pointer cursor works on both `<a>` and `<button>` renders via global rule. Confirm disabled shows `not-allowed`. (Requirements: 6.4)
