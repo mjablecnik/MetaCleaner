@@ -62,7 +62,7 @@
 
 <div class="flex flex-col items-center w-full">
 	<!-- Desktop Navbar -->
-	<nav class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 py-6 justify-between items-center z-50">
+	<nav class="hidden md:flex w-full max-w-site mx-auto px-6 py-6 justify-between items-center z-50">
 		<a href="/" class="flex items-center gap-3">
 			<div
 				class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue"
@@ -154,7 +154,7 @@
 	</div>
 
 	<!-- Desktop Main Content -->
-	<main class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 pb-24 flex-col gap-16">
+	<main class="hidden md:flex w-full max-w-site mx-auto px-6 pb-24 flex-col gap-16">
 		<!-- Page Header -->
 		<section id="features-header" class="text-center pt-8">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
@@ -313,7 +313,7 @@
 
 	<!-- Desktop Footer -->
 	<footer class="hidden md:block w-full border-t border-border mt-8">
-		<div class="w-full max-w-[1100px] mx-auto px-6 py-12">
+		<div class="w-full max-w-site mx-auto px-6 py-12">
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
 				<!-- Brand + Social -->
 				<div class="flex flex-col gap-4 md:col-span-1">

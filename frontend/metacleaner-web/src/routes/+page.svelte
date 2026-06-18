@@ -179,7 +179,7 @@
 	<!-- Navigation -->
 	<!-- Desktop Navbar -->
 	<nav
-		class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 py-6 justify-between items-center z-50"
+		class="hidden md:flex w-full max-w-site mx-auto px-6 py-6 justify-between items-center z-50"
 	>
 		<a href="/" class="flex items-center gap-3">
 			<div
@@ -229,7 +229,7 @@
 	</nav>
 
 	<!-- Main Content (Desktop) -->
-	<main class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 flex-col gap-[48px] pb-24">
+	<main class="hidden md:flex w-full max-w-site mx-auto px-6 flex-col gap-[48px] pb-24">
 		<!-- Hero -->
 		<section id="hero" class="w-full pt-12 pb-8 flex flex-col lg:flex-row gap-12 items-center">
 			<div class="w-full lg:w-[55%] flex flex-col gap-6">
@@ -261,10 +261,10 @@
 			</div>
 			<div class="w-full lg:w-[45%] h-[400px]">
 				<div
-					class="w-full h-full rounded-[16px] bg-navy-card border border-border p-[24px] flex flex-col shadow-card relative overflow-hidden"
+					class="w-full h-full rounded-2xl bg-navy-card border border-border p-[24px] flex flex-col shadow-card relative overflow-hidden"
 				>
 					<div
-						class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-blue/10 blur-[50px] rounded-full pointer-events-none"
+						class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-blue/10 blur-glow rounded-full pointer-events-none"
 					></div>
 					<div class="flex justify-between items-center mb-6 z-10">
 						<h3 class="font-semibold text-lg">{m.home_upload_title()}</h3>
@@ -414,7 +414,7 @@
 						>
 							<i class="fa-solid {step.icon}"></i>
 						</div>
-						<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">{step.number}</span>
+						<span class="absolute top-6 right-6 text-5xl font-black text-watermark select-none">{step.number}</span>
 						<h3 class="text-xl font-bold">{t(step.titleKey)}</h3>
 						<p class="text-text-muted text-sm leading-relaxed">
 							{t(step.descKey)}
@@ -426,7 +426,7 @@
 	</main>
 
 	<!-- Who Is It For (Desktop) -->
-	<section id="who-its-for" class="hidden md:block w-full max-w-[1100px] mx-auto px-6 pb-16">
+	<section id="who-its-for" class="hidden md:block w-full max-w-site mx-auto px-6 pb-16">
 		<div class="text-center mb-12">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
 				>{m.home_audience_eyebrow()}</span
@@ -466,7 +466,7 @@
 	</section>
 
 	<!-- FAQ (Desktop) -->
-	<section id="faq" class="hidden md:block w-full max-w-[1100px] mx-auto px-6 pb-16">
+	<section id="faq" class="hidden md:block w-full max-w-site mx-auto px-6 pb-16">
 		<div class="text-center mb-12">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-green mb-3 block"
 				>{m.home_faq_eyebrow()}</span
@@ -498,7 +498,7 @@
 
 	<!-- Desktop Footer -->
 	<footer class="hidden md:block w-full bg-navy-card border-t border-border mt-8">
-		<div class="max-w-[1100px] mx-auto px-6 py-16">
+		<div class="max-w-site mx-auto px-6 py-16">
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mb-12 gap-10 w-auto">
 				<!-- Brand -->
 				<div class="flex flex-col gap-5 lg:col-span-1 w-full">
@@ -600,7 +600,7 @@
 				class="w-full rounded-2xl bg-navy-card border border-border p-5 flex flex-col shadow-card relative overflow-hidden"
 			>
 				<div
-					class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/3 bg-brand-blue/10 blur-[40px] rounded-full pointer-events-none"
+					class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/3 bg-brand-blue/10 blur-glow-sm rounded-full pointer-events-none"
 				></div>
 				<div class="flex justify-between items-center mb-4 z-10">
 					<h3 class="font-semibold text-sm">{m.home_upload_title()}</h3>
@@ -759,7 +759,7 @@
 					<div
 						class="bg-navy-card rounded-2xl border border-border p-5 flex items-start gap-4 relative overflow-hidden"
 					>
-						<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">{step.number}</span>
+						<span class="absolute top-3 right-4 text-4xl font-black text-watermark select-none leading-none">{step.number}</span>
 						<div
 							class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
 						>

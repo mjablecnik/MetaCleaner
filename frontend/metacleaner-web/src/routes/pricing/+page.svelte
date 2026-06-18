@@ -28,7 +28,7 @@
 <div class="flex flex-col items-center w-full min-h-screen">
 	<!-- Desktop Navbar -->
 	<nav
-		class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 py-6 justify-between items-center z-50"
+		class="hidden md:flex w-full max-w-site mx-auto px-6 py-6 justify-between items-center z-50"
 	>
 		<a href="/" class="flex items-center gap-3">
 			<div
@@ -122,7 +122,7 @@
 
 	<!-- Desktop Main -->
 	<main
-		class="hidden md:flex w-full max-w-[1100px] mx-auto px-6 py-16 flex-col items-center flex-1"
+		class="hidden md:flex w-full max-w-site mx-auto px-6 py-16 flex-col items-center flex-1"
 	>
 		<!-- Header -->
 		<div class="text-center mb-10">
@@ -381,7 +381,7 @@
 
 	<!-- Footer -->
 	<footer class="w-full bg-navy-card border-t border-border mt-auto">
-		<div class="max-w-[1100px] mx-auto px-6 py-8">
+		<div class="max-w-site mx-auto px-6 py-8">
 			<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
 				<p class="text-xs text-text-muted">{m.footer_copyright()}</p>
 				<div class="flex items-center gap-6">
