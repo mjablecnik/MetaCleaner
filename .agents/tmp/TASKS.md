@@ -26,8 +26,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 13. [HIGH] Create `CtaButton.stories.svelte` — all variants, disabled, full-width.
 - [x] 14. [MEDIUM] Create `CheckBullet.svelte` — check icon + text; props `text`, `emphasis`.
 - [x] 15. [MEDIUM] Create `CheckBullet.stories.svelte` — default + emphasis.
-- [ ] 16. [MEDIUM] Create `NavLink.svelte` — desktop nav link; props `href`, `label`, `active`.
-- [ ] 17. [MEDIUM] Create `NavLink.stories.svelte` — default + active.
+- [x] 16. [MEDIUM] Create `NavLink.svelte` — desktop nav link; props `href`, `label`, `active`.
+- [x] 17. [MEDIUM] Create `NavLink.stories.svelte` — default + active.
 - [ ] 18. [MEDIUM] Create `GradientText.svelte` — blue→green clip-text wrapper (children snippet).
 - [ ] 19. [MEDIUM] Create `GradientText.stories.svelte` — sample heading.
 - [ ] 20. [LOW] Create `FormatBadge.svelte` — uppercase format tag; props `label`, `size`.
