@@ -96,8 +96,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 70. [MEDIUM] Create `FeaturesFooter.svelte` — composing `FooterBrand`, `SocialIconLink`, `FooterColumn`, `FooterBottomBar`.
 
 ### Pricing components (`src/routes/pricing/components/`)
-- [ ] 71. [HIGH] Create `BillingToggle.svelte` — monthly/yearly toggle; props `value`, `onChange`.
-- [ ] 72. [HIGH] Create `BillingToggle.stories.svelte` — monthly + yearly.
+- [x] 71. [HIGH] Create `BillingToggle.svelte` — monthly/yearly toggle; props `value`, `onChange`.
+- [x] 72. [HIGH] Create `BillingToggle.stories.svelte` — monthly + yearly.
 - [ ] 73. [HIGH] Create `PricingCard.svelte` — plan card (desktop+mobile) composing `CheckBullet`, `CtaButton`; props `plan`, `isYearly`.
 - [ ] 74. [HIGH] Create `PricingCard.stories.svelte` — free / pack / featured / disabled.
 - [ ] 75. [MEDIUM] Create `EnterpriseBanner.svelte` — composing `CtaButton`; prop `enterprise`.
