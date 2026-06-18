@@ -1,5 +1,16 @@
 # AI Log
 
+## 2026-06-18 10:32 — manual
+- Project: frontend (metacleaner-web)
+- Completed the full UI decomposition refactor of the marketing site (REFACTORING.md / TASKS.md, all 85 tasks done), breaking the three monolithic page files (Home 867 lines, Features 539, Pricing 398) into a Page → Sections → Components → Elements hierarchy with **no visual change** to any page
+- Phase 0 — centralized remaining hardcoded visual constants into Tailwind v4 `@theme` tokens in `src/routes/layout.css`: added `--color-border` (#1f2937), `--color-border-strong` (#374151), `--color-watermark`, `--container-site` (1100px), and blur tokens; replaced `border-gray-800` (×60), `border-gray-700` (×13), `text-gray-800`, `max-w-[1100px]` (×11), and raw hex in the `.lang-*` CSS with `var(--color-*)` references
+- Phase 1 — created 12 shared **elements** under `src/lib/components/elements/`: `BrandLogo`, `IconBadge`, `SectionHeading`, `CtaButton`, `CheckBullet`, `NavLink`, `GradientText`, `FormatBadge`, `SocialIconLink`, `FooterBrand`, `FooterColumn`, `FooterBottomBar`
+- Phase 2 — created shared **components** under `src/lib/components/shared/`: `SiteNavbar`, `MobileNavbar`, and `MobileMenu` (unifying the Home slide-in drawer and the byte-identical Features/Pricing dropdowns behind a `variant` prop); added a story for the existing `LanguageSwitcher`
+- Phase 3 — created page-specific components & sections: Home (`UploadCard`, `MetadataFieldRow`, `MetadataComparisonCard`, `RiskStatCard`, `StepCard`, `AudienceCard`, `FaqAccordionItem` with internal `$state` replacing DOM-class toggling; sections `HeroSection`, `WhyItMattersSection`, `HowItWorksSection`, `AudienceSection`, `FaqSection`, `HomeFooter`); Features (`FormatPill`, `ExifIllustration`, `C2paIllustration`, `FeatureRow`, `FeatureCard`; sections `FeaturesHeaderSection`, `FeaturesShowcaseSection`, `FeaturesCtaSection`, `FeaturesFooter`); Pricing (`BillingToggle`, `PricingCard`, `EnterpriseBanner`; sections `PricingHeaderSection`, `PricingPlansSection`, `PricingFooter`)
+- Phase 4 — moved `src/routes/+page.svelte` → `src/routes/(home)/+page.svelte` (route group, same URL) and rewrote all three pages as short composition files importing shared navbar/menu + their sections, keeping `mobileMenuOpen` and `currentBilling`/`isYearly` `$state` in the pages and passing down
+- Added a co-located `*.stories.svelte` for every new element and component (Storybook 10 + `@storybook/addon-svelte-csf`)
+- Verified clean `npm run check` (0 type errors) and `vite build`, `npm run build-storybook` (all stories build), and visual parity on Home/Features/Pricing desktop + mobile — language switch, billing toggle, FAQ accordion, and mobile menu all still work, no duplicated UI code remains
+
 ## 2026-06-18 07:36 — manual
 - Project: frontend (metacleaner-web)
 - Completed the full i18n + repository refactor of the marketing site (DATA_SPEC.md / TASKS.md, all 28 tasks done), converting ~300 hardcoded (mostly Czech) strings across the Home, Features, and Pricing pages into Paraglide JS messages with `en` as base locale
