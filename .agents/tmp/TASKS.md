@@ -74,7 +74,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 52. [HIGH] Create `WhyItMattersSection.svelte` — composing `SectionHeading`, `MetadataComparisonCard`, `RiskStatCard`.
 - [x] 53. [HIGH] Create `HowItWorksSection.svelte` — composing `SectionHeading`, `StepCard`.
 - [x] 54. [HIGH] Create `AudienceSection.svelte` — composing `SectionHeading`, `AudienceCard`.
-- [ ] 55. [HIGH] Create `FaqSection.svelte` — composing `SectionHeading`, `FaqAccordionItem`.
+- [x] 55. [HIGH] Create `FaqSection.svelte` — composing `SectionHeading`, `FaqAccordionItem`.
 - [ ] 56. [MEDIUM] Create `HomeFooter.svelte` — composing `FooterBrand`, `FooterColumn`, `FooterBottomBar`.
 
 ### Features components (`src/routes/features/components/`)
