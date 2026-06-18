@@ -56,8 +56,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 ### Home components (`src/routes/(home)/components/`)
 - [x] 37. [HIGH] Create `MetadataFieldRow.svelte` — icon + label + value/”removed”; props `field`, `variant` ('before'|'after'), `size`.
 - [x] 38. [HIGH] Create `MetadataFieldRow.stories.svelte` — before/after, desktop/mobile.
-- [ ] 39. [HIGH] Create `MetadataComparisonCard.svelte` — before/after card composing `IconBadge` + `MetadataFieldRow`; props `variant`, `fields`, `size`.
-- [ ] 40. [HIGH] Create `MetadataComparisonCard.stories.svelte` — before + after.
+- [x] 39. [HIGH] Create `MetadataComparisonCard.svelte` — before/after card composing `IconBadge` + `MetadataFieldRow`; props `variant`, `fields`, `size`.
+- [x] 40. [HIGH] Create `MetadataComparisonCard.stories.svelte` — before + after.
 - [ ] 41. [MEDIUM] Create `UploadCard.svelte` — dashed drop card composing `FormatBadge`; prop `size` (desktop/mobile).
 - [ ] 42. [MEDIUM] Create `UploadCard.stories.svelte` — desktop + mobile.
 - [ ] 43. [MEDIUM] Create `RiskStatCard.svelte` — stat card composing `IconBadge`; props `stat`, `size`.
