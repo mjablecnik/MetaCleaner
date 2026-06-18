@@ -20,10 +20,10 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 7. [HIGH] Create `BrandLogo.stories.svelte` — sizes sm/md/lg.
 - [x] 8. [HIGH] Create `IconBadge.svelte` — tinted rounded icon container; props `icon`, `color`, `size`, `shape` ('circle'|'rounded'), `tint`.
 - [x] 9. [HIGH] Create `IconBadge.stories.svelte` — color/shape/size variants.
-- [ ] 10. [HIGH] Create `SectionHeading.svelte` — eyebrow + title + subtitle; props `eyebrow`, `eyebrowColor`, `title`, `subtitle`, `size` ('lg'|'sm').
-- [ ] 11. [HIGH] Create `SectionHeading.stories.svelte` — with/without eyebrow, lg/sm.
-- [ ] 12. [HIGH] Create `CtaButton.svelte` — button/link; props `variant` ('primary'|'secondary'|'blue'|'outline'), `icon`, `label`, `href`, `disabled`, `fullWidth`.
-- [ ] 13. [HIGH] Create `CtaButton.stories.svelte` — all variants, disabled, full-width.
+- [x] 10. [HIGH] Create `SectionHeading.svelte` — eyebrow + title + subtitle; props `eyebrow`, `eyebrowColor`, `title`, `subtitle`, `size` ('lg'|'sm').
+- [x] 11. [HIGH] Create `SectionHeading.stories.svelte` — with/without eyebrow, lg/sm.
+- [x] 12. [HIGH] Create `CtaButton.svelte` — button/link; props `variant` ('primary'|'secondary'|'blue'|'outline'), `icon`, `label`, `href`, `disabled`, `fullWidth`.
+- [x] 13. [HIGH] Create `CtaButton.stories.svelte` — all variants, disabled, full-width.
 - [ ] 14. [MEDIUM] Create `CheckBullet.svelte` — check icon + text; props `text`, `emphasis`.
 - [ ] 15. [MEDIUM] Create `CheckBullet.stories.svelte` — default + emphasis.
 - [ ] 16. [MEDIUM] Create `NavLink.svelte` — desktop nav link; props `href`, `label`, `active`.
