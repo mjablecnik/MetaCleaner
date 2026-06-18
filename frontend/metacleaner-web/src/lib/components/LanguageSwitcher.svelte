@@ -38,7 +38,7 @@
 </script>
 
 {#if variant === 'desktop'}
-	<div class="lang-dropdown" bind:this={wrapperEl}>
+	<div class="relative inline-block" bind:this={wrapperEl}>
 		<button
 			onclick={toggleDropdown}
 			class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
@@ -51,18 +51,25 @@
 					: ''}"
 			></i>
 		</button>
-		<div class="lang-dropdown-menu {dropdownOpen ? 'open' : ''}">
+		<div
+			class="{dropdownOpen
+				? 'block'
+				: 'hidden'} absolute right-0 top-[calc(100%+8px)] bg-navy-card border border-border-strong rounded-[10px] min-w-[160px] z-[200] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.5)]"
+		>
 			{#each locales as locale (locale)}
 				<div
 					onclick={() => chooseLocale(locale)}
-					class="lang-option {currentLocale === locale ? 'active' : ''}"
+					class="flex items-center gap-[10px] px-4 py-[10px] cursor-pointer text-[13px] font-medium transition-[background,color] duration-150 hover:bg-navy-lighter hover:text-white {currentLocale ===
+					locale
+						? 'bg-navy-lighter text-white'
+						: 'text-text-muted'}"
 					role="button"
 					tabindex="0"
 					onkeydown={(e) => e.key === 'Enter' && chooseLocale(locale)}
 				>
-					<span class="lang-flag">{localeMap[locale]?.flag}</span>
+					<span class="text-[18px]">{localeMap[locale]?.flag}</span>
 					{localeMap[locale]?.name}
-					<span class="lang-check {currentLocale === locale ? '' : 'hidden'}">
+					<span class="ml-auto text-brand-blue {currentLocale === locale ? '' : 'hidden'}">
 						<i class="fa-solid fa-check text-xs"></i>
 					</span>
 				</div>

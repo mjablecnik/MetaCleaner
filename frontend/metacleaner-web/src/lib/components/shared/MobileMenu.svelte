@@ -18,7 +18,7 @@
 {#if variant === 'drawer'}
 	{#if open}
 		<div
-			class="menu-overlay open fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"
+			class="fixed inset-0 bg-black/60 z-30 backdrop-blur-sm"
 			onclick={onClose}
 			role="button"
 			tabindex="-1"
@@ -27,9 +27,9 @@
 	{/if}
 
 	<div
-		class="slide-menu {open
-			? 'open'
-			: ''} fixed top-0 right-0 h-full w-full z-40 bg-navy-card border-l border-border flex flex-col shadow-2xl md:hidden"
+		class="{open
+			? 'translate-x-0'
+			: 'translate-x-full'} transition-transform duration-300 fixed top-0 right-0 h-full w-full z-40 bg-navy-card border-l border-border flex flex-col shadow-2xl md:hidden"
 	>
 		<div class="flex items-center justify-between px-5 py-5 border-b border-border">
 			<BrandLogo size="md" href="/" />
@@ -123,9 +123,9 @@
 	</div>
 {:else}
 	<div
-		class="mobile-menu {open
-			? 'open'
-			: ''} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
+		class="{open
+			? 'flex'
+			: 'hidden'} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
 	>
 		<a
 			href="{resolve('/' as Pathname)}#how-it-works"
