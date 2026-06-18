@@ -9,7 +9,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 ## Phase 0 — Theme / design tokens
 
 - [x] 1. [HIGH] Add new color tokens to the `@theme` block in `src/routes/layout.css`: `--color-border: #1f2937`, `--color-border-strong: #374151`, `--color-watermark: #1f2937`; add container token `--container-site: 1100px`; (optional) `--blur-glow: 50px`, `--blur-glow-sm: 40px`.
-- [ ] 2. [HIGH] Replace hardcoded hex in `src/routes/layout.css` raw CSS (`body`, `.lang-dropdown-menu`, `.lang-option`, `.lang-check`) with `var(--color-*)` references (navy-main, navy-card, navy-lighter, text-main, text-muted, brand-blue, border-strong).
+- [x] 2. [HIGH] Replace hardcoded hex in `src/routes/layout.css` raw CSS (`body`, `.lang-dropdown-menu`, `.lang-option`, `.lang-check`) with `var(--color-*)` references (navy-main, navy-card, navy-lighter, text-main, text-muted, brand-blue, border-strong).
 - [ ] 3. [HIGH] Replace `border-gray-800` (×60) with `border-border` and `border-gray-700` (×13) / `hover:bg-gray-800` with `border-border-strong` / `bg-border` across the three pages.
 - [ ] 4. [MEDIUM] Replace `text-gray-800` watermark step numbers with `text-watermark`, `max-w-[1100px]` (×11) with `max-w-site`, `rounded-[16px]` with `rounded-2xl`, and (if tokenized) `blur-[50px]`/`blur-[40px]` with the blur tokens.
 - [ ] 5. [LOW] Replace the hardcoded `'Inter', sans-serif` in the `body` rule with `var(--font-family-sans)` (verify Tailwind still emits the `font-sans` utility; add `--font-sans` alias if needed).

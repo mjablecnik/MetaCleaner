@@ -27,8 +27,8 @@
 body {
 	margin: 0;
 	padding: 0;
-	background-color: #0a1628;
-	color: #fff;
+	background-color: var(--color-navy-main);
+	color: var(--color-text-main);
 	font-family: 'Inter', sans-serif;
 }
 
@@ -83,8 +83,8 @@ body {
 	position: absolute;
 	right: 0;
 	top: calc(100% + 8px);
-	background: #111d33;
-	border: 1px solid #374151;
+	background: var(--color-navy-card);
+	border: 1px solid var(--color-border-strong);
 	border-radius: 10px;
 	min-width: 160px;
 	z-index: 200;
@@ -104,20 +104,20 @@ body {
 	cursor: pointer;
 	font-size: 13px;
 	font-weight: 500;
-	color: #94a3b8;
+	color: var(--color-text-muted);
 	transition:
 		background 0.15s,
 		color 0.15s;
 }
 
 .lang-option:hover {
-	background: #1e293b;
-	color: #fff;
+	background: var(--color-navy-lighter);
+	color: var(--color-text-main);
 }
 
 .lang-option.active {
-	color: #fff;
-	background: #1e293b;
+	color: var(--color-text-main);
+	background: var(--color-navy-lighter);
 }
 
 .lang-option .lang-flag {
@@ -126,7 +126,7 @@ body {
 
 .lang-option .lang-check {
 	margin-left: auto;
-	color: #3b82f6;
+	color: var(--color-brand-blue);
 }
 
 .mobile-menu {
