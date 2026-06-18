@@ -20,7 +20,7 @@
 	const menuVariant = $derived(activePage === 'home' ? ('drawer' as const) : ('dropdown' as const));
 
 	$effect(() => {
-		$page.url.pathname;
+		void $page.url.pathname;
 		mobileMenuOpen = false;
 	});
 
@@ -47,7 +47,12 @@
 	/>
 </svelte:head>
 
-<MobileMenu variant={menuVariant} active={activePage} open={mobileMenuOpen} onClose={closeMobileMenu} />
+<MobileMenu
+	variant={menuVariant}
+	active={activePage}
+	open={mobileMenuOpen}
+	onClose={closeMobileMenu}
+/>
 
 <div class="flex flex-col items-center w-full">
 	<SiteNavbar active={activePage} />
