@@ -1,12 +1,13 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
-	import { getAudience, getFaq } from '$lib/repositories';
+	import { getAudience, getFaq, stepsRepository } from '$lib/repositories';
 
 	const audienceFull = getAudience('full');
 	const audienceCompact = getAudience('compact');
 	const faqDesktop = getFaq('desktop');
 	const faqMobile = getFaq('mobile');
+	const steps = stepsRepository();
 
 	const audienceColorClasses: Record<string, { iconBg: string; iconText: string; hoverBorder: string }> = {
 		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue', hoverBorder: 'hover:border-brand-blue/50' },
@@ -451,48 +452,22 @@
 				<p class="text-text-muted max-w-xl mx-auto">{m.home_steps_subtitle()}</p>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative"
-				>
+				{#each steps as step}
 					<div
-						class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2"
+						class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative"
 					>
-						<i class="fa-solid fa-upload"></i>
+						<div
+							class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2"
+						>
+							<i class="fa-solid {step.icon}"></i>
+						</div>
+						<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">{step.number}</span>
+						<h3 class="text-xl font-bold">{t(step.titleKey)}</h3>
+						<p class="text-text-muted text-sm leading-relaxed">
+							{t(step.descKey)}
+						</p>
 					</div>
-					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">01</span>
-					<h3 class="text-xl font-bold">{m.home_step1_title()}</h3>
-					<p class="text-text-muted text-sm leading-relaxed">
-						{m.home_step1_desc()}
-					</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative"
-				>
-					<div
-						class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2"
-					>
-						<i class="fa-solid fa-clipboard"></i>
-					</div>
-					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">02</span>
-					<h3 class="text-xl font-bold">{m.home_step2_title()}</h3>
-					<p class="text-text-muted text-sm leading-relaxed">
-						{m.home_step2_desc()}
-					</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-8 flex flex-col items-center text-center gap-4 relative"
-				>
-					<div
-						class="w-14 h-14 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-2xl mb-2"
-					>
-						<i class="fa-solid fa-download"></i>
-					</div>
-					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">03</span>
-					<h3 class="text-xl font-bold">{m.home_step3_title()}</h3>
-					<p class="text-text-muted text-sm leading-relaxed">
-						{m.home_step3_desc()}
-					</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 	</main>
@@ -870,51 +845,26 @@
 				<p class="text-sm text-text-muted">{m.home_steps_subtitle()}</p>
 			</div>
 			<div class="flex flex-col gap-3">
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex items-start gap-4 relative overflow-hidden"
-				>
-					<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">01</span>
+				{#each steps as step}
 					<div
-						class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
+						class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex items-start gap-4 relative overflow-hidden"
 					>
-						<i class="fa-solid fa-upload"></i>
+						<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">{step.number}</span>
+						<div
+							class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
+						>
+							<i class="fa-solid {step.icon}"></i>
+						</div>
+						<div class="flex-1 z-10">
+							<h3 class="font-bold text-base mb-1">{t(step.titleKey)}</h3>
+							{#if step.descMobileKey}
+								<p class="text-xs text-text-muted leading-relaxed">
+									{t(step.descMobileKey)}
+								</p>
+							{/if}
+						</div>
 					</div>
-					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">{m.home_step1_title()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_step1_desc_mobile()}
-						</p>
-					</div>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex items-start gap-4 relative overflow-hidden"
-				>
-					<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">02</span>
-					<div
-						class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-clipboard"></i>
-					</div>
-					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">{m.home_step2_title()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_step2_desc_mobile()}
-						</p>
-					</div>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-5 flex items-start gap-4 relative overflow-hidden"
-				>
-					<span class="absolute top-3 right-4 text-4xl font-black text-gray-800 select-none leading-none">03</span>
-					<div
-						class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-download"></i>
-					</div>
-					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">{m.home_step3_title()}</h3>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</section>
 

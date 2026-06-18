@@ -31,7 +31,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 20. [MEDIUM] Replace the 4 hardcoded plan cards (desktop + mobile) and the `t` plan map in `pricing/+page.svelte` with `pricingRepository` + billing helpers.
 - [x] 21. [MEDIUM] Replace the hardcoded "Who It's For" cards (desktop + mobile) in `+page.svelte` with `audienceRepository`.
 - [x] 22. [MEDIUM] Replace the hardcoded FAQ items (desktop + mobile) in `+page.svelte` with `faqRepository`.
-- [ ] 23. [MEDIUM] Replace the hardcoded How-It-Works steps (desktop + mobile) in `+page.svelte` with `stepsRepository`.
+- [x] 23. [MEDIUM] Replace the hardcoded How-It-Works steps (desktop + mobile) in `+page.svelte` with `stepsRepository`.
 - [ ] 24. [MEDIUM] Replace the hardcoded risk stats in `+page.svelte` with `statsRepository`.
 - [ ] 25. [MEDIUM] Replace the hardcoded before/after EXIF demo fields in `+page.svelte` with `metadataDemoRepository`.
 
