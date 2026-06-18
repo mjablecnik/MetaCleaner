@@ -65,9 +65,9 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 45. [MEDIUM] Create `StepCard.svelte` — step card composing `IconBadge`; props `step`, `size`.
 - [x] 46. [MEDIUM] Create `StepCard.stories.svelte` — desktop + mobile.
 - [x] 47. [MEDIUM] Create `AudienceCard.svelte` — audience card composing `IconBadge` + `CheckBullet`; props `audience`, `compact`.
-- [ ] 48. [MEDIUM] Create `AudienceCard.stories.svelte` — full + compact.
-- [ ] 49. [MEDIUM] Create `FaqAccordionItem.svelte` — question/answer with internal `open` `$state` (replaces DOM-class toggling, same look/behavior); props `question`, `answer`, `size`.
-- [ ] 50. [MEDIUM] Create `FaqAccordionItem.stories.svelte` — collapsed + expanded.
+- [x] 48. [MEDIUM] Create `AudienceCard.stories.svelte` — full + compact.
+- [x] 49. [MEDIUM] Create `FaqAccordionItem.svelte` — question/answer with internal `open` `$state` (replaces DOM-class toggling, same look/behavior); props `question`, `answer`, `size`.
+- [x] 50. [MEDIUM] Create `FaqAccordionItem.stories.svelte` — collapsed + expanded.
 
 ### Home sections (`src/routes/(home)/sections/`)
 - [ ] 51. [HIGH] Create `HeroSection.svelte` — desktop+mobile hero composing `GradientText`, `UploadCard`, `CtaButton`.
