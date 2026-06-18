@@ -58,8 +58,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 38. [HIGH] Create `MetadataFieldRow.stories.svelte` — before/after, desktop/mobile.
 - [x] 39. [HIGH] Create `MetadataComparisonCard.svelte` — before/after card composing `IconBadge` + `MetadataFieldRow`; props `variant`, `fields`, `size`.
 - [x] 40. [HIGH] Create `MetadataComparisonCard.stories.svelte` — before + after.
-- [ ] 41. [MEDIUM] Create `UploadCard.svelte` — dashed drop card composing `FormatBadge`; prop `size` (desktop/mobile).
-- [ ] 42. [MEDIUM] Create `UploadCard.stories.svelte` — desktop + mobile.
+- [x] 41. [MEDIUM] Create `UploadCard.svelte` — dashed drop card composing `FormatBadge`; prop `size` (desktop/mobile).
+- [x] 42. [MEDIUM] Create `UploadCard.stories.svelte` — desktop + mobile.
 - [ ] 43. [MEDIUM] Create `RiskStatCard.svelte` — stat card composing `IconBadge`; props `stat`, `size`.
 - [ ] 44. [MEDIUM] Create `RiskStatCard.stories.svelte` — the three stat colors.
 - [ ] 45. [MEDIUM] Create `StepCard.svelte` — step card composing `IconBadge`; props `step`, `size`.
