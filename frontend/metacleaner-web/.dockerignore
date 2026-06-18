@@ -1,0 +1,13 @@
+.git/
+node_modules/
+build/
+.svelte-kit/
+.storybook/
+.design/
+.vscode/
+test-results/
+storybook-static/
+*.log
+.env
+.env.*
+!.env.example
