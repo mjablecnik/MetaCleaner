@@ -1,42 +1,116 @@
-# sv
+# MetaCleaner Web
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Marketing website for the MetaCleaner service — a SvelteKit 2 static site with Tailwind CSS, Paraglide i18n (English and Czech), and SVG flag icons. Built with `@sveltejs/adapter-static` so the output is a pre-rendered static site deployable to any CDN or static host without a Node.js server.
 
-## Creating a project
+## Prerequisites
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Node.js 22+** — [nodejs.org](https://nodejs.org)
+- **Bun** — [bun.sh](https://bun.sh) (used as package manager and build tool)
+  ```sh
+  curl -fsSL https://bun.sh/install | bash
+  ```
+- Supported OS: Linux, macOS, WSL
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-bun x sv@0.16.1 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" paraglide="languageTags:en, cs+demo:no" storybook mcp="ide:claude-code+setup:remote" --install bun metacleaner-web
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Quick Start
 
 ```sh
-npm run dev
+# 1. Clone the repository
+git clone <repo-url>
+cd frontend/metacleaner-web
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# 2. Install dependencies
+bun install
+
+# 3. Copy environment config (no vars required for local dev — see .env.example)
+cp .env.example .env
+
+# 4. Start the dev server
+bun run dev
 ```
 
-## Building
+The dev server starts at `http://localhost:5173`.
 
-To create a production version of your app:
+## Environment Configuration
+
+Copy `.env.example` to `.env` before running locally:
 
 ```sh
-npm run build
+cp .env.example .env
 ```
 
-You can preview the production build with `npm run preview`.
+This project is a static marketing site and currently requires no environment variables. The `.env.example` file documents any future additions.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Scripts
+
+### Development
+
+| Script | Description |
+|---|---|
+| `bun run dev` | Start Vite dev server with hot module replacement at `localhost:5173` |
+| `bun run preview` | Serve the production `build/` directory locally to preview the static output |
+
+### Type Checking and Linting
+
+| Script | Description |
+|---|---|
+| `bun run check` | Run `svelte-kit sync` then `svelte-check` for TypeScript and Svelte type errors |
+| `bun run check:watch` | Same as `check` but re-runs on every file save |
+| `bun run lint` | Check formatting with Prettier and run ESLint |
+| `bun run format` | Auto-format all files with Prettier |
+
+### Testing
+
+| Script | Description |
+|---|---|
+| `bun run test:unit` | Run Vitest unit tests in watch mode |
+| `bun run test` | Run all tests: unit tests (once) then Playwright e2e tests |
+| `bun run test:e2e` | Install Playwright browsers then run end-to-end tests |
+
+> **Playwright browsers** are an optional dependency for e2e tests. Run `npx playwright install chromium` once before `test:e2e`. On Linux you may also need `npx playwright install-deps chromium` (requires sudo).
+
+### Build
+
+| Script | Description |
+|---|---|
+| `bun run build` | Compile a production static site into the `build/` directory |
+
+## Adapter
+
+This project uses [`@sveltejs/adapter-static`](https://kit.svelte.dev/docs/adapter-static). On `bun run build`, SvelteKit emits a `build/` directory of static HTML, CSS, and JS files with no server runtime. A fallback `index.html` is configured so client-side routing works on static hosts that lack server-side rewrite rules.
+
+The root layout sets `export const ssr = false` and `export const prerender = false`, making all pages render client-side as a single-page application.
+
+## Deployment
+
+### Docker (recommended)
+
+```sh
+./start-docker.sh
+```
+
+Builds a production image and starts an nginx container serving the static site.
+
+### Static host (Netlify, Vercel, Cloudflare Pages, S3, etc.)
+
+1. Run `bun run build`
+2. Upload the contents of `build/` to your host
+3. Configure URL rewrites to serve `index.html` for all paths (for client-side routing)
+
+## Project Structure
+
+```
+src/
+  lib/
+    assets/flags/      SVG flag icons (gb.svg, cz.svg) used by LanguageSwitcher
+    repositories/      Data factories (faq.ts, audience.ts, …)
+    shared/sections/   Shared layout components (SiteFooter.svelte, …)
+  routes/
+    (home)             Home page sections
+    features/          Features page
+    pricing/           Pricing page
+messages/              Paraglide i18n JSON files (en.json, cs.json)
+```
+
+## Author
+
+Martin Jablečník

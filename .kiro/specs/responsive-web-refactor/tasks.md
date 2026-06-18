@@ -24,7 +24,7 @@ Refactor `frontend/metacleaner-web/` into a clean, responsive SvelteKit marketin
 - [x] 16. Refactor Features page sections: Review and merge any duplicated mobile/desktop blocks in `FeaturesHeaderSection`, `FeaturesShowcaseSection`, `FeaturesCtaSection`. (Requirements: 2.7, 2.8)
 - [x] 17. Clean up orphaned i18n keys: Remove `footer_tagline_mobile`, `footer_tagline_features`, `home_audience_*_mobile`, `home_stat_*_short`, `home_faq_eyebrow_mobile`, `home_faq_title_mobile`, `home_faq_subtitle_mobile` and other unused keys from both `en.json` and `cs.json`. Keep `home_upload_drop_mobile` (genuinely different UX text). (Requirements: 3.5, 3.6)
 - [x] 18. Verify CtaButton cursor behavior: Confirm pointer cursor works on both `<a>` and `<button>` renders via global rule. Confirm disabled shows `not-allowed`. (Requirements: 6.4)
-- [ ] 19. Write README: Replace default README with proper documentation: project description, prerequisites, Quick Start, scripts list, adapter-static rationale, Author section. (Requirements: 10.1–10.6)
+- [x] 19. Write README: Replace default README with proper documentation: project description, prerequisites, Quick Start, scripts list, adapter-static rationale, Author section. (Requirements: 10.1–10.6)
 - [ ] 20. Final verification: Run `bun run build` (exit 0), `bun run check` (zero TS errors), `bun run lint`. Build and start Docker container via `./start-docker.sh` to verify the containerized app serves correctly. Manually verify all pages at 375px and 1280px. Verify scrollbar, cursor, SVG flags, mobile menu behavior. (Requirements: All)
 
 ## Task Dependency Graph
