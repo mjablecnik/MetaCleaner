@@ -3,7 +3,6 @@
 	import { pricingRepository, getEnterprise } from '$lib/repositories';
 	import PricingHeaderSection from './sections/PricingHeaderSection.svelte';
 	import PricingPlansSection from './sections/PricingPlansSection.svelte';
-	import PricingFooter from './sections/PricingFooter.svelte';
 
 	let currentBilling = $state<'monthly' | 'yearly'>('monthly');
 
@@ -34,5 +33,4 @@
 		<PricingPlansSection {plans} {isYearly} {enterprise} />
 	</main>
 
-	<PricingFooter />
 </div>

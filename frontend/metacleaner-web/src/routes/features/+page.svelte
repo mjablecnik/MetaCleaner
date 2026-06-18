@@ -3,7 +3,6 @@
 	import FeaturesHeaderSection from './sections/FeaturesHeaderSection.svelte';
 	import FeaturesShowcaseSection from './sections/FeaturesShowcaseSection.svelte';
 	import FeaturesCtaSection from './sections/FeaturesCtaSection.svelte';
-	import FeaturesFooter from './sections/FeaturesFooter.svelte';
 </script>
 
 <svelte:head>
@@ -13,4 +12,3 @@
 <FeaturesHeaderSection />
 <FeaturesShowcaseSection />
 <FeaturesCtaSection />
-<FeaturesFooter />

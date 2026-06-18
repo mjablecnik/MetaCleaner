@@ -4,6 +4,7 @@
 	import SiteNavbar from '$lib/components/shared/SiteNavbar.svelte';
 	import MobileNavbar from '$lib/components/shared/MobileNavbar.svelte';
 	import MobileMenu from '$lib/components/shared/MobileMenu.svelte';
+	import SiteFooter from '$lib/shared/sections/SiteFooter.svelte';
 
 	let { children } = $props();
 
@@ -52,4 +53,5 @@
 	<SiteNavbar active={activePage} />
 	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
 	{@render children()}
+	<SiteFooter />
 </div>

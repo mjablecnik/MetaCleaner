@@ -5,7 +5,6 @@
 	import HowItWorksSection from './sections/HowItWorksSection.svelte';
 	import AudienceSection from './sections/AudienceSection.svelte';
 	import FaqSection from './sections/FaqSection.svelte';
-	import HomeFooter from './sections/HomeFooter.svelte';
 </script>
 
 <svelte:head>
@@ -17,4 +16,3 @@
 <HowItWorksSection />
 <AudienceSection />
 <FaqSection />
-<HomeFooter />
