@@ -98,10 +98,10 @@ All paths are relative to `frontend/metacleaner-web/`.
 ### Pricing components (`src/routes/pricing/components/`)
 - [x] 71. [HIGH] Create `BillingToggle.svelte` — monthly/yearly toggle; props `value`, `onChange`.
 - [x] 72. [HIGH] Create `BillingToggle.stories.svelte` — monthly + yearly.
-- [ ] 73. [HIGH] Create `PricingCard.svelte` — plan card (desktop+mobile) composing `CheckBullet`, `CtaButton`; props `plan`, `isYearly`.
-- [ ] 74. [HIGH] Create `PricingCard.stories.svelte` — free / pack / featured / disabled.
-- [ ] 75. [MEDIUM] Create `EnterpriseBanner.svelte` — composing `CtaButton`; prop `enterprise`.
-- [ ] 76. [MEDIUM] Create `EnterpriseBanner.stories.svelte` — default.
+- [x] 73. [HIGH] Create `PricingCard.svelte` — plan card (desktop+mobile) composing `CheckBullet`, `CtaButton`; props `plan`, `isYearly`.
+- [x] 74. [HIGH] Create `PricingCard.stories.svelte` — free / pack / featured / disabled.
+- [x] 75. [MEDIUM] Create `EnterpriseBanner.svelte` — composing `CtaButton`; prop `enterprise`.
+- [x] 76. [MEDIUM] Create `EnterpriseBanner.stories.svelte` — default.
 
 ### Pricing sections (`src/routes/pricing/sections/`)
 - [ ] 77. [HIGH] Create `PricingHeaderSection.svelte` — title + subtitle + `BillingToggle`.
