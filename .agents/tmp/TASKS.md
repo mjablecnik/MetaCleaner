@@ -75,7 +75,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 53. [HIGH] Create `HowItWorksSection.svelte` — composing `SectionHeading`, `StepCard`.
 - [x] 54. [HIGH] Create `AudienceSection.svelte` — composing `SectionHeading`, `AudienceCard`.
 - [x] 55. [HIGH] Create `FaqSection.svelte` — composing `SectionHeading`, `FaqAccordionItem`.
-- [ ] 56. [MEDIUM] Create `HomeFooter.svelte` — composing `FooterBrand`, `FooterColumn`, `FooterBottomBar`.
+- [x] 56. [MEDIUM] Create `HomeFooter.svelte` — composing `FooterBrand`, `FooterColumn`, `FooterBottomBar`.
 
 ### Features components (`src/routes/features/components/`)
 - [ ] 57. [MEDIUM] Create `FormatPill.svelte` — format chip; props `format`, `size`.
