@@ -112,10 +112,10 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 - [x] 80. [MEDIUM] Move `src/routes/+page.svelte` → `src/routes/(home)/+page.svelte` and rewrite it to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=drawer), and the Home sections; keep `mobileMenuOpen` `$state` in the page.
 - [x] 81. [MEDIUM] Refactor `src/routes/features/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Features sections.
-- [ ] 82. [MEDIUM] Refactor `src/routes/pricing/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Pricing sections; keep `currentBilling`/`isYearly` `$state` in the page and pass down.
+- [x] 82. [MEDIUM] Refactor `src/routes/pricing/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Pricing sections; keep `currentBilling`/`isYearly` `$state` in the page and pass down.
 
 ## Final
 
-- [ ] 83. [HIGH] Run `npm run check` and `vite build` — 0 type errors, clean build.
+- [x] 83. [HIGH] Run `npm run check` and `vite build` — 0 type errors, clean build.
 - [ ] 84. [HIGH] Run `npm run build-storybook` — all new stories build.
 - [ ] 85. [HIGH] Visually verify Home, Features, Pricing (desktop + mobile) — no visual regressions, language switch + billing toggle + FAQ accordion + mobile menu still work, and no duplicated UI code remains.
