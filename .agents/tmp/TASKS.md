@@ -78,8 +78,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 56. [MEDIUM] Create `HomeFooter.svelte` — composing `FooterBrand`, `FooterColumn`, `FooterBottomBar`.
 
 ### Features components (`src/routes/features/components/`)
-- [ ] 57. [MEDIUM] Create `FormatPill.svelte` — format chip; props `format`, `size`.
-- [ ] 58. [MEDIUM] Create `FormatPill.stories.svelte` — color variants.
+- [x] 57. [MEDIUM] Create `FormatPill.svelte` — format chip; props `format`, `size`.
+- [x] 58. [MEDIUM] Create `FormatPill.stories.svelte` — color variants.
 - [ ] 59. [MEDIUM] Create `ExifIllustration.svelte` — inline EXIF decorative graphic.
 - [ ] 60. [MEDIUM] Create `ExifIllustration.stories.svelte` — default.
 - [ ] 61. [MEDIUM] Create `C2paIllustration.svelte` — inline C2PA decorative graphic.
