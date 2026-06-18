@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-18 — data-refactor
+- Project: frontend (metacleaner-web)
+- Task: i18n + repository refactor verification (task 28)
+- Verified en/cs key parity: both `messages/en.json` and `messages/cs.json` contain exactly 229 keys with identical key sets (zero missing in either direction)
+- Verified zero hardcoded Czech characters remain in any of the three page components (`+page.svelte`, `features/+page.svelte`, `pricing/+page.svelte`)
+- Ran `vite build` — clean build, 0 errors, 0 type errors; `svelte-check` reports 0 errors (43 pre-existing accessibility warnings for placeholder `#` hrefs, unchanged from before this refactor)
+- All repositories (`featuresRepository`, `pricingRepository`, `audienceRepository`, `faqRepository`, `stepsRepository`, `statsRepository`, `metadataDemoRepository`) confirmed in place under `src/lib/repositories/`
+- `LanguageSwitcher.svelte` confirmed in `src/lib/components/`, driven by Paraglide `getLocale`/`setLocale`
+
 ## 2026-06-18 06:02 — manual
 - Project: frontend (metacleaner-web)
 - Built the MetaCleaner Web marketing site from the `.design/` mockups, reproducing each design pixel-perfectly with responsive mobile + desktop variants and Czech-default `data-cs`/`data-en` multilingual text (PAGES.md documents the shared design system — colors, Inter font, navbar, footer, language switcher)

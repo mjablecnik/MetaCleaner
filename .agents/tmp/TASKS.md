@@ -40,5 +40,5 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 27. [MEDIUM] Mount `LanguageSwitcher` in all three pages' desktop navbar and mobile drawer; remove the per-page `langConfig`/`setLang`/`toggleLangDropdown`/`localStorage('lang')` code.
 
 ## Final
-- [ ] 28. [LOW] Verify: en/cs key parity is complete, no hardcoded user-facing text remains (only brand/product/format/`−20%` literals), repositories back both layouts, language switch persists across reload, and both breakpoints are visually unchanged. Run `bun run build` / lint and update `.agents/AI_LOG.md`.
+- [x] 28. [LOW] Verify: en/cs key parity is complete, no hardcoded user-facing text remains (only brand/product/format/`−20%` literals), repositories back both layouts, language switch persists across reload, and both breakpoints are visually unchanged. Run `bun run build` / lint and update `.agents/AI_LOG.md`.
 </content>
