@@ -6,8 +6,8 @@
 	import { statsRepository, getMetadataFields, getCleanedFields } from '$lib/repositories';
 
 	const stats = statsRepository();
-	const fields = getMetadataFields('desktop');
-	const cleanedFields = getCleanedFields('desktop');
+	const fields = getMetadataFields();
+	const cleanedFields = getCleanedFields();
 </script>
 
 <section id="why-it-matters" class="w-full max-w-site mx-auto px-4 md:px-6 pb-8 md:pb-12">

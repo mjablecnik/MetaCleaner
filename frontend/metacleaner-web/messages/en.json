@@ -70,10 +70,6 @@
 	"meta_field_datetime": "Date and time",
 	"meta_field_author": "Author",
 	"meta_field_camera": "Camera settings",
-	"meta_field_gps_short": "GPS",
-	"meta_field_device_short": "Device",
-	"meta_field_datetime_short": "Date",
-	"meta_field_author_short": "Author",
 
 	"home_stat_gps_label": "of photos shared online contain GPS metadata",
 	"home_stat_fields_label": "different data fields can be hidden in one file",

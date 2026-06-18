@@ -70,10 +70,6 @@
 	"meta_field_datetime": "Datum a čas",
 	"meta_field_author": "Autor",
 	"meta_field_camera": "Nastavení fotoaparátu",
-	"meta_field_gps_short": "GPS",
-	"meta_field_device_short": "Zařízení",
-	"meta_field_datetime_short": "Datum",
-	"meta_field_author_short": "Autor",
 
 	"home_stat_gps_label": "fotek sdílených online obsahuje GPS metadata",
 	"home_stat_fields_label": "různých datových polí může být skryto v jednom souboru",
