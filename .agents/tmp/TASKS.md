@@ -12,7 +12,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 2. [HIGH] Replace hardcoded hex in `src/routes/layout.css` raw CSS (`body`, `.lang-dropdown-menu`, `.lang-option`, `.lang-check`) with `var(--color-*)` references (navy-main, navy-card, navy-lighter, text-main, text-muted, brand-blue, border-strong).
 - [x] 3. [HIGH] Replace `border-gray-800` (×60) with `border-border` and `border-gray-700` (×13) / `hover:bg-gray-800` with `border-border-strong` / `bg-border` across the three pages.
 - [x] 4. [MEDIUM] Replace `text-gray-800` watermark step numbers with `text-watermark`, `max-w-[1100px]` (×11) with `max-w-site`, `rounded-[16px]` with `rounded-2xl`, and (if tokenized) `blur-[50px]`/`blur-[40px]` with the blur tokens.
-- [ ] 5. [LOW] Replace the hardcoded `'Inter', sans-serif` in the `body` rule with `var(--font-family-sans)` (verify Tailwind still emits the `font-sans` utility; add `--font-sans` alias if needed).
+- [x] 5. [LOW] Replace the hardcoded `'Inter', sans-serif` in the `body` rule with `var(--font-family-sans)` (verify Tailwind still emits the `font-sans` utility; add `--font-sans` alias if needed).
 
 ## Phase 1 — Shared elements (`src/lib/components/elements/`)
 

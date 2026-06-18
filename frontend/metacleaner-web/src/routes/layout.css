@@ -29,7 +29,7 @@ body {
 	padding: 0;
 	background-color: var(--color-navy-main);
 	color: var(--color-text-main);
-	font-family: 'Inter', sans-serif;
+	font-family: var(--font-family-sans);
 }
 
 ::-webkit-scrollbar {
