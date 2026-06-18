@@ -2,62 +2,42 @@
 	import * as m from '$lib/paraglide/messages';
 	import FormatBadge from '$lib/components/elements/FormatBadge.svelte';
 
-	interface Props {
-		size?: 'desktop' | 'mobile';
-	}
-
-	const { size = 'desktop' }: Props = $props();
-
-	const isMobile = $derived(size === 'mobile');
-
 	const formats = ['JPG', 'PNG', 'HEIC', 'WEBP'];
-	const badgeSize = $derived(isMobile ? 'xs' : 'sm') as 'sm' | 'xs';
-
-	const cardHeight = $derived(isMobile ? '' : 'h-full');
-	const cardPadding = $derived(isMobile ? 'p-5' : 'p-6');
-	const glowHeight = $derived(isMobile ? 'h-1/3' : 'h-1/2');
-	const glowBlur = $derived(isMobile ? 'blur-glow-sm' : 'blur-glow');
-	const headerMb = $derived(isMobile ? 'mb-4' : 'mb-6');
-	const titleSize = $derived(isMobile ? 'text-sm' : 'text-lg');
-	const badgeGap = $derived(isMobile ? 'gap-1' : 'gap-2');
-	const dropFlex = $derived(isMobile ? 'py-8' : 'flex-1');
-	const dropGap = $derived(isMobile ? 'gap-3' : 'gap-4');
-	const dropHover = $derived(isMobile ? '' : 'hover:bg-navy-main/80 transition-colors');
-	const iconSize = $derived(isMobile ? 'w-14 h-14 text-xl' : 'w-16 h-16 text-2xl');
-	const dropText = $derived(isMobile ? m.home_upload_drop_mobile() : m.home_upload_drop());
-	const hintText = $derived(isMobile ? m.home_upload_hint_mobile() : m.home_upload_hint());
-	const dropTextSize = $derived(isMobile ? 'text-sm' : '');
-	const dropCenter = $derived(isMobile ? 'text-center px-4' : 'text-center');
-	const noteMt = $derived(isMobile ? '' : 'mt-2');
 </script>
 
 <div
-	class="w-full {cardHeight} rounded-2xl bg-navy-card border border-border {cardPadding} flex flex-col shadow-card relative overflow-hidden"
+	class="w-full md:h-full rounded-2xl bg-navy-card border border-border p-5 md:p-6 flex flex-col shadow-card relative overflow-hidden"
 >
 	<div
-		class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 {glowHeight} bg-brand-blue/10 {glowBlur} rounded-full pointer-events-none"
+		class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/3 md:h-1/2 bg-brand-blue/10 blur-glow-sm md:blur-glow rounded-full pointer-events-none"
 	></div>
-	<div class="flex justify-between items-center {headerMb} z-10">
-		<h3 class="font-semibold {titleSize}">{m.home_upload_title()}</h3>
-		<div class="flex {badgeGap}">
+	<div class="flex justify-between items-center mb-4 md:mb-6 z-10">
+		<h3 class="font-semibold text-sm md:text-lg">{m.home_upload_title()}</h3>
+		<div class="flex gap-1 md:gap-2">
 			{#each formats as label (label)}
-				<FormatBadge {label} size={badgeSize} />
+				<FormatBadge {label} size="sm" />
 			{/each}
 		</div>
 	</div>
 	<div
-		class="{dropFlex} rounded-xl bg-navy-main/50 dashed-border-anim flex flex-col items-center justify-center {dropGap} cursor-pointer z-10 {dropHover}"
+		class="py-8 md:py-0 md:flex-1 rounded-xl bg-navy-main/50 dashed-border-anim flex flex-col items-center justify-center gap-3 md:gap-4 cursor-pointer z-10 md:hover:bg-navy-main/80 md:transition-colors"
 	>
 		<div
-			class="{iconSize} rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue shadow-glow-blue"
+			class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-navy-lighter flex items-center justify-center text-xl md:text-2xl text-brand-blue shadow-glow-blue"
 		>
 			<i class="fa-solid fa-file-arrow-up"></i>
 		</div>
-		<div class={dropCenter}>
-			<p class="font-semibold text-white {dropTextSize} mb-1">{dropText}</p>
-			<p class="text-xs text-text-muted">{hintText}</p>
+		<div class="text-center px-4 md:px-0">
+			<p class="font-semibold text-white text-sm mb-1">
+				<span class="md:hidden">{m.home_upload_drop_mobile()}</span>
+				<span class="hidden md:inline">{m.home_upload_drop()}</span>
+			</p>
+			<p class="text-xs text-text-muted">
+				<span class="md:hidden">{m.home_upload_hint_mobile()}</span>
+				<span class="hidden md:inline">{m.home_upload_hint()}</span>
+			</p>
 		</div>
-		<p class="text-[10px] text-text-muted {noteMt}">
+		<p class="text-[10px] text-text-muted md:mt-2">
 			<i class="fa-solid fa-lock mr-1"></i>{m.home_upload_local_note()}
 		</p>
 	</div>

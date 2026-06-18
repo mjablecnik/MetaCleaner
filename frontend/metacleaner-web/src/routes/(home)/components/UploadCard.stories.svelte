@@ -5,22 +5,20 @@
 	const { Story } = defineMeta({
 		title: 'Home/UploadCard',
 		component: UploadCard,
-		tags: ['autodocs'],
-		argTypes: {
-			size: { control: { type: 'select' }, options: ['desktop', 'mobile'] }
-		},
-		args: {
-			size: 'desktop'
-		}
+		tags: ['autodocs']
 	});
 </script>
 
 <!-- Desktop: fixed-height wrapper replicates the hero column context -->
 <Story name="Desktop">
 	<div class="w-full h-[400px]">
-		<UploadCard size="desktop" />
+		<UploadCard />
 	</div>
 </Story>
 
 <!-- Mobile: sized by content -->
-<Story name="Mobile" args={{ size: 'mobile' }} />
+<Story name="Mobile">
+	<div class="w-[375px]">
+		<UploadCard />
+	</div>
+</Story>
