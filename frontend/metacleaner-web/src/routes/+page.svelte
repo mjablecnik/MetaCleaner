@@ -1,18 +1,25 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
-	import { getAudience, getFaq, stepsRepository } from '$lib/repositories';
+	import { getAudience, getFaq, stepsRepository, statsRepository } from '$lib/repositories';
 
 	const audienceFull = getAudience('full');
 	const audienceCompact = getAudience('compact');
 	const faqDesktop = getFaq('desktop');
 	const faqMobile = getFaq('mobile');
 	const steps = stepsRepository();
+	const stats = statsRepository();
 
 	const audienceColorClasses: Record<string, { iconBg: string; iconText: string; hoverBorder: string }> = {
 		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue', hoverBorder: 'hover:border-brand-blue/50' },
 		'brand-orange': { iconBg: 'bg-brand-orange/20', iconText: 'text-brand-orange', hoverBorder: 'hover:border-brand-orange/50' },
 		'brand-green': { iconBg: 'bg-brand-green/20', iconText: 'text-brand-green', hoverBorder: 'hover:border-brand-green/50' }
+	};
+
+	const statColorClasses: Record<string, { iconBg: string; iconText: string }> = {
+		'brand-red': { iconBg: 'bg-brand-red/20', iconText: 'text-brand-red' },
+		'brand-orange': { iconBg: 'bg-brand-orange/20', iconText: 'text-brand-orange' },
+		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue' }
 	};
 
 	let mobileMenuOpen = $state(false);
@@ -406,39 +413,20 @@
 			</div>
 			<!-- Risk stats -->
 			<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
-				>
+				{#each stats as stat}
+					{@const sc = statColorClasses[stat.color] ?? statColorClasses['brand-blue']}
 					<div
-						class="w-12 h-12 rounded-full bg-brand-red/20 flex items-center justify-center text-brand-red text-xl"
+						class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
 					>
-						<i class="fa-solid fa-location-crosshairs"></i>
+						<div
+							class="w-12 h-12 rounded-full {sc.iconBg} flex items-center justify-center {sc.iconText} text-xl"
+						>
+							<i class="fa-solid {stat.icon}"></i>
+						</div>
+						<span class="text-3xl font-black text-white">{stat.value}</span>
+						<p class="text-sm text-text-muted">{t(stat.labelKey)}</p>
 					</div>
-					<span class="text-3xl font-black text-white">94%</span>
-					<p class="text-sm text-text-muted">{m.home_stat_gps_label()}</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
-				>
-					<div
-						class="w-12 h-12 rounded-full bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl"
-					>
-						<i class="fa-solid fa-eye"></i>
-					</div>
-					<span class="text-3xl font-black text-white">200+</span>
-					<p class="text-sm text-text-muted">{m.home_stat_fields_label()}</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
-				>
-					<div
-						class="w-12 h-12 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
-					>
-						<i class="fa-solid fa-users"></i>
-					</div>
-					<span class="text-3xl font-black text-white">9 z 10</span>
-					<p class="text-sm text-text-muted">{m.home_stat_unaware_label()}</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 
@@ -795,43 +783,22 @@
 			</div>
 			<!-- Stats -->
 			<div class="grid grid-cols-3 gap-2">
-				<div
-					class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
-				>
+				{#each stats as stat}
+					{@const sc = statColorClasses[stat.color] ?? statColorClasses['brand-blue']}
 					<div
-						class="w-9 h-9 rounded-full bg-brand-red/20 flex items-center justify-center text-brand-red text-sm"
+						class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
 					>
-						<i class="fa-solid fa-location-crosshairs"></i>
+						<div
+							class="w-9 h-9 rounded-full {sc.iconBg} flex items-center justify-center {sc.iconText} text-sm"
+						>
+							<i class="fa-solid {stat.icon}"></i>
+						</div>
+						<span class="text-xl font-black text-white">{stat.valueMobile ?? stat.value}</span>
+						<p class="text-[10px] text-text-muted leading-tight">
+							{t(stat.labelMobileKey ?? stat.labelKey)}
+						</p>
 					</div>
-					<span class="text-xl font-black text-white">94%</span>
-					<p class="text-[10px] text-text-muted leading-tight">{m.home_stat_gps_label_short()}</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
-				>
-					<div
-						class="w-9 h-9 rounded-full bg-brand-orange/20 flex items-center justify-center text-brand-orange text-sm"
-					>
-						<i class="fa-solid fa-eye"></i>
-					</div>
-					<span class="text-xl font-black text-white">200+</span>
-					<p class="text-[10px] text-text-muted leading-tight">
-						{m.home_stat_fields_label_short()}
-					</p>
-				</div>
-				<div
-					class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
-				>
-					<div
-						class="w-9 h-9 rounded-full bg-brand-blue/20 flex items-center justify-center text-brand-blue text-sm"
-					>
-						<i class="fa-solid fa-users"></i>
-					</div>
-					<span class="text-xl font-black text-white">9/10</span>
-					<p class="text-[10px] text-text-muted leading-tight">
-						{m.home_stat_unaware_label_short()}
-					</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 
