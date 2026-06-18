@@ -1,7 +1,35 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import './layout.css';
+	import SiteNavbar from '$lib/components/shared/SiteNavbar.svelte';
+	import MobileNavbar from '$lib/components/shared/MobileNavbar.svelte';
+	import MobileMenu from '$lib/components/shared/MobileMenu.svelte';
 
 	let { children } = $props();
+
+	let mobileMenuOpen = $state(false);
+
+	const activePage = $derived.by(() => {
+		const path = $page.url.pathname;
+		if (path.startsWith('/features')) return 'features' as const;
+		if (path.startsWith('/pricing')) return 'pricing' as const;
+		return 'home' as const;
+	});
+
+	const menuVariant = $derived(activePage === 'home' ? ('drawer' as const) : ('dropdown' as const));
+
+	$effect(() => {
+		$page.url.pathname;
+		mobileMenuOpen = false;
+	});
+
+	function toggleMobileMenu() {
+		mobileMenuOpen = !mobileMenuOpen;
+	}
+
+	function closeMobileMenu() {
+		mobileMenuOpen = false;
+	}
 </script>
 
 <svelte:head>
@@ -18,4 +46,10 @@
 	/>
 </svelte:head>
 
-{@render children()}
+<MobileMenu variant={menuVariant} active={activePage} open={mobileMenuOpen} onClose={closeMobileMenu} />
+
+<div class="flex flex-col items-center w-full">
+	<SiteNavbar active={activePage} />
+	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
+	{@render children()}
+</div>
