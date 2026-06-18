@@ -111,7 +111,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 ## Phase 4 — Refactor pages
 
 - [x] 80. [MEDIUM] Move `src/routes/+page.svelte` → `src/routes/(home)/+page.svelte` and rewrite it to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=drawer), and the Home sections; keep `mobileMenuOpen` `$state` in the page.
-- [ ] 81. [MEDIUM] Refactor `src/routes/features/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Features sections.
+- [x] 81. [MEDIUM] Refactor `src/routes/features/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Features sections.
 - [ ] 82. [MEDIUM] Refactor `src/routes/pricing/+page.svelte` to compose `SiteNavbar`, `MobileNavbar`, `MobileMenu` (variant=dropdown), and the Pricing sections; keep `currentBilling`/`isYearly` `$state` in the page and pass down.
 
 ## Final
