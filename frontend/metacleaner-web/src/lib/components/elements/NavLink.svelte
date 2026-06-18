@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
+
 	interface Props {
 		href: string;
 		label: string;
@@ -14,4 +17,4 @@
 	);
 </script>
 
-<a {href} class={classes}>{label}</a>
+<a href={resolve(href as Pathname)} class={classes}>{label}</a>
