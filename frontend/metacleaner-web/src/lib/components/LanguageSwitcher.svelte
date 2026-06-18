@@ -2,12 +2,14 @@
 	import { getLocale, setLocale, locales } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages';
 	import { onMount } from 'svelte';
+	import flagGb from '$lib/assets/flags/gb.svg';
+	import flagCz from '$lib/assets/flags/cz.svg';
 
 	let { variant = 'desktop' }: { variant?: 'desktop' | 'mobile' } = $props();
 
 	const localeMap: Record<string, { flag: string; label: string; name: string }> = {
-		en: { flag: '🇬🇧', label: 'EN', name: 'English' },
-		cs: { flag: '🇨🇿', label: 'CS', name: 'Čeština' }
+		en: { flag: flagGb, label: 'EN', name: 'English' },
+		cs: { flag: flagCz, label: 'CS', name: 'Čeština' }
 	};
 
 	type Locale = (typeof locales)[number];
@@ -43,7 +45,7 @@
 			onclick={toggleDropdown}
 			class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 		>
-			<span>{localeMap[currentLocale]?.flag ?? '🌐'}</span>
+			<img src={localeMap[currentLocale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
 			<span>{localeMap[currentLocale]?.label ?? currentLocale.toUpperCase()}</span>
 			<i
 				class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 {dropdownOpen
@@ -67,7 +69,7 @@
 					tabindex="0"
 					onkeydown={(e) => e.key === 'Enter' && chooseLocale(locale)}
 				>
-					<span class="text-[18px]">{localeMap[locale]?.flag}</span>
+					<img src={localeMap[locale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
 					{localeMap[locale]?.name}
 					<span class="ml-auto text-brand-blue {currentLocale === locale ? '' : 'hidden'}">
 						<i class="fa-solid fa-check text-xs"></i>
@@ -87,7 +89,7 @@
 				class="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-gray-700 bg-navy-lighter text-white text-sm font-semibold transition-all hover:border-brand-blue/50"
 			>
 				<div class="flex items-center gap-3">
-					<span class="text-xl">{localeMap[currentLocale]?.flag ?? '🌐'}</span>
+					<img src={localeMap[currentLocale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
 					<span class="text-sm font-semibold"
 						>{localeMap[currentLocale]?.name ?? currentLocale}</span
 					>
@@ -111,7 +113,7 @@
 							? 'border-t border-gray-800'
 							: ''} {currentLocale === locale ? 'text-white bg-navy-lighter' : 'text-text-muted'}"
 					>
-						<span class="text-xl">{localeMap[locale]?.flag}</span>
+						<img src={localeMap[locale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
 						<span class="flex-1 text-left">{localeMap[locale]?.name}</span>
 						<i
 							class="fa-solid fa-check text-brand-blue text-xs {currentLocale === locale
