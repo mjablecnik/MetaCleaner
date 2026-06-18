@@ -86,8 +86,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 62. [MEDIUM] Create `C2paIllustration.stories.svelte` — default.
 - [x] 63. [HIGH] Create `FeatureRow.svelte` — desktop alternating row composing `IconBadge`, `FormatPill`, `CheckBullet`, image/illustration; props `feature`.
 - [x] 64. [HIGH] Create `FeatureRow.stories.svelte` — ltr/rtl, formats vs bullets, image vs illustration.
-- [ ] 65. [HIGH] Create `FeatureCard.svelte` — mobile feature card composing `IconBadge`, `FormatPill`, `CheckBullet`; props `feature`.
-- [ ] 66. [HIGH] Create `FeatureCard.stories.svelte` — formats + bullets variants.
+- [x] 65. [HIGH] Create `FeatureCard.svelte` — mobile feature card composing `IconBadge`, `FormatPill`, `CheckBullet`; props `feature`.
+- [x] 66. [HIGH] Create `FeatureCard.stories.svelte` — formats + bullets variants.
 
 ### Features sections (`src/routes/features/sections/`)
 - [ ] 67. [HIGH] Create `FeaturesHeaderSection.svelte` — composing `SectionHeading`/`GradientText`.
