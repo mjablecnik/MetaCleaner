@@ -208,14 +208,13 @@
 		<section id="hero" class="w-full pt-12 pb-8 flex flex-col lg:flex-row gap-12 items-center">
 			<div class="w-full lg:w-[55%] flex flex-col gap-6">
 				<h1 class="text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight w-[609px]">
-					<span>Chraňte své soukromí</span><br />
+					<span>{m.home_hero_title_line1()}</span><br />
 					<span
 						class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green"
-					>Odstraňte metadata</span>
+					>{m.home_hero_title_line2()}</span>
 				</h1>
 				<p class="text-lg text-text-muted leading-relaxed max-w-xl">
-					Chraňte své soukromí odstraněním skrytých EXIF dat, GPS souřadnic a informací o zařízení
-					z vašich fotek a videí před jejich sdílením online.
+					{m.home_hero_subtitle()}
 				</p>
 				<div class="flex flex-col sm:flex-row gap-4 mt-4">
 					<a
@@ -242,7 +241,7 @@
 						class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-brand-blue/10 blur-[50px] rounded-full pointer-events-none"
 					></div>
 					<div class="flex justify-between items-center mb-6 z-10">
-						<h3 class="font-semibold text-lg">Vyčistit soubory</h3>
+						<h3 class="font-semibold text-lg">{m.home_upload_title()}</h3>
 						<div class="flex gap-2">
 							<span class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">JPG</span>
 							<span class="px-2 py-1 rounded bg-navy-lighter text-[10px] font-bold text-white uppercase">PNG</span>
@@ -259,12 +258,11 @@
 							<i class="fa-solid fa-file-arrow-up"></i>
 						</div>
 						<div class="text-center">
-							<p class="font-semibold text-white mb-1">Přetáhněte soubory sem</p>
-							<p class="text-xs text-text-muted">nebo klikněte pro výběr ze zařízení</p>
+							<p class="font-semibold text-white mb-1">{m.home_upload_drop()}</p>
+							<p class="text-xs text-text-muted">{m.home_upload_hint()}</p>
 						</div>
 						<p class="text-[10px] text-text-muted mt-2">
-							<i class="fa-solid fa-lock mr-1"></i>Soubory se zpracovávají lokálně. Nikdy se
-							nenahrávají.
+							<i class="fa-solid fa-lock mr-1"></i>{m.home_upload_local_note()}
 						</p>
 					</div>
 				</div>
@@ -275,11 +273,11 @@
 		<section id="why-it-matters" class="w-full">
 			<div class="text-center mb-12">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-green mb-3 block"
-					>Důležitost</span
+					>{m.home_why_eyebrow()}</span
 				>
-				<h2 class="text-4xl font-bold mb-4">Proč je to důležité?</h2>
+				<h2 class="text-4xl font-bold mb-4">{m.home_why_title()}</h2>
 				<p class="text-text-muted max-w-xl mx-auto">
-					Každý soubor, který sdílíte, může obsahovat více informací, než si myslíte.
+					{m.home_why_subtitle()}
 				</p>
 			</div>
 			<!-- Before/After comparison -->
@@ -295,8 +293,8 @@
 							<i class="fa-solid fa-triangle-exclamation"></i>
 						</div>
 						<div>
-							<span class="text-xs font-bold uppercase tracking-wider text-brand-red">Před čištěním</span>
-							<p class="text-sm font-semibold text-white">Fotka obsahuje skrytá data</p>
+							<span class="text-xs font-bold uppercase tracking-wider text-brand-red">{m.home_why_before_label()}</span>
+							<p class="text-sm font-semibold text-white">{m.home_why_before_caption()}</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
@@ -304,7 +302,7 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-location-dot text-brand-red"></i> GPS souřadnice
+								<i class="fa-solid fa-location-dot text-brand-red"></i> {m.meta_field_gps()}
 							</span>
 							<span class="text-xs font-mono text-white">50.0755°N, 14.4378°E</span>
 						</div>
@@ -312,7 +310,7 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-mobile-screen text-brand-red"></i> Zařízení
+								<i class="fa-solid fa-mobile-screen text-brand-red"></i> {m.meta_field_device()}
 							</span>
 							<span class="text-xs font-mono text-white">Apple iPhone 15 Pro</span>
 						</div>
@@ -320,7 +318,7 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-calendar text-brand-red"></i> Datum a čas
+								<i class="fa-solid fa-calendar text-brand-red"></i> {m.meta_field_datetime()}
 							</span>
 							<span class="text-xs font-mono text-white">2024-03-15 14:32:07</span>
 						</div>
@@ -328,7 +326,7 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-user text-brand-red"></i> Autor
+								<i class="fa-solid fa-user text-brand-red"></i> {m.meta_field_author()}
 							</span>
 							<span class="text-xs font-mono text-white">Jan Novák</span>
 						</div>
@@ -336,14 +334,14 @@
 							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-camera text-brand-red"></i> Nastavení fotoaparátu
+								<i class="fa-solid fa-camera text-brand-red"></i> {m.meta_field_camera()}
 							</span>
 							<span class="text-xs font-mono text-white">f/1.8 · 1/120s · ISO 64</span>
 						</div>
 					</div>
 					<p class="text-xs text-brand-red/80 flex items-center gap-2 mt-1">
 						<i class="fa-solid fa-circle-exclamation"></i>
-						Tato data jsou viditelná každému, kdo soubor obdrží.
+						{m.home_why_before_warning()}
 					</p>
 				</div>
 				<!-- After card -->
@@ -357,12 +355,12 @@
 							<i class="fa-solid fa-shield-halved"></i>
 						</div>
 						<div>
-							<span class="text-xs font-bold uppercase tracking-wider text-brand-green">Po čištění</span>
-							<p class="text-sm font-semibold text-white">Fotka je bezpečná ke sdílení</p>
+							<span class="text-xs font-bold uppercase tracking-wider text-brand-green">{m.home_why_after_label()}</span>
+							<p class="text-sm font-semibold text-white">{m.home_why_after_caption()}</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
-						{#each ['GPS souřadnice', 'Zařízení', 'Datum a čas', 'Autor', 'Nastavení fotoaparátu'] as label, i}
+						{#each [m.meta_field_gps(), m.meta_field_device(), m.meta_field_datetime(), m.meta_field_author(), m.meta_field_camera()] as label, i}
 							<div
 								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 							>
@@ -381,14 +379,14 @@
 									{label}
 								</span>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1">
-									<i class="fa-solid fa-check"></i> Odstraněno
+									<i class="fa-solid fa-check"></i> {m.home_why_removed()}
 								</span>
 							</div>
 						{/each}
 					</div>
 					<p class="text-xs text-brand-green/80 flex items-center gap-2 mt-1">
 						<i class="fa-solid fa-circle-check"></i>
-						Soubor neobsahuje žádná citlivá metadata.
+						{m.home_why_after_note()}
 					</p>
 				</div>
 			</div>
@@ -403,7 +401,7 @@
 						<i class="fa-solid fa-location-crosshairs"></i>
 					</div>
 					<span class="text-3xl font-black text-white">94%</span>
-					<p class="text-sm text-text-muted">fotek sdílených online obsahuje GPS metadata</p>
+					<p class="text-sm text-text-muted">{m.home_stat_gps_label()}</p>
 				</div>
 				<div
 					class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
@@ -414,7 +412,7 @@
 						<i class="fa-solid fa-eye"></i>
 					</div>
 					<span class="text-3xl font-black text-white">200+</span>
-					<p class="text-sm text-text-muted">různých datových polí může být skryto v jednom souboru</p>
+					<p class="text-sm text-text-muted">{m.home_stat_fields_label()}</p>
 				</div>
 				<div
 					class="bg-navy-card rounded-2xl border border-gray-800 p-6 flex flex-col items-center text-center gap-3"
@@ -425,7 +423,7 @@
 						<i class="fa-solid fa-users"></i>
 					</div>
 					<span class="text-3xl font-black text-white">9 z 10</span>
-					<p class="text-sm text-text-muted">uživatelů neví, že jejich fotky obsahují osobní data</p>
+					<p class="text-sm text-text-muted">{m.home_stat_unaware_label()}</p>
 				</div>
 			</div>
 		</section>
@@ -820,17 +818,16 @@
 					class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20 w-fit"
 				>
 					<i class="fa-solid fa-lock text-brand-blue text-xs"></i>
-					<span class="text-xs font-semibold text-brand-blue">100% lokální zpracování</span>
+					<span class="text-xs font-semibold text-brand-blue">{m.home_hero_badge()}</span>
 				</div>
 				<h1 class="text-3xl font-bold leading-tight tracking-tight">
-					Chraňte své soukromí<br />
+					{m.home_hero_title_line1()}<br />
 					<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green"
-						>Odstraňte metadata</span
+						>{m.home_hero_title_line2()}</span
 					>
 				</h1>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Chraňte své soukromí odstraněním skrytých EXIF dat, GPS souřadnic a informací o zařízení
-					z vašich fotek a videí před jejich sdílením online.
+					{m.home_hero_subtitle()}
 				</p>
 			</div>
 			<!-- Upload Card -->
@@ -841,7 +838,7 @@
 					class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/3 bg-brand-blue/10 blur-[40px] rounded-full pointer-events-none"
 				></div>
 				<div class="flex justify-between items-center mb-4 z-10">
-					<h3 class="font-semibold text-sm">Vyčistit soubory</h3>
+					<h3 class="font-semibold text-sm">{m.home_upload_title()}</h3>
 					<div class="flex gap-1">
 						<span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">JPG</span>
 						<span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">PNG</span>
@@ -858,12 +855,11 @@
 						<i class="fa-solid fa-file-arrow-up"></i>
 					</div>
 					<div class="text-center px-4">
-						<p class="font-semibold text-white text-sm mb-1">Klepněte pro výběr souborů</p>
-						<p class="text-xs text-text-muted">nebo přetáhněte soubory sem</p>
+						<p class="font-semibold text-white text-sm mb-1">{m.home_upload_drop_mobile()}</p>
+						<p class="text-xs text-text-muted">{m.home_upload_hint_mobile()}</p>
 					</div>
 					<p class="text-[10px] text-text-muted">
-						<i class="fa-solid fa-lock mr-1"></i>Soubory se zpracovávají lokálně. Nikdy se
-						nenahrávají.
+						<i class="fa-solid fa-lock mr-1"></i>{m.home_upload_local_note()}
 					</p>
 				</div>
 			</div>
@@ -888,11 +884,11 @@
 		<section id="why-it-matters-mobile" class="w-full">
 			<div class="text-center mb-6">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-green mb-2 block"
-					>Důležitost</span
+					>{m.home_why_eyebrow()}</span
 				>
-				<h2 class="text-2xl font-bold mb-2">Proč je to důležité?</h2>
+				<h2 class="text-2xl font-bold mb-2">{m.home_why_title()}</h2>
 				<p class="text-sm text-text-muted">
-					Každý soubor, který sdílíte, může obsahovat více informací, než si myslíte.
+					{m.home_why_subtitle()}
 				</p>
 			</div>
 			<!-- Before Card -->
@@ -907,9 +903,9 @@
 					</div>
 					<div>
 						<span class="text-[10px] font-bold uppercase tracking-wider text-brand-red block"
-							>Před čištěním</span
+							>{m.home_why_before_label()}</span
 						>
-						<p class="text-xs font-semibold text-white">Fotka obsahuje skrytá data</p>
+						<p class="text-xs font-semibold text-white">{m.home_why_before_caption()}</p>
 					</div>
 				</div>
 				<div class="flex flex-col gap-1.5">
@@ -917,7 +913,7 @@
 						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 					>
 						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i> GPS
+							<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i> {m.meta_field_gps_short()}
 						</span>
 						<span class="text-xs font-mono text-white">50.07°N, 14.43°E</span>
 					</div>
@@ -925,7 +921,7 @@
 						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 					>
 						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-mobile-screen text-brand-red text-[10px]"></i>Zařízení
+							<i class="fa-solid fa-mobile-screen text-brand-red text-[10px]"></i>{m.meta_field_device_short()}
 						</span>
 						<span class="text-xs font-mono text-white">iPhone 15 Pro</span>
 					</div>
@@ -933,7 +929,7 @@
 						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 					>
 						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-calendar text-brand-red text-[10px]"></i>Datum
+							<i class="fa-solid fa-calendar text-brand-red text-[10px]"></i>{m.meta_field_datetime_short()}
 						</span>
 						<span class="text-xs font-mono text-white">2024-03-15 14:32</span>
 					</div>
@@ -941,14 +937,13 @@
 						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 					>
 						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-user text-brand-red text-[10px]"></i>Autor
+							<i class="fa-solid fa-user text-brand-red text-[10px]"></i>{m.meta_field_author_short()}
 						</span>
 						<span class="text-xs font-mono text-white">Jan Novák</span>
 					</div>
 				</div>
 				<p class="text-xs text-brand-red/80 flex items-center gap-1.5">
-					<i class="fa-solid fa-circle-exclamation text-[10px]"></i>Tato data jsou viditelná každému,
-					kdo soubor obdrží.
+					<i class="fa-solid fa-circle-exclamation text-[10px]"></i>{m.home_why_before_warning()}
 				</p>
 			</div>
 			<!-- After Card -->
@@ -963,13 +958,13 @@
 					</div>
 					<div>
 						<span class="text-[10px] font-bold uppercase tracking-wider text-brand-green block"
-							>Po čištění</span
+							>{m.home_why_after_label()}</span
 						>
-						<p class="text-xs font-semibold text-white">Fotka je bezpečná ke sdílení</p>
+						<p class="text-xs font-semibold text-white">{m.home_why_after_caption()}</p>
 					</div>
 				</div>
 				<div class="flex flex-col gap-1.5">
-					{#each [['fa-location-dot', 'GPS'], ['fa-mobile-screen', 'Zařízení'], ['fa-calendar', 'Datum'], ['fa-user', 'Autor']] as [icon, label]}
+					{#each [['fa-location-dot', m.meta_field_gps_short()], ['fa-mobile-screen', m.meta_field_device_short()], ['fa-calendar', m.meta_field_datetime_short()], ['fa-user', m.meta_field_author_short()]] as [icon, label]}
 						<div
 							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
@@ -977,14 +972,13 @@
 								<i class="fa-solid {icon} text-brand-green text-[10px]"></i>{label}
 							</span>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1">
-								<i class="fa-solid fa-check text-[10px]"></i> Odstraněno
+								<i class="fa-solid fa-check text-[10px]"></i> {m.home_why_removed()}
 							</span>
 						</div>
 					{/each}
 				</div>
 				<p class="text-xs text-brand-green/80 flex items-center gap-1.5">
-					<i class="fa-solid fa-circle-check text-[10px]"></i>Soubor neobsahuje žádná citlivá
-					metadata.
+					<i class="fa-solid fa-circle-check text-[10px]"></i>{m.home_why_after_note()}
 				</p>
 			</div>
 			<!-- Stats -->
@@ -998,7 +992,7 @@
 						<i class="fa-solid fa-location-crosshairs"></i>
 					</div>
 					<span class="text-xl font-black text-white">94%</span>
-					<p class="text-[10px] text-text-muted leading-tight">fotek sdílených online obsahuje GPS</p>
+					<p class="text-[10px] text-text-muted leading-tight">{m.home_stat_gps_label_short()}</p>
 				</div>
 				<div
 					class="bg-navy-card rounded-xl border border-gray-800 p-3 flex flex-col items-center text-center gap-1.5"
@@ -1010,7 +1004,7 @@
 					</div>
 					<span class="text-xl font-black text-white">200+</span>
 					<p class="text-[10px] text-text-muted leading-tight">
-						skrytých datových polí v jednom souboru
+						{m.home_stat_fields_label_short()}
 					</p>
 				</div>
 				<div
@@ -1023,7 +1017,7 @@
 					</div>
 					<span class="text-xl font-black text-white">9/10</span>
 					<p class="text-[10px] text-text-muted leading-tight">
-						uživatelů neví o osobních datech ve fotkách
+						{m.home_stat_unaware_label_short()}
 					</p>
 				</div>
 			</div>
