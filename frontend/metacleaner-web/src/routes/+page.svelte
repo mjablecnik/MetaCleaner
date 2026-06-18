@@ -1,5 +1,16 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n';
+	import { getAudience } from '$lib/repositories';
+
+	const audienceFull = getAudience('full');
+	const audienceCompact = getAudience('compact');
+
+	const audienceColorClasses: Record<string, { iconBg: string; iconText: string; hoverBorder: string }> = {
+		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue', hoverBorder: 'hover:border-brand-blue/50' },
+		'brand-orange': { iconBg: 'bg-brand-orange/20', iconText: 'text-brand-orange', hoverBorder: 'hover:border-brand-orange/50' },
+		'brand-green': { iconBg: 'bg-brand-green/20', iconText: 'text-brand-green', hoverBorder: 'hover:border-brand-green/50' }
+	};
 
 	let mobileMenuOpen = $state(false);
 
@@ -496,132 +507,31 @@
 			</p>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-blue/50 transition-colors"
-			>
+			{#each audienceFull as audience}
+				{@const cc = audienceColorClasses[audience.color] ?? audienceColorClasses['brand-blue']}
 				<div
-					class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
+					class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 {cc.hoverBorder} transition-colors"
 				>
-					<i class="fa-solid fa-newspaper"></i>
+					<div
+						class="w-12 h-12 rounded-xl {cc.iconBg} flex items-center justify-center {cc.iconText} text-xl"
+					>
+						<i class="fa-solid {audience.icon}"></i>
+					</div>
+					<h3 class="text-lg font-bold">{t(audience.titleKey)}</h3>
+					<p class="text-sm text-text-muted leading-relaxed">
+						{t(audience.descKey)}
+					</p>
+					{#if audience.bulletKeys}
+						<ul class="flex flex-col gap-1.5 mt-auto">
+							{#each audience.bulletKeys as bulletKey}
+								<li class="flex items-center gap-2 text-xs text-text-muted">
+									<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{t(bulletKey)}
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_journalists_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_journalists_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_journalists_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_journalists_bullet2()}
-					</li>
-				</ul>
-			</div>
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-orange/50 transition-colors"
-			>
-				<div
-					class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl"
-				>
-					<i class="fa-solid fa-camera-retro"></i>
-				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_photographers_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_photographers_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_photographers_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_photographers_bullet2()}
-					</li>
-				</ul>
-			</div>
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-green/50 transition-colors"
-			>
-				<div
-					class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl"
-				>
-					<i class="fa-solid fa-building"></i>
-				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_business_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_business_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_business_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_business_bullet2()}
-					</li>
-				</ul>
-			</div>
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-blue/50 transition-colors"
-			>
-				<div
-					class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
-				>
-					<i class="fa-solid fa-user-shield"></i>
-				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_users_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_users_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_users_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_users_bullet2()}
-					</li>
-				</ul>
-			</div>
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-orange/50 transition-colors"
-			>
-				<div
-					class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl"
-				>
-					<i class="fa-solid fa-flask"></i>
-				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_researchers_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_researchers_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_researchers_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_researchers_bullet2()}
-					</li>
-				</ul>
-			</div>
-			<div
-				class="bg-navy-card rounded-2xl border border-gray-800 p-7 flex flex-col gap-4 hover:border-brand-green/50 transition-colors"
-			>
-				<div
-					class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl"
-				>
-					<i class="fa-solid fa-lock"></i>
-				</div>
-				<h3 class="text-lg font-bold">{m.home_audience_it_title()}</h3>
-				<p class="text-sm text-text-muted leading-relaxed">
-					{m.home_audience_it_desc()}
-				</p>
-				<ul class="flex flex-col gap-1.5 mt-auto">
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_it_bullet1()}
-					</li>
-					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_it_bullet2()}
-					</li>
-				</ul>
-			</div>
+			{/each}
 		</div>
 	</section>
 
@@ -1076,58 +986,22 @@
 				</p>
 			</div>
 			<div class="flex flex-col gap-3">
-				<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
-					<div
-						class="w-11 h-11 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-newspaper"></i>
+				{#each audienceCompact as audience}
+					{@const cc = audienceColorClasses[audience.color] ?? audienceColorClasses['brand-blue']}
+					<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
+						<div
+							class="w-11 h-11 rounded-xl {cc.iconBg} flex items-center justify-center {cc.iconText} text-lg flex-shrink-0"
+						>
+							<i class="fa-solid {audience.icon}"></i>
+						</div>
+						<div>
+							<h3 class="font-bold text-sm mb-1">{t(audience.titleKey)}</h3>
+							<p class="text-xs text-text-muted leading-relaxed">
+								{t(audience.descKey)}
+							</p>
+						</div>
 					</div>
-					<div>
-						<h3 class="font-bold text-sm mb-1">{m.home_audience_journalists_title_mobile()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_audience_journalists_desc_mobile()}
-						</p>
-					</div>
-				</div>
-				<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
-					<div
-						class="w-11 h-11 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-camera"></i>
-					</div>
-					<div>
-						<h3 class="font-bold text-sm mb-1">{m.home_audience_photographers_title_mobile()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_audience_photographers_desc_mobile()}
-						</p>
-					</div>
-				</div>
-				<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
-					<div
-						class="w-11 h-11 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-briefcase"></i>
-					</div>
-					<div>
-						<h3 class="font-bold text-sm mb-1">{m.home_audience_business_title_mobile()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_audience_business_desc_mobile()}
-						</p>
-					</div>
-				</div>
-				<div class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex items-start gap-4">
-					<div
-						class="w-11 h-11 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-lg flex-shrink-0"
-					>
-						<i class="fa-solid fa-users"></i>
-					</div>
-					<div>
-						<h3 class="font-bold text-sm mb-1">{m.home_audience_users_title_mobile()}</h3>
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_audience_users_desc_mobile()}
-						</p>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</section>
 
