@@ -16,7 +16,7 @@
 		subtitle={m.home_steps_subtitle()}
 	/>
 	<div class="grid grid-cols-3 gap-6">
-		{#each steps as step}
+		{#each steps as step, i (i)}
 			<StepCard {step} size="desktop" />
 		{/each}
 	</div>
@@ -32,7 +32,7 @@
 		size="sm"
 	/>
 	<div class="flex flex-col gap-3">
-		{#each steps as step}
+		{#each steps as step, i (i)}
 			<StepCard {step} size="mobile" />
 		{/each}
 	</div>

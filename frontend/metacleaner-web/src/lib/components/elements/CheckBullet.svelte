@@ -18,9 +18,7 @@
 		xs: 'text-xs'
 	} as const;
 
-	const textClass = $derived(
-		emphasis ? 'font-medium' : 'text-text-muted'
-	);
+	const textClass = $derived(emphasis ? 'font-medium' : 'text-text-muted');
 	const iconClass = $derived(`${iconColorMap[color]} ${iconSizeMap[size]}`);
 </script>
 

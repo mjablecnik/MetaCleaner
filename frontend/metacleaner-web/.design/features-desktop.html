@@ -1,1106 +1,1531 @@
 <html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Features</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							card: '0 4px 6px -1px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.dashed-border-anim {
+				background-image:
+					linear-gradient(90deg, #94a3b8 50%, transparent 50%),
+					linear-gradient(90deg, #94a3b8 50%, transparent 50%),
+					linear-gradient(0deg, #94a3b8 50%, transparent 50%),
+					linear-gradient(0deg, #94a3b8 50%, transparent 50%);
+				background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+				background-size:
+					15px 2px,
+					15px 2px,
+					2px 15px,
+					2px 15px;
+				background-position:
+					left top,
+					right bottom,
+					left bottom,
+					right top;
+				animation: border-dance 1s infinite linear;
+			}
 
-      .dashed-border-anim
-      {
-        background-image: linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(90deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%), linear-gradient(0deg, #94a3b8 50%, transparent 50%);
-        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-        background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
-        background-position: left top, right bottom, left bottom, right top;
-        animation: border-dance 1s infinite linear;
-      }
+			@keyframes border-dance {
+				0% {
+					background-position:
+						left top,
+						right bottom,
+						left bottom,
+						right top;
+				}
 
-      @keyframes border-dance
-      {
-        0%
-        {
-          background-position: left top, right bottom, left bottom, right top;
-        }
+				100% {
+					background-position:
+						left 15px top,
+						right 15px bottom,
+						left bottom 15px,
+						right top 15px;
+				}
+			}
 
-        100%
-        {
-          background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
-        }
-      }
+			.lang-dropdown {
+				position: relative;
+				display: inline-block;
+			}
 
-      .lang-dropdown
-      {
-        position: relative;
-        display: inline-block;
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 160px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 160px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background 0.15s, color 0.15s;
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			.feature-tab.active {
+				background: #3b82f6;
+				color: #fff;
+			}
 
-      .feature-tab.active
-      {
-        background: #3b82f6;
-        color: #fff;
-      }
+			.feature-tab {
+				transition: all 0.2s;
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#iyt49i {
+				width: 87%;
+			}
 
-      .feature-tab
-      {
-        transition: all 0.2s;
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #iyt49i
-      {
-        width: 87%;
-      }
+			#icbpr2 {
+				width: 8%;
+			}
 
-      #icbpr2
-      {
-        width: 8%;
-      }
+			#i2s8h2 {
+				width: 3%;
+			}
 
-      #i2s8h2
-      {
-        width: 3%;
-      }
+			#iwd9pb {
+				width: 2%;
+			}
 
-      #iwd9pb
-      {
-        width: 2%;
-      }
+			#il4ubs {
+				width: 85%;
+			}
 
-      #il4ubs
-      {
-        width: 85%;
-      }
+			#i4bc9a {
+				width: 55%;
+			}
 
-      #i4bc9a
-      {
-        width: 55%;
-      }
+			#i0vej1 {
+				width: 48%;
+			}
 
-      #i0vej1
-      {
-        width: 48%;
-      }
+			#im7dxg {
+				width: 75%;
+			}
+		</style>
+	</head>
 
-      #im7dxg
-      {
-        width: 75%;
-      }
-    </style>
-  </head>
+	<body class="flex flex-col items-center">
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Features</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<nav
+			id="navbar"
+			class="z-50 mx-auto flex w-full max-w-[1100px] items-center justify-between px-6 py-6"
+		>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="text-xl" data-fa-i2svg=""
+						><svg
+							class="svg-inline--fa fa-shield-halved"
+							aria-hidden="true"
+							focusable="false"
+							data-prefix="fas"
+							data-icon="shield-halved"
+							role="img"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 512 512"
+							data-fa-i2svg=""
+						>
+							<path
+								fill="currentColor"
+								d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z"
+							></path></svg
+					></i>
+				</div>
+				<span class="text-xl font-bold tracking-tight" contenteditable="false">MetaCleaner</span>
+			</div>
+			<div class="hidden items-center gap-8 text-sm font-medium text-text-muted md:flex">
+				<a href="#" class="transition-colors hover:text-white" contenteditable="false"
+					>Jak to funguje</a
+				><a href="#features" class="text-white transition-colors" contenteditable="false">Funkce</a
+				><a href="#" class="transition-colors hover:text-white" contenteditable="false">Ceník</a
+				><a href="#" class="transition-colors hover:text-white" contenteditable="false">FAQ</a>
+			</div>
+			<div class="flex items-center gap-3">
+				<div id="langDropdown" class="lang-dropdown">
+					<button
+						onclick="toggleLangDropdown()"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+					>
+						<span id="currentLangFlag" class="" contenteditable="false">🇨🇿</span
+						><span id="currentLangLabel" class="" contenteditable="false">CS</span
+						><i id="langDropdownChevron" class="ml-1 text-xs text-text-muted" data-fa-i2svg=""
+							><svg
+								class="svg-inline--fa fa-chevron-down"
+								aria-hidden="true"
+								focusable="false"
+								data-prefix="fas"
+								data-icon="chevron-down"
+								role="img"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 512 512"
+								data-fa-i2svg=""
+							>
+								<path
+									fill="currentColor"
+									d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+								></path></svg
+						></i>
+					</button>
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div
+							id="opt-cs"
+							onclick="setLang('cs')"
+							class="lang-option active"
+							contenteditable="false"
+						>
+							<span contenteditable="false">🇨🇿</span> Čeština
+						</div>
+						<div id="opt-en" onclick="setLang('en')" class="lang-option" contenteditable="false">
+							<span contenteditable="false">🇬🇧</span> English
+						</div>
+						<div id="opt-de" onclick="setLang('de')" class="lang-option" contenteditable="false">
+							<span contenteditable="false">🇩🇪</span> Deutsch
+						</div>
+					</div>
+				</div>
+				<button
+					class="hidden rounded-lg px-5 py-2.5 text-sm font-semibold text-text-main transition-colors hover:bg-navy-lighter md:block"
+					contenteditable="false"
+				>
+					Přihlásit
+				</button>
+			</div>
+		</nav>
+		<main id="main" class="mx-auto flex w-full max-w-[1100px] flex-col gap-16 px-6 pb-24">
+			<!-- Page Header -->
+			<section id="features-header" class="pt-8 text-center">
+				<span
+					class="mb-3 block text-xs font-bold tracking-widest text-brand-blue uppercase"
+					contenteditable="false"
+					>Funkce</span
+				>
+				<h1 class="mb-4 text-5xl leading-tight font-bold" contenteditable="false">
+					Kompletní sada nástrojů<br /><span
+						class="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent"
+						contenteditable="false"
+						>pro ochranu soukromí</span
+					>
+				</h1>
+				<p
+					class="mx-auto max-w-2xl text-lg leading-relaxed text-text-muted"
+					contenteditable="false"
+				>
+					Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a
+					získejte plnou kontrolu nad svými soubory.
+				</p>
+			</section>
+			<!-- Feature 1: EXIF Metadata Removal -->
+			<section id="feature-exif" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/20 text-xl text-brand-blue"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-broom"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="broom"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 576 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M566.6 54.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192-34.7-34.7c-4.2-4.2-10-6.6-16-6.6c-12.5 0-22.6 10.1-22.6 22.6v29.1L364.3 320h29.1c12.5 0 22.6-10.1 22.6-22.6c0-6-2.4-11.8-6.6-16l-34.7-34.7 192-192zM341.1 353.4L222.6 234.9c-42.7-3.7-85.2 11.7-115.8 42.3l-8 8C76.5 307.5 64 337.7 64 369.2c0 6.8 7.1 11.2 13.2 8.2l51.1-25.5c5-2.5 9.5 4.1 5.4 7.9L7.3 473.4C2.7 477.6 0 483.6 0 489.9C0 502.1 9.9 512 22.1 512l173.3 0c38.8 0 75.9-15.4 103.4-42.8c30.6-30.6 45.9-73.1 42.3-115.8z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-blue uppercase"
+								contenteditable="false"
+								>Funkce 01</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">
+							EXIF Metadata Removal
+						</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Automaticky odstraní všechna skrytá metadata z vašich souborů. Žádná data nezůstanou —
+							vaše soukromí je plně chráněno před sdílením.
+						</p>
+						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-red" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-location-dot"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="location-dot"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 384 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">GPS souřadnice</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-orange" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-mobile-screen"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="mobile-screen"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 384 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM144 448c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16s-7.2-16-16-16H160c-8.8 0-16 7.2-16 16zM304 64H80V384H304V64z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Info o zařízení</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-blue" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-user"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="user"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Autor souboru</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-calendar"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="calendar"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Datum a čas</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-text-muted" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-code"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="code"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 640 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Software info</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-blue" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-camera"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="camera"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Nastavení kamery</span>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<div class="relative flex h-48 w-48 items-center justify-center">
+							<!-- Simple file icon with tags being erased -->
+							<div class="relative">
+								<!-- File shape -->
+								<div
+									class="relative flex h-36 w-28 flex-col items-center justify-center gap-2 rounded-lg border-2 border-brand-blue/40 bg-navy-card"
+								>
+									<div
+										class="absolute -top-1 -right-1 flex h-7 w-7 items-center justify-center rounded-tr-lg rounded-bl-lg border-2 border-brand-blue/40 bg-navy-main"
+									>
+										<i class="fa-solid fa-camera text-xs text-brand-blue"></i>
+									</div>
+									<i class="fa-solid fa-image mt-2 text-3xl text-brand-blue/60"></i>
+									<div class="flex w-16 flex-col gap-1">
+										<div class="h-1.5 w-full rounded-full bg-brand-blue/30"></div>
+										<div class="h-1.5 w-3/4 rounded-full bg-brand-blue/20"></div>
+									</div>
+								</div>
+								<!-- Floating metadata tags being erased -->
+								<div
+									class="absolute -top-3 -left-10 flex items-center gap-1 rounded-md border border-brand-red/40 bg-brand-red/20 px-2 py-0.5 opacity-60"
+								>
+									<i class="fa-solid fa-location-dot text-xs text-brand-red"></i>
+									<span class="font-mono text-xs text-brand-red">GPS</span>
+									<i class="fa-solid fa-xmark ml-1 text-xs text-brand-red"></i>
+								</div>
+								<div
+									class="absolute -top-3 right-[-3.5rem] flex items-center gap-1 rounded-md border border-brand-orange/40 bg-brand-orange/20 px-2 py-0.5 opacity-60"
+								>
+									<i class="fa-solid fa-mobile-screen text-xs text-brand-orange"></i>
+									<span class="font-mono text-xs text-brand-orange">DEV</span>
+									<i class="fa-solid fa-xmark ml-1 text-xs text-brand-orange"></i>
+								</div>
+								<div
+									class="absolute bottom-4 -left-12 flex items-center gap-1 rounded-md border border-text-muted/30 bg-text-muted/10 px-2 py-0.5 opacity-50"
+								>
+									<i class="fa-solid fa-calendar text-xs text-text-muted"></i>
+									<span class="font-mono text-xs text-text-muted">DATE</span>
+									<i class="fa-solid fa-xmark ml-1 text-xs text-text-muted"></i>
+								</div>
+								<!-- Broom icon -->
+								<div
+									class="absolute -right-4 -bottom-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue shadow-glow-blue"
+								>
+									<i class="fa-solid fa-broom text-sm text-white"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 2: AI Tool Detection -->
+			<section id="feature-ai" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row-reverse">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-orange/20 text-xl text-brand-orange"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-robot"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="robot"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 640 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H304zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H400zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224H64V416H48c-26.5 0-48-21.5-48-48V272c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H576V224h16z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-orange uppercase"
+								contenteditable="false"
+								>Funkce 02</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">
+							AI Tool Detection
+						</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Pokročilá detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ obrázku a
+							zjistěte, zda byl generován umělou inteligencí.
+						</p>
+						<div class="flex flex-col gap-3">
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Detekce Midjourney, DALL·E, Stable Diffusion</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Adobe Firefly a další AI generátory</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Procentuální pravděpodobnost pro každý nástroj</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Lokální analýza bez odesílání dat</span
+								>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<img
+							class="h-full w-full object-contain"
+							src="https://storage.googleapis.com/uxpilot-auth.appspot.com/13e0bf6e0f-aa80ce2947ef80f51f20.png"
+							alt="simple minimal flat illustration of a robot face with a magnifying glass scanning an image, orange accent color, transparent background, clean vector art"
+						/>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 3: C2PA Removal -->
+			<section id="feature-c2pa" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-green/20 text-xl text-brand-green"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-stamp"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="stamp"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M312 201.8c0-17.4 9.2-33.2 19.9-47C344.5 138.5 352 118.1 352 96c0-53-43-96-96-96s-96 43-96 96c0 22.1 7.5 42.5 20.1 58.8c10.7 13.8 19.9 29.6 19.9 47c0 29.9-24.3 54.2-54.2 54.2H112C50.1 256 0 306.1 0 368c0 20.9 13.4 38.7 32 45.3V464c0 26.5 21.5 48 48 48H432c26.5 0 48-21.5 48-48V413.3c18.6-6.6 32-24.4 32-45.3c0-61.9-50.1-112-112-112H366.2c-29.9 0-54.2-24.3-54.2-54.2zM416 416v32H96V416H416z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-green uppercase"
+								contenteditable="false"
+								>Funkce 03</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">C2PA Removal</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Odstraňte digitální podpisy a certifikáty obsahu z vašich souborů. C2PA standard je
+							používán k označení AI-generovaného obsahu.
+						</p>
+						<div class="flex flex-col gap-3">
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Odstranění C2PA digitálních podpisů</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Vymazání Content Credentials certifikátů</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Kompatibilní s Adobe, Microsoft, Google standardy</span
+								>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<div class="relative flex h-48 w-48 items-center justify-center">
+							<!-- Simple certificate with X -->
+							<div class="relative flex flex-col items-center">
+								<!-- Certificate shape -->
+								<div
+									class="relative flex h-24 w-32 flex-col items-center justify-center gap-2 rounded-lg border-2 border-brand-green/30 bg-navy-card"
+								>
+									<!-- Seal -->
+									<div
+										class="absolute -top-4 left-1/2 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full border-2 border-brand-green/50 bg-brand-green/20"
+									>
+										<i class="fa-solid fa-stamp text-sm text-brand-green"></i>
+									</div>
+									<div class="mt-3 flex w-20 flex-col items-center gap-1">
+										<div class="h-1.5 w-full rounded-full bg-brand-green/30"></div>
+										<div class="h-1.5 w-3/4 rounded-full bg-brand-green/20"></div>
+										<div class="h-1.5 w-1/2 rounded-full bg-brand-green/20"></div>
+									</div>
+								</div>
+								<!-- Big X overlay -->
+								<div class="absolute inset-0 flex items-center justify-center">
+									<div
+										class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-brand-red/60 bg-brand-red/10"
+									>
+										<i class="fa-solid fa-xmark text-3xl text-brand-red"></i>
+									</div>
+								</div>
+								<!-- C2PA label -->
+								<div
+									class="mt-4 flex items-center gap-2 rounded-full border border-brand-green/30 bg-navy-card px-3 py-1"
+								>
+									<i class="fa-solid fa-certificate text-xs text-brand-green/50"></i>
+									<span class="text-xs font-bold tracking-widest text-brand-green/70">C2PA</span>
+									<i class="fa-solid fa-ban text-xs text-brand-red"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 4: Risk Scanner -->
+			<section id="feature-risk" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row-reverse">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-red/20 text-xl text-brand-red"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-shield-halved"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="shield-halved"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-red uppercase"
+								contenteditable="false"
+								>Funkce 04</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">Risk Scanner</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Automaticky vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a detailní
+							analýzu potenciálních hrozeb pro vaše soukromí.
+						</p>
+						<div class="flex flex-col gap-3">
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Celkové rizikové skóre 0–100</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Kategorizace rizik (GPS, identita, osobní data)</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Porovnání stavu před a po čištění</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Doporučení pro zvýšení bezpečnosti</span
+								>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<img
+							class="h-full w-full object-contain"
+							src="https://storage.googleapis.com/uxpilot-auth.appspot.com/8ecbe2e659-79866aab835cb0bd68bf.png"
+							alt="simple minimal flat illustration of a shield with a risk score gauge meter, red and green colors, transparent background, clean vector art"
+						/>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 5: Batch Processing -->
+			<section id="feature-batch" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/20 text-xl text-brand-blue"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-layer-group"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="layer-group"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 576 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-blue uppercase"
+								contenteditable="false"
+								>Funkce 05</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">
+							Batch Processing
+						</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Zpracujte stovky souborů najednou. Hromadné čištění metadat, AI detekce a skenování
+							rizik pro celé složky souborů jediným kliknutím.
+						</p>
+						<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-blue" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-images"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="images"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 576 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">JPG, PNG, HEIC</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-red" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-file-pdf"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="file-pdf"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">PDF dokumenty</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-orange" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-file-video"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="file-video"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 384 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM64 288c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V288zM300.9 397.9L256 368V304l44.9-29.9c2-1.3 4.4-2.1 6.8-2.1c6.8 0 12.3 5.5 12.3 12.3V387.7c0 6.8-5.5 12.3-12.3 12.3c-2.4 0-4.8-.7-6.8-2.1z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Video soubory</span>
+							</div>
+							<div
+								class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+							>
+								<i class="text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-folder-open"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="folder-open"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 576 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M88.7 223.8L0 375.8V96C0 60.7 28.7 32 64 32H181.5c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7H416c35.3 0 64 28.7 64 64v32H144c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224H544c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480H32c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"
+										></path></svg></i
+								><span class="text-sm font-medium" contenteditable="false">Celé složky</span>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<img
+							class="h-full w-full object-contain"
+							src="https://storage.googleapis.com/uxpilot-auth.appspot.com/086bb62676-9932975e36639131dcde.png"
+							alt="simple minimal flat illustration of multiple stacked file documents being processed simultaneously with checkmarks, blue color scheme, transparent background, clean vector art"
+						/>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 6: PDF Report -->
+			<section id="feature-pdf" class="w-full">
+				<div class="flex flex-col items-center gap-10 lg:flex-row-reverse">
+					<div class="flex flex-1 flex-col gap-6">
+						<div class="inline-flex w-fit items-center gap-2">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/20 text-xl text-brand-blue"
+							>
+								<i data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-file-pdf"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="file-pdf"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z"
+										></path></svg
+								></i>
+							</div>
+							<span
+								class="text-xs font-bold tracking-widest text-brand-blue uppercase"
+								contenteditable="false"
+								>Funkce 06</span
+							>
+						</div>
+						<h2 class="text-4xl leading-tight font-bold" contenteditable="false">PDF Report</h2>
+						<p class="max-w-2xl leading-relaxed text-text-muted" contenteditable="false">
+							Generujte detailní PDF zprávy o všech činnostech. Získejte kompletní přehled o
+							čištění, detekci AI a analýze rizik pro každý soubor.
+						</p>
+						<div class="flex flex-col gap-3">
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Všechny detekce a čištění</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Analýza rizik a doporučení</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Hromadné zpracování výsledků</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<i class="text-sm text-brand-green" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-check"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="check"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
+										></path></svg></i
+								><span class="text-sm text-text-muted" contenteditable="false"
+									>Závěrečná kontrola a závěry</span
+								>
+							</div>
+						</div>
+					</div>
+					<div class="flex h-64 w-full flex-shrink-0 items-center justify-center lg:w-72">
+						<img
+							class="h-full w-full object-contain"
+							src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c7b53abbf-a7c6cc514cdacd768cbf.png"
+							alt="simple minimal flat illustration of a PDF document report with charts and checkmarks inside, blue and red accent colors, no background, clean vector art style"
+						/>
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer id="footer" class="mt-8 w-full border-t border-gray-800">
+			<div class="mx-auto w-full max-w-[1100px] px-6 py-12">
+				<div class="mb-10 grid grid-cols-1 gap-10 md:grid-cols-4">
+					<div class="flex flex-col gap-4 md:col-span-1">
+						<div class="flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+							>
+								<i class="text-xl" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-shield-halved"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fas"
+										data-icon="shield-halved"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z"
+										></path></svg
+								></i>
+							</div>
+							<span class="text-xl font-bold tracking-tight" contenteditable="false"
+								>MetaCleaner</span
+							>
+						</div>
+						<p class="text-sm leading-relaxed text-text-muted" contenteditable="false">
+							Kompletní ochrana soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.
+						</p>
+						<div class="mt-1 flex items-center gap-3">
+							<a
+								href="#"
+								class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted transition-all hover:border-gray-600 hover:text-white"
+								><i class="text-sm" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-twitter"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fab"
+										data-icon="twitter"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 512 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"
+										></path></svg></i></a
+							><a
+								href="#"
+								class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted transition-all hover:border-gray-600 hover:text-white"
+								><i class="text-sm" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-github"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fab"
+										data-icon="github"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 496 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+										></path></svg></i></a
+							><a
+								href="#"
+								class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted transition-all hover:border-gray-600 hover:text-white"
+								><i class="text-sm" data-fa-i2svg=""
+									><svg
+										class="svg-inline--fa fa-linkedin"
+										aria-hidden="true"
+										focusable="false"
+										data-prefix="fab"
+										data-icon="linkedin"
+										role="img"
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 448 512"
+										data-fa-i2svg=""
+									>
+										<path
+											fill="currentColor"
+											d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"
+										></path></svg></i
+							></a>
+						</div>
+					</div>
+					<div class="flex flex-col gap-4">
+						<span
+							class="text-xs font-bold tracking-widest text-text-muted uppercase"
+							contenteditable="false"
+							>Produkt</span
+						>
+						<div class="flex flex-col gap-3">
+							<a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Jak to funguje</a
+							><a
+								href="#features"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Funkce</a
+							><a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Ceník</a
+							><a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>FAQ</a
+							>
+						</div>
+					</div>
+					<div class="flex flex-col gap-4">
+						<span
+							class="text-xs font-bold tracking-widest text-text-muted uppercase"
+							contenteditable="false"
+							>Funkce</span
+						>
+						<div class="flex flex-col gap-3">
+							<a
+								href="#feature-exif"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>EXIF Removal</a
+							><a
+								href="#feature-ai"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>AI Detection</a
+							><a
+								href="#feature-c2pa"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>C2PA Removal</a
+							><a
+								href="#feature-risk"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Risk Scanner</a
+							><a
+								href="#feature-batch"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Batch Processing</a
+							><a
+								href="#feature-pdf"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>PDF Report</a
+							>
+						</div>
+					</div>
+					<div class="flex flex-col gap-4">
+						<span
+							class="text-xs font-bold tracking-widest text-text-muted uppercase"
+							contenteditable="false"
+							>Právní</span
+						>
+						<div class="flex flex-col gap-3">
+							<a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Ochrana soukromí</a
+							><a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Podmínky použití</a
+							><a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>GDPR</a
+							><a
+								href="#"
+								class="text-sm text-text-muted transition-colors hover:text-white"
+								contenteditable="false"
+								>Kontakt</a
+							>
+						</div>
+					</div>
+				</div>
+				<div
+					class="flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-6 sm:flex-row"
+				>
+					<span class="text-xs text-text-muted" contenteditable="false"
+						>© 2024 MetaCleaner. Všechna práva vyhrazena.</span
+					>
+					<div class="flex items-center gap-2">
+						<span class="text-xs text-text-muted" contenteditable="false">Vyrobeno s</span
+						><i class="text-xs text-brand-red" data-fa-i2svg=""
+							><svg
+								class="svg-inline--fa fa-heart"
+								aria-hidden="true"
+								focusable="false"
+								data-prefix="fas"
+								data-icon="heart"
+								role="img"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 512 512"
+								data-fa-i2svg=""
+							>
+								<path
+									fill="currentColor"
+									d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"
+								></path></svg></i
+						><span class="text-xs text-text-muted" contenteditable="false"
+							>pro ochranu vašeho soukromí</span
+						>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<script>
+			function toggleLangDropdown() {
+				const dropdown = document.getElementById('langDropdownMenu');
+				const chevron = document.getElementById('langDropdownChevron');
+				const currentLangFlag = document.getElementById('currentLangFlag');
+				const currentLangLabel = document.getElementById('currentLangLabel');
 
-  <body class="flex flex-col items-center">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <nav id="navbar"
-      class="w-full max-w-[1100px] mx-auto px-6 py-6 flex justify-between items-center z-50">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="text-xl" data-fa-i2svg=""><svg
-              class="svg-inline--fa fa-shield-halved" aria-hidden="true"
-              focusable="false" data-prefix="fas" data-icon="shield-halved"
-              role="img" xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512" data-fa-i2svg="">
-              <path fill="currentColor"
-                d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z">
-              </path>
-            </svg></i>
-        </div><span class="text-xl font-bold tracking-tight"
-          contenteditable="false">MetaCleaner</span>
-      </div>
-      <div
-        class="hidden md:flex items-center gap-8 text-sm font-medium text-text-muted">
-        <a href="#" class="hover:text-white transition-colors"
-          contenteditable="false">Jak to
-          funguje</a><a href="#features" class="text-white transition-colors"
-          contenteditable="false">Funkce</a><a href="#"
-          class="hover:text-white transition-colors"
-          contenteditable="false">Ceník</a><a href="#"
-          class="hover:text-white transition-colors"
-          contenteditable="false">FAQ</a>
-      </div>
-      <div class="flex items-center gap-3">
-        <div id="langDropdown" class="lang-dropdown"><button
-            onclick="toggleLangDropdown()"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
-              id="currentLangFlag" class=""
-              contenteditable="false">🇨🇿</span><span id="currentLangLabel"
-              class="" contenteditable="false">CS</span><i
-              id="langDropdownChevron" class="text-text-muted text-xs ml-1"
-              data-fa-i2svg=""><svg class="svg-inline--fa fa-chevron-down"
-                aria-hidden="true" focusable="false" data-prefix="fas"
-                data-icon="chevron-down" role="img"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                data-fa-i2svg="">
-                <path fill="currentColor"
-                  d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
-                </path>
-              </svg></i></button>
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div id="opt-cs" onclick="setLang('cs')" class="lang-option active"
-              contenteditable="false">
-              <span contenteditable="false">🇨🇿</span> Čeština
-            </div>
-            <div id="opt-en" onclick="setLang('en')" class="lang-option"
-              contenteditable="false">
-              <span contenteditable="false">🇬🇧</span> English
-            </div>
-            <div id="opt-de" onclick="setLang('de')" class="lang-option"
-              contenteditable="false">
-              <span contenteditable="false">🇩🇪</span> Deutsch
-            </div>
-          </div>
-        </div><button
-          class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
-          contenteditable="false">Přihlásit</button>
-      </div>
-    </nav>
-    <main id="main"
-      class="w-full max-w-[1100px] mx-auto px-6 pb-24 flex flex-col gap-16">
-      <!-- Page Header -->
-      <section id="features-header" class="text-center pt-8"><span
-          class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
-          contenteditable="false">Funkce</span>
-        <h1 class="text-5xl font-bold mb-4 leading-tight"
-          contenteditable="false">Kompletní sada
-          nástrojů<br><span
-            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green"
-            contenteditable="false">pro
-            ochranu soukromí</span></h1>
-        <p class="text-text-muted max-w-2xl mx-auto text-lg leading-relaxed"
-          contenteditable="false">
-          Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata,
-          detekujte AI obsah a získejte plnou kontrolu nad svými soubory.</p>
-      </section><!-- Feature 1: EXIF Metadata Removal -->
-      <section id="feature-exif" class="w-full">
-        <div class="flex flex-col lg:flex-row gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-broom"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="broom" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M566.6 54.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192-34.7-34.7c-4.2-4.2-10-6.6-16-6.6c-12.5 0-22.6 10.1-22.6 22.6v29.1L364.3 320h29.1c12.5 0 22.6-10.1 22.6-22.6c0-6-2.4-11.8-6.6-16l-34.7-34.7 192-192zM341.1 353.4L222.6 234.9c-42.7-3.7-85.2 11.7-115.8 42.3l-8 8C76.5 307.5 64 337.7 64 369.2c0 6.8 7.1 11.2 13.2 8.2l51.1-25.5c5-2.5 9.5 4.1 5.4 7.9L7.3 473.4C2.7 477.6 0 483.6 0 489.9C0 502.1 9.9 512 22.1 512l173.3 0c38.8 0 75.9-15.4 103.4-42.8c30.6-30.6 45.9-73.1 42.3-115.8z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue"
-                contenteditable="false">Funkce 01</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">EXIF Metadata Removal</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Automaticky odstraní všechna skrytá
-              metadata z vašich souborů. Žádná data nezůstanou — vaše soukromí
-              je plně chráněno před sdílením.</p>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-red" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-location-dot" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="location-dot"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 384 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">GPS souřadnice</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-orange" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-mobile-screen" aria-hidden="true"
-                    focusable="false" data-prefix="fas"
-                    data-icon="mobile-screen" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM144 448c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16s-7.2-16-16-16H160c-8.8 0-16 7.2-16 16zM304 64H80V384H304V64z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Info o zařízení</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-blue" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-user" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="user"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Autor souboru</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-green" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-calendar" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="calendar"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Datum a čas</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-text-muted" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-code" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="code"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 640 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Software info</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-blue" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-camera" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="camera"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Nastavení kamery</span></div>
-            </div>
-          </div>
-          <div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <div class="relative w-48 h-48 flex items-center justify-center">
-              <!-- Simple file icon with tags being erased -->
-              <div class="relative">
-                <!-- File shape -->
-                <div class="w-28 h-36 bg-navy-card border-2 border-brand-blue/40 rounded-lg flex flex-col items-center justify-center gap-2 relative">
-                  <div class="absolute -top-1 -right-1 w-7 h-7 bg-navy-main border-2 border-brand-blue/40 rounded-tr-lg rounded-bl-lg flex items-center justify-center">
-                    <i class="fa-solid fa-camera text-brand-blue text-xs"></i>
-                  </div>
-                  <i class="fa-solid fa-image text-brand-blue/60 text-3xl mt-2"></i>
-                  <div class="flex flex-col gap-1 w-16">
-                    <div class="h-1.5 bg-brand-blue/30 rounded-full w-full"></div>
-                    <div class="h-1.5 bg-brand-blue/20 rounded-full w-3/4"></div>
-                  </div>
-                </div>
-                <!-- Floating metadata tags being erased -->
-                <div class="absolute -top-3 -left-10 flex items-center gap-1 bg-brand-red/20 border border-brand-red/40 rounded-md px-2 py-0.5 opacity-60">
-                  <i class="fa-solid fa-location-dot text-brand-red text-xs"></i>
-                  <span class="text-xs text-brand-red font-mono">GPS</span>
-                  <i class="fa-solid fa-xmark text-brand-red text-xs ml-1"></i>
-                </div>
-                <div class="absolute -top-3 right-[-3.5rem] flex items-center gap-1 bg-brand-orange/20 border border-brand-orange/40 rounded-md px-2 py-0.5 opacity-60">
-                  <i class="fa-solid fa-mobile-screen text-brand-orange text-xs"></i>
-                  <span class="text-xs text-brand-orange font-mono">DEV</span>
-                  <i class="fa-solid fa-xmark text-brand-orange text-xs ml-1"></i>
-                </div>
-                <div class="absolute bottom-4 -left-12 flex items-center gap-1 bg-text-muted/10 border border-text-muted/30 rounded-md px-2 py-0.5 opacity-50">
-                  <i class="fa-solid fa-calendar text-text-muted text-xs"></i>
-                  <span class="text-xs text-text-muted font-mono">DATE</span>
-                  <i class="fa-solid fa-xmark text-text-muted text-xs ml-1"></i>
-                </div>
-                <!-- Broom icon -->
-                <div class="absolute -bottom-4 -right-4 w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center shadow-glow-blue">
-                  <i class="fa-solid fa-broom text-white text-sm"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 2: AI Tool Detection -->
-      <section id="feature-ai" class="w-full">
-        <div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-robot"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="robot" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H304zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H400zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224H64V416H48c-26.5 0-48-21.5-48-48V272c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H576V224h16z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-orange"
-                contenteditable="false">Funkce 02</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">AI Tool Detection</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Pokročilá detekce obsahu vytvořeného
-              pomocí AI nástrojů. Identifikujte původ obrázku a zjistěte, zda
-              byl generován umělou inteligencí.</p>
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Detekce Midjourney, DALL·E, Stable
-                  Diffusion</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Adobe Firefly a další AI
-                  generátory</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Procentuální pravděpodobnost pro každý
-                  nástroj</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Lokální analýza bez odesílání
-                  dat</span></div>
-            </div>
-          </div>
-          <div
-            class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <img class="w-full h-full object-contain"
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/13e0bf6e0f-aa80ce2947ef80f51f20.png"
-              alt="simple minimal flat illustration of a robot face with a magnifying glass scanning an image, orange accent color, transparent background, clean vector art">
-          </div>
-        </div>
-      </section><!-- Feature 3: C2PA Removal -->
-      <section id="feature-c2pa" class="w-full">
-        <div class="flex flex-col lg:flex-row gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-stamp"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="stamp" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M312 201.8c0-17.4 9.2-33.2 19.9-47C344.5 138.5 352 118.1 352 96c0-53-43-96-96-96s-96 43-96 96c0 22.1 7.5 42.5 20.1 58.8c10.7 13.8 19.9 29.6 19.9 47c0 29.9-24.3 54.2-54.2 54.2H112C50.1 256 0 306.1 0 368c0 20.9 13.4 38.7 32 45.3V464c0 26.5 21.5 48 48 48H432c26.5 0 48-21.5 48-48V413.3c18.6-6.6 32-24.4 32-45.3c0-61.9-50.1-112-112-112H366.2c-29.9 0-54.2-24.3-54.2-54.2zM416 416v32H96V416H416z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-green"
-                contenteditable="false">Funkce 03</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">C2PA Removal</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Odstraňte digitální podpisy a certifikáty
-              obsahu z vašich souborů. C2PA standard je používán k označení
-              AI-generovaného obsahu.</p>
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Odstranění C2PA digitálních
-                  podpisů</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Vymazání Content Credentials
-                  certifikátů</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Kompatibilní s Adobe, Microsoft,
-                  Google standardy</span></div>
-            </div>
-          </div>
-          <div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <div class="relative w-48 h-48 flex items-center justify-center">
-              <!-- Simple certificate with X -->
-              <div class="relative flex flex-col items-center">
-                <!-- Certificate shape -->
-                <div class="w-32 h-24 bg-navy-card border-2 border-brand-green/30 rounded-lg flex flex-col items-center justify-center gap-2 relative">
-                  <!-- Seal -->
-                  <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-brand-green/20 border-2 border-brand-green/50 flex items-center justify-center">
-                    <i class="fa-solid fa-stamp text-brand-green text-sm"></i>
-                  </div>
-                  <div class="mt-3 flex flex-col gap-1 w-20 items-center">
-                    <div class="h-1.5 bg-brand-green/30 rounded-full w-full"></div>
-                    <div class="h-1.5 bg-brand-green/20 rounded-full w-3/4"></div>
-                    <div class="h-1.5 bg-brand-green/20 rounded-full w-1/2"></div>
-                  </div>
-                </div>
-                <!-- Big X overlay -->
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="w-16 h-16 rounded-full bg-brand-red/10 border-2 border-brand-red/60 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-brand-red text-3xl"></i>
-                  </div>
-                </div>
-                <!-- C2PA label -->
-                <div class="mt-4 px-3 py-1 rounded-full bg-navy-card border border-brand-green/30 flex items-center gap-2">
-                  <i class="fa-solid fa-certificate text-brand-green/50 text-xs"></i>
-                  <span class="text-xs font-bold tracking-widest text-brand-green/70">C2PA</span>
-                  <i class="fa-solid fa-ban text-brand-red text-xs"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 4: Risk Scanner -->
-      <section id="feature-risk" class="w-full">
-        <div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-red/20 flex items-center justify-center text-brand-red text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-shield-halved"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="shield-halved" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-red"
-                contenteditable="false">Funkce 04</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">Risk Scanner</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Automaticky vyhodnotí míru rizika každého
-              souboru. Získejte přehledné skóre a detailní analýzu potenciálních
-              hrozeb pro vaše soukromí.</p>
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Celkové rizikové skóre 0–100</span>
-              </div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Kategorizace rizik (GPS, identita,
-                  osobní data)</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Porovnání stavu před a po
-                  čištění</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Doporučení pro zvýšení
-                  bezpečnosti</span></div>
-            </div>
-          </div>
-          <div
-            class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <img class="w-full h-full object-contain"
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/8ecbe2e659-79866aab835cb0bd68bf.png"
-              alt="simple minimal flat illustration of a shield with a risk score gauge meter, red and green colors, transparent background, clean vector art">
-          </div>
-        </div>
-      </section><!-- Feature 5: Batch Processing -->
-      <section id="feature-batch" class="w-full">
-        <div class="flex flex-col lg:flex-row gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-layer-group"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="layer-group" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue"
-                contenteditable="false">Funkce 05</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">Batch Processing</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Zpracujte stovky souborů najednou.
-              Hromadné čištění metadat, AI detekce a skenování rizik pro celé
-              složky souborů jediným kliknutím.</p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-blue" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-images" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="images"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">JPG, PNG, HEIC</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-red" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-file-pdf" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="file-pdf"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">PDF dokumenty</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-orange" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-file-video" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="file-video"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 384 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM64 288c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V288zM300.9 397.9L256 368V304l44.9-29.9c2-1.3 4.4-2.1 6.8-2.1c6.8 0 12.3 5.5 12.3 12.3V387.7c0 6.8-5.5 12.3-12.3 12.3c-2.4 0-4.8-.7-6.8-2.1z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Video soubory</span></div>
-              <div
-                class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800">
-                <i class="text-brand-green" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-folder-open" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="folder-open"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 576 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M88.7 223.8L0 375.8V96C0 60.7 28.7 32 64 32H181.5c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7H416c35.3 0 64 28.7 64 64v32H144c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224H544c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480H32c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z">
-                    </path>
-                  </svg></i><span class="text-sm font-medium"
-                  contenteditable="false">Celé složky</span></div>
-            </div>
-          </div>
-          <div
-            class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <img class="w-full h-full object-contain"
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/086bb62676-9932975e36639131dcde.png"
-              alt="simple minimal flat illustration of multiple stacked file documents being processed simultaneously with checkmarks, blue color scheme, transparent background, clean vector art">
-          </div>
-        </div>
-      </section><!-- Feature 6: PDF Report -->
-      <section id="feature-pdf" class="w-full">
-        <div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-          <div class="flex flex-col gap-6 flex-1">
-            <div class="inline-flex items-center gap-2 w-fit">
-              <div
-                class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl">
-                <i data-fa-i2svg=""><svg class="svg-inline--fa fa-file-pdf"
-                    aria-hidden="true" focusable="false" data-prefix="fas"
-                    data-icon="file-pdf" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z">
-                    </path>
-                  </svg></i></div>
-              <span
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue"
-                contenteditable="false">Funkce 06</span>
-            </div>
-            <h2 class="text-4xl font-bold leading-tight"
-              contenteditable="false">PDF Report</h2>
-            <p class="text-text-muted leading-relaxed max-w-2xl"
-              contenteditable="false">Generujte detailní PDF zprávy o všech
-              činnostech. Získejte kompletní přehled o čištění, detekci AI a
-              analýze rizik pro každý soubor.</p>
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Všechny detekce a čištění</span></div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Analýza rizik a doporučení</span>
-              </div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Hromadné zpracování výsledků</span>
-              </div>
-              <div class="flex items-center gap-3"><i
-                  class="text-brand-green text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-check" aria-hidden="true"
-                    focusable="false" data-prefix="fas" data-icon="check"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z">
-                    </path>
-                  </svg></i><span class="text-sm text-text-muted"
-                  contenteditable="false">Závěrečná kontrola a závěry</span>
-              </div>
-            </div>
-          </div>
-          <div
-            class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-            <img class="w-full h-full object-contain"
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c7b53abbf-a7c6cc514cdacd768cbf.png"
-              alt="simple minimal flat illustration of a PDF document report with charts and checkmarks inside, blue and red accent colors, no background, clean vector art style">
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer id="footer" class="w-full border-t border-gray-800 mt-8">
-      <div class="w-full max-w-[1100px] mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-          <div class="flex flex-col gap-4 md:col-span-1">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-                <i class="text-xl" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-shield-halved" aria-hidden="true"
-                    focusable="false" data-prefix="fas"
-                    data-icon="shield-halved" role="img"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                    data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0zm0 66.8V444.8C394 378 431.1 230.1 432 141.4L256 66.8l0 0z">
-                    </path>
-                  </svg></i>
-              </div><span class="text-xl font-bold tracking-tight"
-                contenteditable="false">MetaCleaner</span>
-            </div>
-            <p class="text-text-muted text-sm leading-relaxed"
-              contenteditable="false">Kompletní ochrana
-              soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.</p>
-            <div class="flex items-center gap-3 mt-1"><a href="#"
-                class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"><i
-                  class="text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-twitter" aria-hidden="true"
-                    focusable="false" data-prefix="fab" data-icon="twitter"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z">
-                    </path>
-                  </svg></i></a><a href="#"
-                class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"><i
-                  class="text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-github" aria-hidden="true"
-                    focusable="false" data-prefix="fab" data-icon="github"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 496 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z">
-                    </path>
-                  </svg></i></a><a href="#"
-                class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted hover:text-white hover:border-gray-600 transition-all"><i
-                  class="text-sm" data-fa-i2svg=""><svg
-                    class="svg-inline--fa fa-linkedin" aria-hidden="true"
-                    focusable="false" data-prefix="fab" data-icon="linkedin"
-                    role="img" xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor"
-                      d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z">
-                    </path>
-                  </svg></i></a></div>
-          </div>
-          <div class="flex flex-col gap-4"><span
-              class="text-xs font-bold uppercase tracking-widest text-text-muted"
-              contenteditable="false">Produkt</span>
-            <div class="flex flex-col gap-3"><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Jak
-                to funguje</a><a href="#features"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Funkce</a><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Ceník</a><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">FAQ</a>
-            </div>
-          </div>
-          <div class="flex flex-col gap-4"><span
-              class="text-xs font-bold uppercase tracking-widest text-text-muted"
-              contenteditable="false">Funkce</span>
-            <div class="flex flex-col gap-3"><a href="#feature-exif"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">EXIF
-                Removal</a><a href="#feature-ai"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">AI
-                Detection</a><a href="#feature-c2pa"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">C2PA
-                Removal</a><a href="#feature-risk"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Risk
-                Scanner</a><a href="#feature-batch"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Batch
-                Processing</a><a href="#feature-pdf"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">PDF
-                Report</a></div>
-          </div>
-          <div class="flex flex-col gap-4"><span
-              class="text-xs font-bold uppercase tracking-widest text-text-muted"
-              contenteditable="false">Právní</span>
-            <div class="flex flex-col gap-3"><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Ochrana
-                soukromí</a><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Podmínky
-                použití</a><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">GDPR</a><a href="#"
-                class="text-sm text-text-muted hover:text-white transition-colors"
-                contenteditable="false">Kontakt</a>
-            </div>
-          </div>
-        </div>
-        <div
-          class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span class="text-xs text-text-muted" contenteditable="false">© 2024
-            MetaCleaner. Všechna
-            práva vyhrazena.</span>
-          <div class="flex items-center gap-2"><span
-              class="text-xs text-text-muted" contenteditable="false">Vyrobeno
-              s</span><i class="text-brand-red text-xs" data-fa-i2svg=""><svg
-                class="svg-inline--fa fa-heart" aria-hidden="true"
-                focusable="false" data-prefix="fas" data-icon="heart" role="img"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                data-fa-i2svg="">
-                <path fill="currentColor"
-                  d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z">
-                </path>
-              </svg></i><span class="text-xs text-text-muted"
-              contenteditable="false">pro ochranu vašeho soukromí</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script>
-      function toggleLangDropdown()
-      {
-        const dropdown = document.getElementById('langDropdownMenu');
-        const chevron = document.getElementById('langDropdownChevron');
-        const currentLangFlag = document.getElementById('currentLangFlag');
-        const currentLangLabel = document.getElementById('currentLangLabel');
+				dropdown.classList.toggle('open');
+				chevron.classList.toggle('rotate-180');
 
-        dropdown.classList.toggle('open');
-        chevron.classList.toggle('rotate-180');
+				if (dropdown.classList.contains('open')) {
+					currentLangFlag.textContent = '🇬🇧';
+					currentLangLabel.textContent = 'EN';
+				} else {
+					currentLangFlag.textContent = '🇨🇿';
+					currentLangLabel.textContent = 'CS';
+				}
+			}
 
-        if (dropdown.classList.contains('open'))
-        {
-          currentLangFlag.textContent = '🇬🇧';
-          currentLangLabel.textContent = 'EN';
-        }
-        else
-        {
-          currentLangFlag.textContent = '🇨🇿';
-          currentLangLabel.textContent = 'CS';
-        }
-      }
+			function setLang(lang) {
+				// Implement language switching logic
+				console.log(`Switching to language: ${lang}`);
+				toggleLangDropdown();
+			}
+		</script>
 
-      function setLang(lang)
-      {
-        // Implement language switching logic
-        console.log(`Switching to language: ${lang}`);
-        toggleLangDropdown();
-      }
-    </script>
+		<script>
+			(function () {
+				// Block <a href="…"> navigation unconditionally.
+				// ONLY e.preventDefault() — onclick handlers on anchors still fire so all
+				// JavaScript UI bindings (tabs, dropdowns, modals) work as expected.
+				document.addEventListener(
+					'click',
+					function (e) {
+						var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+						if (!a) return;
+						e.preventDefault();
+					},
+					true
+				);
 
-    <script>
-      (function()
-      {
-        // Block <a href="…"> navigation unconditionally.
-        // ONLY e.preventDefault() — onclick handlers on anchors still fire so all
-        // JavaScript UI bindings (tabs, dropdowns, modals) work as expected.
-        document.addEventListener('click', function(e)
-        {
-          var a = e.target && e.target.closest ? e.target.closest(
-            'a[href]') : null;
-          if (!a) return;
-          e.preventDefault();
-        }, true);
+				// Block window.open
+				try {
+					window.open = function () {
+						return null;
+					};
+				} catch (_) {}
 
-        // Block window.open
-        try
-        {
-          window.open = function()
-          {
-            return null;
-          };
-        }
-        catch (_)
-        {}
+				// Block history navigation APIs
+				try {
+					history.pushState = function () {};
+					history.replaceState = function () {};
+				} catch (_) {}
 
-        // Block history navigation APIs
-        try
-        {
-          history.pushState = function() {};
-          history.replaceState = function() {};
-        }
-        catch (_)
-        {}
+				// Block location.assign and location.replace
+				try {
+					if (window.location) {
+						window.location.assign = function () {};
+						window.location.replace = function () {};
+					}
+				} catch (_) {}
 
-        // Block location.assign and location.replace
-        try
-        {
-          if (window.location)
-          {
-            window.location.assign = function() {};
-            window.location.replace = function() {};
-          }
-        }
-        catch (_)
-        {}
-
-        // Block window.location.href = '…' and location.href = '…' direct assignments.
-        // Override the href setter on Location.prototype (iframe-local, does not affect parent).
-        try
-        {
-          var _locProto = Location.prototype;
-          var _hrefDesc = Object.getOwnPropertyDescriptor(_locProto, 'href');
-          if (_hrefDesc && typeof _hrefDesc.set === 'function')
-          {
-            Object.defineProperty(_locProto, 'href',
-            {
-              get: _hrefDesc.get,
-              set: function()
-              {
-                /* navigation blocked — onclick already ran */ },
-              configurable: true,
-              enumerable: true,
-            });
-          }
-        }
-        catch (_)
-        {}
-      })();
-    </script>
-
-
-  </body>
-
+				// Block window.location.href = '…' and location.href = '…' direct assignments.
+				// Override the href setter on Location.prototype (iframe-local, does not affect parent).
+				try {
+					var _locProto = Location.prototype;
+					var _hrefDesc = Object.getOwnPropertyDescriptor(_locProto, 'href');
+					if (_hrefDesc && typeof _hrefDesc.set === 'function') {
+						Object.defineProperty(_locProto, 'href', {
+							get: _hrefDesc.get,
+							set: function () {
+								/* navigation blocked — onclick already ran */
+							},
+							configurable: true,
+							enumerable: true
+						});
+					}
+				} catch (_) {}
+			})();
+		</script>
+	</body>
 </html>

@@ -447,7 +447,7 @@ export function detectAIInMetadata(raw: Record<string, unknown>, fileName: strin
  * Analyze structural properties to detect AI-generated images.
  * Checks for missing camera indicators, thumbnail absence, and ICC profile absence.
  */
-export function detectAIByStructure(raw: Record<string, unknown>, fileName: string): AISignal[] {
+export function detectAIByStructure(raw: Record<string, unknown>, _fileName: string): AISignal[] {
 	const signals: AISignal[] = [];
 
 	const hasMake = !!raw['Make'];

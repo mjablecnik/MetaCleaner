@@ -50,7 +50,7 @@
 		</div>
 	</div>
 	<div class="flex flex-col {fieldsGap}">
-		{#each fields as field}
+		{#each fields as field, i (i)}
 			<MetadataFieldRow {field} {variant} {size} />
 		{/each}
 	</div>

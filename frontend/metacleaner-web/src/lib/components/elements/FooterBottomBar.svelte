@@ -14,10 +14,20 @@
 		showBorder?: boolean;
 	}
 
-	const { copyright, links = [], madeWith = false, pt = 'pt-8', showBorder = true }: Props = $props();
+	const {
+		copyright,
+		links = [],
+		madeWith = false,
+		pt = 'pt-8',
+		showBorder = true
+	}: Props = $props();
 </script>
 
-<div class="{showBorder ? 'border-t border-border' : ''} {pt} flex flex-col sm:flex-row items-center justify-between gap-4">
+<div
+	class="{showBorder
+		? 'border-t border-border'
+		: ''} {pt} flex flex-col sm:flex-row items-center justify-between gap-4"
+>
 	<p class="text-xs text-text-muted">{copyright}</p>
 	{#if madeWith}
 		<div class="flex items-center gap-2">
@@ -27,7 +37,8 @@
 		</div>
 	{:else if links.length > 0}
 		<div class="flex items-center gap-6">
-			{#each links as link}
+			{#each links as link, i (i)}
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href={link.href} class="text-xs text-text-muted hover:text-white transition-colors"
 					>{link.label}</a
 				>

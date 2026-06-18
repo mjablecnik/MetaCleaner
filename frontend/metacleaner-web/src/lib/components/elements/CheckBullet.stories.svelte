@@ -26,12 +26,21 @@
 </script>
 
 <!-- Color variants -->
-<Story name="Green (default)" args={{ color: 'green', text: 'Remove hidden GPS and camera metadata' }} />
+<Story
+	name="Green (default)"
+	args={{ color: 'green', text: 'Remove hidden GPS and camera metadata' }}
+/>
 <Story name="Blue" args={{ color: 'blue', text: 'Clean metadata from unlimited files' }} />
 
 <!-- Emphasis -->
-<Story name="Emphasized" args={{ color: 'green', emphasis: true, text: 'Everything in Free, plus:' }} />
-<Story name="Blue Emphasized" args={{ color: 'blue', emphasis: true, text: 'Everything in Free, plus:' }} />
+<Story
+	name="Emphasized"
+	args={{ color: 'green', emphasis: true, text: 'Everything in Free, plus:' }}
+/>
+<Story
+	name="Blue Emphasized"
+	args={{ color: 'blue', emphasis: true, text: 'Everything in Free, plus:' }}
+/>
 
 <!-- Size variants -->
 <Story name="Small (sm)" args={{ size: 'sm', text: 'Supports all major image formats' }} />

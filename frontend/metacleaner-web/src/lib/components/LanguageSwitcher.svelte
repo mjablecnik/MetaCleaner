@@ -45,10 +45,14 @@
 		>
 			<span>{localeMap[currentLocale]?.flag ?? '🌐'}</span>
 			<span>{localeMap[currentLocale]?.label ?? currentLocale.toUpperCase()}</span>
-			<i class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 {dropdownOpen ? 'rotate-180' : ''}"></i>
+			<i
+				class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 {dropdownOpen
+					? 'rotate-180'
+					: ''}"
+			></i>
 		</button>
 		<div class="lang-dropdown-menu {dropdownOpen ? 'open' : ''}">
-			{#each locales as locale}
+			{#each locales as locale (locale)}
 				<div
 					onclick={() => chooseLocale(locale)}
 					class="lang-option {currentLocale === locale ? 'active' : ''}"
@@ -77,7 +81,9 @@
 			>
 				<div class="flex items-center gap-3">
 					<span class="text-xl">{localeMap[currentLocale]?.flag ?? '🌐'}</span>
-					<span class="text-sm font-semibold">{localeMap[currentLocale]?.name ?? currentLocale}</span>
+					<span class="text-sm font-semibold"
+						>{localeMap[currentLocale]?.name ?? currentLocale}</span
+					>
 				</div>
 				<i
 					class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-200 {dropdownOpen
@@ -90,7 +96,7 @@
 					? ''
 					: 'hidden'} absolute left-0 right-0 mt-2 bg-navy-card border border-gray-700 rounded-xl overflow-hidden z-50 shadow-2xl"
 			>
-				{#each locales as locale, i}
+				{#each locales as locale, i (locale)}
 					<button
 						onclick={() => chooseLocale(locale)}
 						class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-navy-lighter hover:text-white transition-all {i >

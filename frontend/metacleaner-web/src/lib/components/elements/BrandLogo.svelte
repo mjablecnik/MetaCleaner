@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
+
 	interface Props {
 		size?: 'sm' | 'md' | 'lg';
-		href?: string;
+		href?: Pathname;
 	}
 
 	const { size = 'md', href = '/' }: Props = $props();
@@ -15,7 +18,7 @@
 	const s = $derived(sizeMap[size]);
 </script>
 
-<a {href} class="flex items-center {s.gap}">
+<a href={resolve(href)} class="flex items-center {s.gap}">
 	<div
 		class="{s.container} rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue"
 	>

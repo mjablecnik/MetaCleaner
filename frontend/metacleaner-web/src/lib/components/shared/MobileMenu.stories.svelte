@@ -17,7 +17,19 @@
 	});
 </script>
 
-<Story name="Drawer Open" args={{ variant: 'drawer', active: 'home', open: true, onClose: () => {} }} />
-<Story name="Dropdown Open — Features" args={{ variant: 'dropdown', active: 'features', open: true, onClose: () => {} }} />
-<Story name="Dropdown Open — Pricing" args={{ variant: 'dropdown', active: 'pricing', open: true, onClose: () => {} }} />
-<Story name="Dropdown Closed" args={{ variant: 'dropdown', active: 'features', open: false, onClose: () => {} }} />
+<Story
+	name="Drawer Open"
+	args={{ variant: 'drawer', active: 'home', open: true, onClose: () => {} }}
+/>
+<Story
+	name="Dropdown Open — Features"
+	args={{ variant: 'dropdown', active: 'features', open: true, onClose: () => {} }}
+/>
+<Story
+	name="Dropdown Open — Pricing"
+	args={{ variant: 'dropdown', active: 'pricing', open: true, onClose: () => {} }}
+/>
+<Story
+	name="Dropdown Closed"
+	args={{ variant: 'dropdown', active: 'features', open: false, onClose: () => {} }}
+/>

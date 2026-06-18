@@ -40,7 +40,7 @@
 	<div class="flex justify-between items-center {headerMb} z-10">
 		<h3 class="font-semibold {titleSize}">{m.home_upload_title()}</h3>
 		<div class="flex {badgeGap}">
-			{#each formats as label}
+			{#each formats as label (label)}
 				<FormatBadge {label} size={badgeSize} />
 			{/each}
 		</div>

@@ -18,11 +18,17 @@
 			: 'bg-navy-card rounded-2xl border border-border p-6 flex flex-col items-center text-center gap-3'
 	);
 	const badgeSize = $derived(isMobile ? 'sm' : 'lg') as 'sm' | 'lg';
-	const valueClass = $derived(isMobile ? 'text-xl font-black text-white' : 'text-3xl font-black text-white');
-	const labelClass = $derived(isMobile ? 'text-[10px] text-text-muted leading-tight' : 'text-sm text-text-muted');
+	const valueClass = $derived(
+		isMobile ? 'text-xl font-black text-white' : 'text-3xl font-black text-white'
+	);
+	const labelClass = $derived(
+		isMobile ? 'text-[10px] text-text-muted leading-tight' : 'text-sm text-text-muted'
+	);
 
 	const displayValue = $derived(isMobile ? (stat.valueMobile ?? stat.value) : stat.value);
-	const displayLabel = $derived(t(isMobile ? (stat.labelMobileKey ?? stat.labelKey) : stat.labelKey));
+	const displayLabel = $derived(
+		t(isMobile ? (stat.labelMobileKey ?? stat.labelKey) : stat.labelKey)
+	);
 </script>
 
 <div class={cardClass}>

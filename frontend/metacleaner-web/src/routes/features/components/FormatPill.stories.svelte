@@ -20,13 +20,58 @@
 </script>
 
 <!-- Color variants (desktop) -->
-<Story name="Red — desktop" args={{ format: { icon: 'fa-location-dot', color: 'brand-red', label: 'GPS Coordinates' }, size: 'desktop' }} />
-<Story name="Orange — desktop" args={{ format: { icon: 'fa-mobile-screen', color: 'brand-orange', label: 'Device Info' }, size: 'desktop' }} />
-<Story name="Blue — desktop" args={{ format: { icon: 'fa-camera', color: 'brand-blue', label: 'Camera Model' }, size: 'desktop' }} />
-<Story name="Green — desktop" args={{ format: { icon: 'fa-calendar', color: 'brand-green', label: 'Date & Time' }, size: 'desktop' }} />
-<Story name="Muted — desktop" args={{ format: { icon: 'fa-code', color: 'text-muted', label: 'Software' }, size: 'desktop' }} />
+<Story
+	name="Red — desktop"
+	args={{
+		format: { icon: 'fa-location-dot', color: 'brand-red', label: 'GPS Coordinates' },
+		size: 'desktop'
+	}}
+/>
+<Story
+	name="Orange — desktop"
+	args={{
+		format: { icon: 'fa-mobile-screen', color: 'brand-orange', label: 'Device Info' },
+		size: 'desktop'
+	}}
+/>
+<Story
+	name="Blue — desktop"
+	args={{
+		format: { icon: 'fa-camera', color: 'brand-blue', label: 'Camera Model' },
+		size: 'desktop'
+	}}
+/>
+<Story
+	name="Green — desktop"
+	args={{
+		format: { icon: 'fa-calendar', color: 'brand-green', label: 'Date & Time' },
+		size: 'desktop'
+	}}
+/>
+<Story
+	name="Muted — desktop"
+	args={{ format: { icon: 'fa-code', color: 'text-muted', label: 'Software' }, size: 'desktop' }}
+/>
 
 <!-- Mobile variants -->
-<Story name="Red — mobile" args={{ format: { icon: 'fa-location-dot', color: 'brand-red', label: 'GPS Coordinates' }, size: 'mobile' }} />
-<Story name="Orange — mobile" args={{ format: { icon: 'fa-file-pdf', color: 'brand-red', label: 'PDF Documents' }, size: 'mobile' }} />
-<Story name="Green — mobile" args={{ format: { icon: 'fa-folder-open', color: 'brand-green', label: 'Bulk Folders' }, size: 'mobile' }} />
+<Story
+	name="Red — mobile"
+	args={{
+		format: { icon: 'fa-location-dot', color: 'brand-red', label: 'GPS Coordinates' },
+		size: 'mobile'
+	}}
+/>
+<Story
+	name="Orange — mobile"
+	args={{
+		format: { icon: 'fa-file-pdf', color: 'brand-red', label: 'PDF Documents' },
+		size: 'mobile'
+	}}
+/>
+<Story
+	name="Green — mobile"
+	args={{
+		format: { icon: 'fa-folder-open', color: 'brand-green', label: 'Bulk Folders' },
+		size: 'mobile'
+	}}
+/>

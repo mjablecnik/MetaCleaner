@@ -18,10 +18,7 @@
 
 <div class="bg-navy-card rounded-2xl border border-border overflow-hidden">
 	{#if isMobile}
-		<button
-			onclick={toggle}
-			class="w-full flex items-center justify-between p-4 text-left"
-		>
+		<button onclick={toggle} class="w-full flex items-center justify-between p-4 text-left">
 			<span class="text-sm font-semibold text-white">{question}</span>
 			<i
 				class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"

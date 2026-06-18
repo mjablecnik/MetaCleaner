@@ -28,7 +28,8 @@
 
 	const variantClasses: Record<string, string> = {
 		primary: 'bg-brand-green text-white shadow-glow-green hover:bg-green-500 transition-all',
-		secondary: 'bg-navy-lighter border border-border-strong text-white hover:bg-border transition-all',
+		secondary:
+			'bg-navy-lighter border border-border-strong text-white hover:bg-border transition-all',
 		blue: 'bg-brand-blue text-white hover:bg-blue-600 transition-colors',
 		outline: 'border border-border-strong text-white hover:bg-navy-lighter transition-colors'
 	};
@@ -48,6 +49,7 @@
 </script>
 
 {#if href && !disabled}
+	<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 	<a {href} class={classes}>
 		{#if icon}<i class={icon}></i>{/if}
 		{label}

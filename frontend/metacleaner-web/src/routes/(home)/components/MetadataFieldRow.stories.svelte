@@ -2,8 +2,16 @@
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import MetadataFieldRow from './MetadataFieldRow.svelte';
 
-	const gpsField = { icon: 'fa-location-dot', labelKey: 'meta_field_gps', value: '50.0755°N, 14.4378°E' };
-	const gpsFieldMobile = { icon: 'fa-location-dot', labelKey: 'meta_field_gps_short', value: '50.07°N, 14.43°E' };
+	const gpsField = {
+		icon: 'fa-location-dot',
+		labelKey: 'meta_field_gps',
+		value: '50.0755°N, 14.4378°E'
+	};
+	const gpsFieldMobile = {
+		icon: 'fa-location-dot',
+		labelKey: 'meta_field_gps_short',
+		value: '50.07°N, 14.43°E'
+	};
 
 	const { Story } = defineMeta({
 		title: 'Home/MetadataFieldRow',

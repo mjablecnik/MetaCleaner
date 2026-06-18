@@ -1,506 +1,580 @@
 <html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Features</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							card: '0 4px 6px -1px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.lang-dropdown {
+				position: relative;
+				display: inline-block;
+			}
 
-      .lang-dropdown
-      {
-        position: relative;
-        display: inline-block;
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 150px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 150px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background 0.15s, color 0.15s;
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			.accordion-content {
+				display: none;
+			}
 
-      .accordion-content
-      {
-        display: none;
-      }
+			.accordion-content.open {
+				display: block;
+			}
 
-      .accordion-content.open
-      {
-        display: block;
-      }
+			.accordion-chevron {
+				transition: transform 0.2s;
+			}
 
-      .accordion-chevron
-      {
-        transition: transform 0.2s;
-      }
+			.accordion-chevron.open {
+				transform: rotate(180deg);
+			}
 
-      .accordion-chevron.open
-      {
-        transform: rotate(180deg);
-      }
+			.mobile-menu {
+				display: none;
+			}
 
-      .mobile-menu
-      {
-        display: none;
-      }
+			.mobile-menu.open {
+				display: flex;
+			}
+		</style>
+	</head>
 
-      .mobile-menu.open
-      {
-        display: flex;
-      }
-    </style>
-  </head>
-
-  <body class="flex flex-col items-center w-full">
-    <!-- Navbar -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <nav id="navbar"
-      class="w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800/50">
-      <div class="flex items-center gap-2">
-        <div
-          class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="fa-solid fa-shield-halved text-base"></i></div><span
-          class="text-lg font-bold tracking-tight">MetaCleaner</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div id="langDropdown" class="lang-dropdown">
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div id="opt-cs" onclick="setLang('cs')" class="lang-option active">
-              <span>🇨🇿</span> Čeština</div>
-            <div id="opt-en" onclick="setLang('en')" class="lang-option">
-              <span>🇬🇧</span> English</div>
-            <div id="opt-de" onclick="setLang('de')" class="lang-option">
-              <span>🇩🇪</span> Deutsch</div>
-          </div>
-        </div><button onclick="toggleMobileMenu()"
-          class="w-9 h-9 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center text-white"><i
-            id="hamburgerIcon" class="fa-solid fa-bars text-sm"></i></button>
-      </div>
-    </nav><!-- Mobile Menu Drawer -->
-    <div id="mobileMenu"
-      class="mobile-menu w-full flex-col bg-navy-card border-b border-gray-800 px-4 py-4 gap-3 z-40">
-      <a href="#"
-        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Jak
-        to funguje <i class="fa-solid fa-chevron-right text-xs"></i></a><a
-        href="#"
-        class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between">Funkce
-        <i class="fa-solid fa-chevron-right text-xs"></i></a><a href="#"
-        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Ceník
-        <i class="fa-solid fa-chevron-right text-xs"></i></a><a href="#"
-        class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">FAQ
-        <i class="fa-solid fa-chevron-right text-xs"></i></a><button
-        class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold">Přihlásit</button>
-    </div><!-- Main -->
-    <main id="main" class="w-full px-4 pb-16 flex flex-col gap-2">
-      <!-- Page Header -->
-      <section id="features-header" class="text-center pt-8 pb-6 px-2"><span
-          class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block">Funkce</span>
-        <h1 class="text-3xl font-bold mb-3 leading-tight">Kompletní sada
-          nástrojů<br><span
-            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-green">pro
-            ochranu soukromí</span></h1>
-        <p class="text-text-muted text-sm leading-relaxed">Šest výkonných
-          nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a
-          získejte plnou kontrolu nad svými soubory.</p>
-      </section><!-- Feature 1: EXIF -->
-      <section id="feature-exif" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0">
-              <i class="fa-solid fa-broom"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-                Funkce 01</div>
-              <div class="text-base font-bold">EXIF Metadata Removal</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Automaticky
-              odstraní všechna skrytá metadata z vašich souborů. Žádná data
-              nezůstanou — vaše soukromí je plně chráněno před sdílením.</p>
-            <div class="grid grid-cols-2 gap-2">
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i
-                  class="fa-solid fa-location-dot text-brand-red text-sm"></i><span
-                  class="text-xs font-medium">GPS souřadnice</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i
-                  class="fa-solid fa-mobile-screen text-brand-orange text-sm"></i><span
-                  class="text-xs font-medium">Info o zařízení</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i class="fa-solid fa-user text-brand-blue text-sm"></i><span
-                  class="text-xs font-medium">Autor souboru</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i
-                  class="fa-solid fa-calendar text-brand-green text-sm"></i><span
-                  class="text-xs font-medium">Datum a čas</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i class="fa-solid fa-code text-text-muted text-sm"></i><span
-                  class="text-xs font-medium">Software info</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i class="fa-solid fa-camera text-brand-blue text-sm"></i><span
-                  class="text-xs font-medium">Nastavení kamery</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 2: AI Detection -->
-      <section id="feature-ai" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-base flex-shrink-0">
-              <i class="fa-solid fa-robot"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-orange mb-0.5">
-                Funkce 02</div>
-              <div class="text-base font-bold">AI Tool Detection</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Pokročilá
-              detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ
-              obrázku a zjistěte, zda byl generován umělou inteligencí.</p>
-            <div class="flex flex-col gap-2.5">
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Detekce Midjourney, DALL·E,
-                  Stable Diffusion</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Adobe Firefly a další AI
-                  generátory</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Procentuální pravděpodobnost
-                  pro každý nástroj</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Lokální analýza bez odesílání
-                  dat</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 3: C2PA -->
-      <section id="feature-c2pa" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-base flex-shrink-0">
-              <i class="fa-solid fa-stamp"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-green mb-0.5">
-                Funkce 03</div>
-              <div class="text-base font-bold">C2PA Removal</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Odstraňte
-              digitální podpisy a certifikáty obsahu z vašich souborů. C2PA
-              standard je používán k označení AI-generovaného obsahu.</p>
-            <div class="flex flex-col gap-2.5">
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Odstranění C2PA digitálních
-                  podpisů</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Vymazání Content Credentials
-                  certifikátů</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Kompatibilní s Adobe,
-                  Microsoft, Google standardy</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 4: Risk Scanner -->
-      <section id="feature-risk" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-red/20 flex items-center justify-center text-brand-red text-base flex-shrink-0">
-              <i class="fa-solid fa-shield-halved"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-red mb-0.5">
-                Funkce 04</div>
-              <div class="text-base font-bold">Risk Scanner</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Automaticky
-              vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a
-              detailní analýzu potenciálních hrozeb pro vaše soukromí.</p>
-            <div class="flex flex-col gap-2.5">
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Celkové rizikové skóre
-                  0–100</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Kategorizace rizik (GPS,
-                  identita, osobní data)</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Porovnání stavu před a po
-                  čištění</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Doporučení pro zvýšení
-                  bezpečnosti</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 5: Batch Processing -->
-      <section id="feature-batch" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0">
-              <i class="fa-solid fa-layer-group"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-                Funkce 05</div>
-              <div class="text-base font-bold">Batch Processing</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Zpracujte
-              stovky souborů najednou. Hromadné čištění metadat, AI detekce a
-              skenování rizik pro celé složky souborů jediným kliknutím.</p>
-            <div class="grid grid-cols-2 gap-2">
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i class="fa-solid fa-images text-brand-blue text-sm"></i><span
-                  class="text-xs font-medium">JPG, PNG, HEIC</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i class="fa-solid fa-file-pdf text-brand-red text-sm"></i><span
-                  class="text-xs font-medium">PDF dokumenty</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i
-                  class="fa-solid fa-file-video text-brand-orange text-sm"></i><span
-                  class="text-xs font-medium">Video soubory</span></div>
-              <div
-                class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800">
-                <i
-                  class="fa-solid fa-folder-open text-brand-green text-sm"></i><span
-                  class="text-xs font-medium">Celé složky</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- Feature 6: PDF Report -->
-      <section id="feature-pdf" class="w-full mb-3">
-        <div
-          class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-          <div class="w-full flex items-center gap-3 px-4 py-4 text-left">
-            <div
-              class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0">
-              <i class="fa-solid fa-file-pdf"></i></div>
-            <div class="flex-1 min-w-0">
-              <div
-                class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-                Funkce 06</div>
-              <div class="text-base font-bold">PDF Report</div>
-            </div>
-          </div>
-          <div class="px-4 pb-5">
-            <p class="text-text-muted text-sm leading-relaxed mb-4">Generujte
-              detailní PDF zprávy o všech činnostech. Získejte kompletní přehled
-              o čištění, detekci AI a analýze rizik pro každý soubor.</p>
-            <div class="flex flex-col gap-2.5">
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Všechny detekce a
-                  čištění</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Analýza rizik a
-                  doporučení</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Hromadné zpracování
-                  výsledků</span></div>
-              <div class="flex items-start gap-2.5"><i
-                  class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i><span
-                  class="text-sm text-text-muted">Závěrečná kontrola a
-                  závěry</span></div>
-            </div>
-          </div>
-        </div>
-      </section><!-- CTA -->
-      <section id="cta-section" class="w-full mt-4 mb-6">
-        <div
-          class="bg-gradient-to-br from-brand-blue/20 to-brand-green/10 rounded-2xl border border-brand-blue/30 p-6 text-center">
-          <h2 class="text-xl font-bold mb-2">Začněte zdarma</h2>
-          <p class="text-text-muted text-sm mb-5">Vyzkoušejte všechny funkce bez
-            registrace.</p><button
-            class="w-full py-3.5 rounded-xl bg-brand-green text-white font-semibold text-sm shadow-glow-green">Vyzkoušet
-            zdarma</button>
-        </div>
-      </section>
-    </main><!-- Footer -->
-    <footer id="footer" class="w-full border-t border-gray-800">
-      <div class="px-4 py-8">
-        <div class="flex items-center gap-3 mb-4">
-          <div
-            class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-            <i class="fa-solid fa-shield-halved text-base"></i></div><span
-            class="text-lg font-bold tracking-tight">MetaCleaner</span>
-        </div>
-        <p class="text-text-muted text-sm leading-relaxed mb-4">Kompletní
-          ochrana soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.
-        </p>
-        <div class="flex items-center gap-2 mb-6"><a href="#"
-            class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"><i
-              class="fa-brands fa-twitter text-sm"></i></a><a href="#"
-            class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"><i
-              class="fa-brands fa-github text-sm"></i></a><a href="#"
-            class="w-9 h-9 rounded-lg bg-navy-card border border-gray-800 flex items-center justify-center text-text-muted"><i
-              class="fa-brands fa-linkedin text-sm"></i></a></div>
-      </div>
-    </footer>
-  </body>
-
+	<body class="flex w-full flex-col items-center">
+		<!-- Navbar -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Features</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Features</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<nav
+			id="navbar"
+			class="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-800/50 bg-navy-main px-4 py-4"
+		>
+			<div class="flex items-center gap-2">
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-base"></i>
+				</div>
+				<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div id="langDropdown" class="lang-dropdown">
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div id="opt-cs" onclick="setLang('cs')" class="lang-option active">
+							<span>🇨🇿</span> Čeština
+						</div>
+						<div id="opt-en" onclick="setLang('en')" class="lang-option">
+							<span>🇬🇧</span> English
+						</div>
+						<div id="opt-de" onclick="setLang('de')" class="lang-option">
+							<span>🇩🇪</span> Deutsch
+						</div>
+					</div>
+				</div>
+				<button
+					onclick="toggleMobileMenu()"
+					class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
+				>
+					<i id="hamburgerIcon" class="fa-solid fa-bars text-sm"></i>
+				</button>
+			</div>
+		</nav>
+		<!-- Mobile Menu Drawer -->
+		<div
+			id="mobileMenu"
+			class="mobile-menu z-40 w-full flex-col gap-3 border-b border-gray-800 bg-navy-card px-4 py-4"
+		>
+			<a
+				href="#"
+				class="flex items-center justify-between border-b border-gray-800 py-3 text-sm font-medium text-text-muted"
+				>Jak to funguje <i class="fa-solid fa-chevron-right text-xs"></i></a
+			><a
+				href="#"
+				class="flex items-center justify-between border-b border-gray-800 py-3 text-sm font-medium text-white"
+				>Funkce <i class="fa-solid fa-chevron-right text-xs"></i></a
+			><a
+				href="#"
+				class="flex items-center justify-between border-b border-gray-800 py-3 text-sm font-medium text-text-muted"
+				>Ceník <i class="fa-solid fa-chevron-right text-xs"></i></a
+			><a
+				href="#"
+				class="flex items-center justify-between border-b border-gray-800 py-3 text-sm font-medium text-text-muted"
+				>FAQ <i class="fa-solid fa-chevron-right text-xs"></i></a
+			><button class="mt-2 w-full rounded-xl bg-brand-blue py-3 text-sm font-semibold text-white">
+				Přihlásit
+			</button>
+		</div>
+		<!-- Main -->
+		<main id="main" class="flex w-full flex-col gap-2 px-4 pb-16">
+			<!-- Page Header -->
+			<section id="features-header" class="px-2 pt-8 pb-6 text-center">
+				<span class="mb-3 block text-xs font-bold tracking-widest text-brand-blue uppercase"
+					>Funkce</span
+				>
+				<h1 class="mb-3 text-3xl leading-tight font-bold">
+					Kompletní sada nástrojů<br /><span
+						class="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent"
+						>pro ochranu soukromí</span
+					>
+				</h1>
+				<p class="text-sm leading-relaxed text-text-muted">
+					Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a
+					získejte plnou kontrolu nad svými soubory.
+				</p>
+			</section>
+			<!-- Feature 1: EXIF -->
+			<section id="feature-exif" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-blue/20 text-base text-brand-blue"
+						>
+							<i class="fa-solid fa-broom"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-blue uppercase">
+								Funkce 01
+							</div>
+							<div class="text-base font-bold">EXIF Metadata Removal</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Automaticky odstraní všechna skrytá metadata z vašich souborů. Žádná data nezůstanou —
+							vaše soukromí je plně chráněno před sdílením.
+						</p>
+						<div class="grid grid-cols-2 gap-2">
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-location-dot text-sm text-brand-red"></i
+								><span class="text-xs font-medium">GPS souřadnice</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-mobile-screen text-sm text-brand-orange"></i
+								><span class="text-xs font-medium">Info o zařízení</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-user text-sm text-brand-blue"></i
+								><span class="text-xs font-medium">Autor souboru</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-calendar text-sm text-brand-green"></i
+								><span class="text-xs font-medium">Datum a čas</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-code text-sm text-text-muted"></i
+								><span class="text-xs font-medium">Software info</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-camera text-sm text-brand-blue"></i
+								><span class="text-xs font-medium">Nastavení kamery</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 2: AI Detection -->
+			<section id="feature-ai" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-orange/20 text-base text-brand-orange"
+						>
+							<i class="fa-solid fa-robot"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-orange uppercase">
+								Funkce 02
+							</div>
+							<div class="text-base font-bold">AI Tool Detection</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Pokročilá detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ obrázku a
+							zjistěte, zda byl generován umělou inteligencí.
+						</p>
+						<div class="flex flex-col gap-2.5">
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted"
+									>Detekce Midjourney, DALL·E, Stable Diffusion</span
+								>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Adobe Firefly a další AI generátory</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted"
+									>Procentuální pravděpodobnost pro každý nástroj</span
+								>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Lokální analýza bez odesílání dat</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 3: C2PA -->
+			<section id="feature-c2pa" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-green/20 text-base text-brand-green"
+						>
+							<i class="fa-solid fa-stamp"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-green uppercase">
+								Funkce 03
+							</div>
+							<div class="text-base font-bold">C2PA Removal</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Odstraňte digitální podpisy a certifikáty obsahu z vašich souborů. C2PA standard je
+							používán k označení AI-generovaného obsahu.
+						</p>
+						<div class="flex flex-col gap-2.5">
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Odstranění C2PA digitálních podpisů</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted"
+									>Vymazání Content Credentials certifikátů</span
+								>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted"
+									>Kompatibilní s Adobe, Microsoft, Google standardy</span
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 4: Risk Scanner -->
+			<section id="feature-risk" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-red/20 text-base text-brand-red"
+						>
+							<i class="fa-solid fa-shield-halved"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-red uppercase">
+								Funkce 04
+							</div>
+							<div class="text-base font-bold">Risk Scanner</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Automaticky vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a detailní
+							analýzu potenciálních hrozeb pro vaše soukromí.
+						</p>
+						<div class="flex flex-col gap-2.5">
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Celkové rizikové skóre 0–100</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted"
+									>Kategorizace rizik (GPS, identita, osobní data)</span
+								>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Porovnání stavu před a po čištění</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Doporučení pro zvýšení bezpečnosti</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 5: Batch Processing -->
+			<section id="feature-batch" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-blue/20 text-base text-brand-blue"
+						>
+							<i class="fa-solid fa-layer-group"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-blue uppercase">
+								Funkce 05
+							</div>
+							<div class="text-base font-bold">Batch Processing</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Zpracujte stovky souborů najednou. Hromadné čištění metadat, AI detekce a skenování
+							rizik pro celé složky souborů jediným kliknutím.
+						</p>
+						<div class="grid grid-cols-2 gap-2">
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-images text-sm text-brand-blue"></i
+								><span class="text-xs font-medium">JPG, PNG, HEIC</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-file-pdf text-sm text-brand-red"></i
+								><span class="text-xs font-medium">PDF dokumenty</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-file-video text-sm text-brand-orange"></i
+								><span class="text-xs font-medium">Video soubory</span>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-xl border border-gray-800 bg-navy-lighter px-3 py-2.5"
+							>
+								<i class="fa-solid fa-folder-open text-sm text-brand-green"></i
+								><span class="text-xs font-medium">Celé složky</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- Feature 6: PDF Report -->
+			<section id="feature-pdf" class="mb-3 w-full">
+				<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card">
+					<div class="flex w-full items-center gap-3 px-4 py-4 text-left">
+						<div
+							class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-brand-blue/20 text-base text-brand-blue"
+						>
+							<i class="fa-solid fa-file-pdf"></i>
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="mb-0.5 text-xs font-bold tracking-widest text-brand-blue uppercase">
+								Funkce 06
+							</div>
+							<div class="text-base font-bold">PDF Report</div>
+						</div>
+					</div>
+					<div class="px-4 pb-5">
+						<p class="mb-4 text-sm leading-relaxed text-text-muted">
+							Generujte detailní PDF zprávy o všech činnostech. Získejte kompletní přehled o
+							čištění, detekci AI a analýze rizik pro každý soubor.
+						</p>
+						<div class="flex flex-col gap-2.5">
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Všechny detekce a čištění</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Analýza rizik a doporučení</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Hromadné zpracování výsledků</span>
+							</div>
+							<div class="flex items-start gap-2.5">
+								<i class="fa-solid fa-check mt-0.5 text-xs text-brand-green"></i
+								><span class="text-sm text-text-muted">Závěrečná kontrola a závěry</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- CTA -->
+			<section id="cta-section" class="mt-4 mb-6 w-full">
+				<div
+					class="rounded-2xl border border-brand-blue/30 bg-gradient-to-br from-brand-blue/20 to-brand-green/10 p-6 text-center"
+				>
+					<h2 class="mb-2 text-xl font-bold">Začněte zdarma</h2>
+					<p class="mb-5 text-sm text-text-muted">Vyzkoušejte všechny funkce bez registrace.</p>
+					<button
+						class="w-full rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-glow-green"
+					>
+						Vyzkoušet zdarma
+					</button>
+				</div>
+			</section>
+		</main>
+		<!-- Footer -->
+		<footer id="footer" class="w-full border-t border-gray-800">
+			<div class="px-4 py-8">
+				<div class="mb-4 flex items-center gap-3">
+					<div
+						class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+					>
+						<i class="fa-solid fa-shield-halved text-base"></i>
+					</div>
+					<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+				</div>
+				<p class="mb-4 text-sm leading-relaxed text-text-muted">
+					Kompletní ochrana soukromí pro vaše soubory. Bez odesílání dat, bez kompromisů.
+				</p>
+				<div class="mb-6 flex items-center gap-2">
+					<a
+						href="#"
+						class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted"
+						><i class="fa-brands fa-twitter text-sm"></i></a
+					><a
+						href="#"
+						class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted"
+						><i class="fa-brands fa-github text-sm"></i></a
+					><a
+						href="#"
+						class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-800 bg-navy-card text-text-muted"
+						><i class="fa-brands fa-linkedin text-sm"></i
+					></a>
+				</div>
+			</div>
+		</footer>
+	</body>
 </html>

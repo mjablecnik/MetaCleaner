@@ -20,8 +20,11 @@
 <div class="flex flex-col gap-4">
 	<span class={headingClass}>{heading}</span>
 	<div class="flex flex-col gap-3">
-		{#each links as link}
-			<a href={link.href} class="text-sm text-text-muted hover:text-white transition-colors">{link.label}</a>
+		{#each links as link, i (i)}
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+			<a href={link.href} class="text-sm text-text-muted hover:text-white transition-colors"
+				>{link.label}</a
+			>
 		{/each}
 	</div>
 </div>

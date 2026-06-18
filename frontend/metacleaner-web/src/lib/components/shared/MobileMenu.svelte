@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import * as m from '$lib/paraglide/messages';
 	import BrandLogo from '$lib/components/elements/BrandLogo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
@@ -126,14 +128,14 @@
 			: ''} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
 	>
 		<a
-			href="/#how-it-works"
+			href="{resolve('/' as Pathname)}#how-it-works"
 			onclick={onClose}
 			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_how_it_works()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href="/features"
+			href={resolve('/features' as Pathname)}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'features'
 				? 'text-white'
@@ -142,7 +144,7 @@
 			{m.nav_features()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href="/pricing"
+			href={resolve('/pricing' as Pathname)}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'pricing'
 				? 'text-white'
@@ -151,7 +153,7 @@
 			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href="/#faq"
+			href="{resolve('/' as Pathname)}#faq"
 			onclick={onClose}
 			class="text-sm font-medium {active === 'faq'
 				? 'text-white'

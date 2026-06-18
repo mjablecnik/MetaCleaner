@@ -30,7 +30,8 @@
 		</div>
 		<div class="flex-1 min-w-0">
 			<div class="text-xs font-bold uppercase tracking-widest {labelColor} mb-0.5">
-				{m.feature_label()} {featureNumber}
+				{m.feature_label()}
+				{featureNumber}
 			</div>
 			<div class="text-base font-bold">{feature.titleText}</div>
 		</div>
@@ -40,13 +41,13 @@
 
 		{#if feature.formats}
 			<div class="grid grid-cols-2 gap-2">
-				{#each feature.formats as fmt}
+				{#each feature.formats as fmt (fmt)}
 					<FormatPill format={fmt} size="mobile" />
 				{/each}
 			</div>
 		{:else if feature.bullets}
 			<ul class="flex flex-col gap-2.5">
-				{#each feature.bullets as bullet}
+				{#each feature.bullets as bullet (bullet)}
 					<CheckBullet text={t(bullet)} size="xs" />
 				{/each}
 			</ul>

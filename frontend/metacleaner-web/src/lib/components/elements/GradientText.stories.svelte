@@ -10,19 +10,13 @@
 </script>
 
 <Story name="Heading">
-	{#snippet children()}
-		<span class="text-5xl font-black">Remove Hidden Metadata</span>
-	{/snippet}
+	<span class="text-5xl font-black">Remove Hidden Metadata</span>
 </Story>
 
 <Story name="Inline Text">
-	{#snippet children()}
-		<span class="text-2xl font-bold">Privacy-First</span>
-	{/snippet}
+	<span class="text-2xl font-bold">Privacy-First</span>
 </Story>
 
 <Story name="Large Heading">
-	{#snippet children()}
-		<span class="text-6xl font-black">Protect Your Privacy</span>
-	{/snippet}
+	<span class="text-6xl font-black">Protect Your Privacy</span>
 </Story>

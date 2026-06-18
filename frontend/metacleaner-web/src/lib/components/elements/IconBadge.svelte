@@ -42,7 +42,7 @@
 			? (tintedColorMap[color] ?? tintedColorMap['brand-blue'])
 			: (solidColorMap[color] ?? solidColorMap['brand-blue'])
 	);
-	const shadow = $derived(tint ? '' : ((solidColorMap[color] ?? solidColorMap['brand-blue']).shadow));
+	const shadow = $derived(tint ? '' : (solidColorMap[color] ?? solidColorMap['brand-blue']).shadow);
 </script>
 
 <div class="{s.container} {r} {c.bg} flex items-center justify-center {c.text} {s.icon} {shadow}">

@@ -37,10 +37,7 @@
 />
 
 <!-- Eyebrow color variants -->
-<Story
-	name="Blue Eyebrow"
-	args={{ size: 'lg', eyebrow: 'Features', eyebrowColor: 'brand-blue' }}
-/>
+<Story name="Blue Eyebrow" args={{ size: 'lg', eyebrow: 'Features', eyebrowColor: 'brand-blue' }} />
 <Story
 	name="Orange Eyebrow"
 	args={{ size: 'lg', eyebrow: 'How It Works', eyebrowColor: 'brand-orange' }}

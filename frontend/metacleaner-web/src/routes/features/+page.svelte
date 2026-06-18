@@ -26,7 +26,12 @@
 <div class="flex flex-col items-center w-full">
 	<SiteNavbar active="features" />
 	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
-	<MobileMenu variant="dropdown" active="features" open={mobileMenuOpen} onClose={closeMobileMenu} />
+	<MobileMenu
+		variant="dropdown"
+		active="features"
+		open={mobileMenuOpen}
+		onClose={closeMobileMenu}
+	/>
 	<FeaturesHeaderSection />
 	<FeaturesShowcaseSection />
 	<FeaturesCtaSection />

@@ -56,7 +56,7 @@
 		{#if audience.bulletKeys}
 			<!-- Bullets use text-xs (smaller than CheckBullet's text-sm) to match the original page markup -->
 			<ul class="flex flex-col gap-1.5 mt-auto">
-				{#each audience.bulletKeys as bulletKey}
+				{#each audience.bulletKeys as bulletKey (bulletKey)}
 					<li class="flex items-center gap-2 text-xs text-text-muted">
 						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{t(bulletKey)}
 					</li>

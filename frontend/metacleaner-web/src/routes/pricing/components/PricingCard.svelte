@@ -66,7 +66,7 @@
 		<p class="text-xs text-text-muted mb-4">{t(plan.subtitleKey)}</p>
 
 		<ul class="flex flex-col gap-2.5 mb-4">
-			{#each plan.featureKeys as key, i}
+			{#each plan.featureKeys as key, i (key)}
 				<li class="flex items-start gap-2.5">
 					<i class="fa-solid fa-check text-brand-blue mt-0.5 text-xs"></i>
 					<span class="text-sm {i === 0 ? 'font-medium' : 'text-text-muted'}">{t(key)}</span>
@@ -119,7 +119,9 @@
 		<h3 class="text-xl font-bold text-center mb-6">{plan.nameText ?? t(plan.nameKey!)}</h3>
 
 		<div
-			class="text-center {plan.originalYearly ? 'mb-1' : 'mb-2'} flex justify-center items-end gap-1"
+			class="text-center {plan.originalYearly
+				? 'mb-1'
+				: 'mb-2'} flex justify-center items-end gap-1"
 		>
 			<span class="text-5xl font-black">{price}</span>
 			{#if plan.id === 'pack' && plan.perKey}
@@ -139,7 +141,7 @@
 		<p class="text-sm text-text-muted text-center mb-8">{t(plan.subtitleKey)}</p>
 
 		<ul class="flex flex-col gap-4 mb-8 flex-1">
-			{#each plan.featureKeys as key, i}
+			{#each plan.featureKeys as key, i (key)}
 				<li class="flex items-start gap-3">
 					<i class="fa-solid fa-check text-brand-blue mt-1 text-sm"></i>
 					<span class="text-sm {i === 0 ? 'font-medium' : 'font-medium text-text-muted'}"

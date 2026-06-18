@@ -34,13 +34,13 @@
 </script>
 
 <!-- Desktop / Before -->
-<Story name="Desktop / Before" args={{ variant: 'before', fields: desktopFields, size: 'desktop' }} />
+<Story
+	name="Desktop / Before"
+	args={{ variant: 'before', fields: desktopFields, size: 'desktop' }}
+/>
 
 <!-- Desktop / After -->
-<Story
-	name="Desktop / After"
-	args={{ variant: 'after', fields: desktopFields, size: 'desktop' }}
-/>
+<Story name="Desktop / After" args={{ variant: 'after', fields: desktopFields, size: 'desktop' }} />
 
 <!-- Mobile / Before -->
 <Story name="Mobile / Before" args={{ variant: 'before', fields: mobileFields, size: 'mobile' }} />

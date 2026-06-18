@@ -17,7 +17,7 @@
 		subtitle={m.home_audience_subtitle()}
 	/>
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-		{#each audienceFull as audience}
+		{#each audienceFull as audience, i (i)}
 			<AudienceCard {audience} />
 		{/each}
 	</div>
@@ -33,7 +33,7 @@
 		size="sm"
 	/>
 	<div class="flex flex-col gap-3">
-		{#each audienceCompact as audience}
+		{#each audienceCompact as audience, i (i)}
 			<AudienceCard {audience} compact />
 		{/each}
 	</div>

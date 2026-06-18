@@ -9,4 +9,10 @@
 	});
 </script>
 
-<Story name="Default" args={{ tagline: 'Remove hidden metadata from your photos in seconds — free, private, no account needed.' }} />
+<Story
+	name="Default"
+	args={{
+		tagline:
+			'Remove hidden metadata from your photos in seconds — free, private, no account needed.'
+	}}
+/>

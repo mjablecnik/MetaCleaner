@@ -25,7 +25,7 @@
 		<MetadataComparisonCard variant="after" fields={desktopCleanedFields} />
 	</div>
 	<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-		{#each stats as stat}
+		{#each stats as stat, i (i)}
 			<RiskStatCard {stat} />
 		{/each}
 	</div>
@@ -45,7 +45,7 @@
 		<MetadataComparisonCard variant="after" fields={mobileCleanedFields} size="mobile" />
 	</div>
 	<div class="grid grid-cols-3 gap-2">
-		{#each stats as stat}
+		{#each stats as stat, i (i)}
 			<RiskStatCard {stat} size="mobile" />
 		{/each}
 	</div>

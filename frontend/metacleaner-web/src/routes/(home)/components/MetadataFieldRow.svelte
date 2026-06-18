@@ -25,7 +25,9 @@
 	const iconColor = $derived(isAfter ? 'text-brand-green' : 'text-brand-red');
 </script>
 
-<div class="flex items-center justify-between {rowPadding} rounded-lg bg-navy-main/60 border border-border">
+<div
+	class="flex items-center justify-between {rowPadding} rounded-lg bg-navy-main/60 border border-border"
+>
 	<span class="text-xs text-text-muted flex items-center {labelGap}">
 		<i class="fa-solid {field.icon} {iconColor} {iconSize}"></i>
 		{t(field.labelKey)}

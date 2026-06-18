@@ -4,7 +4,10 @@
 </script>
 
 <!-- Desktop Features Header -->
-<section id="features-header" class="hidden md:block w-full max-w-site mx-auto px-6 text-center pt-8">
+<section
+	id="features-header"
+	class="hidden md:block w-full max-w-site mx-auto px-6 text-center pt-8"
+>
 	<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
 		>{m.features_eyebrow()}</span
 	>

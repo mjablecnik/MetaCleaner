@@ -41,7 +41,8 @@
 			<div class="inline-flex items-center gap-2 w-fit">
 				<IconBadge icon={feature.icon} color={feature.color} size="lg" />
 				<span class="text-xs font-bold uppercase tracking-widest {labelColor}">
-					{m.feature_label()} {featureNumber}
+					{m.feature_label()}
+					{featureNumber}
 				</span>
 			</div>
 			<h2 class="text-4xl font-bold leading-tight">{feature.titleText}</h2>
@@ -49,13 +50,13 @@
 
 			{#if feature.formats}
 				<div class={formatsGridClass}>
-					{#each feature.formats as fmt}
+					{#each feature.formats as fmt (fmt)}
 						<FormatPill format={fmt} size="desktop" />
 					{/each}
 				</div>
 			{:else if feature.bullets}
 				<ul class="flex flex-col gap-3">
-					{#each feature.bullets as bullet}
+					{#each feature.bullets as bullet (bullet)}
 						<CheckBullet text={t(bullet)} />
 					{/each}
 				</ul>

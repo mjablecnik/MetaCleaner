@@ -17,11 +17,9 @@
 
 <!-- Desktop: fixed-height wrapper replicates the hero column context -->
 <Story name="Desktop">
-	{#snippet children()}
-		<div class="w-full h-[400px]">
-			<UploadCard size="desktop" />
-		</div>
-	{/snippet}
+	<div class="w-full h-[400px]">
+		<UploadCard size="desktop" />
+	</div>
 </Story>
 
 <!-- Mobile: sized by content -->
