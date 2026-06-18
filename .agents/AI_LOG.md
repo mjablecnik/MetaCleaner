@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-18 07:36 — manual
+- Project: frontend (metacleaner-web)
+- Completed the full i18n + repository refactor of the marketing site (DATA_SPEC.md / TASKS.md, all 28 tasks done), converting ~300 hardcoded (mostly Czech) strings across the Home, Features, and Pricing pages into Paraglide JS messages with `en` as base locale
+- Set the Paraglide runtime locale strategy to `["localStorage", "cookie", "preferredLanguage", "baseLocale"]` and added an `src/lib/i18n.ts` `t(key)` resolver mirroring the app's `tx()` pattern
+- Seeded `messages/en.json` and `messages/cs.json` with the namespaced key set (`nav_*`, `cta_*`, `footer_*`, `home_*`, `features_*`, `pricing_*`, `meta_*`) and verified complete en/cs key parity
+- Created `src/lib/repositories/` data layer — `featuresRepository`, `pricingRepository` (+ `getEnterprise()`/billing helpers), `audienceRepository`, `faqRepository`, `stepsRepository`, `statsRepository`, `metadataDemoRepository`, and an `index.ts` re-exporting all — sourcing structured content (feature cards, plans, audience cards, FAQ, steps, risk stats, EXIF demo) once for both desktop and mobile layouts
+- Replaced the duplicated hardcoded markup in all three pages with `#each repository(...)` loops resolving copy via `t(key)`
+- Created `src/lib/components/LanguageSwitcher.svelte` driven by Paraglide `getLocale`/`setLocale`/`locales` (en/cs), mounted in every page's desktop navbar and mobile drawer, and removed the per-page `langConfig`/`setLang`/`localStorage('lang')` code
+- Verified clean `vite build`, no remaining hardcoded user-facing copy (only brand/product/format/`−20%` literals), and language choice persisting across reload
+
 ## 2026-06-18 — data-refactor
 - Project: frontend (metacleaner-web)
 - Task: i18n + repository refactor verification (task 28)
