@@ -2,6 +2,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
 	import { featuresRepository } from '$lib/repositories';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 
 	let mobileMenuOpen = $state(false);
 
@@ -77,7 +78,7 @@
 			<a href="/#faq" class="hover:text-white transition-colors">{m.nav_faq()}</a>
 		</div>
 		<div class="flex items-center gap-3">
-			<!-- LanguageSwitcher will be mounted here in Task 27 -->
+			<LanguageSwitcher variant="desktop" />
 			<a
 				href="#"
 				class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
@@ -141,6 +142,9 @@
 		>
 			{m.nav_faq()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
+		<div class="border-t border-gray-800 my-1"></div>
+		<LanguageSwitcher variant="mobile" />
+		<div class="border-t border-gray-800 my-1"></div>
 		<a
 			href="#"
 			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"

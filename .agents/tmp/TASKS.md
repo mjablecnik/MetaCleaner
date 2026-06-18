@@ -37,7 +37,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 
 ## Phase 5 — Language switching
 - [x] 26. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` driven by Paraglide `getLocale`/`setLocale`/`locales`, with flag+label map, preserving the existing desktop dropdown + mobile drawer markup (en/cs only).
-- [ ] 27. [MEDIUM] Mount `LanguageSwitcher` in all three pages' desktop navbar and mobile drawer; remove the per-page `langConfig`/`setLang`/`toggleLangDropdown`/`localStorage('lang')` code.
+- [x] 27. [MEDIUM] Mount `LanguageSwitcher` in all three pages' desktop navbar and mobile drawer; remove the per-page `langConfig`/`setLang`/`toggleLangDropdown`/`localStorage('lang')` code.
 
 ## Final
 - [ ] 28. [LOW] Verify: en/cs key parity is complete, no hardcoded user-facing text remains (only brand/product/format/`−20%` literals), repositories back both layouts, language switch persists across reload, and both breakpoints are visually unchanged. Run `bun run build` / lint and update `.agents/AI_LOG.md`.

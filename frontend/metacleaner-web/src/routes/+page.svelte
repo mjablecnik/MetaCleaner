@@ -2,6 +2,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
 	import { getAudience, getFaq, stepsRepository, statsRepository, getMetadataFields, getCleanedFields } from '$lib/repositories';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 
 	const audienceFull = getAudience('full');
 	const audienceCompact = getAudience('compact');
@@ -150,7 +151,7 @@
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
 		<div class="border-t border-gray-800 my-3"></div>
-		<!-- LanguageSwitcher will be mounted here in Task 27 -->
+		<LanguageSwitcher variant="mobile" />
 		<div class="border-t border-gray-800 my-3"></div>
 	</div>
 	<!-- Auth Buttons -->
@@ -195,7 +196,7 @@
 			<a href="#faq" class="hover:text-white transition-colors">{m.nav_faq()}</a>
 		</div>
 		<div class="flex items-center gap-3">
-			<!-- LanguageSwitcher will be mounted here in Task 27 -->
+			<LanguageSwitcher variant="desktop" />
 			<a
 				href="#"
 				class="px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
