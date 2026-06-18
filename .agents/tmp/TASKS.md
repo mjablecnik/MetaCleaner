@@ -8,7 +8,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 3. [HIGH] Add a `t(key)` resolver helper (e.g. `src/lib/i18n.ts`) that maps a repository key string to `m[key]()`, mirroring the app's `tx()` pattern, and verify `import * as m from '$lib/paraglide/messages'` compiles.
 
 ## Phase 2 — Create repository/data layer
-- [ ] 4. [HIGH] Create `src/lib/repositories/features.ts` — `featuresRepository` returning the 6 features (id, number, icon, color, layout, literal title, `descKey`, bullet/format keys, image `{src, altKey}`).
+- [x] 4. [HIGH] Create `src/lib/repositories/features.ts` — `featuresRepository` returning the 6 features (id, number, icon, color, layout, literal title, `descKey`, bullet/format keys, image `{src, altKey}`).
 - [ ] 5. [HIGH] Create `src/lib/repositories/pricing.ts` — `pricingRepository` returning the 4 plans (name key/literal, monthly/yearly prices, original price, save key, subtitle key, feature keys, CTA key, flags) + `getEnterprise()` + billing price helpers.
 - [ ] 6. [HIGH] Create `src/lib/repositories/audience.ts` — `audienceRepository` with `getAudience('full'|'compact')` (6 desktop / 4 mobile cards: icon, color, `titleKey`, `descKey`, bullet keys).
 - [ ] 7. [HIGH] Create `src/lib/repositories/faq.ts` — `faqRepository` with `getFaq('desktop'|'mobile')` returning `{ id, questionKey, answerKey }` for each layout's question set.
