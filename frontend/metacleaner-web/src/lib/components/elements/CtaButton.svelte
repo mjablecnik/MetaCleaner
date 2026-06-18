@@ -1,6 +1,7 @@
 <script lang="ts">
 	interface Props {
 		variant?: 'primary' | 'secondary' | 'blue' | 'outline';
+		size?: 'md' | 'sm';
 		icon?: string;
 		label: string;
 		href?: string;
@@ -11,6 +12,7 @@
 
 	const {
 		variant = 'primary',
+		size = 'md',
 		icon,
 		label,
 		href,
@@ -18,6 +20,11 @@
 		fullWidth = false,
 		onclick
 	}: Props = $props();
+
+	const sizeClasses: Record<string, string> = {
+		md: 'px-8 py-3.5 rounded-lg',
+		sm: 'py-4 rounded-xl text-sm'
+	};
 
 	const variantClasses: Record<string, string> = {
 		primary: 'bg-brand-green text-white shadow-glow-green hover:bg-green-500 transition-all',
@@ -28,7 +35,8 @@
 
 	const classes = $derived(
 		[
-			'px-8 py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2',
+			sizeClasses[size],
+			'font-semibold flex items-center justify-center gap-2',
 			fullWidth ? 'w-full' : '',
 			disabled
 				? 'border border-border-strong text-text-muted cursor-not-allowed'

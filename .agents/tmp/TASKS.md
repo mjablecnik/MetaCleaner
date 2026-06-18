@@ -70,7 +70,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 50. [MEDIUM] Create `FaqAccordionItem.stories.svelte` — collapsed + expanded.
 
 ### Home sections (`src/routes/(home)/sections/`)
-- [ ] 51. [HIGH] Create `HeroSection.svelte` — desktop+mobile hero composing `GradientText`, `UploadCard`, `CtaButton`.
+- [x] 51. [HIGH] Create `HeroSection.svelte` — desktop+mobile hero composing `GradientText`, `UploadCard`, `CtaButton`.
 - [ ] 52. [HIGH] Create `WhyItMattersSection.svelte` — composing `SectionHeading`, `MetadataComparisonCard`, `RiskStatCard`.
 - [ ] 53. [HIGH] Create `HowItWorksSection.svelte` — composing `SectionHeading`, `StepCard`.
 - [ ] 54. [HIGH] Create `AudienceSection.svelte` — composing `SectionHeading`, `AudienceCard`.
