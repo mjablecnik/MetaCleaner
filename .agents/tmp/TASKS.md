@@ -27,7 +27,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 18. [MEDIUM] Backfill `messages/cs.json` for every key added in Phase 3 and verify en/cs key parity (no missing keys in either file).
 
 ## Phase 4 — Replace API data with repository calls
-- [ ] 19. [MEDIUM] Replace the 6 hardcoded feature sections (desktop + mobile) in `features/+page.svelte` with an `#each featuresRepository(...)` render using `t(key)`.
+- [x] 19. [MEDIUM] Replace the 6 hardcoded feature sections (desktop + mobile) in `features/+page.svelte` with an `#each featuresRepository(...)` render using `t(key)`.
 - [ ] 20. [MEDIUM] Replace the 4 hardcoded plan cards (desktop + mobile) and the `t` plan map in `pricing/+page.svelte` with `pricingRepository` + billing helpers.
 - [ ] 21. [MEDIUM] Replace the hardcoded "Who It's For" cards (desktop + mobile) in `+page.svelte` with `audienceRepository`.
 - [ ] 22. [MEDIUM] Replace the hardcoded FAQ items (desktop + mobile) in `+page.svelte` with `faqRepository`.

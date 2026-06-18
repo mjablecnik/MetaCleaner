@@ -1,7 +1,50 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
+	import { t } from '$lib/i18n';
+	import { featuresRepository } from '$lib/repositories';
 
 	let mobileMenuOpen = $state(false);
+
+	const features = featuresRepository();
+
+	const colorClasses: Record<string, { iconBg: string; iconText: string; label: string }> = {
+		'brand-blue': {
+			iconBg: 'bg-brand-blue/20',
+			iconText: 'text-brand-blue',
+			label: 'text-brand-blue'
+		},
+		'brand-orange': {
+			iconBg: 'bg-brand-orange/20',
+			iconText: 'text-brand-orange',
+			label: 'text-brand-orange'
+		},
+		'brand-green': {
+			iconBg: 'bg-brand-green/20',
+			iconText: 'text-brand-green',
+			label: 'text-brand-green'
+		},
+		'brand-red': {
+			iconBg: 'bg-brand-red/20',
+			iconText: 'text-brand-red',
+			label: 'text-brand-red'
+		}
+	};
+
+	const formatColorClasses: Record<string, string> = {
+		'brand-red': 'text-brand-red',
+		'brand-orange': 'text-brand-orange',
+		'brand-blue': 'text-brand-blue',
+		'brand-green': 'text-brand-green',
+		'text-muted': 'text-text-muted'
+	};
+
+	function featureNumber(n: number): string {
+		return String(n).padStart(2, '0');
+	}
+
+	function desktopFormatsGrid(count: number): string {
+		return count === 4 ? 'grid grid-cols-2 sm:grid-cols-4 gap-3' : 'grid grid-cols-2 sm:grid-cols-3 gap-3';
+	}
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
@@ -124,379 +167,144 @@
 			</p>
 		</section>
 
-		<!-- Feature 1: EXIF Metadata Removal -->
-		<section id="feature-exif" class="w-full">
-			<div class="flex flex-col lg:flex-row gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
-						>
-							<i class="fa-solid fa-broom"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-blue">Funkce 01</span>
-					</div>
-					<h2 class="text-4xl font-bold leading-tight">EXIF Metadata Removal</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Automaticky odstraní všechna skrytá metadata z vašich souborů. Žádná data nezůstanou —
-						vaše soukromí je plně chráněno před sdílením.
-					</p>
-					<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-location-dot text-brand-red"></i>
-							<span class="text-sm font-medium">GPS souřadnice</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-mobile-screen text-brand-orange"></i>
-							<span class="text-sm font-medium">Info o zařízení</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-user text-brand-blue"></i>
-							<span class="text-sm font-medium">Autor souboru</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-calendar text-brand-green"></i>
-							<span class="text-sm font-medium">Datum a čas</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-code text-text-muted"></i>
-							<span class="text-sm font-medium">Software info</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-camera text-brand-blue"></i>
-							<span class="text-sm font-medium">Nastavení kamery</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<div class="relative w-48 h-48 flex items-center justify-center">
-						<div class="relative">
+		<!-- Feature Sections (desktop) -->
+		{#each features as feature}
+			<section id="feature-{feature.id}" class="w-full">
+				<div
+					class="flex flex-col {feature.layout === 'rtl'
+						? 'lg:flex-row-reverse'
+						: 'lg:flex-row'} gap-10 items-center"
+				>
+					<!-- Content -->
+					<div class="flex flex-col gap-6 flex-1">
+						<div class="inline-flex items-center gap-2 w-fit">
 							<div
-								class="w-28 h-36 bg-navy-card border-2 border-brand-blue/40 rounded-lg flex flex-col items-center justify-center gap-2 relative"
+								class="w-12 h-12 rounded-xl {colorClasses[feature.color].iconBg} flex items-center justify-center {colorClasses[feature.color].iconText} text-xl"
 							>
-								<div
-									class="absolute -top-1 -right-1 w-7 h-7 bg-navy-main border-2 border-brand-blue/40 rounded-tr-lg rounded-bl-lg flex items-center justify-center"
-								>
-									<i class="fa-solid fa-camera text-brand-blue text-xs"></i>
-								</div>
-								<i class="fa-solid fa-image text-brand-blue/60 text-3xl mt-2"></i>
-								<div class="flex flex-col gap-1 w-16">
-									<div class="h-1.5 bg-brand-blue/30 rounded-full w-full"></div>
-									<div class="h-1.5 bg-brand-blue/20 rounded-full w-3/4"></div>
-								</div>
+								<i class="fa-solid {feature.icon}"></i>
 							</div>
-							<div
-								class="absolute -top-3 -left-10 flex items-center gap-1 bg-brand-red/20 border border-brand-red/40 rounded-md px-2 py-0.5 opacity-60"
+							<span
+								class="text-xs font-bold uppercase tracking-widest {colorClasses[feature.color].label}"
+								>{m.feature_label()} {featureNumber(feature.number)}</span
 							>
-								<i class="fa-solid fa-location-dot text-brand-red text-xs"></i>
-								<span class="text-xs text-brand-red font-mono">GPS</span>
-								<i class="fa-solid fa-xmark text-brand-red text-xs ml-1"></i>
-							</div>
-							<div
-								class="absolute -top-3 right-[-3.5rem] flex items-center gap-1 bg-brand-orange/20 border border-brand-orange/40 rounded-md px-2 py-0.5 opacity-60"
-							>
-								<i class="fa-solid fa-mobile-screen text-brand-orange text-xs"></i>
-								<span class="text-xs text-brand-orange font-mono">DEV</span>
-								<i class="fa-solid fa-xmark text-brand-orange text-xs ml-1"></i>
-							</div>
-							<div
-								class="absolute bottom-4 -left-12 flex items-center gap-1 bg-text-muted/10 border border-text-muted/30 rounded-md px-2 py-0.5 opacity-50"
-							>
-								<i class="fa-solid fa-calendar text-text-muted text-xs"></i>
-								<span class="text-xs text-text-muted font-mono">DATE</span>
-								<i class="fa-solid fa-xmark text-text-muted text-xs ml-1"></i>
-							</div>
-							<div
-								class="absolute -bottom-4 -right-4 w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center shadow-glow-blue"
-							>
-								<i class="fa-solid fa-broom text-white text-sm"></i>
-							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+						<h2 class="text-4xl font-bold leading-tight">{feature.titleText}</h2>
+						<p class="text-text-muted leading-relaxed max-w-2xl">{t(feature.descKey)}</p>
 
-		<!-- Feature 2: AI Tool Detection -->
-		<section id="feature-ai" class="w-full">
-			<div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-xl"
-						>
-							<i class="fa-solid fa-robot"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-orange"
-							>Funkce 02</span
-						>
+						{#if feature.formats}
+							<div class={desktopFormatsGrid(feature.formats.length)}>
+								{#each feature.formats as fmt}
+									<div
+										class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
+									>
+										<i class="fa-solid {fmt.icon} {formatColorClasses[fmt.color]}"></i>
+										<span class="text-sm font-medium">{fmt.key ? t(fmt.key) : fmt.label}</span>
+									</div>
+								{/each}
+							</div>
+						{:else if feature.bullets}
+							<div class="flex flex-col gap-3">
+								{#each feature.bullets as bullet}
+									<div class="flex items-center gap-3">
+										<i class="fa-solid fa-check text-brand-green text-sm"></i>
+										<span class="text-sm text-text-muted">{t(bullet)}</span>
+									</div>
+								{/each}
+							</div>
+						{/if}
 					</div>
-					<h2 class="text-4xl font-bold leading-tight">AI Tool Detection</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Pokročilá detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ obrázku a
-						zjistěte, zda byl generován umělou inteligencí.
-					</p>
-					<div class="flex flex-col gap-3">
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Detekce Midjourney, DALL·E, Stable Diffusion</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Adobe Firefly a další AI generátory</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted"
-								>Procentuální pravděpodobnost pro každý nástroj</span
-							>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Lokální analýza bez odesílání dat</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<img
-						class="w-full h-full object-contain"
-						src="https://storage.googleapis.com/uxpilot-auth.appspot.com/13e0bf6e0f-aa80ce2947ef80f51f20.png"
-						alt="robot face with magnifying glass scanning an image"
-					/>
-				</div>
-			</div>
-		</section>
 
-		<!-- Feature 3: C2PA Removal -->
-		<section id="feature-c2pa" class="w-full">
-			<div class="flex flex-col lg:flex-row gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-xl"
-						>
-							<i class="fa-solid fa-stamp"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-green">Funkce 03</span>
-					</div>
-					<h2 class="text-4xl font-bold leading-tight">C2PA Removal</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Odstraňte digitální podpisy a certifikáty obsahu z vašich souborů. C2PA standard je
-						používán k označení AI-generovaného obsahu.
-					</p>
-					<div class="flex flex-col gap-3">
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Odstranění C2PA digitálních podpisů</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Vymazání Content Credentials certifikátů</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted"
-								>Kompatibilní s Adobe, Microsoft, Google standardy</span
-							>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<div class="relative w-48 h-48 flex items-center justify-center">
-						<div class="relative flex flex-col items-center">
-							<div
-								class="w-32 h-24 bg-navy-card border-2 border-brand-green/30 rounded-lg flex flex-col items-center justify-center gap-2 relative"
-							>
-								<div
-									class="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-brand-green/20 border-2 border-brand-green/50 flex items-center justify-center"
-								>
-									<i class="fa-solid fa-stamp text-brand-green text-sm"></i>
-								</div>
-								<div class="mt-3 flex flex-col gap-1 w-20 items-center">
-									<div class="h-1.5 bg-brand-green/30 rounded-full w-full"></div>
-									<div class="h-1.5 bg-brand-green/20 rounded-full w-3/4"></div>
-									<div class="h-1.5 bg-brand-green/20 rounded-full w-1/2"></div>
+					<!-- Visual -->
+					<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
+						{#if feature.image}
+							<img
+								class="w-full h-full object-contain"
+								src={feature.image.src}
+								alt={t(feature.image.altKey)}
+							/>
+						{:else if feature.id === 'exif'}
+							<div class="relative w-48 h-48 flex items-center justify-center">
+								<div class="relative">
+									<div
+										class="w-28 h-36 bg-navy-card border-2 border-brand-blue/40 rounded-lg flex flex-col items-center justify-center gap-2 relative"
+									>
+										<div
+											class="absolute -top-1 -right-1 w-7 h-7 bg-navy-main border-2 border-brand-blue/40 rounded-tr-lg rounded-bl-lg flex items-center justify-center"
+										>
+											<i class="fa-solid fa-camera text-brand-blue text-xs"></i>
+										</div>
+										<i class="fa-solid fa-image text-brand-blue/60 text-3xl mt-2"></i>
+										<div class="flex flex-col gap-1 w-16">
+											<div class="h-1.5 bg-brand-blue/30 rounded-full w-full"></div>
+											<div class="h-1.5 bg-brand-blue/20 rounded-full w-3/4"></div>
+										</div>
+									</div>
+									<div
+										class="absolute -top-3 -left-10 flex items-center gap-1 bg-brand-red/20 border border-brand-red/40 rounded-md px-2 py-0.5 opacity-60"
+									>
+										<i class="fa-solid fa-location-dot text-brand-red text-xs"></i>
+										<span class="text-xs text-brand-red font-mono">GPS</span>
+										<i class="fa-solid fa-xmark text-brand-red text-xs ml-1"></i>
+									</div>
+									<div
+										class="absolute -top-3 right-[-3.5rem] flex items-center gap-1 bg-brand-orange/20 border border-brand-orange/40 rounded-md px-2 py-0.5 opacity-60"
+									>
+										<i class="fa-solid fa-mobile-screen text-brand-orange text-xs"></i>
+										<span class="text-xs text-brand-orange font-mono">DEV</span>
+										<i class="fa-solid fa-xmark text-brand-orange text-xs ml-1"></i>
+									</div>
+									<div
+										class="absolute bottom-4 -left-12 flex items-center gap-1 bg-text-muted/10 border border-text-muted/30 rounded-md px-2 py-0.5 opacity-50"
+									>
+										<i class="fa-solid fa-calendar text-text-muted text-xs"></i>
+										<span class="text-xs text-text-muted font-mono">DATE</span>
+										<i class="fa-solid fa-xmark text-text-muted text-xs ml-1"></i>
+									</div>
+									<div
+										class="absolute -bottom-4 -right-4 w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center shadow-glow-blue"
+									>
+										<i class="fa-solid fa-broom text-white text-sm"></i>
+									</div>
 								</div>
 							</div>
-							<div class="absolute inset-0 flex items-center justify-center">
-								<div
-									class="w-16 h-16 rounded-full bg-brand-red/10 border-2 border-brand-red/60 flex items-center justify-center"
-								>
-									<i class="fa-solid fa-xmark text-brand-red text-3xl"></i>
+						{:else if feature.id === 'c2pa'}
+							<div class="relative w-48 h-48 flex items-center justify-center">
+								<div class="relative flex flex-col items-center">
+									<div
+										class="w-32 h-24 bg-navy-card border-2 border-brand-green/30 rounded-lg flex flex-col items-center justify-center gap-2 relative"
+									>
+										<div
+											class="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-brand-green/20 border-2 border-brand-green/50 flex items-center justify-center"
+										>
+											<i class="fa-solid fa-stamp text-brand-green text-sm"></i>
+										</div>
+										<div class="mt-3 flex flex-col gap-1 w-20 items-center">
+											<div class="h-1.5 bg-brand-green/30 rounded-full w-full"></div>
+											<div class="h-1.5 bg-brand-green/20 rounded-full w-3/4"></div>
+											<div class="h-1.5 bg-brand-green/20 rounded-full w-1/2"></div>
+										</div>
+									</div>
+									<div class="absolute inset-0 flex items-center justify-center">
+										<div
+											class="w-16 h-16 rounded-full bg-brand-red/10 border-2 border-brand-red/60 flex items-center justify-center"
+										>
+											<i class="fa-solid fa-xmark text-brand-red text-3xl"></i>
+										</div>
+									</div>
+									<div
+										class="mt-4 px-3 py-1 rounded-full bg-navy-card border border-brand-green/30 flex items-center gap-2"
+									>
+										<i class="fa-solid fa-certificate text-brand-green/50 text-xs"></i>
+										<span class="text-xs font-bold tracking-widest text-brand-green/70">C2PA</span>
+										<i class="fa-solid fa-ban text-brand-red text-xs"></i>
+									</div>
 								</div>
 							</div>
-							<div
-								class="mt-4 px-3 py-1 rounded-full bg-navy-card border border-brand-green/30 flex items-center gap-2"
-							>
-								<i class="fa-solid fa-certificate text-brand-green/50 text-xs"></i>
-								<span class="text-xs font-bold tracking-widest text-brand-green/70">C2PA</span>
-								<i class="fa-solid fa-ban text-brand-red text-xs"></i>
-							</div>
-						</div>
+						{/if}
 					</div>
 				</div>
-			</div>
-		</section>
-
-		<!-- Feature 4: Risk Scanner -->
-		<section id="feature-risk" class="w-full">
-			<div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-red/20 flex items-center justify-center text-brand-red text-xl"
-						>
-							<i class="fa-solid fa-shield-halved"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-red">Funkce 04</span>
-					</div>
-					<h2 class="text-4xl font-bold leading-tight">Risk Scanner</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Automaticky vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a detailní
-						analýzu potenciálních hrozeb pro vaše soukromí.
-					</p>
-					<div class="flex flex-col gap-3">
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Celkové rizikové skóre 0–100</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted"
-								>Kategorizace rizik (GPS, identita, osobní data)</span
-							>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Porovnání stavu před a po čištění</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Doporučení pro zvýšení bezpečnosti</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<img
-						class="w-full h-full object-contain"
-						src="https://storage.googleapis.com/uxpilot-auth.appspot.com/8ecbe2e659-79866aab835cb0bd68bf.png"
-						alt="shield with risk score gauge meter"
-					/>
-				</div>
-			</div>
-		</section>
-
-		<!-- Feature 5: Batch Processing -->
-		<section id="feature-batch" class="w-full">
-			<div class="flex flex-col lg:flex-row gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
-						>
-							<i class="fa-solid fa-layer-group"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-blue">Funkce 05</span>
-					</div>
-					<h2 class="text-4xl font-bold leading-tight">Batch Processing</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Zpracujte stovky souborů najednou. Hromadné čištění metadat, AI detekce a skenování
-						rizik pro celé složky souborů jediným kliknutím.
-					</p>
-					<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-images text-brand-blue"></i>
-							<span class="text-sm font-medium">JPG, PNG, HEIC</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-file-pdf text-brand-red"></i>
-							<span class="text-sm font-medium">PDF dokumenty</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-file-video text-brand-orange"></i>
-							<span class="text-sm font-medium">Video soubory</span>
-						</div>
-						<div
-							class="flex items-center gap-3 px-4 py-3 rounded-xl bg-navy-card border border-gray-800"
-						>
-							<i class="fa-solid fa-folder-open text-brand-green"></i>
-							<span class="text-sm font-medium">Celé složky</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<img
-						class="w-full h-full object-contain"
-						src="https://storage.googleapis.com/uxpilot-auth.appspot.com/086bb62676-9932975e36639131dcde.png"
-						alt="multiple stacked file documents being processed simultaneously"
-					/>
-				</div>
-			</div>
-		</section>
-
-		<!-- Feature 6: PDF Report -->
-		<section id="feature-pdf" class="w-full">
-			<div class="flex flex-col lg:flex-row-reverse gap-10 items-center">
-				<div class="flex flex-col gap-6 flex-1">
-					<div class="inline-flex items-center gap-2 w-fit">
-						<div
-							class="w-12 h-12 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-xl"
-						>
-							<i class="fa-solid fa-file-pdf"></i>
-						</div>
-						<span class="text-xs font-bold uppercase tracking-widest text-brand-blue">Funkce 06</span>
-					</div>
-					<h2 class="text-4xl font-bold leading-tight">PDF Report</h2>
-					<p class="text-text-muted leading-relaxed max-w-2xl">
-						Generujte detailní PDF zprávy o všech činnostech. Získejte kompletní přehled o čištění,
-						detekci AI a analýze rizik pro každý soubor.
-					</p>
-					<div class="flex flex-col gap-3">
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Všechny detekce a čištění</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Analýza rizik a doporučení</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Hromadné zpracování výsledků</span>
-						</div>
-						<div class="flex items-center gap-3">
-							<i class="fa-solid fa-check text-brand-green text-sm"></i>
-							<span class="text-sm text-text-muted">Závěrečná kontrola a závěry</span>
-						</div>
-					</div>
-				</div>
-				<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
-					<img
-						class="w-full h-full object-contain"
-						src="https://storage.googleapis.com/uxpilot-auth.appspot.com/7c7b53abbf-a7c6cc514cdacd768cbf.png"
-						alt="PDF document report with charts and checkmarks"
-					/>
-				</div>
-			</div>
-		</section>
+			</section>
+		{/each}
 	</main>
 
 	<!-- Desktop Footer -->
@@ -623,293 +431,53 @@
 			</p>
 		</section>
 
-		<!-- Feature 1: EXIF (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-broom"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-							Funkce 01
-						</div>
-						<div class="text-base font-bold">EXIF Metadata Removal</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Automaticky odstraní všechna skrytá metadata z vašich souborů. Žádná data nezůstanou —
-						vaše soukromí je plně chráněno před sdílením.
-					</p>
-					<div class="grid grid-cols-2 gap-2">
+		<!-- Feature Cards (mobile) -->
+		{#each features as feature}
+			<section class="w-full mb-3">
+				<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+					<div class="w-full flex items-center gap-3 px-4 py-4">
 						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
+							class="w-10 h-10 rounded-xl {colorClasses[feature.color].iconBg} flex items-center justify-center {colorClasses[feature.color].iconText} text-base flex-shrink-0"
 						>
-							<i class="fa-solid fa-location-dot text-brand-red text-sm"></i>
-							<span class="text-xs font-medium">GPS souřadnice</span>
+							<i class="fa-solid {feature.icon}"></i>
 						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-mobile-screen text-brand-orange text-sm"></i>
-							<span class="text-xs font-medium">Info o zařízení</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-user text-brand-blue text-sm"></i>
-							<span class="text-xs font-medium">Autor souboru</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-calendar text-brand-green text-sm"></i>
-							<span class="text-xs font-medium">Datum a čas</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-code text-text-muted text-sm"></i>
-							<span class="text-xs font-medium">Software info</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-camera text-brand-blue text-sm"></i>
-							<span class="text-xs font-medium">Nastavení kamery</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Feature 2: AI Detection (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-orange/20 flex items-center justify-center text-brand-orange text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-robot"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-orange mb-0.5">
-							Funkce 02
-						</div>
-						<div class="text-base font-bold">AI Tool Detection</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Pokročilá detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ obrázku a
-						zjistěte, zda byl generován umělou inteligencí.
-					</p>
-					<div class="flex flex-col gap-2.5">
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Detekce Midjourney, DALL·E, Stable Diffusion</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Adobe Firefly a další AI generátory</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted"
-								>Procentuální pravděpodobnost pro každý nástroj</span
+						<div class="flex-1 min-w-0">
+							<div
+								class="text-xs font-bold uppercase tracking-widest {colorClasses[feature.color].label} mb-0.5"
 							>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Lokální analýza bez odesílání dat</span>
+								{m.feature_label()} {featureNumber(feature.number)}
+							</div>
+							<div class="text-base font-bold">{feature.titleText}</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</section>
+					<div class="px-4 pb-5">
+						<p class="text-text-muted text-sm leading-relaxed mb-4">{t(feature.descKey)}</p>
 
-		<!-- Feature 3: C2PA (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-stamp"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-green mb-0.5">
-							Funkce 03
-						</div>
-						<div class="text-base font-bold">C2PA Removal</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Odstraňte digitální podpisy a certifikáty obsahu z vašich souborů. C2PA standard je
-						používán k označení AI-generovaného obsahu.
-					</p>
-					<div class="flex flex-col gap-2.5">
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Odstranění C2PA digitálních podpisů</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Vymazání Content Credentials certifikátů</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted"
-								>Kompatibilní s Adobe, Microsoft, Google standardy</span
-							>
-						</div>
+						{#if feature.formats}
+							<div class="grid grid-cols-2 gap-2">
+								{#each feature.formats as fmt}
+									<div
+										class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
+									>
+										<i class="fa-solid {fmt.icon} {formatColorClasses[fmt.color]} text-sm"></i>
+										<span class="text-xs font-medium">{fmt.key ? t(fmt.key) : fmt.label}</span>
+									</div>
+								{/each}
+							</div>
+						{:else if feature.bullets}
+							<div class="flex flex-col gap-2.5">
+								{#each feature.bullets as bullet}
+									<div class="flex items-start gap-2.5">
+										<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
+										<span class="text-sm text-text-muted">{t(bullet)}</span>
+									</div>
+								{/each}
+							</div>
+						{/if}
 					</div>
 				</div>
-			</div>
-		</section>
-
-		<!-- Feature 4: Risk Scanner (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-red/20 flex items-center justify-center text-brand-red text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-shield-halved"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-red mb-0.5">
-							Funkce 04
-						</div>
-						<div class="text-base font-bold">Risk Scanner</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Automaticky vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a detailní
-						analýzu potenciálních hrozeb pro vaše soukromí.
-					</p>
-					<div class="flex flex-col gap-2.5">
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Celkové rizikové skóre 0–100</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted"
-								>Kategorizace rizik (GPS, identita, osobní data)</span
-							>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Porovnání stavu před a po čištění</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Doporučení pro zvýšení bezpečnosti</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Feature 5: Batch Processing (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-layer-group"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-							Funkce 05
-						</div>
-						<div class="text-base font-bold">Batch Processing</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Zpracujte stovky souborů najednou. Hromadné čištění metadat, AI detekce a skenování
-						rizik pro celé složky souborů jediným kliknutím.
-					</p>
-					<div class="grid grid-cols-2 gap-2">
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-images text-brand-blue text-sm"></i>
-							<span class="text-xs font-medium">JPG, PNG, HEIC</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-file-pdf text-brand-red text-sm"></i>
-							<span class="text-xs font-medium">PDF dokumenty</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-file-video text-brand-orange text-sm"></i>
-							<span class="text-xs font-medium">Video soubory</span>
-						</div>
-						<div
-							class="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-navy-lighter border border-gray-800"
-						>
-							<i class="fa-solid fa-folder-open text-brand-green text-sm"></i>
-							<span class="text-xs font-medium">Celé složky</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- Feature 6: PDF Report (Mobile Card) -->
-		<section class="w-full mb-3">
-			<div class="bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<div class="w-full flex items-center gap-3 px-4 py-4">
-					<div
-						class="w-10 h-10 rounded-xl bg-brand-blue/20 flex items-center justify-center text-brand-blue text-base flex-shrink-0"
-					>
-						<i class="fa-solid fa-file-pdf"></i>
-					</div>
-					<div class="flex-1 min-w-0">
-						<div class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-0.5">
-							Funkce 06
-						</div>
-						<div class="text-base font-bold">PDF Report</div>
-					</div>
-				</div>
-				<div class="px-4 pb-5">
-					<p class="text-text-muted text-sm leading-relaxed mb-4">
-						Generujte detailní PDF zprávy o všech činnostech. Získejte kompletní přehled o čištění,
-						detekci AI a analýze rizik pro každý soubor.
-					</p>
-					<div class="flex flex-col gap-2.5">
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Všechny detekce a čištění</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Analýza rizik a doporučení</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Hromadné zpracování výsledků</span>
-						</div>
-						<div class="flex items-start gap-2.5">
-							<i class="fa-solid fa-check text-brand-green text-xs mt-0.5"></i>
-							<span class="text-sm text-text-muted">Závěrečná kontrola a závěry</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+			</section>
+		{/each}
 
 		<!-- CTA Section (Mobile only) -->
 		<section id="cta-section" class="w-full mt-4 mb-6">
