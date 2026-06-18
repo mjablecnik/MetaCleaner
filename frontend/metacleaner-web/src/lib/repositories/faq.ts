@@ -4,22 +4,15 @@ export interface FaqItem {
 	answerKey: string;
 }
 
-export function getFaq(layout?: 'desktop' | 'mobile'): FaqItem[] {
-	if (layout === 'mobile') {
-		return [
-			{ id: 'm1', questionKey: 'home_faq_m1_question', answerKey: 'home_faq_m1_answer' },
-			{ id: 'm2', questionKey: 'home_faq_m2_question', answerKey: 'home_faq_m2_answer' },
-			{ id: 'm3', questionKey: 'home_faq_m3_question', answerKey: 'home_faq_m3_answer' },
-			{ id: 'm4', questionKey: 'home_faq_m4_question', answerKey: 'home_faq_m4_answer' },
-			{ id: 'm5', questionKey: 'home_faq_m5_question', answerKey: 'home_faq_m5_answer' }
-		];
-	}
-
+export function getFaq(): FaqItem[] {
 	return [
-		{ id: 'd1', questionKey: 'home_faq_d1_question', answerKey: 'home_faq_d1_answer' },
-		{ id: 'd2', questionKey: 'home_faq_d2_question', answerKey: 'home_faq_d2_answer' },
-		{ id: 'd3', questionKey: 'home_faq_d3_question', answerKey: 'home_faq_d3_answer' },
-		{ id: 'd4', questionKey: 'home_faq_d4_question', answerKey: 'home_faq_d4_answer' },
-		{ id: 'd5', questionKey: 'home_faq_d5_question', answerKey: 'home_faq_d5_answer' }
+		{ id: '1', questionKey: 'home_faq_1_question', answerKey: 'home_faq_1_answer' },
+		{ id: '2', questionKey: 'home_faq_2_question', answerKey: 'home_faq_2_answer' },
+		{ id: '3', questionKey: 'home_faq_3_question', answerKey: 'home_faq_3_answer' },
+		{ id: '4', questionKey: 'home_faq_4_question', answerKey: 'home_faq_4_answer' },
+		{ id: '5', questionKey: 'home_faq_5_question', answerKey: 'home_faq_5_answer' },
+		{ id: '6', questionKey: 'home_faq_6_question', answerKey: 'home_faq_6_answer' },
+		{ id: '7', questionKey: 'home_faq_7_question', answerKey: 'home_faq_7_answer' },
+		{ id: '8', questionKey: 'home_faq_8_question', answerKey: 'home_faq_8_answer' }
 	];
 }
