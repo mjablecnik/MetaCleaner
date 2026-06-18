@@ -32,8 +32,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 19. [MEDIUM] Create `GradientText.stories.svelte` — sample heading.
 - [x] 20. [LOW] Create `FormatBadge.svelte` — uppercase format tag; props `label`, `size`.
 - [x] 21. [LOW] Create `FormatBadge.stories.svelte` — JPG/PNG/HEIC/WEBP, sizes.
-- [ ] 22. [LOW] Create `SocialIconLink.svelte` — square social icon button; props `icon`, `href`.
-- [ ] 23. [LOW] Create `SocialIconLink.stories.svelte` — twitter/github/linkedin.
+- [x] 22. [LOW] Create `SocialIconLink.svelte` — square social icon button; props `icon`, `href`.
+- [x] 23. [LOW] Create `SocialIconLink.stories.svelte` — twitter/github/linkedin.
 - [ ] 24. [MEDIUM] Create `FooterBrand.svelte` — `BrandLogo` + tagline; prop `tagline`.
 - [ ] 25. [MEDIUM] Create `FooterBrand.stories.svelte` — default.
 - [ ] 26. [MEDIUM] Create `FooterColumn.svelte` — heading + link list; props `heading`, `links`.
