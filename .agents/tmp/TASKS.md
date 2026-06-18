@@ -36,8 +36,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 23. [LOW] Create `SocialIconLink.stories.svelte` — twitter/github/linkedin.
 - [x] 24. [MEDIUM] Create `FooterBrand.svelte` — `BrandLogo` + tagline; prop `tagline`.
 - [x] 25. [MEDIUM] Create `FooterBrand.stories.svelte` — default.
-- [ ] 26. [MEDIUM] Create `FooterColumn.svelte` — heading + link list; props `heading`, `links`.
-- [ ] 27. [MEDIUM] Create `FooterColumn.stories.svelte` — sample column.
+- [x] 26. [MEDIUM] Create `FooterColumn.svelte` — heading + link list; props `heading`, `links`.
+- [x] 27. [MEDIUM] Create `FooterColumn.stories.svelte` — sample column.
 - [ ] 28. [MEDIUM] Create `FooterBottomBar.svelte` — copyright + legal links (+ optional made-with); props `copyright`, `links`, `madeWith`.
 - [ ] 29. [MEDIUM] Create `FooterBottomBar.stories.svelte` — with/without made-with.
 
