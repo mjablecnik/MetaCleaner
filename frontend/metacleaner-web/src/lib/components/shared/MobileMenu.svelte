@@ -35,6 +35,7 @@
 			<BrandLogo size="md" href="/" />
 			<button
 				onclick={onClose}
+				aria-label={m.nav_close_menu()}
 				class="w-9 h-9 flex items-center justify-center rounded-lg bg-navy-lighter border border-border-strong text-white"
 			>
 				<i class="fa-solid fa-xmark text-sm"></i>
