@@ -15,6 +15,7 @@
 	<BrandLogo size="md" href="/" />
 	<button
 		onclick={onToggle}
+		aria-label={open ? 'Close menu' : 'Open menu'}
 		class="w-9 h-9 rounded-lg bg-navy-lighter border border-border-strong flex items-center justify-center text-white"
 	>
 		<i class="fa-solid {open ? 'fa-xmark' : 'fa-bars'} text-sm"></i>

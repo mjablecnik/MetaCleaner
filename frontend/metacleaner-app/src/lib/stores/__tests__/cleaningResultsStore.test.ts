@@ -12,13 +12,11 @@ function makeResults(overrides: Partial<ProcessingResults> = {}): ProcessingResu
 		totalTimeSeconds: 5,
 		fileResults: [],
 		beforeBreakdown: {
-			gpsFields: [],
-			exifFields: [],
-			xmpFields: [],
-			id3Fields: [],
-			mp4Atoms: [],
-			pngChunks: [],
-			totalRemoved: 0
+			gpsLocations: 0,
+			exifFields: 0,
+			xmpFields: 0,
+			id3mp4Fields: 0,
+			otherFields: 0
 		},
 		...overrides
 	};
