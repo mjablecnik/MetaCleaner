@@ -16,8 +16,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 ## Phase 1 — Shared elements (`src/lib/components/elements/`)
 
-- [ ] 6. [HIGH] Create `BrandLogo.svelte` — logo tile + “MetaCleaner” wordmark; props `size` ('sm'|'md'|'lg'), `href='/'`.
-- [ ] 7. [HIGH] Create `BrandLogo.stories.svelte` — sizes sm/md/lg.
+- [x] 6. [HIGH] Create `BrandLogo.svelte` — logo tile + “MetaCleaner” wordmark; props `size` ('sm'|'md'|'lg'), `href='/'`.
+- [x] 7. [HIGH] Create `BrandLogo.stories.svelte` — sizes sm/md/lg.
 - [ ] 8. [HIGH] Create `IconBadge.svelte` — tinted rounded icon container; props `icon`, `color`, `size`, `shape` ('circle'|'rounded'), `tint`.
 - [ ] 9. [HIGH] Create `IconBadge.stories.svelte` — color/shape/size variants.
 - [ ] 10. [HIGH] Create `SectionHeading.svelte` — eyebrow + title + subtitle; props `eyebrow`, `eyebrowColor`, `title`, `subtitle`, `size` ('lg'|'sm').
