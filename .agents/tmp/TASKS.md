@@ -5,7 +5,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 ## Phase 1 — Setup i18n infrastructure
 - [x] 1. [HIGH] Confirm Paraglide is installed/wired (it is) and set the runtime locale strategy to `["localStorage", "cookie", "preferredLanguage", "baseLocale"]` (via the inlang/paraglide Vite plugin config), keeping `baseLocale: "en"`, `locales: ["en","cs"]`.
 - [x] 2. [HIGH] Replace the scaffold `hello_world` in `messages/en.json` and `messages/cs.json` with the full key set from DATA_SPEC §6; seed the shared `nav_*`, `cta_*`, `footer_*`, `meta_*` keys in both languages.
-- [ ] 3. [HIGH] Add a `t(key)` resolver helper (e.g. `src/lib/i18n.ts`) that maps a repository key string to `m[key]()`, mirroring the app's `tx()` pattern, and verify `import * as m from '$lib/paraglide/messages'` compiles.
+- [x] 3. [HIGH] Add a `t(key)` resolver helper (e.g. `src/lib/i18n.ts`) that maps a repository key string to `m[key]()`, mirroring the app's `tx()` pattern, and verify `import * as m from '$lib/paraglide/messages'` compiles.
 
 ## Phase 2 — Create repository/data layer
 - [ ] 4. [HIGH] Create `src/lib/repositories/features.ts` — `featuresRepository` returning the 6 features (id, number, icon, color, layout, literal title, `descKey`, bullet/format keys, image `{src, altKey}`).
