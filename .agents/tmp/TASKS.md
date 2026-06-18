@@ -105,7 +105,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 ### Pricing sections (`src/routes/pricing/sections/`)
 - [x] 77. [HIGH] Create `PricingHeaderSection.svelte` — title + subtitle + `BillingToggle`.
-- [ ] 78. [HIGH] Create `PricingPlansSection.svelte` — desktop + mobile `PricingCard` grids; props `plans`, `isYearly`.
+- [x] 78. [HIGH] Create `PricingPlansSection.svelte` — desktop + mobile `PricingCard` grids; props `plans`, `isYearly`.
 - [ ] 79. [MEDIUM] Create `PricingFooter.svelte` — composing `FooterBottomBar`.
 
 ## Phase 4 — Refactor pages
