@@ -1,10 +1,12 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
-	import { getAudience } from '$lib/repositories';
+	import { getAudience, getFaq } from '$lib/repositories';
 
 	const audienceFull = getAudience('full');
 	const audienceCompact = getAudience('compact');
+	const faqDesktop = getFaq('desktop');
+	const faqMobile = getFaq('mobile');
 
 	const audienceColorClasses: Record<string, { iconBg: string; iconText: string; hoverBorder: string }> = {
 		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue', hoverBorder: 'hover:border-brand-blue/50' },
@@ -547,80 +549,22 @@
 			</p>
 		</div>
 		<div class="max-w-3xl mx-auto flex flex-col gap-3">
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white">{m.home_faq_d1_question()}</span>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						{m.home_faq_d1_answer()}
-					</p>
-				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white">{m.home_faq_d2_question()}</span>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						{m.home_faq_d2_answer()}
-					</p>
-				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white"
-						>{m.home_faq_d3_question()}</span
+			{#each faqDesktop as item (item.id)}
+				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+					<button
+						onclick={toggleFaq}
+						class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
 					>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						{m.home_faq_d3_answer()}
-					</p>
+						<span class="font-semibold text-white">{t(item.questionKey)}</span>
+						<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
+					</button>
+					<div class="faq-answer hidden px-6 pb-5">
+						<p class="text-sm text-text-muted leading-relaxed">
+							{t(item.answerKey)}
+						</p>
+					</div>
 				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white">{m.home_faq_d4_question()}</span>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						{m.home_faq_d4_answer()}
-					</p>
-				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white"
-						>{m.home_faq_d5_question()}</span
-					>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						{m.home_faq_d5_answer()}
-					</p>
-				</div>
-			</div>
+			{/each}
 		</div>
 	</section>
 
@@ -1015,76 +959,22 @@
 				<p class="text-sm text-text-muted">{m.home_faq_subtitle_mobile()}</p>
 			</div>
 			<div class="flex flex-col gap-2">
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-					<button
-						onclick={toggleFaq}
-						class="w-full flex items-center justify-between p-4 text-left"
-					>
-						<span class="text-sm font-semibold text-white">{m.home_faq_m1_question()}</span>
-						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
-					</button>
-					<div class="faq-answer hidden px-4 pb-4">
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_faq_m1_answer()}
-						</p>
+				{#each faqMobile as item (item.id)}
+					<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+						<button
+							onclick={toggleFaq}
+							class="w-full flex items-center justify-between p-4 text-left"
+						>
+							<span class="text-sm font-semibold text-white">{t(item.questionKey)}</span>
+							<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
+						</button>
+						<div class="faq-answer hidden px-4 pb-4">
+							<p class="text-xs text-text-muted leading-relaxed">
+								{t(item.answerKey)}
+							</p>
+						</div>
 					</div>
-				</div>
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-					<button
-						onclick={toggleFaq}
-						class="w-full flex items-center justify-between p-4 text-left"
-					>
-						<span class="text-sm font-semibold text-white">{m.home_faq_m2_question()}</span>
-						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
-					</button>
-					<div class="faq-answer hidden px-4 pb-4">
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_faq_m2_answer()}
-						</p>
-					</div>
-				</div>
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-					<button
-						onclick={toggleFaq}
-						class="w-full flex items-center justify-between p-4 text-left"
-					>
-						<span class="text-sm font-semibold text-white">{m.home_faq_m3_question()}</span>
-						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
-					</button>
-					<div class="faq-answer hidden px-4 pb-4">
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_faq_m3_answer()}
-						</p>
-					</div>
-				</div>
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-					<button
-						onclick={toggleFaq}
-						class="w-full flex items-center justify-between p-4 text-left"
-					>
-						<span class="text-sm font-semibold text-white">{m.home_faq_m4_question()}</span>
-						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
-					</button>
-					<div class="faq-answer hidden px-4 pb-4">
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_faq_m4_answer()}
-						</p>
-					</div>
-				</div>
-				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-					<button
-						onclick={toggleFaq}
-						class="w-full flex items-center justify-between p-4 text-left"
-					>
-						<span class="text-sm font-semibold text-white">{m.home_faq_m5_question()}</span>
-						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
-					</button>
-					<div class="faq-answer hidden px-4 pb-4">
-						<p class="text-xs text-text-muted leading-relaxed">
-							{m.home_faq_m5_answer()}
-						</p>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</section>
 	</main>
