@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-18 06:02 — manual
+- Project: frontend (metacleaner-web)
+- Built the MetaCleaner Web marketing site from the `.design/` mockups, reproducing each design pixel-perfectly with responsive mobile + desktop variants and Czech-default `data-cs`/`data-en` multilingual text (PAGES.md documents the shared design system — colors, Inter font, navbar, footer, language switcher)
+- Implemented the **Home** page (`69ed1ef`): navbar, gradient hero with animated dashed upload card and Try-free/Download CTAs, "Why It Matters" before/after metadata comparison + risk stats, "How It Works" 3 steps, "Who Is It For" cards, FAQ accordion, footer, plus a mobile sticky navbar and slide-in menu drawer with overlay
+- Implemented the **Features** page (`688b2e8`): responsive showcase of 6 tools (EXIF Metadata Removal, AI Tool Detection, C2PA Removal, Risk Scanner, Batch Processing, PDF Report) with alternating 2-column rows + PNG illustrations on desktop and stacked cards + "Začněte zdarma" CTA on mobile
+- Implemented the **Pricing** (Ceník) page (`77f815e`): monthly/yearly billing toggle (−20%), 4 plan cards (Zdarma, 50 fotek, Pro featured w/ glow, Pro+ "Připravujeme"), Enterprise banner, and `setBilling()` wiring to swap yearly prices and reveal struck-through originals + green savings
+- Wired up cross-page navigation and the language switcher (`10af231`): shared navbar/footer links, mobile menu drawer, per-page active link highlighting, and site-wide language switching with localStorage persistence
+- Added desktop and mobile feature page assets (`6e28129`) and scaffolded the metacleaner-web project (`92d4aaf`)
+
 ## 2026-06-16 07:26 — manual
 - Project: frontend, backend, terminal (full stack — unit/integration test pipeline)
 - Generated test spec (TEST_SPEC.md) and task list (TASKS.md) targeting remaining uncovered logic; all tasks completed
