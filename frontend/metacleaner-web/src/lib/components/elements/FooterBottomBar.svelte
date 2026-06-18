@@ -11,12 +11,13 @@
 		links?: Link[];
 		madeWith?: boolean;
 		pt?: string;
+		showBorder?: boolean;
 	}
 
-	const { copyright, links = [], madeWith = false, pt = 'pt-8' }: Props = $props();
+	const { copyright, links = [], madeWith = false, pt = 'pt-8', showBorder = true }: Props = $props();
 </script>
 
-<div class="border-t border-border {pt} flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="{showBorder ? 'border-t border-border' : ''} {pt} flex flex-col sm:flex-row items-center justify-between gap-4">
 	<p class="text-xs text-text-muted">{copyright}</p>
 	{#if madeWith}
 		<div class="flex items-center gap-2">
