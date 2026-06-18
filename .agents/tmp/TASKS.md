@@ -80,8 +80,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 ### Features components (`src/routes/features/components/`)
 - [x] 57. [MEDIUM] Create `FormatPill.svelte` — format chip; props `format`, `size`.
 - [x] 58. [MEDIUM] Create `FormatPill.stories.svelte` — color variants.
-- [ ] 59. [MEDIUM] Create `ExifIllustration.svelte` — inline EXIF decorative graphic.
-- [ ] 60. [MEDIUM] Create `ExifIllustration.stories.svelte` — default.
+- [x] 59. [MEDIUM] Create `ExifIllustration.svelte` — inline EXIF decorative graphic.
+- [x] 60. [MEDIUM] Create `ExifIllustration.stories.svelte` — default.
 - [ ] 61. [MEDIUM] Create `C2paIllustration.svelte` — inline C2PA decorative graphic.
 - [ ] 62. [MEDIUM] Create `C2paIllustration.stories.svelte` — default.
 - [ ] 63. [HIGH] Create `FeatureRow.svelte` — desktop alternating row composing `IconBadge`, `FormatPill`, `CheckBullet`, image/illustration; props `feature`.
