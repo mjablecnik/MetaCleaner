@@ -36,7 +36,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 25. [MEDIUM] Replace the hardcoded before/after EXIF demo fields in `+page.svelte` with `metadataDemoRepository`.
 
 ## Phase 5 — Language switching
-- [ ] 26. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` driven by Paraglide `getLocale`/`setLocale`/`locales`, with flag+label map, preserving the existing desktop dropdown + mobile drawer markup (en/cs only).
+- [x] 26. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` driven by Paraglide `getLocale`/`setLocale`/`locales`, with flag+label map, preserving the existing desktop dropdown + mobile drawer markup (en/cs only).
 - [ ] 27. [MEDIUM] Mount `LanguageSwitcher` in all three pages' desktop navbar and mobile drawer; remove the per-page `langConfig`/`setLang`/`toggleLangDropdown`/`localStorage('lang')` code.
 
 ## Final
