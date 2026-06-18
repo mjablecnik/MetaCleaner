@@ -21,6 +21,12 @@
 	function chooseLocale(locale: Locale) {
 		currentLocale = locale;
 		dropdownOpen = false;
+
+		// Remove hash fragment before locale change to prevent scrolling back to anchor
+		if (window.location.hash) {
+			history.replaceState(null, '', window.location.pathname + window.location.search);
+		}
+
 		setLocale(locale);
 	}
 
