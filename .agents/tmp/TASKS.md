@@ -104,7 +104,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 76. [MEDIUM] Create `EnterpriseBanner.stories.svelte` — default.
 
 ### Pricing sections (`src/routes/pricing/sections/`)
-- [ ] 77. [HIGH] Create `PricingHeaderSection.svelte` — title + subtitle + `BillingToggle`.
+- [x] 77. [HIGH] Create `PricingHeaderSection.svelte` — title + subtitle + `BillingToggle`.
 - [ ] 78. [HIGH] Create `PricingPlansSection.svelte` — desktop + mobile `PricingCard` grids; props `plans`, `isYearly`.
 - [ ] 79. [MEDIUM] Create `PricingFooter.svelte` — composing `FooterBottomBar`.
 
