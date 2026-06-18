@@ -4,7 +4,9 @@
 	const langConfig: Record<string, { flag: string; label: string; name: string }> = {
 		cs: { flag: '🇨🇿', label: 'CS', name: 'Čeština' },
 		en: { flag: '🇬🇧', label: 'EN', name: 'English' },
-		de: { flag: '🇩🇪', label: 'DE', name: 'Deutsch' }
+		de: { flag: '🇩🇪', label: 'DE', name: 'Deutsch' },
+		fr: { flag: '🇫🇷', label: 'FR', name: 'Français' },
+		sk: { flag: '🇸🇰', label: 'SK', name: 'Slovenčina' }
 	};
 
 	let currentLang = $state('cs');
@@ -42,9 +44,63 @@
 
 	onMount(() => {
 		const saved = localStorage.getItem('lang') || 'cs';
-		if (langConfig[saved]) currentLang = saved;
+		currentLang = langConfig[saved] ? saved : 'cs';
 		document.addEventListener('click', handleDocumentClick);
 		return () => document.removeEventListener('click', handleDocumentClick);
+	});
+
+	const t = $derived({
+		howItWorks:
+			currentLang === 'en'
+				? 'How it Works'
+				: currentLang === 'de'
+					? 'Wie es funktioniert'
+					: currentLang === 'fr'
+						? 'Comment ça marche'
+						: currentLang === 'sk'
+							? 'Ako to funguje'
+							: 'Jak to funguje',
+		features:
+			currentLang === 'en'
+				? 'Features'
+				: currentLang === 'de'
+					? 'Funktionen'
+					: currentLang === 'fr'
+						? 'Fonctionnalités'
+						: currentLang === 'sk'
+							? 'Funkcie'
+							: 'Funkce',
+		pricing:
+			currentLang === 'en'
+				? 'Pricing'
+				: currentLang === 'de'
+					? 'Preise'
+					: currentLang === 'fr'
+						? 'Tarifs'
+						: currentLang === 'sk'
+							? 'Cenník'
+							: 'Ceník',
+		faq: 'FAQ',
+		login:
+			currentLang === 'en'
+				? 'Log In'
+				: currentLang === 'de'
+					? 'Anmelden'
+					: currentLang === 'fr'
+						? 'Connexion'
+						: currentLang === 'sk'
+							? 'Prihlásiť'
+							: 'Přihlásit',
+		tryFree:
+			currentLang === 'en'
+				? 'Try for Free'
+				: currentLang === 'de'
+					? 'Kostenlos testen'
+					: currentLang === 'fr'
+						? 'Essayer gratuitement'
+						: currentLang === 'sk'
+							? 'Vyskúšať zadarmo'
+							: 'Vyzkoušet zdarma'
 	});
 </script>
 
@@ -64,10 +120,10 @@
 			<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
 		</a>
 		<div class="flex items-center gap-8 text-sm font-medium text-text-muted">
-			<a href="/#how-it-works" class="hover:text-white transition-colors">Jak to funguje</a>
-			<a href="/features" class="text-white transition-colors">Funkce</a>
-			<a href="/pricing" class="hover:text-white transition-colors">Ceník</a>
-			<a href="/#faq" class="hover:text-white transition-colors">FAQ</a>
+			<a href="/#how-it-works" class="hover:text-white transition-colors">{t.howItWorks}</a>
+			<a href="/features" class="text-white transition-colors">{t.features}</a>
+			<a href="/pricing" class="hover:text-white transition-colors">{t.pricing}</a>
+			<a href="/#faq" class="hover:text-white transition-colors">{t.faq}</a>
 		</div>
 		<div class="flex items-center gap-3">
 			<div id="langDropdown" class="lang-dropdown">
@@ -101,11 +157,12 @@
 					{/each}
 				</div>
 			</div>
-			<button
+			<a
+				href="#"
 				class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
 			>
-				Přihlásit
-			</button>
+				{t.login}
+			</a>
 		</div>
 	</nav>
 
@@ -140,32 +197,35 @@
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			Jak to funguje <i class="fa-solid fa-chevron-right text-xs"></i>
+			{t.howItWorks} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/features"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			Funkce <i class="fa-solid fa-chevron-right text-xs"></i>
+			{t.features} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/pricing"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			Ceník <i class="fa-solid fa-chevron-right text-xs"></i>
+			{t.pricing} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="/#faq"
 			onclick={closeMobileMenu}
 			class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between"
 		>
-			FAQ <i class="fa-solid fa-chevron-right text-xs"></i>
+			{t.faq} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
-		<button class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold">
-			Přihlásit
-		</button>
+		<a
+			href="#"
+			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
+		>
+			{t.login}
+		</a>
 	</div>
 
 	<!-- Desktop Main Content -->
@@ -982,11 +1042,12 @@
 			>
 				<h2 class="text-xl font-bold mb-2">Začněte zdarma</h2>
 				<p class="text-text-muted text-sm mb-5">Vyzkoušejte všechny funkce bez registrace.</p>
-				<button
-					class="w-full py-3.5 rounded-xl bg-brand-green text-white font-semibold text-sm shadow-glow-green"
+				<a
+					href="#"
+					class="w-full py-3.5 rounded-xl bg-brand-green text-white font-semibold text-sm shadow-glow-green block text-center"
 				>
-					Vyzkoušet zdarma
-				</button>
+					{t.tryFree}
+				</a>
 			</div>
 		</section>
 	</main>

@@ -59,21 +59,117 @@
 
 	onMount(() => {
 		const saved = localStorage.getItem('lang') || 'cs';
-		currentLang = saved;
+		if (langConfig[saved]) currentLang = saved;
 		document.addEventListener('click', handleDocumentClick);
 		return () => document.removeEventListener('click', handleDocumentClick);
 	});
 
-	$effect(() => {
-		if (typeof document !== 'undefined') {
-			document.querySelectorAll('[data-cs]').forEach((el) => {
-				const val =
-					(el as HTMLElement).dataset[currentLang] ||
-					(el as HTMLElement).dataset['en'] ||
-					(el as HTMLElement).dataset['cs'];
-				if (val) el.textContent = val;
-			});
-		}
+	const t = $derived({
+		howItWorks:
+			currentLang === 'en'
+				? 'How it Works'
+				: currentLang === 'de'
+					? 'Wie es funktioniert'
+					: currentLang === 'fr'
+						? 'Comment ça marche'
+						: currentLang === 'sk'
+							? 'Ako to funguje'
+							: 'Jak to funguje',
+		features:
+			currentLang === 'en'
+				? 'Features'
+				: currentLang === 'de'
+					? 'Funktionen'
+					: currentLang === 'fr'
+						? 'Fonctionnalités'
+						: currentLang === 'sk'
+							? 'Funkcie'
+							: 'Funkce',
+		pricing:
+			currentLang === 'en'
+				? 'Pricing'
+				: currentLang === 'de'
+					? 'Preise'
+					: currentLang === 'fr'
+						? 'Tarifs'
+						: currentLang === 'sk'
+							? 'Cenník'
+							: 'Ceník',
+		faq: 'FAQ',
+		login:
+			currentLang === 'en'
+				? 'Log In'
+				: currentLang === 'de'
+					? 'Anmelden'
+					: currentLang === 'fr'
+						? 'Connexion'
+						: currentLang === 'sk'
+							? 'Prihlásiť'
+							: 'Přihlásit',
+		register:
+			currentLang === 'en'
+				? 'Register'
+				: currentLang === 'de'
+					? 'Registrieren'
+					: currentLang === 'fr'
+						? "S'inscrire"
+						: currentLang === 'sk'
+							? 'Registrácia'
+							: 'Registrace',
+		tryFree:
+			currentLang === 'en'
+				? 'Try for Free'
+				: currentLang === 'de'
+					? 'Kostenlos testen'
+					: currentLang === 'fr'
+						? 'Essayer gratuitement'
+						: currentLang === 'sk'
+							? 'Vyskúšať zadarmo'
+							: 'Vyzkoušet zdarma',
+		downloadApp:
+			currentLang === 'en'
+				? 'Download App'
+				: currentLang === 'de'
+					? 'App herunterladen'
+					: currentLang === 'fr'
+						? "Télécharger l'app"
+						: currentLang === 'sk'
+							? 'Stiahnuť aplikáciu'
+							: 'Stáhnout aplikaci',
+		navigation:
+			currentLang === 'en'
+				? 'Navigation'
+				: currentLang === 'sk'
+					? 'Navigácia'
+					: 'Navigace',
+		whyItMatters:
+			currentLang === 'en'
+				? 'Why it Matters'
+				: currentLang === 'de'
+					? 'Warum es wichtig ist'
+					: currentLang === 'fr'
+						? "Pourquoi c'est important"
+						: currentLang === 'sk'
+							? 'Prečo je to dôležité'
+							: 'Proč to funguje',
+		forWho:
+			currentLang === 'en'
+				? 'For Who'
+				: currentLang === 'de'
+					? 'Für wen'
+					: currentLang === 'fr'
+						? 'Pour qui'
+						: currentLang === 'sk'
+							? 'Pre koho'
+							: 'Pro koho',
+		language:
+			currentLang === 'en'
+				? 'Language'
+				: currentLang === 'de'
+					? 'Sprache'
+					: currentLang === 'fr'
+						? 'Langue'
+						: 'Jazyk'
 	});
 </script>
 
@@ -120,7 +216,7 @@
 	<!-- Nav Links -->
 	<div class="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto">
 		<p class="text-[10px] font-bold uppercase tracking-widest text-text-muted px-2 mb-2">
-			Navigace
+			{t.navigation}
 		</p>
 		<a
 			href="#how-it-works"
@@ -132,7 +228,7 @@
 			>
 				<i class="fa-solid fa-circle-play"></i>
 			</div>
-			<span class="text-sm font-medium">Jak to funguje</span>
+			<span class="text-sm font-medium">{t.howItWorks}</span>
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
 		<a
@@ -145,7 +241,7 @@
 			>
 				<i class="fa-solid fa-shield-halved"></i>
 			</div>
-			<span class="text-sm font-medium">Proč to funguje</span>
+			<span class="text-sm font-medium">{t.whyItMatters}</span>
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
 		<a
@@ -158,7 +254,7 @@
 			>
 				<i class="fa-solid fa-users"></i>
 			</div>
-			<span class="text-sm font-medium">Pro koho</span>
+			<span class="text-sm font-medium">{t.forWho}</span>
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
 		<a
@@ -171,11 +267,11 @@
 			>
 				<i class="fa-solid fa-circle-question"></i>
 			</div>
-			<span class="text-sm font-medium">FAQ</span>
+			<span class="text-sm font-medium">{t.faq}</span>
 			<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 		</a>
 		<div class="border-t border-gray-800 my-3"></div>
-		<p class="text-[10px] font-bold uppercase tracking-widest text-text-muted px-2 mb-2">Jazyk</p>
+		<p class="text-[10px] font-bold uppercase tracking-widest text-text-muted px-2 mb-2">{t.language}</p>
 		<div class="px-1 relative" id="lang-dropdown-wrapper">
 			<button
 				onclick={toggleLangDropdown}
@@ -219,17 +315,20 @@
 	<!-- Auth Buttons -->
 	<div class="px-4 pb-4">
 		<div class="flex gap-2 mt-3">
-			<button
+			<a
+				href="#"
 				class="flex-1 py-3 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5"
 			>
 				<i class="fa-solid fa-right-to-bracket text-text-muted"></i>
-				Přihlásit
-			</button>
-			<button
+				{t.login}
+			</a>
+			<a
+				href="#"
 				class="flex-1 py-3 rounded-xl bg-brand-blue text-white font-semibold text-xs flex items-center justify-center gap-1.5"
 			>
-				<i class="fa-solid fa-user-plus"></i> Registrace
-			</button>
+				<i class="fa-solid fa-user-plus"></i>
+				{t.register}
+			</a>
 		</div>
 	</div>
 </div>
@@ -249,10 +348,10 @@
 			<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
 		</a>
 		<div class="flex items-center gap-8 text-sm font-medium text-text-muted">
-			<a href="#how-it-works" class="hover:text-white transition-colors">Jak to funguje</a>
-			<a href="/features" class="hover:text-white transition-colors">Funkce</a>
-			<a href="/pricing" class="hover:text-white transition-colors">Ceník</a>
-			<a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+			<a href="#how-it-works" class="hover:text-white transition-colors">{t.howItWorks}</a>
+			<a href="/features" class="hover:text-white transition-colors">{t.features}</a>
+			<a href="/pricing" class="hover:text-white transition-colors">{t.pricing}</a>
+			<a href="#faq" class="hover:text-white transition-colors">{t.faq}</a>
 		</div>
 		<div class="flex items-center gap-3">
 			<div id="langDropdown" class="lang-dropdown">
@@ -286,11 +385,12 @@
 					{/each}
 				</div>
 			</div>
-			<button
+			<a
+				href="#"
 				class="px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
 			>
-				Přihlásit
-			</button>
+				{t.login}
+			</a>
 		</div>
 	</nav>
 
@@ -332,18 +432,20 @@
 					z vašich fotek a videí před jejich sdílením online.
 				</p>
 				<div class="flex flex-col sm:flex-row gap-4 mt-4">
-					<button
+					<a
+						href="#"
 						class="px-8 py-3.5 rounded-lg bg-brand-green text-white font-semibold shadow-glow-green hover:bg-green-500 transition-all flex items-center justify-center gap-2"
 					>
 						<i class="fa-solid fa-cloud-arrow-up"></i>
-						<span>Vyzkoušet zdarma</span>
-					</button>
-					<button
+						<span>{t.tryFree}</span>
+					</a>
+					<a
+						href="#"
 						class="px-8 py-3.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-semibold hover:bg-gray-800 transition-all flex items-center justify-center gap-2"
 					>
 						<i class="fa-brands fa-apple"></i>
-						<span>Stáhnout aplikaci</span>
-					</button>
+						<span>{t.downloadApp}</span>
+					</a>
 				</div>
 			</div>
 			<div class="w-full lg:w-[45%] h-[400px]">
@@ -982,16 +1084,18 @@
 			</div>
 			<!-- CTAs -->
 			<div class="flex flex-col gap-3">
-				<button
+				<a
+					href="#"
 					class="w-full py-4 rounded-xl bg-brand-green text-white font-semibold shadow-glow-green text-sm flex items-center justify-center gap-2"
 				>
-					<i class="fa-solid fa-cloud-arrow-up"></i>Vyzkoušet zdarma
-				</button>
-				<button
+					<i class="fa-solid fa-cloud-arrow-up"></i>{t.tryFree}
+				</a>
+				<a
+					href="#"
 					class="w-full py-4 rounded-xl bg-navy-lighter border border-gray-700 text-white font-semibold text-sm flex items-center justify-center gap-2"
 				>
-					<i class="fa-brands fa-apple"></i>Stáhnout aplikaci
-				</button>
+					<i class="fa-brands fa-apple"></i>{t.downloadApp}
+				</a>
 			</div>
 		</section>
 

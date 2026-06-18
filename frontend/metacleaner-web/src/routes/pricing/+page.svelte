@@ -164,11 +164,12 @@
 					{/each}
 				</div>
 			</div>
-			<button
+			<a
+				href="#"
 				class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
 			>
 				{t.login}
-			</button>
+			</a>
 		</div>
 	</nav>
 
@@ -226,9 +227,12 @@
 		>
 			{t.faq} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
-		<button class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold">
+		<a
+			href="#"
+			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
+		>
 			{t.login}
-		</button>
+		</a>
 	</div>
 
 	<!-- Desktop Main -->
