@@ -15,7 +15,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 8. [HIGH] Create `src/lib/repositories/steps.ts` — `stepsRepository` returning the 3 "how it works" steps (`number, icon, titleKey, descKey`, + mobile desc key).
 - [x] 9. [HIGH] Create `src/lib/repositories/stats.ts` — `statsRepository` returning the 3 risk stats (`value, icon, color, labelKey`, + mobile short label key).
 - [x] 10. [HIGH] Create `src/lib/repositories/metadataDemo.ts` — `metadataDemoRepository` returning the before/after EXIF sample fields (`icon, labelKey, value`) for desktop + mobile variants.
-- [ ] 11. [HIGH] Create `src/lib/repositories/index.ts` re-exporting all repositories and their interfaces.
+- [x] 11. [HIGH] Create `src/lib/repositories/index.ts` re-exporting all repositories and their interfaces.
 
 ## Phase 3 — Extract static UI strings to i18n
 - [ ] 12. [MEDIUM] Extract shared chrome strings (navbar, mobile drawer, footer, CTAs) on `src/routes/+page.svelte` to `nav_*`/`cta_*`/`footer_*` keys; delete the inline `langConfig`/`t` object. — ~20 strings
