@@ -82,8 +82,8 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 58. [MEDIUM] Create `FormatPill.stories.svelte` — color variants.
 - [x] 59. [MEDIUM] Create `ExifIllustration.svelte` — inline EXIF decorative graphic.
 - [x] 60. [MEDIUM] Create `ExifIllustration.stories.svelte` — default.
-- [ ] 61. [MEDIUM] Create `C2paIllustration.svelte` — inline C2PA decorative graphic.
-- [ ] 62. [MEDIUM] Create `C2paIllustration.stories.svelte` — default.
+- [x] 61. [MEDIUM] Create `C2paIllustration.svelte` — inline C2PA decorative graphic.
+- [x] 62. [MEDIUM] Create `C2paIllustration.stories.svelte` — default.
 - [ ] 63. [HIGH] Create `FeatureRow.svelte` — desktop alternating row composing `IconBadge`, `FormatPill`, `CheckBullet`, image/illustration; props `feature`.
 - [ ] 64. [HIGH] Create `FeatureRow.stories.svelte` — ltr/rtl, formats vs bullets, image vs illustration.
 - [ ] 65. [HIGH] Create `FeatureCard.svelte` — mobile feature card composing `IconBadge`, `FormatPill`, `CheckBullet`; props `feature`.
