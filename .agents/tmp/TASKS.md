@@ -49,13 +49,13 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 33. [HIGH] Create `MobileNavbar.stories.svelte` — open/closed.
 - [x] 34. [HIGH] Create `MobileMenu.svelte` — unifies Home drawer + Features/Pricing dropdown; props `variant` ('drawer'|'dropdown'), `active`, `open`, `onClose`; composes `LanguageSwitcher`.
 - [x] 35. [HIGH] Create `MobileMenu.stories.svelte` — drawer (open) + dropdown (open).
-- [ ] 36. [LOW] Create `LanguageSwitcher.stories.svelte` for the existing `src/lib/components/LanguageSwitcher.svelte` — desktop + mobile variants.
+- [x] 36. [LOW] Create `LanguageSwitcher.stories.svelte` for the existing `src/lib/components/LanguageSwitcher.svelte` — desktop + mobile variants.
 
 ## Phase 3 — Page-specific components & sections
 
 ### Home components (`src/routes/(home)/components/`)
-- [ ] 37. [HIGH] Create `MetadataFieldRow.svelte` — icon + label + value/“removed”; props `field`, `variant` ('before'|'after'), `size`.
-- [ ] 38. [HIGH] Create `MetadataFieldRow.stories.svelte` — before/after, desktop/mobile.
+- [x] 37. [HIGH] Create `MetadataFieldRow.svelte` — icon + label + value/”removed”; props `field`, `variant` ('before'|'after'), `size`.
+- [x] 38. [HIGH] Create `MetadataFieldRow.stories.svelte` — before/after, desktop/mobile.
 - [ ] 39. [HIGH] Create `MetadataComparisonCard.svelte` — before/after card composing `IconBadge` + `MetadataFieldRow`; props `variant`, `fields`, `size`.
 - [ ] 40. [HIGH] Create `MetadataComparisonCard.stories.svelte` — before + after.
 - [ ] 41. [MEDIUM] Create `UploadCard.svelte` — dashed drop card composing `FormatBadge`; prop `size` (desktop/mobile).
