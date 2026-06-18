@@ -22,6 +22,8 @@
 	--max-width-site: 1100px;
 	--blur-glow: 50px;
 	--blur-glow-sm: 40px;
+	--text-badge: 10px;
+	--text-badge-xs: 9px;
 }
 
 body {

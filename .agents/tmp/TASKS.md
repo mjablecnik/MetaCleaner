@@ -28,10 +28,10 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 15. [MEDIUM] Create `CheckBullet.stories.svelte` — default + emphasis.
 - [x] 16. [MEDIUM] Create `NavLink.svelte` — desktop nav link; props `href`, `label`, `active`.
 - [x] 17. [MEDIUM] Create `NavLink.stories.svelte` — default + active.
-- [ ] 18. [MEDIUM] Create `GradientText.svelte` — blue→green clip-text wrapper (children snippet).
-- [ ] 19. [MEDIUM] Create `GradientText.stories.svelte` — sample heading.
-- [ ] 20. [LOW] Create `FormatBadge.svelte` — uppercase format tag; props `label`, `size`.
-- [ ] 21. [LOW] Create `FormatBadge.stories.svelte` — JPG/PNG/HEIC/WEBP, sizes.
+- [x] 18. [MEDIUM] Create `GradientText.svelte` — blue→green clip-text wrapper (children snippet).
+- [x] 19. [MEDIUM] Create `GradientText.stories.svelte` — sample heading.
+- [x] 20. [LOW] Create `FormatBadge.svelte` — uppercase format tag; props `label`, `size`.
+- [x] 21. [LOW] Create `FormatBadge.stories.svelte` — JPG/PNG/HEIC/WEBP, sizes.
 - [ ] 22. [LOW] Create `SocialIconLink.svelte` — square social icon button; props `icon`, `href`.
 - [ ] 23. [LOW] Create `SocialIconLink.stories.svelte` — twitter/github/linkedin.
 - [ ] 24. [MEDIUM] Create `FooterBrand.svelte` — `BrandLogo` + tagline; prop `tagline`.
