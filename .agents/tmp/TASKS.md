@@ -64,7 +64,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 - [x] 44. [MEDIUM] Create `RiskStatCard.stories.svelte` — the three stat colors.
 - [x] 45. [MEDIUM] Create `StepCard.svelte` — step card composing `IconBadge`; props `step`, `size`.
 - [x] 46. [MEDIUM] Create `StepCard.stories.svelte` — desktop + mobile.
-- [ ] 47. [MEDIUM] Create `AudienceCard.svelte` — audience card composing `IconBadge` + `CheckBullet`; props `audience`, `compact`.
+- [x] 47. [MEDIUM] Create `AudienceCard.svelte` — audience card composing `IconBadge` + `CheckBullet`; props `audience`, `compact`.
 - [ ] 48. [MEDIUM] Create `AudienceCard.stories.svelte` — full + compact.
 - [ ] 49. [MEDIUM] Create `FaqAccordionItem.svelte` — question/answer with internal `open` `$state` (replaces DOM-class toggling, same look/behavior); props `question`, `answer`, `size`.
 - [ ] 50. [MEDIUM] Create `FaqAccordionItem.stories.svelte` — collapsed + expanded.
