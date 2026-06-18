@@ -45,7 +45,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 - [x] 30. [HIGH] Create `SiteNavbar.svelte` — desktop navbar composing `BrandLogo`, `NavLink`, `LanguageSwitcher`, login `CtaButton`; prop `active`. Use `/#anchor` hrefs so it works from any page.
 - [x] 31. [HIGH] Create `SiteNavbar.stories.svelte` — active = home/features/pricing.
-- [ ] 32. [HIGH] Create `MobileNavbar.svelte` — sticky top bar + hamburger; props `open`, `onToggle`.
+- [x] 32. [HIGH] Create `MobileNavbar.svelte` — sticky top bar + hamburger; props `open`, `onToggle`.
 - [ ] 33. [HIGH] Create `MobileNavbar.stories.svelte` — open/closed.
 - [ ] 34. [HIGH] Create `MobileMenu.svelte` — unifies Home drawer + Features/Pricing dropdown; props `variant` ('drawer'|'dropdown'), `active`, `open`, `onClose`; composes `LanguageSwitcher`.
 - [ ] 35. [HIGH] Create `MobileMenu.stories.svelte` — drawer (open) + dropdown (open).
