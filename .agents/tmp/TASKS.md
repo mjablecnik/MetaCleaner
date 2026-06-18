@@ -91,7 +91,7 @@ All paths are relative to `frontend/metacleaner-web/`.
 
 ### Features sections (`src/routes/features/sections/`)
 - [x] 67. [HIGH] Create `FeaturesHeaderSection.svelte` — composing `SectionHeading`/`GradientText`.
-- [ ] 68. [HIGH] Create `FeaturesShowcaseSection.svelte` — desktop `FeatureRow` list + mobile `FeatureCard` list.
+- [x] 68. [HIGH] Create `FeaturesShowcaseSection.svelte` — desktop `FeatureRow` list + mobile `FeatureCard` list.
 - [ ] 69. [MEDIUM] Create `FeaturesCtaSection.svelte` — mobile CTA box composing `CtaButton`.
 - [ ] 70. [MEDIUM] Create `FeaturesFooter.svelte` — composing `FooterBrand`, `SocialIconLink`, `FooterColumn`, `FooterBottomBar`.
 
