@@ -564,3 +564,15 @@
 - Problem: `HandleJobProgress` now takes `*AuthMiddleware` as a parameter. `NewRouter` originally instantiated `authMW` after all `mux.Handle()` calls at the bottom of the function. Passing `authMW` to `HandleJobProgress` before it's declared caused a compile error.
 - Solution: Move `authMW := NewAuthMiddleware(cfg)` to the top of `NewRouter` (just after the rate limiters), before any `mux.Handle()` registrations. The line at the bottom becomes just `return cors(authMW.Middleware(mux))`.
 - Source: code-review-fix, 2026-06-15
+
+## Playwright browser path mismatch in metacleaner-app and metacleaner-web
+- Project: metacleaner-app, metacleaner-web
+- Problem: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` is set in the environment, but `/opt/playwright-browsers` is owned by root (not writable). The project's playwright version may need a different revision than what's installed there (e.g., metacleaner-app needs rev 1223, metacleaner-web needs rev 1228). Running `npx playwright install chromium` fails with EACCES.
+- Solution: Install to a writable path: `PLAYWRIGHT_BROWSERS_PATH=/tmp/playwright-browsers npx --prefix /workspace/frontend/<project> playwright install chromium`. Then run tests with `PLAYWRIGHT_BROWSERS_PATH=/tmp/playwright-browsers npm run test:browser`.
+- Source: check-build, 2026-06-18
+
+## Storybook browser tests have 68 pre-existing unhandled errors (metacleaner-app)
+- Project: metacleaner-app
+- Problem: Running `npm run test:browser` reports 68 unhandled errors (TypeError: Cannot read properties of undefined) from Storybook stories. These occur when Storybook's autodocs feature renders components without required props. All 385 test assertions pass but the exit code is non-zero due to these runtime errors. Affected stories include FileAccordionItem, AuthStatsRow, NavBar, LanguageDropdown, ReportCard, ReportTableRow, and others.
+- Solution: Not fixed — pre-existing issues not caused by recent changes. Server tests (`npm test`) pass cleanly with 482 tests. Browser tests are broken due to autodocs rendering missing required props. Fixing would require adding default args to 12+ story files.
+- Source: check-build, 2026-06-18
