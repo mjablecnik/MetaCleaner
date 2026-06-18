@@ -32,8 +32,8 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 21. [MEDIUM] Replace the hardcoded "Who It's For" cards (desktop + mobile) in `+page.svelte` with `audienceRepository`.
 - [x] 22. [MEDIUM] Replace the hardcoded FAQ items (desktop + mobile) in `+page.svelte` with `faqRepository`.
 - [x] 23. [MEDIUM] Replace the hardcoded How-It-Works steps (desktop + mobile) in `+page.svelte` with `stepsRepository`.
-- [ ] 24. [MEDIUM] Replace the hardcoded risk stats in `+page.svelte` with `statsRepository`.
-- [ ] 25. [MEDIUM] Replace the hardcoded before/after EXIF demo fields in `+page.svelte` with `metadataDemoRepository`.
+- [x] 24. [MEDIUM] Replace the hardcoded risk stats in `+page.svelte` with `statsRepository`.
+- [x] 25. [MEDIUM] Replace the hardcoded before/after EXIF demo fields in `+page.svelte` with `metadataDemoRepository`.
 
 ## Phase 5 — Language switching
 - [ ] 26. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` driven by Paraglide `getLocale`/`setLocale`/`locales`, with flag+label map, preserving the existing desktop dropdown + mobile drawer markup (en/cs only).

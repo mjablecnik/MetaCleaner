@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
-	import { getAudience, getFaq, stepsRepository, statsRepository } from '$lib/repositories';
+	import { getAudience, getFaq, stepsRepository, statsRepository, getMetadataFields, getCleanedFields } from '$lib/repositories';
 
 	const audienceFull = getAudience('full');
 	const audienceCompact = getAudience('compact');
@@ -9,6 +9,10 @@
 	const faqMobile = getFaq('mobile');
 	const steps = stepsRepository();
 	const stats = statsRepository();
+	const desktopFields = getMetadataFields('desktop');
+	const desktopCleanedFields = getCleanedFields('desktop');
+	const mobileFields = getMetadataFields('mobile');
+	const mobileCleanedFields = getCleanedFields('mobile');
 
 	const audienceColorClasses: Record<string, { iconBg: string; iconText: string; hoverBorder: string }> = {
 		'brand-blue': { iconBg: 'bg-brand-blue/20', iconText: 'text-brand-blue', hoverBorder: 'hover:border-brand-blue/50' },
@@ -319,46 +323,16 @@
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
-						<div
-							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
-						>
-							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-location-dot text-brand-red"></i> {m.meta_field_gps()}
-							</span>
-							<span class="text-xs font-mono text-white">50.0755°N, 14.4378°E</span>
-						</div>
-						<div
-							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
-						>
-							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-mobile-screen text-brand-red"></i> {m.meta_field_device()}
-							</span>
-							<span class="text-xs font-mono text-white">Apple iPhone 15 Pro</span>
-						</div>
-						<div
-							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
-						>
-							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-calendar text-brand-red"></i> {m.meta_field_datetime()}
-							</span>
-							<span class="text-xs font-mono text-white">2024-03-15 14:32:07</span>
-						</div>
-						<div
-							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
-						>
-							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-user text-brand-red"></i> {m.meta_field_author()}
-							</span>
-							<span class="text-xs font-mono text-white">Jan Novák</span>
-						</div>
-						<div
-							class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
-						>
-							<span class="text-xs text-text-muted flex items-center gap-2">
-								<i class="fa-solid fa-camera text-brand-red"></i> {m.meta_field_camera()}
-							</span>
-							<span class="text-xs font-mono text-white">f/1.8 · 1/120s · ISO 64</span>
-						</div>
+						{#each desktopFields as field}
+							<div
+								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
+							>
+								<span class="text-xs text-text-muted flex items-center gap-2">
+									<i class="fa-solid {field.icon} text-brand-red"></i> {t(field.labelKey)}
+								</span>
+								<span class="text-xs font-mono text-white">{field.value}</span>
+							</div>
+						{/each}
 					</div>
 					<p class="text-xs text-brand-red/80 flex items-center gap-2 mt-1">
 						<i class="fa-solid fa-circle-exclamation"></i>
@@ -381,23 +355,13 @@
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
-						{#each [m.meta_field_gps(), m.meta_field_device(), m.meta_field_datetime(), m.meta_field_author(), m.meta_field_camera()] as label, i}
+						{#each desktopCleanedFields as field}
 							<div
 								class="flex items-center justify-between px-4 py-2.5 rounded-lg bg-navy-main/60 border border-gray-800"
 							>
 								<span class="text-xs text-text-muted flex items-center gap-2">
-									<i
-										class="fa-solid {i === 0
-											? 'fa-location-dot'
-											: i === 1
-												? 'fa-mobile-screen'
-												: i === 2
-													? 'fa-calendar'
-													: i === 3
-														? 'fa-user'
-														: 'fa-camera'} text-brand-green"
-									></i>
-									{label}
+									<i class="fa-solid {field.icon} text-brand-green"></i>
+									{t(field.labelKey)}
 								</span>
 								<span class="text-xs font-mono text-brand-green flex items-center gap-1">
 									<i class="fa-solid fa-check"></i> {m.home_why_removed()}
@@ -709,38 +673,16 @@
 					</div>
 				</div>
 				<div class="flex flex-col gap-1.5">
-					<div
-						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
-					>
-						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-location-dot text-brand-red text-[10px]"></i> {m.meta_field_gps_short()}
-						</span>
-						<span class="text-xs font-mono text-white">50.07°N, 14.43°E</span>
-					</div>
-					<div
-						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
-					>
-						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-mobile-screen text-brand-red text-[10px]"></i>{m.meta_field_device_short()}
-						</span>
-						<span class="text-xs font-mono text-white">iPhone 15 Pro</span>
-					</div>
-					<div
-						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
-					>
-						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-calendar text-brand-red text-[10px]"></i>{m.meta_field_datetime_short()}
-						</span>
-						<span class="text-xs font-mono text-white">2024-03-15 14:32</span>
-					</div>
-					<div
-						class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
-					>
-						<span class="text-xs text-text-muted flex items-center gap-1.5">
-							<i class="fa-solid fa-user text-brand-red text-[10px]"></i>{m.meta_field_author_short()}
-						</span>
-						<span class="text-xs font-mono text-white">Jan Novák</span>
-					</div>
+					{#each mobileFields as field}
+						<div
+							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
+						>
+							<span class="text-xs text-text-muted flex items-center gap-1.5">
+								<i class="fa-solid {field.icon} text-brand-red text-[10px]"></i> {t(field.labelKey)}
+							</span>
+							<span class="text-xs font-mono text-white">{field.value}</span>
+						</div>
+					{/each}
 				</div>
 				<p class="text-xs text-brand-red/80 flex items-center gap-1.5">
 					<i class="fa-solid fa-circle-exclamation text-[10px]"></i>{m.home_why_before_warning()}
@@ -764,12 +706,12 @@
 					</div>
 				</div>
 				<div class="flex flex-col gap-1.5">
-					{#each [['fa-location-dot', m.meta_field_gps_short()], ['fa-mobile-screen', m.meta_field_device_short()], ['fa-calendar', m.meta_field_datetime_short()], ['fa-user', m.meta_field_author_short()]] as [icon, label]}
+					{#each mobileCleanedFields as field}
 						<div
 							class="flex items-center justify-between px-3 py-2 rounded-lg bg-navy-main/60 border border-gray-800"
 						>
 							<span class="text-xs text-text-muted flex items-center gap-1.5">
-								<i class="fa-solid {icon} text-brand-green text-[10px]"></i>{label}
+								<i class="fa-solid {field.icon} text-brand-green text-[10px]"></i>{t(field.labelKey)}
 							</span>
 							<span class="text-xs font-mono text-brand-green flex items-center gap-1">
 								<i class="fa-solid fa-check text-[10px]"></i> {m.home_why_removed()}
