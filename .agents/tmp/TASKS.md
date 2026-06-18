@@ -24,7 +24,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 - [x] 15. [MEDIUM] Set `meta_home_title` and extract the Home `<title>`; verify no hardcoded copy remains in `+page.svelte` except brand/format literals. — 1 string + sweep
 - [x] 16. [MEDIUM] Extract `src/routes/features/+page.svelte` header, mobile CTA, and footer copy to `features_*` / `footer_*` keys; delete inline `t` object; set `meta_features_title`. — ~12 strings
 - [x] 17. [MEDIUM] Extract `src/routes/pricing/+page.svelte` header, billing toggle, enterprise banner, and footer copy to `pricing_*` / `footer_*` keys; set `meta_pricing_title`. — ~10 strings
-- [ ] 18. [MEDIUM] Backfill `messages/cs.json` for every key added in Phase 3 and verify en/cs key parity (no missing keys in either file).
+- [x] 18. [MEDIUM] Backfill `messages/cs.json` for every key added in Phase 3 and verify en/cs key parity (no missing keys in either file).
 
 ## Phase 4 — Replace API data with repository calls
 - [ ] 19. [MEDIUM] Replace the 6 hardcoded feature sections (desktop + mobile) in `features/+page.svelte` with an `#each featuresRepository(...)` render using `t(key)`.
