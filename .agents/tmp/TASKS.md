@@ -20,7 +20,7 @@ Derived from `DATA_SPEC.md`. Do tasks in order; dependencies are created first.
 ## Phase 3 — Extract static UI strings to i18n
 - [x] 12. [MEDIUM] Extract shared chrome strings (navbar, mobile drawer, footer, CTAs) on `src/routes/+page.svelte` to `nav_*`/`cta_*`/`footer_*` keys; delete the inline `langConfig`/`t` object. — ~20 strings
 - [x] 13. [MEDIUM] Extract Home hero + upload card + Why-It-Matters headings/labels to `home_hero_*` / `home_upload_*` / `home_why_*` keys (desktop + mobile). — ~25 strings
-- [ ] 14. [MEDIUM] Extract Home How-It-Works, Who-It's-For, and FAQ section headings (eyebrow/title/subtitle) to `home_steps_*` / `home_audience_*` / `home_faq_*` keys. — ~9 strings
+- [x] 14. [MEDIUM] Extract Home How-It-Works, Who-It's-For, and FAQ section headings (eyebrow/title/subtitle) to `home_steps_*` / `home_audience_*` / `home_faq_*` keys. — ~9 strings
 - [ ] 15. [MEDIUM] Set `meta_home_title` and extract the Home `<title>`; verify no hardcoded copy remains in `+page.svelte` except brand/format literals. — 1 string + sweep
 - [ ] 16. [MEDIUM] Extract `src/routes/features/+page.svelte` header, mobile CTA, and footer copy to `features_*` / `footer_*` keys; delete inline `t` object; set `meta_features_title`. — ~12 strings
 - [ ] 17. [MEDIUM] Extract `src/routes/pricing/+page.svelte` header, billing toggle, enterprise banner, and footer copy to `pricing_*` / `footer_*` keys; set `meta_pricing_title`. — ~10 strings

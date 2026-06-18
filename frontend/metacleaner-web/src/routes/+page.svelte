@@ -432,10 +432,10 @@
 		<section id="how-it-works" class="w-full">
 			<div class="text-center mb-12">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
-					>Postup</span
+					>{m.home_steps_eyebrow()}</span
 				>
-				<h2 class="text-4xl font-bold mb-4">Jak to funguje?</h2>
-				<p class="text-text-muted max-w-xl mx-auto">Tři jednoduché kroky k ochraně vašeho soukromí.</p>
+				<h2 class="text-4xl font-bold mb-4">{m.home_steps_title()}</h2>
+				<p class="text-text-muted max-w-xl mx-auto">{m.home_steps_subtitle()}</p>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 				<div
@@ -447,10 +447,9 @@
 						<i class="fa-solid fa-upload"></i>
 					</div>
 					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">01</span>
-					<h3 class="text-xl font-bold">Nahrajte soubory</h3>
+					<h3 class="text-xl font-bold">{m.home_step1_title()}</h3>
 					<p class="text-text-muted text-sm leading-relaxed">
-						Přetáhněte fotky nebo videa do aplikace. Všechny soubory se zpracují na vašem zařízení.
-						Vaše data nikdy neodpovídají na serverech.
+						{m.home_step1_desc()}
 					</p>
 				</div>
 				<div
@@ -462,10 +461,9 @@
 						<i class="fa-solid fa-clipboard"></i>
 					</div>
 					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">02</span>
-					<h3 class="text-xl font-bold">Odstraňte metadata</h3>
+					<h3 class="text-xl font-bold">{m.home_step2_title()}</h3>
 					<p class="text-text-muted text-sm leading-relaxed">
-						Aplikace automaticky odstraňuje skryté EXIF data, GPS souřadnice a informace o zařízení
-						z vašich souborů.
+						{m.home_step2_desc()}
 					</p>
 				</div>
 				<div
@@ -477,10 +475,9 @@
 						<i class="fa-solid fa-download"></i>
 					</div>
 					<span class="absolute top-6 right-6 text-5xl font-black text-gray-800 select-none">03</span>
-					<h3 class="text-xl font-bold">Stáhni soubory</h3>
+					<h3 class="text-xl font-bold">{m.home_step3_title()}</h3>
 					<p class="text-text-muted text-sm leading-relaxed">
-						Soubory se automaticky stáhnou do vašeho počítače nebo telefonu. Všechny soubory jsou
-						bezpečně uloženy.
+						{m.home_step3_desc()}
 					</p>
 				</div>
 			</div>
@@ -491,11 +488,11 @@
 	<section id="who-its-for" class="hidden md:block w-full max-w-[1100px] mx-auto px-6 pb-16">
 		<div class="text-center mb-12">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
-				>Pro koho</span
+				>{m.home_audience_eyebrow()}</span
 			>
-			<h2 class="text-4xl font-bold mb-4">Pro koho je MetaCleaner určen?</h2>
+			<h2 class="text-4xl font-bold mb-4">{m.home_audience_title()}</h2>
 			<p class="text-text-muted max-w-xl mx-auto">
-				Ať jste novinář, fotograf nebo firemní uživatel – MetaCleaner chrání vaše soukromí.
+				{m.home_audience_subtitle()}
 			</p>
 		</div>
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -507,17 +504,16 @@
 				>
 					<i class="fa-solid fa-newspaper"></i>
 				</div>
-				<h3 class="text-lg font-bold">Novináři &amp; Aktivisté</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_journalists_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Ochraňte své zdroje a svou polohu. Sdílejte fotodokumentaci bez rizika prozrazení GPS
-					souřadnic nebo identity zařízení.
+					{m.home_audience_journalists_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Anonymní sdílení souborů
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_journalists_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Ochrana zdrojů
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_journalists_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -529,17 +525,16 @@
 				>
 					<i class="fa-solid fa-camera-retro"></i>
 				</div>
-				<h3 class="text-lg font-bold">Fotografové &amp; Tvůrci</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_photographers_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Sdílejte svá díla online bez prozrazení místa focení, nastavení fotoaparátu nebo osobních
-					údajů v metadatech.
+					{m.home_audience_photographers_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Skrytí místa focení
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_photographers_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Ochrana workflow
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_photographers_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -551,17 +546,16 @@
 				>
 					<i class="fa-solid fa-building"></i>
 				</div>
-				<h3 class="text-lg font-bold">Firmy &amp; Právníci</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_business_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Zajistěte GDPR compliance a chraňte citlivé firemní dokumenty. PDF reporty pro audit a
-					interní procesy.
+					{m.home_audience_business_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>GDPR compliance
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_business_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Auditní záznamy
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_business_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -573,17 +567,16 @@
 				>
 					<i class="fa-solid fa-user-shield"></i>
 				</div>
-				<h3 class="text-lg font-bold">Běžní uživatelé</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_users_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Sdílejte fotky z dovolené nebo rodinné snímky bez obav, že prozradíte svou adresu nebo
-					rutinu.
+					{m.home_audience_users_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Snadné použití
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_users_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Žádná registrace
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_users_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -595,16 +588,16 @@
 				>
 					<i class="fa-solid fa-flask"></i>
 				</div>
-				<h3 class="text-lg font-bold">Výzkumníci &amp; Akademici</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_researchers_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Anonymizujte výzkumná data bez metadat, která by mohla identifikovat účastníky studie.
+					{m.home_audience_researchers_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Anonymizace dat
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_researchers_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Batch zpracování
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_researchers_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -616,17 +609,16 @@
 				>
 					<i class="fa-solid fa-lock"></i>
 				</div>
-				<h3 class="text-lg font-bold">IT &amp; Bezpečnostní týmy</h3>
+				<h3 class="text-lg font-bold">{m.home_audience_it_title()}</h3>
 				<p class="text-sm text-text-muted leading-relaxed">
-					Integrujte do firemních procesů. Hromadné čištění, PDF audit logy a lokální zpracování bez
-					cloudových rizik.
+					{m.home_audience_it_desc()}
 				</p>
 				<ul class="flex flex-col gap-1.5 mt-auto">
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>Lokální zpracování
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_it_bullet1()}
 					</li>
 					<li class="flex items-center gap-2 text-xs text-text-muted">
-						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>API integrace
+						<i class="fa-solid fa-check text-brand-green text-[10px]"></i>{m.home_audience_it_bullet2()}
 					</li>
 				</ul>
 			</div>
@@ -637,11 +629,11 @@
 	<section id="faq" class="hidden md:block w-full max-w-[1100px] mx-auto px-6 pb-16">
 		<div class="text-center mb-12">
 			<span class="text-xs font-bold uppercase tracking-widest text-brand-green mb-3 block"
-				>Časté dotazy</span
+				>{m.home_faq_eyebrow()}</span
 			>
-			<h2 class="text-4xl font-bold mb-4">Máte otázky?</h2>
+			<h2 class="text-4xl font-bold mb-4">{m.home_faq_title()}</h2>
 			<p class="text-text-muted max-w-xl mx-auto">
-				Odpovědi na nejčastěji kladené otázky o MetaCleaner.
+				{m.home_faq_subtitle()}
 			</p>
 		</div>
 		<div class="max-w-3xl mx-auto flex flex-col gap-3">
@@ -650,13 +642,12 @@
 					onclick={toggleFaq}
 					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
 				>
-					<span class="font-semibold text-white">Jsou moje soubory bezpečné? Nahrávají se na server?</span>
+					<span class="font-semibold text-white">{m.home_faq_d1_question()}</span>
 					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
 				</button>
 				<div class="faq-answer hidden px-6 pb-5">
 					<p class="text-sm text-text-muted leading-relaxed">
-						Ne. MetaCleaner zpracovává všechny soubory výhradně lokálně na vašem zařízení. Žádný
-						soubor ani metadata se nikdy neodesílají na naše servery. Vaše data zůstávají 100% u vás.
+						{m.home_faq_d1_answer()}
 					</p>
 				</div>
 			</div>
@@ -665,48 +656,12 @@
 					onclick={toggleFaq}
 					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
 				>
-					<span class="font-semibold text-white">Jaké metadaty odstraňuje MetaCleaner?</span>
+					<span class="font-semibold text-white">{m.home_faq_d2_question()}</span>
 					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
 				</button>
 				<div class="faq-answer hidden px-6 pb-5">
 					<p class="text-sm text-text-muted leading-relaxed">
-						MetaCleaner odstraňuje všechny typy EXIF metadat, včetně GPS souřadnic, informací o
-						zařízení, datových polí, času a pořízení, a dalších skrytých polí, které mohou být
-						zdrojem prozrazení.
-					</p>
-				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white"
-						>Je možné vytvořit vlastní metadaty nebo způsob sdílení?</span
-					>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						Ne. MetaCleaner je určen pro bezpečné sdílení souborů, nikoli pro vytváření vlastních
-						metadat nebo sdílení. Všechny soubory se zpracují lokálně a nejsou vytvářeny žádné
-						metadaty.
-					</p>
-				</div>
-			</div>
-			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
-				<button
-					onclick={toggleFaq}
-					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
-				>
-					<span class="font-semibold text-white">Jaké soubory lze zpracovat?</span>
-					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
-				</button>
-				<div class="faq-answer hidden px-6 pb-5">
-					<p class="text-sm text-text-muted leading-relaxed">
-						MetaCleaner podporuje zpracování všech typů obrázků, včetně JPG, PNG, HEIC, WebP, a
-						dalších formátů, které obsahují EXIF metadaty. Všechny soubory se zpracují lokálně a bez
-						ztráty kvality.
+						{m.home_faq_d2_answer()}
 					</p>
 				</div>
 			</div>
@@ -716,15 +671,43 @@
 					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
 				>
 					<span class="font-semibold text-white"
-						>Je možné zpracovat soubory větší než 100 MB?</span
+						>{m.home_faq_d3_question()}</span
 					>
 					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
 				</button>
 				<div class="faq-answer hidden px-6 pb-5">
 					<p class="text-sm text-text-muted leading-relaxed">
-						Ano, MetaCleaner podporuje zpracování souborů větších než 100 MB. Všechny soubory se
-						zpracují lokálně a bez ztráty kvality, až do maximální velikosti, kterou umožňuje vaše
-						zařízení.
+						{m.home_faq_d3_answer()}
+					</p>
+				</div>
+			</div>
+			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+				<button
+					onclick={toggleFaq}
+					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
+				>
+					<span class="font-semibold text-white">{m.home_faq_d4_question()}</span>
+					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
+				</button>
+				<div class="faq-answer hidden px-6 pb-5">
+					<p class="text-sm text-text-muted leading-relaxed">
+						{m.home_faq_d4_answer()}
+					</p>
+				</div>
+			</div>
+			<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
+				<button
+					onclick={toggleFaq}
+					class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-navy-lighter/50 transition-colors"
+				>
+					<span class="font-semibold text-white"
+						>{m.home_faq_d5_question()}</span
+					>
+					<i class="fa-solid fa-chevron-down text-text-muted transition-transform duration-200"></i>
+				</button>
+				<div class="faq-answer hidden px-6 pb-5">
+					<p class="text-sm text-text-muted leading-relaxed">
+						{m.home_faq_d5_answer()}
 					</p>
 				</div>
 			</div>
@@ -1027,10 +1010,10 @@
 		<section id="how-it-works-mobile" class="w-full">
 			<div class="text-center mb-6">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-2 block"
-					>Postup</span
+					>{m.home_steps_eyebrow()}</span
 				>
-				<h2 class="text-2xl font-bold mb-2">Jak to funguje?</h2>
-				<p class="text-sm text-text-muted">Tři jednoduché kroky k ochraně vašeho soukromí.</p>
+				<h2 class="text-2xl font-bold mb-2">{m.home_steps_title()}</h2>
+				<p class="text-sm text-text-muted">{m.home_steps_subtitle()}</p>
 			</div>
 			<div class="flex flex-col gap-3">
 				<div
@@ -1043,9 +1026,9 @@
 						<i class="fa-solid fa-upload"></i>
 					</div>
 					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">Nahrajte soubory</h3>
+						<h3 class="font-bold text-base mb-1">{m.home_step1_title()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Klepněte nebo přetáhněte fotky. Vše se zpracuje na vašem zařízení.
+							{m.home_step1_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1059,9 +1042,9 @@
 						<i class="fa-solid fa-clipboard"></i>
 					</div>
 					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">Odstraňte metadata</h3>
+						<h3 class="font-bold text-base mb-1">{m.home_step2_title()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Aplikace automaticky odstraňuje EXIF data, GPS souřadnice a informace o zařízení.
+							{m.home_step2_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1075,7 +1058,7 @@
 						<i class="fa-solid fa-download"></i>
 					</div>
 					<div class="flex-1 z-10">
-						<h3 class="font-bold text-base mb-1">Stáhni soubory</h3>
+						<h3 class="font-bold text-base mb-1">{m.home_step3_title()}</h3>
 					</div>
 				</div>
 			</div>
@@ -1085,11 +1068,11 @@
 		<section id="who-its-for-mobile" class="w-full">
 			<div class="text-center mb-6">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-orange mb-2 block"
-					>Pro koho</span
+					>{m.home_audience_eyebrow()}</span
 				>
-				<h2 class="text-2xl font-bold mb-2">Pro koho je MetaCleaner?</h2>
+				<h2 class="text-2xl font-bold mb-2">{m.home_audience_title_mobile()}</h2>
 				<p class="text-sm text-text-muted">
-					Každý, kdo sdílí soubory online, by měl chránit své soukromí.
+					{m.home_audience_subtitle_mobile()}
 				</p>
 			</div>
 			<div class="flex flex-col gap-3">
@@ -1100,9 +1083,9 @@
 						<i class="fa-solid fa-newspaper"></i>
 					</div>
 					<div>
-						<h3 class="font-bold text-sm mb-1">Novináři a aktivisté</h3>
+						<h3 class="font-bold text-sm mb-1">{m.home_audience_journalists_title_mobile()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Chraňte svou polohu a identitu při sdílení citlivých materiálů.
+							{m.home_audience_journalists_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1113,9 +1096,9 @@
 						<i class="fa-solid fa-camera"></i>
 					</div>
 					<div>
-						<h3 class="font-bold text-sm mb-1">Fotografové a tvůrci</h3>
+						<h3 class="font-bold text-sm mb-1">{m.home_audience_photographers_title_mobile()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Sdílejte portfolio bez odhalení místa nebo vybavení.
+							{m.home_audience_photographers_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1126,9 +1109,9 @@
 						<i class="fa-solid fa-briefcase"></i>
 					</div>
 					<div>
-						<h3 class="font-bold text-sm mb-1">Firmy a právníci</h3>
+						<h3 class="font-bold text-sm mb-1">{m.home_audience_business_title_mobile()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Zajistěte soulad s GDPR při sdílení dokumentů a fotografií.
+							{m.home_audience_business_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1139,9 +1122,9 @@
 						<i class="fa-solid fa-users"></i>
 					</div>
 					<div>
-						<h3 class="font-bold text-sm mb-1">Běžní uživatelé</h3>
+						<h3 class="font-bold text-sm mb-1">{m.home_audience_users_title_mobile()}</h3>
 						<p class="text-xs text-text-muted leading-relaxed">
-							Chraňte svou rodinu a domov při sdílení fotek na sociálních sítích.
+							{m.home_audience_users_desc_mobile()}
 						</p>
 					</div>
 				</div>
@@ -1152,10 +1135,10 @@
 		<section id="faq-mobile" class="w-full">
 			<div class="text-center mb-6">
 				<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-2 block"
-					>FAQ</span
+					>{m.home_faq_eyebrow_mobile()}</span
 				>
-				<h2 class="text-2xl font-bold mb-2">Časté otázky</h2>
-				<p class="text-sm text-text-muted">Vše, co potřebujete vědět o MetaCleaner.</p>
+				<h2 class="text-2xl font-bold mb-2">{m.home_faq_title_mobile()}</h2>
+				<p class="text-sm text-text-muted">{m.home_faq_subtitle_mobile()}</p>
 			</div>
 			<div class="flex flex-col gap-2">
 				<div class="faq-item bg-navy-card rounded-2xl border border-gray-800 overflow-hidden">
@@ -1163,13 +1146,12 @@
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between p-4 text-left"
 					>
-						<span class="text-sm font-semibold text-white">Jsou moje soubory v bezpečí?</span>
+						<span class="text-sm font-semibold text-white">{m.home_faq_m1_question()}</span>
 						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
 					</button>
 					<div class="faq-answer hidden px-4 pb-4">
 						<p class="text-xs text-text-muted leading-relaxed">
-							Ano. Vše probíhá přímo ve vašem prohlížeči nebo zařízení. Žádný soubor se nikdy
-							nenahraje na naše servery.
+							{m.home_faq_m1_answer()}
 						</p>
 					</div>
 				</div>
@@ -1178,12 +1160,12 @@
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between p-4 text-left"
 					>
-						<span class="text-sm font-semibold text-white">Jaké formáty jsou podporovány?</span>
+						<span class="text-sm font-semibold text-white">{m.home_faq_m2_question()}</span>
 						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
 					</button>
 					<div class="faq-answer hidden px-4 pb-4">
 						<p class="text-xs text-text-muted leading-relaxed">
-							Podporujeme JPG, PNG, HEIC, WEBP, PDF a další běžné formáty.
+							{m.home_faq_m2_answer()}
 						</p>
 					</div>
 				</div>
@@ -1192,13 +1174,12 @@
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between p-4 text-left"
 					>
-						<span class="text-sm font-semibold text-white">Je MetaCleaner zdarma?</span>
+						<span class="text-sm font-semibold text-white">{m.home_faq_m3_question()}</span>
 						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
 					</button>
 					<div class="faq-answer hidden px-4 pb-4">
 						<p class="text-xs text-text-muted leading-relaxed">
-							Základní funkce jsou zdarma. Pro pokročilé funkce jako hromadné zpracování nabízíme
-							prémiový plán.
+							{m.home_faq_m3_answer()}
 						</p>
 					</div>
 				</div>
@@ -1207,13 +1188,12 @@
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between p-4 text-left"
 					>
-						<span class="text-sm font-semibold text-white">Funguje to offline?</span>
+						<span class="text-sm font-semibold text-white">{m.home_faq_m4_question()}</span>
 						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
 					</button>
 					<div class="faq-answer hidden px-4 pb-4">
 						<p class="text-xs text-text-muted leading-relaxed">
-							Mobilní aplikace funguje plně offline. Webová verze vyžaduje připojení pouze pro načtení
-							stránky.
+							{m.home_faq_m4_answer()}
 						</p>
 					</div>
 				</div>
@@ -1222,12 +1202,12 @@
 						onclick={toggleFaq}
 						class="w-full flex items-center justify-between p-4 text-left"
 					>
-						<span class="text-sm font-semibold text-white">Sníží se kvalita obrázků?</span>
+						<span class="text-sm font-semibold text-white">{m.home_faq_m5_question()}</span>
 						<i class="fa-solid fa-chevron-down text-text-muted text-xs transition-transform duration-300"></i>
 					</button>
 					<div class="faq-answer hidden px-4 pb-4">
 						<p class="text-xs text-text-muted leading-relaxed">
-							Ne. Odstraňujeme pouze metadata, samotný obraz zůstává beze změny v plné kvalitě.
+							{m.home_faq_m5_answer()}
 						</p>
 					</div>
 				</div>
