@@ -171,8 +171,8 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Test file: `backend/metacleaner-server/tests/config_test.go`
     - **Validates: Requirements 10.2, 10.3, 10.4**
 
-- [ ] 10. Backend: Update .env.example with new environment variables
-  - [ ] 10.1 Add `APP_ENV`, `SUPABASE_TIMEOUT` to `.env.example` with placeholder values and comments
+- [x] 10. Backend: Update .env.example with new environment variables
+  - [x] 10.1 Add `APP_ENV`, `SUPABASE_TIMEOUT` to `.env.example` with placeholder values and comments
     - `APP_ENV=development` (controls JSON vs text log format)
     - `SUPABASE_TIMEOUT=10` (seconds, default)
     - _Requirements: 8.2, 8.3, 10.3_
