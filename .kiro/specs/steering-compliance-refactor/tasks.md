@@ -95,7 +95,7 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Validate completions file starts with `#compdef metacleaner` and includes all commands/flags
     - _Requirements: 5.1, 5.2, 5.3, 6.5, 6.6, 7.1, 7.2, 7.3_
 
-- [ ] 5. Checkpoint - Ensure all CLI tests pass
+- [x] 5. Checkpoint - Ensure all CLI tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Backend: Create structured logger and request ID middleware
