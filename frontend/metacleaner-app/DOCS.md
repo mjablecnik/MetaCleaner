@@ -16,8 +16,8 @@
 
 All variables are loaded at **build time** via SvelteKit's `$env/static/public`. They are baked into the JS bundle and cannot be changed at runtime.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable         | Default                 | Description                              |
+| ---------------- | ----------------------- | ---------------------------------------- |
 | `PUBLIC_API_URL` | `http://localhost:8080` | Backend API base URL (no trailing slash) |
 
 Reference: `.env.example`
@@ -122,11 +122,11 @@ fly status --app metacleaner-app                   # Check status
 
 ### Three Test Layers
 
-| Layer | Command | Environment | Description |
-|-------|---------|-------------|-------------|
-| Server-side unit | `bun run test` | Node (Vitest) | Services, utilities, stores |
+| Layer             | Command                | Environment                 | Description                            |
+| ----------------- | ---------------------- | --------------------------- | -------------------------------------- |
+| Server-side unit  | `bun run test`         | Node (Vitest)               | Services, utilities, stores            |
 | Browser component | `bun run test:browser` | Playwright browser (Vitest) | Rendered Svelte components + Storybook |
-| E2E | `bun run test:e2e` | Playwright | Full page flows, all routes |
+| E2E               | `bun run test:e2e`     | Playwright                  | Full page flows, all routes            |
 
 ### Running Tests
 
@@ -163,9 +163,9 @@ import { locale } from '$lib/locale.svelte';
 import * as m from '$lib/paraglide/messages';
 
 function tx(key: string): string {
-  void locale.current; // reactive dependency — REQUIRED
-  const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
-  return fn ? fn() : key;
+	void locale.current; // reactive dependency — REQUIRED
+	const fn = (m as unknown as Record<string, (() => string) | undefined>)[key];
+	return fn ? fn() : key;
 }
 ```
 
