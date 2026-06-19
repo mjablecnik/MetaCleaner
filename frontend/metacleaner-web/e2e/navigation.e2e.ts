@@ -98,8 +98,12 @@ test.describe('Footer navigation links', () => {
 	test('footer placeholder links are present', async ({ page }) => {
 		await page.goto('/');
 		const desktopFooter = page.locator('footer').locator('div.hidden.md\\:block');
-		await expect(desktopFooter.getByRole('link', { name: 'Privacy Policy', exact: true })).toBeVisible();
-		await expect(desktopFooter.getByRole('link', { name: 'Terms of Service', exact: true })).toBeVisible();
+		await expect(
+			desktopFooter.getByRole('link', { name: 'Privacy Policy', exact: true })
+		).toBeVisible();
+		await expect(
+			desktopFooter.getByRole('link', { name: 'Terms of Service', exact: true })
+		).toBeVisible();
 		await expect(desktopFooter.getByRole('link', { name: 'About us', exact: true })).toBeVisible();
 		await expect(desktopFooter.getByRole('link', { name: 'Contact', exact: true })).toBeVisible();
 	});

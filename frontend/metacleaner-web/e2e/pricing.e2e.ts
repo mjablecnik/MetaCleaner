@@ -80,7 +80,10 @@ test.describe('Pricing page — billing toggle', () => {
 		await expect(desktopPlans.getByText('€5,99').first()).toBeVisible();
 
 		// Click Yearly toggle
-		await page.getByRole('button', { name: /Yearly/ }).first().click();
+		await page
+			.getByRole('button', { name: /Yearly/ })
+			.first()
+			.click();
 
 		// Pro yearly price should now be visible
 		await expect(desktopPlans.getByText('€57,51').first()).toBeVisible();
@@ -97,7 +100,10 @@ test.describe('Pricing page — billing toggle', () => {
 		const desktopPlans = page.locator('.hidden.md\\:flex');
 
 		// Switch to yearly
-		await page.getByRole('button', { name: /Yearly/ }).first().click();
+		await page
+			.getByRole('button', { name: /Yearly/ })
+			.first()
+			.click();
 		await expect(desktopPlans.getByText('€57,51').first()).toBeVisible();
 
 		// Switch back to monthly

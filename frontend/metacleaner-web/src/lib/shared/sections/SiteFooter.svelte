@@ -42,10 +42,7 @@
 				]}
 			/>
 		</div>
-		<FooterBottomBar
-			copyright={m.footer_copyright({ year: currentYear })}
-			madeWith
-		/>
+		<FooterBottomBar copyright={m.footer_copyright({ year: currentYear })} madeWith />
 	</div>
 
 	<!-- Mobile layout -->
@@ -56,15 +53,19 @@
 				{m.footer_tagline()}
 			</p>
 			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2">
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href="/privacy" class="text-xs text-text-muted hover:text-white transition-colors"
 					>{m.footer_short_privacy()}</a
 				>
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href="/terms" class="text-xs text-text-muted hover:text-white transition-colors"
 					>{m.footer_short_terms()}</a
 				>
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href="#" class="text-xs text-text-muted hover:text-white transition-colors"
 					>{m.footer_short_contact()}</a
 				>
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href="/about" class="text-xs text-text-muted hover:text-white transition-colors"
 					>{m.footer_short_about()}</a
 				>

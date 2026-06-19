@@ -18,7 +18,7 @@
 		subtitle={m.home_why_subtitle()}
 	/>
 	<div class="flex flex-col gap-3 mb-6 md:grid md:grid-cols-2 md:gap-6 md:mb-10">
-		<MetadataComparisonCard variant="before" fields={fields} />
+		<MetadataComparisonCard variant="before" {fields} />
 		<MetadataComparisonCard variant="after" fields={cleanedFields} />
 	</div>
 	<div class="grid grid-cols-3 gap-2 md:gap-6">

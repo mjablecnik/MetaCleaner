@@ -33,12 +33,7 @@
 				<p class="text-2xl font-semibold text-text-main">Something went wrong.</p>
 			{/if}
 
-			<CtaButton
-				href="/"
-				label={m.error_404_cta()}
-				variant="primary"
-				icon="fa-solid fa-house"
-			/>
+			<CtaButton href="/" label={m.error_404_cta()} variant="primary" icon="fa-solid fa-house" />
 		</div>
 	</main>
 </div>

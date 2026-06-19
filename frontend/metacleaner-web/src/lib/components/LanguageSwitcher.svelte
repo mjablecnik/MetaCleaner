@@ -98,7 +98,11 @@
 				class="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-gray-700 bg-navy-lighter text-white text-sm font-semibold transition-all hover:border-brand-blue/50"
 			>
 				<div class="flex items-center gap-3">
-					<img src={localeMap[currentLocale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
+					<img
+						src={localeMap[currentLocale]?.flag}
+						alt=""
+						class="w-5 h-4 rounded-sm object-cover"
+					/>
 					<span class="text-sm font-semibold"
 						>{localeMap[currentLocale]?.name ?? currentLocale}</span
 					>

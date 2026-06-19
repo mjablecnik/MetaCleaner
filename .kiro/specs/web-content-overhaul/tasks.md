@@ -166,21 +166,21 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
   - Ensure processing claims are accurate across all updated sections
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Dead code cleanup
-  - [ ] 10.1 Remove SocialIconLink component files
+- [x] 10. Dead code cleanup
+  - [x] 10.1 Remove SocialIconLink component files
     - Delete `src/lib/components/elements/SocialIconLink.svelte`
     - Delete `src/lib/components/elements/SocialIconLink.stories.svelte`
     - Remove any barrel re-export of SocialIconLink from index files
     - _Requirements: 11.1, 11.6_
 
-  - [ ] 10.2 Scan for and remove other dead code
+  - [x] 10.2 Scan for and remove other dead code
     - Check for any remaining references to removed i18n keys in components
     - Verify no orphaned imports referencing SocialIconLink or removed FAQ entry
     - Remove any unused TypeScript modules or repository files no longer imported
     - Check for unused static assets in `src/lib/assets/` or `static/`
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 11. Final checkpoint - Ensure all tests pass and build succeeds
+- [x] 11. Final checkpoint - Ensure all tests pass and build succeeds
   - Run `bun run check` for type checking
   - Run `bun run lint` for formatting/linting
   - Ensure all tests pass, ask the user if questions arise.

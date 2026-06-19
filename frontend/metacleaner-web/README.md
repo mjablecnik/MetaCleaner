@@ -44,34 +44,34 @@ This project is a static marketing site and currently requires no environment va
 
 ### Development
 
-| Script | Description |
-|---|---|
-| `bun run dev` | Start Vite dev server with hot module replacement at `localhost:5173` |
+| Script            | Description                                                                  |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `bun run dev`     | Start Vite dev server with hot module replacement at `localhost:5173`        |
 | `bun run preview` | Serve the production `build/` directory locally to preview the static output |
 
 ### Type Checking and Linting
 
-| Script | Description |
-|---|---|
-| `bun run check` | Run `svelte-kit sync` then `svelte-check` for TypeScript and Svelte type errors |
-| `bun run check:watch` | Same as `check` but re-runs on every file save |
-| `bun run lint` | Check formatting with Prettier and run ESLint |
-| `bun run format` | Auto-format all files with Prettier |
+| Script                | Description                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `bun run check`       | Run `svelte-kit sync` then `svelte-check` for TypeScript and Svelte type errors |
+| `bun run check:watch` | Same as `check` but re-runs on every file save                                  |
+| `bun run lint`        | Check formatting with Prettier and run ESLint                                   |
+| `bun run format`      | Auto-format all files with Prettier                                             |
 
 ### Testing
 
-| Script | Description |
-|---|---|
-| `bun run test:unit` | Run Vitest unit tests in watch mode |
-| `bun run test` | Run all tests: unit tests (once) then Playwright e2e tests |
-| `bun run test:e2e` | Install Playwright browsers then run end-to-end tests |
+| Script              | Description                                                |
+| ------------------- | ---------------------------------------------------------- |
+| `bun run test:unit` | Run Vitest unit tests in watch mode                        |
+| `bun run test`      | Run all tests: unit tests (once) then Playwright e2e tests |
+| `bun run test:e2e`  | Install Playwright browsers then run end-to-end tests      |
 
 > **Playwright browsers** are an optional dependency for e2e tests. Run `npx playwright install chromium` once before `test:e2e`. On Linux you may also need `npx playwright install-deps chromium` (requires sudo).
 
 ### Build
 
-| Script | Description |
-|---|---|
+| Script          | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
 | `bun run build` | Compile a production static site into the `build/` directory |
 
 ## Adapter
