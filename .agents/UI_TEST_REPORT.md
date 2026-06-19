@@ -1,127 +1,120 @@
 # Test Report
-Created: 2026-06-14T22:14:08+00:00
-Updated: 2026-06-14T22:14:08+00:00
+Created: 2026-06-19T05:26:00+00:00
+Updated: 2026-06-19T05:26:00+00:00
+
+Project: **frontend/metacleaner-web** (SvelteKit 2 / Svelte 5 + Vite 8 + Tailwind v4,
+static marketing site). E2E framework: **Playwright** (`**/*.e2e.{ts,js}`, port 4173).
 
 ## Summary
-- Total E2E tests: 418
-- Passing E2E tests: 418
-- Failing E2E tests: 0
-- Total component stories: 314
-- Passing component stories: 314
+- Total E2E tests: 60
+- Passing E2E tests: 54
+- Failing E2E tests: 6
+- Total component stories: 41
+- Passing component stories: 0
 - Failing component stories: 0
+
+> **Component stories are not executed.** 41 `*.stories.svelte` files exist and use
+> Storybook CSF (`@storybook/addon-svelte-csf`), but **no component-catalog runner is
+> installed** (no Storybook/Ladle/Histoire in `package.json`, no `.storybook/`, no
+> catalog binary). They therefore neither pass nor fail — they are authored but
+> unrunnable. See Notes.
 
 ## E2E Test Coverage
 | Page/Route | Test File | Status |
 |---|---|---|
-| `/` (Step1 Upload) | e2e/step1-upload.spec.ts | ✅ Pass |
-| `/` (Step1→Step2 Transition) | e2e/step1-to-step2-transition.spec.ts | ✅ Pass |
-| `/` (Step2 Risk Analysis) | e2e/step2-risk-analysis.spec.ts | ✅ Pass |
-| `/` (Step2→Step5 Complete Flow) | e2e/step2-to-step5-complete-flow.spec.ts | ✅ Pass |
-| `/` (Step3 Processing) | e2e/step3-processing.spec.ts | ✅ Pass |
-| `/` (Step3 Cancel) | e2e/step3-cancel.spec.ts | ✅ Pass |
-| `/` (Step4 Error) | e2e/step4-error.spec.ts | ✅ Pass |
-| `/` (Step5 Results) | e2e/step5-results.spec.ts | ✅ Pass |
-| `/` → `/report` → `/reports` | e2e/step5-report-navigation.spec.ts | ✅ Pass |
-| `/` (File Validation) | e2e/file-validation.spec.ts | ✅ Pass |
-| `/` (File Removal) | e2e/file-removal.spec.ts | ✅ Pass |
-| `/login` | e2e/login.spec.ts | ✅ Pass |
-| `/register` | e2e/register.spec.ts | ✅ Pass |
-| `/forgot-password` | e2e/forgot-password.spec.ts | ✅ Pass |
-| `/email-verified` | e2e/email-verified.spec.ts | ✅ Pass |
-| `/reports` | e2e/reports.spec.ts | ✅ Pass |
-| `/report` | e2e/report-detail.spec.ts | ✅ Pass |
-| Cross-page navigation | e2e/navigation.spec.ts | ✅ Pass |
-| Responsive layout | e2e/responsive.spec.ts | ✅ Pass |
-| Hamburger menu | e2e/hamburger-menu.spec.ts | ✅ Pass |
-| Auth navigation | e2e/auth-navigation.spec.ts | ✅ Pass |
-| Auth responsive | e2e/auth-responsive.spec.ts | ✅ Pass |
+| `/` (home) | `e2e/home.e2e.ts` | ✅ Pass (9/9) |
+| `/features` | `e2e/features.e2e.ts` | ✅ Pass (4/4) |
+| `/pricing` | `e2e/pricing.e2e.ts` | ✅ Pass (10/10) |
+| Cross-page navigation (navbar + footer) | `e2e/navigation.e2e.ts` | ✅ Pass (12/12) |
+| Mobile menu / hamburger | `e2e/mobile-menu.e2e.ts` | ❌ Fail (5/9 — 4 failing) |
+| Responsive layout (375px / 1280px) | `e2e/responsive.e2e.ts` | ❌ Fail (14/16 — 2 failing) |
+
+All three application routes (`/`, `/features`, `/pricing`) have passing page-level
+E2E coverage. The two suites with failures are cross-cutting behaviour suites; the
+specific failing cases are listed under Notes.
 
 ## Component Test Coverage
+No runner executes these; "Status" reflects authored coverage only (⚠️ Not run).
+
 | Component | Story File | States Covered | Status |
 |---|---|---|---|
-| AccordionCard | AccordionCard.stories.svelte | Closed, Open, WithIcon, RedBorder + 4 more | ✅ Pass |
-| AuthTextInput | AuthTextInput.stories.svelte | Default, WithIcon, Focused, WithError, Disabled | ✅ Pass |
-| Badge | Badge.stories.svelte | Blue, Green, Red, Orange, WithDot + 5 more | ✅ Pass |
-| Button | Button.stories.svelte | Primary, Secondary, Danger, Ghost, Disabled + 5 more | ✅ Pass |
-| Card | Card.stories.svelte | Default, Green/Red/Blue/Orange Border, NoContent | ✅ Pass |
-| Chip | Chip.stories.svelte | Blue, Green, Red, Orange, Muted + 3 more | ✅ Pass |
-| IconContainer | IconContainer.stories.svelte | Blue, Green, Red, Orange, Muted + 16 more | ✅ Pass |
-| ProgressBar | ProgressBar.stories.svelte | Empty, Half, Full, Blue, Green + 6 more | ✅ Pass |
-| ToggleSwitch | ToggleSwitch.stories.svelte | Off, On, DisabledOff, DisabledOn | ✅ Pass |
-| ActivityLog | ActivityLog.stories.svelte | WithEntries, SuccessOnly, WithError, InProgress, Empty | ✅ Pass |
-| LanguageDropdown | LanguageDropdown.stories.svelte | Closed, Open, CzechSelected (2 states) | ✅ Pass |
-| MobileBottomCta | MobileBottomCta.stories.svelte | WithButton, WithText | ✅ Pass |
-| MobileHamburgerMenu | MobileHamburgerMenu.stories.svelte | Closed, Open, WithLanguage, NoUser (5 states) | ✅ Pass |
-| NavBar | NavBar.stories.svelte | Default, WithBack, WithoutLang, Compact, NoUser | ✅ Pass |
-| PageHeader | PageHeader.stories.svelte | NoBadge, Blue, Orange, Red | ✅ Pass |
-| StatCard | StatCard.stories.svelte | Blue, Green, Red, Orange, Highlighted + 4 more | ✅ Pass |
-| Toast | Toast.stories.svelte | Visible, Hidden, CustomIcon, ErrorIcon | ✅ Pass |
-| UserDropdown | UserDropdown.stories.svelte | Closed, Open, NoUser (4 states) | ✅ Pass |
-| SummaryStatsRow | SummaryStatsRow.stories.svelte | Default, VaryingData | ✅ Pass |
-| AuthBranding | AuthBranding.stories.svelte | Login, Register | ✅ Pass |
-| AuthFeatureCard | AuthFeatureCard.stories.svelte | WithBadge, WithFormatChips, Default | ✅ Pass |
-| AuthFormCard | AuthFormCard.stories.svelte | WithTitle, WithTitleAndSubtitle, WithContent | ✅ Pass |
-| AuthLayout | AuthLayout.stories.svelte | Default, WithContent | ✅ Pass |
-| AuthMobileHero | AuthMobileHero.stories.svelte | Default, WithCustomStats, WithoutStats | ✅ Pass |
-| AuthNavbar | AuthNavbar.stories.svelte | WithRegister, WithLogin, NoRightAction | ✅ Pass |
-| AuthStatsRow | AuthStatsRow.stories.svelte | Default, Bordered, CustomValues | ✅ Pass |
-| CountdownTimer | CountdownTimer.stories.svelte | Running, Expired, CustomDuration | ✅ Pass |
-| OtpInput | OtpInput.stories.svelte | Empty, PartiallyFilled, Complete, WithError | ✅ Pass |
-| PasswordInput | PasswordInput.stories.svelte | Default, WithValue, Showing, WithError, Disabled | ✅ Pass |
-| PasswordRecoveryProgressCards | PasswordRecoveryProgressCards.stories.svelte | Step2Active, Step3Active, AllDone | ✅ Pass |
-| PasswordStrengthMeter | PasswordStrengthMeter.stories.svelte | Empty, Weak, Medium, Strong, VeryStrong | ✅ Pass |
-| SocialLoginButtons | SocialLoginButtons.stories.svelte | Default, LoginLabels, RegisterLabels | ✅ Pass |
-| StepProgressBar | StepProgressBar.stories.svelte | Step1, Step2, Step3, AllComplete | ✅ Pass |
-| TrustBadges | TrustBadges.stories.svelte | Default | ✅ Pass |
-| ActionCard | ActionCard.stories.svelte | CleanAction, ProUpgradeAction | ✅ Pass |
-| AnimatedCheckmark | AnimatedCheckmark.stories.svelte | SmallSize, LargeSize | ✅ Pass |
-| VerificationStepper | VerificationStepper.stories.svelte | Horizontal, Vertical, Step1, Step2, AllDone | ✅ Pass |
-| DropZone | DropZone.stories.svelte | Idle, Dragover | ✅ Pass |
-| FileListItemRisk | FileListItemRisk.stories.svelte | High, Medium, Low, Scanning, Error + 1 more | ✅ Pass |
-| RiskBreakdownBar | RiskBreakdownBar.stories.svelte | Critical, High, Medium, Low, Multiple | ✅ Pass |
-| RiskScoreRing | RiskScoreRing.stories.svelte | Low, Medium, High, Small, Large + 1 more | ✅ Pass |
-| ScanProgressIndicator | ScanProgressIndicator.stories.svelte | Idle, Scanning, Complete, Error | ✅ Pass |
-| BeforeAfterScore | BeforeAfterScore.stories.svelte | Improved (2), Unchanged (2) | ✅ Pass |
-| MobileRiskBanner | MobileRiskBanner.stories.svelte | LowRisk Collapsed, LowRisk Expanded | ✅ Pass |
-| StatusCardIdle | StatusCardIdle.stories.svelte | Default | ✅ Pass |
-| ErrorBanner | ErrorBanner.stories.svelte | Default, Dismissed | ✅ Pass |
-| ErrorStateCard | ErrorStateCard.stories.svelte | Timeout, Connection, Cleaning | ✅ Pass |
-| ErrorFilesCard | ErrorFilesCard.stories.svelte | SingleFile, MultipleFiles | ✅ Pass |
-| ErrorDetailAccordion | ErrorDetailAccordion.stories.svelte | Expanded WithFile, Expanded NoFile, Collapsed | ✅ Pass |
-| ErrorLogAccordion | ErrorLogAccordion.stories.svelte | Expanded Mixed, Expanded Success, Collapsed | ✅ Pass |
-| ErrorTypeAccordion | ErrorTypeAccordion.stories.svelte | Cleaning, Connection, Timeout, Collapsed | ✅ Pass |
-| ProcessingStatusCard | ProcessingStatusCard.stories.svelte | InProgress, NearCompletion | ✅ Pass |
-| ProcessingFilesCard | ProcessingFilesCard.stories.svelte | Processing, SomeCompleted | ✅ Pass |
-| MobileStatusCard | MobileStatusCard.stories.svelte | InProgress, NearCompletion | ✅ Pass |
-| ActivityLogAccordion | ActivityLogAccordion.stories.svelte | Collapsed, Expanded | ✅ Pass |
-| FileProcessingRow | FileProcessingRow.stories.svelte | Waiting, InProgress, Completed, Failed, Skipped | ✅ Pass |
-| SuccessHeader | SuccessHeader.stories.svelte | Default, SingleFile | ✅ Pass |
-| FileResultsCard | FileResultsCard.stories.svelte | SingleFile, MultipleFiles | ✅ Pass |
-| MetadataOverview | MetadataOverview.stories.svelte | WithGPS, WithoutGPS | ✅ Pass |
-| MetadataCategoryCard | MetadataCategoryCard.stories.svelte | HighRisk, LowRisk, AllClean, WithManyFields | ✅ Pass |
-| MetadataFieldList | MetadataFieldList.stories.svelte | FewFields, ManyFields, AllRemoved, Mixed | ✅ Pass |
-| ChartBar | ChartBar.stories.svelte | Red, Orange, Blue, Green, Zero + 1 more | ✅ Pass |
-| FileAccordionItem | FileAccordionItem.stories.svelte | Collapsed, Expanded (5 states) | ✅ Pass |
-| MetadataTable | MetadataTable.stories.svelte | FewFields, ManyFields, WithMoreCount, SingleField | ✅ Pass |
-| ReportDetailHeader | ReportDetailHeader.stories.svelte | Default, NoReportData | ✅ Pass |
-| ReportChartCard | ReportChartCard.stories.svelte | Default, VaryingData, NoData | ✅ Pass |
-| FileAccordionList | FileAccordionList.stories.svelte | SingleFile, MultipleFiles | ✅ Pass |
-| FilterPill | FilterPill.stories.svelte | Active, Inactive, WithCount (7 states) | ✅ Pass |
-| ReportCard | ReportCard.stories.svelte | Image, Video, WithTags, HighFieldCount, Multiple | ✅ Pass |
-| ReportTableRow | ReportTableRow.stories.svelte | Image, Video, WithGPS, HighFieldCount, Multiple | ✅ Pass |
-| ReportsHeader | ReportsHeader.stories.svelte | Default, NoReports | ✅ Pass |
-| FiltersBar | FiltersBar.stories.svelte | NoFilter, Successful, GPS, Photos, Video | ✅ Pass |
-| MobileFilters | MobileFilters.stories.svelte | NoFilter, Successful, GPS, Photos, Video | ✅ Pass |
-| ReportsList | ReportsList.stories.svelte | WithData, EmptyState, SingleReport | ✅ Pass |
-| ReportsTable | ReportsTable.stories.svelte | WithData, EmptyState, Filtered | ✅ Pass |
+| LanguageSwitcher | `LanguageSwitcher.stories.svelte` | Desktop, Mobile | ⚠️ Not run |
+| BrandLogo | `elements/BrandLogo.stories.svelte` | Small, Medium, Large | ⚠️ Not run |
+| CheckBullet | `elements/CheckBullet.stories.svelte` | Green, Blue Emphasized, Blue Emphasized Small, Extra small | ⚠️ Not run |
+| CtaButton | `elements/CtaButton.stories.svelte` | Primary, Secondary, Blue, Outline, Disabled, Full Width Primary, Full Width Blue, Link | ⚠️ Not run |
+| FooterBottomBar | `elements/FooterBottomBar.stories.svelte` | WithLinks, WithMadeWith | ⚠️ Not run |
+| FooterBrand | `elements/FooterBrand.stories.svelte` | Default | ⚠️ Not run |
+| FooterColumn | `elements/FooterColumn.stories.svelte` | Product, Company, Legal | ⚠️ Not run |
+| FormatBadge | `elements/FormatBadge.stories.svelte` | JPG, PNG, HEIC, WEBP, Small, Extra small | ⚠️ Not run |
+| GradientText | `elements/GradientText.stories.svelte` | Heading, Inline Text, Large Heading | ⚠️ Not run |
+| IconBadge | `elements/IconBadge.stories.svelte` | Tinted/Solid colors, Circle, Rounded, sizes (Small–Extra Large) | ⚠️ Not run |
+| NavLink | `elements/NavLink.stories.svelte` | Default, Active | ⚠️ Not run |
+| SectionHeading | `elements/SectionHeading.stories.svelte` | Large/Small Eyebrow, Blue/Orange Eyebrow, No Eyebrow, No Subtitle | ⚠️ Not run |
+| SocialIconLink | `elements/SocialIconLink.stories.svelte` | Twitter, GitHub, LinkedIn | ⚠️ Not run |
+| MobileMenu | `shared/MobileMenu.stories.svelte` | Drawer Open, Dropdown Open (Features/Pricing), Dropdown Closed | ⚠️ Not run |
+| MobileNavbar | `shared/MobileNavbar.stories.svelte` | Closed, Open | ⚠️ Not run |
+| SiteNavbar | `shared/SiteNavbar.stories.svelte` | Home/Features/Pricing Active | ⚠️ Not run |
+| AudienceCard | `(home)/components/AudienceCard.stories.svelte` | Journalist, Photographer | ⚠️ Not run |
+| FaqAccordionItem | `(home)/components/FaqAccordionItem.stories.svelte` | Collapsed | ⚠️ Not run |
+| MetadataComparisonCard | `(home)/components/MetadataComparisonCard.stories.svelte` | Desktop/Mobile × Before/After | ⚠️ Not run |
+| MetadataFieldRow | `(home)/components/MetadataFieldRow.stories.svelte` | Desktop/Mobile × Before/After | ⚠️ Not run |
+| RiskStatCard | `(home)/components/RiskStatCard.stories.svelte` | Desktop/Mobile × Red/Orange/Blue | ⚠️ Not run |
+| StepCard | `(home)/components/StepCard.stories.svelte` | Desktop/Mobile × Step 1–3 | ⚠️ Not run |
+| UploadCard | `(home)/components/UploadCard.stories.svelte` | Desktop, Mobile | ⚠️ Not run |
+| AudienceSection | `(home)/sections/AudienceSection.stories.svelte` | Default | ⚠️ Not run |
+| FaqSection | `(home)/sections/FaqSection.stories.svelte` | Default | ⚠️ Not run |
+| HeroSection | `(home)/sections/HeroSection.stories.svelte` | Default | ⚠️ Not run |
+| HowItWorksSection | `(home)/sections/HowItWorksSection.stories.svelte` | Default | ⚠️ Not run |
+| WhyItMattersSection | `(home)/sections/WhyItMattersSection.stories.svelte` | Default | ⚠️ Not run |
+| C2paIllustration | `features/components/C2paIllustration.stories.svelte` | Default | ⚠️ Not run |
+| ExifIllustration | `features/components/ExifIllustration.stories.svelte` | Default | ⚠️ Not run |
+| FeatureCard | `features/components/FeatureCard.stories.svelte` | Formats (brand-blue), Bullets (brand-orange) | ⚠️ Not run |
+| FeatureRow | `features/components/FeatureRow.stories.svelte` | LTR/RTL × Formats/Bullets/Image/Illustration | ⚠️ Not run |
+| FormatPill | `features/components/FormatPill.stories.svelte` | Red/Orange/Blue/Green/Muted × desktop/mobile | ⚠️ Not run |
+| FeaturesCtaSection | `features/sections/FeaturesCtaSection.stories.svelte` | Default | ⚠️ Not run |
+| FeaturesHeaderSection | `features/sections/FeaturesHeaderSection.stories.svelte` | Default | ⚠️ Not run |
+| FeaturesShowcaseSection | `features/sections/FeaturesShowcaseSection.stories.svelte` | Default | ⚠️ Not run |
+| BillingToggle | `pricing/components/BillingToggle.stories.svelte` | Monthly, Yearly | ⚠️ Not run |
+| EnterpriseBanner | `pricing/components/EnterpriseBanner.stories.svelte` | Desktop, Mobile | ⚠️ Not run |
+| PricingCard | `pricing/components/PricingCard.stories.svelte` | Free, Pack, Featured (Pro), Disabled (Pro+), Mobile variants | ⚠️ Not run |
+| PricingHeaderSection | `pricing/sections/PricingHeaderSection.stories.svelte` | Monthly, Yearly | ⚠️ Not run |
+| PricingPlansSection | `pricing/sections/PricingPlansSection.stories.svelte` | Monthly, Yearly | ⚠️ Not run |
 
 ## Uncovered (no tests)
-- No pages/routes are missing E2E test coverage — all 8 routes are covered.
-- All interactive components have Storybook stories.
+- **`SiteFooter`** (`src/lib/shared/sections/SiteFooter.svelte`) — the only component
+  with **no** `*.stories.svelte` file. (Its real links are nonetheless exercised
+  indirectly by `e2e/navigation.e2e.ts`.)
+- **All 41 component stories** are effectively uncovered at runtime: they exist but
+  no catalog runner executes them.
+- No application **routes** are uncovered — all three (`/`, `/features`, `/pricing`)
+  have E2E suites.
 
 ## Notes
-- Storybook build: ✅ Passes successfully (314 stories across 75 story files)
-- E2E tests: ✅ All 418 tests pass (22 test files across all routes)
-- Unit tests (Vitest server): 1 test times out in property-based testing (`apiCleaningService.test.ts` — ProcessingResults construction) due to slow CI environment, not a code defect
-- Vitest browser project: Cannot run in headless CI (no browser runtime available) — requires local environment with browser
-- The environment running these tests is significantly slower than typical development machines, causing occasional Playwright timeouts on first runs, but all tests pass with sufficient timeout allowance
+- **E2E run:** `playwright test` (build + preview on :4173, headless Chromium).
+  Browsers were not present at the system path (`/opt/playwright-browsers` held
+  chromium-1223; Playwright 1.60 needs 1228 and the dir is read-only); installed the
+  matching `chrome-headless-shell` v1228 to `$HOME/.cache/ms-playwright` and ran with
+  `PLAYWRIGHT_BROWSERS_PATH` pointed there. **Future runs must do the same** or the
+  suite errors out with "Executable doesn't exist".
+- **6 E2E failures** (selector-based, in newly generated suites):
+  - `mobile-menu.e2e.ts` — 4 failing tests for the **dropdown** variant on
+    `/features` and `/pricing`. The locator `div.md\:hidden.w-full.flex-col` is never
+    visible, so the dropdown panel assertions time out. Likely the dropdown markup /
+    class names differ from what the test expects; the drawer-variant (home) tests
+    pass.
+  - `responsive.e2e.ts` — 2 failing tests: `/pricing` mobile layout and `/pricing`
+    desktop plan-grid visibility. Pricing-specific responsive selectors don't match.
+  - The home, features, pricing, and navigation suites pass fully (35/35 combined).
+- **No component-catalog runner.** Storybook CSF stories reference
+  `@storybook/addon-svelte-csf` but Storybook itself is not a dependency and there is
+  no `.storybook/` config (a prior install attempt is recorded in
+  `debug-storybook.log` but never completed). To make the 41 stories count toward
+  coverage, install + configure a runner (Storybook with the Svelte CSF addon, or
+  migrate stories to `vitest-browser-svelte` component tests, which *is* installed and
+  wired in `vite.config.ts` via the `client` browser project).
+- **Prior report scope:** the previous `UI_TEST_REPORT.md` documented a different
+  project (`metacleaner-app`, 418 tests, `/login`–`/report` routes). It does not apply
+  to `metacleaner-web`; this report fully replaces it, hence a fresh `Created` date.
+- **Recommendation:** fix the 6 failing selectors in the mobile-menu/responsive
+  pricing tests, and stand up a component-catalog runner so the stories become
+  executable coverage rather than authored-only.
