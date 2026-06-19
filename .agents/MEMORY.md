@@ -582,3 +582,15 @@
 - Problem: Running `npm run test:browser` reports 68 unhandled errors (TypeError: Cannot read properties of undefined) from Storybook stories. These occur when Storybook's autodocs feature renders components without required props. All 385 test assertions pass but the exit code is non-zero due to these runtime errors. Affected stories include FileAccordionItem, AuthStatsRow, NavBar, LanguageDropdown, ReportCard, ReportTableRow, and others.
 - Solution: Not fixed — pre-existing issues not caused by recent changes. Server tests (`npm test`) pass cleanly with 482 tests. Browser tests are broken due to autodocs rendering missing required props. Fixing would require adding default args to 12+ story files.
 - Source: check-build, 2026-06-18
+
+## pgregory.net/rapid does not support WithMinSuccessfulTests option
+- Project: metacleaner-server
+- Problem: `rapid.Check(t, fn, rapid.WithMinSuccessfulTests(100))` fails to compile — `rapid.WithMinSuccessfulTests` does not exist and `rapid.Check` only accepts two arguments `(rapid.TB, func(*rapid.T))`.
+- Solution: Use `rapid.Check(t, func(t *rapid.T) { ... })` with no options. rapid runs 100 tests by default, so no option needed to satisfy the "min 100 iterations" requirement.
+- Source: create-code, 2026-06-19
+
+## contextKey type already declared in auth_middleware.go (backend)
+- Project: metacleaner-server
+- Problem: `source/auth_middleware.go` declares `type contextKey int` using `iota`. Adding a new file (`logger.go`) that also declares `type contextKey string` causes a redeclaration compile error.
+- Solution: Use a distinct type name in the new file — e.g., `type loggerContextKey string` — to avoid collision with the existing `contextKey int` in auth_middleware.go.
+- Source: create-code, 2026-06-19

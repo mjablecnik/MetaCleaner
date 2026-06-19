@@ -98,21 +98,21 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
 - [x] 5. Checkpoint - Ensure all CLI tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Backend: Create structured logger and request ID middleware
-  - [ ] 6.1 Create `source/logger.go` with InitLogger, LoggerFromContext, ContextWithLogger
+- [x] 6. Backend: Create structured logger and request ID middleware
+  - [x] 6.1 Create `source/logger.go` with InitLogger, LoggerFromContext, ContextWithLogger
     - Implement JSON handler (production: `APP_ENV=production`, Info level) and Text handler (development: Debug level)
     - Use `log/slog` package, set as default logger via `slog.SetDefault`
     - Store request-scoped logger in context via custom context key
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-  - [ ] 6.2 Create `source/request_id.go` with GenerateRequestID and RequestIDMiddleware
+  - [x] 6.2 Create `source/request_id.go` with GenerateRequestID and RequestIDMiddleware
     - Generate UUID v4 using `crypto/rand` (version 4 bits + variant bits)
     - Middleware: generate or pass through `X-Request-Id` header
     - Inject request-scoped logger with `requestId` attribute into context
     - Set `X-Request-Id` response header
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [ ]* 6.3 Write property tests for request ID and logger (Properties 8–11)
+  - [x]* 6.3 Write property tests for request ID and logger (Properties 8–11)
     - **Property 8: Structured log JSON format in production** — output is valid JSON with time, level, msg keys
     - **Property 9: Request ID in response header** — UUID v4 format regex match
     - **Property 10: Request ID passthrough** — incoming X-Request-Id echoed exactly
@@ -121,25 +121,25 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Test file: `backend/metacleaner-server/tests/request_id_test.go`, `tests/logger_test.go`
     - **Validates: Requirements 8.2, 8.5, 9.1, 9.3, 9.4, 9.5**
 
-- [ ] 7. Backend: Replace all log.* calls with slog and wire middleware
-  - [ ] 7.1 Replace all `log.Printf`, `log.Println`, `log.Fatalf` calls in `source/main.go` with `slog` equivalents
+- [x] 7. Backend: Replace all log.* calls with slog and wire middleware
+  - [x] 7.1 Replace all `log.Printf`, `log.Println`, `log.Fatalf` calls in `source/main.go` with `slog` equivalents
     - Call `InitLogger()` at the start of `Run()`
     - Replace `log.Fatalf` with `slog.Error` + `os.Exit(1)`
     - Replace `log.Printf`/`log.Println` with `slog.Info`/`slog.Debug`
     - _Requirements: 8.1, 8.6_
 
-  - [ ] 7.2 Replace all `log.*` calls in `source/config.go`, `source/router.go`, `source/supabase.go`, `source/supabase_auth.go`
+  - [x] 7.2 Replace all `log.*` calls in `source/config.go`, `source/router.go`, `source/supabase.go`, `source/supabase_auth.go`
     - Replace with appropriate `slog.Info`/`slog.Warn`/`slog.Error` calls
     - Ensure no passwords, tokens, API keys, or JWT secrets are logged
     - Use `LoggerFromContext(ctx)` where request context is available
     - _Requirements: 8.1, 8.5, 8.6_
 
-  - [ ] 7.3 Replace `log.*` calls in remaining source files (`handlers.go`, `auth_handlers.go`, `auth_middleware.go`, `pipeline.go`, `cleanup.go`, `websocket.go`, `pdf.go`)
+  - [x] 7.3 Replace `log.*` calls in remaining source files (`handlers.go`, `auth_handlers.go`, `auth_middleware.go`, `pipeline.go`, `cleanup.go`, `websocket.go`, `pdf.go`)
     - Use `LoggerFromContext(r.Context())` in HTTP handlers for request-scoped logging
     - Ensure sensitive data (credentials, tokens) is never logged
     - _Requirements: 8.1, 8.5, 8.6_
 
-  - [ ] 7.4 Wire `RequestIDMiddleware` into the router middleware chain in `source/router.go`
+  - [x] 7.4 Wire `RequestIDMiddleware` into the router middleware chain in `source/router.go`
     - Add RequestIDMiddleware before CORS and auth middleware
     - Ensure all downstream handlers receive request-scoped logger via context
     - _Requirements: 9.2, 9.3, 9.4_

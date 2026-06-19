@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"math/big"
 	"net/http"
 	"strings"
@@ -128,7 +128,7 @@ func (kc *keyCache) refresh() error {
 		}
 		pubKey, err := parseECPublicKey(k)
 		if err != nil {
-			log.Printf("[auth-middleware] skipping JWKS key %s: %v", k.KID, err)
+			slog.Warn("auth-middleware: skipping JWKS key", "kid", k.KID, "error", err)
 			continue
 		}
 		newKeys[k.KID] = pubKey
@@ -139,7 +139,7 @@ func (kc *keyCache) refresh() error {
 	kc.fetchedAt = time.Now()
 	kc.mu.Unlock()
 
-	log.Printf("[auth-middleware] JWKS refreshed: %d keys loaded", len(newKeys))
+	slog.Info("auth-middleware: JWKS refreshed", "keysLoaded", len(newKeys))
 	return nil
 }
 
@@ -184,7 +184,7 @@ func NewAuthMiddleware(cfg Config) *AuthMiddleware {
 
 	// Pre-fetch keys at startup (may fail in tests with no SupabaseURL — that's OK)
 	if err := cache.refresh(); err != nil {
-		log.Printf("[auth-middleware] WARNING: initial JWKS fetch failed: %v (will retry on first request)", err)
+		slog.Warn("auth-middleware: initial JWKS fetch failed, will retry on first request", "error", err)
 	}
 
 	return &AuthMiddleware{

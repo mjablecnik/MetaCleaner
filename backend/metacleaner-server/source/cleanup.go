@@ -2,7 +2,7 @@ package source
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -53,7 +53,7 @@ func (cs *CleanupScheduler) RunCleanup() {
 		entries, err := os.ReadDir(dir)
 		if err != nil {
 			if !os.IsNotExist(err) {
-				log.Printf("cleanup: failed to read directory %s: %v", dir, err)
+				slog.Warn("cleanup: failed to read directory", "dir", dir, "error", err)
 			}
 			continue
 		}
@@ -65,7 +65,7 @@ func (cs *CleanupScheduler) RunCleanup() {
 
 			info, err := entry.Info()
 			if err != nil {
-				log.Printf("cleanup: failed to stat %s: %v", entry.Name(), err)
+				slog.Warn("cleanup: failed to stat file", "name", entry.Name(), "error", err)
 				continue
 			}
 
@@ -77,9 +77,9 @@ func (cs *CleanupScheduler) RunCleanup() {
 			path := filepath.Join(dir, entry.Name())
 			fileID := ExtractFileID(entry.Name())
 			if err := os.Remove(path); err != nil {
-				log.Printf("cleanup: failed to delete %s: %v", path, err)
+				slog.Warn("cleanup: failed to delete file", "path", path, "error", err)
 			} else {
-				log.Printf("cleanup: deleted %s (id=%s, age=%s)", entry.Name(), fileID, age.Round(time.Second))
+				slog.Info("cleanup: deleted file", "name", entry.Name(), "id", fileID, "age", age.Round(time.Second))
 			}
 		}
 	}

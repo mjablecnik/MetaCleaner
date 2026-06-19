@@ -2,7 +2,7 @@ package source
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -104,8 +104,7 @@ func LoadConfig() (Config, error) {
 		}
 	}
 
-	log.Printf("Config loaded: port=%d, maxFileSize=%s, retentionPeriod=%s",
-		cfg.Port, formatBytes(cfg.MaxFileSize), cfg.RetentionPeriod)
+	slog.Info("config loaded", "port", cfg.Port, "maxFileSize", formatBytes(cfg.MaxFileSize), "retentionPeriod", cfg.RetentionPeriod)
 
 	return cfg, nil
 }

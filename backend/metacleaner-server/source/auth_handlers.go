@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -82,7 +81,7 @@ func HandleRegister(authClient *SupabaseAuthClient) http.HandlerFunc {
 			SubscriptionType: "free",
 			Credits:          3,
 		}); err != nil {
-			log.Printf("register: failed to create profile for user %s: %v", user.ID, err)
+			LoggerFromContext(r.Context()).Warn("register: failed to create profile", "userId", user.ID, "error", err)
 			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
 			return
 		}
@@ -456,7 +455,7 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 				SubscriptionType: "free",
 				Credits:          3,
 			}); createErr != nil {
-				log.Printf("magic link callback: failed to create profile for user %s: %v", session.User.ID, createErr)
+				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
 		}
 
@@ -611,7 +610,7 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 				SubscriptionType: "free",
 				Credits:          3,
 			}); createErr != nil {
-				log.Printf("oauth callback: failed to create profile for user %s: %v", session.User.ID, createErr)
+				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
 		}
 

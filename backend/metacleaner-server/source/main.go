@@ -3,7 +3,7 @@ package source
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
@@ -22,46 +22,53 @@ func checkTool(name string, args ...string) error {
 
 // Run is the main entry point for the metacleaner server.
 func Run() {
+	InitLogger()
+
 	cfg, err := LoadConfig()
 	if err != nil {
-		log.Fatalf("startup: configuration error: %v", err)
+		slog.Error("startup: configuration error", "error", err)
+		os.Exit(1)
 	}
 
 	// Startup: verify ExifTool in PATH.
 	if err := checkTool("exiftool", "-ver"); err != nil {
-		log.Fatalf("startup: %v", err)
+		slog.Error("startup", "error", err)
+		os.Exit(1)
 	}
-	log.Println("startup: exiftool OK")
+	slog.Info("startup: exiftool OK")
 
 	// Startup: verify FFmpeg in PATH.
 	if err := checkTool("ffmpeg", "-version"); err != nil {
-		log.Fatalf("startup: %v", err)
+		slog.Error("startup", "error", err)
+		os.Exit(1)
 	}
-	log.Println("startup: ffmpeg OK")
+	slog.Info("startup: ffmpeg OK")
 
 	// Startup: create temp storage directories.
 	for _, dir := range []string{"uploads", "cleaned"} {
 		path := cfg.TempStoragePath + "/" + dir
 		if err := os.MkdirAll(path, 0755); err != nil {
-			log.Fatalf("startup: failed to create temp directory %s: %v", path, err)
+			slog.Error("startup: failed to create temp directory", "path", path, "error", err)
+			os.Exit(1)
 		}
 	}
-	log.Printf("startup: temp storage ready at %s", cfg.TempStoragePath)
+	slog.Info("startup: temp storage ready", "path", cfg.TempStoragePath)
 
 	// Startup: verify Supabase DB connectivity.
 	db := NewSupabaseClient(cfg)
 	startupCtx := context.Background()
 	if err := db.Ping(startupCtx); err != nil {
-		log.Fatalf("startup: Supabase not reachable: %v", err)
+		slog.Error("startup: Supabase not reachable", "error", err)
+		os.Exit(1)
 	}
-	log.Println("startup: Supabase DB OK")
+	slog.Info("startup: Supabase DB OK")
 
 	// Start cleanup scheduler.
 	scheduler := NewCleanupScheduler(cfg.RetentionPeriod, cfg.TempStoragePath)
 	schedulerCtx, cancelScheduler := context.WithCancel(startupCtx)
 	defer cancelScheduler()
 	scheduler.Start(schedulerCtx)
-	log.Println("startup: cleanup scheduler started")
+	slog.Info("startup: cleanup scheduler started")
 
 	// Initialize WebSocketHub and CleaningPipeline.
 	hub := NewWebSocketHub()
@@ -83,9 +90,10 @@ func Run() {
 
 	// Start server in background.
 	go func() {
-		log.Printf("startup: HTTP server listening on :%d", cfg.Port)
+		slog.Info("startup: HTTP server listening", "port", cfg.Port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("server: %v", err)
+			slog.Error("server error", "error", err)
+			os.Exit(1)
 		}
 	}()
 
@@ -93,15 +101,15 @@ func Run() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("shutdown: signal received")
+	slog.Info("shutdown: signal received")
 
 	// Graceful shutdown with 30s timeout.
 	shutdownCtx, cancelShutdown := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancelShutdown()
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Printf("shutdown: HTTP server error: %v", err)
+		slog.Error("shutdown: HTTP server error", "error", err)
 	}
 
 	cancelScheduler()
-	log.Println("shutdown: complete")
+	slog.Info("shutdown: complete")
 }

@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
@@ -278,15 +278,15 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			ctx := context.Background()
 			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 			if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
-				log.Printf("job %s: pipeline error: %v", job.ID, err)
+				slog.Error("job: pipeline error", "jobId", job.ID, "error", err)
 			}
 
 			// Retry UpdateJob once — a transient DB error here leaves the job
 			// stuck in "processing" with no way for the user to recover.
 			if err := db.UpdateJob(ctx, job); err != nil {
-				log.Printf("job %s: UpdateJob failed, retrying: %v", job.ID, err)
+				slog.Warn("job: UpdateJob failed, retrying", "jobId", job.ID, "error", err)
 				if err2 := db.UpdateJob(ctx, job); err2 != nil {
-					log.Printf("job %s: UpdateJob retry failed, broadcasting error: %v", job.ID, err2)
+					slog.Error("job: UpdateJob retry failed, broadcasting error", "jobId", job.ID, "error", err2)
 					hub.Broadcast(job.ID, ProgressEvent{
 						Type:    "job_error",
 						JobID:   job.ID,
@@ -298,7 +298,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 
 			for i := range files {
 				if err := db.UpdateFileRecord(ctx, &files[i]); err != nil {
-					log.Printf("job %s: UpdateFileRecord failed for file %s: %v", job.ID, files[i].LocalID, err)
+					slog.Warn("job: UpdateFileRecord failed", "jobId", job.ID, "fileId", files[i].LocalID, "error", err)
 				}
 			}
 			createJobReport(ctx, db, hub, job, files)
@@ -459,7 +459,7 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			// LocalID is not persisted to DB — derive it from FileName by stripping the extension
 			localID := strings.TrimSuffix(f.FileName, f.FileExtension)
 			if !localIDPattern.MatchString(localID) {
-				log.Printf("HandleJobDownload: derived localID %q from FileName %q does not match expected pattern f-[hex]; skipping file %s", localID, f.FileName, f.ID)
+				LoggerFromContext(r.Context()).Warn("HandleJobDownload: derived localID does not match expected pattern, skipping file", "localID", localID, "fileName", f.FileName, "fileId", f.ID)
 				continue
 			}
 			matches, _ := filepath.Glob(filepath.Join(cleanedDir, localID+"_cleaned.*"))

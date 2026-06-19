@@ -219,5 +219,5 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
 
 	cors := corsMiddleware(cfg.FrontendOrigin)
-	return securityHeadersMiddleware(cors(authMW.Middleware(mux)))
+	return securityHeadersMiddleware(RequestIDMiddleware(cors(authMW.Middleware(mux))))
 }
