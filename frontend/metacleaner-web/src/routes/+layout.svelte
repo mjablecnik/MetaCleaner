@@ -6,6 +6,7 @@
 	import MobileNavbar from '$lib/components/shared/MobileNavbar.svelte';
 	import MobileMenu from '$lib/components/shared/MobileMenu.svelte';
 	import SiteFooter from '$lib/shared/sections/SiteFooter.svelte';
+	import CookieConsentBanner from '$lib/components/shared/CookieConsentBanner.svelte';
 
 	let { children } = $props();
 
@@ -25,6 +26,8 @@
 		const path = $page.url.pathname;
 		if (path.startsWith('/features')) return 'features' as const;
 		if (path.startsWith('/pricing')) return 'pricing' as const;
+		if (path.startsWith('/about') || path.startsWith('/privacy') || path.startsWith('/terms'))
+			return 'home' as const;
 		return 'home' as const;
 	});
 
@@ -70,4 +73,5 @@
 	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
 	{@render children()}
 	<SiteFooter />
+	<CookieConsentBanner />
 </div>
