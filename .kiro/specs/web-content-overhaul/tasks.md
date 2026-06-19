@@ -94,8 +94,8 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - All content from i18n messages (`terms_*` keys)
     - _Requirements: 3.1, 3.2, 3.4, 3.5, 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 4. Implement custom 404 error page
-  - [ ] 4.1 Create `src/routes/+error.svelte`
+- [x] 4. Implement custom 404 error page
+  - [x] 4.1 Create `src/routes/+error.svelte`
     - Large "404" number as focal element (gradient text using GradientText or custom gradient styling)
     - Subtitle message explaining page not found
     - CTA button linking to home `/` using CtaButton component
