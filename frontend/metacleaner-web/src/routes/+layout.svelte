@@ -28,7 +28,7 @@
 		return 'home' as const;
 	});
 
-	const menuVariant = $derived(activePage === 'home' ? ('drawer' as const) : ('dropdown' as const));
+	const menuVariant = $derived('drawer' as const);
 
 	$effect(() => {
 		void $page.url.pathname;
