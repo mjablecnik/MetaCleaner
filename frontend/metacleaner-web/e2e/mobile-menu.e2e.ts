@@ -38,11 +38,13 @@ test.describe('Mobile menu — drawer variant (home page)', () => {
 		await expect(backdrop).toBeAttached();
 
 		// Drawer panel always stays in DOM (translate-x-full when closed); verify the
-		// correct anchor links are present as a structural check
-		await expect(page.locator('a[href="#how-it-works"]')).toBeAttached();
-		await expect(page.locator('a[href="#why-it-matters"]')).toBeAttached();
-		await expect(page.locator('a[href="#who-its-for"]')).toBeAttached();
-		await expect(page.locator('a[href="#faq"]')).toBeAttached();
+		// correct anchor links are present as a structural check — scoped to drawer to
+		// avoid strict mode violations with matching footer/desktop nav links
+		const drawer = page.locator('div.fixed.top-0.right-0.h-full');
+		await expect(drawer.locator('a[href="/#how-it-works"]')).toBeAttached();
+		await expect(drawer.locator('a[href="/#why-it-matters"]')).toBeAttached();
+		await expect(drawer.locator('a[href="/#who-its-for"]')).toBeAttached();
+		await expect(drawer.locator('a[href="/#faq"]')).toBeAttached();
 	});
 
 	test('close button inside drawer closes the menu', async ({ page }) => {
@@ -69,58 +71,60 @@ test.describe('Mobile menu — drawer variant (home page)', () => {
 	});
 });
 
-test.describe('Mobile menu — dropdown variant (features and pricing pages)', () => {
-	test('dropdown on /features page opens and shows navigation links', async ({ page }) => {
+test.describe('Mobile menu — drawer on /features and /pricing pages', () => {
+	test('drawer on /features page opens and shows navigation links', async ({ page }) => {
 		await page.goto('/features');
-		// Dropdown panel uses {open ? 'flex' : 'hidden'} — initially hidden
-		const dropdown = page.locator('div.md\\:hidden.w-full.flex-col');
-		await expect(dropdown).not.toBeVisible();
+		// Backdrop is absent when drawer is closed
+		const backdrop = page.locator('div.fixed.inset-0.bg-black\\/60');
+		await expect(backdrop).not.toBeAttached();
 
 		await page.getByRole('button', { name: 'Open menu' }).click();
 
-		// Panel should now be visible
-		await expect(dropdown).toBeVisible();
-		// Dropdown contains navigation links
-		await expect(dropdown.getByRole('link', { name: 'Features', exact: true })).toBeVisible();
-		await expect(dropdown.getByRole('link', { name: 'Pricing', exact: true })).toBeVisible();
+		// Backdrop present confirms drawer is open
+		await expect(backdrop).toBeAttached();
+		// Drawer contains navigation links — use filter to avoid FA icon accessible-name issues
+		const drawer = page.locator('div.fixed.top-0.right-0.h-full');
+		await expect(drawer.locator('a').filter({ hasText: 'Features' })).toBeVisible();
+		await expect(drawer.locator('a').filter({ hasText: 'Pricing' })).toBeVisible();
 	});
 
-	test('dropdown on /pricing page opens and shows navigation links', async ({ page }) => {
+	test('drawer on /pricing page opens and shows navigation links', async ({ page }) => {
 		await page.goto('/pricing');
-		const dropdown = page.locator('div.md\\:hidden.w-full.flex-col');
-		await expect(dropdown).not.toBeVisible();
+		const backdrop = page.locator('div.fixed.inset-0.bg-black\\/60');
+		await expect(backdrop).not.toBeAttached();
 
 		await page.getByRole('button', { name: 'Open menu' }).click();
 
-		await expect(dropdown).toBeVisible();
-		await expect(dropdown.getByRole('link', { name: 'Features', exact: true })).toBeVisible();
-		await expect(dropdown.getByRole('link', { name: 'Pricing', exact: true })).toBeVisible();
+		await expect(backdrop).toBeAttached();
+		const drawer = page.locator('div.fixed.top-0.right-0.h-full');
+		await expect(drawer.locator('a').filter({ hasText: 'Features' })).toBeVisible();
+		await expect(drawer.locator('a').filter({ hasText: 'Pricing' })).toBeVisible();
 	});
 
-	test('clicking a dropdown link navigates and closes the menu', async ({ page }) => {
+	test('clicking a drawer link navigates and closes the menu', async ({ page }) => {
 		await page.goto('/features');
 		await page.getByRole('button', { name: 'Open menu' }).click();
 
-		const dropdown = page.locator('div.md\\:hidden.w-full.flex-col');
-		await expect(dropdown).toBeVisible();
+		const drawer = page.locator('div.fixed.top-0.right-0.h-full');
+		await expect(drawer).toBeVisible();
 
-		// Click Pricing link inside the dropdown
-		await dropdown.getByRole('link', { name: 'Pricing', exact: true }).click();
+		// Click Pricing link inside the drawer — filter by text to avoid FA icon accessible-name issues
+		await drawer.locator('a').filter({ hasText: 'Pricing' }).click();
 		await page.waitForURL(/\/pricing$/);
 
 		// Menu should be closed after navigation (aria-label reverts to "Open menu")
 		await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
 	});
 
-	test('closing dropdown via hamburger hides the panel', async ({ page }) => {
+	test('closing drawer via close button hides the panel', async ({ page }) => {
 		await page.goto('/pricing');
 		await page.getByRole('button', { name: 'Open menu' }).click();
 
-		const dropdown = page.locator('div.md\\:hidden.w-full.flex-col');
-		await expect(dropdown).toBeVisible();
+		const backdrop = page.locator('div.fixed.inset-0.bg-black\\/60');
+		await expect(backdrop).toBeAttached();
 
-		// Click the same button (now "Close menu") to close
-		await page.getByRole('button', { name: 'Close menu' }).click();
-		await expect(dropdown).not.toBeVisible();
+		// Use .last() — the X button inside the drawer panel, not the hamburger in MobileNavbar
+		await page.getByRole('button', { name: 'Close menu' }).last().click();
+		await expect(backdrop).not.toBeAttached();
 	});
 });

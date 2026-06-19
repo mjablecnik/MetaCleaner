@@ -81,7 +81,7 @@ test.describe('Responsive layout — desktop 1280px', () => {
 
 	test('/pricing: desktop plan grid is visible', async ({ page }) => {
 		await page.goto('/pricing');
-		const desktopPlans = page.locator('.hidden.md\\:flex');
+		const desktopPlans = page.locator('div.hidden.md\\:flex');
 		await expect(desktopPlans).toBeVisible();
 		await expect(desktopPlans.getByText('Pro', { exact: true })).toBeVisible();
 	});

@@ -32,7 +32,7 @@ test.describe('Home page — static content', () => {
 		await page.goto('/');
 		// The badge is md:hidden (mobile-only); assert it is attached to the DOM
 		await expect(
-			page.locator('#hero').getByText('100% local processing', { exact: true })
+			page.locator('#hero').getByText('Local scanning · Server-side cleaning', { exact: true })
 		).toBeAttached();
 	});
 
@@ -63,7 +63,7 @@ test.describe('Home page — FAQ accordion', () => {
 		const faqSection = page.locator('#faq');
 		const firstQuestion = 'Are my files safe? Are they uploaded to a server?';
 		const firstAnswer =
-			'No. MetaCleaner processes all files exclusively locally on your device. No file or metadata is ever sent to our servers. Your data stays 100% with you.';
+			'Metadata scanning and analysis are performed locally in your browser — files are never uploaded for scanning. Metadata cleaning requires uploading files to our server for processing. Uploaded files are automatically deleted after cleaning is complete.';
 
 		// Answer should not be visible initially
 		await expect(faqSection.getByText(firstAnswer)).not.toBeVisible();
@@ -80,7 +80,7 @@ test.describe('Home page — FAQ accordion', () => {
 		const faqSection = page.locator('#faq');
 		const firstQuestion = 'Are my files safe? Are they uploaded to a server?';
 		const firstAnswer =
-			'No. MetaCleaner processes all files exclusively locally on your device. No file or metadata is ever sent to our servers. Your data stays 100% with you.';
+			'Metadata scanning and analysis are performed locally in your browser — files are never uploaded for scanning. Metadata cleaning requires uploading files to our server for processing. Uploaded files are automatically deleted after cleaning is complete.';
 
 		// Open the item
 		await faqSection.locator('button').filter({ hasText: firstQuestion }).click();
@@ -91,11 +91,11 @@ test.describe('Home page — FAQ accordion', () => {
 		await expect(faqSection.getByText(firstAnswer)).not.toBeVisible();
 	});
 
-	test('FAQ section has 8 question buttons', async ({ page }) => {
+	test('FAQ section has 7 question buttons', async ({ page }) => {
 		await page.goto('/');
 		const faqSection = page.locator('#faq');
 		// Each FAQ item renders one button (the question toggle)
 		const buttons = faqSection.getByRole('button');
-		await expect(buttons).toHaveCount(8);
+		await expect(buttons).toHaveCount(7);
 	});
 });
