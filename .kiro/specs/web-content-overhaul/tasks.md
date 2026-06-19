@@ -136,14 +136,14 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Test: Copyright year matches current year
     - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 7. Correct processing claims and remove download references
-  - [ ] 7.1 Update HeroSection to remove Download App button and fix badge
+- [x] 7. Correct processing claims and remove download references
+  - [x] 7.1 Update HeroSection to remove Download App button and fix badge
     - Remove secondary "Download App" CTA button from `src/routes/(home)/sections/HeroSection.svelte`
     - Remove wrapper `<div>` around primary button if it only exists for flex row layout
     - The hero badge text will already use the updated i18n key from task 1.6
     - _Requirements: 7.1, 6.6_
 
-  - [ ] 7.2 Update FAQ repository to exclude entry 7
+  - [x] 7.2 Update FAQ repository to exclude entry 7
     - Modify `src/lib/repositories/faq.ts` to remove FAQ entry 7 (offline/mobile app question)
     - Ensure the FAQ returns correct number of items without the removed entry
     - _Requirements: 7.3, 7.4_

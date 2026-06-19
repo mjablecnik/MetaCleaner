@@ -12,7 +12,6 @@ export function getFaq(): FaqItem[] {
 		{ id: '4', questionKey: 'home_faq_4_question', answerKey: 'home_faq_4_answer' },
 		{ id: '5', questionKey: 'home_faq_5_question', answerKey: 'home_faq_5_answer' },
 		{ id: '6', questionKey: 'home_faq_6_question', answerKey: 'home_faq_6_answer' },
-		{ id: '7', questionKey: 'home_faq_7_question', answerKey: 'home_faq_7_answer' },
 		{ id: '8', questionKey: 'home_faq_8_question', answerKey: 'home_faq_8_answer' }
 	];
 }
