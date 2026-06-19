@@ -6,8 +6,8 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
 
 ## Tasks
 
-- [ ] 1. CLI: Create output module and short flag support
-  - [ ] 1.1 Create `src/output.ts` with OutputConfig, detectOutputConfig, shouldUseColor, color wrappers, and emoji replacement
+- [x] 1. CLI: Create output module and short flag support
+  - [x] 1.1 Create `src/output.ts` with OutputConfig, detectOutputConfig, shouldUseColor, color wrappers, and emoji replacement
     - Implement `OutputConfig` interface with `noColor`, `stdoutTTY`, `stderrTTY`
     - Implement `detectOutputConfig()` checking `NO_COLOR` env and `process.stdout.isTTY` / `process.stderr.isTTY`
     - Implement `shouldUseColor(stream, config)` returning false when noColor or stream not TTY
@@ -15,14 +15,14 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Implement `emoji(symbol, config)` returning plain-text labels when colors disabled
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 1.2 Add short flag aliases (`-h`, `-v`, `-q`) to `parseArgs` in `src/index.ts`
+  - [x] 1.2 Add short flag aliases (`-h`, `-v`, `-q`) to `parseArgs` in `src/index.ts`
     - Extend the argument parser to recognize `-h` (help), `-v` (version precedence), `-q` (quiet)
     - Ensure `-v` takes precedence over other commands/flags regardless of position
     - Ensure `-q` + `--verbose` conflict detection writes error to stderr and exits with code 2
     - Ignore unrecognized single-character flags (e.g., `-x`)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ]* 1.3 Write property tests for short flag parsing (Properties 1–4)
+  - [x]* 1.3 Write property tests for short flag parsing (Properties 1–4)
     - **Property 1: Short flag equivalence** — `-h` produces help, `-q` produces quiet:true same as `--quiet`
     - **Property 2: `-v` flag precedence** — any array with `-v` always produces `command: 'version'`
     - **Property 3: Mutual exclusivity detection** — `-q` + `--verbose` always signals exit code 2
@@ -31,7 +31,7 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Test file: `terminal/metacleaner-cli/tests/parseArgs.test.ts`
     - **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5**
 
-  - [ ]* 1.4 Write property tests for output module (Properties 5–7)
+  - [x]* 1.4 Write property tests for output module (Properties 5–7)
     - **Property 5: Color suppression when disabled** — zero ANSI escape sequences in output
     - **Property 6: Correct ANSI wrapping when enabled** — output matches `\x1b[{code}m` + text + `\x1b[0m`
     - **Property 7: Emoji replacement when colors disabled** — only printable ASCII returned

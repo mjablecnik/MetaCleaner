@@ -23,8 +23,8 @@ function parseArgs(argv: string[]): ParseResult {
   let unknownCommand: string | undefined;
   let commandSet = false;
 
-  // --version anywhere in args takes precedence
-  if (argv.includes('--version')) {
+  // --version or -v anywhere in args takes precedence
+  if (argv.includes('--version') || argv.includes('-v')) {
     return {
       options: { command: 'version', files: [], server, json, verbose, quiet, output, timeout },
     };
@@ -40,15 +40,20 @@ function parseArgs(argv: string[]): ParseResult {
       json = true;
     } else if (arg === '--verbose') {
       verbose = true;
-    } else if (arg === '--quiet') {
+    } else if (arg === '--quiet' || arg === '-q') {
       quiet = true;
     } else if (arg === '--output') {
       output = argv[++i];
     } else if (arg === '--timeout') {
       const val = parseInt(argv[++i] ?? '', 10);
       timeout = isNaN(val) ? 60 : val;
+    } else if (arg === '-h') {
+      command = 'help';
+      commandSet = true;
     } else if (arg.startsWith('--')) {
-      // unknown flag — ignore
+      // unknown long flag — ignore
+    } else if (arg.startsWith('-')) {
+      // unknown short flag — ignore
     } else if (!commandSet) {
       if (KNOWN_COMMANDS.has(arg)) {
         command = arg as CLIOptions['command'];
