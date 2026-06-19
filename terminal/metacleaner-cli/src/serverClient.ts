@@ -46,7 +46,7 @@ export async function checkHealth(serverUrl: string): Promise<boolean> {
   }
 }
 
-export async function uploadFiles(serverUrl: string, filePaths: string[]): Promise<UploadedFile[]> {
+export async function uploadFiles(serverUrl: string, filePaths: string[], signal?: AbortSignal): Promise<UploadedFile[]> {
   const form = new FormData();
 
   for (const filePath of filePaths) {
@@ -58,6 +58,7 @@ export async function uploadFiles(serverUrl: string, filePaths: string[]): Promi
   const response = await fetch(`${serverUrl}/api/upload`, {
     method: 'POST',
     body: form,
+    signal,
   });
 
   await assertOk(response);
@@ -66,11 +67,12 @@ export async function uploadFiles(serverUrl: string, filePaths: string[]): Promi
   return body.files;
 }
 
-export async function createJob(serverUrl: string, fileIds: string[]): Promise<JobResponse> {
+export async function createJob(serverUrl: string, fileIds: string[], signal?: AbortSignal): Promise<JobResponse> {
   const response = await fetch(`${serverUrl}/api/jobs`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fileIds }),
+    signal,
   });
 
   await assertOk(response);
@@ -83,6 +85,7 @@ export async function waitForJob(
   jobId: string,
   timeoutSeconds: number,
   progress: ProgressIndicator,
+  signal?: AbortSignal,
 ): Promise<JobStatus> {
   const startTime = Date.now();
   let pollInterval = 1000;
@@ -92,6 +95,11 @@ export async function waitForJob(
   while (true) {
     await new Promise(resolve => setTimeout(resolve, pollInterval));
 
+    if (signal?.aborted) {
+      progress.stop();
+      throw new DOMException('Aborted', 'AbortError');
+    }
+
     const elapsedMs = Date.now() - startTime;
     const elapsedSeconds = Math.floor(elapsedMs / 1000);
 
@@ -100,7 +108,7 @@ export async function waitForJob(
       throw new TimeoutError(elapsedSeconds, timeoutSeconds);
     }
 
-    const response = await fetch(`${serverUrl}/api/jobs/${jobId}`);
+    const response = await fetch(`${serverUrl}/api/jobs/${jobId}`, { signal });
     await assertOk(response);
 
     const status = (await response.json()) as JobStatus;
@@ -125,8 +133,9 @@ export async function downloadFile(
   serverUrl: string,
   fileId: string,
   outputPath: string,
+  signal?: AbortSignal,
 ): Promise<void> {
-  const response = await fetch(`${serverUrl}/api/files/${fileId}/download`);
+  const response = await fetch(`${serverUrl}/api/files/${fileId}/download`, { signal });
   await assertOk(response);
 
   const buffer = await response.arrayBuffer();

@@ -30,6 +30,7 @@ import {
   downloadFile,
   TimeoutError,
 } from './serverClient.js';
+import { registerCleanup, unregisterCleanup, getAbortSignal } from './signals.js';
 import { createProgressIndicator } from './progress.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -182,17 +183,18 @@ async function executeClean(options: CLIOptions): Promise<CommandResult> {
     const fileSize = statSync(filePath).size;
 
     try {
-      const uploaded = await uploadFiles(options.server, [filePath]);
+      const signal = getAbortSignal();
+      const uploaded = await uploadFiles(options.server, [filePath], signal);
       if (uploaded.length === 0) throw new Error('Upload returned no files');
       const fileId = uploaded[0].id;
 
-      const job = await createJob(options.server, [fileId]);
-      const status = await waitForJob(options.server, job.jobId, options.timeout, progress);
+      const job = await createJob(options.server, [fileId], signal);
+      const status = await waitForJob(options.server, job.jobId, options.timeout, progress, signal);
 
       if (status.status === 'failed') throw new Error('Server cleaning job failed');
 
       const outputPath = resolveOutputPath(filePath, options.output, multipleFiles);
-      await downloadFile(options.server, fileId, outputPath);
+      await downloadFile(options.server, fileId, outputPath, signal);
       const cleanedSize = statSync(outputPath).size;
 
       const cleanResult: CleanResult = {
@@ -288,19 +290,23 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
         continue;
       }
 
-      const uploaded = await uploadFiles(options.server, [filePath]);
+      const signal = getAbortSignal();
+      const uploaded = await uploadFiles(options.server, [filePath], signal);
       if (uploaded.length === 0) throw new Error('Upload returned no files');
       const fileId = uploaded[0].id;
 
-      const job = await createJob(options.server, [fileId]);
-      const status = await waitForJob(options.server, job.jobId, options.timeout, progress);
+      const job = await createJob(options.server, [fileId], signal);
+      const status = await waitForJob(options.server, job.jobId, options.timeout, progress, signal);
 
       if (status.status === 'failed') throw new Error('Server cleaning job failed');
 
       const tempPath = join(tmpdir(), `metacleaner_${Date.now()}${ext}`);
-      await downloadFile(options.server, fileId, tempPath);
+      const cleanupTempFile = async (): Promise<void> => { await rm(tempPath, { force: true }); };
+      registerCleanup(cleanupTempFile);
+      await downloadFile(options.server, fileId, tempPath, signal);
 
       const [afterResult] = await scanFiles([tempPath]);
+      unregisterCleanup(cleanupTempFile);
       await rm(tempPath, { force: true });
 
       if (afterResult.error || !afterResult.scanResult) {

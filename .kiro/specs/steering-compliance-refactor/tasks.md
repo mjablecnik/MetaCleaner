@@ -59,19 +59,19 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
 - [x] 3. Checkpoint - Ensure CLI output and flag tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. CLI: Signal handling, install script, and completions
-  - [ ] 4.1 Create `src/signals.ts` with SIGINT handler and cleanup registry
+- [x] 4. CLI: Signal handling, install script, and completions
+  - [x] 4.1 Create `src/signals.ts` with SIGINT handler and cleanup registry
     - Implement `registerCleanup(fn)`, `unregisterCleanup(fn)`, `installSignalHandler()`
     - On SIGINT: run all registered cleanups, write "Interrupted." to stderr, exit 130
     - Abort in-progress HTTP requests before performing cleanup
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ] 4.2 Integrate signal handler into `src/index.ts` and `src/commands.ts`
+  - [x] 4.2 Integrate signal handler into `src/index.ts` and `src/commands.ts`
     - Call `installSignalHandler()` at startup
     - Register temp file cleanup during clean/compare operations
     - _Requirements: 5.1, 5.4_
 
-  - [ ] 4.3 Create `terminal/metacleaner-cli/install.sh`
+  - [x] 4.3 Create `terminal/metacleaner-cli/install.sh`
     - Check `bin/metacleaner` exists, error with build.sh suggestion if not (exit 2)
     - Create `~/.local/bin/` if needed, copy binary with +x permissions
     - Check `completions/_metacleaner` exists, warn and skip if missing
@@ -80,7 +80,7 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Script must be idempotent
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
 
-  - [ ] 4.4 Create `terminal/metacleaner-cli/completions/_metacleaner` zsh completion file
+  - [x] 4.4 Create `terminal/metacleaner-cli/completions/_metacleaner` zsh completion file
     - Begin with `#compdef metacleaner`
     - Use `_arguments` for subcommands: scan, clean, compare, help, version
     - Complete all global flags: `--server`, `--json`, `--verbose`, `--quiet`, `--output`, `--timeout`, `--version`, `--help`
@@ -88,7 +88,7 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Offer file path completion for scan/clean/compare arguments
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [ ]* 4.5 Write unit tests for signal handler and install script validation
+  - [x]* 4.5 Write unit tests for signal handler and install script validation
     - Test cleanup registry add/remove
     - Test that SIGINT produces exit code 130 and "Interrupted." message
     - Validate install.sh script content (error paths, idempotency)

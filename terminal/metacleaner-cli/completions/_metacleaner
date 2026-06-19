@@ -1,0 +1,56 @@
+#compdef metacleaner
+
+_metacleaner() {
+  local -a subcommands
+  subcommands=(
+    'scan:Scan files and display metadata with risk assessment'
+    'clean:Clean metadata from files via the backend server'
+    'compare:Compare metadata before and after cleaning'
+    'help:Show help message'
+    'version:Print the version string and exit'
+  )
+
+  local -a global_flags
+  global_flags=(
+    '--server[Backend server URL]:url:'
+    '--json[Output results in JSON format]'
+    '--verbose[Show additional details including raw parser output]'
+    '--quiet[Output only risk score and severity per file]'
+    '-q[Output only risk score and severity per file (short for --quiet)]'
+    '--output[Output directory or file path for cleaned files]:path:_files'
+    '--timeout[Maximum server polling wait time in seconds]:seconds:'
+    '--version[Print the version string and exit]'
+    '-v[Print the version string and exit (short for --version)]'
+    '--help[Show help message]'
+    '-h[Show help message (short for --help)]'
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe 'subcommand' subcommands
+    _arguments $global_flags
+    return
+  fi
+
+  case "${words[2]}" in
+    scan)
+      _arguments \
+        $global_flags \
+        '*:file:_files'
+      ;;
+    clean)
+      _arguments \
+        $global_flags \
+        '*:file:_files'
+      ;;
+    compare)
+      _arguments \
+        $global_flags \
+        '*:file:_files'
+      ;;
+    *)
+      _arguments $global_flags
+      ;;
+  esac
+}
+
+_metacleaner "$@"

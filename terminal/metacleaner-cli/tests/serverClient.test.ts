@@ -236,7 +236,7 @@ describe('downloadFile', () => {
 
     await downloadFile(SERVER, 'f-1', '/tmp/output.jpg');
 
-    expect(fetch).toHaveBeenCalledWith(`${SERVER}/api/files/f-1/download`);
+    expect(fetch).toHaveBeenCalledWith(`${SERVER}/api/files/f-1/download`, { signal: undefined });
     expect(writeFile).toHaveBeenCalledWith('/tmp/output.jpg', expect.any(Buffer));
   });
 

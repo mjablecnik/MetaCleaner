@@ -2,6 +2,7 @@ import './polyfills.js';
 import type { CLIOptions, CommandResult } from './types.js';
 import { executeCommand } from './commands.js';
 import { detectOutputConfig } from './output.js';
+import { installSignalHandler } from './signals.js';
 
 const args = process.argv.slice(2);
 
@@ -77,6 +78,7 @@ function parseArgs(argv: string[]): ParseResult {
 }
 
 async function main(): Promise<void> {
+  installSignalHandler();
   const outputConfig = detectOutputConfig();
 
   // No arguments → show help
