@@ -86,6 +86,32 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
+				href={resolve('/features' as Pathname)}
+				onclick={onClose}
+				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
+			>
+				<div
+					class="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue text-sm group-hover:bg-brand-blue/20 transition-colors"
+				>
+					<i class="fa-solid fa-wand-magic-sparkles"></i>
+				</div>
+				<span class="text-sm font-medium">{m.nav_features()}</span>
+				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
+			</a>
+			<a
+				href={resolve('/pricing' as Pathname)}
+				onclick={onClose}
+				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
+			>
+				<div
+					class="w-9 h-9 rounded-lg bg-brand-orange/10 flex items-center justify-center text-brand-orange text-sm group-hover:bg-brand-orange/20 transition-colors"
+				>
+					<i class="fa-solid fa-tags"></i>
+				</div>
+				<span class="text-sm font-medium">{m.nav_pricing()}</span>
+				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
+			</a>
+			<a
 				href="#faq"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
