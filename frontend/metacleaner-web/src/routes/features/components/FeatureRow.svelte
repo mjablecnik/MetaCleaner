@@ -64,7 +64,7 @@
 		</div>
 
 		<!-- Visual -->
-		<div class="flex-shrink-0 w-full lg:w-72 h-64 flex items-center justify-center">
+		<div class="hidden lg:flex flex-shrink-0 w-full lg:w-72 h-64 items-center justify-center">
 			{#if feature.image}
 				<img
 					class="w-full h-full object-contain"
