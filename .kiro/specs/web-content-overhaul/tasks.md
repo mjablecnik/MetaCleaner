@@ -107,7 +107,7 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Uses shared layout (navbar + footer)
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-- [ ] 5. Checkpoint - Verify new pages and cookie consent
+- [x] 5. Checkpoint - Verify new pages and cookie consent
   - Ensure all new routes render correctly in both locales
   - Ensure cookie consent banner appears/hides correctly
   - Ensure all tests pass, ask the user if questions arise.
