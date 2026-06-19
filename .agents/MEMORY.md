@@ -1,5 +1,23 @@
 # Memory
 
+## Playwright: Font Awesome icons break getByRole('button', { name }) matching
+- Project: metacleaner-web
+- Problem: `getByRole('button', { name: 'Question text?', exact: true })` times out in Playwright when the button contains both text and a Font Awesome `<i>` icon (e.g., chevron). The FA icon may contribute to the accessible name, causing the match to fail.
+- Solution: Use `locator('button').filter({ hasText: 'Question text?' })` instead. This matches buttons that contain the text without requiring an exact accessible-name match.
+- Source: ui-tests, 2026-06-19
+
+## Playwright: getByText exact fails on split headings with inline elements
+- Project: metacleaner-web
+- Problem: `getByText('Complete toolkit', { exact: true })` fails when the text is a raw text node inside an `<h1>` that also contains a `<br>` and a child element with more text. No single element has exactly that text content.
+- Solution: Use `getByText(/Complete toolkit/)` (regex) to match headings whose text node is part of a larger element's text content.
+- Source: ui-tests, 2026-06-19
+
+## Playwright: strict mode violations from dual mobile/desktop markup
+- Project: metacleaner-web
+- Problem: SvelteKit components render both mobile (md:hidden) and desktop (hidden md:flex) variants. `getByText('Coming soon', { exact: true })` violates strict mode because it matches both the visible desktop button and the hidden mobile button.
+- Solution: Scope locators to the visible container — e.g. `page.locator('.hidden.md\\:flex').getByText('Coming soon')` for desktop. For mobile tests, scope to `.md\\:hidden`.
+- Source: ui-tests, 2026-06-19
+
 ## fast-check stringMatching with [&&] set-intersection syntax hangs in JavaScript
 - Project: metacleaner-cli
 - Problem: `fc.stringMatching(/^-[b-z&&[^hvq]]$/)` uses set-intersection syntax (`&&`) which is only valid in the JS regex `v` flag (ES2024). Without `/v`, the `]` inside `[...]` ends the outer character class early, generating 3-character strings like `-b]`. A subsequent `.filter(s => s.length === 2)` never passes, causing fast-check to spin indefinitely trying to find values.
