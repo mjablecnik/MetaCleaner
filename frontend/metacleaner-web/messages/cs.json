@@ -79,7 +79,7 @@
 	"footer_link_about": "O nás",
 	"footer_link_faq": "FAQ",
 	"footer_link_contact": "Kontakt",
-	"footer_copyright": "© 2024 MetaCleaner. Všechna práva vyhrazena.",
+	"footer_copyright": "© {year} MetaCleaner. Všechna práva vyhrazena.",
 	"footer_legal_privacy": "Zásady ochrany soukromí",
 	"footer_legal_terms": "Podmínky použití",
 	"footer_short_privacy": "Soukromí",

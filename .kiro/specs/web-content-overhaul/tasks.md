@@ -112,12 +112,12 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
   - Ensure cookie consent banner appears/hides correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Footer cleanup
-  - [ ] 6.1 Remove social media icons from SiteFooter
+- [x] 6. Footer cleanup
+  - [x] 6.1 Remove social media icons from SiteFooter
     - Remove all social icon links (Twitter, GitHub, LinkedIn) from both desktop and mobile layouts in `src/lib/shared/sections/SiteFooter.svelte`
     - _Requirements: 5.2_
 
-  - [ ] 6.2 Update footer link hrefs and remove Cookies link
+  - [x] 6.2 Update footer link hrefs and remove Cookies link
     - Remove "Cookies" link from Legal column
     - Update "About us" link href from `#` to `/about`
     - Update "Privacy" link href to `/privacy`
@@ -125,7 +125,7 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Apply same changes to mobile layout links
     - _Requirements: 5.1, 5.4, 1.3, 2.3, 3.3_
 
-  - [ ] 6.3 Replace hardcoded copyright year with dynamic year
+  - [x] 6.3 Replace hardcoded copyright year with dynamic year
     - Replace hardcoded "© 2024" with `new Date().getFullYear()` in FooterBottomBar or SiteFooter
     - Ensure localized format: "© {year} MetaCleaner. All rights reserved."
     - _Requirements: 5.3_

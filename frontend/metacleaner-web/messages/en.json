@@ -79,7 +79,7 @@
 	"footer_link_about": "About us",
 	"footer_link_faq": "FAQ",
 	"footer_link_contact": "Contact",
-	"footer_copyright": "© 2024 MetaCleaner. All rights reserved.",
+	"footer_copyright": "© {year} MetaCleaner. All rights reserved.",
 	"footer_legal_privacy": "Privacy Policy",
 	"footer_legal_terms": "Terms of Service",
 	"footer_short_privacy": "Privacy",
