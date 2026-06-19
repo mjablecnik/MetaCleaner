@@ -135,3 +135,25 @@ src/
 │   └── report/            # Single report detail
 messages/                  # i18n message files (en.json, cs.json)
 ```
+
+## Documentation
+
+For detailed documentation on environment variables, project architecture, testing strategy, and troubleshooting:
+
+📄 **[DOCS.md](./DOCS.md)**
+
+## Author
+
+👤 **Martin Jablečník**
+
+- Website: [www.jablecnik.com](https://www.jablecnik.com)
+- Github: [@mjablecnik](https://github.com/mjablecnik)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## License
+
+Copyright © 2025 Martin Jablečník.
+This project is [MIT](LICENSE) licensed.
