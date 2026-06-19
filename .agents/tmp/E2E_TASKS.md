@@ -42,20 +42,20 @@ this is a fully static marketing site with no `fetch()` calls.
       `pricing.e2e.ts`) — default monthly (Pro price `€5,99`); click `Yearly` →
       Pro price updates to `€57,51` (yearly badge `−20%` shown); click `Monthly` →
       reverts to `€5,99`. mock: none.
-- [ ] Create **navigation test** (`e2e/navigation.e2e.ts`) — verify desktop navbar
+- [x] Create **navigation test** (`e2e/navigation.e2e.ts`) — verify desktop navbar
       links (scope to `nav.hidden.md\\:flex`): brand→`/`, `Features`→`/features`,
       `Pricing`→`/pricing`, `How it Works`→`/#how-it-works`, `FAQ`→`/#faq`; verify
       footer real links (`/features`, `/pricing`, `/#how-it-works`, `/#faq`)
       navigate correctly and active page state updates. Run at desktop viewport.
       mock: none.
-- [ ] Create **mobile menu / hamburger test** (`e2e/mobile-menu.e2e.ts`) — at 375px:
+- [x] Create **mobile menu / hamburger test** (`e2e/mobile-menu.e2e.ts`) — at 375px:
       hamburger (`getByRole('button', { name: 'Open menu' })`) opens `MobileMenu`;
       on **home** assert `drawer` variant anchors (`#how-it-works`,
       `#why-it-matters`, `#who-its-for`, `#faq`) and close (✕) button works; on
       **/features** & **/pricing** assert `dropdown` variant links (`/features`,
       `/pricing`, `/#how-it-works`, `/#faq`); verify menu closes after navigation.
       mock: none.
-- [ ] Create **responsive test for all pages** (`e2e/responsive.e2e.ts`) —
+- [x] Create **responsive test for all pages** (`e2e/responsive.e2e.ts`) —
       viewports: **mobile 375px**, **desktop 1280px**. At 375px: `MobileNavbar`
       (`nav.md\\:hidden`) visible, desktop `nav.hidden.md\\:flex` hidden, mobile
       footer visible. At 1280px: desktop nav visible, `MobileNavbar` hidden, desktop
