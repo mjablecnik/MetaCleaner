@@ -6,33 +6,33 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
 
 ## Tasks
 
-- [ ] 1. Add i18n message keys for all new and modified content
-  - [ ] 1.1 Add cookie consent banner i18n keys to `messages/en.json` and `messages/cs.json`
+- [x] 1. Add i18n message keys for all new and modified content
+  - [x] 1.1 Add cookie consent banner i18n keys to `messages/en.json` and `messages/cs.json`
     - Add keys: `cookie_banner_text`, `cookie_banner_accept`, `cookie_banner_reject`, `cookie_banner_privacy_link`
     - English and Czech translations for all four keys
     - _Requirements: 4.5_
 
-  - [ ] 1.2 Add About page i18n keys to both locale files
+  - [x] 1.2 Add About page i18n keys to both locale files
     - Add keys: `meta_about_title`, `meta_about_description`, `about_heading`, `about_description_p1`, `about_description_p2`, `about_contact_heading`, `about_contact_email_label`, `about_contact_email`
     - English and Czech translations
     - _Requirements: 1.2, 1.5_
 
-  - [ ] 1.3 Add Privacy Policy page i18n keys to both locale files
+  - [x] 1.3 Add Privacy Policy page i18n keys to both locale files
     - Add keys: `meta_privacy_title`, `meta_privacy_description`, `privacy_heading`, `privacy_intro`, `privacy_section1_title` through `privacy_section5_content`
     - Full legal content in both English and Czech
     - _Requirements: 2.2, 2.5_
 
-  - [ ] 1.4 Add Terms of Use page i18n keys to both locale files
+  - [x] 1.4 Add Terms of Use page i18n keys to both locale files
     - Add keys: `meta_terms_title`, `meta_terms_description`, `terms_heading`, `terms_intro`, `terms_section1_title` through `terms_section5_content`
     - Full legal content in both English and Czech
     - _Requirements: 3.2, 3.5_
 
-  - [ ] 1.5 Add 404 error page i18n keys to both locale files
+  - [x] 1.5 Add 404 error page i18n keys to both locale files
     - Add keys: `error_404_title`, `error_404_heading`, `error_404_message`, `error_404_cta`
     - English and Czech translations
     - _Requirements: 9.5, 9.6_
 
-  - [ ] 1.6 Update existing i18n keys for processing claims correction
+  - [x] 1.6 Update existing i18n keys for processing claims correction
     - Modify `home_hero_badge`: "Local scanning · Server-side cleaning"
     - Modify `footer_tagline`: distinguish local scanning from server-side cleaning
     - Modify `home_upload_local_note`: scanning is local, cleaning requires upload
@@ -41,7 +41,7 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Update all in both EN and CS locale files
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10_
 
-  - [ ] 1.7 Remove deprecated i18n keys from both locale files
+  - [x] 1.7 Remove deprecated i18n keys from both locale files
     - Remove `cta_download_app`, `home_faq_7_question`, `home_faq_7_answer`, `footer_legal_cookies`
     - _Requirements: 7.2, 7.3, 5.1_
 

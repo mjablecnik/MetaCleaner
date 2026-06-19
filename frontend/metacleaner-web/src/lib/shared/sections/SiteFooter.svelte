@@ -41,9 +41,8 @@
 				heading={m.footer_col_legal()}
 				headingClass="text-sm font-bold uppercase tracking-widest text-white"
 				links={[
-					{ href: '#', label: m.footer_legal_privacy() },
-					{ href: '#', label: m.footer_legal_terms() },
-					{ href: '#', label: m.footer_legal_cookies() }
+					{ href: '/privacy', label: m.footer_legal_privacy() },
+					{ href: '/terms', label: m.footer_legal_terms() }
 				]}
 			/>
 		</div>

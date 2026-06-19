@@ -29,25 +29,14 @@
 			{m.home_hero_subtitle()}
 		</p>
 
-		<div class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-2 md:mt-4">
-			<div class="w-full sm:w-auto">
-				<CtaButton
-					variant="primary"
-					icon="fa-solid fa-cloud-arrow-up"
-					label={m.cta_try_free()}
-					href="#"
-					fullWidth
-				/>
-			</div>
-			<div class="w-full sm:w-auto">
-				<CtaButton
-					variant="secondary"
-					icon="fa-brands fa-apple"
-					label={m.cta_download_app()}
-					href="#"
-					fullWidth
-				/>
-			</div>
+		<div class="mt-2 md:mt-4">
+			<CtaButton
+				variant="primary"
+				icon="fa-solid fa-cloud-arrow-up"
+				label={m.cta_try_free()}
+				href="#"
+				fullWidth
+			/>
 		</div>
 	</div>
 
