@@ -153,7 +153,7 @@ function buildResultsFromStatus(
 		filesProcessed: status.filesCompleted,
 		fieldsRemoved: status.fieldsRemoved,
 		gpsLocationsRemoved: status.gpsLocationsRemoved,
-		totalTimeSeconds: status.totalTimeSeconds,
+		totalTimeSeconds: status.totalTimeSeconds ?? 0,
 		fileResults,
 		beforeBreakdown: {
 			gpsLocations,

@@ -27,7 +27,7 @@ type Job struct {
 	FilesCompleted      int        `json:"filesCompleted"`
 	FieldsRemoved       int        `json:"fieldsRemoved"`
 	GPSLocationsRemoved int        `json:"gpsLocationsRemoved"`
-	TotalTimeSeconds    int        `json:"totalTimeSeconds,omitempty"`
+	TotalTimeSeconds    int        `json:"totalTimeSeconds"`
 	CreatedAt           time.Time  `json:"createdAt"`
 	CompletedAt         *time.Time `json:"completedAt,omitempty"`
 	ReportID            string     `json:"reportId,omitempty"` // populated on-the-fly from cleaning_reports; not stored on the job row
@@ -97,7 +97,7 @@ type ProgressEvent struct {
 	CurrentFileID        string `json:"currentFileId,omitempty"`
 	JobID                string `json:"jobId,omitempty"`
 	ReportID             string `json:"reportId,omitempty"`
-	TotalTimeSeconds     int    `json:"totalTimeSeconds,omitempty"`
+	TotalTimeSeconds     int    `json:"totalTimeSeconds"`
 	GPSLocationsRemoved  int    `json:"gpsLocationsRemoved,omitempty"`
 }
 

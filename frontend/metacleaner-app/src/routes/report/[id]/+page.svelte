@@ -41,7 +41,7 @@
 		{
 			icon: 'fa-solid fa-clock',
 			iconColor: 'orange' as const,
-			value: reportDetail ? reportDetail.totalTimeSeconds + 's' : '',
+			value: reportDetail ? (reportDetail.totalTimeSeconds ?? 0) + 's' : '',
 			label: tx('report.stats.totalTime')
 		}
 	]);
