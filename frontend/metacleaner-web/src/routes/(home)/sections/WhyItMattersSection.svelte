@@ -10,7 +10,7 @@
 	const cleanedFields = getCleanedFields();
 </script>
 
-<section id="why-it-matters" class="w-full max-w-site mx-auto px-4 md:px-6 pb-8 md:pb-12">
+<section id="why-it-matters" class="w-full max-w-site mx-auto px-6 pb-8 md:pb-12">
 	<SectionHeading
 		eyebrow={m.home_why_eyebrow()}
 		eyebrowColor="brand-green"

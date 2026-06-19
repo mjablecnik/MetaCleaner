@@ -5,7 +5,7 @@
 
 <section
 	id="features-header"
-	class="w-full max-w-site mx-auto px-4 md:px-6 text-center pt-8 pb-6 md:pb-0"
+	class="w-full max-w-site mx-auto px-6 text-center pt-8 pb-6 md:pb-0"
 >
 	<span class="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3 block"
 		>{m.features_eyebrow()}</span

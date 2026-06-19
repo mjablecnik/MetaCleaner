@@ -21,7 +21,7 @@
 </svelte:head>
 
 <div class="flex flex-col items-center w-full min-h-screen">
-	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-4 md:px-6 py-8 md:py-16">
+	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-8 md:py-16">
 		<PricingHeaderSection value={currentBilling} onChange={onBillingChange} />
 		<PricingPlansSection {plans} {isYearly} {enterprise} />
 	</main>

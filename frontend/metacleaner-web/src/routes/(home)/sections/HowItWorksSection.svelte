@@ -7,7 +7,7 @@
 	const steps = stepsRepository();
 </script>
 
-<section id="how-it-works" class="w-full max-w-site mx-auto px-4 md:px-6 pb-8 md:pb-16">
+<section id="how-it-works" class="w-full max-w-site mx-auto px-6 pb-8 md:pb-16">
 	<SectionHeading
 		eyebrow={m.home_steps_eyebrow()}
 		eyebrowColor="brand-blue"

@@ -10,7 +10,7 @@
 </script>
 
 <nav
-	class="md:hidden w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-border/50"
+	class="md:hidden w-full px-6 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-border/50"
 >
 	<BrandLogo size="md" href="/" />
 	<button

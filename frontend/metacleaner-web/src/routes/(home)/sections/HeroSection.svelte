@@ -7,7 +7,7 @@
 
 <section
 	id="hero"
-	class="w-full max-w-site mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-8 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center"
+	class="w-full max-w-site mx-auto px-6 pt-8 md:pt-12 pb-8 flex flex-col lg:flex-row gap-6 lg:gap-12 items-center"
 >
 	<div class="w-full lg:w-[55%] flex flex-col gap-4 md:gap-6">
 		<!-- Badge: mobile only -->

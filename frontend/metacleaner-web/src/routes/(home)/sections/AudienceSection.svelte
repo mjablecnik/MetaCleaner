@@ -7,7 +7,7 @@
 	const audience = getAudience();
 </script>
 
-<section id="who-its-for" class="w-full max-w-site mx-auto px-4 md:px-6 pb-8 md:pb-16">
+<section id="who-its-for" class="w-full max-w-site mx-auto px-6 pb-8 md:pb-16">
 	<SectionHeading
 		eyebrow={m.home_audience_eyebrow()}
 		eyebrowColor="brand-blue"
