@@ -11,7 +11,7 @@
 	const { active = 'home' }: Props = $props();
 </script>
 
-<nav class="hidden md:flex w-full max-w-site mx-auto px-6 py-6 justify-between items-center z-50">
+<nav class="hidden md:flex w-full max-w-site mx-auto px-6 py-6 justify-between items-center z-50 sticky top-0 bg-navy-main">
 	<BrandLogo size="lg" href="/" />
 	<div class="flex items-center gap-8">
 		<NavLink href="/#how-it-works" label={m.nav_how_it_works()} active={active === 'home'} />
