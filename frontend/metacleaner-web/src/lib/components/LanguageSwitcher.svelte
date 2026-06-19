@@ -2,14 +2,14 @@
 	import { getLocale, setLocale, locales } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages';
 	import { onMount } from 'svelte';
-	import flagGb from '$lib/assets/flags/gb.svg';
-	import flagCz from '$lib/assets/flags/cz.svg';
+	import flagEn from '$lib/assets/flags/en.svg';
+	import flagCs from '$lib/assets/flags/cs.svg';
 
 	let { variant = 'desktop' }: { variant?: 'desktop' | 'mobile' } = $props();
 
 	const localeMap: Record<string, { flag: string; label: string; name: string }> = {
-		en: { flag: flagGb, label: 'EN', name: 'English' },
-		cs: { flag: flagCz, label: 'CS', name: 'Čeština' }
+		en: { flag: flagEn, label: 'EN', name: 'English' },
+		cs: { flag: flagCs, label: 'CS', name: 'Čeština' }
 	};
 
 	type Locale = (typeof locales)[number];
@@ -21,6 +21,9 @@
 	function chooseLocale(locale: Locale) {
 		currentLocale = locale;
 		dropdownOpen = false;
+
+		// Save scroll position before locale change so we can restore it after reload
+		sessionStorage.setItem('__locale_scroll_y', String(window.scrollY));
 
 		// Remove hash fragment before locale change to prevent scrolling back to anchor
 		if (window.location.hash) {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import './layout.css';
 	import SiteNavbar from '$lib/components/shared/SiteNavbar.svelte';
 	import MobileNavbar from '$lib/components/shared/MobileNavbar.svelte';
@@ -7,6 +8,16 @@
 	import SiteFooter from '$lib/shared/sections/SiteFooter.svelte';
 
 	let { children } = $props();
+
+	onMount(() => {
+		const savedScrollY = sessionStorage.getItem('__locale_scroll_y');
+		if (savedScrollY !== null) {
+			sessionStorage.removeItem('__locale_scroll_y');
+			requestAnimationFrame(() => {
+				window.scrollTo(0, parseInt(savedScrollY, 10));
+			});
+		}
+	});
 
 	let mobileMenuOpen = $state(false);
 
