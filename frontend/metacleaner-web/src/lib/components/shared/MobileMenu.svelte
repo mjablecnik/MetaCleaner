@@ -47,7 +47,7 @@
 				{m.nav_navigation()}
 			</p>
 			<a
-				href="#how-it-works"
+				href="{resolve('/' as Pathname)}#how-it-works"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -60,7 +60,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="#why-it-matters"
+				href="{resolve('/' as Pathname)}#why-it-matters"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -73,7 +73,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="#who-its-for"
+				href="{resolve('/' as Pathname)}#who-its-for"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -112,7 +112,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="#faq"
+				href="{resolve('/' as Pathname)}#faq"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
