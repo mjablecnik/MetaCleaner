@@ -1,4 +1,5 @@
 import type { FormatOptions } from './formatter.js';
+import type { OutputConfig } from './output.js';
 
 export interface ProgressIndicator {
   start(message: string): void;
@@ -61,8 +62,11 @@ const noopIndicator: ProgressIndicator = {
   stop() {},
 };
 
-export function createProgressIndicator(options: Pick<FormatOptions, 'quiet' | 'json'>): ProgressIndicator {
+export function createProgressIndicator(options: Pick<FormatOptions, 'quiet' | 'json' | 'outputConfig'>): ProgressIndicator {
   if (options.quiet || options.json) {
+    return noopIndicator;
+  }
+  if (options.outputConfig !== undefined && !options.outputConfig.stderrTTY) {
     return noopIndicator;
   }
   return createActiveProgressIndicator();

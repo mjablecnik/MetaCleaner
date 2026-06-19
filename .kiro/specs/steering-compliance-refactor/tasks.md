@@ -39,19 +39,19 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Test file: `terminal/metacleaner-cli/tests/output.test.ts`
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 4.4, 4.5**
 
-- [ ] 2. CLI: Integrate output module into existing formatters and progress
-  - [ ] 2.1 Update `src/formatter.ts` to use `output.ts` color wrappers and emoji function
+- [x] 2. CLI: Integrate output module into existing formatters and progress
+  - [x] 2.1 Update `src/formatter.ts` to use `output.ts` color wrappers and emoji function
     - Replace hardcoded emoji characters with calls to `emoji(symbol, config)`
     - Wrap error/warning/success/info messages with appropriate color functions
     - Pass `OutputConfig` through format functions
     - _Requirements: 2.1, 2.2, 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 2.2 Update `src/progress.ts` to suppress spinner when stderr is not TTY
+  - [x] 2.2 Update `src/progress.ts` to suppress spinner when stderr is not TTY
     - Check `OutputConfig.stderrTTY` before rendering spinner animation
     - Suppress carriage return control characters when not TTY
     - _Requirements: 3.1_
 
-  - [ ] 2.3 Wire `OutputConfig` through `src/index.ts` and `src/commands.ts`
+  - [x] 2.3 Wire `OutputConfig` through `src/index.ts` and `src/commands.ts`
     - Call `detectOutputConfig()` at startup
     - Pass config to all formatting and progress functions
     - _Requirements: 2.1, 2.4, 3.2, 3.3, 3.4, 4.5_

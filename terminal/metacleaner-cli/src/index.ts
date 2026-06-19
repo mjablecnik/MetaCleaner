@@ -1,6 +1,7 @@
 import './polyfills.js';
 import type { CLIOptions, CommandResult } from './types.js';
 import { executeCommand } from './commands.js';
+import { detectOutputConfig } from './output.js';
 
 const args = process.argv.slice(2);
 
@@ -76,14 +77,17 @@ function parseArgs(argv: string[]): ParseResult {
 }
 
 async function main(): Promise<void> {
+  const outputConfig = detectOutputConfig();
+
   // No arguments → show help
   if (args.length === 0) {
     const { options } = parseArgs([]);
-    const result: CommandResult = await executeCommand(options);
+    const result: CommandResult = await executeCommand({ ...options, outputConfig });
     process.exit(result.exitCode);
   }
 
   const { options, unknownCommand } = parseArgs(args);
+  options.outputConfig = outputConfig;
 
   if (options.verbose && options.quiet) {
     process.stderr.write('Error: --verbose and --quiet flags are mutually exclusive\n');

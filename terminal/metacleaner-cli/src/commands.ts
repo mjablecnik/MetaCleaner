@@ -92,7 +92,7 @@ async function executeScan(options: CLIOptions): Promise<CommandResult> {
   }
 
   const results = await scanFiles(options.files);
-  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet };
+  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet, outputConfig: options.outputConfig };
 
   if (options.json) {
     if (results.length === 1) {
@@ -145,7 +145,7 @@ async function executeClean(options: CLIOptions): Promise<CommandResult> {
     return { exitCode: 2, results: [] };
   }
 
-  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet };
+  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet, outputConfig: options.outputConfig };
   const progress = createProgressIndicator(formatOpts);
   const results: FileResult[] = [];
   const multipleFiles = options.files.length > 1;
@@ -247,7 +247,7 @@ async function executeCompare(options: CLIOptions): Promise<CommandResult> {
     return { exitCode: 2, results: [] };
   }
 
-  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet };
+  const formatOpts = { json: options.json, verbose: options.verbose, quiet: options.quiet, outputConfig: options.outputConfig };
 
   const healthy = await checkHealth(options.server);
   if (!healthy) {

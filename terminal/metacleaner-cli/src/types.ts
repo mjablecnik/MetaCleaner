@@ -10,6 +10,7 @@ export type {
 } from 'metacleaner-app/src/lib/scanner/types.js';
 
 import type { ScanResult, SeverityLevel } from 'metacleaner-app/src/lib/scanner/types.js';
+import type { OutputConfig } from './output.js';
 
 export interface CLIOptions {
   command: 'scan' | 'clean' | 'compare' | 'help' | 'version';
@@ -20,6 +21,7 @@ export interface CLIOptions {
   quiet: boolean;
   output?: string;
   timeout: number;
+  outputConfig?: OutputConfig;
 }
 
 export interface CleanResult {

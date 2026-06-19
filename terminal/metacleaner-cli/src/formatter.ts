@@ -2,12 +2,16 @@ import { classifySeverity } from 'metacleaner-app/src/lib/scanner/riskAnalyzer.j
 import { VIDEO_EXTENSIONS } from 'metacleaner-app/src/lib/scanner/constants.js';
 import type { SeverityLevel } from 'metacleaner-app/src/lib/scanner/types.js';
 import type { FileResult, AggregatedSummary, CleanResult, CompareResult } from './types.js';
+import { type OutputConfig, red, yellow, green, cyan, emoji as emojiStr } from './output.js';
 
 export interface FormatOptions {
   json: boolean;
   verbose: boolean;
   quiet: boolean;
+  outputConfig?: OutputConfig;
 }
+
+const NO_COLOR_CONFIG: OutputConfig = { noColor: true, stdoutTTY: false, stderrTTY: false };
 
 const CATEGORY_LABELS: Record<string, string> = {
   gps: 'GPS Location',
@@ -90,6 +94,8 @@ export function getDefaultOutputPath(filePath: string): string {
 }
 
 export function formatScanResult(result: FileResult, options: FormatOptions): string {
+  const cfg = options.outputConfig ?? NO_COLOR_CONFIG;
+
   if (options.json) {
     return JSON.stringify(result, null, 2);
   }
@@ -103,15 +109,20 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
   const lines: string[] = [];
 
   if (result.error) {
-    lines.push(`❌ ${result.fileName} — ${result.error}`);
+    lines.push(red(`${emojiStr('❌', cfg)} ${result.fileName} — ${result.error}`, cfg));
     return lines.join('\n');
   }
 
   const scan = result.scanResult!;
   const severity = formatSeverity(scan.fileScore);
-  const emoji = SEVERITY_EMOJI[severity];
+  const severityEmoji = SEVERITY_EMOJI[severity];
+  const severityLine = `${emojiStr(severityEmoji, cfg)} ${result.fileName}`;
+  const coloredSeverityLine =
+    severity === 'critical' ? red(severityLine, cfg) :
+    severity === 'high' || severity === 'medium' ? yellow(severityLine, cfg) :
+    green(severityLine, cfg);
 
-  lines.push(`${emoji} ${result.fileName}`);
+  lines.push(coloredSeverityLine);
   lines.push(`   Risk Score: ${scan.fileScore}/100 (${severity})`);
   lines.push(`   Fields: ${scan.fieldCount}`);
 
@@ -119,12 +130,12 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
     const latField = scan.fields.find(f => f.key === 'GPSLatitude');
     const lonField = scan.fields.find(f => f.key === 'GPSLongitude');
     if (latField && lonField) {
-      lines.push(`   📍 GPS: ${latField.value}, ${lonField.value}`);
+      lines.push(`   ${emojiStr('📍', cfg)} GPS: ${latField.value}, ${lonField.value}`);
     }
   }
 
   if (scan.device) {
-    lines.push(`   📱 Device: ${scan.device}`);
+    lines.push(`   ${emojiStr('📱', cfg)} Device: ${scan.device}`);
   }
 
   const categories = ['gps', 'deviceIdentity', 'personalData', 'timestamps'] as const;
@@ -132,8 +143,8 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
     const catFields = scan.fields.filter(f => f.category === cat);
     if (catFields.length === 0) continue;
     const label = CATEGORY_LABELS[cat];
-    const catEmoji = CATEGORY_EMOJI[cat];
-    lines.push(`\n   ${catEmoji} ${label} (score: ${scan.categoryScores[cat]})`);
+    const catEmojiChar = CATEGORY_EMOJI[cat];
+    lines.push(`\n   ${emojiStr(catEmojiChar, cfg)} ${label} (score: ${scan.categoryScores[cat]})`);
     for (const field of catFields) {
       lines.push(`      ${field.key}: ${field.value}`);
     }
@@ -144,25 +155,23 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
     lines.push(`   Format: ${result.format}`);
     lines.push(`   File path: ${result.filePath}`);
 
-    // Show all raw metadata fields (including non-privacy ones)
     if (scan.rawMetadata && Object.keys(scan.rawMetadata).length > 0) {
-      lines.push(`\n   📋 All metadata fields (${Object.keys(scan.rawMetadata).length}):`);
+      lines.push(`\n   ${emojiStr('📋', cfg)} All metadata fields (${Object.keys(scan.rawMetadata).length}):`);
       const privacyKeys = new Set(scan.fields.map(f => f.key));
       for (const [key, value] of Object.entries(scan.rawMetadata)) {
         const truncated = String(value).length > 80 ? String(value).slice(0, 77) + '...' : String(value);
-        const marker = privacyKeys.has(key) ? '⚠' : ' ';
+        const marker = privacyKeys.has(key) ? emojiStr('⚠', cfg) : ' ';
         lines.push(`      ${marker} ${key}: ${truncated}`);
       }
     }
   }
 
-  // AI detection output
   if (scan.aiDetection?.isAIGenerated) {
     const ai = scan.aiDetection;
     const genStr = ai.generator ? ` (${ai.generator})` : '';
-    lines.push(`\n   🤖 AI-Generated [${ai.confidence}]${genStr}`);
+    lines.push(`\n   ${emojiStr('🤖', cfg)} AI-Generated [${ai.confidence}]${genStr}`);
     for (const signal of ai.signals) {
-      const icon = signal.type === 'confirmed' ? '✔' : '⚠';
+      const icon = signal.type === 'confirmed' ? emojiStr('✔', cfg) : emojiStr('⚠', cfg);
       lines.push(`      ${icon} ${signal.detail} [${signal.source}]`);
     }
   }
@@ -171,6 +180,8 @@ export function formatScanResult(result: FileResult, options: FormatOptions): st
 }
 
 export function formatCleanResult(result: FileResult, options: FormatOptions): string {
+  const cfg = options.outputConfig ?? NO_COLOR_CONFIG;
+
   if (options.json) {
     return JSON.stringify(result, null, 2);
   }
@@ -184,7 +195,7 @@ export function formatCleanResult(result: FileResult, options: FormatOptions): s
   const lines: string[] = [];
 
   if (result.error) {
-    lines.push(`❌ ${result.fileName} — ${result.error}`);
+    lines.push(red(`${emojiStr('❌', cfg)} ${result.fileName} — ${result.error}`, cfg));
     return lines.join('\n');
   }
 
@@ -192,7 +203,7 @@ export function formatCleanResult(result: FileResult, options: FormatOptions): s
   const sizeDiff = clean.originalSize - clean.cleanedSize;
   const sizeArrow = sizeDiff >= 0 ? `↓ ${formatBytes(sizeDiff)} smaller` : `↑ ${formatBytes(-sizeDiff)} larger`;
 
-  lines.push(`✅ ${result.fileName}`);
+  lines.push(green(`${emojiStr('✅', cfg)} ${result.fileName}`, cfg));
   lines.push(`   Fields removed: ${clean.fieldsRemoved}`);
   lines.push(`   GPS stripped: ${clean.gpsStripped ? 'yes' : 'no'}`);
   lines.push(`   Original size: ${formatBytes(clean.originalSize)}`);
@@ -203,6 +214,8 @@ export function formatCleanResult(result: FileResult, options: FormatOptions): s
 }
 
 export function formatCompareResult(result: FileResult, options: FormatOptions): string {
+  const cfg = options.outputConfig ?? NO_COLOR_CONFIG;
+
   if (options.json) {
     return JSON.stringify(result, null, 2);
   }
@@ -216,7 +229,7 @@ export function formatCompareResult(result: FileResult, options: FormatOptions):
   const lines: string[] = [];
 
   if (result.error) {
-    lines.push(`❌ ${result.fileName} — ${result.error}`);
+    lines.push(red(`${emojiStr('❌', cfg)} ${result.fileName} — ${result.error}`, cfg));
     return lines.join('\n');
   }
 
@@ -225,7 +238,7 @@ export function formatCompareResult(result: FileResult, options: FormatOptions):
   const scoreArrow = scoreDiff <= 0 ? `↓ ${Math.abs(scoreDiff)}` : `↑ ${scoreDiff}`;
   const fieldDiff = cmp.after.fieldCount - cmp.before.fieldCount;
 
-  lines.push(`🔍 ${result.fileName}`);
+  lines.push(cyan(`${emojiStr('🔍', cfg)} ${result.fileName}`, cfg));
   lines.push(`   Score: ${cmp.scoreBefore} → ${cmp.scoreAfter} (${scoreArrow})`);
   lines.push(`   Severity: ${cmp.severityBefore} → ${cmp.severityAfter}`);
   lines.push(`   Fields: ${cmp.before.fieldCount} → ${cmp.after.fieldCount} (${fieldDiff < 0 ? fieldDiff : '+' + fieldDiff})`);
@@ -240,34 +253,31 @@ export function formatCompareResult(result: FileResult, options: FormatOptions):
   }
 
   if (options.verbose) {
-    // Show fields that were removed (present before, absent after)
     const afterKeys = new Set(cmp.after.fields.map(f => f.key));
     const removedFields = cmp.before.fields.filter(f => !afterKeys.has(f.key));
 
     if (removedFields.length > 0) {
-      lines.push(`\n   🗑️  Removed fields (${removedFields.length}):`);
+      lines.push(`\n   ${emojiStr('🗑️', cfg)}  Removed fields (${removedFields.length}):`);
       for (const field of removedFields) {
-        const catEmoji = CATEGORY_EMOJI[field.category] ?? '·';
-        lines.push(`      ${catEmoji} ${field.key}: ${field.value}`);
+        const catEmojiChar = CATEGORY_EMOJI[field.category] ?? '·';
+        lines.push(`      ${emojiStr(catEmojiChar, cfg)} ${field.key}: ${field.value}`);
       }
     }
 
-    // Show fields that remain after cleaning
     if (cmp.after.fields.length > 0) {
-      lines.push(`\n   ⚠️  Remaining fields (${cmp.after.fields.length}):`);
+      lines.push(yellow(`\n   ${emojiStr('⚠️', cfg)}  Remaining fields (${cmp.after.fields.length}):`, cfg));
       for (const field of cmp.after.fields) {
-        const catEmoji = CATEGORY_EMOJI[field.category] ?? '·';
-        lines.push(`      ${catEmoji} ${field.key}: ${field.value}`);
+        const catEmojiChar = CATEGORY_EMOJI[field.category] ?? '·';
+        lines.push(`      ${emojiStr(catEmojiChar, cfg)} ${field.key}: ${field.value}`);
       }
     }
 
-    // Show all raw metadata before cleaning
     if (cmp.before.rawMetadata && Object.keys(cmp.before.rawMetadata).length > 0) {
-      lines.push(`\n   📋 All metadata before (${Object.keys(cmp.before.rawMetadata).length}):`);
+      lines.push(`\n   ${emojiStr('📋', cfg)} All metadata before (${Object.keys(cmp.before.rawMetadata).length}):`);
       const privacyKeys = new Set(cmp.before.fields.map(f => f.key));
       for (const [key, value] of Object.entries(cmp.before.rawMetadata)) {
         const truncated = String(value).length > 80 ? String(value).slice(0, 77) + '...' : String(value);
-        const marker = privacyKeys.has(key) ? '⚠' : ' ';
+        const marker = privacyKeys.has(key) ? emojiStr('⚠', cfg) : ' ';
         lines.push(`      ${marker} ${key}: ${truncated}`);
       }
     }
@@ -277,6 +287,7 @@ export function formatCompareResult(result: FileResult, options: FormatOptions):
 }
 
 export function formatSummary(results: FileResult[], options: FormatOptions): string {
+  const cfg = options.outputConfig ?? NO_COLOR_CONFIG;
   const summary = computeAggregatedSummary(results);
 
   if (options.json) {
@@ -288,14 +299,14 @@ export function formatSummary(results: FileResult[], options: FormatOptions): st
   }
 
   const lines: string[] = [];
-  lines.push(`\n── Summary ──────────────────────────`);
+  lines.push(cyan(`\n── Summary ──────────────────────────`, cfg));
   lines.push(`   Total files:    ${summary.totalFiles}`);
   lines.push(`   Succeeded:      ${summary.successCount}`);
   lines.push(`   Errors:         ${summary.errorCount}`);
   lines.push(`   Max risk score: ${summary.maxRiskScore} (${summary.maxSeverity})`);
   lines.push(`   GPS detected:   ${summary.gpsFileCount} file(s)`);
   lines.push(`   AI-generated:   ${summary.aiFileCount} file(s)`);
-  lines.push(`─────────────────────────────────────`);
+  lines.push(cyan(`─────────────────────────────────────`, cfg));
 
   return lines.join('\n');
 }
