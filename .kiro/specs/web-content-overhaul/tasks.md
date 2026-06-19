@@ -153,8 +153,8 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Test: No FAQ entry contains references to app stores or native apps
     - _Requirements: 7.3, 7.4_
 
-- [ ] 8. Fix CTA button width in Features page
-  - [ ] 8.1 Ensure FeaturesCtaSection button is auto-width and centered
+- [x] 8. Fix CTA button width in Features page
+  - [x] 8.1 Ensure FeaturesCtaSection button is auto-width and centered
     - Verify/fix `src/routes/features/sections/FeaturesCtaSection.svelte` so the CtaButton renders with content-driven width (not full-width)
     - Wrap in `flex justify-center` if not already centered
     - Ensure auto-width is maintained on mobile viewports (< 640px)

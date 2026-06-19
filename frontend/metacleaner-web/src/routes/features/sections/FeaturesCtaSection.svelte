@@ -9,6 +9,8 @@
 	>
 		<h2 class="text-xl md:text-3xl font-bold mb-2 md:mb-3">{m.features_cta_title()}</h2>
 		<p class="text-text-muted text-sm md:text-base mb-5 md:mb-8">{m.features_cta_subtitle()}</p>
-		<CtaButton variant="primary" label={m.cta_try_free()} href="#" size="sm" />
+		<div class="flex justify-center">
+			<CtaButton variant="primary" label={m.cta_try_free()} href="#" size="sm" />
+		</div>
 	</div>
 </section>
