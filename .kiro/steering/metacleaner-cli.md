@@ -210,12 +210,66 @@ bun run test:watch        # Watch mode
 ```bash
 cd terminal/metacleaner-cli
 bun install                     # Install deps (workspace link resolves frontend)
-bun run start                   # Run CLI (bun run src/index.ts)
-bun run src/index.ts scan photo.jpg        # Scan a file
-bun run src/index.ts clean photo.jpg       # Clean a file
-bun run src/index.ts compare photo.jpg     # Before/after comparison
 bun run test                    # Run tests
 ```
+
+## Running the CLI
+
+### Option 1: Standalone binary (recommended)
+
+Build a self-contained binary via `build.sh`:
+
+```bash
+cd terminal/metacleaner-cli
+chmod +x build.sh
+./build.sh
+```
+
+Then run from anywhere:
+
+```bash
+./bin/metacleaner scan photo.jpg
+./bin/metacleaner clean photo.jpg
+./bin/metacleaner compare photo.jpg
+./bin/metacleaner scan --json photo.jpg
+./bin/metacleaner clean --output ./cleaned/ photo.jpg
+./bin/metacleaner compare --timeout 120 large-video.mp4
+```
+
+The binary is standalone (includes Bun runtime) — no dependencies needed to run it.
+
+### Option 2: `bun start` (from CLI project directory)
+
+```bash
+cd terminal/metacleaner-cli
+bun start scan photo.jpg
+bun start clean photo.jpg
+bun start compare photo.jpg
+```
+
+### Option 3: Global `metacleaner` command (via `bun link`)
+
+Run once to register the global alias:
+
+```bash
+cd terminal/metacleaner-cli
+bun link
+```
+
+Then use from anywhere:
+
+```bash
+metacleaner scan photo.jpg
+metacleaner clean photo.jpg
+metacleaner compare photo.jpg
+```
+
+### Notes
+
+- `scan` works offline (no backend needed)
+- `clean` and `compare` require a running backend (default `http://localhost:8080` or env `METACLEANER_SERVER_URL`)
+- The global `metacleaner` command is registered via the `"bin"` field in `package.json`
+- The `bin/` directory is gitignored
 
 ## Key Design Decisions
 
