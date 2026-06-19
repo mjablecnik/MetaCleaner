@@ -45,8 +45,8 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Remove `cta_download_app`, `home_faq_7_question`, `home_faq_7_answer`, `footer_legal_cookies`
     - _Requirements: 7.2, 7.3, 5.1_
 
-- [ ] 2. Implement Cookie Consent Banner component
-  - [ ] 2.1 Create `CookieConsentBanner.svelte` in `src/lib/components/shared/`
+- [x] 2. Implement Cookie Consent Banner component
+  - [x] 2.1 Create `CookieConsentBanner.svelte` in `src/lib/components/shared/`
     - Fixed-bottom bar with accept/reject buttons and privacy policy link
     - Reads/writes `cookie_consent` key in localStorage (`'accepted'` | `'rejected'`)
     - Shows on mount if no consent stored; hides with 300ms transition on action
@@ -65,13 +65,13 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Test: try/catch fallback when localStorage unavailable
     - _Requirements: 4.1, 4.3, 4.4, 4.8_
 
-  - [ ] 2.3 Add CookieConsentBanner to `+layout.svelte`
+  - [x] 2.3 Add CookieConsentBanner to `+layout.svelte`
     - Import and render CookieConsentBanner after SiteFooter inside the flex column
     - Extend `activePage` derived to handle new routes (`/about`, `/privacy`, `/terms`)
     - _Requirements: 4.1, 4.6_
 
-- [ ] 3. Implement new pages (About, Privacy, Terms)
-  - [ ] 3.1 Create `src/routes/about/+page.svelte`
+- [x] 3. Implement new pages (About, Privacy, Terms)
+  - [x] 3.1 Create `src/routes/about/+page.svelte`
     - `<svelte:head>` with localized title and meta description
     - Page heading using SectionHeading or equivalent h1 styling
     - Company description section (two paragraphs from i18n)
@@ -80,7 +80,7 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Shared layout (navbar + footer) via existing `+layout.svelte`
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 10.1, 10.2, 10.3, 10.4, 10.5_
 
-  - [ ] 3.2 Create `src/routes/privacy/+page.svelte`
+  - [x] 3.2 Create `src/routes/privacy/+page.svelte`
     - `<svelte:head>` with localized title and meta description
     - Page heading (h1) + structured content with h2 sub-sections
     - `prose` class from `@tailwindcss/typography` with dark mode overrides for legal content
@@ -88,7 +88,7 @@ Comprehensive content and structural overhaul of the metacleaner-web marketing s
     - Responsive and consistent with site design
     - _Requirements: 2.1, 2.2, 2.4, 2.5, 10.1, 10.2, 10.3, 10.4, 10.5_
 
-  - [ ] 3.3 Create `src/routes/terms/+page.svelte`
+  - [x] 3.3 Create `src/routes/terms/+page.svelte`
     - `<svelte:head>` with localized title and meta description
     - Same pattern as Privacy page: h1 heading + h2 sub-sections + prose styling
     - All content from i18n messages (`terms_*` keys)
