@@ -1,5 +1,11 @@
 # Memory
 
+## fast-check stringMatching with [&&] set-intersection syntax hangs in JavaScript
+- Project: metacleaner-cli
+- Problem: `fc.stringMatching(/^-[b-z&&[^hvq]]$/)` uses set-intersection syntax (`&&`) which is only valid in the JS regex `v` flag (ES2024). Without `/v`, the `]` inside `[...]` ends the outer character class early, generating 3-character strings like `-b]`. A subsequent `.filter(s => s.length === 2)` never passes, causing fast-check to spin indefinitely trying to find values.
+- Solution: Replace regex-based arbitrary with `fc.constantFrom('-a', '-b', ..., '-z')` listing only the known safe/unknown flags (omitting `-h`, `-v`, `-q`).
+- Source: create-code, 2026-06-19
+
 ## computeAggregatedRisk used category score maxima instead of max(fileScore)
 - Project: metacleaner-app
 - Problem: `computeAggregatedRisk` computed `overallScore` as a weighted sum of per-category maxima across files. Tests that set `fileScore` directly with all-zero `categoryScores` (the common mock pattern) got `overallScore = 0` instead of `max(fileScore)`.

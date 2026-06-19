@@ -175,15 +175,16 @@ describe('parseArgs – Property 3: mutual exclusivity detection', () => {
 
 describe('parseArgs – Property 4: unknown short flags ignored', () => {
   it('unrecognized -X flags do not alter parsed command', () => {
-    const unknownFlags = fc.stringMatching(/^-[^hvqvV]$/).filter(s => !['--', '-h', '-v', '-q'].includes(s));
+    // Unknown short flags: any single letter except the recognized -h, -v, -q
+    const unknownShortFlag = fc.constantFrom(
+      '-a', '-b', '-c', '-d', '-e', '-f', '-g', '-i', '-j', '-k',
+      '-l', '-m', '-n', '-o', '-p', '-r', '-s', '-t', '-u', '-w', '-x', '-y', '-z',
+    );
 
     fc.assert(
       fc.property(
         fc.constantFrom('scan', 'clean', 'compare'),
-        fc.array(fc.stringMatching(/^-[b-z&&[^hvq]]$/).filter(s => s.length === 2), {
-          minLength: 1,
-          maxLength: 3,
-        }),
+        fc.array(unknownShortFlag, { minLength: 1, maxLength: 3 }),
         (cmd, unknownShort) => {
           const withUnknown = parseArgs([cmd, ...unknownShort]);
           const withoutUnknown = parseArgs([cmd]);

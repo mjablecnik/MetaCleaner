@@ -56,7 +56,7 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
     - Pass config to all formatting and progress functions
     - _Requirements: 2.1, 2.4, 3.2, 3.3, 3.4, 4.5_
 
-- [ ] 3. Checkpoint - Ensure CLI output and flag tests pass
+- [x] 3. Checkpoint - Ensure CLI output and flag tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. CLI: Signal handling, install script, and completions
