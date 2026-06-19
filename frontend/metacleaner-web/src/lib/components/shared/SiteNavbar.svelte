@@ -16,10 +16,10 @@
 >
 	<BrandLogo size="lg" href="/" />
 	<div class="flex items-center gap-8">
-		<NavLink href="/#how-it-works" label={m.nav_how_it_works()} active={active === 'home'} />
+		<NavLink href="/#how-it-works" label={m.nav_how_it_works()} />
 		<NavLink href="/features" label={m.nav_features()} active={active === 'features'} />
 		<NavLink href="/pricing" label={m.nav_pricing()} active={active === 'pricing'} />
-		<NavLink href="/#faq" label={m.nav_faq()} active={active === 'faq'} />
+		<NavLink href="/#faq" label={m.nav_faq()} />
 	</div>
 	<div class="flex items-center gap-3">
 		<LanguageSwitcher variant="desktop" />

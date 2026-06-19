@@ -35,7 +35,6 @@
 				icon="fa-solid fa-cloud-arrow-up"
 				label={m.cta_try_free()}
 				href="#"
-				fullWidth
 			/>
 		</div>
 	</div>

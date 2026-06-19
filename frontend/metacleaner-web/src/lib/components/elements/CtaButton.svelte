@@ -23,7 +23,7 @@
 
 	const sizeClasses: Record<string, string> = {
 		md: 'px-8 py-3.5 rounded-lg',
-		sm: 'py-4 rounded-xl text-sm'
+		sm: 'px-12 py-4 rounded-xl text-sm'
 	};
 
 	const variantClasses: Record<string, string> = {
@@ -37,7 +37,7 @@
 	const classes = $derived(
 		[
 			sizeClasses[size],
-			'font-semibold flex items-center justify-center gap-2',
+			'font-semibold inline-flex items-center justify-center gap-2',
 			fullWidth ? 'w-full' : '',
 			disabled
 				? 'border border-border-strong text-text-muted cursor-not-allowed'

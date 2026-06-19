@@ -37,9 +37,6 @@
 				<span class="hidden md:inline">{m.home_upload_hint()}</span>
 			</p>
 		</div>
-		<p class="text-[10px] text-text-muted md:mt-2">
-			<i class="fa-solid fa-lock mr-1"></i>{m.home_upload_local_note()}
-		</p>
 	</div>
 </div>
 
