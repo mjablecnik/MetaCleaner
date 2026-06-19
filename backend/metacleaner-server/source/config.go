@@ -36,6 +36,7 @@ type Config struct {
 	RateLimitRPM           int
 	AndroidCertFingerprint string
 	AppleTeamID            string
+	SupabaseTimeout        time.Duration
 }
 
 func LoadConfig() (Config, error) {
@@ -47,6 +48,7 @@ func LoadConfig() (Config, error) {
 		RetentionPeriod: time.Hour,
 		TempStoragePath: "/tmp/metacleaner",
 		RateLimitRPM:    10,
+		SupabaseTimeout: 10 * time.Second,
 	}
 
 	if v := os.Getenv("PORT"); v != "" {
@@ -78,6 +80,12 @@ func LoadConfig() (Config, error) {
 	if v := os.Getenv("RATE_LIMIT_RPM"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			cfg.RateLimitRPM = n
+		}
+	}
+
+	if v := os.Getenv("SUPABASE_TIMEOUT"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 {
+			cfg.SupabaseTimeout = time.Duration(n) * time.Second
 		}
 	}
 

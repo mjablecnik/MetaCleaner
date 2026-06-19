@@ -80,10 +80,15 @@ type SupabaseAuthClient struct {
 	oauthCallback string
 	magicCallback string
 	frontendURL   string
+	timeout       time.Duration
 }
 
 // NewSupabaseAuthClient creates a new SupabaseAuthClient from the given config.
 func NewSupabaseAuthClient(cfg Config) *SupabaseAuthClient {
+	timeout := cfg.SupabaseTimeout
+	if timeout == 0 {
+		timeout = 10 * time.Second
+	}
 	return &SupabaseAuthClient{
 		httpClient:    &http.Client{Timeout: 30 * time.Second},
 		baseURL:       cfg.SupabaseURL,
@@ -93,7 +98,14 @@ func NewSupabaseAuthClient(cfg Config) *SupabaseAuthClient {
 		oauthCallback: cfg.OAuthCallbackURL,
 		magicCallback: cfg.MagicLinkCallbackURL,
 		frontendURL:   cfg.FrontendURL,
+		timeout:       timeout,
 	}
+}
+
+func (c *SupabaseAuthClient) doWithTimeout(req *http.Request) (*http.Response, error) {
+	ctx, cancel := context.WithTimeout(req.Context(), c.timeout)
+	defer cancel()
+	return c.httpClient.Do(req.WithContext(ctx))
 }
 
 // --- URL helpers ---
@@ -144,7 +156,7 @@ func (c *SupabaseAuthClient) newAdminRequest(ctx context.Context, method, rawURL
 // --- Response handler ---
 
 func (c *SupabaseAuthClient) doRequest(req *http.Request, result interface{}) error {
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(req)
 	if err != nil {
 		return fmt.Errorf("supabase auth request: %w", err)
 	}
@@ -398,7 +410,7 @@ func (c *SupabaseAuthClient) CreateProfile(ctx context.Context, profile UserProf
 	}
 	req.Header.Set("Prefer", "return=minimal")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(req)
 	if err != nil {
 		return fmt.Errorf("create profile: %w", err)
 	}
@@ -419,7 +431,7 @@ func (c *SupabaseAuthClient) GetProfile(ctx context.Context, userID string) (*Us
 	req.Header.Set("Accept", "application/json")
 	req.Header.Del("Content-Type")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(req)
 	if err != nil {
 		return nil, fmt.Errorf("get profile: %w", err)
 	}

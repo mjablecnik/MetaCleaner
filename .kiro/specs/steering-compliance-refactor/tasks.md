@@ -147,25 +147,25 @@ This plan covers refactoring the MetaCleaner CLI and Backend to comply with thei
 - [x] 8. Checkpoint - Ensure backend compiles and existing tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Backend: Add Supabase timeout support
-  - [ ] 9.1 Add `SupabaseTimeout` field to Config struct and parse `SUPABASE_TIMEOUT` env var in `source/config.go`
+- [x] 9. Backend: Add Supabase timeout support
+  - [x] 9.1 Add `SupabaseTimeout` field to Config struct and parse `SUPABASE_TIMEOUT` env var in `source/config.go`
     - Default 10 seconds
     - Parse integer seconds from env var, fall back to default on invalid/non-positive/empty values
     - Add `SUPABASE_TIMEOUT` to `.env.example`
     - _Requirements: 10.2, 10.3, 10.4_
 
-  - [ ] 9.2 Add `doWithTimeout` helper to `source/supabase.go` and wrap all `httpClient.Do` calls
+  - [x] 9.2 Add `doWithTimeout` helper to `source/supabase.go` and wrap all `httpClient.Do` calls
     - Create `context.WithTimeout` with configured duration
     - Replace direct `httpClient.Do(req)` calls with timeout-wrapped version
     - Return `context.DeadlineExceeded` error on timeout
     - _Requirements: 10.1, 10.2, 10.5_
 
-  - [ ] 9.3 Wrap all `httpClient.Do` calls in `source/supabase_auth.go` with timeout
+  - [x] 9.3 Wrap all `httpClient.Do` calls in `source/supabase_auth.go` with timeout
     - Apply same `doWithTimeout` pattern to `doRequest` and direct `httpClient.Do` calls (CreateProfile, GetProfile)
     - Pass timeout from config through SupabaseAuthClient
     - _Requirements: 10.1, 10.5_
 
-  - [ ]* 9.4 Write property test for Supabase timeout parsing (Property 12)
+  - [x]* 9.4 Write property test for Supabase timeout parsing (Property 12)
     - **Property 12: Supabase timeout parsing** — positive integer N → N seconds, else default 10s
     - Use `pgregory.net/rapid` for random strings and integers
     - Test file: `backend/metacleaner-server/tests/config_test.go`

@@ -15,6 +15,7 @@ type SupabaseClient struct {
 	httpClient *http.Client
 	baseURL    string
 	apiKey     string
+	timeout    time.Duration
 }
 
 // NewSupabaseClient creates a new SupabaseClient from the given config.
@@ -24,11 +25,22 @@ func NewSupabaseClient(cfg Config) *SupabaseClient {
 	if key == "" {
 		key = cfg.SupabaseAPIKey // fallback if service role not configured
 	}
+	timeout := cfg.SupabaseTimeout
+	if timeout == 0 {
+		timeout = 10 * time.Second
+	}
 	return &SupabaseClient{
 		httpClient: &http.Client{Timeout: 30 * time.Second},
 		baseURL:    cfg.SupabaseURL,
 		apiKey:     key,
+		timeout:    timeout,
 	}
+}
+
+func (c *SupabaseClient) doWithTimeout(ctx context.Context, req *http.Request) (*http.Response, error) {
+	timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
+	defer cancel()
+	return c.httpClient.Do(req.WithContext(timeoutCtx))
 }
 
 // --- DB record types (snake_case for PostgREST serialization) ---
@@ -122,7 +134,7 @@ func (c *SupabaseClient) doJSON(ctx context.Context, method, url string, payload
 		req.Header.Set("Prefer", "return=representation")
 	}
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(ctx, req)
 	if err != nil {
 		return err
 	}
@@ -155,7 +167,7 @@ func (c *SupabaseClient) Ping(ctx context.Context) error {
 		return err
 	}
 	req.Header.Set("Accept", "application/json")
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(ctx, req)
 	if err != nil {
 		return err
 	}
@@ -517,7 +529,7 @@ func (c *SupabaseClient) uploadPDFOnce(ctx context.Context, path string, data []
 	}
 	req.Header.Set("Content-Type", "application/pdf")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(ctx, req)
 	if err != nil {
 		return err
 	}
@@ -545,7 +557,7 @@ func (c *SupabaseClient) GetPDFSignedURL(ctx context.Context, path string) (stri
 	req.Body = io.NopCloser(bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.doWithTimeout(ctx, req)
 	if err != nil {
 		return "", err
 	}

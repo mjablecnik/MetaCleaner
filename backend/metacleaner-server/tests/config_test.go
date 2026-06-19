@@ -2,10 +2,12 @@ package tests
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
 	src "metacleaner-server/source"
+	"pgregory.net/rapid"
 )
 
 func setRequiredConfigEnv(t *testing.T) {
@@ -18,6 +20,7 @@ func setRequiredConfigEnv(t *testing.T) {
 	t.Setenv("RETENTION_PERIOD", "")
 	t.Setenv("TEMP_STORAGE_PATH", "")
 	t.Setenv("RATE_LIMIT_RPM", "")
+	t.Setenv("SUPABASE_TIMEOUT", "")
 	t.Setenv("FRONTEND_ORIGIN", "")
 	t.Setenv("SUPABASE_SERVICE_ROLE_KEY", "")
 	t.Setenv("SUPABASE_JWT_SECRET", "")
@@ -192,4 +195,96 @@ func TestErrConfigMessage(t *testing.T) {
 	if len(msg) < 5 {
 		t.Errorf("error message too short: %q", msg)
 	}
+}
+
+// TestSupabaseTimeoutDefault verifies that an empty SUPABASE_TIMEOUT produces the 10s default.
+func TestSupabaseTimeoutDefault(t *testing.T) {
+	setRequiredConfigEnv(t)
+	// SUPABASE_TIMEOUT already cleared by setRequiredConfigEnv
+
+	cfg, err := src.LoadConfig()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cfg.SupabaseTimeout != 10*time.Second {
+		t.Errorf("SupabaseTimeout default = %v, want 10s", cfg.SupabaseTimeout)
+	}
+}
+
+// TestSupabaseTimeoutExplicit verifies that a valid positive integer is parsed to N seconds.
+func TestSupabaseTimeoutExplicit(t *testing.T) {
+	setRequiredConfigEnv(t)
+	t.Setenv("SUPABASE_TIMEOUT", "30")
+
+	cfg, err := src.LoadConfig()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cfg.SupabaseTimeout != 30*time.Second {
+		t.Errorf("SupabaseTimeout = %v, want 30s", cfg.SupabaseTimeout)
+	}
+}
+
+// TestSupabaseTimeoutInvalidFallsBackToDefault verifies that non-numeric, zero, or
+// negative values for SUPABASE_TIMEOUT fall back to the 10s default.
+func TestSupabaseTimeoutInvalidFallsBackToDefault(t *testing.T) {
+	cases := []string{"abc", "0", "-5", "1.5", " "}
+	for _, v := range cases {
+		t.Run(fmt.Sprintf("value=%q", v), func(t *testing.T) {
+			setRequiredConfigEnv(t)
+			t.Setenv("SUPABASE_TIMEOUT", v)
+
+			cfg, err := src.LoadConfig()
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if cfg.SupabaseTimeout != 10*time.Second {
+				t.Errorf("SUPABASE_TIMEOUT=%q: got %v, want 10s", v, cfg.SupabaseTimeout)
+			}
+		})
+	}
+}
+
+// Property 12: Supabase timeout parsing — positive integer N → N seconds, else default 10s.
+// Feature: steering-compliance-refactor, Property 12: Supabase timeout parsing
+func TestProperty12_SupabaseTimeoutParsing(t *testing.T) {
+	rapid.Check(t, func(rt *rapid.T) {
+		setRequiredConfigEnv(t)
+
+		n := rapid.Int().Draw(rt, "timeout_seconds")
+		t.Setenv("SUPABASE_TIMEOUT", fmt.Sprintf("%d", n))
+
+		cfg, err := src.LoadConfig()
+		if err != nil {
+			rt.Fatal(err)
+		}
+
+		if n > 0 {
+			expected := time.Duration(n) * time.Second
+			if cfg.SupabaseTimeout != expected {
+				rt.Fatalf("SUPABASE_TIMEOUT=%d: got %v, want %v", n, cfg.SupabaseTimeout, expected)
+			}
+		} else {
+			if cfg.SupabaseTimeout != 10*time.Second {
+				rt.Fatalf("SUPABASE_TIMEOUT=%d (non-positive): got %v, want 10s", n, cfg.SupabaseTimeout)
+			}
+		}
+	})
+
+	// Also test non-numeric strings
+	rapid.Check(t, func(rt *rapid.T) {
+		setRequiredConfigEnv(t)
+
+		// Generate strings that start with a letter (guaranteed non-numeric)
+		s := rapid.StringMatching(`[a-zA-Z][a-zA-Z0-9]*`).Draw(rt, "non_numeric")
+		t.Setenv("SUPABASE_TIMEOUT", s)
+
+		cfg, err := src.LoadConfig()
+		if err != nil {
+			rt.Fatal(err)
+		}
+		if cfg.SupabaseTimeout != 10*time.Second {
+			rt.Fatalf("SUPABASE_TIMEOUT=%q (non-numeric): got %v, want 10s", s, cfg.SupabaseTimeout)
+		}
+	})
 }
