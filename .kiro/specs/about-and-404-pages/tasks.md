@@ -104,7 +104,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Display a single stat item in the hero grid
     - _Requirements: 1.3_
 
-  - [ ] 4.3 Create `src/routes/about/sections/StorySection.svelte`
+  - [x] 4.3 Create `src/routes/about/sections/StorySection.svelte`
     - Render eyebrow label, heading, gradient divider (brand-blue → brand-green)
     - Render 3 narrative paragraphs from separate Paraglide message keys
     - Two-column layout at lg+ (1/3 heading + 2/3 paragraphs), stacked below lg
