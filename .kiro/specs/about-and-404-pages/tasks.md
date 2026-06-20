@@ -162,7 +162,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - All labels from Paraglide messages
     - _Requirements: 5.4_
 
-  - [ ] 6.4 Create `src/routes/error/sections/QuickLinksGrid.svelte` and `QuickLinkCard.svelte`
+  - [x] 6.4 Create `src/routes/error/sections/QuickLinksGrid.svelte` and `QuickLinkCard.svelte`
     - QuickLinksGrid: 4 quick link cards in responsive grid
     - Links: Try Free (/), Features (/features), Pricing (/pricing), FAQ (/#faq)
     - Each card: clickable link, min 44×44px touch target, icon + label, hover border color
