@@ -139,7 +139,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
 - [x] 5. Checkpoint — Verify About page renders correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement 404 error page
+- [x] 6. Implement 404 error page
   - [x] 6.1 Create `src/routes/error/sections/OrbitVisual.svelte`
     - Two concentric rotating rings with dashed borders (outer 18s CW, inner 28s CCW)
     - Glowing dots on each ring (brand-blue outer, brand-red inner)
@@ -179,7 +179,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Set `<title>` via Paraglide (`error_404_title` for 404, generic fallback for other errors)
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.6, 5.7, 11.3, 11.4_
 
-- [ ] 7. Final checkpoint — Ensure all tests pass
+- [x] 7. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
