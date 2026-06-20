@@ -55,7 +55,7 @@
 	</nav>
 
 	<main
-		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-4 pt-6 pb-10 lg:px-6 lg:pb-16"
+		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-6 pt-6 pb-10 lg:pb-16"
 	>
 		<!-- Mobile layout (single-column, hidden on desktop) -->
 		<div class="flex w-full flex-col lg:hidden">

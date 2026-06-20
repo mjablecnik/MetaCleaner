@@ -62,7 +62,6 @@
 		const t = e.target as Element;
 		if (!t.closest('#nav-langDropdown')) langDropdownOpen = false;
 		if (!t.closest('#nav-userDropdown')) userDropdownOpen = false;
-		if (!t.closest('#nav-hamburgerDropdown')) hamburgerMenuOpen = false;
 	}
 
 	onMount(() => {
@@ -89,7 +88,7 @@
 	class:no-print={noPrint}
 >
 	<div
-		class="mx-auto flex max-w-[1100px] items-center justify-between px-4 lg:px-6
+		class="mx-auto flex max-w-[1100px] items-center justify-between px-6
 			{reducedDesktopPadding ? 'py-4 lg:py-5' : 'py-4 lg:py-6'}"
 	>
 		<!-- Logo area -->

@@ -13,7 +13,7 @@
 </script>
 
 <nav
-	class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-4 py-4 lg:px-6 lg:py-6"
+	class="mx-auto flex w-full max-w-[1100px] items-center justify-between px-6 py-4 lg:py-6"
 >
 	<div class="flex items-center gap-2.5 lg:gap-3">
 		<div
@@ -31,7 +31,7 @@
 			{/if}
 			<a
 				href={resolve(rightHref!)}
-				class="min-h-[44px] rounded-lg border border-gray-700 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-navy-lighter lg:min-h-0 lg:px-4 lg:py-2 lg:text-sm"
+				class="rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter lg:px-4 lg:py-2"
 			>
 				{rightLabel}
 			</a>

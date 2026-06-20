@@ -567,6 +567,7 @@ class ApiCleaningService implements CleaningService {
 				}
 
 				const fileIds = uploadResponse.files.map((f) => f.id);
+				cleaningResultsStore.setUploadedFileIds(fileIds);
 				const fileNames: Record<string, string> = {};
 
 				for (const fileInfo of uploadResponse.files) {

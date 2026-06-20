@@ -40,15 +40,7 @@
 		</div>
 	</div>
 
-	<!-- Mobile: full-width PDF download button -->
-	<button
-		onclick={onDownloadPdf}
-		class="no-print flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-transform active:scale-95 lg:hidden"
-	>
-		<i class="fa-solid fa-file-pdf"></i>
-		<span>{tx('report.actions.downloadPdf')}</span>
-	</button>
-
+	<!-- Mobile: hidden — moved to MobileBottomCta -->
 	<!-- Desktop: action buttons -->
 	<div class="no-print hidden items-center gap-3 self-start lg:flex lg:self-auto">
 		<button

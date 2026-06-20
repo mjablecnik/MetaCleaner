@@ -10,6 +10,7 @@
 	import ReportDetailHeader from '../sections/ReportDetailHeader.svelte';
 	import ReportChartCard from '../sections/ReportChartCard.svelte';
 	import FileAccordionList from '../sections/FileAccordionList.svelte';
+	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 
 	let reportDetail = $state<ReportDetail | null>(null);
 	let isLoading = $state(true);
@@ -82,7 +83,7 @@
 </svelte:head>
 
 <main
-	class="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-4 pt-4 pb-24 lg:gap-6 lg:px-6 lg:pt-0"
+	class="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-6 pt-4 pb-40 lg:gap-6 lg:pb-24 lg:pt-0"
 >
 	{#if isLoading}
 		<div class="flex items-center justify-center py-20">
@@ -108,7 +109,17 @@
 		<FileAccordionList files={reportDetail?.files ?? []} />
 
 		<div class="fade-in-up mt-4 pb-4 text-center text-sm text-text-muted delay-4 lg:mt-8">
-			<p>{tx('common.footer.copyright')}</p>
+			<p>{tx('common.footer.copyright', { year: new Date().getFullYear() })}</p>
 		</div>
 	{/if}
 </main>
+
+<MobileBottomCta>
+	<button
+		onclick={handleDownloadPdf}
+		class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green"
+	>
+		<i class="fa-solid fa-file-pdf"></i>
+		{tx('report.actions.downloadPdf')}
+	</button>
+</MobileBottomCta>

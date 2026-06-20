@@ -221,7 +221,7 @@
 	"common.loading": "Loading...",
 	"common.error": "An error occurred. Please try again.",
 	"common.downloadError": "Download failed. Please try again.",
-	"common.footer.copyright": "© 2025 MetaCleaner. All rights reserved.",
+	"common.footer.copyright": "© {year} MetaCleaner. All rights reserved.",
 	"step1.upload.rejectedTooLarge": "{count} file(s) exceeded the 500 MB size limit",
 	"step1.upload.rejectedUnsupported": "{count} file(s) have an unsupported format",
 	"step1.status.waiting": "Waiting for files",

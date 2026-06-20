@@ -221,7 +221,7 @@
 	"common.loading": "Načítám...",
 	"common.error": "Došlo k chybě. Zkuste to prosím znovu.",
 	"common.downloadError": "Stažení selhalo. Zkuste to prosím znovu.",
-	"common.footer.copyright": "© 2025 MetaCleaner. Všechna práva vyhrazena.",
+	"common.footer.copyright": "© {year} MetaCleaner. Všechna práva vyhrazena.",
 	"step1.upload.rejectedTooLarge": "{count} soubor(ů) přesáhl(o) limit 500 MB",
 	"step1.upload.rejectedUnsupported": "{count} soubor(ů) má nepodporovaný formát",
 	"step1.status.waiting": "Čeká na soubory",

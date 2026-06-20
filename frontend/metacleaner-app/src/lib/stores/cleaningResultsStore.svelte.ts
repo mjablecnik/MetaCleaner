@@ -5,6 +5,7 @@ let _results = $state<ProcessingResults | null>(null);
 let _error = $state<CleaningError | null>(null);
 let _jobId = $state<string | null>(null);
 let _reportId = $state<string | null>(null);
+let _uploadedFileIds = $state<string[]>([]);
 
 export const cleaningResultsStore = {
 	get results() {
@@ -18,6 +19,12 @@ export const cleaningResultsStore = {
 	},
 	get reportId() {
 		return _reportId;
+	},
+	get uploadedFileIds() {
+		return _uploadedFileIds;
+	},
+	setUploadedFileIds(ids: string[]) {
+		_uploadedFileIds = ids;
 	},
 	setResults(r: ProcessingResults, jobId?: string, reportId?: string) {
 		_results = r;
@@ -37,5 +44,6 @@ export const cleaningResultsStore = {
 		_error = null;
 		_jobId = null;
 		_reportId = null;
+		_uploadedFileIds = [];
 	}
 };

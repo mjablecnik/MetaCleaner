@@ -138,8 +138,8 @@
 		{/each}
 	</div>
 
-	<!-- Action buttons -->
-	<div class="mt-1 flex gap-3">
+	<!-- Action buttons (hidden on mobile — MobileBottomCta provides these actions) -->
+	<div class="mt-1 hidden gap-3 lg:flex">
 		<button
 			onclick={onDownload}
 			class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"

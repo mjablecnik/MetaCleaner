@@ -26,23 +26,23 @@
 	}
 </script>
 
-<div class="mb-5 flex items-center gap-2 lg:mb-6">
+<div class="mt-2 mb-8 flex items-center justify-center gap-2 lg:mt-0 lg:mb-6">
 	{#each { length: steps } as _, i (i)}
 		{@const stepNum = i + 1}
 		{@const isLast = stepNum === steps}
-		<div class="flex {isLast ? '' : 'flex-1'} items-center gap-2">
+		<div class="flex items-center gap-2">
 			<div
-				class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 lg:h-8 lg:w-8"
+				class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 lg:h-10 lg:w-10 lg:text-base"
 				style="background: {stepBg(stepNum)}; color: {stepColor(stepNum)};"
 			>
 				{#if currentStep > stepNum}
-					<i class="fa-solid fa-check text-xs"></i>
+					<i class="fa-solid fa-check text-sm"></i>
 				{:else}
 					{stepNum}
 				{/if}
 			</div>
 			{#if !isLast}
-				<div class="h-1 flex-1 overflow-hidden rounded-full bg-navy-lighter">
+				<div class="h-1 w-16 overflow-hidden rounded-full bg-navy-lighter lg:w-20">
 					<div
 						class="h-full rounded-full transition-all duration-500"
 						style="width: {lineFill(stepNum)}; background: {lineBg(stepNum)};"

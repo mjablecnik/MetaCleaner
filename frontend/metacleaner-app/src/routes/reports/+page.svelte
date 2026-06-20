@@ -9,6 +9,7 @@
 	import type { Report, ReportSummaryStats } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
+	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
 	import ReportsHeader from './sections/ReportsHeader.svelte';
 	import FiltersBar from './sections/FiltersBar.svelte';
 	import MobileFilters from './sections/MobileFilters.svelte';
@@ -108,7 +109,7 @@
 </svelte:head>
 
 <main
-	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-28 lg:mt-0 lg:gap-6 lg:px-6 lg:pb-24"
+	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-6 pb-28 lg:mt-0 lg:gap-6 lg:pb-24"
 >
 	<ReportsHeader totalReports={stats?.totalReports ?? 0} />
 
@@ -140,14 +141,14 @@
 	{/if}
 </main>
 
-<div class="mobile-gradient-fade fixed right-0 bottom-0 left-0 z-40 px-4 py-4 lg:hidden">
+<MobileBottomCta>
 	<a
 		href={resolve('/' as Pathname)}
-		class="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-green py-4 text-base font-bold text-white shadow-glow-green"
+		class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green"
 	>
 		<i class="fa-solid fa-plus"></i>
 		<span>{tx('reports.header.newCleaning')}</span>
 	</a>
-</div>
+</MobileBottomCta>
 
 <Toast message={toastMessage} show={showToast} />

@@ -31,7 +31,7 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col items-start gap-3 sm:items-end">
+	<div class="hidden flex-col items-start gap-3 sm:flex sm:items-end">
 		<button
 			onclick={onUploadNew}
 			class="flex items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-4 py-2.5 text-sm font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"

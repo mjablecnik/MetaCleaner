@@ -31,7 +31,7 @@
 	/>
 
 	<main
-		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-5 pb-8 lg:px-6 lg:pb-16"
+		class="mx-auto flex w-full max-w-[1100px] flex-1 items-center justify-center px-6 pb-8 lg:pb-16"
 	>
 		<div class="grid w-full grid-cols-1 items-center gap-12 lg:grid-cols-2">
 			<!-- Left: Branding (desktop only) -->

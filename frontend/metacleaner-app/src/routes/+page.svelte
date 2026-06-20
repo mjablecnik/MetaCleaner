@@ -26,7 +26,7 @@
 </svelte:head>
 
 <main
-	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-4 pb-24 lg:mt-0 lg:gap-6 lg:px-6"
+	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-6 pb-40 lg:mt-0 lg:gap-6 lg:pb-24"
 >
 	{#if state === 'idle' || state === 'files-ready'}
 		<div class="mb-0 flex flex-col gap-1 lg:mb-2">

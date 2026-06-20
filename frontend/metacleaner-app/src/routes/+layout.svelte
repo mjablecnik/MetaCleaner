@@ -23,7 +23,7 @@
 			return {
 				logoHref: '/' as string | undefined,
 				compact: true,
-				showLangDropdown: false,
+				showLangDropdown: true,
 				showBackButton: true,
 				backHref: '/',
 				backLabel: tx('reports.nav.backToCleaning')

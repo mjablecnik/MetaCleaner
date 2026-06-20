@@ -53,8 +53,12 @@
 		try {
 			let blob: Blob;
 			let filename: string;
-			if (results.fileResults.length === 1) {
-				const fileId = results.fileResults[0].fileId;
+			const isSingleFile = files.length === 1;
+
+			if (isSingleFile) {
+				// Prefer fileId from results, fall back to uploadedFileIds
+				const fileId =
+					results.fileResults[0]?.fileId || cleaningResultsStore.uploadedFileIds[0] || '';
 				blob = await downloadFile(fileId);
 				filename = files[0]?.name ?? fileId;
 			} else {
@@ -168,22 +172,22 @@
 	<div class="flex flex-col gap-2">
 		<button
 			onclick={handleDownload}
-			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-navy-main"
+			class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-bold text-white shadow-glow-green"
 		>
 			<i class="fa-solid fa-download"></i>
-			{results?.fileResults.length === 1 ? tx('common.download') : tx('step5.actions.downloadAll')}
+			{files.length <= 1 ? tx('common.download') : tx('step5.actions.downloadAll')}
 		</button>
 		<div class="grid grid-cols-2 gap-2">
 			<button
 				onclick={handleViewReport}
-				class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-card py-3 text-xs font-semibold text-white"
+				class="flex items-center justify-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 py-3 text-xs font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"
 			>
 				<i class="fa-solid fa-file-lines"></i>
 				{tx('step5.actions.viewReport')}
 			</button>
 			<button
 				onclick={handleUploadNew}
-				class="flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-card py-3 text-xs font-semibold text-white"
+				class="flex items-center justify-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 py-3 text-xs font-semibold text-brand-blue transition-all hover:bg-brand-blue/20"
 			>
 				<i class="fa-solid fa-arrow-up-from-bracket"></i>
 				{tx('step5.actions.uploadNew')}

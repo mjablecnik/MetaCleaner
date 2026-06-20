@@ -31,7 +31,7 @@
 			</p>
 		</div>
 	</div>
-	<div class="flex items-center gap-3 self-start sm:self-auto">
+	<div class="hidden items-center gap-3 self-start sm:flex sm:self-auto">
 		<a
 			href={resolve('/' as Pathname)}
 			class="flex items-center gap-2 rounded-xl bg-brand-green px-4 py-2 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400 lg:px-5 lg:py-2.5"
