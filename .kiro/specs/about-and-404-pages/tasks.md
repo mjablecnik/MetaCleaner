@@ -148,7 +148,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - CSS `@media (prefers-reduced-motion: reduce)` sets all animations to 0ms
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 6.2 Create `src/routes/error/sections/TerminalCard.svelte`
+  - [x] 6.2 Create `src/routes/error/sections/TerminalCard.svelte`
     - Terminal header with traffic-light dots, title, pulsing LIVE indicator (1.5s cycle)
     - 5 diagnostic lines with 500ms sequential delay: path, status (red), privacy (green), timestamp, suggestion (orange)
     - Blinking cursor after lines (1.4s toggle)
