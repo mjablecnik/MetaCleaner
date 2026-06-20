@@ -169,7 +169,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Create QuickLinkCard at `src/routes/error/components/QuickLinkCard.svelte`
     - _Requirements: 5.5_
 
-  - [ ] 6.5 Replace `src/routes/+error.svelte`
+  - [x] 6.5 Replace `src/routes/+error.svelte`
     - Import OrbitVisual, TerminalCard, ActionButtons, QuickLinksGrid from `error/` subdirectories
     - Display error badge with pulsing red dot and "Error 404 — Page Not Found" text
     - Display large "404" number with gradient
