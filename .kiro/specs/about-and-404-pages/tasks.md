@@ -90,7 +90,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
 - [x] 3. Checkpoint — Verify shared component changes
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement About page sections
+- [x] 4. Implement About page sections
   - [x] 4.1 Create `src/routes/about/sections/HeroSection.svelte`
     - Render label, headline with GradientText, descriptive paragraph
     - Render two badges (founded 2022, Prague location) with Font Awesome icons
@@ -131,16 +131,16 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - All text from Paraglide
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10_
 
-  - [ ] 4.6 Replace `src/routes/about/+page.svelte`
+  - [x] 4.6 Replace `src/routes/about/+page.svelte`
     - Import and render HeroSection, StorySection, ValuesSection, ContactSection
     - Set `<title>` and `<meta name="description">` via Paraglide keys
     - _Requirements: 11.1, 11.2_
 
-- [ ] 5. Checkpoint — Verify About page renders correctly
+- [x] 5. Checkpoint — Verify About page renders correctly
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement 404 error page
-  - [ ] 6.1 Create `src/routes/error/sections/OrbitVisual.svelte`
+  - [x] 6.1 Create `src/routes/error/sections/OrbitVisual.svelte`
     - Two concentric rotating rings with dashed borders (outer 18s CW, inner 28s CCW)
     - Glowing dots on each ring (brand-blue outer, brand-red inner)
     - Center card with warning triangle icon (`fa-solid fa-triangle-exclamation`) in brand-red
