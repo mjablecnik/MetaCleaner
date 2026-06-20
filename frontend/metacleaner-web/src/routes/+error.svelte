@@ -34,7 +34,7 @@
 				class="flex flex-col items-center gap-8 lg:col-start-2 lg:row-start-1 lg:row-end-5 lg:justify-center"
 			>
 				<OrbitVisual />
-				<TerminalCard currentPath={currentPath} />
+				<TerminalCard {currentPath} />
 			</div>
 
 			<!-- 3. 404 number + heading + description — mobile: third; desktop: col 1, row 2 -->

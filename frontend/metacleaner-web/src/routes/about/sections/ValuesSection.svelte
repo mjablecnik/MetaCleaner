@@ -7,38 +7,38 @@
 			icon: 'fa-solid fa-lock',
 			title: m.about_values_privacy_title(),
 			description: m.about_values_privacy_desc(),
-			hoverColor: 'brand-blue' as const,
+			hoverColor: 'brand-blue' as const
 		},
 		{
 			icon: 'fa-solid fa-eye-slash',
 			title: m.about_values_transparency_title(),
 			description: m.about_values_transparency_desc(),
-			hoverColor: 'brand-green' as const,
+			hoverColor: 'brand-green' as const
 		},
 		{
 			icon: 'fa-solid fa-universal-access',
 			title: m.about_values_accessibility_title(),
 			description: m.about_values_accessibility_desc(),
-			hoverColor: 'brand-orange' as const,
+			hoverColor: 'brand-orange' as const
 		},
 		{
 			icon: 'fa-solid fa-code',
 			title: m.about_values_opensource_title(),
 			description: m.about_values_opensource_desc(),
-			hoverColor: 'brand-blue' as const,
+			hoverColor: 'brand-blue' as const
 		},
 		{
 			icon: 'fa-solid fa-shield-halved',
 			title: m.about_values_security_title(),
 			description: m.about_values_security_desc(),
-			hoverColor: 'brand-green' as const,
+			hoverColor: 'brand-green' as const
 		},
 		{
 			icon: 'fa-solid fa-lightbulb',
 			title: m.about_values_innovation_title(),
 			description: m.about_values_innovation_desc(),
-			hoverColor: 'brand-orange' as const,
-		},
+			hoverColor: 'brand-orange' as const
+		}
 	];
 </script>
 
@@ -58,7 +58,7 @@
 	</div>
 
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each values as value}
+		{#each values as value (value.icon)}
 			<ValueCard
 				icon={value.icon}
 				title={value.title}

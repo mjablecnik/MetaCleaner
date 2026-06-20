@@ -7,11 +7,13 @@
 		{ value: '50K+', label: m.about_hero_stat_users(), colorClass: 'text-white' },
 		{ value: '2M+', label: m.about_hero_stat_files(), colorClass: 'text-brand-green' },
 		{ value: '100%', label: m.about_hero_stat_local(), colorClass: 'text-brand-blue' },
-		{ value: '4.9★', label: m.about_hero_stat_rating(), colorClass: 'text-brand-orange' },
+		{ value: '4.9★', label: m.about_hero_stat_rating(), colorClass: 'text-brand-orange' }
 	];
 </script>
 
-<section class="w-full max-w-site mx-auto px-6 pt-8 md:pt-16 pb-8 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
+<section
+	class="w-full max-w-site mx-auto px-6 pt-8 md:pt-16 pb-8 flex flex-col lg:flex-row gap-8 lg:gap-16 items-center"
+>
 	<div class="w-full lg:w-[55%] flex flex-col gap-4">
 		<span class="text-xs font-semibold uppercase tracking-widest text-brand-blue">
 			{m.about_hero_label()}
@@ -27,11 +29,15 @@
 		</p>
 
 		<div class="flex flex-wrap gap-3 mt-2">
-			<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20">
+			<div
+				class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20"
+			>
 				<i class="fa-solid fa-calendar-days text-brand-blue text-xs"></i>
 				<span class="text-xs font-medium text-text-muted">{m.about_hero_badge_founded()}</span>
 			</div>
-			<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20">
+			<div
+				class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/20"
+			>
 				<i class="fa-solid fa-location-dot text-brand-blue text-xs"></i>
 				<span class="text-xs font-medium text-text-muted">{m.about_hero_badge_location()}</span>
 			</div>
@@ -41,7 +47,7 @@
 	<div class="w-full lg:w-[45%]">
 		<div class="border border-border rounded-2xl bg-navy-card p-6">
 			<div class="grid grid-cols-2 gap-4">
-				{#each stats as stat}
+				{#each stats as stat (stat.value)}
 					<StatCard value={stat.value} label={stat.label} colorClass={stat.colorClass} />
 				{/each}
 			</div>

@@ -8,17 +8,21 @@
 
 	const { icon, title, description, hoverColor }: Props = $props();
 
-	const borderClass = $derived({
-		'brand-blue': 'hover:border-brand-blue/50',
-		'brand-green': 'hover:border-brand-green/50',
-		'brand-orange': 'hover:border-brand-orange/50',
-	}[hoverColor]);
+	const borderClass = $derived(
+		{
+			'brand-blue': 'hover:border-brand-blue/50',
+			'brand-green': 'hover:border-brand-green/50',
+			'brand-orange': 'hover:border-brand-orange/50'
+		}[hoverColor]
+	);
 
-	const iconClass = $derived({
-		'brand-blue': 'text-brand-blue bg-brand-blue/10',
-		'brand-green': 'text-brand-green bg-brand-green/10',
-		'brand-orange': 'text-brand-orange bg-brand-orange/10',
-	}[hoverColor]);
+	const iconClass = $derived(
+		{
+			'brand-blue': 'text-brand-blue bg-brand-blue/10',
+			'brand-green': 'text-brand-green bg-brand-green/10',
+			'brand-orange': 'text-brand-orange bg-brand-orange/10'
+		}[hoverColor]
+	);
 </script>
 
 <div

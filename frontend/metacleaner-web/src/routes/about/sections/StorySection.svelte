@@ -13,7 +13,9 @@
 				{m.about_story_heading()}
 			</h2>
 
-			<div class="h-0.5 w-24 rounded-full bg-gradient-to-r from-brand-blue to-brand-green mt-2"></div>
+			<div
+				class="h-0.5 w-24 rounded-full bg-gradient-to-r from-brand-blue to-brand-green mt-2"
+			></div>
 		</div>
 
 		<div class="w-full lg:w-2/3 flex flex-col gap-5">

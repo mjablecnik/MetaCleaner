@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import * as m from '$lib/paraglide/messages';
 </script>
 
 <div class="flex flex-col gap-3">
 	<a
-		href="/"
+		href={resolve('/' as Pathname)}
 		class="w-full py-3.5 rounded-xl bg-brand-green text-white text-sm font-semibold shadow-glow-green flex items-center justify-center gap-2 min-h-[48px] hover:bg-green-500 transition-colors"
 	>
 		<i class="fa-solid fa-house"></i>
@@ -19,7 +21,7 @@
 			{m.error_404_btn_back()}
 		</button>
 		<a
-			href="/about#contact"
+			href="{resolve('/about' as Pathname)}#contact"
 			class="flex-1 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white text-sm font-semibold flex items-center justify-center gap-2 min-h-[48px] hover:bg-border transition-colors"
 		>
 			<i class="fa-solid fa-headset"></i>

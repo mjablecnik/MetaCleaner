@@ -54,7 +54,9 @@
 	<h3 class="text-base font-semibold">{m.about_contact_form_heading()}</h3>
 
 	{#if isSuccess}
-		<div class="flex items-start gap-3 p-4 rounded-lg bg-brand-green/10 border border-brand-green/20">
+		<div
+			class="flex items-start gap-3 p-4 rounded-lg bg-brand-green/10 border border-brand-green/20"
+		>
 			<i class="fa-solid fa-circle-check text-brand-green mt-0.5"></i>
 			<p class="text-sm text-brand-green">{m.about_contact_form_success()}</p>
 		</div>
@@ -127,8 +129,7 @@
 					maxlength={2000}
 					rows={5}
 					class="w-full px-3 py-2 text-sm rounded-lg bg-navy border border-border focus:outline-none focus:border-brand-blue/50 transition-colors resize-none
-						{errors.message ? 'border-red-500/60' : ''}"
-				></textarea>
+						{errors.message ? 'border-red-500/60' : ''}"></textarea>
 				{#if errors.message}
 					<span class="text-xs text-red-400">{getErrorMessage(errors.message)}</span>
 				{/if}
