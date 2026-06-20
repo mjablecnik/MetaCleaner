@@ -91,7 +91,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Implement About page sections
-  - [ ] 4.1 Create `src/routes/about/sections/HeroSection.svelte`
+  - [x] 4.1 Create `src/routes/about/sections/HeroSection.svelte`
     - Render label, headline with GradientText, descriptive paragraph
     - Render two badges (founded 2022, Prague location) with Font Awesome icons
     - Render stats grid (4 items in 2×2): 50K+ users, 2M+ files, 100% local, 4.9★ rating
@@ -99,7 +99,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - All text from Paraglide messages
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ] 4.2 Create `src/routes/about/components/StatCard.svelte`
+  - [x] 4.2 Create `src/routes/about/components/StatCard.svelte`
     - Props: value, label, colorClass
     - Display a single stat item in the hero grid
     - _Requirements: 1.3_
