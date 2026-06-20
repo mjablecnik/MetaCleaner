@@ -157,7 +157,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - prefers-reduced-motion: show all lines immediately, static cursor
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 6.3 Create `src/routes/error/sections/ActionButtons.svelte`
+  - [x] 6.3 Create `src/routes/error/sections/ActionButtons.svelte`
     - Three buttons: "Back to Home" (green CTA, href="/"), "Go Back" (history.back()), "Support" (href="/about#contact")
     - All labels from Paraglide messages
     - _Requirements: 5.4_
