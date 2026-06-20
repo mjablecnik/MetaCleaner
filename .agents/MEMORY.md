@@ -591,9 +591,9 @@
 
 ## Playwright browser path mismatch in metacleaner-app and metacleaner-web
 - Project: metacleaner-app, metacleaner-web
-- Problem: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` is set in the environment, but `/opt/playwright-browsers` is owned by root (not writable). The project's playwright version may need a different revision than what's installed there (e.g., metacleaner-app needs rev 1223, metacleaner-web needs rev 1228). Running `npx playwright install chromium` fails with EACCES.
-- Solution: Install to a writable path: `PLAYWRIGHT_BROWSERS_PATH=/tmp/playwright-browsers npx --prefix /workspace/frontend/<project> playwright install chromium`. Then run tests with `PLAYWRIGHT_BROWSERS_PATH=/tmp/playwright-browsers npm run test:browser`.
-- Source: check-build, 2026-06-18
+- Problem: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` is set in the environment, but `/opt/playwright-browsers` is owned by root (not writable). The project's playwright version may need a different revision than what's installed there (e.g., metacleaner-app needs rev 1223, metacleaner-web needs rev 1228). Running `npx playwright install chromium` fails with EACCES. The CDN download (playwright.azureedge.net → playwright.download.prss.microsoft.com) also returns "GatewayExceptionResponse" (blocked in this sandbox).
+- Solution: Copy the existing installed browser directory to the expected revision path in a writable location: `mkdir -p /home/agent/.playwright-browsers/chromium_headless_shell-1228/chrome-headless-shell-linux64 && cp -r /opt/playwright-browsers/chromium_headless_shell-1223/. /home/agent/.playwright-browsers/chromium_headless_shell-1228/` (some files will fail with EPERM but the main binary copies fine). Then run tests with `PLAYWRIGHT_BROWSERS_PATH=/home/agent/.playwright-browsers npx playwright test`.
+- Source: check-build, 2026-06-19
 
 ## Storybook browser tests have 68 pre-existing unhandled errors (metacleaner-app)
 - Project: metacleaner-app
