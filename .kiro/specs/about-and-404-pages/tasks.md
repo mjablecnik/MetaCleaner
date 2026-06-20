@@ -87,7 +87,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Change mobile footer Contact link href from `'#'` to `'/about#contact'`
     - _Requirements: 9.1, 9.2, 9.3_
 
-- [ ] 3. Checkpoint — Verify shared component changes
+- [x] 3. Checkpoint — Verify shared component changes
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Implement About page sections
