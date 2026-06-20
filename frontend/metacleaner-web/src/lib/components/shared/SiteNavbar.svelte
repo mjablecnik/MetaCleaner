@@ -5,7 +5,7 @@
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 
 	interface Props {
-		active?: 'home' | 'features' | 'pricing' | 'faq';
+		active?: 'home' | 'features' | 'pricing' | 'about' | 'faq';
 	}
 
 	const { active = 'home' }: Props = $props();
@@ -19,6 +19,7 @@
 		<NavLink href="/#how-it-works" label={m.nav_how_it_works()} />
 		<NavLink href="/features" label={m.nav_features()} active={active === 'features'} />
 		<NavLink href="/pricing" label={m.nav_pricing()} active={active === 'pricing'} />
+		<NavLink href="/about" label={m.nav_about()} active={active === 'about'} />
 		<NavLink href="/#faq" label={m.nav_faq()} />
 	</div>
 	<div class="flex items-center gap-3">

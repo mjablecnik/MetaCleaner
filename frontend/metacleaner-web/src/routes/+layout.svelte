@@ -26,8 +26,7 @@
 		const path = $page.url.pathname;
 		if (path.startsWith('/features')) return 'features' as const;
 		if (path.startsWith('/pricing')) return 'pricing' as const;
-		if (path.startsWith('/about') || path.startsWith('/privacy') || path.startsWith('/terms'))
-			return 'home' as const;
+		if (path.startsWith('/about')) return 'about' as const;
 		return 'home' as const;
 	});
 

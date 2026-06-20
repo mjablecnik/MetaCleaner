@@ -7,7 +7,7 @@
 
 	interface Props {
 		variant: 'drawer' | 'dropdown';
-		active?: 'home' | 'features' | 'pricing' | 'faq';
+		active?: 'home' | 'features' | 'pricing' | 'about' | 'faq';
 		open: boolean;
 		onClose: () => void;
 	}
@@ -112,6 +112,21 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
+				href={resolve('/about' as Pathname)}
+				onclick={onClose}
+				class="flex items-center gap-3 px-3 py-3 rounded-xl {active === 'about'
+					? 'text-white'
+					: 'text-text-muted'} hover:bg-navy-lighter hover:text-white transition-all group"
+			>
+				<div
+					class="w-9 h-9 rounded-lg bg-brand-blue/10 flex items-center justify-center text-brand-blue text-sm group-hover:bg-brand-blue/20 transition-colors"
+				>
+					<i class="fa-solid fa-circle-info"></i>
+				</div>
+				<span class="text-sm font-medium">{m.nav_about()}</span>
+				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
+			</a>
+			<a
 				href="{resolve('/' as Pathname)}#faq"
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
@@ -178,6 +193,15 @@
 				: 'text-text-muted'} py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
+		</a>
+		<a
+			href={resolve('/about' as Pathname)}
+			onclick={onClose}
+			class="text-sm font-medium {active === 'about'
+				? 'text-white'
+				: 'text-text-muted'} py-3 border-b border-border flex items-center justify-between"
+		>
+			{m.nav_about()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="{resolve('/' as Pathname)}#faq"

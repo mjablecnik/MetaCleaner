@@ -6,20 +6,20 @@ Replace the existing About page and 404 error page with fully-featured redesigns
 
 ## Tasks
 
-- [ ] 1. Add i18n message keys and shared utilities
-  - [ ] 1.1 Add About page and 404 page message keys to `messages/en.json`
+- [x] 1. Add i18n message keys and shared utilities
+  - [x] 1.1 Add About page and 404 page message keys to `messages/en.json`
     - Add all `about_*` keys (hero, story, values, contact form labels/errors/success)
     - Add all `error_404_*` keys (badge, heading, description, buttons, links, terminal lines)
     - Add `nav_about` key if not already present
     - Verify `meta_about_title`, `meta_about_description`, `error_404_title` keys exist
     - _Requirements: 10.1, 10.3_
 
-  - [ ] 1.2 Add Czech translations to `messages/cs.json`
+  - [x] 1.2 Add Czech translations to `messages/cs.json`
     - Mirror all new keys from `en.json` with Czech translations
     - Ensure every `about_*` and `error_404_*` key has a non-empty Czech string
     - _Requirements: 10.2, 10.3_
 
-  - [ ] 1.3 Create `src/lib/utils/contactFormValidation.ts`
+  - [x] 1.3 Create `src/lib/utils/contactFormValidation.ts`
     - Define `ContactFormData`, `ValidationErrors`, `ValidationResult` interfaces
     - Implement `validateContactForm()` as a pure function
     - Rules: name required + max 100 chars, email required + max 254 chars + email format, subject required + max 150 chars, message required + max 2000 chars
@@ -27,7 +27,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Export all interfaces and the function
     - _Requirements: 4.4, 4.8_
 
-  - [ ] 1.4 Create `src/lib/utils/brevoClient.ts`
+  - [x] 1.4 Create `src/lib/utils/brevoClient.ts`
     - Define `ContactEmailPayload` interface (senderName, senderEmail, subject, message)
     - Implement `sendContactEmail()` function using Brevo transactional email API (`/v3/smtp/email`)
     - API key from `import.meta.env.VITE_BREVO_API_KEY`
@@ -64,25 +64,25 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - File: `src/lib/utils/contactFormValidation.property.test.ts`
     - **Validates: Requirements 4.4, 4.8**
 
-- [ ] 2. Update shared layout and navigation components
-  - [ ] 2.1 Update `SiteNavbar.svelte` to add About link
+- [x] 2. Update shared layout and navigation components
+  - [x] 2.1 Update `SiteNavbar.svelte` to add About link
     - Extend `Props.active` union type to include `'about'`
     - Add NavLink with `href="/about"`, `label={m.nav_about()}`, `active={active === 'about'}` after Pricing and before FAQ
     - _Requirements: 8.1, 8.3, 8.4, 8.5_
 
-  - [ ] 2.2 Update `MobileMenu.svelte` to add About link
+  - [x] 2.2 Update `MobileMenu.svelte` to add About link
     - Extend `Props.active` union type to include `'about'`
     - Add About link with `fa-solid fa-circle-info` icon in both `drawer` and `dropdown` variants
     - Position after Pricing and before FAQ in both variants
     - Apply active state styling (`text-white`) when `active === 'about'`
     - _Requirements: 8.2, 8.3, 8.4, 8.5_
 
-  - [ ] 2.3 Update `+layout.svelte` activePage logic
+  - [x] 2.3 Update `+layout.svelte` activePage logic
     - Change the `activePage` derived to return `'about'` when path starts with `/about`
     - Remove `/about` from the condition that currently returns `'home'`
     - _Requirements: 8.5_
 
-  - [ ] 2.4 Update `SiteFooter.svelte` contact links
+  - [x] 2.4 Update `SiteFooter.svelte` contact links
     - Change desktop Company column Contact link href from `'#'` to `'/about#contact'`
     - Change mobile footer Contact link href from `'#'` to `'/about#contact'`
     - _Requirements: 9.1, 9.2, 9.3_

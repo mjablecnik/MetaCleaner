@@ -30,7 +30,7 @@
 				links={[
 					{ href: '/about', label: m.footer_link_about() },
 					{ href: '/#faq', label: m.footer_link_faq() },
-					{ href: '#', label: m.footer_link_contact() }
+					{ href: '/about#contact', label: m.footer_link_contact() }
 				]}
 			/>
 			<FooterColumn
@@ -62,7 +62,7 @@
 					>{m.footer_short_terms()}</a
 				>
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-				<a href="#" class="text-xs text-text-muted hover:text-white transition-colors"
+				<a href="/about#contact" class="text-xs text-text-muted hover:text-white transition-colors"
 					>{m.footer_short_contact()}</a
 				>
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
