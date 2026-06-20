@@ -110,7 +110,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Two-column layout at lg+ (1/3 heading + 2/3 paragraphs), stacked below lg
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 4.4 Create `src/routes/about/sections/ValuesSection.svelte` and `ValueCard.svelte`
+  - [x] 4.4 Create `src/routes/about/sections/ValuesSection.svelte` and `ValueCard.svelte`
     - ValuesSection: header (label, heading, subtitle) + 6 ValueCard components
     - Responsive grid: lg:grid-cols-3, sm:grid-cols-2, below sm: grid-cols-1
     - ValueCard props: icon, title, description, hoverColor
@@ -119,7 +119,7 @@ Replace the existing About page and 404 error page with fully-featured redesigns
     - Create ValueCard at `src/routes/about/components/ValueCard.svelte`
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 4.5 Create `src/routes/about/sections/ContactSection.svelte` and sub-components
+  - [x] 4.5 Create `src/routes/about/sections/ContactSection.svelte` and sub-components
     - ContactSection: id="contact", header, two-column layout (2/5 info + 3/5 form at lg+, stacked on mobile)
     - Create `src/routes/about/components/ContactInfoCard.svelte` — email, security email, address, company ID
     - Create `src/routes/about/components/ResponseTimeCard.svelte` — 24h business, 4h security
