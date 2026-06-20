@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
+	import { env } from '$env/dynamic/public';
 	import { onMount } from 'svelte';
 	import { tx } from '$lib/shared/utils/i18n';
 	import { authStore } from '$lib/auth/auth.svelte.js';
@@ -17,12 +18,15 @@
 
 	let { onSuccess }: Props = $props();
 
+	const privacyPolicyUrl = env.PUBLIC_PRIVACY_POLICY_URL || '';
+
 	let firstName = $state('');
 	let lastName = $state('');
 	let email = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
 	let passwordVisible = $state(false);
+	let consentGiven = $state(false);
 	let oauthLoading = $state(false);
 
 	let firstNameError = $state('');
@@ -30,6 +34,7 @@
 	let emailError = $state('');
 	let passwordError = $state('');
 	let confirmError = $state('');
+	let consentError = $state('');
 	let apiError = $state('');
 	let submitState = $state<'idle' | 'loading' | 'success'>('idle');
 
@@ -73,6 +78,7 @@
 		emailError = '';
 		passwordError = '';
 		confirmError = '';
+		consentError = '';
 		apiError = '';
 
 		let valid = true;
@@ -98,6 +104,10 @@
 		}
 		if (password !== confirmPassword) {
 			confirmError = tx('auth.common.validation.passwordsMismatch');
+			valid = false;
+		}
+		if (!consentGiven) {
+			consentError = tx('auth.register.validation.consentRequired');
 			valid = false;
 		}
 		if (!valid) return;
@@ -211,6 +221,37 @@
 			<i class="fa-solid fa-circle-exclamation mr-2"></i>{apiError}
 		</div>
 	{/if}
+
+	<!-- Consent checkbox -->
+	<div class="flex flex-col gap-1">
+		<div class="flex items-start gap-2.5">
+			<button
+				type="button"
+				onclick={() => { consentGiven = !consentGiven; consentError = ''; }}
+				class="mt-0.5 flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 {consentGiven
+					? 'border-brand-blue bg-brand-blue'
+					: consentError ? 'border-brand-red' : 'border-gray-600 bg-navy-main'}"
+			>
+				{#if consentGiven}<i class="fa-solid fa-check text-[10px] text-white"></i>{/if}
+			</button>
+			<span class="text-xs leading-relaxed text-text-muted lg:text-sm">
+				{tx('auth.register.consent.text')}
+				{#if privacyPolicyUrl}
+					<a
+						href={privacyPolicyUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
+					>{tx('auth.register.consent.link')}</a>
+				{:else}
+					<span class="font-semibold text-brand-blue">{tx('auth.register.consent.link')}</span>
+				{/if}
+			</span>
+		</div>
+		{#if consentError}
+			<p class="ml-8.5 text-xs text-brand-red lg:ml-7.5">{consentError}</p>
+		{/if}
+	</div>
 
 	<button
 		type="submit"
