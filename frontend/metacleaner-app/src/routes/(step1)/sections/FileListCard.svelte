@@ -24,7 +24,7 @@
 	</div>
 
 	<!-- File List -->
-	<div class="flex max-h-[260px] flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[300px]">
+	<div class="flex max-h-[520px] flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[300px]">
 		{#each files as file (file.id)}
 			<FileListItemRisk {file} onRemove={() => scannerStore.removeFile(file.id)} />
 		{/each}
