@@ -6,6 +6,7 @@
 	import type { Pathname } from '$app/types';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
+	import { getReportPdf } from '$lib/clients/metaCleanerApi';
 	import type { Report, ReportSummaryStats } from '$lib/types/report';
 	import SummaryStatsRow from '$lib/shared/sections/SummaryStatsRow.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -86,6 +87,22 @@
 		toastTimer = setTimeout(() => {
 			showToast = false;
 		}, 2500);
+
+		getReportPdf(id)
+			.then((url) => {
+				if (url) {
+					window.open(url, '_blank');
+				}
+			})
+			.catch((err) => {
+				console.error('PDF download failed:', err);
+				toastMessage = tx('common.error');
+				showToast = true;
+				clearTimeout(toastTimer);
+				toastTimer = setTimeout(() => {
+					showToast = false;
+				}, 3000);
+			});
 	}
 
 	onMount(() => {
