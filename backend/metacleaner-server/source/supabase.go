@@ -583,6 +583,35 @@ func (c *SupabaseClient) GetPDFSignedURL(ctx context.Context, path string) (stri
 	return result.SignedURL, nil
 }
 
+// DownloadPDF fetches the raw PDF bytes from Supabase Storage using a signed URL.
+// Returns nil slice if the file doesn't exist or on error.
+func (c *SupabaseClient) DownloadPDF(ctx context.Context, path string) ([]byte, error) {
+	// Generate a short-lived signed URL and download from it.
+	// This avoids issues with storage RLS policies on direct object access.
+	signedURL, err := c.GetPDFSignedURL(ctx, path)
+	if err != nil {
+		return nil, fmt.Errorf("get signed URL for download: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, signedURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
+	defer cancel()
+
+	resp, err := c.httpClient.Do(req.WithContext(timeoutCtx))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("PDF download failed: status %d", resp.StatusCode)
+	}
+	return io.ReadAll(resp.Body)
+}
+
 // --- Conversion helpers ---
 
 func fileRecordToDB(f FileRecord) dbFileRecord {

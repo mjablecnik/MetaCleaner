@@ -496,6 +496,24 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			io.Copy(writer, file) //nolint:errcheck
 			file.Close()
 		}
+
+		// Include the PDF report in the ZIP if available.
+		if reportID, err := db.GetReportIDByJobID(r.Context(), jobID); err == nil && reportID != "" {
+			if report, _, err := db.GetReportByHumanID(r.Context(), reportID, ""); err == nil && report != nil {
+				if report.PDFStatus == "uploaded" && report.PDFPath != "" {
+					if pdfData, err := db.DownloadPDF(r.Context(), report.PDFPath); err == nil && len(pdfData) > 0 {
+						pdfName := fmt.Sprintf("MetaCleaner_Report_%s.pdf", reportID)
+						if writer, err := zipWriter.Create(pdfName); err == nil {
+							writer.Write(pdfData) //nolint:errcheck
+						}
+					} else if err != nil {
+						slog.Warn("job-download: failed to download PDF for ZIP inclusion", "jobId", jobID, "reportId", reportID, "error", err)
+					}
+				} else {
+					slog.Info("job-download: PDF not yet available, skipping ZIP inclusion", "jobId", jobID, "reportId", reportID, "pdfStatus", report.PDFStatus)
+				}
+			}
+		}
 	}
 }
 
