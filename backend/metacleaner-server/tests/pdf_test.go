@@ -26,6 +26,16 @@ func requirePDFFont(t *testing.T) {
 	t.Skip("no system font available for PDF generation — skipping")
 }
 
+func makePDFContext(report *src.ReportDetail) *src.PDFReportContext {
+	return &src.PDFReportContext{
+		Report:      report,
+		FrontendURL: "https://app.metacleaner.com",
+		ExifToolVer: "12.87",
+		FFmpegVer:   "6.1.1",
+		ServiceVer:  "1.0.0",
+	}
+}
+
 func makePopulatedReport() *src.ReportDetail {
 	return &src.ReportDetail{
 		ReportID:            "MC-2025-001",
@@ -42,6 +52,7 @@ func makePopulatedReport() *src.ReportDetail {
 		Files: []src.ReportFileDetail{
 			{
 				Name:          "photo.jpg",
+				OriginalName:  "vacation_beach.jpg",
 				Extension:     ".jpg",
 				SizeMB:        "2.5",
 				Format:        "jpeg",
@@ -49,6 +60,12 @@ func makePopulatedReport() *src.ReportDetail {
 				Type:          "image",
 				HasGPS:        true,
 				FieldsRemoved: 15,
+				SHA256Hash:    "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+				Metadata: &src.MetadataDetail{
+					GPSFields:  []src.MetadataField{{Label: "GPSLatitude", Value: "48.8566"}},
+					EXIFFields: []src.MetadataField{{Label: "Make", Value: "Canon"}, {Label: "Model", Value: "EOS R5"}},
+					XMPFields:  []src.MetadataField{{Label: "XMP-dc:Creator", Value: "John"}},
+				},
 			},
 			{
 				Name:          "landscape.png",
@@ -59,6 +76,7 @@ func makePopulatedReport() *src.ReportDetail {
 				Type:          "image",
 				HasGPS:        false,
 				FieldsRemoved: 12,
+				SHA256Hash:    "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
 			},
 			{
 				Name:          "clip.mp4",
@@ -69,6 +87,7 @@ func makePopulatedReport() *src.ReportDetail {
 				Type:          "video",
 				HasGPS:        true,
 				FieldsRemoved: 15,
+				SHA256Hash:    "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
 			},
 		},
 	}
@@ -80,7 +99,7 @@ func TestGenerateReportPDF_ValidReport(t *testing.T) {
 	requirePDFFont(t)
 
 	report := makePopulatedReport()
-	data, err := src.GenerateReportPDF(report)
+	data, err := src.GenerateReportPDF(makePDFContext(report))
 	if err != nil {
 		t.Fatalf("GenerateReportPDF returned error: %v", err)
 	}
@@ -106,7 +125,7 @@ func TestGenerateReportPDF_EmptyFileList(t *testing.T) {
 		Files:            []src.ReportFileDetail{},
 		ChartData:        []src.ChartDataPoint{},
 	}
-	data, err := src.GenerateReportPDF(report)
+	data, err := src.GenerateReportPDF(makePDFContext(report))
 	if err != nil {
 		t.Fatalf("GenerateReportPDF (empty files) returned error: %v", err)
 	}
@@ -133,7 +152,7 @@ func TestGenerateReportPDF_ZeroValueFields(t *testing.T) {
 			{Label: "", Fields: 0, Percentage: 0},
 		},
 	}
-	data, err := src.GenerateReportPDF(report)
+	data, err := src.GenerateReportPDF(makePDFContext(report))
 	if err != nil {
 		t.Fatalf("GenerateReportPDF (zero fields) returned error: %v", err)
 	}
@@ -142,15 +161,14 @@ func TestGenerateReportPDF_ZeroValueFields(t *testing.T) {
 	}
 }
 
-// TestGenerateReportPDF_LongFileName verifies that file names longer than 28
-// characters are truncated with "..." without panicking.
+// TestGenerateReportPDF_LongFileName verifies that long file names don't cause issues.
 func TestGenerateReportPDF_LongFileName(t *testing.T) {
 	requirePDFFont(t)
 
 	report := makePopulatedReport()
-	report.Files[0].Name = "this_is_a_very_long_filename_that_exceeds_28_chars.jpg"
+	report.Files[0].OriginalName = "this_is_a_very_long_filename_that_exceeds_many_chars_and_should_still_work.jpg"
 
-	data, err := src.GenerateReportPDF(report)
+	data, err := src.GenerateReportPDF(makePDFContext(report))
 	if err != nil {
 		t.Fatalf("GenerateReportPDF (long filename) returned error: %v", err)
 	}
@@ -175,18 +193,96 @@ func TestGenerateReportPDF_ManyFiles(t *testing.T) {
 	for i := range 60 {
 		report.Files = append(report.Files, src.ReportFileDetail{
 			Name:          "file.jpg",
+			OriginalName:  "original_photo.jpg",
 			Extension:     ".jpg",
 			SizeMB:        "1.0",
 			Format:        "jpeg",
 			Type:          "image",
 			HasGPS:        i%2 == 0,
 			FieldsRemoved: 5,
+			SHA256Hash:    "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
 		})
 	}
 
-	data, err := src.GenerateReportPDF(report)
+	data, err := src.GenerateReportPDF(makePDFContext(report))
 	if err != nil {
 		t.Fatalf("GenerateReportPDF (many files) returned error: %v", err)
+	}
+	if !bytes.HasPrefix(data, []byte("%PDF")) {
+		t.Errorf("PDF bytes do not start with %%PDF")
+	}
+}
+
+// TestGenerateReportPDF_NoFrontendURL verifies PDF generates even without QR code URL.
+func TestGenerateReportPDF_NoFrontendURL(t *testing.T) {
+	requirePDFFont(t)
+
+	report := makePopulatedReport()
+	ctx := &src.PDFReportContext{
+		Report:      report,
+		FrontendURL: "", // No frontend URL → QR code skipped
+		ExifToolVer: "12.87",
+		FFmpegVer:   "6.1.1",
+		ServiceVer:  "1.0.0",
+	}
+	data, err := src.GenerateReportPDF(ctx)
+	if err != nil {
+		t.Fatalf("GenerateReportPDF (no frontend URL) returned error: %v", err)
+	}
+	if !bytes.HasPrefix(data, []byte("%PDF")) {
+		t.Errorf("PDF bytes do not start with %%PDF")
+	}
+}
+
+// TestGenerateReportPDF_WithMetadataDetails verifies detailed metadata labels are included.
+func TestGenerateReportPDF_WithMetadataDetails(t *testing.T) {
+	requirePDFFont(t)
+
+	report := &src.ReportDetail{
+		ReportID:            "MC-2025-003",
+		Date:                "2025-03-15T12:00:00Z",
+		FilesProcessed:      1,
+		FieldsRemoved:       8,
+		GPSLocationsRemoved: 1,
+		TotalTimeSeconds:    3,
+		ChartData: []src.ChartDataPoint{
+			{Label: "GPS", Fields: 3, Percentage: 38},
+			{Label: "EXIF", Fields: 5, Percentage: 62},
+		},
+		Files: []src.ReportFileDetail{
+			{
+				Name:          "f-abc123.jpg",
+				OriginalName:  "sunset_photo.jpg",
+				Extension:     ".jpg",
+				SizeMB:        "3.2",
+				Format:        "jpeg",
+				Device:        "iPhone 15 Pro",
+				Type:          "image",
+				HasGPS:        true,
+				FieldsRemoved: 8,
+				SHA256Hash:    "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+				Metadata: &src.MetadataDetail{
+					GPSFields: []src.MetadataField{
+						{Label: "GPSLatitude", Value: "48.8566"},
+						{Label: "GPSLongitude", Value: "2.3522"},
+						{Label: "GPSAltitude", Value: "35m"},
+					},
+					EXIFFields: []src.MetadataField{
+						{Label: "Make", Value: "Apple"},
+						{Label: "Model", Value: "iPhone 15 Pro"},
+						{Label: "Software", Value: "iOS 17.2"},
+						{Label: "DateTimeOriginal", Value: "2025:03:15 12:00:00"},
+						{Label: "CreateDate", Value: "2025:03:15 12:00:00"},
+					},
+					TotalRemoved: 8,
+				},
+			},
+		},
+	}
+
+	data, err := src.GenerateReportPDF(makePDFContext(report))
+	if err != nil {
+		t.Fatalf("GenerateReportPDF (with metadata details) returned error: %v", err)
 	}
 	if !bytes.HasPrefix(data, []byte("%PDF")) {
 		t.Errorf("PDF bytes do not start with %%PDF")

@@ -3,8 +3,11 @@ package source
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -87,12 +90,23 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 			continue
 		}
 
+		// Compute SHA-256 of the cleaned file for integrity verification.
+		fileHash, hashErr := computeFileSHA256(cleanedPath)
+		if hashErr != nil {
+			f.Status = "error"
+			f.ErrorCode = "PROCESSING_FAILED"
+			f.ErrorMessage = "failed to compute file hash: " + hashErr.Error()
+			progressFn(buildFileErrorEvent(f, i+1, total))
+			continue
+		}
+
 		f.Status = "done"
 		f.ProcessedAt = &now
 		f.FieldsRemoved = result.FieldsRemoved
 		f.GPSRemoved = result.GPSRemoved
 		f.Device = result.Device
 		f.MetadataBreakdown = result.MetadataBreakdown
+		f.SHA256Hash = fileHash
 
 		job.FilesCompleted++
 		job.FieldsRemoved += result.FieldsRemoved
@@ -821,4 +835,43 @@ func CategorizeMetadataField(key string, source string) string {
 	default:
 		return "EXIF"
 	}
+}
+
+// computeFileSHA256 computes the SHA-256 hash of a file and returns it as a hex string.
+func computeFileSHA256(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	h := sha256.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(h.Sum(nil)), nil
+}
+
+// GetToolVersions returns the versions of ExifTool and FFmpeg installed on the system.
+func GetToolVersions() (exiftoolVer, ffmpegVer string) {
+	if out, err := exec.Command("exiftool", "-ver").Output(); err == nil {
+		exiftoolVer = strings.TrimSpace(string(out))
+	} else {
+		exiftoolVer = "unknown"
+	}
+	if out, err := exec.Command("ffmpeg", "-version").Output(); err == nil {
+		lines := strings.Split(string(out), "\n")
+		if len(lines) > 0 {
+			// First line: "ffmpeg version X.Y.Z ..."
+			parts := strings.Fields(lines[0])
+			if len(parts) >= 3 {
+				ffmpegVer = parts[2]
+			} else {
+				ffmpegVer = lines[0]
+			}
+		}
+	} else {
+		ffmpegVer = "unknown"
+	}
+	return
 }

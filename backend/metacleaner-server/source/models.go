@@ -52,6 +52,7 @@ type FileRecord struct {
 	ErrorCode         string          `json:"errorCode,omitempty"`
 	ErrorMessage      string          `json:"errorMessage,omitempty"`
 	MetadataBreakdown *MetadataDetail `json:"metadata,omitempty"`
+	SHA256Hash        string          `json:"sha256Hash,omitempty"` // SHA-256 of the cleaned file
 	ProcessedAt       *time.Time      `json:"processedAt,omitempty"`
 }
 
@@ -146,6 +147,16 @@ type ReportFileDetail struct {
 	HasGPS        bool            `json:"hasGps"`
 	FieldsRemoved int             `json:"fieldsRemoved"`
 	Metadata      *MetadataDetail `json:"metadata"`
+	SHA256Hash    string          `json:"sha256Hash,omitempty"` // SHA-256 of cleaned file (for PDF verification)
+}
+
+// PDFReportContext holds additional context needed for PDF generation beyond ReportDetail.
+type PDFReportContext struct {
+	Report       *ReportDetail
+	FrontendURL  string // Base URL for QR code link (e.g. "https://app.metacleaner.com")
+	ExifToolVer  string // ExifTool version used for cleaning
+	FFmpegVer    string // FFmpeg version used for cleaning
+	ServiceVer   string // MetaCleaner service version
 }
 
 // Report is the DB record for a cleaning report

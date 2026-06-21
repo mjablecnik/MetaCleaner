@@ -75,6 +75,7 @@ type dbFileRecord struct {
 	ErrorCode         string          `json:"error_code,omitempty"`
 	ErrorMessage      string          `json:"error_message,omitempty"`
 	MetadataBreakdown json.RawMessage `json:"metadata_breakdown,omitempty"`
+	SHA256Hash        string          `json:"sha256_hash,omitempty"`
 	ProcessedAt       *time.Time      `json:"processed_at,omitempty"`
 	CreatedAt         *time.Time      `json:"created_at,omitempty"`
 }
@@ -398,6 +399,7 @@ func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*Re
 				HasGPS:        f.GPSRemoved,
 				FieldsRemoved: f.FieldsRemoved,
 				Metadata:      f.MetadataBreakdown,
+				SHA256Hash:    f.SHA256Hash,
 			})
 		}
 	}
@@ -596,6 +598,7 @@ func fileRecordToDB(f FileRecord) dbFileRecord {
 		GPSRemoved:    f.GPSRemoved,
 		ErrorCode:     f.ErrorCode,
 		ErrorMessage:  f.ErrorMessage,
+		SHA256Hash:    f.SHA256Hash,
 		ProcessedAt:   f.ProcessedAt,
 	}
 	if f.MetadataBreakdown != nil {
@@ -623,6 +626,7 @@ func dbToFileRecord(r dbFileRecord) FileRecord {
 		GPSRemoved:    r.GPSRemoved,
 		ErrorCode:     r.ErrorCode,
 		ErrorMessage:  r.ErrorMessage,
+		SHA256Hash:    r.SHA256Hash,
 		ProcessedAt:   r.ProcessedAt,
 	}
 	if len(r.MetadataBreakdown) > 0 {

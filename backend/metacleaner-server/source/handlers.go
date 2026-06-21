@@ -301,7 +301,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 					slog.Warn("job: UpdateFileRecord failed", "jobId", job.ID, "fileId", files[i].LocalID, "error", err)
 				}
 			}
-			createJobReport(ctx, db, hub, job, files)
+			createJobReport(ctx, cfg, db, hub, job, files)
 		}()
 
 		w.Header().Set("Content-Type", "application/json")
@@ -602,7 +602,7 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 
 // createJobReport builds a report record, persists it, notifies clients, and asynchronously
 // generates and uploads the PDF.
-func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
+func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
 	report := BuildReport(job, files)
 	if err := db.CreateReport(ctx, report); err != nil {
 		return
@@ -621,7 +621,17 @@ func createJobReport(ctx context.Context, db *SupabaseClient, hub *WebSocketHub,
 			_ = db.UpdateReportPDF(pdfCtx, report.ID, "", "failed")
 			return
 		}
-		pdfBytes, err := GenerateReportPDF(detail)
+
+		exifVer, ffmpegVer := GetToolVersions()
+		pdfContext := &PDFReportContext{
+			Report:      detail,
+			FrontendURL: cfg.FrontendURL,
+			ExifToolVer: exifVer,
+			FFmpegVer:   ffmpegVer,
+			ServiceVer:  "1.0.0",
+		}
+
+		pdfBytes, err := GenerateReportPDF(pdfContext)
 		if err != nil {
 			_ = db.UpdateReportPDF(pdfCtx, report.ID, "", "failed")
 			return
