@@ -152,11 +152,12 @@ type ReportFileDetail struct {
 
 // PDFReportContext holds additional context needed for PDF generation beyond ReportDetail.
 type PDFReportContext struct {
-	Report       *ReportDetail
-	FrontendURL  string // Base URL for QR code link (e.g. "https://app.metacleaner.com")
-	ExifToolVer  string // ExifTool version used for cleaning
-	FFmpegVer    string // FFmpeg version used for cleaning
-	ServiceVer   string // MetaCleaner service version
+	Report      *ReportDetail
+	FrontendURL string // Base URL of the frontend app
+	BackendURL  string // Base URL of the backend API (for QR code PDF link)
+	ExifToolVer string // ExifTool version used for cleaning
+	FFmpegVer   string // FFmpeg version used for cleaning
+	ServiceVer  string // MetaCleaner service version
 }
 
 // Report is the DB record for a cleaning report

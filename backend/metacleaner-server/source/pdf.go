@@ -321,6 +321,9 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 			}
 
 			// Detailed metadata fields removed (labels only — values may contain sensitive data)
+			// NOTE: Commented out to keep PDF compact. Detail is available in the online report via QR code.
+			// Uncomment to include per-field listing in the PDF.
+			/*
 			if f.Metadata != nil {
 				allFields := collectMetadataLabels(f.Metadata)
 				if len(allFields) > 0 {
@@ -340,6 +343,7 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 					}
 				}
 			}
+			*/
 
 			// Separator between files
 			y += 8
@@ -425,13 +429,20 @@ func drawQRCode(pdf *gopdf.GoPdf, ctx *PDFReportContext, x, y, size float64) err
 	return nil
 }
 
-// buildVerifyURL constructs the online verification URL for the report.
+// buildVerifyURL constructs the public PDF download URL for the report QR code.
 func buildVerifyURL(ctx *PDFReportContext) string {
 	if ctx.FrontendURL == "" || ctx.Report == nil {
 		return ""
 	}
-	base := strings.TrimRight(ctx.FrontendURL, "/")
-	return base + "/report/" + ctx.Report.ReportID
+	// Points to the public PDF endpoint on the backend API.
+	// FrontendURL is used as base because CORS and the backend share the same domain
+	// in production (via fly.io proxy). If backend has a different URL, override accordingly.
+	// The public endpoint serves the PDF directly without authentication.
+	base := strings.TrimRight(ctx.BackendURL, "/")
+	if base == "" {
+		return ""
+	}
+	return base + "/api/public/reports/" + ctx.Report.ReportID + "/pdf"
 }
 
 // drawWrappedText renders multi-line text within maxWidth, returning the final Y position.

@@ -623,9 +623,19 @@ func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *W
 		}
 
 		exifVer, ffmpegVer := GetToolVersions()
+
+		// Derive backend URL from OAuthCallbackURL (strip path).
+		backendURL := ""
+		if cfg.OAuthCallbackURL != "" {
+			if idx := strings.Index(cfg.OAuthCallbackURL, "/api/"); idx > 0 {
+				backendURL = cfg.OAuthCallbackURL[:idx]
+			}
+		}
+
 		pdfContext := &PDFReportContext{
 			Report:      detail,
 			FrontendURL: cfg.FrontendURL,
+			BackendURL:  backendURL,
 			ExifToolVer: exifVer,
 			FFmpegVer:   ffmpegVer,
 			ServiceVer:  "1.0.0",
@@ -686,6 +696,63 @@ func HandleGetReport(db *SupabaseClient) http.HandlerFunc {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(detail)
+	}
+}
+
+// HandleGetPublicReport handles GET /api/public/reports/{id} — returns report detail
+// without authentication. Used for QR code verification by third parties.
+func HandleGetPublicReport(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reportID := r.PathValue("id")
+		if reportID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
+			return
+		}
+		// No userID filter — public access by human-readable report ID only
+		_, detail, err := db.GetReportByHumanID(r.Context(), reportID, "")
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
+			return
+		}
+		if detail == nil {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "Report not found")
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(detail)
+	}
+}
+
+// HandleGetPublicReportPDF handles GET /api/public/reports/{id}/pdf — redirects to
+// the signed PDF download URL without authentication. This is the target of the QR code
+// in printed PDF reports, allowing third parties to download the original PDF for verification.
+func HandleGetPublicReportPDF(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		reportID := r.PathValue("id")
+		if reportID == "" {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
+			return
+		}
+		// No userID filter — public access
+		report, _, err := db.GetReportByHumanID(r.Context(), reportID, "")
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
+			return
+		}
+		if report == nil {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "Report not found")
+			return
+		}
+		if report.PDFStatus != "uploaded" || report.PDFPath == "" {
+			WriteError(w, http.StatusNotFound, ErrReportNotFound, "PDF not available for this report")
+			return
+		}
+		signedURL, err := db.GetPDFSignedURL(r.Context(), report.PDFPath)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to generate PDF URL")
+			return
+		}
+		http.Redirect(w, r, signedURL, http.StatusTemporaryRedirect)
 	}
 }
 

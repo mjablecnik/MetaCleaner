@@ -209,6 +209,12 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/reports/{id}/pdf
 	mux.Handle("GET /api/reports/{id}/pdf", HandleGetReportPDF(db))
 
+	// GET /api/public/reports/{id} — public report access (no auth, for QR code verification)
+	mux.Handle("GET /api/public/reports/{id}", HandleGetPublicReport(db))
+
+	// GET /api/public/reports/{id}/pdf — public PDF download (no auth, QR code target)
+	mux.Handle("GET /api/public/reports/{id}/pdf", HandleGetPublicReportPDF(db))
+
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 
