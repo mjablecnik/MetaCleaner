@@ -2,26 +2,16 @@
 	import * as m from '$lib/paraglide/messages';
 </script>
 
-<div class="flex flex-col gap-3 p-6 rounded-xl bg-navy-card border border-border">
-	<div class="flex items-center gap-2">
-		<i class="fa-solid fa-clock text-brand-blue text-sm"></i>
-		<h3 class="text-base font-semibold">{m.about_contact_response_title()}</h3>
+<div
+	class="bg-navy-card rounded-2xl border border-brand-green/30 p-4 lg:p-5 flex items-start gap-4"
+>
+	<div
+		class="w-10 h-10 rounded-xl bg-brand-green/20 flex items-center justify-center text-brand-green shrink-0"
+	>
+		<i class="fa-solid fa-clock text-sm"></i>
 	</div>
-
-	<div class="flex flex-col gap-2">
-		<div class="flex items-center gap-2">
-			<div class="w-2 h-2 rounded-full bg-brand-green shrink-0"></div>
-			<span class="text-sm text-text-muted"
-				>Business inquiries: <span class="text-white font-medium">24h</span></span
-			>
-		</div>
-		<div class="flex items-center gap-2">
-			<div class="w-2 h-2 rounded-full bg-brand-orange shrink-0"></div>
-			<span class="text-sm text-text-muted"
-				>Security reports: <span class="text-white font-medium">4h</span></span
-			>
-		</div>
+	<div>
+		<p class="text-sm font-semibold text-white mb-1">{m.about_contact_response_title()}</p>
+		<p class="text-xs text-text-muted leading-relaxed">{m.about_contact_response_desc()}</p>
 	</div>
-
-	<p class="text-xs text-text-muted leading-relaxed">{m.about_contact_response_desc()}</p>
 </div>
