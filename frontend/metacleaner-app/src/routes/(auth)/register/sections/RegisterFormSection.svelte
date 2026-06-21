@@ -228,7 +228,7 @@
 			<button
 				type="button"
 				onclick={() => { consentGiven = !consentGiven; consentError = ''; }}
-				class="mt-0.5 flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 {consentGiven
+				class="mt-0.5 flex h-6 w-6 min-w-6 min-h-6 shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-5 lg:min-h-5 {consentGiven
 					? 'border-brand-blue bg-brand-blue'
 					: consentError ? 'border-brand-red' : 'border-gray-600 bg-navy-main'}"
 			>

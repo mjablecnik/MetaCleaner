@@ -167,7 +167,7 @@
 		<button
 			type="button"
 			onclick={() => (rememberMe = !rememberMe)}
-			class="flex h-6 w-6 min-w-[24px] flex-shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 {rememberMe
+			class="flex h-6 w-6 min-w-6 min-h-6 shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-5 lg:min-h-5 {rememberMe
 				? 'border-brand-blue bg-brand-blue'
 				: 'border-gray-600 bg-navy-main'}"
 		>
