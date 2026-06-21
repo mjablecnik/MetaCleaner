@@ -41,6 +41,7 @@ type FileRecord struct {
 	UserID            string          `json:"-"`
 	FileName          string          `json:"name"`
 	OriginalName      string          `json:"originalName,omitempty"` // original upload filename from the client
+	CleanedName       string          `json:"cleanedName,omitempty"` // output filename after cleaning (e.g. IMG_f-abc_cleaned.jpg)
 	FileExtension     string          `json:"extension"`
 	FileSizeBytes     int64           `json:"sizeBytes"`
 	FileType          string          `json:"type"`
@@ -139,6 +140,7 @@ type ChartDataPoint struct {
 type ReportFileDetail struct {
 	Name          string          `json:"name"`
 	OriginalName  string          `json:"original_name,omitempty"`
+	CleanedName   string          `json:"cleaned_name,omitempty"`
 	Extension     string          `json:"extension"`
 	SizeMB        string          `json:"sizeMB"`
 	Format        string          `json:"format"`

@@ -287,6 +287,9 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 				{"Size:", f.SizeMB + " MB"},
 				{"Extension:", f.Extension},
 			}
+			if f.CleanedName != "" {
+				fileProps = append(fileProps, []string{"Cleaned filename:", f.CleanedName})
+			}
 			if f.Device != "" {
 				fileProps = append(fileProps, []string{"Device:", f.Device})
 			}
