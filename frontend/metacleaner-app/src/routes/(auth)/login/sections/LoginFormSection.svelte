@@ -48,7 +48,7 @@
 		if (!valid) return;
 		isSubmitting = true;
 		try {
-			await authStore.login(email, password);
+			await authStore.login(email, password, rememberMe);
 		} catch (err: unknown) {
 			apiError = (err as Error).message ?? '';
 		} finally {

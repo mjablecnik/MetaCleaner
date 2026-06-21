@@ -17,6 +17,17 @@
 	let user = $state<User | null>(null);
 	let langOptions = $state<Language[]>([]);
 
+	// Reactively load user profile when auth state changes (e.g., after login navigates here)
+	$effect(() => {
+		if (authStore.isAuthReady && authStore.isAuthenticated) {
+			getCurrentUser().then((u) => {
+				user = u;
+			});
+		} else if (authStore.isAuthReady && !authStore.isAuthenticated) {
+			user = null;
+		}
+	});
+
 	const navProps = $derived.by(() => {
 		const path = page.url.pathname;
 		if (path === '/reports') {
@@ -55,27 +66,6 @@
 		getLanguages().then((langs) => {
 			langOptions = langs;
 		});
-
-		// Wait for auth to be ready before fetching user profile
-		const checkAndLoadUser = () => {
-			if (authStore.isAuthenticated) {
-				getCurrentUser().then((u) => {
-					user = u;
-				});
-			}
-		};
-
-		if (authStore.isAuthReady) {
-			checkAndLoadUser();
-		} else {
-			// Poll until auth is ready (restore/refresh completes)
-			const interval = setInterval(() => {
-				if (authStore.isAuthReady) {
-					clearInterval(interval);
-					checkAndLoadUser();
-				}
-			}, 50);
-		}
 
 		// Handle Android hardware back button
 		App.addListener('backButton', ({ canGoBack }) => {
