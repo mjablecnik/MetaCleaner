@@ -68,6 +68,11 @@
 			return;
 		}
 
+		// On mobile, scroll to top so the progress is visible in the first half of the screen
+		if (window.innerWidth < 1024) {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
 		totalFiles = files.length;
 
 		for (const file of files) {

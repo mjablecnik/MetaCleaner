@@ -12,7 +12,7 @@
 	const { beforeBreakdown, totalFieldsBefore, gpsLocationsRemoved }: Props = $props();
 
 	let accordionOpen = $state(true);
-	let activeTab = $state<'before' | 'after'>('before');
+	let activeTab = $state<'before' | 'after'>('after');
 </script>
 
 <!-- Desktop: full two-column card -->
