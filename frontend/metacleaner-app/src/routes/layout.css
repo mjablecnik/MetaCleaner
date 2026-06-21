@@ -341,3 +341,17 @@ button,
 		display: none !important;
 	}
 }
+
+/* ─── Autofill override ──────────────────────────────────────────────── */
+/* Prevent browser autofill from changing input background to white/light */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+	-webkit-box-shadow: 0 0 0 1000px var(--color-navy-lighter) inset !important;
+	-webkit-text-fill-color: var(--color-text-main) !important;
+	caret-color: var(--color-text-main);
+	transition: background-color 5000s ease-in-out 0s;
+}
