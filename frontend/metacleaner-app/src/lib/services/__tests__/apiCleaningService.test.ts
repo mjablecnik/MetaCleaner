@@ -621,7 +621,7 @@ describe('Feature: api-integration, Property 6: WebSocket message dispatch corre
 			filesProcessed: 2,
 			fieldsRemoved: 42,
 			gpsLocationsRemoved: 1,
-			totalTimeSeconds: 7
+			totalTimeMs: 7
 		});
 
 		expect(callbacks.onComplete).toHaveBeenCalledTimes(1);
@@ -667,7 +667,7 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 						filesProcessed: events.length,
 						fieldsRemoved: events.reduce((sum, e) => sum + e.fieldsRemoved, 0),
 						gpsLocationsRemoved: events.filter((e) => e.gpsRemoved).length,
-						totalTimeSeconds: 5
+						totalTimeMs: 5
 					});
 
 					const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
@@ -700,7 +700,7 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 					filesProcessed: gpsFlags.length,
 					fieldsRemoved: gpsFlags.length * 5,
 					gpsLocationsRemoved: gpsFlags.filter(Boolean).length,
-					totalTimeSeconds: 3
+					totalTimeMs: 3
 				});
 
 				const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
@@ -710,13 +710,13 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 		);
 	}, 30000);
 
-	it('ProcessingResults preserves fieldsRemoved, gpsLocationsRemoved, and totalTimeSeconds from job_complete', async () => {
+	it('ProcessingResults preserves fieldsRemoved, gpsLocationsRemoved, and totalTimeMs from job_complete', async () => {
 		await fc.assert(
 			fc.asyncProperty(
 				fc.record({
 					fieldsRemoved: fc.nat({ max: 10000 }),
 					gpsLocationsRemoved: fc.nat({ max: 500 }),
-					totalTimeSeconds: fc.nat({ max: 3600 })
+					totalTimeMs: fc.nat({ max: 3600 })
 				}),
 				async (jobMsg) => {
 					const { ws, callbacks } = await setupWsScenario();
@@ -726,13 +726,13 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 						filesProcessed: 0,
 						fieldsRemoved: jobMsg.fieldsRemoved,
 						gpsLocationsRemoved: jobMsg.gpsLocationsRemoved,
-						totalTimeSeconds: jobMsg.totalTimeSeconds
+						totalTimeMs: jobMsg.totalTimeMs
 					});
 
 					const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
 					expect(result.fieldsRemoved).toBe(jobMsg.fieldsRemoved);
 					expect(result.gpsLocationsRemoved).toBe(jobMsg.gpsLocationsRemoved);
-					expect(result.totalTimeSeconds).toBe(jobMsg.totalTimeSeconds);
+					expect(result.totalTimeMs).toBe(jobMsg.totalTimeMs);
 				}
 			),
 			{ numRuns: 50 }
@@ -769,7 +769,7 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 						filesProcessed: events.length,
 						fieldsRemoved: events.reduce((sum, e) => sum + e.fieldsRemoved, 0),
 						gpsLocationsRemoved: events.filter((e) => e.gpsRemoved).length,
-						totalTimeSeconds: 5
+						totalTimeMs: 5
 					});
 
 					const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
@@ -804,7 +804,7 @@ describe('Feature: api-integration, Property 7: ProcessingResults construction f
 			type: 'job_complete',
 			fieldsRemoved: 30,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 5
+			totalTimeMs: 5
 		});
 
 		const result = vi.mocked(callbacks.onComplete).mock.calls[0][0] as ProcessingResults;
@@ -1296,7 +1296,7 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 			filesProcessed: 2,
 			fieldsRemoved: 30,
 			gpsLocationsRemoved: 1,
-			totalTimeSeconds: 7,
+			totalTimeMs: 7,
 			chartData: [{ label: 'EXIF', fields: 20, percentage: 67 }],
 			files: [
 				{
@@ -1329,7 +1329,7 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 		expect(result.filesProcessed).toBe(2);
 		expect(result.fieldsRemoved).toBe(30);
 		expect(result.gpsLocationsRemoved).toBe(1);
-		expect(result.totalTimeSeconds).toBe(7);
+		expect(result.totalTimeMs).toBe(7);
 		expect(result.chartData).toEqual([{ label: 'EXIF', fields: 20, percentage: 67 }]);
 		expect(result.files).toHaveLength(2);
 
@@ -1355,7 +1355,7 @@ describe('Feature: api-integration, Task 6.2: downloadResults error handling and
 			filesProcessed: 1,
 			fieldsRemoved: 5,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 3,
+			totalTimeMs: 3,
 			chartData: [],
 			files: [
 				{
@@ -1484,7 +1484,7 @@ describe('Bug Condition 8: mapMetadataDetail should include video-specific field
 			filesProcessed: 1,
 			fieldsRemoved: 2,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 2,
+			totalTimeMs: 2,
 			chartData: [],
 			files: [
 				{
@@ -1525,7 +1525,7 @@ describe('Bug Condition 8: mapMetadataDetail should include video-specific field
 			filesProcessed: 1,
 			fieldsRemoved: 2,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 2,
+			totalTimeMs: 2,
 			chartData: [],
 			files: [
 				{
@@ -1566,7 +1566,7 @@ describe('Bug Condition 8: mapMetadataDetail should include video-specific field
 			filesProcessed: 1,
 			fieldsRemoved: 3,
 			gpsLocationsRemoved: 1,
-			totalTimeSeconds: 1,
+			totalTimeMs: 1,
 			chartData: [],
 			files: [
 				{
@@ -1609,7 +1609,7 @@ describe('Bug Condition 9: Report detail should show original upload filename', 
 			filesProcessed: 1,
 			fieldsRemoved: 5,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 2,
+			totalTimeMs: 2,
 			chartData: [],
 			files: [
 				{
@@ -1640,7 +1640,7 @@ describe('Bug Condition 9: Report detail should show original upload filename', 
 			filesProcessed: 1,
 			fieldsRemoved: 5,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 2,
+			totalTimeMs: 2,
 			chartData: [],
 			files: [
 				{
@@ -1677,7 +1677,7 @@ describe('Bug Condition 9: Report detail should show original upload filename', 
 						filesProcessed: 1,
 						fieldsRemoved: 1,
 						gpsLocationsRemoved: 0,
-						totalTimeSeconds: 1,
+						totalTimeMs: 1,
 						chartData: [],
 						files: [
 							{
@@ -1733,7 +1733,7 @@ describe('Feature: api-integration, Property 11: Bar width percentage computatio
 			filesProcessed: files.length,
 			fieldsRemoved: files.reduce((sum, f) => sum + (f.fieldsRemoved as number), 0),
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 5,
+			totalTimeMs: 5,
 			chartData: [],
 			files
 		};
@@ -1852,7 +1852,7 @@ describe('Feature: api-integration, Property 13: mapMetadataDetail complete fiel
 			filesProcessed: 1,
 			fieldsRemoved,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 1,
+			totalTimeMs: 1,
 			chartData: [],
 			files: [
 				{

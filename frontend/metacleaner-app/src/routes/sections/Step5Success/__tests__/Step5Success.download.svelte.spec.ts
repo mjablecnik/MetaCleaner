@@ -23,7 +23,7 @@ vi.mock('$lib/stores/cleaningResultsStore.svelte', () => ({
 			filesProcessed: 1,
 			fieldsRemoved: 5,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 3,
+			totalTimeMs: 3,
 			fileResults: [{ fileId: 'f-single-001', gpsRemoved: false, totalFields: 5 }],
 			beforeBreakdown: {
 				gpsLocations: 0,

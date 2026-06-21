@@ -51,7 +51,7 @@
 		filesProcessed: 1,
 		fieldsRemoved: 42,
 		gpsLocationsRemoved: 2,
-		totalTimeSeconds: 8,
+		totalTimeMs: 8000,
 		chartData: [
 			{ label: 'GPS', fields: 12, percentage: 29 },
 			{ label: 'EXIF', fields: 22, percentage: 52 },
@@ -122,7 +122,7 @@
 		filesProcessed: 2,
 		fieldsRemoved: 87,
 		gpsLocationsRemoved: 5,
-		totalTimeSeconds: 21,
+		totalTimeMs: 21000,
 		chartData: [
 			{ label: 'GPS', fields: 35, percentage: 40 },
 			{ label: 'EXIF', fields: 38, percentage: 44 },

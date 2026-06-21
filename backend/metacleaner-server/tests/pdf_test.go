@@ -43,7 +43,7 @@ func makePopulatedReport() *src.ReportDetail {
 		FilesProcessed:      3,
 		FieldsRemoved:       42,
 		GPSLocationsRemoved: 2,
-		TotalTimeSeconds:    15,
+		TotalTimeMs:    15,
 		ChartData: []src.ChartDataPoint{
 			{Label: "GPS", Fields: 10, Percentage: 24},
 			{Label: "EXIF", Fields: 20, Percentage: 48},
@@ -121,7 +121,7 @@ func TestGenerateReportPDF_EmptyFileList(t *testing.T) {
 		Date:             "2025-01-01T00:00:00Z",
 		FilesProcessed:   0,
 		FieldsRemoved:    0,
-		TotalTimeSeconds: 0,
+		TotalTimeMs: 0,
 		Files:            []src.ReportFileDetail{},
 		ChartData:        []src.ChartDataPoint{},
 	}
@@ -187,7 +187,7 @@ func TestGenerateReportPDF_ManyFiles(t *testing.T) {
 		Date:             "2025-06-01T00:00:00Z",
 		FilesProcessed:   60,
 		FieldsRemoved:    300,
-		TotalTimeSeconds: 120,
+		TotalTimeMs: 120,
 		ChartData:        []src.ChartDataPoint{},
 	}
 	for i := range 60 {
@@ -244,7 +244,7 @@ func TestGenerateReportPDF_WithMetadataDetails(t *testing.T) {
 		FilesProcessed:      1,
 		FieldsRemoved:       8,
 		GPSLocationsRemoved: 1,
-		TotalTimeSeconds:    3,
+		TotalTimeMs:    3,
 		ChartData: []src.ChartDataPoint{
 			{Label: "GPS", Fields: 3, Percentage: 38},
 			{Label: "EXIF", Fields: 5, Percentage: 62},

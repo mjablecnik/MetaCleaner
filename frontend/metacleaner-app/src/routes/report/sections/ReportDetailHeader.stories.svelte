@@ -21,7 +21,7 @@
 		filesProcessed: 5,
 		fieldsRemoved: 87,
 		gpsLocationsRemoved: 3,
-		totalTimeSeconds: 42,
+		totalTimeMs: 42000,
 		chartData: [],
 		files: []
 	};

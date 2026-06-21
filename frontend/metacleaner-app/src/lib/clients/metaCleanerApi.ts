@@ -40,7 +40,7 @@ export interface JobStatusResponse {
 	filesCompleted: number;
 	fieldsRemoved: number;
 	gpsLocationsRemoved: number;
-	totalTimeSeconds: number;
+	totalTimeMs: number;
 	createdAt: string;
 	completedAt?: string;
 	reportId?: string;

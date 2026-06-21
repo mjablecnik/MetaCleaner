@@ -428,7 +428,7 @@ func TestSupabaseClient_UpdateJob_SendsCorrectVerbAndPath(t *testing.T) {
 		TotalFiles:      2,
 		FilesCompleted:  2,
 		FieldsRemoved:   8,
-		TotalTimeSeconds: 5,
+		TotalTimeMs: 5,
 		CompletedAt:     &now,
 	}
 	if err := client.UpdateJob(context.Background(), job); err != nil {

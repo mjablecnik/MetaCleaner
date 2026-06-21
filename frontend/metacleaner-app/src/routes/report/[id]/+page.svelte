@@ -17,6 +17,13 @@
 	let loadError = $state<string | null>(null);
 	let userEmail = $state('');
 
+	function formatTimeMs(ms: number): string {
+		if (!Number.isFinite(ms) || ms <= 0) return '0ms';
+		if (ms < 1000) return `${ms}ms`;
+		const s = ms / 1000;
+		return s >= 60 ? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s` : `${Math.round(s * 10) / 10}s`;
+	}
+
 	const reportId = $derived(page.params.id);
 
 	const stats = $derived([
@@ -42,7 +49,7 @@
 		{
 			icon: 'fa-solid fa-clock',
 			iconColor: 'orange' as const,
-			value: reportDetail ? (reportDetail.totalTimeSeconds ?? 0) + 's' : '',
+			value: reportDetail ? formatTimeMs(reportDetail.totalTimeMs ?? 0) : '',
 			label: tx('report.stats.totalTime')
 		}
 	]);

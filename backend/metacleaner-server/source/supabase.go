@@ -53,7 +53,7 @@ type dbJob struct {
 	FilesCompleted      int        `json:"files_completed"`
 	FieldsRemoved       int        `json:"fields_removed"`
 	GPSLocationsRemoved int        `json:"gps_locations_removed"`
-	TotalTimeSeconds    *int       `json:"total_time_seconds,omitempty"`
+	TotalTimeMs    *int       `json:"total_time_seconds,omitempty"`
 	CreatedAt           *time.Time `json:"created_at,omitempty"`
 	CompletedAt         *time.Time `json:"completed_at,omitempty"`
 }
@@ -90,7 +90,7 @@ type dbReport struct {
 	FilesProcessed      int             `json:"files_processed"`
 	FieldsRemoved       int             `json:"fields_removed"`
 	GPSLocationsRemoved int             `json:"gps_locations_removed"`
-	TotalTimeSeconds    int             `json:"total_time_seconds"`
+	TotalTimeMs    int             `json:"total_time_seconds"`
 	FileTypes           string          `json:"file_types"`
 	DominantType        string          `json:"dominant_type"`
 	HasGPS              bool            `json:"has_gps"`
@@ -217,9 +217,9 @@ func (c *SupabaseClient) UpdateJob(ctx context.Context, job *Job) error {
 		GPSLocationsRemoved: job.GPSLocationsRemoved,
 		CompletedAt:         job.CompletedAt,
 	}
-	if job.TotalTimeSeconds > 0 {
-		t := job.TotalTimeSeconds
-		rec.TotalTimeSeconds = &t
+	if job.TotalTimeMs > 0 {
+		t := job.TotalTimeMs
+		rec.TotalTimeMs = &t
 	}
 
 	url := c.restURL("cleaning_jobs?id=eq." + job.ID)
@@ -249,8 +249,8 @@ func (c *SupabaseClient) GetJob(ctx context.Context, jobID, userID string) (*Job
 		GPSLocationsRemoved: r.GPSLocationsRemoved,
 		CompletedAt:         r.CompletedAt,
 	}
-	if r.TotalTimeSeconds != nil {
-		job.TotalTimeSeconds = *r.TotalTimeSeconds
+	if r.TotalTimeMs != nil {
+		job.TotalTimeMs = *r.TotalTimeMs
 	}
 	if r.CreatedAt != nil {
 		job.CreatedAt = *r.CreatedAt
@@ -342,7 +342,7 @@ func (c *SupabaseClient) CreateReport(ctx context.Context, report *Report) error
 		FilesProcessed:      report.FilesProcessed,
 		FieldsRemoved:       report.FieldsRemoved,
 		GPSLocationsRemoved: report.GPSLocationsRemoved,
-		TotalTimeSeconds:    report.TotalTimeSeconds,
+		TotalTimeMs:    report.TotalTimeMs,
 		FileTypes:           report.FileTypes,
 		DominantType:        report.DominantType,
 		HasGPS:              report.HasGPS,
@@ -412,7 +412,7 @@ func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*Re
 		FilesProcessed:      r.FilesProcessed,
 		FieldsRemoved:       r.FieldsRemoved,
 		GPSLocationsRemoved: r.GPSLocationsRemoved,
-		TotalTimeSeconds:    r.TotalTimeSeconds,
+		TotalTimeMs:    r.TotalTimeMs,
 		ChartData:           chartData,
 		Files:               fileDetails,
 	}, nil
@@ -428,7 +428,7 @@ func dbRowToReport(r dbReport) *Report {
 		FilesProcessed:      r.FilesProcessed,
 		FieldsRemoved:       r.FieldsRemoved,
 		GPSLocationsRemoved: r.GPSLocationsRemoved,
-		TotalTimeSeconds:    r.TotalTimeSeconds,
+		TotalTimeMs:    r.TotalTimeMs,
 		FileTypes:           r.FileTypes,
 		DominantType:        r.DominantType,
 		HasGPS:              r.HasGPS,
@@ -491,7 +491,7 @@ func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]Repo
 
 	summaries := make([]ReportSummary, len(rows))
 	for i, r := range rows {
-		duration := fmt.Sprintf("%ds", r.TotalTimeSeconds)
+		duration := FormatDurationMs(r.TotalTimeMs)
 		summaries[i] = ReportSummary{
 			ID:        r.ID,
 			ReportID:  r.ReportID,

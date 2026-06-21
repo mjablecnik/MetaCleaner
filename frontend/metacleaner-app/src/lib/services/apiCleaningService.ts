@@ -75,7 +75,7 @@ interface BackendReportDetail {
 	filesProcessed: number;
 	fieldsRemoved: number;
 	gpsLocationsRemoved: number;
-	totalTimeSeconds: number;
+	totalTimeMs: number;
 	chartData: { label: string; fields: number; percentage: number }[];
 	files: BackendReportFileDetail[];
 }
@@ -153,7 +153,7 @@ function buildResultsFromStatus(
 		filesProcessed: status.filesCompleted,
 		fieldsRemoved: status.fieldsRemoved,
 		gpsLocationsRemoved: status.gpsLocationsRemoved,
-		totalTimeSeconds: status.totalTimeSeconds ?? 0,
+		totalTimeMs: status.totalTimeMs ?? 0,
 		fileResults,
 		beforeBreakdown: {
 			gpsLocations,
@@ -263,7 +263,7 @@ function buildProcessingResults(
 	_jobId: string
 ): ProcessingResults {
 	const filesProcessed = (msg.filesProcessed as number) ?? accumulatedResults.length;
-	const totalTimeSeconds = (msg.totalTimeSeconds as number) ?? 0;
+	const totalTimeMs = (msg.totalTimeMs as number) ?? 0;
 	const msgGpsRemoved = msg.gpsLocationsRemoved as number | undefined;
 	const accumulatedGpsRemoved = accumulatedResults.filter((r) => r.gpsRemoved).length;
 	const gpsLocationsRemoved =
@@ -302,7 +302,7 @@ function buildProcessingResults(
 		filesProcessed,
 		fieldsRemoved,
 		gpsLocationsRemoved,
-		totalTimeSeconds,
+		totalTimeMs,
 		fileResults,
 		beforeBreakdown
 	};
@@ -495,7 +495,7 @@ function mapReportDetail(data: BackendReportDetail): ReportDetail {
 		filesProcessed: data.filesProcessed,
 		fieldsRemoved: data.fieldsRemoved,
 		gpsLocationsRemoved: data.gpsLocationsRemoved,
-		totalTimeSeconds: data.totalTimeSeconds,
+		totalTimeMs: data.totalTimeMs,
 		chartData: data.chartData ?? [],
 		files: mapReportFileDetails(data.files ?? [])
 	};

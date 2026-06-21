@@ -13,7 +13,7 @@ const mockReportDetail = {
 	filesProcessed: 3,
 	fieldsRemoved: 42,
 	gpsLocationsRemoved: 1,
-	totalTimeSeconds: 7,
+	totalTimeMs: 7,
 	chartData: [],
 	files: []
 };

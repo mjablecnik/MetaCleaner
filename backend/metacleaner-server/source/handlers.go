@@ -608,7 +608,7 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 		FilesProcessed:      job.FilesCompleted,
 		FieldsRemoved:       job.FieldsRemoved,
 		GPSLocationsRemoved: job.GPSLocationsRemoved,
-		TotalTimeSeconds:    job.TotalTimeSeconds,
+		TotalTimeMs:    job.TotalTimeMs,
 		FileTypes:           fileTypesStr,
 		DominantType:        dominantType,
 		HasGPS:              job.GPSLocationsRemoved > 0,

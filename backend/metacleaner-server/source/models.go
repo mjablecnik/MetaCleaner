@@ -1,6 +1,7 @@
 package source
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -27,7 +28,7 @@ type Job struct {
 	FilesCompleted      int        `json:"filesCompleted"`
 	FieldsRemoved       int        `json:"fieldsRemoved"`
 	GPSLocationsRemoved int        `json:"gpsLocationsRemoved"`
-	TotalTimeSeconds    int        `json:"totalTimeSeconds"`
+	TotalTimeMs         int        `json:"totalTimeMs"`
 	CreatedAt           time.Time  `json:"createdAt"`
 	CompletedAt         *time.Time `json:"completedAt,omitempty"`
 	ReportID            string     `json:"reportId,omitempty"` // populated on-the-fly from cleaning_reports; not stored on the job row
@@ -99,7 +100,7 @@ type ProgressEvent struct {
 	CurrentFileID        string `json:"currentFileId,omitempty"`
 	JobID                string `json:"jobId,omitempty"`
 	ReportID             string `json:"reportId,omitempty"`
-	TotalTimeSeconds     int    `json:"totalTimeSeconds"`
+	TotalTimeMs          int    `json:"totalTimeMs"`
 	GPSLocationsRemoved  int    `json:"gpsLocationsRemoved,omitempty"`
 }
 
@@ -124,7 +125,7 @@ type ReportDetail struct {
 	FilesProcessed      int                `json:"filesProcessed"`
 	FieldsRemoved       int                `json:"fieldsRemoved"`
 	GPSLocationsRemoved int                `json:"gpsLocationsRemoved"`
-	TotalTimeSeconds    int                `json:"totalTimeSeconds"`
+	TotalTimeMs         int                `json:"totalTimeMs"`
 	ChartData           []ChartDataPoint   `json:"chartData"`
 	Files               []ReportFileDetail `json:"files"`
 }
@@ -172,7 +173,7 @@ type Report struct {
 	FilesProcessed      int              `json:"filesProcessed"`
 	FieldsRemoved       int              `json:"fieldsRemoved"`
 	GPSLocationsRemoved int              `json:"gpsLocationsRemoved"`
-	TotalTimeSeconds    int              `json:"totalTimeSeconds"`
+	TotalTimeMs         int              `json:"totalTimeMs"`
 	FileTypes           string           `json:"fileTypes"`
 	DominantType        string           `json:"dominantType"`
 	HasGPS              bool             `json:"hasGps"`
@@ -194,6 +195,16 @@ type ReportsSummaryStats struct {
 // ValidateFileSize returns true if size does not exceed maxSize
 func ValidateFileSize(size int64, maxSize int64) bool {
 	return size > 0 && size <= maxSize
+}
+
+// FormatDurationMs formats milliseconds into a human-readable duration string.
+// < 1000ms → "Xms", >= 1000ms → "X.Xs"
+func FormatDurationMs(ms int) string {
+	if ms < 1000 {
+		return fmt.Sprintf("%dms", ms)
+	}
+	seconds := float64(ms) / 1000.0
+	return fmt.Sprintf("%.1fs", seconds)
 }
 
 // ValidateFileFormat returns true if the extension (with or without dot) is supported, case-insensitively

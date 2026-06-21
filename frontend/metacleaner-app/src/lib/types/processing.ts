@@ -79,7 +79,7 @@ export interface ProcessingResults {
 	filesProcessed: number;
 	fieldsRemoved: number;
 	gpsLocationsRemoved: number;
-	totalTimeSeconds: number;
+	totalTimeMs: number;
 	fileResults: FileMetadataResult[];
 	beforeBreakdown: MetadataBreakdown;
 }

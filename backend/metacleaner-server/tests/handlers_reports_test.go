@@ -213,7 +213,7 @@ func TestBuildReport(t *testing.T) {
 		FilesCompleted:      2,
 		FieldsRemoved:       30,
 		GPSLocationsRemoved: 1,
-		TotalTimeSeconds:    5,
+		TotalTimeMs:    5,
 	}
 	files := []src.FileRecord{
 		{

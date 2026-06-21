@@ -153,7 +153,7 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 		{"Files Processed:", fmt.Sprintf("%d", report.FilesProcessed)},
 		{"Total Fields Removed:", fmt.Sprintf("%d", report.FieldsRemoved)},
 		{"GPS Locations Removed:", fmt.Sprintf("%d", report.GPSLocationsRemoved)},
-		{"Processing Time:", fmt.Sprintf("%ds", report.TotalTimeSeconds)},
+		{"Processing Time:", formatDuration(report.TotalTimeMs)},
 	}
 	for _, row := range summaryRows {
 		_ = pdf.SetFont("bold", "", 11)
@@ -382,6 +382,12 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 		return nil, fmt.Errorf("PDF generation produced empty output")
 	}
 	return b, nil
+}
+
+// formatDuration formats milliseconds into a human-readable duration string.
+// < 1000ms → "Xms", >= 1000ms → "X.Xs"
+func formatDuration(ms int) string {
+	return FormatDurationMs(ms)
 }
 
 // drawFooter renders the page footer with page number and branding.

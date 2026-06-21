@@ -67,7 +67,7 @@ export interface ReportDetail {
 	filesProcessed: number;
 	fieldsRemoved: number;
 	gpsLocationsRemoved: number;
-	totalTimeSeconds: number;
+	totalTimeMs: number;
 	chartData: ChartDataPoint[];
 	files: ReportFileDetail[];
 }

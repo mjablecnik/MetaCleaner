@@ -225,7 +225,7 @@ describe('Preservation 3.8: mapMetadataDetail preserves GPS/EXIF/XMP for image f
 						filesProcessed: 1,
 						fieldsRemoved: totalRemoved,
 						gpsLocationsRemoved: gpsFields.length,
-						totalTimeSeconds: 2,
+						totalTimeMs: 2,
 						chartData: [],
 						files: [
 							{
@@ -273,7 +273,7 @@ describe('Preservation 3.8: mapMetadataDetail preserves GPS/EXIF/XMP for image f
 						filesProcessed: 1,
 						fieldsRemoved: gpsFields.length,
 						gpsLocationsRemoved: gpsFields.length,
-						totalTimeSeconds: 1,
+						totalTimeMs: 1,
 						chartData: [],
 						files: [
 							{
@@ -316,7 +316,7 @@ describe('Preservation 3.8: mapMetadataDetail preserves GPS/EXIF/XMP for image f
 			filesProcessed: 1,
 			fieldsRemoved: 0,
 			gpsLocationsRemoved: 0,
-			totalTimeSeconds: 1,
+			totalTimeMs: 1,
 			chartData: [],
 			files: [
 				{
@@ -362,7 +362,7 @@ describe('Preservation 3.9: Report file detail scalar fields pass through unchan
 						filesProcessed: 1,
 						fieldsRemoved: 1,
 						gpsLocationsRemoved: 0,
-						totalTimeSeconds: 1,
+						totalTimeMs: 1,
 						chartData: [],
 						files: [
 							{
@@ -406,7 +406,7 @@ describe('Preservation 3.9: Report file detail scalar fields pass through unchan
 						filesProcessed: 1,
 						fieldsRemoved: 1,
 						gpsLocationsRemoved: 0,
-						totalTimeSeconds: 1,
+						totalTimeMs: 1,
 						chartData: [],
 						files: [
 							{

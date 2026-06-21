@@ -24,11 +24,13 @@
 		};
 	});
 
-	function formatTime(seconds: number): string {
-		if (!Number.isFinite(seconds)) return '0s';
-		const m = Math.floor(seconds / 60);
-		const s = seconds % 60;
-		return m > 0 ? `${m}m ${s}s` : `${s}s`;
+	function formatTime(ms: number): string {
+		if (!Number.isFinite(ms) || ms <= 0) return '0ms';
+		if (ms < 1000) return `${ms}ms`;
+		const totalSeconds = ms / 1000;
+		const m = Math.floor(totalSeconds / 60);
+		const s = Math.round(totalSeconds % 60 * 10) / 10;
+		return m > 0 ? `${m}m ${Math.round(s)}s` : `${s}s`;
 	}
 
 	const results = $derived(cleaningResultsStore.results);
@@ -144,7 +146,7 @@
 			>
 				<i class="fa-solid fa-clock text-sm text-brand-orange lg:text-base"></i>
 			</div>
-			<p class="text-2xl font-black text-white">{formatTime(results.totalTimeSeconds)}</p>
+			<p class="text-2xl font-black text-white">{formatTime(results.totalTimeMs)}</p>
 			<p class="text-[11px] text-text-muted lg:text-xs">{tx('step5.stats.totalTime')}</p>
 		</div>
 	</div>

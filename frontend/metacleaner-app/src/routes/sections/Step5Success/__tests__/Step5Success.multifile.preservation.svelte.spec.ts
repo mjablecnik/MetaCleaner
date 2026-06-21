@@ -19,7 +19,7 @@ vi.mock('$lib/stores/cleaningResultsStore.svelte', () => ({
 			filesProcessed: 2,
 			fieldsRemoved: 12,
 			gpsLocationsRemoved: 1,
-			totalTimeSeconds: 5,
+			totalTimeMs: 5,
 			fileResults: [
 				{ fileId: 'f-multi-001', gpsRemoved: false, totalFields: 7 },
 				{ fileId: 'f-multi-002', gpsRemoved: true, totalFields: 5 }

@@ -9,7 +9,7 @@ function makeResults(overrides: Partial<ProcessingResults> = {}): ProcessingResu
 		filesProcessed: 2,
 		fieldsRemoved: 10,
 		gpsLocationsRemoved: 1,
-		totalTimeSeconds: 5,
+		totalTimeMs: 5,
 		fileResults: [],
 		beforeBreakdown: {
 			gpsLocations: 0,

@@ -127,8 +127,8 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		})
 	}
 
-	elapsed := int(time.Since(start).Seconds())
-	job.TotalTimeSeconds = elapsed
+	elapsedMs := int(time.Since(start).Milliseconds())
+	job.TotalTimeMs = elapsedMs
 	job.Status = "completed"
 	completed := time.Now()
 	job.CompletedAt = &completed
@@ -141,7 +141,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		FilesCompleted:      job.FilesCompleted,
 		TotalFiles:          total,
 		FieldsRemoved:       job.FieldsRemoved,
-		TotalTimeSeconds:    elapsed,
+		TotalTimeMs:         elapsedMs,
 		GPSLocationsRemoved: job.GPSLocationsRemoved,
 	})
 
