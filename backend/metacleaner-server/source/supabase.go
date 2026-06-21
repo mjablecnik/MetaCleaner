@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -114,45 +116,88 @@ func (c *SupabaseClient) newRequest(ctx context.Context, method, url string, bod
 }
 
 func (c *SupabaseClient) doJSON(ctx context.Context, method, url string, payload, result interface{}) error {
-	var bodyReader io.Reader
+	var payloadBytes []byte
 	if payload != nil {
 		data, err := json.Marshal(payload)
 		if err != nil {
 			return fmt.Errorf("marshal payload: %w", err)
 		}
-		bodyReader = bytes.NewReader(data)
+		payloadBytes = data
 	}
 
-	req, err := c.newRequest(ctx, method, url, bodyReader)
-	if err != nil {
-		return err
-	}
-	if payload != nil {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	req.Header.Set("Accept", "application/json")
-	// Return the inserted/updated row so we can read auto-generated fields.
-	if method == http.MethodPost || method == http.MethodPatch {
-		req.Header.Set("Prefer", "return=representation")
-	}
+	var lastErr error
+	maxRetries := 3
+	baseDelay := 500 * time.Millisecond
 
-	resp, err := c.doWithTimeout(ctx, req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	respBody, _ := io.ReadAll(resp.Body)
-	if resp.StatusCode >= 300 {
-		return fmt.Errorf("supabase %s %s: status %d: %s", method, url, resp.StatusCode, respBody)
-	}
-
-	if result != nil && len(respBody) > 0 {
-		if err := json.Unmarshal(respBody, result); err != nil {
-			return fmt.Errorf("unmarshal response: %w", err)
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		if attempt > 0 {
+			// Exponential backoff: 500ms, 1s, 2s
+			delay := baseDelay * (1 << (attempt - 1))
+			slog.Warn("supabase: retrying request", "method", method, "url", url, "attempt", attempt, "delay", delay, "lastError", lastErr)
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(delay):
+			}
 		}
+
+		var bodyReader io.Reader
+		if payloadBytes != nil {
+			bodyReader = bytes.NewReader(payloadBytes)
+		}
+
+		req, err := c.newRequest(ctx, method, url, bodyReader)
+		if err != nil {
+			return err
+		}
+		if payloadBytes != nil {
+			req.Header.Set("Content-Type", "application/json")
+		}
+		req.Header.Set("Accept", "application/json")
+		if method == http.MethodPost || method == http.MethodPatch {
+			req.Header.Set("Prefer", "return=representation")
+		}
+
+		resp, err := c.doWithTimeout(ctx, req)
+		if err != nil {
+			lastErr = err
+			// Retry on timeout/network errors
+			if ctx.Err() != nil {
+				return ctx.Err()
+			}
+			continue
+		}
+
+		respBody, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		if resp.StatusCode >= 300 {
+			lastErr = fmt.Errorf("supabase %s %s: status %d: %s", method, url, resp.StatusCode, respBody)
+			// Retry on transient errors (429 rate limit, 5xx server errors)
+			if isRetryableStatus(resp.StatusCode) {
+				continue
+			}
+			return lastErr
+		}
+
+		if result != nil && len(respBody) > 0 {
+			if err := json.Unmarshal(respBody, result); err != nil {
+				return fmt.Errorf("unmarshal response: %w", err)
+			}
+		}
+		return nil
 	}
-	return nil
+
+	return fmt.Errorf("supabase: max retries exceeded: %w", lastErr)
+}
+
+// isRetryableStatus returns true for HTTP status codes that indicate a transient error.
+func isRetryableStatus(status int) bool {
+	return status == http.StatusTooManyRequests || // 429
+		status == http.StatusServiceUnavailable || // 503
+		status == http.StatusGatewayTimeout || // 504
+		status == http.StatusBadGateway || // 502
+		status == http.StatusRequestTimeout // 408
 }
 
 func (c *SupabaseClient) restURL(path string) string {
@@ -285,6 +330,119 @@ func (c *SupabaseClient) UpdateFileRecord(ctx context.Context, file *FileRecord)
 	rec := fileRecordToDB(*file)
 	url := c.restURL("job_files?id=eq." + file.ID)
 	return c.doJSON(ctx, http.MethodPatch, url, rec, nil)
+}
+
+// BatchUpdateFileRecords updates multiple file records in a single RPC call.
+// Uses Supabase's PostgreSQL function for batch upsert to reduce N calls to 1.
+// Falls back to sequential updates if the batch call fails.
+func (c *SupabaseClient) BatchUpdateFileRecords(ctx context.Context, files []FileRecord) error {
+	if len(files) == 0 {
+		return nil
+	}
+
+	// PostgREST doesn't support batch PATCH by different IDs natively.
+	// Use UPSERT (POST with on_conflict=id and merge-duplicates) to update all in one request.
+	recs := make([]dbFileRecord, 0, len(files))
+	for _, f := range files {
+		if f.ID == "" {
+			continue // Skip files without DB IDs
+		}
+		rec := fileRecordToDB(f)
+		rec.ID = f.ID
+		rec.UserID = f.UserID
+		recs = append(recs, rec)
+	}
+
+	if len(recs) == 0 {
+		return nil
+	}
+
+	url := c.restURL("job_files")
+
+	// Marshal payload
+	data, err := json.Marshal(recs)
+	if err != nil {
+		return fmt.Errorf("marshal batch payload: %w", err)
+	}
+
+	req, err := c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	// UPSERT: on conflict with ID, merge (update) all columns
+	req.Header.Set("Prefer", "resolution=merge-duplicates")
+
+	var lastErr error
+	maxRetries := 3
+	baseDelay := 500 * time.Millisecond
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		if attempt > 0 {
+			delay := baseDelay * (1 << (attempt - 1))
+			slog.Warn("supabase: retrying batch update", "attempt", attempt, "delay", delay, "lastError", lastErr)
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(delay):
+			}
+			// Re-create the request with fresh body
+			req, err = c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
+			if err != nil {
+				return err
+			}
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Accept", "application/json")
+			req.Header.Set("Prefer", "resolution=merge-duplicates")
+		}
+
+		resp, err := c.doWithTimeout(ctx, req)
+		if err != nil {
+			lastErr = err
+			if ctx.Err() != nil {
+				return ctx.Err()
+			}
+			continue
+		}
+
+		respBody, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		if resp.StatusCode >= 300 {
+			lastErr = fmt.Errorf("supabase batch update: status %d: %s", resp.StatusCode, respBody)
+			if isRetryableStatus(resp.StatusCode) {
+				continue
+			}
+			// Non-retryable error — fall back to sequential updates
+			slog.Warn("supabase: batch update failed, falling back to sequential", "status", resp.StatusCode, "error", string(respBody))
+			return c.sequentialUpdateFileRecords(ctx, files)
+		}
+
+		slog.Info("supabase: batch updated file records", "count", len(recs))
+		return nil
+	}
+
+	// All retries exhausted — fall back to sequential
+	slog.Warn("supabase: batch update retries exhausted, falling back to sequential", "lastError", lastErr)
+	return c.sequentialUpdateFileRecords(ctx, files)
+}
+
+// sequentialUpdateFileRecords updates file records one by one as a fallback.
+func (c *SupabaseClient) sequentialUpdateFileRecords(ctx context.Context, files []FileRecord) error {
+	var errors []string
+	for i := range files {
+		if files[i].ID == "" {
+			continue
+		}
+		if err := c.UpdateFileRecord(ctx, &files[i]); err != nil {
+			errors = append(errors, fmt.Sprintf("file %s: %v", files[i].ID, err))
+		}
+	}
+	if len(errors) > 0 {
+		return fmt.Errorf("failed to update %d file records: %s", len(errors), strings.Join(errors, "; "))
+	}
+	return nil
 }
 
 // GetFileRecords returns all file records for a job.

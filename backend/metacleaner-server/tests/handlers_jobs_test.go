@@ -42,11 +42,12 @@ func TestHandleCreateJobEmptyFileIDs(t *testing.T) {
 	db := src.NewSupabaseClient(cfg)
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
+	pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(`{"fileIds":[]}`))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("expected 400, got %d: %s", rr.Code, rr.Body.String())
@@ -64,11 +65,12 @@ func TestHandleCreateJobMissingFile(t *testing.T) {
 	db := src.NewSupabaseClient(cfg)
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
+	pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(`{"fileIds":["f-00112233"]}`))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
@@ -101,12 +103,13 @@ func TestHandleCreateJobSuccess(t *testing.T) {
 	db := src.NewSupabaseClient(cfg)
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
+	pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	body := fmt.Sprintf(`{"fileIds":[%q]}`, fileID)
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 	if rr.Code != http.StatusCreated {
 		t.Fatalf("expected 201, got %d: %s", rr.Code, rr.Body.String())
@@ -192,6 +195,7 @@ func TestHandleCreateJobBodyTooLarge(t *testing.T) {
 	db := src.NewSupabaseClient(cfg)
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
+	pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	// Build a body just over the 1 MB limit.
 	// The content doesn't need to be valid JSON — MaxBytesReader fires before decode.
@@ -205,7 +209,7 @@ func TestHandleCreateJobBodyTooLarge(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", bytes.NewReader(oversized))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("expected 400 for oversized body, got %d: %s", rr.Code, rr.Body.String())
@@ -226,6 +230,7 @@ func TestHandleCreateJobBodyExactLimit(t *testing.T) {
 	db := src.NewSupabaseClient(cfg)
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
+	pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	// A body at the limit that contains valid-looking JSON (empty fileIds → 400 INVALID_REQUEST,
 	// not a MaxBytesReader error). This confirms the limit itself doesn't trigger.
@@ -233,7 +238,7 @@ func TestHandleCreateJobBodyExactLimit(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/jobs", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
-	src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+	src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 	// Should return 400 INVALID_REQUEST (empty fileIds), not 413 or MaxBytesReader truncation
 	if rr.Code != http.StatusBadRequest {

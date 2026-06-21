@@ -34,6 +34,7 @@ func TestHandleCreateJob_InvalidFileIDFormats(t *testing.T) {
 			db := src.NewSupabaseClient(cfg)
 			hub := src.NewWebSocketHub()
 			pl := src.NewCleaningPipeline(cfg)
+			pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 			fileIDsJSON, _ := json.Marshal(tc.fileIDs)
 			body := `{"fileIds":` + string(fileIDsJSON) + `}`
@@ -41,7 +42,7 @@ func TestHandleCreateJob_InvalidFileIDFormats(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			rr := httptest.NewRecorder()
 
-			src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+			src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 			if rr.Code != http.StatusBadRequest {
 				t.Errorf("fileID %v: expected 400, got %d: %s", tc.fileIDs, rr.Code, rr.Body.String())
@@ -71,13 +72,14 @@ func TestHandleCreateJob_ValidFileIDFormat(t *testing.T) {
 			db := src.NewSupabaseClient(cfg)
 			hub := src.NewWebSocketHub()
 			pl := src.NewCleaningPipeline(cfg)
+			pool := src.NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 			body := `{"fileIds":["` + fileID + `"]}`
 			req := httptest.NewRequest(http.MethodPost, "/api/jobs", strings.NewReader(body))
 			req.Header.Set("Content-Type", "application/json")
 			rr := httptest.NewRecorder()
 
-			src.HandleCreateJob(cfg, db, hub, pl)(rr, req)
+			src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
 
 			// Format validation passed; file does not exist on disk → 404
 			if rr.Code == http.StatusBadRequest {

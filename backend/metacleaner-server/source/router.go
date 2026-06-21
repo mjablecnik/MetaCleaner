@@ -146,6 +146,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 
 	authMW := NewAuthMiddleware(cfg)
 
+	// Job worker pool — limits concurrent pipeline executions.
+	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)
+
 	// POST /api/auth/register — rate limited
 	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient)))
 
@@ -186,7 +189,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 
 	// POST /api/jobs
-	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl))
+	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool))
 
 	// GET /api/jobs/{id}
 	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))

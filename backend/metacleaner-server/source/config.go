@@ -37,18 +37,20 @@ type Config struct {
 	AndroidCertFingerprint string
 	AppleTeamID            string
 	SupabaseTimeout        time.Duration
+	MaxConcurrentJobs      int
 }
 
 func LoadConfig() (Config, error) {
 	_ = godotenv.Load()
 
 	cfg := Config{
-		Port:            8080,
-		MaxFileSize:     500 * 1024 * 1024, // 500 MB
-		RetentionPeriod: time.Hour,
-		TempStoragePath: "/tmp/metacleaner",
-		RateLimitRPM:    10,
-		SupabaseTimeout: 10 * time.Second,
+		Port:              8080,
+		MaxFileSize:       500 * 1024 * 1024, // 500 MB
+		RetentionPeriod:   time.Hour,
+		TempStoragePath:   "/tmp/metacleaner",
+		RateLimitRPM:      10,
+		SupabaseTimeout:   10 * time.Second,
+		MaxConcurrentJobs: 3,
 	}
 
 	if v := os.Getenv("PORT"); v != "" {
@@ -86,6 +88,12 @@ func LoadConfig() (Config, error) {
 	if v := os.Getenv("SUPABASE_TIMEOUT"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 {
 			cfg.SupabaseTimeout = time.Duration(n) * time.Second
+		}
+	}
+
+	if v := os.Getenv("MAX_CONCURRENT_JOBS"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 {
+			cfg.MaxConcurrentJobs = n
 		}
 	}
 

@@ -201,7 +201,7 @@ type CreateJobResponse struct {
 }
 
 // HandleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
-func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline) http.HandlerFunc {
+func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, pool *JobWorkerPool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 
@@ -276,32 +276,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			time.Sleep(500 * time.Millisecond)
 
 			ctx := context.Background()
-			progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
-			if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
-				slog.Error("job: pipeline error", "jobId", job.ID, "error", err)
-			}
-
-			// Retry UpdateJob once — a transient DB error here leaves the job
-			// stuck in "processing" with no way for the user to recover.
-			if err := db.UpdateJob(ctx, job); err != nil {
-				slog.Warn("job: UpdateJob failed, retrying", "jobId", job.ID, "error", err)
-				if err2 := db.UpdateJob(ctx, job); err2 != nil {
-					slog.Error("job: UpdateJob retry failed, broadcasting error", "jobId", job.ID, "error", err2)
-					hub.Broadcast(job.ID, ProgressEvent{
-						Type:    "job_error",
-						JobID:   job.ID,
-						Message: "Failed to save job results",
-					})
-					return
-				}
-			}
-
-			for i := range files {
-				if err := db.UpdateFileRecord(ctx, &files[i]); err != nil {
-					slog.Warn("job: UpdateFileRecord failed", "jobId", job.ID, "fileId", files[i].LocalID, "error", err)
-				}
-			}
-			createJobReport(ctx, cfg, db, hub, job, files)
+			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files)
 		}()
 
 		w.Header().Set("Content-Type", "application/json")
