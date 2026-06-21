@@ -333,24 +333,74 @@ func (c *SupabaseClient) UpdateFileRecord(ctx context.Context, file *FileRecord)
 }
 
 // BatchUpdateFileRecords updates multiple file records in a single RPC call.
-// Uses Supabase's PostgreSQL function for batch upsert to reduce N calls to 1.
+// Uses Supabase's PostgreSQL upsert to reduce N calls to 1.
 // Falls back to sequential updates if the batch call fails.
 func (c *SupabaseClient) BatchUpdateFileRecords(ctx context.Context, files []FileRecord) error {
 	if len(files) == 0 {
 		return nil
 	}
 
-	// PostgREST doesn't support batch PATCH by different IDs natively.
-	// Use UPSERT (POST with on_conflict=id and merge-duplicates) to update all in one request.
-	recs := make([]dbFileRecord, 0, len(files))
+	// PostgREST bulk upsert requires all objects to have the same set of keys (PGRST102).
+	// Use a uniform struct without omitempty to ensure consistency across all records.
+	type uniformFileRecord struct {
+		ID                string          `json:"id"`
+		JobID             string          `json:"job_id"`
+		UserID            string          `json:"user_id"`
+		FileName          string          `json:"file_name"`
+		OriginalName      string          `json:"original_name"`
+		CleanedName       string          `json:"cleaned_name"`
+		FileExtension     string          `json:"file_extension"`
+		FileSizeBytes     int64           `json:"file_size_bytes"`
+		FileType          string          `json:"file_type"`
+		Format            string          `json:"format"`
+		Device            string          `json:"device"`
+		Status            string          `json:"status"`
+		FieldsRemoved     int             `json:"fields_removed"`
+		GPSRemoved        bool            `json:"gps_removed"`
+		ErrorCode         string          `json:"error_code"`
+		ErrorMessage      string          `json:"error_message"`
+		MetadataBreakdown json.RawMessage `json:"metadata_breakdown"`
+		SHA256Hash        string          `json:"sha256_hash"`
+		ProcessedAt       *time.Time      `json:"processed_at"`
+	}
+
+	recs := make([]uniformFileRecord, 0, len(files))
 	for _, f := range files {
 		if f.ID == "" {
-			continue // Skip files without DB IDs
+			continue
 		}
-		rec := fileRecordToDB(f)
-		rec.ID = f.ID
-		rec.UserID = f.UserID
-		recs = append(recs, rec)
+		var mdJSON json.RawMessage
+		if f.MetadataBreakdown != nil {
+			data, err := json.Marshal(f.MetadataBreakdown)
+			if err == nil {
+				mdJSON = data
+			}
+		}
+		if mdJSON == nil {
+			mdJSON = json.RawMessage("null")
+		}
+
+		recs = append(recs, uniformFileRecord{
+			ID:                f.ID,
+			JobID:             f.JobID,
+			UserID:            f.UserID,
+			FileName:          f.FileName,
+			OriginalName:      f.OriginalName,
+			CleanedName:       f.CleanedName,
+			FileExtension:     f.FileExtension,
+			FileSizeBytes:     f.FileSizeBytes,
+			FileType:          f.FileType,
+			Format:            f.Format,
+			Device:            f.Device,
+			Status:            f.Status,
+			FieldsRemoved:     f.FieldsRemoved,
+			GPSRemoved:        f.GPSRemoved,
+			ErrorCode:         f.ErrorCode,
+			ErrorMessage:      f.ErrorMessage,
+			MetadataBreakdown: mdJSON,
+			SHA256Hash:        f.SHA256Hash,
+			ProcessedAt:       f.ProcessedAt,
+		})
 	}
 
 	if len(recs) == 0 {
@@ -359,20 +409,10 @@ func (c *SupabaseClient) BatchUpdateFileRecords(ctx context.Context, files []Fil
 
 	url := c.restURL("job_files")
 
-	// Marshal payload
 	data, err := json.Marshal(recs)
 	if err != nil {
 		return fmt.Errorf("marshal batch payload: %w", err)
 	}
-
-	req, err := c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	// UPSERT: on conflict with ID, merge (update) all columns
-	req.Header.Set("Prefer", "resolution=merge-duplicates")
 
 	var lastErr error
 	maxRetries := 3
@@ -387,15 +427,16 @@ func (c *SupabaseClient) BatchUpdateFileRecords(ctx context.Context, files []Fil
 				return ctx.Err()
 			case <-time.After(delay):
 			}
-			// Re-create the request with fresh body
-			req, err = c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
-			if err != nil {
-				return err
-			}
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Accept", "application/json")
-			req.Header.Set("Prefer", "resolution=merge-duplicates")
 		}
+
+		req, err := c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Accept", "application/json")
+		// UPSERT: on conflict with ID, merge (update) all columns
+		req.Header.Set("Prefer", "resolution=merge-duplicates")
 
 		resp, err := c.doWithTimeout(ctx, req)
 		if err != nil {

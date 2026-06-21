@@ -330,6 +330,11 @@ func isExemptPath(path string) bool {
 	if path == "/api/auth/me" {
 		return false
 	}
+	// WebSocket progress endpoint handles its own auth via ?token= query param
+	// (browsers cannot send custom headers on WebSocket upgrade requests).
+	if strings.HasSuffix(path, "/progress") && strings.HasPrefix(path, "/api/jobs/") {
+		return true
+	}
 	return strings.HasPrefix(path, "/api/auth/") ||
 		strings.HasPrefix(path, "/api/public/") ||
 		path == "/api/health" ||

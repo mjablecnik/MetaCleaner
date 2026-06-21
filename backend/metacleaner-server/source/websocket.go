@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -11,20 +12,81 @@ import (
 
 // WebSocketHub manages WebSocket connections per job ID.
 type WebSocketHub struct {
-	mu    sync.Mutex
-	conns map[string][]*websocket.Conn
+	mu       sync.Mutex
+	conns    map[string][]*websocket.Conn
+	waiters  map[string][]chan struct{} // channels closed when first client registers for a job
 }
 
 // NewWebSocketHub creates an empty hub.
 func NewWebSocketHub() *WebSocketHub {
-	return &WebSocketHub{conns: make(map[string][]*websocket.Conn)}
+	return &WebSocketHub{
+		conns:   make(map[string][]*websocket.Conn),
+		waiters: make(map[string][]chan struct{}),
+	}
+}
+
+// WaitForRegistration returns a channel that is closed when the first WebSocket
+// client registers for the given jobID, or after the timeout — whichever comes first.
+// This allows the pipeline to wait for the frontend to connect before broadcasting.
+func (h *WebSocketHub) WaitForRegistration(jobID string, timeout time.Duration) <-chan struct{} {
+	ch := make(chan struct{})
+
+	h.mu.Lock()
+	// If there's already a connection for this job, signal immediately
+	if len(h.conns[jobID]) > 0 {
+		h.mu.Unlock()
+		close(ch)
+		return ch
+	}
+	h.waiters[jobID] = append(h.waiters[jobID], ch)
+	h.mu.Unlock()
+
+	// Timeout fallback — don't block forever if WS never connects (e.g. CLI client)
+	go func() {
+		time.Sleep(timeout)
+		select {
+		case <-ch:
+			// Already closed by Register
+		default:
+			close(ch)
+		}
+		// Clean up waiter
+		h.mu.Lock()
+		waiters := h.waiters[jobID]
+		filtered := waiters[:0]
+		for _, w := range waiters {
+			if w != ch {
+				filtered = append(filtered, w)
+			}
+		}
+		if len(filtered) == 0 {
+			delete(h.waiters, jobID)
+		} else {
+			h.waiters[jobID] = filtered
+		}
+		h.mu.Unlock()
+	}()
+
+	return ch
 }
 
 // Register adds conn to the set of connections listening for jobID.
 func (h *WebSocketHub) Register(jobID string, conn *websocket.Conn) {
 	h.mu.Lock()
-	defer h.mu.Unlock()
 	h.conns[jobID] = append(h.conns[jobID], conn)
+	// Signal all waiters that a client has connected
+	waiters := h.waiters[jobID]
+	delete(h.waiters, jobID)
+	h.mu.Unlock()
+
+	for _, ch := range waiters {
+		select {
+		case <-ch:
+			// Already closed (timeout)
+		default:
+			close(ch)
+		}
+	}
 }
 
 // Unregister removes conn from the set for jobID.

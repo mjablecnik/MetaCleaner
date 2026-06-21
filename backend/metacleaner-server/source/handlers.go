@@ -270,10 +270,14 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			return
 		}
 
+		// Channel signals that at least one WebSocket client has registered for this job,
+		// or a timeout elapsed — whichever comes first. This ensures progress events
+		// are not lost due to the WS connection being slower than the pipeline start.
+		wsReady := hub.WaitForRegistration(job.ID, 3*time.Second)
+
 		go func() {
-			// Small delay to allow the frontend WebSocket client to connect
-			// before we start broadcasting progress events.
-			time.Sleep(500 * time.Millisecond)
+			// Wait until a WS client connects or the timeout expires.
+			<-wsReady
 
 			ctx := context.Background()
 			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files)
