@@ -795,13 +795,16 @@ func classifyFFmpegField(key string) string {
 	}
 
 	// Device/software identity
-	if lower == "handler_name" || strings.Contains(lower, "encoder") ||
+	if strings.Contains(lower, "encoder") ||
 		strings.Contains(lower, "software") || lower == "make" || lower == "model" {
 		return "MP4"
 	}
 
 	// Non-privacy container metadata — skip these
-	// major_brand, minor_version, compatible_brands, language, handler_type, etc.
+	// major_brand, minor_version, compatible_brands, language, handler_type, handler_name, etc.
+	if lower == "handler_name" {
+		return ""
+	}
 	return ""
 }
 
