@@ -78,20 +78,22 @@ let _isAuthReady = $state(false);
 
 const _isAuthenticated = $derived(_accessToken !== null);
 
-function _getStorage(): Storage {
-	if (!browser) return localStorage; // fallback, won't be called server-side
-	const remember = localStorage.getItem(REMEMBER_KEY);
-	return remember === 'false' ? sessionStorage : localStorage;
-}
+// Session expiry when "remember me" is OFF (1 hour in ms)
+const SHORT_SESSION_MS = 60 * 60 * 1000;
 
 function _persist(access: string, refresh: string, expiresIn: number): void {
 	_accessToken = access;
 	_refreshToken = refresh;
 	if (browser) {
-		const storage = _getStorage();
-		storage.setItem(TOKEN_KEY, access);
-		storage.setItem(REFRESH_KEY, refresh);
-		storage.setItem(EXPIRES_KEY, String(Date.now() + expiresIn * 1000));
+		const rememberMe = localStorage.getItem(REMEMBER_KEY) !== 'false';
+		// When not remembering, cap expiry to 1 hour regardless of server-provided value
+		const effectiveExpiresMs = rememberMe
+			? expiresIn * 1000
+			: Math.min(expiresIn * 1000, SHORT_SESSION_MS);
+
+		localStorage.setItem(TOKEN_KEY, access);
+		localStorage.setItem(REFRESH_KEY, refresh);
+		localStorage.setItem(EXPIRES_KEY, String(Date.now() + effectiveExpiresMs));
 	}
 }
 
@@ -100,14 +102,10 @@ function _clear(): void {
 	_refreshToken = null;
 	_user = null;
 	if (browser) {
-		// Clear from both storages to be safe
 		localStorage.removeItem(TOKEN_KEY);
 		localStorage.removeItem(REFRESH_KEY);
 		localStorage.removeItem(EXPIRES_KEY);
 		localStorage.removeItem(REMEMBER_KEY);
-		sessionStorage.removeItem(TOKEN_KEY);
-		sessionStorage.removeItem(REFRESH_KEY);
-		sessionStorage.removeItem(EXPIRES_KEY);
 	}
 }
 
@@ -116,20 +114,9 @@ function _restore(): void {
 		_isAuthReady = true;
 		return;
 	}
-	// Check localStorage first (remember me = true), then sessionStorage
-	let token = localStorage.getItem(TOKEN_KEY);
-	let storedRefresh = localStorage.getItem(REFRESH_KEY);
-	let expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
-
-	if (!token && !storedRefresh) {
-		token = sessionStorage.getItem(TOKEN_KEY);
-		storedRefresh = sessionStorage.getItem(REFRESH_KEY);
-		expiresAt = Number(sessionStorage.getItem(EXPIRES_KEY) ?? '0');
-		if (token || storedRefresh) {
-			// Mark as session-only for _getStorage()
-			localStorage.setItem(REMEMBER_KEY, 'false');
-		}
-	}
+	const token = localStorage.getItem(TOKEN_KEY);
+	const storedRefresh = localStorage.getItem(REFRESH_KEY);
+	const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
 
 	if (token && expiresAt > Date.now()) {
 		_accessToken = token;
@@ -137,10 +124,15 @@ function _restore(): void {
 		_isAuthReady = true;
 	} else if (storedRefresh) {
 		// Access token expired but refresh token exists — attempt silent refresh.
-		const storage = _getStorage();
-		storage.removeItem(TOKEN_KEY);
-		storage.removeItem(REFRESH_KEY);
-		storage.removeItem(EXPIRES_KEY);
+		// If remember me is OFF and token expired, don't refresh — session is over.
+		const rememberMe = localStorage.getItem(REMEMBER_KEY) !== 'false';
+		if (!rememberMe) {
+			_clear();
+			_isAuthReady = true;
+			return;
+		}
+		localStorage.removeItem(TOKEN_KEY);
+		localStorage.removeItem(EXPIRES_KEY);
 		_refreshToken = storedRefresh;
 		refresh()
 			.then(() => {
@@ -163,8 +155,10 @@ _restore();
 if (browser) {
 	setInterval(async () => {
 		if (!_refreshToken) return;
-		const storage = _getStorage();
-		const expiresAt = Number(storage.getItem(EXPIRES_KEY) ?? '0');
+		// Don't proactively refresh for short sessions (remember me = false)
+		const rememberMe = localStorage.getItem(REMEMBER_KEY) !== 'false';
+		if (!rememberMe) return;
+		const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
 		if (expiresAt > 0 && expiresAt - Date.now() < 60_000) {
 			await refresh().catch(() => {});
 		}
@@ -226,8 +220,7 @@ async function logout(): Promise<void> {
 }
 
 async function refresh(): Promise<void> {
-	const storage = browser ? _getStorage() : null;
-	const token = _refreshToken ?? (storage ? storage.getItem(REFRESH_KEY) : null);
+	const token = _refreshToken ?? (browser ? localStorage.getItem(REFRESH_KEY) : null);
 	if (!token) throw new Error('No refresh token');
 	const data = await callAuthApi<AuthResponse>('/api/auth/refresh', { refresh_token: token });
 	if (!data) throw new Error('Refresh returned empty response');
@@ -268,8 +261,7 @@ export const authStore = {
 	},
 	get expiresAt(): number {
 		if (!browser) return 0;
-		const storage = _getStorage();
-		return Number(storage.getItem(EXPIRES_KEY) ?? '0');
+		return Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
 	},
 	login,
 	register,
