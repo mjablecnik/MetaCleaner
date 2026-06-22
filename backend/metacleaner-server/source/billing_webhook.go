@@ -232,7 +232,20 @@ func handleSubscriptionDeleted(ctx context.Context, db *SupabaseClient, sub *str
 		return err
 	}
 
-	slog.Info("webhook: subscription cancelled", "stripeSubID", sub.ID)
+	dbSub, err := db.GetSubscriptionByStripeID(ctx, sub.ID)
+	if err != nil {
+		return fmt.Errorf("subscription deleted: lookup subscription: %w", err)
+	}
+	if dbSub == nil {
+		slog.Warn("webhook: subscription.deleted subscription not found in DB, skipping credit zeroing", "stripeSubID", sub.ID)
+		return nil
+	}
+
+	if err := db.SetSubscriptionCredits(ctx, dbSub.UserID, 0); err != nil {
+		return fmt.Errorf("subscription deleted: zero credits: %w", err)
+	}
+
+	slog.Info("webhook: subscription cancelled and credits zeroed", "stripeSubID", sub.ID, "userID", dbSub.UserID)
 	return nil
 }
 
