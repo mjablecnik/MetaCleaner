@@ -2,6 +2,7 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
+	import { page } from '$app/state';
 	import { locale } from '$lib/locale.svelte';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
@@ -154,6 +155,27 @@
 					<i class="fa-solid fa-key"></i>
 				</div>
 				<span class="text-sm font-medium">{tx('common.nav.apiKeys')}</span>
+				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
+			</a>
+
+			<!-- Docs -->
+			<a
+				href={resolve('/docs' as Pathname)}
+				onclick={handleClose}
+				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 transition-all hover:bg-navy-lighter
+					{page.url.pathname === '/docs' ? 'text-brand-blue' : 'text-text-muted hover:text-white'}"
+			>
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-lg text-sm
+						{page.url.pathname === '/docs'
+						? 'bg-brand-blue/10 text-brand-blue'
+						: 'bg-navy-lighter text-text-muted'}"
+				>
+					<i class="fa-solid fa-book"></i>
+				</div>
+				<span class="text-sm font-medium {page.url.pathname === '/docs' ? 'font-semibold' : ''}"
+					>{tx('docs.nav.docs')}</span
+				>
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
 			</a>
 

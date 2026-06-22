@@ -53,14 +53,14 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
 - [x] 4. Checkpoint — Data module compiles with type safety
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Route Setup and Auth Guard
-  - [ ] 5.1 Create `/docs` route with auth guard
+- [x] 5. Route Setup and Auth Guard
+  - [x] 5.1 Create `/docs` route with auth guard
     - Create `src/routes/docs/+layout.ts` with `guardProtectedRoute('/docs')` auth guard pattern
     - Create `src/routes/docs/+page.svelte` as page shell: sidebar + main content area
     - Set localized `<title>` meta tag with app name and docs identifier
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 5.2 Integrate NavBar with docs navigation item
+  - [x] 5.2 Integrate NavBar with docs navigation item
     - Add "Docs" link to `NavBar.svelte` desktop nav area (after API Keys), visible only when authenticated
     - Add "Docs" entry with `fa-book` icon to `MobileHamburgerMenu.svelte`
     - Apply `brand-blue` text color when on `/docs` route (active state)

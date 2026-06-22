@@ -2,6 +2,7 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
+	import { page } from '$app/state';
 	import type { User } from '$lib/repositories/userRepository';
 
 	interface Props {
@@ -60,6 +61,20 @@
 		<a class="lang-option" href={resolve('/api-keys' as Pathname)}>
 			<i class="fa-solid fa-key text-sm text-text-muted"></i>
 			<span>{tx('common.nav.apiKeys')}</span>
+		</a>
+		<a
+			class="lang-option"
+			href={resolve('/docs' as Pathname)}
+			class:active={page.url.pathname === '/docs'}
+		>
+			<i
+				class="fa-solid fa-book text-sm {page.url.pathname === '/docs'
+					? 'text-brand-blue'
+					: 'text-text-muted'}"
+			></i>
+			<span class={page.url.pathname === '/docs' ? 'font-semibold text-brand-blue' : ''}
+				>{tx('docs.nav.docs')}</span
+			>
 		</a>
 		<div
 			class="lang-option lang-option-danger"

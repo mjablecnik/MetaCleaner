@@ -30,6 +30,16 @@
 
 	const navProps = $derived.by(() => {
 		const path = page.url.pathname;
+		if (path === '/docs') {
+			return {
+				logoHref: '/' as string | undefined,
+				compact: true,
+				showLangDropdown: true,
+				showBackButton: true,
+				backHref: '/',
+				backLabel: tx('docs.nav.back')
+			};
+		}
 		if (path === '/reports') {
 			return {
 				logoHref: '/' as string | undefined,
