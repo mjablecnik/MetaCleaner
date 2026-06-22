@@ -642,3 +642,15 @@
 - Problem: stripe-go v82 removed `CurrentPeriodStart`/`CurrentPeriodEnd` from `stripe.Subscription` struct (they were on the subscription in older versions). Also `stripe.Invoice.Subscription` no longer exists directly; subscription info is under `Invoice.Parent.SubscriptionDetails.Subscription`.
 - Solution: Extract period dates from `sub.Items.Data[0].CurrentPeriodStart/End` on `stripe.Subscription`. For invoices, use `inv.Parent.SubscriptionDetails.Subscription.ID` to get the subscription ID.
 - Source: create-code, 2026-06-22
+
+## Docker builds fail for monorepo packages using bun workspaces
+- Project: metacleaner-app, metacleaner-web
+- Problem: Dockerfiles in `frontend/metacleaner-app` and `frontend/metacleaner-web` copied only their own directory as the build context. Both packages depend on `metacleaner-shared` (workspace:*). Bun reads the root `package.json` workspace list and errors with "Workspace not found" for any workspace whose directory isn't present in the build context.
+- Solution: Rebuild from the workspace root (`../../` relative to the package): copy the root `package.json` and `bun.lock`, copy the full `metacleaner-shared` source, copy stub `package.json` files for the other workspaces (no source needed), then run `bun install --frozen-lockfile`. Update `start-docker.sh` to use `-f Dockerfile <workspace-root>` as the build context. Also add `ARG PUBLIC_APP_URL` + `ENV` to metacleaner-web Dockerfile since it uses `$env/static/public` which requires the var at build time.
+- Source: check-build, 2026-06-22
+
+## API keys migration script numbering conflict
+- Project: metacleaner-server
+- Problem: The spec says to create `scripts/migration004.sql` but that file already exists (Stripe billing migration). Creating it would overwrite existing billing schema.
+- Solution: Create `scripts/migration005.sql` instead for the API keys table.
+- Source: create-code, 2026-06-22
