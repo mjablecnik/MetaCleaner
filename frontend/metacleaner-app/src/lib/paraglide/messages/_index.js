@@ -5,6 +5,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Common_Brandname1Inputs */
 /** @typedef {{}} Common_Nav_Loggedinas2Inputs */
 /** @typedef {{}} Common_Nav_Reporthistory1Inputs */
+/** @typedef {{}} Common_Nav_PricingInputs */
 /** @typedef {{}} Common_Nav_SettingsInputs */
 /** @typedef {{}} Common_Nav_LogoutInputs */
 /** @typedef {{}} Common_Nav_LanguageInputs */
@@ -223,7 +224,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Common_LoadingInputs */
 /** @typedef {{}} Common_ErrorInputs */
 /** @typedef {{}} Common_Downloaderror1Inputs */
-/** @typedef {{}} Common_Footer_CopyrightInputs */
+/** @typedef {{ year: NonNullable<unknown> }} Common_Footer_CopyrightInputs */
 /** @typedef {{ count: NonNullable<unknown> }} Step1_Upload_Rejectedtoolarge2Inputs */
 /** @typedef {{ count: NonNullable<unknown> }} Step1_Upload_Rejectedunsupported1Inputs */
 /** @typedef {{}} Step1_Status_WaitingInputs */
@@ -355,6 +356,9 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Register_Stats_Cleanedlabel1Inputs */
 /** @typedef {{}} Auth_Register_Validation_Firstnamerequired2Inputs */
 /** @typedef {{}} Auth_Register_Validation_Lastnamerequired2Inputs */
+/** @typedef {{}} Auth_Register_Validation_Consentrequired1Inputs */
+/** @typedef {{}} Auth_Register_Consent_TextInputs */
+/** @typedef {{}} Auth_Register_Consent_LinkInputs */
 /** @typedef {{}} Auth_Checkemail_Meta_Title1Inputs */
 /** @typedef {{}} Auth_Checkemail_Badge_Created1Inputs */
 /** @typedef {{}} Auth_Checkemail_Heading_Almostdone2Inputs */
@@ -455,6 +459,53 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Error_Page_TitleInputs */
 /** @typedef {{}} Error_Page_Defaultmessage1Inputs */
 /** @typedef {{}} Error_Page_Gohome1Inputs */
+/** @typedef {{}} Pricing_TitleInputs */
+/** @typedef {{}} Pricing_SubtitleInputs */
+/** @typedef {{}} Pricing_Billing_MonthlyInputs */
+/** @typedef {{}} Pricing_Billing_YearlyInputs */
+/** @typedef {{}} Pricing_Plan_Free_NameInputs */
+/** @typedef {{}} Pricing_Plan_Free_SubtitleInputs */
+/** @typedef {{}} Pricing_Feat_Free_1Inputs */
+/** @typedef {{}} Pricing_Feat_Free_2Inputs */
+/** @typedef {{}} Pricing_Feat_Free_3Inputs */
+/** @typedef {{}} Pricing_Feat_Free_4Inputs */
+/** @typedef {{}} Pricing_Cta_Start_FreeInputs */
+/** @typedef {{}} Pricing_Plan_Pack_NameInputs */
+/** @typedef {{}} Pricing_Plan_Pack_SubtitleInputs */
+/** @typedef {{}} Pricing_Per_50Inputs */
+/** @typedef {{}} Pricing_Feat_Pack_1Inputs */
+/** @typedef {{}} Pricing_Feat_Pack_2Inputs */
+/** @typedef {{}} Pricing_Feat_Pack_3Inputs */
+/** @typedef {{}} Pricing_Feat_Pack_4Inputs */
+/** @typedef {{}} Pricing_Feat_Pack_5Inputs */
+/** @typedef {{}} Pricing_Cta_BuyInputs */
+/** @typedef {{}} Pricing_Plan_Pro_SubtitleInputs */
+/** @typedef {{}} Pricing_Badge_PopularInputs */
+/** @typedef {{ amount: NonNullable<unknown> }} Pricing_SaveInputs */
+/** @typedef {{}} Pricing_Feat_Pro_1Inputs */
+/** @typedef {{}} Pricing_Feat_Pro_2Inputs */
+/** @typedef {{}} Pricing_Feat_Pro_3Inputs */
+/** @typedef {{}} Pricing_Feat_Pro_4Inputs */
+/** @typedef {{}} Pricing_Feat_Pro_5Inputs */
+/** @typedef {{}} Pricing_Feat_Pro_6Inputs */
+/** @typedef {{}} Pricing_Cta_Activate_ProInputs */
+/** @typedef {{}} Pricing_Per_Month_ShortInputs */
+/** @typedef {{}} Pricing_Plan_Proplus_SubtitleInputs */
+/** @typedef {{}} Pricing_Feat_Proplus_1Inputs */
+/** @typedef {{}} Pricing_Feat_Proplus_2Inputs */
+/** @typedef {{}} Pricing_Feat_Proplus_3Inputs */
+/** @typedef {{}} Pricing_Feat_Proplus_4Inputs */
+/** @typedef {{}} Pricing_Cta_Coming_SoonInputs */
+/** @typedef {{}} Pricing_Enterprise_TitleInputs */
+/** @typedef {{}} Pricing_Enterprise_DescInputs */
+/** @typedef {{}} Pricing_Cta_ContactInputs */
+/** @typedef {{}} Pricing_Current_PlanInputs */
+/** @typedef {{}} Pricing_Meta_TitleInputs */
+/** @typedef {{}} Pricing_Checkout_ErrorInputs */
+/** @typedef {{}} Pricing_Success_Meta_TitleInputs */
+/** @typedef {{}} Pricing_Success_TitleInputs */
+/** @typedef {{}} Pricing_Success_DescriptionInputs */
+/** @typedef {{}} Pricing_Success_Backtocleaning2Inputs */
 import * as __en from "./en.js"
 import * as __cs from "./cs.js"
 /**
@@ -502,6 +553,21 @@ const common_nav_reporthistory1 = /** @type {((inputs?: Common_Nav_Reporthistory
 	return __cs.common_nav_reporthistory1(inputs)
 });
 export { common_nav_reporthistory1 as "common.nav.reportHistory" }
+/**
+* | output |
+* | --- |
+* | "Pricing" |
+*
+* @param {Common_Nav_PricingInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const common_nav_pricing = /** @type {((inputs?: Common_Nav_PricingInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Common_Nav_PricingInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.common_nav_pricing(inputs)
+	return __cs.common_nav_pricing(inputs)
+});
+export { common_nav_pricing as "common.nav.pricing" }
 /**
 * | output |
 * | --- |
@@ -3775,13 +3841,13 @@ export { common_downloaderror1 as "common.downloadError" }
 /**
 * | output |
 * | --- |
-* | "© 2025 MetaCleaner. All rights reserved." |
+* | "© {year} MetaCleaner. All rights reserved." |
 *
 * @param {Common_Footer_CopyrightInputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
 * @returns {LocalizedString}
 */
-const common_footer_copyright = /** @type {((inputs?: Common_Footer_CopyrightInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Common_Footer_CopyrightInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+const common_footer_copyright = /** @type {((inputs: Common_Footer_CopyrightInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Common_Footer_CopyrightInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "en") return __en.common_footer_copyright(inputs)
 	return __cs.common_footer_copyright(inputs)
@@ -5755,6 +5821,51 @@ export { auth_register_validation_lastnamerequired2 as "auth.register.validation
 /**
 * | output |
 * | --- |
+* | "You must agree to the processing of personal data." |
+*
+* @param {Auth_Register_Validation_Consentrequired1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_register_validation_consentrequired1 = /** @type {((inputs?: Auth_Register_Validation_Consentrequired1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Validation_Consentrequired1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_register_validation_consentrequired1(inputs)
+	return __cs.auth_register_validation_consentrequired1(inputs)
+});
+export { auth_register_validation_consentrequired1 as "auth.register.validation.consentRequired" }
+/**
+* | output |
+* | --- |
+* | "I agree to the processing of personal data in accordance with the" |
+*
+* @param {Auth_Register_Consent_TextInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_register_consent_text = /** @type {((inputs?: Auth_Register_Consent_TextInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Consent_TextInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_register_consent_text(inputs)
+	return __cs.auth_register_consent_text(inputs)
+});
+export { auth_register_consent_text as "auth.register.consent.text" }
+/**
+* | output |
+* | --- |
+* | "Privacy Policy" |
+*
+* @param {Auth_Register_Consent_LinkInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_register_consent_link = /** @type {((inputs?: Auth_Register_Consent_LinkInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Register_Consent_LinkInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_register_consent_link(inputs)
+	return __cs.auth_register_consent_link(inputs)
+});
+export { auth_register_consent_link as "auth.register.consent.link" }
+/**
+* | output |
+* | --- |
 * | "Verify Email – MetaCleaner" |
 *
 * @param {Auth_Checkemail_Meta_Title1Inputs} inputs
@@ -7252,3 +7363,667 @@ const error_page_gohome1 = /** @type {((inputs?: Error_Page_Gohome1Inputs, optio
 	return __cs.error_page_gohome1(inputs)
 });
 export { error_page_gohome1 as "error.page.goHome" }
+/**
+* | output |
+* | --- |
+* | "Pricing" |
+*
+* @param {Pricing_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_title = /** @type {((inputs?: Pricing_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_title(inputs)
+	return __cs.pricing_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Simple pricing. Credits never expire." |
+*
+* @param {Pricing_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_subtitle = /** @type {((inputs?: Pricing_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_subtitle(inputs)
+	return __cs.pricing_subtitle(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Monthly" |
+*
+* @param {Pricing_Billing_MonthlyInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_billing_monthly = /** @type {((inputs?: Pricing_Billing_MonthlyInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Billing_MonthlyInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_billing_monthly(inputs)
+	return __cs.pricing_billing_monthly(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Yearly" |
+*
+* @param {Pricing_Billing_YearlyInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_billing_yearly = /** @type {((inputs?: Pricing_Billing_YearlyInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Billing_YearlyInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_billing_yearly(inputs)
+	return __cs.pricing_billing_yearly(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Free" |
+*
+* @param {Pricing_Plan_Free_NameInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_free_name = /** @type {((inputs?: Pricing_Plan_Free_NameInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Free_NameInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_free_name(inputs)
+	return __cs.pricing_plan_free_name(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "For starters" |
+*
+* @param {Pricing_Plan_Free_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_free_subtitle = /** @type {((inputs?: Pricing_Plan_Free_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Free_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_free_subtitle(inputs)
+	return __cs.pricing_plan_free_subtitle(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "3 free photos" |
+*
+* @param {Pricing_Feat_Free_1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_free_1 = /** @type {((inputs?: Pricing_Feat_Free_1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Free_1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_free_1(inputs)
+	return __cs.pricing_feat_free_1(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "All formats (JPG, PNG, HEIC, WEBP)" |
+*
+* @param {Pricing_Feat_Free_2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_free_2 = /** @type {((inputs?: Pricing_Feat_Free_2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Free_2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_free_2(inputs)
+	return __cs.pricing_feat_free_2(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Remove EXIF + C2PA" |
+*
+* @param {Pricing_Feat_Free_3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_free_3 = /** @type {((inputs?: Pricing_Feat_Free_3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Free_3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_free_3(inputs)
+	return __cs.pricing_feat_free_3(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "No credit card required" |
+*
+* @param {Pricing_Feat_Free_4Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_free_4 = /** @type {((inputs?: Pricing_Feat_Free_4Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Free_4Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_free_4(inputs)
+	return __cs.pricing_feat_free_4(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Start for free" |
+*
+* @param {Pricing_Cta_Start_FreeInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_cta_start_free = /** @type {((inputs?: Pricing_Cta_Start_FreeInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Cta_Start_FreeInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_cta_start_free(inputs)
+	return __cs.pricing_cta_start_free(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "50 photos" |
+*
+* @param {Pricing_Plan_Pack_NameInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_pack_name = /** @type {((inputs?: Pricing_Plan_Pack_NameInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Pack_NameInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_pack_name(inputs)
+	return __cs.pricing_plan_pack_name(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Credits never expire" |
+*
+* @param {Pricing_Plan_Pack_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_pack_subtitle = /** @type {((inputs?: Pricing_Plan_Pack_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Pack_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_pack_subtitle(inputs)
+	return __cs.pricing_plan_pack_subtitle(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "/ 50 photos" |
+*
+* @param {Pricing_Per_50Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_per_50 = /** @type {((inputs?: Pricing_Per_50Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Per_50Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_per_50(inputs)
+	return __cs.pricing_per_50(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "50 photos in package" |
+*
+* @param {Pricing_Feat_Pack_1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pack_1 = /** @type {((inputs?: Pricing_Feat_Pack_1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pack_1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pack_1(inputs)
+	return __cs.pricing_feat_pack_1(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Remove EXIF + C2PA" |
+*
+* @param {Pricing_Feat_Pack_2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pack_2 = /** @type {((inputs?: Pricing_Feat_Pack_2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pack_2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pack_2(inputs)
+	return __cs.pricing_feat_pack_2(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Batch processing" |
+*
+* @param {Pricing_Feat_Pack_3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pack_3 = /** @type {((inputs?: Pricing_Feat_Pack_3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pack_3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pack_3(inputs)
+	return __cs.pricing_feat_pack_3(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "All formats" |
+*
+* @param {Pricing_Feat_Pack_4Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pack_4 = /** @type {((inputs?: Pricing_Feat_Pack_4Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pack_4Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pack_4(inputs)
+	return __cs.pricing_feat_pack_4(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "PDF report — €1.99 / report" |
+*
+* @param {Pricing_Feat_Pack_5Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pack_5 = /** @type {((inputs?: Pricing_Feat_Pack_5Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pack_5Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pack_5(inputs)
+	return __cs.pricing_feat_pack_5(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Buy →" |
+*
+* @param {Pricing_Cta_BuyInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_cta_buy = /** @type {((inputs?: Pricing_Cta_BuyInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Cta_BuyInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_cta_buy(inputs)
+	return __cs.pricing_cta_buy(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "100 photos / month" |
+*
+* @param {Pricing_Plan_Pro_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_pro_subtitle = /** @type {((inputs?: Pricing_Plan_Pro_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Pro_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_pro_subtitle(inputs)
+	return __cs.pricing_plan_pro_subtitle(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Most Popular" |
+*
+* @param {Pricing_Badge_PopularInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_badge_popular = /** @type {((inputs?: Pricing_Badge_PopularInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Badge_PopularInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_badge_popular(inputs)
+	return __cs.pricing_badge_popular(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Save {amount}" |
+*
+* @param {Pricing_SaveInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_save = /** @type {((inputs: Pricing_SaveInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_SaveInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_save(inputs)
+	return __cs.pricing_save(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "100 photos monthly" |
+*
+* @param {Pricing_Feat_Pro_1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_1 = /** @type {((inputs?: Pricing_Feat_Pro_1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_1(inputs)
+	return __cs.pricing_feat_pro_1(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Remove EXIF + C2PA" |
+*
+* @param {Pricing_Feat_Pro_2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_2 = /** @type {((inputs?: Pricing_Feat_Pro_2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_2(inputs)
+	return __cs.pricing_feat_pro_2(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Risk Scanner (Clean Score 0–100)" |
+*
+* @param {Pricing_Feat_Pro_3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_3 = /** @type {((inputs?: Pricing_Feat_Pro_3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_3(inputs)
+	return __cs.pricing_feat_pro_3(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "PDF report included" |
+*
+* @param {Pricing_Feat_Pro_4Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_4 = /** @type {((inputs?: Pricing_Feat_Pro_4Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_4Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_4(inputs)
+	return __cs.pricing_feat_pro_4(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "30-day cleaning history" |
+*
+* @param {Pricing_Feat_Pro_5Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_5 = /** @type {((inputs?: Pricing_Feat_Pro_5Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_5Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_5(inputs)
+	return __cs.pricing_feat_pro_5(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Batch processing" |
+*
+* @param {Pricing_Feat_Pro_6Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_pro_6 = /** @type {((inputs?: Pricing_Feat_Pro_6Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Pro_6Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_pro_6(inputs)
+	return __cs.pricing_feat_pro_6(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Activate Pro →" |
+*
+* @param {Pricing_Cta_Activate_ProInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_cta_activate_pro = /** @type {((inputs?: Pricing_Cta_Activate_ProInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Cta_Activate_ProInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_cta_activate_pro(inputs)
+	return __cs.pricing_cta_activate_pro(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "/ mo" |
+*
+* @param {Pricing_Per_Month_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_per_month_short = /** @type {((inputs?: Pricing_Per_Month_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Per_Month_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_per_month_short(inputs)
+	return __cs.pricing_per_month_short(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "300 photos / month" |
+*
+* @param {Pricing_Plan_Proplus_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_plan_proplus_subtitle = /** @type {((inputs?: Pricing_Plan_Proplus_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Plan_Proplus_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_plan_proplus_subtitle(inputs)
+	return __cs.pricing_plan_proplus_subtitle(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "300 photos monthly" |
+*
+* @param {Pricing_Feat_Proplus_1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_proplus_1 = /** @type {((inputs?: Pricing_Feat_Proplus_1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Proplus_1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_proplus_1(inputs)
+	return __cs.pricing_feat_proplus_1(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Everything in Pro plan" |
+*
+* @param {Pricing_Feat_Proplus_2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_proplus_2 = /** @type {((inputs?: Pricing_Feat_Proplus_2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Proplus_2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_proplus_2(inputs)
+	return __cs.pricing_feat_proplus_2(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Bulk API access" |
+*
+* @param {Pricing_Feat_Proplus_3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_proplus_3 = /** @type {((inputs?: Pricing_Feat_Proplus_3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Proplus_3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_proplus_3(inputs)
+	return __cs.pricing_feat_proplus_3(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Priority support" |
+*
+* @param {Pricing_Feat_Proplus_4Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_feat_proplus_4 = /** @type {((inputs?: Pricing_Feat_Proplus_4Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Feat_Proplus_4Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_feat_proplus_4(inputs)
+	return __cs.pricing_feat_proplus_4(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Coming soon" |
+*
+* @param {Pricing_Cta_Coming_SoonInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_cta_coming_soon = /** @type {((inputs?: Pricing_Cta_Coming_SoonInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Cta_Coming_SoonInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_cta_coming_soon(inputs)
+	return __cs.pricing_cta_coming_soon(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Enterprise — custom" |
+*
+* @param {Pricing_Enterprise_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_enterprise_title = /** @type {((inputs?: Pricing_Enterprise_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Enterprise_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_enterprise_title(inputs)
+	return __cs.pricing_enterprise_title(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "High volume photos, API integration, invoicing, corporate account. We'll agree on a price and activate credits directly to your account." |
+*
+* @param {Pricing_Enterprise_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_enterprise_desc = /** @type {((inputs?: Pricing_Enterprise_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Enterprise_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_enterprise_desc(inputs)
+	return __cs.pricing_enterprise_desc(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Contact us →" |
+*
+* @param {Pricing_Cta_ContactInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_cta_contact = /** @type {((inputs?: Pricing_Cta_ContactInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Cta_ContactInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_cta_contact(inputs)
+	return __cs.pricing_cta_contact(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "Current Plan" |
+*
+* @param {Pricing_Current_PlanInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+export const pricing_current_plan = /** @type {((inputs?: Pricing_Current_PlanInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Current_PlanInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_current_plan(inputs)
+	return __cs.pricing_current_plan(inputs)
+});
+/**
+* | output |
+* | --- |
+* | "MetaCleaner — Pricing" |
+*
+* @param {Pricing_Meta_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_meta_title = /** @type {((inputs?: Pricing_Meta_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Meta_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_meta_title(inputs)
+	return __cs.pricing_meta_title(inputs)
+});
+export { pricing_meta_title as "pricing.meta.title" }
+/**
+* | output |
+* | --- |
+* | "Could not start checkout. Please try again." |
+*
+* @param {Pricing_Checkout_ErrorInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_checkout_error = /** @type {((inputs?: Pricing_Checkout_ErrorInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Checkout_ErrorInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_checkout_error(inputs)
+	return __cs.pricing_checkout_error(inputs)
+});
+export { pricing_checkout_error as "pricing.checkout.error" }
+/**
+* | output |
+* | --- |
+* | "MetaCleaner — Payment Successful" |
+*
+* @param {Pricing_Success_Meta_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_success_meta_title = /** @type {((inputs?: Pricing_Success_Meta_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Success_Meta_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_success_meta_title(inputs)
+	return __cs.pricing_success_meta_title(inputs)
+});
+export { pricing_success_meta_title as "pricing.success.meta.title" }
+/**
+* | output |
+* | --- |
+* | "Payment successful!" |
+*
+* @param {Pricing_Success_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_success_title = /** @type {((inputs?: Pricing_Success_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Success_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_success_title(inputs)
+	return __cs.pricing_success_title(inputs)
+});
+export { pricing_success_title as "pricing.success.title" }
+/**
+* | output |
+* | --- |
+* | "Your subscription has been activated. You now have 100 credits for file cleaning." |
+*
+* @param {Pricing_Success_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_success_description = /** @type {((inputs?: Pricing_Success_DescriptionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Success_DescriptionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_success_description(inputs)
+	return __cs.pricing_success_description(inputs)
+});
+export { pricing_success_description as "pricing.success.description" }
+/**
+* | output |
+* | --- |
+* | "Start cleaning" |
+*
+* @param {Pricing_Success_Backtocleaning2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const pricing_success_backtocleaning2 = /** @type {((inputs?: Pricing_Success_Backtocleaning2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Pricing_Success_Backtocleaning2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.pricing_success_backtocleaning2(inputs)
+	return __cs.pricing_success_backtocleaning2(inputs)
+});
+export { pricing_success_backtocleaning2 as "pricing.success.backToCleaning" }
