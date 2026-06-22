@@ -33,7 +33,7 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Render icon + title + description in a card layout
     - _Requirements: 5.3_
 
-- [ ] 2. Checkpoint — Shared elements compile
+- [x] 2. Checkpoint — Shared elements compile
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 3. Data Layer and i18n
