@@ -25,9 +25,7 @@ export async function guardProtectedRoute(returnTo?: string): Promise<void> {
 	if (!browser) return;
 	await waitForAuthReady();
 	if (!authStore.isAuthenticated) {
-		const loginPath = returnTo
-			? `/login?returnTo=${encodeURIComponent(returnTo)}`
-			: '/login';
+		const loginPath = returnTo ? `/login?returnTo=${encodeURIComponent(returnTo)}` : '/login';
 		redirect(302, resolve(loginPath as Pathname));
 	}
 }

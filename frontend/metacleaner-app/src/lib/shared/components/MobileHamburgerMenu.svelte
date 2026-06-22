@@ -98,8 +98,10 @@
 			</p>
 			{#each langOptions as lang (lang.code)}
 				<button
-					class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-text-muted transition-all group
-						{locale.current === lang.code ? 'bg-navy-lighter text-white' : 'hover:bg-navy-lighter hover:text-white'}"
+					class="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-text-muted transition-all
+						{locale.current === lang.code
+						? 'bg-navy-lighter text-white'
+						: 'hover:bg-navy-lighter hover:text-white'}"
 					onclick={() => handleSelect(lang.code)}
 				>
 					<img src={lang.flag} alt={lang.label} class="h-5 w-7 rounded-sm object-cover" />
@@ -145,7 +147,10 @@
 			<!-- Settings -->
 			<button
 				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
-				onclick={() => { onSettings?.(); open = false; }}
+				onclick={() => {
+					onSettings?.();
+					open = false;
+				}}
 			>
 				<div
 					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
@@ -161,7 +166,10 @@
 			<!-- Logout -->
 			<button
 				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-brand-red transition-all hover:bg-brand-red/10"
-				onclick={() => { onLogout?.(); open = false; }}
+				onclick={() => {
+					onLogout?.();
+					open = false;
+				}}
 			>
 				<div
 					class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-red/10 text-sm text-brand-red"

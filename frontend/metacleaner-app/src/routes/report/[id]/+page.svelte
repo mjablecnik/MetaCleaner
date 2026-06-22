@@ -21,7 +21,9 @@
 		if (!Number.isFinite(ms) || ms <= 0) return '0ms';
 		if (ms < 1000) return `${ms}ms`;
 		const s = ms / 1000;
-		return s >= 60 ? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s` : `${Math.round(s * 10) / 10}s`;
+		return s >= 60
+			? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s`
+			: `${Math.round(s * 10) / 10}s`;
 	}
 
 	const reportId = $derived(page.params.id);
@@ -90,7 +92,7 @@
 </svelte:head>
 
 <main
-	class="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-6 pt-4 pb-40 lg:gap-6 lg:pb-24 lg:pt-0"
+	class="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-6 pt-4 pb-40 lg:gap-6 lg:pt-0 lg:pb-24"
 >
 	{#if isLoading}
 		<div class="flex items-center justify-center py-20">

@@ -227,10 +227,15 @@
 		<div class="flex items-start gap-2.5">
 			<button
 				type="button"
-				onclick={() => { consentGiven = !consentGiven; consentError = ''; }}
-				class="mt-0.5 flex h-6 w-6 min-w-6 min-h-6 shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:w-5 lg:min-w-5 lg:min-h-5 {consentGiven
+				onclick={() => {
+					consentGiven = !consentGiven;
+					consentError = '';
+				}}
+				class="mt-0.5 flex h-6 min-h-6 w-6 min-w-6 shrink-0 items-center justify-center rounded border transition-all lg:h-5 lg:min-h-5 lg:w-5 lg:min-w-5 {consentGiven
 					? 'border-brand-blue bg-brand-blue'
-					: consentError ? 'border-brand-red' : 'border-gray-600 bg-navy-main'}"
+					: consentError
+						? 'border-brand-red'
+						: 'border-gray-600 bg-navy-main'}"
 			>
 				{#if consentGiven}<i class="fa-solid fa-check text-[10px] text-white"></i>{/if}
 			</button>
@@ -242,7 +247,8 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
-					>{tx('auth.register.consent.link')}</a>
+						>{tx('auth.register.consent.link')}</a
+					>
 				{:else}
 					<span class="font-semibold text-brand-blue">{tx('auth.register.consent.link')}</span>
 				{/if}

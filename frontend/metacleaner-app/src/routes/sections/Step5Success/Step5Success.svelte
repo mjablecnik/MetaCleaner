@@ -29,7 +29,7 @@
 		if (ms < 1000) return `${ms}ms`;
 		const totalSeconds = ms / 1000;
 		const m = Math.floor(totalSeconds / 60);
-		const s = Math.round(totalSeconds % 60 * 10) / 10;
+		const s = Math.round((totalSeconds % 60) * 10) / 10;
 		return m > 0 ? `${m}m ${Math.round(s)}s` : `${s}s`;
 	}
 
