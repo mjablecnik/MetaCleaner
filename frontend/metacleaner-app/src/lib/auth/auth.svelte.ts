@@ -181,7 +181,11 @@ async function login(email: string, password: string, rememberMe = true): Promis
 		if (!data) throw new Error('Login returned empty response');
 		_user = data.user ?? null;
 		_persist(data.access_token, data.refresh_token, data.expires_in);
-		await goto(resolve('/' as Pathname));
+		const returnTo = browser
+			? new URLSearchParams(window.location.search).get('returnTo')
+			: null;
+		const destination = returnTo ? decodeURIComponent(returnTo) : resolve('/' as Pathname);
+		await goto(destination);
 	} finally {
 		_isLoading = false;
 	}

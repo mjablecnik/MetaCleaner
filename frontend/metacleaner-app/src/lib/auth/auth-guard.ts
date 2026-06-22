@@ -18,14 +18,17 @@ function waitForAuthReady(): Promise<void> {
 
 /**
  * Call from a +layout.ts load() to block unauthenticated access.
- * Redirects to /login if no valid token is present.
+ * Redirects to /login if no valid token is present, preserving returnTo for post-login redirect.
  * Waits for async token restore/refresh to complete before deciding.
  */
-export async function guardProtectedRoute(): Promise<void> {
+export async function guardProtectedRoute(returnTo?: string): Promise<void> {
 	if (!browser) return;
 	await waitForAuthReady();
 	if (!authStore.isAuthenticated) {
-		redirect(302, resolve('/login' as Pathname));
+		const loginPath = returnTo
+			? `/login?returnTo=${encodeURIComponent(returnTo)}`
+			: '/login';
+		redirect(302, resolve(loginPath as Pathname));
 	}
 }
 
