@@ -216,6 +216,32 @@ func (c *SupabaseClient) SetSubscriptionCredits(ctx context.Context, userID stri
 	return c.UpsertCreditBalance(ctx, userID, amount, purchasedCredits)
 }
 
+// DeductCredits deducts amount credits from the user's balance, consuming subscription
+// credits first and purchased credits second. Returns an error if the total balance is
+// insufficient.
+func (c *SupabaseClient) DeductCredits(ctx context.Context, userID string, amount int) error {
+	subCredits, purchasedCredits, err := c.GetCreditBalance(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("deduct credits: read balance: %w", err)
+	}
+	if subCredits+purchasedCredits < amount {
+		return fmt.Errorf("deduct credits: insufficient balance: have %d, need %d", subCredits+purchasedCredits, amount)
+	}
+
+	newSub := subCredits
+	newPurchased := purchasedCredits
+	remaining := amount
+	if remaining <= newSub {
+		newSub -= remaining
+	} else {
+		remaining -= newSub
+		newSub = 0
+		newPurchased -= remaining
+	}
+
+	return c.UpsertCreditBalance(ctx, userID, newSub, newPurchased)
+}
+
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
 func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSubID string) (*Subscription, error) {
 	var rows []dbSubscription
