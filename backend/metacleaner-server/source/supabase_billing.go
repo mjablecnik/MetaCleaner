@@ -137,6 +137,29 @@ func (c *SupabaseClient) UpdateSubscription(ctx context.Context, stripeSubID str
 	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
 }
 
+// --- Credit balance operations ---
+
+type dbCreditBalance struct {
+	UserID              string     `json:"user_id"`
+	SubscriptionCredits int        `json:"subscription_credits"`
+	PurchasedCredits    int        `json:"purchased_credits"`
+	UpdatedAt           *time.Time `json:"updated_at,omitempty"`
+}
+
+// GetCreditBalance returns the subscription and purchased credit counts for a user.
+// Returns (0, 0, nil) when no credit balance row exists yet.
+func (c *SupabaseClient) GetCreditBalance(ctx context.Context, userID string) (subscriptionCredits, purchasedCredits int, err error) {
+	var rows []dbCreditBalance
+	url := c.restURL("credit_balances?user_id=eq." + userID + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return 0, 0, fmt.Errorf("get credit balance: %w", err)
+	}
+	if len(rows) == 0 {
+		return 0, 0, nil
+	}
+	return rows[0].SubscriptionCredits, rows[0].PurchasedCredits, nil
+}
+
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
 func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSubID string) (*Subscription, error) {
 	var rows []dbSubscription

@@ -224,6 +224,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// POST /api/billing/webhook — no auth middleware, signature-verified by Stripe
 	mux.Handle("POST /api/billing/webhook", HandleStripeWebhook(cfg, db))
 
+	// GET /api/billing/subscription — authenticated
+	mux.Handle("GET /api/billing/subscription", HandleGetSubscription(db))
+
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 

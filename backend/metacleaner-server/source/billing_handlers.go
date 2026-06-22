@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/checkout/session"
@@ -127,6 +128,62 @@ func HandleCreateCheckout(cfg Config, db *SupabaseClient, authClient *SupabaseAu
 			URL:       sess.URL,
 			SessionID: sess.ID,
 		})
+	}
+}
+
+// SubscriptionStatusResponse is the response body for GET /api/billing/subscription.
+type SubscriptionStatusResponse struct {
+	PlanID              string     `json:"plan_id"`
+	Status              string     `json:"status"`
+	BillingPeriod       string     `json:"billing_period,omitempty"`
+	CurrentPeriodEnd    *time.Time `json:"current_period_end,omitempty"`
+	SubscriptionCredits int        `json:"subscription_credits"`
+	PurchasedCredits    int        `json:"purchased_credits"`
+	TotalCredits        int        `json:"total_credits"`
+}
+
+// HandleGetSubscription handles GET /api/billing/subscription.
+// It returns the authenticated user's current subscription status and credit balance.
+func HandleGetSubscription(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		sub, err := db.GetSubscriptionByUserID(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: failed to get subscription", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve subscription")
+			return
+		}
+
+		subCredits, purchasedCredits, err := db.GetCreditBalance(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: failed to get credit balance", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve credit balance")
+			return
+		}
+
+		resp := SubscriptionStatusResponse{
+			SubscriptionCredits: subCredits,
+			PurchasedCredits:    purchasedCredits,
+			TotalCredits:        subCredits + purchasedCredits,
+		}
+
+		if sub == nil || sub.Status == "cancelled" {
+			resp.PlanID = "free"
+			resp.Status = "free"
+		} else {
+			resp.PlanID = sub.PlanID
+			resp.Status = sub.Status
+			resp.BillingPeriod = sub.BillingPeriod
+			resp.CurrentPeriodEnd = sub.CurrentPeriodEnd
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
 	}
 }
 

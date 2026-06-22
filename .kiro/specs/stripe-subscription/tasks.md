@@ -66,10 +66,10 @@
 
 ## Task 8: Backend Subscription Status Endpoint
 
-- [ ] 8.1 Create `HandleGetSubscription(db)` handler in `billing_handlers.go`
-- [ ] 8.2 Implement subscription query — look up active subscription by user_id, return plan_id + status + period info
-- [ ] 8.3 Return free plan response when no subscription exists
-- [ ] 8.4 Register `GET /api/billing/subscription` route in router (authenticated)
+- [x] 8.1 Create `HandleGetSubscription(db)` handler in `billing_handlers.go`
+- [x] 8.2 Implement subscription query — look up active subscription by user_id, return plan_id + status + period info
+- [x] 8.3 Return free plan response when no subscription exists
+- [x] 8.4 Register `GET /api/billing/subscription` route in router (authenticated)
 
 ## Task 9: Backend Supabase Client Extension
 
