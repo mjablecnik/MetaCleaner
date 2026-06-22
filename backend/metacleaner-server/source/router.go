@@ -230,6 +230,18 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/billing/credits — authenticated
 	mux.Handle("GET /api/billing/credits", HandleGetCredits(db))
 
+	// POST /api/keys — create a new API key (authenticated)
+	mux.Handle("POST /api/keys", HandleCreateAPIKey(db))
+
+	// GET /api/keys — list API keys for authenticated user
+	mux.Handle("GET /api/keys", HandleListAPIKeys(db))
+
+	// DELETE /api/keys/{id} — permanently delete an API key
+	mux.Handle("DELETE /api/keys/{id}", HandleDeleteAPIKey(db))
+
+	// PATCH /api/keys/{id}/revoke — revoke an active API key
+	mux.Handle("PATCH /api/keys/{id}/revoke", HandleRevokeAPIKey(db))
+
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 

@@ -6,15 +6,15 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
 
 ## Tasks
 
-- [ ] 1. Database migration and backend models
-  - [ ] 1.1 Create database migration script `scripts/migration004.sql`
+- [x] 1. Database migration and backend models
+  - [x] 1.1 Create database migration script `scripts/migration004.sql`
     - Create `api_keys` table with columns: id (UUID PK), user_id (UUID NOT NULL), name (TEXT NOT NULL, ≤100 chars), key_hash (TEXT NOT NULL UNIQUE), key_prefix (TEXT NOT NULL), key_suffix (TEXT NOT NULL), status (TEXT NOT NULL DEFAULT 'active', CHECK IN ('active','revoked')), note (TEXT nullable, ≤500 chars), created_at (TIMESTAMPTZ NOT NULL DEFAULT NOW()), last_used_at (TIMESTAMPTZ nullable), revoked_at (TIMESTAMPTZ nullable)
     - Add unique index on key_hash, index on user_id
     - Enable RLS and create policy for user's own keys
     - Add foreign key to auth.users with ON DELETE CASCADE
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [ ] 1.2 Create API key models in `source/apikey_models.go`
+  - [x] 1.2 Create API key models in `source/apikey_models.go`
     - Define `APIKey` struct with JSON tags (exclude key_hash from JSON)
     - Define `CreateAPIKeyRequest` with fields: `Name` and `Note` only (no key_type)
     - Define `CreateAPIKeyResponse` struct with full plaintext key + APIKey record
@@ -31,25 +31,25 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - **Validates: Requirements 1.6**
     - Test that empty, whitespace-only, or >100 char names are always rejected with HTTP 400 and no record stored
 
-- [ ] 2. Backend API key handlers
-  - [ ] 2.1 Implement `HandleCreateAPIKey` in `source/apikey_handlers.go`
+- [x] 2. Backend API key handlers
+  - [x] 2.1 Implement `HandleCreateAPIKey` in `source/apikey_handlers.go`
     - Validate name (non-empty, trimmed non-whitespace, ≤100 chars) and optional note (≤500 chars)
     - Call `generateAPIKey()`, store record via SupabaseClient, return full plaintext key once
     - Return HTTP 400 with VALIDATION_ERROR for invalid input
     - _Requirements: 1.1, 1.2, 1.3, 1.6, 9.4_
 
-  - [ ] 2.2 Implement `HandleListAPIKeys` in `source/apikey_handlers.go`
+  - [x] 2.2 Implement `HandleListAPIKeys` in `source/apikey_handlers.go`
     - Query all API keys for authenticated user (from context), ordered by created_at DESC
     - Return array of APIKey records (without key_hash)
     - _Requirements: 2.1, 2.2_
 
-  - [ ] 2.3 Implement `HandleDeleteAPIKey` in `source/apikey_handlers.go`
+  - [x] 2.3 Implement `HandleDeleteAPIKey` in `source/apikey_handlers.go`
     - Validate key belongs to authenticated user
     - Delete record permanently from database
     - Return HTTP 404 if key not found or belongs to another user
     - _Requirements: 3.2, 3.4, 3.6_
 
-  - [ ] 2.4 Implement `HandleRevokeAPIKey` in `source/apikey_handlers.go`
+  - [x] 2.4 Implement `HandleRevokeAPIKey` in `source/apikey_handlers.go`
     - Validate key belongs to authenticated user and has status 'active'
     - Set status to 'revoked', set revoked_at timestamp
     - Return HTTP 409 if key is already revoked
@@ -61,7 +61,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - **Validates: Requirements 4.2, 4.3**
     - Test that active keys transition to revoked with non-null revoked_at, and already-revoked keys get HTTP 409
 
-  - [ ] 2.6 Add Supabase client methods for API key operations
+  - [x] 2.6 Add Supabase client methods for API key operations
     - Add methods to `SupabaseClient`: `CreateAPIKey`, `ListAPIKeys`, `DeleteAPIKey`, `RevokeAPIKey`, `LookupAPIKeyByHash`, `UpdateAPIKeyLastUsed`
     - Use PostgREST HTTP calls following existing patterns in `supabase.go`
     - _Requirements: 9.1, 9.2, 9.4, 9.5_
