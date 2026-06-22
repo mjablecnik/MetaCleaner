@@ -242,6 +242,45 @@ func (c *SupabaseClient) DeductCredits(ctx context.Context, userID string, amoun
 	return c.UpsertCreditBalance(ctx, userID, newSub, newPurchased)
 }
 
+// --- Credit transaction operations ---
+
+type dbCreditTransaction struct {
+	ID           string     `json:"id,omitempty"`
+	UserID       string     `json:"user_id"`
+	Amount       int        `json:"amount"`
+	Type         string     `json:"type"`
+	CreditSource string     `json:"credit_source"`
+	ReferenceID  string     `json:"reference_id,omitempty"`
+	Description  string     `json:"description,omitempty"`
+	CreatedAt    *time.Time `json:"created_at,omitempty"`
+}
+
+// CreditTransaction is the application-level representation of a credit_transactions row.
+type CreditTransaction struct {
+	ID           string
+	UserID       string
+	Amount       int
+	Type         string
+	CreditSource string
+	ReferenceID  string
+	Description  string
+	CreatedAt    time.Time
+}
+
+// RecordCreditTransaction inserts a row into the credit_transactions table.
+func (c *SupabaseClient) RecordCreditTransaction(ctx context.Context, userID string, amount int, txType, creditSource, referenceID, desc string) error {
+	rec := dbCreditTransaction{
+		UserID:       userID,
+		Amount:       amount,
+		Type:         txType,
+		CreditSource: creditSource,
+		ReferenceID:  referenceID,
+		Description:  desc,
+	}
+	var rows []dbCreditTransaction
+	return c.doJSON(ctx, http.MethodPost, c.restURL("credit_transactions"), rec, &rows)
+}
+
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
 func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSubID string) (*Subscription, error) {
 	var rows []dbSubscription
