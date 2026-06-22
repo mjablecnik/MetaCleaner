@@ -151,8 +151,8 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Map error responses to typed errors
     - _Requirements: 1.3, 2.1, 3.2, 4.1_
 
-- [ ] 9. Frontend page structure and sections
-  - [ ] 9.1 Create route directory `src/routes/api-keys/+page.svelte`
+- [x] 9. Frontend page structure and sections
+  - [x] 9.1 Create route directory `src/routes/api-keys/+page.svelte`
     - Page shell that loads data via `apiKeysClient.listApiKeys()` on mount
     - Protect route with existing auth guard (redirect unauthenticated users to login)
     - Manage state: keys list, loading, error, modals open/close
@@ -160,28 +160,28 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Compose sections: PageHeaderSection, UsageSummarySection, SecurityInfoSection, KeysListSection, UsageGuideSection
     - _Requirements: 2.1, 2.5, 2.6, 2.7, 8.1, 8.8_
 
-  - [ ] 9.2 Create `src/routes/api-keys/sections/PageHeaderSection.svelte`
+  - [x] 9.2 Create `src/routes/api-keys/sections/PageHeaderSection.svelte`
     - Use existing `PageHeader` component with green key `IconContainer` and "Create new key" `Button`
     - Wire button to open CreateKeyModal
     - _Requirements: 8.1_
 
-  - [ ] 9.3 Create `src/routes/api-keys/sections/UsageSummarySection.svelte`
+  - [x] 9.3 Create `src/routes/api-keys/sections/UsageSummarySection.svelte`
     - 2 `StatCard` components: active keys count, rate limit per minute
     - Show 0 values when no keys exist (0 active keys, rate limit value displayed)
     - _Requirements: 2.5, 6.4, 8.2, 8.3_
 
-  - [ ] 9.4 Create `src/routes/api-keys/sections/SecurityInfoSection.svelte`
+  - [x] 9.4 Create `src/routes/api-keys/sections/SecurityInfoSection.svelte`
     - Info box explaining that keys are shown only once after creation
     - Use `Card` element with appropriate styling
     - _Requirements: 8.4_
 
-  - [ ] 9.5 Create `src/routes/api-keys/sections/KeysListSection.svelte`
+  - [x] 9.5 Create `src/routes/api-keys/sections/KeysListSection.svelte`
     - Wrap key rows in a `Card` element
     - Show list header with key count
     - Render `KeyRow` for each key, or `EmptyState` when list is empty
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6_
 
-  - [ ] 9.6 Create `src/routes/api-keys/sections/UsageGuideSection.svelte`
+  - [x] 9.6 Create `src/routes/api-keys/sections/UsageGuideSection.svelte`
     - Code examples (Authorization header, cURL, JavaScript fetch)
     - On mobile (<1024px): use `AccordionCard` with all sections collapsed
     - On desktop (≥1024px): side-by-side grid layout
