@@ -196,6 +196,16 @@ func (c *SupabaseClient) UpsertCreditBalance(ctx context.Context, userID string,
 	return nil
 }
 
+// AddPurchasedCredits atomically increments the purchased_credits by amount for a user.
+// It reads the current balance and writes back the updated value (read-then-write).
+func (c *SupabaseClient) AddPurchasedCredits(ctx context.Context, userID string, amount int) error {
+	subCredits, purchasedCredits, err := c.GetCreditBalance(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("add purchased credits: read balance: %w", err)
+	}
+	return c.UpsertCreditBalance(ctx, userID, subCredits, purchasedCredits+amount)
+}
+
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
 func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSubID string) (*Subscription, error) {
 	var rows []dbSubscription
