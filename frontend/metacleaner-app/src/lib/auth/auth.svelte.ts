@@ -198,7 +198,10 @@ async function login(email: string, password: string, rememberMe = true): Promis
 		_user = data.user ?? null;
 		_persist(data.access_token, data.refresh_token, data.expires_in);
 		await _fetchSubscription(data.access_token);
-		const returnTo = browser ? new URLSearchParams(window.location.search).get('returnTo') : null;
+		const returnTo =
+			typeof window !== 'undefined'
+				? new URLSearchParams(window.location.search).get('returnTo')
+				: null;
 		const destination = returnTo ? decodeURIComponent(returnTo) : resolve('/' as Pathname);
 		await goto(destination);
 	} finally {
