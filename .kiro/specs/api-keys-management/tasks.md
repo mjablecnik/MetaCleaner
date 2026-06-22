@@ -142,8 +142,8 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Include navigation key `common.nav.apiKeys`
     - _Requirements: 7.4, 8.1_
 
-- [ ] 8. Frontend API client
-  - [ ] 8.1 Create `src/lib/clients/apiKeysClient.ts`
+- [x] 8. Frontend API client
+  - [x] 8.1 Create `src/lib/clients/apiKeysClient.ts`
     - Implement `createApiKey`, `listApiKeys`, `deleteApiKey`, `revokeApiKey` functions
     - `CreateKeyRequest` interface has only `name` and optional `note` fields
     - Use `buildApiUrl` from existing api-config for URL construction
