@@ -1,5 +1,17 @@
 # Memory
 
+## vitest-browser-svelte: page.locator() unavailable — use container.querySelector or page.getByRole
+- Project: metacleaner-app
+- Problem: `page.locator('.fa-copy')` throws `TypeError: page.locator is not a function` in `vitest-browser-svelte` browser tests. The `page` object from `vitest/browser` does not expose a `.locator()` CSS-selector method in this project's vitest 4.x setup.
+- Solution: For CSS class/attribute selectors use `container.querySelector('.fa-copy')` from the `render()` return value. For role-based selections use `page.getByRole(...)` or `page.getByText(...)`. For awaitable "not visible" assertions after a DOM state change, use `await expect.element(page.getByRole('table').first()).not.toBeInTheDocument()` instead of synchronous `querySelector` checks.
+- Source: create-code, 2026-06-22
+
+## vitest-browser-svelte Svelte 5: cannot pass children snippet via slots option
+- Project: metacleaner-app
+- Problem: `render(InfoBox, { variant: 'blue' }, { slots: { default: 'Hello' } })` does not inject children into Svelte 5 components that use `{@render children?.()}`. The `slots` option in vitest-browser-svelte is not supported for Svelte 5 snippet-based children.
+- Solution: Skip testing children content injection for snippet-based components, or test structural props (variant classes, icon presence, etc.) using `container.querySelector()`. Alternatively, create a wrapper component if slot injection is critical.
+- Source: create-code, 2026-06-22
+
 ## Playwright: Font Awesome icons break getByRole('button', { name }) matching
 - Project: metacleaner-web
 - Problem: `getByRole('button', { name: 'Question text?', exact: true })` times out in Playwright when the button contains both text and a Font Awesome `<i>` icon (e.g., chevron). The FA icon may contribute to the accessible name, causing the match to fail.

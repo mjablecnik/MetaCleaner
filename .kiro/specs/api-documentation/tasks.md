@@ -185,7 +185,7 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Test DocsSidebar highlights active link, renders all sections and endpoints
     - _Requirements: 8.3, 8.7, 4.1, 4.5_
 
-- [ ] 13. Final checkpoint — Ensure all tests pass
+- [x] 13. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
