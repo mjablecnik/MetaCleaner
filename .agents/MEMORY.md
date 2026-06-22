@@ -148,6 +148,18 @@
 - Solution: Add `LocalID: "f-ok"` etc. to FileRecord structs in the test, and change `cp "$3" "$2"` to `cp "$4" "$3"` in the exiftool script.
 - Source: create-code, 2026-06-10T15:30:00+00:00
 
+## Monorepo uses bun, not npm — npm install fails on workspace:* protocol
+- Project: metacleaner-workspace (root)
+- Problem: Running `npm install` at the workspace root fails with `EUNSUPPORTEDPROTOCOL: Unsupported URL Type "workspace:": workspace:*`. npm does not support the `workspace:*` protocol used in package.json dependencies.
+- Solution: Install bun first (`curl -fsSL https://bun.sh/install | bash`), then run `bun install` at the workspace root. Bun handles workspace:* correctly.
+- Source: check-build, 2026-06-22
+
+## authStore login() accesses window.location without typeof guard
+- Project: metacleaner-app
+- Problem: `auth.svelte.ts` line 201 had `browser ? new URLSearchParams(window.location.search)...` — since the test mocks `browser: true` but runs in node without a `window` global, this threw `ReferenceError: window is not defined` for all 5 login state transition tests.
+- Solution: Changed to `typeof window !== 'undefined' ? new URLSearchParams(window.location.search)...` — semantically equivalent in a real browser, but safe in node test environments.
+- Source: check-build, 2026-06-22
+
 ## $state<Date> triggers svelte/prefer-svelte-reactivity lint error
 - Project: metacleaner-app
 
@@ -607,8 +619,26 @@
 - Solution: Use `rapid.Check(t, func(t *rapid.T) { ... })` with no options. rapid runs 100 tests by default, so no option needed to satisfy the "min 100 iterations" requirement.
 - Source: create-code, 2026-06-19
 
+## metacleaner-web: stale src/paraglide/ directory causes ESLint errors
+- Project: metacleaner-web
+- Problem: A `src/paraglide/` directory exists locally (not git-tracked) as a stale artifact from an older paraglide version. The current vite plugin outputs to `src/lib/paraglide` (which is in .gitignore). ESLint was linting the stale `src/paraglide/` files and reporting hundreds of "Unused eslint-disable directive" warnings because the auto-generated files contain `/* eslint-disable */` but have no actual violations. Prettier also flagged all these files.
+- Solution: Add `src/paraglide` to both `.gitignore` and `.prettierignore`. The existing `includeIgnoreFile(gitignorePath)` in eslint.config.js means adding to .gitignore also excludes the directory from ESLint.
+- Source: check-build, 2026-06-20
+
+## metacleaner-web: svelte/no-navigation-without-resolve needs eslint-disable block for multi-line <a> tags
+- Project: metacleaner-web
+- Problem: `eslint-disable-next-line svelte/no-navigation-without-resolve` only suppresses the immediately following line. When an `<a>` tag spans multiple lines with `href` on a separate line (e.g., Prettier-formatted), the comment disables the `<a` line but not the `href={...}` line where the rule actually fires.
+- Solution: Use `<!-- eslint-disable svelte/no-navigation-without-resolve -->` block comments around the entire `<a>` element, followed by `<!-- eslint-enable ... -->` after the closing `</a>`.
+- Source: check-build, 2026-06-20
+
 ## contextKey type already declared in auth_middleware.go (backend)
 - Project: metacleaner-server
 - Problem: `source/auth_middleware.go` declares `type contextKey int` using `iota`. Adding a new file (`logger.go`) that also declares `type contextKey string` causes a redeclaration compile error.
 - Solution: Use a distinct type name in the new file — e.g., `type loggerContextKey string` — to avoid collision with the existing `contextKey int` in auth_middleware.go.
 - Source: create-code, 2026-06-19
+
+## stripe-go v82: CurrentPeriodStart/End moved to SubscriptionItem; Invoice.Subscription removed
+- Project: metacleaner-server
+- Problem: stripe-go v82 removed `CurrentPeriodStart`/`CurrentPeriodEnd` from `stripe.Subscription` struct (they were on the subscription in older versions). Also `stripe.Invoice.Subscription` no longer exists directly; subscription info is under `Invoice.Parent.SubscriptionDetails.Subscription`.
+- Solution: Extract period dates from `sub.Items.Data[0].CurrentPeriodStart/End` on `stripe.Subscription`. For invoices, use `inv.Parent.SubscriptionDetails.Subscription.ID` to get the subscription ID.
+- Source: create-code, 2026-06-22
