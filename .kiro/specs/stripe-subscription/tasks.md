@@ -73,9 +73,9 @@
 
 ## Task 9: Backend Supabase Client Extension
 
-- [ ] 9.1 Add Supabase DB methods: `GetStripeCustomer(userId)`, `CreateStripeCustomer(userId, stripeCustomerId)`
-- [ ] 9.2 Add Supabase DB methods: `CreateSubscription(sub)`, `UpdateSubscription(stripeSubId, fields)`, `GetSubscriptionByUserId(userId)`
-- [ ] 9.3 Add Supabase DB method: `GetSubscriptionByStripeId(stripeSubscriptionId)` for webhook processing
+- [x] 9.1 Add Supabase DB methods: `GetStripeCustomer(userId)`, `CreateStripeCustomer(userId, stripeCustomerId)`
+- [x] 9.2 Add Supabase DB methods: `CreateSubscription(sub)`, `UpdateSubscription(stripeSubId, fields)`, `GetSubscriptionByUserId(userId)`
+- [x] 9.3 Add Supabase DB method: `GetSubscriptionByStripeId(stripeSubscriptionId)` for webhook processing
 
 ## Task 10: Website CTA Redirect
 
