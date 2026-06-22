@@ -5,7 +5,7 @@ export interface SubscriptionStatus {
 	current_period_end: string | null;
 	subscription_credits: number;
 	purchased_credits: number;
-	credit_balance: number;
+	total_credits: number;
 }
 
 export interface CheckoutResponse {
