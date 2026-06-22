@@ -187,6 +187,72 @@ func HandleGetSubscription(db *SupabaseClient) http.HandlerFunc {
 	}
 }
 
+// CreditTransactionResponse is the JSON representation of a single credit transaction.
+type CreditTransactionResponse struct {
+	ID           string    `json:"id"`
+	Amount       int       `json:"amount"`
+	Type         string    `json:"type"`
+	CreditSource string    `json:"credit_source"`
+	ReferenceID  string    `json:"reference_id,omitempty"`
+	Description  string    `json:"description,omitempty"`
+	CreatedAt    time.Time `json:"created_at"`
+}
+
+// CreditsResponse is the response body for GET /api/billing/credits.
+type CreditsResponse struct {
+	SubscriptionCredits int                          `json:"subscription_credits"`
+	PurchasedCredits    int                          `json:"purchased_credits"`
+	TotalCredits        int                          `json:"total_credits"`
+	Transactions        []CreditTransactionResponse  `json:"transactions"`
+}
+
+// HandleGetCredits handles GET /api/billing/credits.
+// It returns the authenticated user's credit balances and the last 50 transactions.
+func HandleGetCredits(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		subCredits, purchasedCredits, err := db.GetCreditBalance(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: failed to get credit balance", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve credit balance")
+			return
+		}
+
+		txs, err := db.GetCreditTransactions(r.Context(), userID, 50)
+		if err != nil {
+			slog.Error("billing: failed to get credit transactions", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve credit transactions")
+			return
+		}
+
+		txResponses := make([]CreditTransactionResponse, len(txs))
+		for i, tx := range txs {
+			txResponses[i] = CreditTransactionResponse{
+				ID:           tx.ID,
+				Amount:       tx.Amount,
+				Type:         tx.Type,
+				CreditSource: tx.CreditSource,
+				ReferenceID:  tx.ReferenceID,
+				Description:  tx.Description,
+				CreatedAt:    tx.CreatedAt,
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(CreditsResponse{
+			SubscriptionCredits: subCredits,
+			PurchasedCredits:    purchasedCredits,
+			TotalCredits:        subCredits + purchasedCredits,
+			Transactions:        txResponses,
+		})
+	}
+}
+
 // resolvePriceAndMode maps a plan ID + billing period to a Stripe Price ID and checkout mode.
 func resolvePriceAndMode(cfg Config, planID, billingPeriod string) (priceID, mode string, err error) {
 	switch planID {
