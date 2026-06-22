@@ -218,6 +218,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/public/reports/{id}/pdf — public PDF download (no auth, QR code target)
 	mux.Handle("GET /api/public/reports/{id}/pdf", HandleGetPublicReportPDF(db))
 
+	// POST /api/billing/checkout — authenticated, rate-limited
+	mux.Handle("POST /api/billing/checkout", rateLimited(HandleCreateCheckout(cfg, db, authClient)))
+
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 

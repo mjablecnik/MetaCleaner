@@ -41,18 +41,18 @@
 
 ## Task 5: Backend Stripe Configuration
 
-- [ ] 5.1 Add Stripe config fields to `Config` struct: `StripeSecretKey`, `StripeWebhookSecret`, Stripe Price IDs for each plan
-- [ ] 5.2 Load Stripe env vars in `LoadConfig()` with validation (StripeSecretKey required if billing endpoints are to be used)
-- [ ] 5.3 Add `stripe-go` dependency to `go.mod` (`github.com/stripe/stripe-go/v82`)
-- [ ] 5.4 Update `.env.example` with Stripe-related keys (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_PRO_MONTH, etc.)
+- [x] 5.1 Add Stripe config fields to `Config` struct: `StripeSecretKey`, `StripeWebhookSecret`, Stripe Price IDs for each plan
+- [x] 5.2 Load Stripe env vars in `LoadConfig()` with validation (StripeSecretKey required if billing endpoints are to be used)
+- [x] 5.3 Add `stripe-go` dependency to `go.mod` (`github.com/stripe/stripe-go/v82`)
+- [x] 5.4 Update `.env.example` with Stripe-related keys (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_PRO_MONTH, etc.)
 
 ## Task 6: Backend Checkout Endpoint
 
-- [ ] 6.1 Create `source/billing_handlers.go` with `HandleCreateCheckout(cfg, db)` handler
-- [ ] 6.2 Implement Stripe customer lookup/creation logic — find existing mapping or create new Stripe customer with user's email
-- [ ] 6.3 Implement checkout session creation — map plan_id + billing_period to Stripe Price ID, create Checkout Session with success/cancel URLs
-- [ ] 6.4 Add validation: reject if user already has active subscription for the same plan (409 Conflict)
-- [ ] 6.5 Register `POST /api/billing/checkout` route in router (authenticated, rate-limited)
+- [x] 6.1 Create `source/billing_handlers.go` with `HandleCreateCheckout(cfg, db)` handler
+- [x] 6.2 Implement Stripe customer lookup/creation logic — find existing mapping or create new Stripe customer with user's email
+- [x] 6.3 Implement checkout session creation — map plan_id + billing_period to Stripe Price ID, create Checkout Session with success/cancel URLs
+- [x] 6.4 Add validation: reject if user already has active subscription for the same plan (409 Conflict)
+- [x] 6.5 Register `POST /api/billing/checkout` route in router (authenticated, rate-limited)
 
 ## Task 7: Backend Webhook Endpoint
 
