@@ -19,20 +19,20 @@
 
 ## Task 2: Pricing Page in metacleaner-app
 
-- [ ] 2.1 Add pricing-related i18n keys to `metacleaner-app/messages/en.json` and `messages/cs.json` (copy from metacleaner-web messages)
-- [ ] 2.2 Create `src/routes/pricing/+page.svelte` in metacleaner-app — import shared components, wire up `translate` with app's `tx()`, handle query params (`?plan=...&billing=...`)
-- [ ] 2.3 Create `src/routes/pricing/+page.ts` — load function that checks auth and reads query params
-- [ ] 2.4 Create `src/routes/pricing/success/+page.svelte` — success page shown after Stripe checkout completion
-- [ ] 2.5 Add `/pricing` link to app's NavBar navigation items
-- [ ] 2.6 Implement auto-checkout trigger: when `?plan=` query param is present and user is authenticated, automatically initiate checkout flow
-- [ ] 2.7 Implement plan preservation across login: if unauthenticated user hits `/pricing?plan=X`, redirect to `/login?returnTo=/pricing?plan=X&billing=Y`
+- [x] 2.1 Add pricing-related i18n keys to `metacleaner-app/messages/en.json` and `messages/cs.json` (copy from metacleaner-web messages)
+- [x] 2.2 Create `src/routes/pricing/+page.svelte` in metacleaner-app — import shared components, wire up `translate` with app's `tx()`, handle query params (`?plan=...&billing=...`)
+- [x] 2.3 Create `src/routes/pricing/+page.ts` — load function that checks auth and reads query params
+- [x] 2.4 Create `src/routes/pricing/success/+page.svelte` — success page shown after Stripe checkout completion
+- [x] 2.5 Add `/pricing` link to app's NavBar navigation items
+- [x] 2.6 Implement auto-checkout trigger: when `?plan=` query param is present and user is authenticated, automatically initiate checkout flow
+- [x] 2.7 Implement plan preservation across login: if unauthenticated user hits `/pricing?plan=X`, redirect to `/login?returnTo=/pricing?plan=X&billing=Y`
 
 ## Task 3: Frontend Billing Client
 
-- [ ] 3.1 Create `src/lib/clients/billingClient.ts` in metacleaner-app with `createCheckoutSession(planId, billing)` and `getSubscription()` methods
-- [ ] 3.2 Create `src/lib/types/billing.ts` with `SubscriptionStatus`, `CheckoutResponse` interfaces
-- [ ] 3.3 Add subscription status to auth state — fetch on login, expose `authStore.subscription` reactive property
-- [ ] 3.4 Wire pricing page to display current plan indicator based on subscription status
+- [x] 3.1 Create `src/lib/clients/billingClient.ts` in metacleaner-app with `createCheckoutSession(planId, billing)` and `getSubscription()` methods
+- [x] 3.2 Create `src/lib/types/billing.ts` with `SubscriptionStatus`, `CheckoutResponse` interfaces
+- [x] 3.3 Add subscription status to auth state — fetch on login, expose `authStore.subscription` reactive property
+- [x] 3.4 Wire pricing page to display current plan indicator based on subscription status
 
 ## Task 4: Backend Database Migration
 

@@ -3,6 +3,7 @@ import { goto } from '$app/navigation';
 import { resolve } from '$app/paths';
 import type { Pathname } from '$app/types';
 import { buildApiUrl } from '$lib/clients/api-config.js';
+import type { SubscriptionStatus } from '$lib/types/billing.js';
 
 const TOKEN_KEY = 'mc_access_token';
 const REFRESH_KEY = 'mc_refresh_token';
@@ -73,6 +74,7 @@ async function callAuthApi<T>(
 let _accessToken = $state<string | null>(null);
 let _refreshToken = $state<string | null>(null);
 let _user = $state<AuthUser | null>(null);
+let _subscription = $state<SubscriptionStatus | null>(null);
 let _isLoading = $state(false);
 let _isAuthReady = $state(false);
 
@@ -101,11 +103,25 @@ function _clear(): void {
 	_accessToken = null;
 	_refreshToken = null;
 	_user = null;
+	_subscription = null;
 	if (browser) {
 		localStorage.removeItem(TOKEN_KEY);
 		localStorage.removeItem(REFRESH_KEY);
 		localStorage.removeItem(EXPIRES_KEY);
 		localStorage.removeItem(REMEMBER_KEY);
+	}
+}
+
+async function _fetchSubscription(accessToken: string): Promise<void> {
+	try {
+		const res = await fetch(buildApiUrl('/api/billing/subscription'), {
+			headers: { Authorization: `Bearer ${accessToken}` }
+		});
+		if (res.ok) {
+			_subscription = (await res.json()) as SubscriptionStatus;
+		}
+	} catch {
+		// Non-fatal — subscription status unavailable
 	}
 }
 
@@ -181,9 +197,8 @@ async function login(email: string, password: string, rememberMe = true): Promis
 		if (!data) throw new Error('Login returned empty response');
 		_user = data.user ?? null;
 		_persist(data.access_token, data.refresh_token, data.expires_in);
-		const returnTo = browser
-			? new URLSearchParams(window.location.search).get('returnTo')
-			: null;
+		await _fetchSubscription(data.access_token);
+		const returnTo = browser ? new URLSearchParams(window.location.search).get('returnTo') : null;
 		const destination = returnTo ? decodeURIComponent(returnTo) : resolve('/' as Pathname);
 		await goto(destination);
 	} finally {
@@ -242,6 +257,12 @@ function setTokensFromCallback(
 	_persist(accessToken, refreshToken, expiresIn);
 }
 
+async function fetchSubscription(): Promise<void> {
+	if (_accessToken) {
+		await _fetchSubscription(_accessToken);
+	}
+}
+
 // ─── Public store ────────────────────────────────────────────────
 
 export const authStore = {
@@ -253,6 +274,9 @@ export const authStore = {
 	},
 	get user(): AuthUser | null {
 		return _user;
+	},
+	get subscription(): SubscriptionStatus | null {
+		return _subscription;
 	},
 	get isAuthenticated(): boolean {
 		return _isAuthenticated;
@@ -271,5 +295,6 @@ export const authStore = {
 	register,
 	logout,
 	refresh,
+	fetchSubscription,
 	setTokensFromCallback
 };

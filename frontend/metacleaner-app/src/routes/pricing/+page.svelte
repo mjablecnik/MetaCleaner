@@ -3,8 +3,13 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { locale } from '$lib/locale.svelte';
 	import { authStore } from '$lib/auth/auth.svelte';
-	import { buildApiUrl } from '$lib/clients/api-config';
-	import { PricingHeaderSection, PricingPlansSection, pricingRepository, getEnterprise } from 'metacleaner-shared';
+	import { billingClient } from '$lib/clients/billingClient';
+	import {
+		PricingHeaderSection,
+		PricingPlansSection,
+		pricingRepository,
+		getEnterprise
+	} from 'metacleaner-shared';
 
 	let { data } = $props();
 
@@ -19,7 +24,12 @@
 
 	let checkoutError = $state<string | null>(null);
 	let isCheckingOut = $state(false);
-	let currentPlanId = $state<string | null>(null);
+
+	const currentPlanId = $derived(
+		authStore.subscription && authStore.subscription.plan_id !== 'free'
+			? authStore.subscription.plan_id
+			: null
+	);
 
 	function translate(key: string): string {
 		void locale.current;
@@ -40,19 +50,7 @@
 		checkoutError = null;
 		isCheckingOut = true;
 		try {
-			const res = await fetch(buildApiUrl('/api/billing/checkout'), {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${authStore.accessToken}`
-				},
-				body: JSON.stringify({ plan_id: planId, billing_period: billing })
-			});
-			if (!res.ok) {
-				const body = await res.json().catch(() => ({ message: res.statusText }));
-				throw new Error((body as { message?: string }).message || res.statusText);
-			}
-			const { url } = (await res.json()) as { url: string; session_id: string };
+			const { url } = await billingClient.createCheckoutSession(planId, billing);
 			window.location.href = url;
 		} catch (err: unknown) {
 			checkoutError = (err as Error).message || tx('pricing.checkout.error');
@@ -74,12 +72,14 @@
 	<title>{tx('pricing.meta.title')}</title>
 </svelte:head>
 
-<div class="flex flex-col items-center w-full min-h-screen">
-	<main class="flex flex-col items-center flex-1 w-full max-w-[1100px] mx-auto px-6 py-8 md:py-16">
+<div class="flex min-h-screen w-full flex-col items-center">
+	<main class="mx-auto flex w-full max-w-[1100px] flex-1 flex-col items-center px-6 py-8 md:py-16">
 		<PricingHeaderSection value={currentBilling} onChange={onBillingChange} {translate} />
 
 		{#if checkoutError}
-			<div class="mb-6 w-full max-w-lg rounded-xl bg-red-500/10 px-4 py-3 text-center text-sm text-red-400">
+			<div
+				class="mb-6 w-full max-w-lg rounded-xl bg-red-500/10 px-4 py-3 text-center text-sm text-red-400"
+			>
 				<i class="fa-solid fa-circle-exclamation mr-1.5"></i>{checkoutError}
 			</div>
 		{/if}
