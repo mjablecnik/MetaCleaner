@@ -1,562 +1,689 @@
 <html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>API Keys</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							'glow-red': '0 0 20px rgba(239,68,68,0.15)',
+							card: '0 4px 6px -1px rgba(0,0,0,0.5)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Keys</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'glow-red': '0 0 20px rgba(239,68,68,0.15)',
-              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.section-card {
+				background: #111d33;
+				border: 1px solid #1e293b;
+				border-radius: 16px;
+			}
 
-      .section-card
-      {
-        background: #111d33;
-        border: 1px solid #1e293b;
-        border-radius: 16px;
-      }
+			.key-row {
+				border-bottom: 1px solid rgba(30, 41, 59, 0.7);
+				transition: background 0.15s;
+			}
 
-      .key-row
-      {
-        border-bottom: 1px solid rgba(30, 41, 59, 0.7);
-        transition: background 0.15s;
-      }
+			.key-row:last-child {
+				border-bottom: none;
+			}
 
-      .key-row:last-child
-      {
-        border-bottom: none;
-      }
+			.key-row:hover {
+				background: rgba(255, 255, 255, 0.02);
+			}
 
-      .key-row:hover
-      {
-        background: rgba(255, 255, 255, 0.02);
-      }
+			.code-mono {
+				font-family: 'Courier New', monospace;
+				font-size: 12px;
+			}
 
-      .code-mono
-      {
-        font-family: 'Courier New', monospace;
-        font-size: 12px;
-      }
+			.badge {
+				display: inline-flex;
+				align-items: center;
+				font-size: 11px;
+				font-weight: 600;
+				padding: 2px 8px;
+				border-radius: 6px;
+			}
 
-      .badge
-      {
-        display: inline-flex;
-        align-items: center;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 6px;
-      }
+			.modal-bg {
+				background: rgba(10, 22, 40, 0.85);
+				backdrop-filter: blur(4px);
+			}
 
-      .modal-bg
-      {
-        background: rgba(10, 22, 40, 0.85);
-        backdrop-filter: blur(4px);
-      }
+			.info-box-blue {
+				background: rgba(59, 130, 246, 0.08);
+				border: 1px solid rgba(59, 130, 246, 0.25);
+				border-radius: 10px;
+			}
 
-      .info-box-blue
-      {
-        background: rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.25);
-        border-radius: 10px;
-      }
+			.info-box-red {
+				background: rgba(239, 68, 68, 0.08);
+				border: 1px solid rgba(239, 68, 68, 0.25);
+				border-radius: 10px;
+			}
 
-      .info-box-red
-      {
-        background: rgba(239, 68, 68, 0.08);
-        border: 1px solid rgba(239, 68, 68, 0.25);
-        border-radius: 10px;
-      }
+			.info-box-green {
+				background: rgba(34, 197, 94, 0.08);
+				border: 1px solid rgba(34, 197, 94, 0.25);
+				border-radius: 10px;
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#in3dl9 {
+				background-image: initial;
+				background-position-x: initial;
+				background-position-y: initial;
+				background-size: initial;
+				background-repeat: initial;
+				background-attachment: initial;
+				background-origin: initial;
+				background-clip: initial;
+				background-color: rgb(17, 29, 51);
+			}
 
-      .info-box-green
-      {
-        background: rgba(34, 197, 94, 0.08);
-        border: 1px solid rgba(34, 197, 94, 0.25);
-        border-radius: 10px;
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #in3dl9
-      {
-        background-image: initial;
-        background-position-x: initial;
-        background-position-y: initial;
-        background-size: initial;
-        background-repeat: initial;
-        background-attachment: initial;
-        background-origin: initial;
-        background-clip: initial;
-        background-color: rgb(17, 29, 51);
-      }
+			#iwpmh8 {
+				background-image: initial;
+				background-position-x: initial;
+				background-position-y: initial;
+				background-size: initial;
+				background-repeat: initial;
+				background-attachment: initial;
+				background-origin: initial;
+				background-clip: initial;
+				background-color: rgb(17, 29, 51);
+			}
+		</style>
+	</head>
 
-      #iwpmh8
-      {
-        background-image: initial;
-        background-position-x: initial;
-        background-position-y: initial;
-        background-size: initial;
-        background-repeat: initial;
-        background-attachment: initial;
-        background-origin: initial;
-        background-clip: initial;
-        background-color: rgb(17, 29, 51);
-      }
-    </style>
-  </head>
+	<body class="flex min-h-screen flex-col">
+		<!-- Navbar -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>API Keys</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>API Keys</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<nav id="navbar" class="sticky top-0 z-50 w-full border-b border-gray-800 bg-navy-main">
+			<div class="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+					>
+						<i class="fa-solid fa-shield-halved text-lg"></i>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="text-xl font-bold tracking-tight">MetaCleaner</span>
+					</div>
+				</div>
+				<div class="flex items-center gap-4">
+					<div
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-1.5"
+					>
+						<img
+							src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg"
+							class="h-6 w-6 rounded-full object-cover"
+						/><span class="hidden text-sm font-medium text-white sm:block">Jan Novák</span>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div class="mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-6 py-10">
+			<!-- Page Header -->
+			<div id="page-header" class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+				<div class="flex items-center gap-4">
+					<div
+						class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand-green/30 bg-brand-green/15 shadow-glow-green"
+					>
+						<i class="fa-solid fa-key text-xl text-brand-green"></i>
+					</div>
+					<div>
+						<h1 class="text-2xl font-bold tracking-tight text-white">API Klíče</h1>
+						<p class="mt-0.5 text-sm text-text-muted">
+							Spravujte přístupové klíče pro vaši aplikaci
+						</p>
+					</div>
+				</div>
+				<button
+					onclick="openCreateModal()"
+					class="flex shrink-0 items-center gap-2 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-semibold text-white shadow-glow-green transition-all hover:bg-green-400"
+				>
+					<i class="fa-solid fa-plus text-xs"></i> Vytvořit nový klíč
+				</button>
+			</div>
+			<!-- Usage summary -->
+			<div id="usage-summary" class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+				<div class="section-card flex items-center gap-4 p-5">
+					<div
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-blue/20 bg-brand-blue/15"
+					>
+						<i class="fa-solid fa-key text-brand-blue"></i>
+					</div>
+					<div>
+						<p class="mb-0.5 text-xs text-text-muted">Aktivní klíče</p>
+						<p class="text-2xl font-bold text-white">3</p>
+					</div>
+				</div>
+				<div class="section-card flex items-center gap-4 p-5">
+					<div
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-green/20 bg-brand-green/15"
+					>
+						<i class="fa-solid fa-chart-bar text-brand-green"></i>
+					</div>
+					<div>
+						<p class="mb-0.5 text-xs text-text-muted">Požadavky dnes</p>
+						<p class="text-2xl font-bold text-white">1 247</p>
+					</div>
+				</div>
+				<div class="section-card flex items-center gap-4 p-5">
+					<div
+						class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-orange/20 bg-brand-orange/15"
+					>
+						<i class="fa-solid fa-gauge-high text-brand-orange"></i>
+					</div>
+					<div>
+						<p class="mb-0.5 text-xs text-text-muted">Limit / minuta</p>
+						<p class="text-2xl font-bold text-white">120</p>
+					</div>
+				</div>
+			</div>
+			<!-- Info box -->
+			<div class="info-box-blue flex items-start gap-3 p-4">
+				<i class="fa-solid fa-circle-info mt-0.5 shrink-0 text-sm text-brand-blue"></i>
+				<div>
+					<p class="mb-0.5 text-sm font-semibold text-white">Bezpečnost API klíčů</p>
+					<p class="text-xs leading-relaxed text-text-muted">
+						Klíč se zobrazí v plné délce pouze jednou při vytvoření. Uchovávejte jej jako proměnnou
+						prostředí a nikdy jej nezahrnujte do kódu na straně klienta. Při podezření na
+						kompromitaci klíč ihned revokujte.
+					</p>
+				</div>
+			</div>
+			<!-- API Keys List -->
+			<div id="keys-section" class="section-card overflow-hidden">
+				<!-- Table header -->
+				<div class="flex items-center justify-between border-b border-gray-800 px-6 py-4">
+					<p class="text-sm font-semibold text-white">Vaše API klíče</p>
+					<span class="badge border border-gray-700 bg-navy-lighter text-text-muted">3 klíče</span>
+				</div>
+				<!-- Key rows -->
+				<div class="divide-y divide-gray-800/60">
+					<!-- Key 1 - Active -->
+					<div
+						id="key-row-1"
+						class="key-row flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center"
+					>
+						<div class="flex min-w-0 flex-1 items-center gap-3">
+							<div
+								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-green/25 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-key text-sm text-brand-green"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex flex-wrap items-center gap-2">
+									<p class="text-sm font-semibold text-white">Produkční klíč</p>
+									<span
+										class="badge border border-brand-green/25 bg-brand-green/15 text-brand-green"
+										>Aktivní</span
+									>
+								</div>
+								<p class="mt-0.5 text-xs text-text-muted">
+									Vytvořen 12. 3. 2025 · Naposledy použit před 2 minutami
+								</p>
+							</div>
+						</div>
+						<div class="flex flex-shrink-0 items-center gap-2">
+							<div
+								class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-main px-3 py-2"
+							>
+								<span id="key-val-1" class="code-mono text-text-muted"
+									>mtd_live_••••••••••••••••••••••Kx9p</span
+								><button
+									onclick="
+										toggleKeyVisibility(
+											'key-val-1',
+											'mtd_live_a4f8d2c1b9e3f7a2d8c4b1e9f3a7d2c8Kx9p',
+											'eye-1'
+										)
+									"
+									class="ml-1 text-text-muted transition-colors hover:text-white"
+								>
+									<i id="eye-1" class="fa-solid fa-eye text-xs"></i>
+								</button>
+							</div>
+							<button
+								onclick="copyKeyText('mtd_live_a4f8d2c1b9e3f7a2d8c4b1e9f3a7d2c8Kx9p', this)"
+								title="Kopírovat"
+								class="rounded-lg border border-gray-700 bg-navy-lighter p-2 text-xs text-text-muted transition-all hover:border-gray-600 hover:text-white"
+							>
+								<i class="fa-solid fa-copy"></i></button
+							><button
+								onclick="openDeleteModal('Produkční klíč', 'key-row-1')"
+								title="Smazat"
+								class="rounded-lg border border-brand-red/25 bg-brand-red/10 p-2 text-xs text-brand-red transition-all hover:bg-brand-red/20"
+							>
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</div>
+					</div>
+					<!-- Key 2 - Active -->
+					<div
+						id="key-row-2"
+						class="key-row flex flex-col gap-4 px-6 py-5 lg:flex-row lg:items-center"
+					>
+						<div class="flex min-w-0 flex-1 items-center gap-3">
+							<div
+								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-green/25 bg-brand-green/10"
+							>
+								<i class="fa-solid fa-key text-sm text-brand-green"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex flex-wrap items-center gap-2">
+									<p class="text-sm font-semibold text-white">Testovací klíč</p>
+									<span
+										class="badge border border-brand-green/25 bg-brand-green/15 text-brand-green"
+										>Aktivní</span
+									><span class="badge border border-gray-700 bg-navy-lighter text-text-muted"
+										>Test</span
+									>
+								</div>
+								<p class="mt-0.5 text-xs text-text-muted">
+									Vytvořen 5. 4. 2025 · Naposledy použit před 3 hodinami
+								</p>
+							</div>
+						</div>
+						<div class="flex flex-shrink-0 items-center gap-2">
+							<div
+								class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-main px-3 py-2"
+							>
+								<span id="key-val-2" class="code-mono text-text-muted"
+									>mtd_test_••••••••••••••••••••••Rz4m</span
+								><button
+									onclick="
+										toggleKeyVisibility(
+											'key-val-2',
+											'mtd_test_c7e2a1f4b8d3e9a6f1c5b7e2a4f8d1c3Rz4m',
+											'eye-2'
+										)
+									"
+									class="ml-1 text-text-muted transition-colors hover:text-white"
+								>
+									<i id="eye-2" class="fa-solid fa-eye text-xs"></i>
+								</button>
+							</div>
+							<button
+								onclick="copyKeyText('mtd_test_c7e2a1f4b8d3e9a6f1c5b7e2a4f8d1c3Rz4m', this)"
+								title="Kopírovat"
+								class="rounded-lg border border-gray-700 bg-navy-lighter p-2 text-xs text-text-muted transition-all hover:border-gray-600 hover:text-white"
+							>
+								<i class="fa-solid fa-copy"></i></button
+							><button
+								onclick="openDeleteModal('Testovací klíč', 'key-row-2')"
+								title="Smazat"
+								class="rounded-lg border border-brand-red/25 bg-brand-red/10 p-2 text-xs text-brand-red transition-all hover:bg-brand-red/20"
+							>
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</div>
+					</div>
+					<!-- Key 3 - Revoked -->
+					<div
+						id="key-row-3"
+						class="key-row flex flex-col gap-4 px-6 py-5 opacity-60 lg:flex-row lg:items-center"
+					>
+						<div class="flex min-w-0 flex-1 items-center gap-3">
+							<div
+								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-700 bg-gray-700/30"
+							>
+								<i class="fa-solid fa-key text-sm text-text-muted"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex flex-wrap items-center gap-2">
+									<p class="text-sm font-semibold text-white">CI/CD Pipeline</p>
+									<span class="badge border border-brand-red/25 bg-brand-red/15 text-brand-red"
+										>Revokován</span
+									>
+								</div>
+								<p class="mt-0.5 text-xs text-text-muted">
+									Vytvořen 18. 1. 2025 · Revokován 2. 5. 2025
+								</p>
+							</div>
+						</div>
+						<div class="flex flex-shrink-0 items-center gap-2">
+							<div
+								class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-main px-3 py-2"
+							>
+								<span class="code-mono text-text-muted">mtd_live_••••••••••••••••••••••Pj7n</span>
+							</div>
+							<button
+								disabled=""
+								title="Kopírovat"
+								class="cursor-not-allowed rounded-lg border border-gray-700 bg-navy-lighter p-2 text-xs text-gray-600"
+							>
+								<i class="fa-solid fa-copy"></i></button
+							><button
+								onclick="openDeleteModal('CI/CD Pipeline', 'key-row-3')"
+								title="Smazat"
+								class="rounded-lg border border-brand-red/25 bg-brand-red/10 p-2 text-xs text-brand-red transition-all hover:bg-brand-red/20"
+							>
+								<i class="fa-solid fa-trash"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Usage guide -->
+			<div id="usage-guide" class="section-card flex flex-col gap-5 p-6">
+				<div class="mb-1 flex items-center gap-2">
+					<i class="fa-solid fa-book-open text-sm text-brand-blue"></i>
+					<p class="text-sm font-semibold text-white">Jak použít API klíč</p>
+				</div>
+				<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+					<div>
+						<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase">
+							Authorization Header
+						</p>
+						<div class="rounded-xl border border-gray-800 bg-navy-main p-4 font-mono text-xs">
+							<span class="text-brand-green">Authorization</span
+							><span class="text-white">: Bearer </span
+							><span class="text-brand-orange">YOUR_API_KEY</span>
+						</div>
+					</div>
+					<div>
+						<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase">
+							Příklad cURL
+						</p>
+						<div
+							class="rounded-xl border border-gray-800 bg-navy-main p-4 font-mono text-xs leading-relaxed"
+						>
+							<span class="text-brand-orange">curl</span><span class="text-white"> -H </span
+							><span class="text-brand-green">"Authorization: Bearer mtd_live_..."</span><br /><span
+								class="text-white"
+								>&nbsp;&nbsp;</span
+							><span class="text-brand-green">"https://docs.metacleaner.app/v1/..."</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- ===== CREATE KEY MODAL ===== -->
+		<div
+			id="create-modal"
+			class="modal-bg fixed inset-0 z-50 hidden items-center justify-center px-4"
+		>
+			<div
+				id="in3dl9"
+				class="flex w-full max-w-md flex-col gap-5 rounded-2xl border border-gray-700 bg-navy-card p-7 shadow-2xl"
+			>
+				<div class="flex items-center justify-between">
+					<div class="flex items-center gap-3">
+						<div
+							class="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-green/30 bg-brand-green/15"
+						>
+							<i class="fa-solid fa-plus text-sm text-brand-green"></i>
+						</div>
+						<div>
+							<p class="text-base font-bold text-white">Vytvořit nový klíč</p>
+							<p class="text-xs text-text-muted">Nový API klíč pro váš účet</p>
+						</div>
+					</div>
+					<button
+						onclick="closeCreateModal()"
+						class="text-text-muted transition-colors hover:text-white"
+					>
+						<i class="fa-solid fa-xmark text-lg"></i>
+					</button>
+				</div>
+				<!-- New key reveal (shown after creation) -->
+				<div id="new-key-reveal" class="hidden">
+					<div class="info-box-green mb-4 flex items-start gap-3 p-4">
+						<i class="fa-solid fa-circle-check mt-0.5 shrink-0 text-brand-green"></i>
+						<div>
+							<p class="mb-0.5 text-sm font-semibold text-white">Klíč byl úspěšně vytvořen!</p>
+							<p class="text-xs text-text-muted">Zkopírujte klíč nyní – zobrazí se pouze jednou.</p>
+						</div>
+					</div>
+					<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase">
+						Váš nový API klíč
+					</p>
+					<div
+						class="flex items-center justify-between gap-3 rounded-xl border border-brand-green/30 bg-navy-main p-4"
+					>
+						<span id="generated-key-text" class="font-mono text-xs break-all text-brand-green"
+							>mtd_live_a9f3c2e1b7d4f8a2c9e3b1f7d4a8c2e6Yz2k</span
+						><button
+							onclick="copyKeyText(document.getElementById('generated-key-text').textContent, this)"
+							class="flex shrink-0 items-center gap-1 rounded-lg border border-brand-green/30 bg-brand-green/15 px-3 py-1.5 text-xs font-semibold text-brand-green transition-all hover:bg-brand-green/25"
+						>
+							<i class="fa-solid fa-copy text-[10px]"></i> Kopírovat
+						</button>
+					</div>
+				</div>
+				<!-- Form (shown before creation) -->
+				<div id="create-form">
+					<div class="flex flex-col gap-4">
+						<div>
+							<label
+								class="mb-2 block text-xs font-semibold tracking-wider text-text-muted uppercase"
+								>Název klíče <span class="text-brand-red">*</span></label
+							><input
+								id="key-name-input"
+								type="text"
+								placeholder="např. Produkční server, CI/CD..."
+								class="w-full rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white placeholder-text-muted transition-colors focus:border-brand-green focus:outline-none"
+							/>
+						</div>
+						<div>
+							<label
+								class="mb-2 block text-xs font-semibold tracking-wider text-text-muted uppercase"
+								>Typ klíče</label
+							>
+							<div class="grid grid-cols-2 gap-2">
+								<button
+									onclick="selectKeyType('live', this)"
+									id="type-live"
+									class="key-type-btn flex items-center gap-2 rounded-xl border border-brand-green/40 bg-brand-green/10 px-4 py-3 text-sm font-medium text-white transition-all"
+								>
+									<i class="fa-solid fa-circle text-xs text-brand-green"></i>
+									Live</button
+								><button
+									onclick="selectKeyType('test', this)"
+									id="type-test"
+									class="key-type-btn flex items-center gap-2 rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm font-medium text-text-muted transition-all hover:border-gray-600"
+								>
+									<i class="fa-solid fa-flask text-xs text-brand-orange"></i>
+									Test
+								</button>
+							</div>
+						</div>
+						<div>
+							<label
+								class="mb-2 block text-xs font-semibold tracking-wider text-text-muted uppercase"
+								>Poznámka (volitelné)</label
+							><textarea
+								placeholder="Popis účelu klíče..."
+								rows="2"
+								class="w-full resize-none rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white placeholder-text-muted transition-colors focus:border-brand-green focus:outline-none"
+							></textarea>
+						</div>
+					</div>
+					<div class="mt-5 flex gap-3">
+						<button
+							onclick="closeCreateModal()"
+							class="flex-1 rounded-xl border border-gray-700 px-4 py-2.5 text-sm font-semibold text-text-muted transition-all hover:border-gray-600 hover:text-white"
+						>
+							Zrušit</button
+						><button
+							onclick="createKey()"
+							class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white shadow-glow-green transition-all hover:bg-green-400"
+						>
+							<i class="fa-solid fa-key text-xs"></i> Vytvořit klíč
+						</button>
+					</div>
+				</div>
+				<!-- Close after reveal -->
+				<div id="reveal-close" class="hidden">
+					<button
+						onclick="closeCreateModal()"
+						class="w-full rounded-xl border border-gray-700 bg-navy-lighter px-4 py-2.5 text-sm font-semibold text-white transition-all hover:border-gray-500"
+					>
+						Zavřít
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- ===== DELETE CONFIRM MODAL ===== -->
+		<div
+			id="delete-modal"
+			class="modal-bg fixed inset-0 z-50 hidden items-center justify-center px-4"
+		>
+			<div
+				id="iwpmh8"
+				class="flex w-full max-w-sm flex-col gap-5 rounded-2xl border border-gray-700 bg-navy-card p-7 shadow-2xl"
+			>
+				<div class="flex flex-col items-center gap-3 text-center">
+					<div
+						class="flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-red/30 bg-brand-red/15"
+					>
+						<i class="fa-solid fa-trash text-xl text-brand-red"></i>
+					</div>
+					<div>
+						<p class="text-lg font-bold text-white">Smazat klíč?</p>
+						<p class="mt-1 text-sm text-text-muted">
+							Klíč
+							<span id="delete-key-name" class="font-semibold text-white">„Produkční klíč"</span>
+							bude trvale odstraněn.
+						</p>
+					</div>
+				</div>
+				<div class="info-box-red flex items-start gap-2 p-3.5">
+					<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0 text-sm text-brand-red"></i>
+					<p class="text-xs leading-relaxed text-text-muted">
+						Tato akce je nevratná. Všechny aplikace používající tento klíč ztratí přístup k API
+						okamžitě.
+					</p>
+				</div>
+				<div class="flex gap-3">
+					<button
+						onclick="closeDeleteModal()"
+						class="flex-1 rounded-xl border border-gray-700 px-4 py-2.5 text-sm font-semibold text-text-muted transition-all hover:border-gray-600 hover:text-white"
+					>
+						Zrušit</button
+					><button
+						onclick="confirmDelete()"
+						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-red px-4 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-red-400"
+					>
+						<i class="fa-solid fa-trash text-xs"></i> Smazat
+					</button>
+				</div>
+			</div>
+		</div>
+		<script>
+			let deleteTargetRow = null;
+			let selectedKeyType = 'live';
 
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Keys</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Keys</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-      rel="stylesheet">
-    <nav id="navbar"
-      class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-50">
-      <div
-        class="max-w-[1200px] mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-            <i class="fa-solid fa-shield-halved text-lg"></i></div>
-          <div class="flex items-center gap-2"><span
-              class="text-xl font-bold tracking-tight">MetaCleaner</span></div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div
-            class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700">
-            <img
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg"
-              class="w-6 h-6 rounded-full object-cover"><span
-              class="text-sm text-white font-medium hidden sm:block">Jan
-              Novák</span></div>
-        </div>
-      </div>
-    </nav>
-    <div class="max-w-[1200px] mx-auto w-full px-6 py-10 flex flex-col gap-8">
-      <!-- Page Header -->
-      <div id="page-header"
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <div
-            class="w-12 h-12 rounded-2xl bg-brand-green/15 border border-brand-green/30 flex items-center justify-center shrink-0 shadow-glow-green">
-            <i class="fa-solid fa-key text-brand-green text-xl"></i></div>
-          <div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">API Klíče
-            </h1>
-            <p class="text-text-muted text-sm mt-0.5">Spravujte přístupové klíče
-              pro vaši aplikaci</p>
-          </div>
-        </div><button onclick="openCreateModal()"
-          class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-green text-white text-sm font-semibold hover:bg-green-400 transition-all shadow-glow-green shrink-0"><i
-            class="fa-solid fa-plus text-xs"></i> Vytvořit nový klíč
-        </button>
-      </div><!-- Usage summary -->
-      <div id="usage-summary" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="section-card p-5 flex items-center gap-4">
-          <div
-            class="w-10 h-10 rounded-xl bg-brand-blue/15 border border-brand-blue/20 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-key text-brand-blue"></i></div>
-          <div>
-            <p class="text-text-muted text-xs mb-0.5">Aktivní klíče</p>
-            <p class="text-white text-2xl font-bold">3</p>
-          </div>
-        </div>
-        <div class="section-card p-5 flex items-center gap-4">
-          <div
-            class="w-10 h-10 rounded-xl bg-brand-green/15 border border-brand-green/20 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-chart-bar text-brand-green"></i></div>
-          <div>
-            <p class="text-text-muted text-xs mb-0.5">Požadavky dnes</p>
-            <p class="text-white text-2xl font-bold">1 247</p>
-          </div>
-        </div>
-        <div class="section-card p-5 flex items-center gap-4">
-          <div
-            class="w-10 h-10 rounded-xl bg-brand-orange/15 border border-brand-orange/20 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-gauge-high text-brand-orange"></i></div>
-          <div>
-            <p class="text-text-muted text-xs mb-0.5">Limit / minuta</p>
-            <p class="text-white text-2xl font-bold">120</p>
-          </div>
-        </div>
-      </div><!-- Info box -->
-      <div class="info-box-blue p-4 flex gap-3 items-start"><i
-          class="fa-solid fa-circle-info text-brand-blue mt-0.5 text-sm shrink-0"></i>
-        <div>
-          <p class="text-white text-sm font-semibold mb-0.5">Bezpečnost API
-            klíčů</p>
-          <p class="text-text-muted text-xs leading-relaxed">Klíč se zobrazí v
-            plné délce pouze jednou při vytvoření. Uchovávejte jej jako
-            proměnnou prostředí a nikdy jej nezahrnujte do kódu na straně
-            klienta. Při podezření na kompromitaci klíč ihned revokujte.</p>
-        </div>
-      </div><!-- API Keys List -->
-      <div id="keys-section" class="section-card overflow-hidden">
-        <!-- Table header -->
-        <div
-          class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
-          <p class="text-sm font-semibold text-white">Vaše API klíče</p><span
-            class="badge bg-navy-lighter text-text-muted border border-gray-700">3
-            klíče</span>
-        </div><!-- Key rows -->
-        <div class="divide-y divide-gray-800/60">
-          <!-- Key 1 - Active -->
-          <div id="key-row-1"
-            class="key-row px-6 py-5 flex flex-col lg:flex-row lg:items-center gap-4">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-              <div
-                class="w-9 h-9 rounded-xl bg-brand-green/10 border border-brand-green/25 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-key text-brand-green text-sm"></i></div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="text-white font-semibold text-sm">Produkční klíč</p>
-                  <span
-                    class="badge bg-brand-green/15 text-brand-green border border-brand-green/25">Aktivní</span>
-                </div>
-                <p class="text-text-muted text-xs mt-0.5">Vytvořen 12. 3. 2025 ·
-                  Naposledy použit před 2 minutami</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <div
-                class="flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2">
-                <span id="key-val-1"
-                  class="code-mono text-text-muted">mtd_live_••••••••••••••••••••••Kx9p</span><button
-                  onclick="toggleKeyVisibility('key-val-1', 'mtd_live_a4f8d2c1b9e3f7a2d8c4b1e9f3a7d2c8Kx9p', 'eye-1')"
-                  class="text-text-muted hover:text-white transition-colors ml-1"><i
-                    id="eye-1" class="fa-solid fa-eye text-xs"></i></button>
-              </div><button
-                onclick="copyKeyText('mtd_live_a4f8d2c1b9e3f7a2d8c4b1e9f3a7d2c8Kx9p', this)"
-                title="Kopírovat"
-                class="p-2 rounded-lg bg-navy-lighter border border-gray-700 text-text-muted hover:text-white hover:border-gray-600 transition-all text-xs"><i
-                  class="fa-solid fa-copy"></i></button><button
-                onclick="openDeleteModal('Produkční klíč', 'key-row-1')"
-                title="Smazat"
-                class="p-2 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red hover:bg-brand-red/20 transition-all text-xs"><i
-                  class="fa-solid fa-trash"></i></button>
-            </div>
-          </div><!-- Key 2 - Active -->
-          <div id="key-row-2"
-            class="key-row px-6 py-5 flex flex-col lg:flex-row lg:items-center gap-4">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-              <div
-                class="w-9 h-9 rounded-xl bg-brand-green/10 border border-brand-green/25 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-key text-brand-green text-sm"></i></div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="text-white font-semibold text-sm">Testovací klíč</p>
-                  <span
-                    class="badge bg-brand-green/15 text-brand-green border border-brand-green/25">Aktivní</span><span
-                    class="badge bg-navy-lighter text-text-muted border border-gray-700">Test</span>
-                </div>
-                <p class="text-text-muted text-xs mt-0.5">Vytvořen 5. 4. 2025 ·
-                  Naposledy použit před 3 hodinami</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <div
-                class="flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2">
-                <span id="key-val-2"
-                  class="code-mono text-text-muted">mtd_test_••••••••••••••••••••••Rz4m</span><button
-                  onclick="toggleKeyVisibility('key-val-2', 'mtd_test_c7e2a1f4b8d3e9a6f1c5b7e2a4f8d1c3Rz4m', 'eye-2')"
-                  class="text-text-muted hover:text-white transition-colors ml-1"><i
-                    id="eye-2" class="fa-solid fa-eye text-xs"></i></button>
-              </div><button
-                onclick="copyKeyText('mtd_test_c7e2a1f4b8d3e9a6f1c5b7e2a4f8d1c3Rz4m', this)"
-                title="Kopírovat"
-                class="p-2 rounded-lg bg-navy-lighter border border-gray-700 text-text-muted hover:text-white hover:border-gray-600 transition-all text-xs"><i
-                  class="fa-solid fa-copy"></i></button><button
-                onclick="openDeleteModal('Testovací klíč', 'key-row-2')"
-                title="Smazat"
-                class="p-2 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red hover:bg-brand-red/20 transition-all text-xs"><i
-                  class="fa-solid fa-trash"></i></button>
-            </div>
-          </div><!-- Key 3 - Revoked -->
-          <div id="key-row-3"
-            class="key-row px-6 py-5 flex flex-col lg:flex-row lg:items-center gap-4 opacity-60">
-            <div class="flex items-center gap-3 min-w-0 flex-1">
-              <div
-                class="w-9 h-9 rounded-xl bg-gray-700/30 border border-gray-700 flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-key text-text-muted text-sm"></i></div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="text-white font-semibold text-sm">CI/CD Pipeline</p>
-                  <span
-                    class="badge bg-brand-red/15 text-brand-red border border-brand-red/25">Revokován</span>
-                </div>
-                <p class="text-text-muted text-xs mt-0.5">Vytvořen 18. 1. 2025 ·
-                  Revokován 2. 5. 2025</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <div
-                class="flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2">
-                <span
-                  class="code-mono text-text-muted">mtd_live_••••••••••••••••••••••Pj7n</span>
-              </div><button disabled="" title="Kopírovat"
-                class="p-2 rounded-lg bg-navy-lighter border border-gray-700 text-gray-600 text-xs cursor-not-allowed"><i
-                  class="fa-solid fa-copy"></i></button><button
-                onclick="openDeleteModal('CI/CD Pipeline', 'key-row-3')"
-                title="Smazat"
-                class="p-2 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red hover:bg-brand-red/20 transition-all text-xs"><i
-                  class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        </div>
-      </div><!-- Usage guide -->
-      <div id="usage-guide" class="section-card p-6 flex flex-col gap-5">
-        <div class="flex items-center gap-2 mb-1"><i
-            class="fa-solid fa-book-open text-brand-blue text-sm"></i>
-          <p class="text-white font-semibold text-sm">Jak použít API klíč</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p
-              class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
-              Authorization Header</p>
-            <div
-              class="bg-navy-main border border-gray-800 rounded-xl p-4 font-mono text-xs">
-              <span class="text-brand-green">Authorization</span><span
-                class="text-white">: Bearer </span><span
-                class="text-brand-orange">YOUR_API_KEY</span></div>
-          </div>
-          <div>
-            <p
-              class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
-              Příklad cURL</p>
-            <div
-              class="bg-navy-main border border-gray-800 rounded-xl p-4 font-mono text-xs leading-relaxed">
-              <span class="text-brand-orange">curl</span><span
-                class="text-white"> -H </span><span
-                class="text-brand-green">"Authorization: Bearer
-                mtd_live_..."</span><br><span
-                class="text-white">&nbsp;&nbsp;</span><span
-                class="text-brand-green">"https://docs.metacleaner.app/v1/..."</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div><!-- ===== CREATE KEY MODAL ===== -->
-    <div id="create-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center modal-bg px-4">
-      <div id="in3dl9"
-        class="bg-navy-card border border-gray-700 rounded-2xl w-full max-w-md p-7 flex flex-col gap-5 shadow-2xl">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-9 h-9 rounded-xl bg-brand-green/15 border border-brand-green/30 flex items-center justify-center">
-              <i class="fa-solid fa-plus text-brand-green text-sm"></i></div>
-            <div>
-              <p class="text-white font-bold text-base">Vytvořit nový klíč</p>
-              <p class="text-text-muted text-xs">Nový API klíč pro váš účet</p>
-            </div>
-          </div><button onclick="closeCreateModal()"
-            class="text-text-muted hover:text-white transition-colors"><i
-              class="fa-solid fa-xmark text-lg"></i></button>
-        </div><!-- New key reveal (shown after creation) -->
-        <div id="new-key-reveal" class="hidden">
-          <div class="info-box-green p-4 flex gap-3 items-start mb-4"><i
-              class="fa-solid fa-circle-check text-brand-green mt-0.5 shrink-0"></i>
-            <div>
-              <p class="text-white text-sm font-semibold mb-0.5">Klíč byl
-                úspěšně vytvořen!</p>
-              <p class="text-text-muted text-xs">Zkopírujte klíč nyní – zobrazí
-                se pouze jednou.</p>
-            </div>
-          </div>
-          <p
-            class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
-            Váš nový API klíč</p>
-          <div
-            class="bg-navy-main border border-brand-green/30 rounded-xl p-4 flex items-center justify-between gap-3">
-            <span id="generated-key-text"
-              class="font-mono text-xs text-brand-green break-all">mtd_live_a9f3c2e1b7d4f8a2c9e3b1f7d4a8c2e6Yz2k</span><button
-              onclick="copyKeyText(document.getElementById('generated-key-text').textContent, this)"
-              class="shrink-0 px-3 py-1.5 rounded-lg bg-brand-green/15 border border-brand-green/30 text-brand-green text-xs font-semibold hover:bg-brand-green/25 transition-all flex items-center gap-1"><i
-                class="fa-solid fa-copy text-[10px]"></i> Kopírovat
-            </button></div>
-        </div><!-- Form (shown before creation) -->
-        <div id="create-form">
-          <div class="flex flex-col gap-4">
-            <div><label
-                class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Název
-                klíče <span class="text-brand-red">*</span></label><input
-                id="key-name-input" type="text"
-                placeholder="např. Produkční server, CI/CD..."
-                class="w-full bg-navy-main border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-green transition-colors">
-            </div>
-            <div><label
-                class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Typ
-                klíče</label>
-              <div class="grid grid-cols-2 gap-2"><button
-                  onclick="selectKeyType('live', this)" id="type-live"
-                  class="key-type-btn flex items-center gap-2 px-4 py-3 rounded-xl border border-brand-green/40 bg-brand-green/10 text-white text-sm font-medium transition-all"><i
-                    class="fa-solid fa-circle text-brand-green text-xs"></i>
-                  Live
-                </button><button onclick="selectKeyType('test', this)"
-                  id="type-test"
-                  class="key-type-btn flex items-center gap-2 px-4 py-3 rounded-xl border border-gray-700 bg-navy-main text-text-muted text-sm font-medium transition-all hover:border-gray-600"><i
-                    class="fa-solid fa-flask text-brand-orange text-xs"></i>
-                  Test
-                </button></div>
-            </div>
-            <div><label
-                class="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Poznámka
-                (volitelné)</label><textarea placeholder="Popis účelu klíče..." rows="2" class="w-full bg-navy-main border border-gray-700 rounded-xl px-4 py-3 text-sm text-white placeholder-text-muted focus:outline-none focus:border-brand-green transition-colors resize-none"></textarea>
-            </div>
-          </div>
-          <div class="flex gap-3 mt-5"><button onclick="closeCreateModal()"
-              class="flex-1 px-4 py-2.5 rounded-xl border border-gray-700 text-text-muted text-sm font-semibold hover:text-white hover:border-gray-600 transition-all">Zrušit</button><button
-              onclick="createKey()"
-              class="flex-1 px-4 py-2.5 rounded-xl bg-brand-green text-white text-sm font-semibold hover:bg-green-400 transition-all shadow-glow-green flex items-center justify-center gap-2"><i
-                class="fa-solid fa-key text-xs"></i> Vytvořit klíč
-            </button></div>
-        </div><!-- Close after reveal -->
-        <div id="reveal-close" class="hidden"><button
-            onclick="closeCreateModal()"
-            class="w-full px-4 py-2.5 rounded-xl bg-navy-lighter border border-gray-700 text-white text-sm font-semibold hover:border-gray-500 transition-all">Zavřít</button>
-        </div>
-      </div>
-    </div><!-- ===== DELETE CONFIRM MODAL ===== -->
-    <div id="delete-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center modal-bg px-4">
-      <div id="iwpmh8"
-        class="bg-navy-card border border-gray-700 rounded-2xl w-full max-w-sm p-7 flex flex-col gap-5 shadow-2xl">
-        <div class="flex flex-col items-center text-center gap-3">
-          <div
-            class="w-14 h-14 rounded-2xl bg-brand-red/15 border border-brand-red/30 flex items-center justify-center">
-            <i class="fa-solid fa-trash text-brand-red text-xl"></i></div>
-          <div>
-            <p class="text-white font-bold text-lg">Smazat klíč?</p>
-            <p class="text-text-muted text-sm mt-1">Klíč <span
-                id="delete-key-name" class="text-white font-semibold">„Produkční
-                klíč"</span> bude trvale odstraněn.</p>
-          </div>
-        </div>
-        <div class="info-box-red p-3.5 flex gap-2 items-start"><i
-            class="fa-solid fa-triangle-exclamation text-brand-red text-sm mt-0.5 shrink-0"></i>
-          <p class="text-text-muted text-xs leading-relaxed">Tato akce je
-            nevratná. Všechny aplikace používající tento klíč ztratí přístup k
-            API okamžitě.</p>
-        </div>
-        <div class="flex gap-3"><button onclick="closeDeleteModal()"
-            class="flex-1 px-4 py-2.5 rounded-xl border border-gray-700 text-text-muted text-sm font-semibold hover:text-white hover:border-gray-600 transition-all">Zrušit</button><button
-            onclick="confirmDelete()"
-            class="flex-1 px-4 py-2.5 rounded-xl bg-brand-red text-white text-sm font-semibold hover:bg-red-400 transition-all shadow-glow-red flex items-center justify-center gap-2"><i
-              class="fa-solid fa-trash text-xs"></i> Smazat
-          </button></div>
-      </div>
-    </div>
-    <script>
-      let deleteTargetRow = null;
-      let selectedKeyType = 'live';
+			function openCreateModal()
+			{
+			  document.getElementById('create-modal').classList.remove('hidden');
+			  document.getElementById('create-modal').classList.add('flex');
+			  document.getElementById('new-key-reveal').classList.add('hidden');
+			  document.getElementById('create-form').classList.remove('hidden');
+			  document.getElementById('reveal-close').classList.add('hidden');
+			  document.getElementById('key-name-input').value = '';
+			  selectKeyType('live', document.getElementById('type-live'));
+			}
 
-      function openCreateModal()
-      {
-        document.getElementById('create-modal').classList.remove('hidden');
-        document.getElementById('create-modal').classList.add('flex');
-        document.getElementById('new-key-reveal').classList.add('hidden');
-        document.getElementById('create-form').classList.remove('hidden');
-        document.getElementById('reveal-close').classList.add('hidden');
-        document.getElementById('key-name-input').value = '';
-        selectKeyType('live', document.getElementById('type-live'));
-      }
+			function closeCreateModal()
+			{
+			  document.getElementById('create-modal').classList.add('hidden');
+			  document.getElementById('create-modal').classList.remove('flex');
+			}
 
-      function closeCreateModal()
-      {
-        document.getElementById('create-modal').classList.add('hidden');
-        document.getElementById('create-modal').classList.remove('flex');
-      }
-
-      function openDeleteModal(name, rowId)
-      {
-        document.getElementById('delete-key-name').textContent = '„' + name +
-          '"';
-        deleteTargetRow = rowId;
-        document.getElementById('delete-modal').classList.remove('hidden');
-        document.getElementById('delete-
-    </script>
-  </body>
-
+			function openDeleteModal(name, rowId)
+			{
+			  document.getElementById('delete-key-name').textContent = '„' + name +
+			    '"';
+			  deleteTargetRow = rowId;
+			  document.getElementById('delete-modal').classList.remove('hidden');
+			  document.getElementById('delete-
+		</script>
+	</body>
 </html>

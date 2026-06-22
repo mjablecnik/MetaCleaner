@@ -13,6 +13,7 @@
 
 	let { data } = $props();
 
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let currentBilling = $state<'monthly' | 'yearly'>('monthly');
 	$effect(() => {
 		currentBilling = data.billing === 'yearly' ? 'yearly' : 'monthly';

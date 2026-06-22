@@ -39,7 +39,7 @@ bun run storybook      # Storybook dev (port 6006)
 ## Local Docker
 
 ```bash
-./start-docker.sh      # Build image & run container on port 8080
+./start-docker.sh      # Build image & run container on port 3000
 docker stop metacleaner-app   # Stop container
 ```
 

@@ -203,6 +203,7 @@ async function login(email: string, password: string, rememberMe = true): Promis
 				? new URLSearchParams(window.location.search).get('returnTo')
 				: null;
 		const destination = returnTo ? decodeURIComponent(returnTo) : resolve('/' as Pathname);
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
 		await goto(destination);
 	} finally {
 		_isLoading = false;

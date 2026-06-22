@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_URL } from '$env/static/public';
 	import * as m from '$lib/paraglide/messages';
 	import BrandLogo from '$lib/components/elements/BrandLogo.svelte';
 	import NavLink from '$lib/components/elements/NavLink.svelte';
@@ -25,7 +26,7 @@
 	<div class="flex items-center gap-3">
 		<LanguageSwitcher variant="desktop" />
 		<a
-			href="#"
+			href="{PUBLIC_APP_URL}/login"
 			class="px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors"
 		>
 			{m.nav_login()}

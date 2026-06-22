@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_URL } from '$env/static/public';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import * as m from '$lib/paraglide/messages';
@@ -147,14 +148,14 @@
 		<div class="px-4 pb-4">
 			<div class="flex gap-2 mt-3">
 				<a
-					href="#"
+					href="{PUBLIC_APP_URL}/login"
 					class="flex-1 py-3 rounded-xl bg-navy-lighter border border-border-strong text-white font-semibold text-xs flex items-center justify-center gap-1.5"
 				>
 					<i class="fa-solid fa-right-to-bracket text-text-muted"></i>
 					{m.nav_login()}
 				</a>
 				<a
-					href="#"
+					href="{PUBLIC_APP_URL}/register"
 					class="flex-1 py-3 rounded-xl bg-brand-blue text-white font-semibold text-xs flex items-center justify-center gap-1.5"
 				>
 					<i class="fa-solid fa-user-plus"></i>
@@ -216,7 +217,7 @@
 		<LanguageSwitcher variant="mobile" />
 		<div class="border-t border-border my-1"></div>
 		<a
-			href="#"
+			href="{PUBLIC_APP_URL}/login"
 			class="w-full mt-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold text-center block"
 		>
 			{m.nav_login()}

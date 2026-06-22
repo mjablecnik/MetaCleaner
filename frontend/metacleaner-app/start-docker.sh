@@ -10,7 +10,10 @@ fi
 PUBLIC_API_URL="${PUBLIC_API_URL:-http://localhost:8080}"
 
 echo "Building Docker image: $APP_NAME (PUBLIC_API_URL=$PUBLIC_API_URL)"
-docker build -t "$APP_NAME" --build-arg "PUBLIC_API_URL=$PUBLIC_API_URL" .
+# Build context is the workspace root so metacleaner-shared is available
+WORKSPACE_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+docker build -t "$APP_NAME" --build-arg "PUBLIC_API_URL=$PUBLIC_API_URL" \
+  -f "$(dirname "$0")/Dockerfile" "$WORKSPACE_ROOT"
 
 echo "Stopping existing container (if any)..."
 docker stop "$APP_NAME" 2>/dev/null || true

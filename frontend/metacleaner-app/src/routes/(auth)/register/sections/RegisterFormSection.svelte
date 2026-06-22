@@ -242,6 +242,7 @@
 			<span class="text-xs leading-relaxed text-text-muted lg:text-sm">
 				{tx('auth.register.consent.text')}
 				{#if privacyPolicyUrl}
+					<!-- eslint-disable svelte/no-navigation-without-resolve -->
 					<a
 						href={privacyPolicyUrl}
 						target="_blank"
@@ -249,6 +250,7 @@
 						class="font-semibold text-brand-blue transition-colors hover:text-blue-400"
 						>{tx('auth.register.consent.link')}</a
 					>
+					<!-- eslint-enable svelte/no-navigation-without-resolve -->
 				{:else}
 					<span class="font-semibold text-brand-blue">{tx('auth.register.consent.link')}</span>
 				{/if}
