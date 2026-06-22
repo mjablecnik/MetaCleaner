@@ -144,7 +144,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	authRL := NewAuthRateLimiter()
 	authRateLimited := authRL.Middleware
 
-	authMW := NewAuthMiddleware(cfg)
+	apiKeyRL := NewAPIKeyRateLimiter(120)
+	authMW := NewAuthMiddleware(cfg, db, apiKeyRL)
 
 	// Job worker pool — limits concurrent pipeline executions.
 	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)

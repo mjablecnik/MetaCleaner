@@ -7,12 +7,14 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
 	"math/big"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -27,12 +29,22 @@ const (
 // contextKey is an unexported type for context keys in this package.
 type contextKey int
 
-const userIDKey contextKey = iota
+const (
+	userIDKey contextKey = iota
+	keyIDKey
+)
 
 // UserIDFromContext returns the authenticated user ID stored in ctx by AuthMiddleware.
 // Returns empty string if not set.
 func UserIDFromContext(ctx context.Context) string {
 	v, _ := ctx.Value(userIDKey).(string)
+	return v
+}
+
+// KeyIDFromContext returns the API key ID stored in ctx when the request was authenticated
+// via an API key. Returns empty string if the request used JWT authentication.
+func KeyIDFromContext(ctx context.Context) string {
+	v, _ := ctx.Value(keyIDKey).(string)
 	return v
 }
 
@@ -168,17 +180,20 @@ func parseECPublicKey(k jwkKey) (*ecdsa.PublicKey, error) {
 
 // --- AuthMiddleware ---
 
-// AuthMiddleware validates JWT Bearer tokens on protected routes.
-// Supports HS256 (via SupabaseJWTSecret) and ES256 (via JWKS from SupabaseURL).
+// AuthMiddleware validates Bearer tokens on protected routes.
+// Supports JWT (HS256/ES256) and API key tokens (mtd_key_ prefix).
 type AuthMiddleware struct {
 	cache     *keyCache
 	jwtSecret []byte
+	db        *SupabaseClient
+	apiKeyRL  *APIKeyRateLimiter
 }
 
 // NewAuthMiddleware creates an AuthMiddleware.
 // If cfg.SupabaseJWTSecret is set, HS256 tokens are validated using HMAC-SHA256.
 // ES256 tokens are always validated via the Supabase JWKS endpoint.
-func NewAuthMiddleware(cfg Config) *AuthMiddleware {
+// Pass db and apiKeyRL to enable API key authentication; both may be nil to disable it.
+func NewAuthMiddleware(cfg Config, db *SupabaseClient, apiKeyRL *APIKeyRateLimiter) *AuthMiddleware {
 	jwksURL := strings.TrimRight(cfg.SupabaseURL, "/") + "/auth/v1/.well-known/jwks.json"
 	cache := newKeyCache(jwksURL)
 
@@ -190,6 +205,8 @@ func NewAuthMiddleware(cfg Config) *AuthMiddleware {
 	return &AuthMiddleware{
 		cache:     cache,
 		jwtSecret: []byte(cfg.SupabaseJWTSecret),
+		db:        db,
+		apiKeyRL:  apiKeyRL,
 	}
 }
 
@@ -299,9 +316,28 @@ func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 	return claims.Sub, nil
 }
 
+// validateAPIKey validates an API key token by hashing it and looking it up in the DB.
+// Returns userID and keyID on success, or an authError on failure.
+// The key must exist and have status "active" — revoked keys are rejected.
+func (m *AuthMiddleware) validateAPIKey(ctx context.Context, token string) (userID, keyID string, err error) {
+	sum := sha256.Sum256([]byte(token))
+	hash := hex.EncodeToString(sum[:])
+
+	apiKey, dbErr := m.db.LookupAPIKeyByHash(ctx, hash)
+	if dbErr != nil {
+		slog.Warn("auth-middleware: api key lookup failed", "error", dbErr)
+		return "", "", &authError{code: ErrAuthUnauthorized, message: "invalid API key"}
+	}
+	if apiKey == nil {
+		return "", "", &authError{code: ErrAuthUnauthorized, message: "invalid or revoked API key"}
+	}
+	return apiKey.UserID, apiKey.ID, nil
+}
+
 // Middleware returns an HTTP middleware that enforces authentication on non-exempt paths.
 // Exempt paths: /api/auth/*, /api/health, /.well-known/*
-// On success, the user ID is stored in the request context via UserIDFromContext.
+// Tokens prefixed with "mtd_key_" are validated as API keys; all others as JWTs.
+// On success, user ID (and key ID for API key requests) are stored in the request context.
 func (m *AuthMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if isExemptPath(r.URL.Path) {
@@ -309,6 +345,50 @@ func (m *AuthMiddleware) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
+		authHeader := r.Header.Get("Authorization")
+		if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+			token := strings.TrimPrefix(authHeader, "Bearer ")
+			if strings.HasPrefix(token, "mtd_key_") {
+				// API key authentication — no JWT fallback
+				if m.db == nil {
+					WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "API key authentication not available")
+					return
+				}
+				userID, keyID, authErr := m.validateAPIKey(r.Context(), token)
+				if authErr != nil {
+					if ae, ok := authErr.(*authError); ok {
+						WriteError(w, http.StatusUnauthorized, ae.code, ae.message)
+					} else {
+						WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "unauthorized")
+					}
+					return
+				}
+
+				// Per-key rate limiting (applied after auth, only for API key requests)
+				if m.apiKeyRL != nil {
+					if allowed, retryAfter := m.apiKeyRL.Allow(keyID); !allowed {
+						w.Header().Set("Retry-After", strconv.Itoa(retryAfter))
+						WriteError(w, http.StatusTooManyRequests, ErrRateLimitExceeded,
+							fmt.Sprintf("API key rate limit exceeded, retry after %d seconds", retryAfter))
+						return
+					}
+				}
+
+				// Update last_used_at asynchronously — failure is non-fatal
+				go func() {
+					if updateErr := m.db.UpdateAPIKeyLastUsed(context.Background(), keyID); updateErr != nil {
+						slog.Warn("auth-middleware: failed to update api key last_used_at", "keyID", keyID, "error", updateErr)
+					}
+				}()
+
+				ctx := context.WithValue(r.Context(), userIDKey, userID)
+				ctx = context.WithValue(ctx, keyIDKey, keyID)
+				next.ServeHTTP(w, r.WithContext(ctx))
+				return
+			}
+		}
+
+		// JWT authentication path (existing behavior)
 		userID, err := m.Authenticate(r)
 		if err != nil {
 			if ae, ok := err.(*authError); ok {

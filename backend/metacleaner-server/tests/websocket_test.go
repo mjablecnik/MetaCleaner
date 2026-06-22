@@ -20,7 +20,7 @@ func newTestWSServer(t *testing.T, frontendOrigin string) *httptest.Server {
 	cfg.SupabaseJWTSecret = testJWTSecret
 	cfg.FrontendOrigin = frontendOrigin
 
-	authMW := src.NewAuthMiddleware(cfg)
+	authMW := src.NewAuthMiddleware(cfg, nil, nil)
 	hub := src.NewWebSocketHub()
 
 	handler := src.HandleJobProgress(hub, authMW, frontendOrigin)
@@ -46,7 +46,7 @@ func validWSToken() string {
 func TestHandleJobProgress_MissingToken_Returns401(t *testing.T) {
 	cfg := newTestConfig(t)
 	cfg.SupabaseJWTSecret = testJWTSecret
-	authMW := src.NewAuthMiddleware(cfg)
+	authMW := src.NewAuthMiddleware(cfg, nil, nil)
 	hub := src.NewWebSocketHub()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/job1/progress", nil)
@@ -65,7 +65,7 @@ func TestHandleJobProgress_MissingToken_Returns401(t *testing.T) {
 func TestHandleJobProgress_InvalidToken_Returns401(t *testing.T) {
 	cfg := newTestConfig(t)
 	cfg.SupabaseJWTSecret = testJWTSecret
-	authMW := src.NewAuthMiddleware(cfg)
+	authMW := src.NewAuthMiddleware(cfg, nil, nil)
 	hub := src.NewWebSocketHub()
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/job1/progress?token=not.a.valid.jwt", nil)

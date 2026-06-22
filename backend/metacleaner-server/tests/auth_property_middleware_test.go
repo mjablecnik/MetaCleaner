@@ -29,7 +29,7 @@ const propertyTestJWTSecret = "property-test-secret-for-middleware"
 func newPropertyMiddleware() *src.AuthMiddleware {
 	return src.NewAuthMiddleware(src.Config{
 		SupabaseJWTSecret: propertyTestJWTSecret,
-	})
+	}, nil, nil)
 }
 
 // handlerCallTracker wraps a next handler that records whether it was invoked.

@@ -66,11 +66,11 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Use PostgREST HTTP calls following existing patterns in `supabase.go`
     - _Requirements: 9.1, 9.2, 9.4, 9.5_
 
-- [ ] 3. Checkpoint - Backend handlers complete
+- [x] 3. Checkpoint - Backend handlers complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Auth middleware extension and rate limiting
-  - [ ] 4.1 Extend auth middleware with API key validation in `source/auth_middleware.go`
+- [x] 4. Auth middleware extension and rate limiting
+  - [x] 4.1 Extend auth middleware with API key validation in `source/auth_middleware.go`
     - In `Authenticate`, detect `mtd_key_` prefix before JWT validation
     - Add `validateAPIKey(token string)` method: SHA-256 hash → DB lookup → check status 'active' → return userID + keyID
     - Store keyID in request context alongside userID for downstream rate limiting
@@ -93,13 +93,13 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - **Validates: Requirements 5.2**
     - Test that active key hash sets correct user_id in request context
 
-  - [ ] 4.5 Implement per-key rate limiter in `source/apikey_rate_limiter.go`
+  - [x] 4.5 Implement per-key rate limiter in `source/apikey_rate_limiter.go`
     - Create `APIKeyRateLimiter` struct with token bucket per key ID (default 120 RPM)
     - `Allow(keyID string) (bool, int)` returns allowed flag and retry-after seconds
     - Include cleanup goroutine to evict stale entries
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 4.6 Integrate API key rate limiter into middleware chain
+  - [x] 4.6 Integrate API key rate limiter into middleware chain
     - After API key auth succeeds, check rate limit before forwarding to handler
     - On limit exceeded: return HTTP 429 with Retry-After header and RATE_LIMIT_EXCEEDED JSON error body
     - On auth failure (401): skip rate limit check entirely

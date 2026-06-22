@@ -465,7 +465,7 @@ func TestHandleMe_Success(t *testing.T) {
 		}
 	}))
 
-	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret})
+	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret}, nil, nil)
 	handler := mw.Middleware(src.HandleMe(authClient))
 
 	token := buildJWT(testJWTSecret, map[string]any{
@@ -501,7 +501,7 @@ func TestHandleMe_ProfileNotFound(t *testing.T) {
 			writeJSONResp(w, http.StatusOK, []interface{}{})
 		}
 	}))
-	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret})
+	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret}, nil, nil)
 	handler := mw.Middleware(src.HandleMe(authClient))
 	token := buildJWT(testJWTSecret, map[string]any{
 		"sub": "user-999",

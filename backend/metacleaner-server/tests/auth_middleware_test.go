@@ -35,7 +35,7 @@ func buildJWT(secret string, claims map[string]any) string {
 func newTestAuthMiddleware() *src.AuthMiddleware {
 	return src.NewAuthMiddleware(src.Config{
 		SupabaseJWTSecret: testJWTSecret,
-	})
+	}, nil, nil)
 }
 
 func reqWithBearer(token string) *http.Request {
