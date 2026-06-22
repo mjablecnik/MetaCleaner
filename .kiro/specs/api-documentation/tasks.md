@@ -95,25 +95,25 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
 - [x] 8. Checkpoint — Route, sidebar, and layout functional
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Documentation Sections
-  - [ ] 9.1 Create `DocsIntroSection.svelte`
+- [x] 9. Documentation Sections
+  - [x] 9.1 Create `DocsIntroSection.svelte`
     - Create `src/routes/docs/sections/DocsIntroSection.svelte`
     - Render: descriptive paragraph, base URL CodeBlock, 3 FeatureCards in responsive grid (3-col lg+, 1-col below), supported format badges, QuickStartFlow (4 numbered steps), rate limit InfoBox (orange variant)
     - Section header with icon badge (32px rounded-lg, 20% bg, 30% border), title (text-2xl font-bold), subtitle (text-xs text-muted)
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 12.5_
 
-  - [ ] 9.2 Create `DocsAuthSection.svelte`
+  - [x] 9.2 Create `DocsAuthSection.svelte`
     - Create `src/routes/docs/sections/DocsAuthSection.svelte`
     - Render: Bearer token explanation, Authorization header CodeBlock, API key generation InfoBox (blue), authenticated cURL example CodeBlock, 4 security best practices list, 2 auth error response CodeBlocks (401, 403)
     - All text via i18n in both English and Czech
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
 
-  - [ ] 9.3 Create `DocsErrorCodesSection.svelte`
+  - [x] 9.3 Create `DocsErrorCodesSection.svelte`
     - Create `src/routes/docs/sections/DocsErrorCodesSection.svelte`
     - Render: standard error response JSON CodeBlock, 3 HTTP status category InfoBoxes (2xx green, 4xx orange, 5xx red), ErrorTable with 8+ entries covering all 5 error categories, retry strategy InfoBox (blue)
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 9.4 Create `DocsEndpointsSection.svelte` and `EndpointCard.svelte`
+  - [x] 9.4 Create `DocsEndpointsSection.svelte` and `EndpointCard.svelte`
     - Create `src/routes/docs/sections/DocsEndpointsSection.svelte` rendering 6 EndpointCards
     - Create `src/routes/docs/components/EndpointCard.svelte` with props: `endpoint: EndpointData`, `initialOpen?: boolean`
     - Collapsible header: MethodBadge + path (monospace) + description + chevron

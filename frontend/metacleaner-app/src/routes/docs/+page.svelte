@@ -7,6 +7,10 @@
 		getSidebarEndpoints
 	} from '$lib/repositories/docsRepository';
 	import DocsSidebar from './components/DocsSidebar.svelte';
+	import DocsIntroSection from './sections/DocsIntroSection.svelte';
+	import DocsAuthSection from './sections/DocsAuthSection.svelte';
+	import DocsErrorCodesSection from './sections/DocsErrorCodesSection.svelte';
+	import DocsEndpointsSection from './sections/DocsEndpointsSection.svelte';
 
 	const config = getDocsConfig();
 	const sidebarSections = getSidebarSections();
@@ -75,11 +79,10 @@
 
 		<!-- Main content area -->
 		<main class="min-w-0 flex-1">
-			<!-- Placeholder content: sections will be added in tasks 9.1–9.4 -->
-			<div class="rounded-xl border border-gray-800 bg-navy-card p-8 text-center text-text-muted">
-				<i class="fa-solid fa-book mb-3 text-3xl text-brand-blue/40"></i>
-				<p class="text-sm">Documentation sections loading…</p>
-			</div>
+			<DocsIntroSection />
+			<DocsAuthSection />
+			<DocsErrorCodesSection />
+			<DocsEndpointsSection />
 		</main>
 	</div>
 </div>
