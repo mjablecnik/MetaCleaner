@@ -36,8 +36,8 @@
 
 ## Task 4: Backend Database Migration
 
-- [ ] 4.1 Create `scripts/migration004.sql` with `stripe_customers` table (user_id, stripe_customer_id, unique constraints, indexes)
-- [ ] 4.2 Add `subscriptions` table to migration (user_id, stripe_subscription_id, stripe_customer_id, plan_id, status, billing_period, period dates, timestamps, indexes)
+- [x] 4.1 Create `scripts/migration004.sql` with `stripe_customers` table (user_id, stripe_customer_id, unique constraints, indexes)
+- [x] 4.2 Add `subscriptions` table to migration (user_id, stripe_subscription_id, stripe_customer_id, plan_id, status, billing_period, period dates, timestamps, indexes)
 
 ## Task 5: Backend Stripe Configuration
 
