@@ -1,8 +1,8 @@
 # Tasks: Stripe Subscription — Missing Credit System
 
 - [x] 1. [HIGH] Add `UpsertCreditBalance` method to `supabase_billing.go` — upserts `credit_balances` row with given subscription_credits and purchased_credits for a user_id
-- [ ] 2. [HIGH] Add `AddPurchasedCredits` method to `supabase_billing.go` — atomically increments `purchased_credits` by amount (read current, write new value)
-- [ ] 3. [HIGH] Add `SetSubscriptionCredits` method to `supabase_billing.go` — sets `subscription_credits` to exact value for a user
+- [x] 2. [HIGH] Add `AddPurchasedCredits` method to `supabase_billing.go` — atomically increments `purchased_credits` by amount (read current, write new value)
+- [x] 3. [HIGH] Add `SetSubscriptionCredits` method to `supabase_billing.go` — sets `subscription_credits` to exact value for a user
 - [ ] 4. [HIGH] Add `DeductCredits` method to `supabase_billing.go` — deducts N credits (subscription first, then purchased); returns error if insufficient balance
 - [ ] 5. [HIGH] Add `RecordCreditTransaction` method to `supabase_billing.go` — inserts row into `credit_transactions` with user_id, amount, type, credit_source, reference_id, description
 - [ ] 6. [HIGH] Add `GetCreditTransactions` method to `supabase_billing.go` — fetches recent credit_transactions for a user (ordered desc, limited)
