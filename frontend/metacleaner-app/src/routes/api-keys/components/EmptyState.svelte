@@ -9,11 +9,18 @@
 	const { onCreateKey }: Props = $props();
 </script>
 
-<!-- Placeholder: implemented in task 10.4 -->
-<div class="flex flex-col items-center gap-4 py-12 text-center">
-	<i class="fa-solid fa-key text-3xl text-text-muted opacity-40"></i>
-	<p class="text-sm text-text-muted">{tx('apiKeys.emptyState.title')}</p>
+<div class="flex flex-col items-center gap-4 py-16 text-center">
+	<div
+		class="flex h-14 w-14 items-center justify-center rounded-2xl border border-gray-700 bg-navy-lighter"
+	>
+		<i class="fa-solid fa-key text-xl text-text-muted opacity-40"></i>
+	</div>
+	<div>
+		<p class="text-sm font-semibold text-white">{tx('apiKeys.emptyState.title')}</p>
+		<p class="mt-1 text-xs text-text-muted">Create an API key to start using the API.</p>
+	</div>
 	<Button variant="primary" onclick={onCreateKey}>
+		<i class="fa-solid fa-plus text-xs"></i>
 		{tx('apiKeys.emptyState.cta')}
 	</Button>
 </div>

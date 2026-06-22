@@ -187,8 +187,8 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - On desktop (≥1024px): side-by-side grid layout
     - _Requirements: 8.5, 8.6, 8.7_
 
-- [ ] 10. Frontend route-specific components
-  - [ ] 10.1 Create `src/routes/api-keys/components/KeyRow.svelte`
+- [x] 10. Frontend route-specific components
+  - [x] 10.1 Create `src/routes/api-keys/components/KeyRow.svelte`
     - Display key name, status `Badge` (Active green / Revoked red), creation date, last used, Key_Display_Hint
     - Active state: copy button, eye toggle, delete button, revoke action
     - Revoked state: 50% opacity, disabled copy/eye buttons, show revocation date
@@ -196,7 +196,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Copy button: copies Key_Display_Hint, shows checkmark for 2 seconds
     - _Requirements: 2.2, 2.3, 2.4, 10.1, 10.3, 10.4, 10.5_
 
-  - [ ] 10.2 Create `src/routes/api-keys/components/CreateKeyModal.svelte`
+  - [x] 10.2 Create `src/routes/api-keys/components/CreateKeyModal.svelte`
     - Modal with backdrop (fixed fullscreen, bg-navy-main/85, backdrop-blur)
     - Form: key name input, optional note textarea (no key type selector)
     - Client-side validation (name required, ≤100 chars)
@@ -204,7 +204,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Close via backdrop click or Escape key
     - _Requirements: 1.3, 1.4, 1.5, 1.6_
 
-  - [ ] 10.3 Create `src/routes/api-keys/components/DeleteConfirmModal.svelte`
+  - [x] 10.3 Create `src/routes/api-keys/components/DeleteConfirmModal.svelte`
     - Modal with backdrop (same pattern as CreateKeyModal)
     - Warning text about permanent deletion
     - Cancel (secondary) and Delete (danger) buttons
@@ -212,7 +212,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - On error: show inline error, preserve key in list
     - _Requirements: 3.1, 3.3, 3.5_
 
-  - [ ] 10.4 Create `src/routes/api-keys/components/EmptyState.svelte`
+  - [x] 10.4 Create `src/routes/api-keys/components/EmptyState.svelte`
     - Message indicating no keys exist
     - CTA button to create first key (opens CreateKeyModal)
     - _Requirements: 2.6_
