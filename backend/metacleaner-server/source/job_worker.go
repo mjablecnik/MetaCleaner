@@ -2,6 +2,7 @@ package source
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"sync"
 )
@@ -97,6 +98,17 @@ func ProcessJobWithPool(pool *JobWorkerPool, ctx context.Context, cfg Config, db
 		// Batch update all file records in a single request instead of N individual calls.
 		if err := db.BatchUpdateFileRecords(ctx, files); err != nil {
 			slog.Warn("job: BatchUpdateFileRecords failed", "jobId", job.ID, "error", err)
+		}
+
+		// Deduct 1 credit per successfully processed file and record the usage transaction.
+		if job.FilesCompleted > 0 {
+			if err := db.DeductCredits(ctx, job.UserID, job.FilesCompleted); err != nil {
+				slog.Warn("job: failed to deduct credits", "jobId", job.ID, "filesCompleted", job.FilesCompleted, "error", err)
+			} else {
+				if err := db.RecordCreditTransaction(ctx, job.UserID, job.FilesCompleted, "usage", "subscription", job.ID, fmt.Sprintf("Processed %d file(s)", job.FilesCompleted)); err != nil {
+					slog.Warn("job: failed to record credit transaction", "jobId", job.ID, "error", err)
+				}
+			}
 		}
 
 		createJobReport(ctx, cfg, db, hub, job, files)
