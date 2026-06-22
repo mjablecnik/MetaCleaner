@@ -115,8 +115,8 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - **Validates: Requirements 6.5**
     - Test that invalid/revoked keys always get HTTP 401 regardless of request count
 
-- [ ] 5. Backend route registration
-  - [ ] 5.1 Register API key routes in `source/router.go`
+- [x] 5. Backend route registration
+  - [x] 5.1 Register API key routes in `source/router.go`
     - Add `POST /api/keys`, `GET /api/keys`, `DELETE /api/keys/{id}`, `PATCH /api/keys/{id}/revoke`
     - Wire rate limiter instance into middleware/handler chain
     - _Requirements: 1.1, 2.1, 3.2, 4.1, 6.1_
