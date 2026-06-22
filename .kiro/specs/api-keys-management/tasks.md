@@ -251,7 +251,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Remove the prop and any associated callback logic
     - _Requirements: 7.5_
 
-- [ ] 12. Final checkpoint - Full integration
+- [x] 12. Final checkpoint - Full integration
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
