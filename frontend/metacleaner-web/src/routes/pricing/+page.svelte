@@ -2,6 +2,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import { t } from '$lib/i18n';
 	import { pricingRepository, getEnterprise, PricingHeaderSection, PricingPlansSection } from 'metacleaner-shared';
+	import { PUBLIC_APP_URL } from '$env/static/public';
 
 	let currentBilling = $state<'monthly' | 'yearly'>('monthly');
 
@@ -19,6 +20,11 @@
 		if (!fn) return key;
 		return fn(params);
 	}
+
+	function handlePlanSelect(planId: string, billing: 'monthly' | 'yearly') {
+		const appUrl = PUBLIC_APP_URL || 'https://app.metacleaner.com';
+		window.location.href = `${appUrl}/pricing?plan=${planId}&billing=${billing}`;
+	}
 </script>
 
 <svelte:head>
@@ -28,6 +34,6 @@
 <div class="flex flex-col items-center w-full min-h-screen">
 	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-8 md:py-16">
 		<PricingHeaderSection value={currentBilling} onChange={onBillingChange} translate={t} />
-		<PricingPlansSection {plans} {isYearly} {enterprise} translate={t} {translateParam} />
+		<PricingPlansSection {plans} {isYearly} {enterprise} translate={t} {translateParam} onPlanSelect={handlePlanSelect} />
 	</main>
 </div>
