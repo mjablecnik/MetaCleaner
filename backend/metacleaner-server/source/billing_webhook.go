@@ -83,6 +83,19 @@ func HandleStripeWebhook(cfg Config, db *SupabaseClient) http.HandlerFunc {
 				return
 			}
 
+		case "invoice.paid":
+			var inv stripe.Invoice
+			if err := json.Unmarshal(event.Data.Raw, &inv); err != nil {
+				slog.Error("webhook: failed to parse invoice.paid", "error", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			if err := handleInvoicePaid(ctx, db, &inv); err != nil {
+				slog.Error("webhook: invoice.paid handler error", "invoiceID", inv.ID, "error", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
 		case "invoice.payment_failed":
 			var inv stripe.Invoice
 			if err := json.Unmarshal(event.Data.Raw, &inv); err != nil {
@@ -220,6 +233,42 @@ func handleSubscriptionDeleted(ctx context.Context, db *SupabaseClient, sub *str
 	}
 
 	slog.Info("webhook: subscription cancelled", "stripeSubID", sub.ID)
+	return nil
+}
+
+func handleInvoicePaid(ctx context.Context, db *SupabaseClient, inv *stripe.Invoice) error {
+	// Skip the initial subscription invoice — credits are granted by handleCheckoutSessionCompleted.
+	if inv.BillingReason == stripe.InvoiceBillingReasonSubscriptionCreate {
+		slog.Info("webhook: invoice.paid is initial subscription invoice, skipping", "invoiceID", inv.ID)
+		return nil
+	}
+
+	var stripeSubID string
+	if inv.Parent != nil && inv.Parent.SubscriptionDetails != nil && inv.Parent.SubscriptionDetails.Subscription != nil {
+		stripeSubID = inv.Parent.SubscriptionDetails.Subscription.ID
+	}
+	if stripeSubID == "" {
+		slog.Warn("webhook: invoice.paid has no subscription, skipping", "invoiceID", inv.ID)
+		return nil
+	}
+
+	sub, err := db.GetSubscriptionByStripeID(ctx, stripeSubID)
+	if err != nil {
+		return fmt.Errorf("invoice paid: lookup subscription: %w", err)
+	}
+	if sub == nil {
+		slog.Warn("webhook: invoice.paid subscription not found in DB, skipping", "stripeSubID", stripeSubID)
+		return nil
+	}
+
+	if err := db.SetSubscriptionCredits(ctx, sub.UserID, 100); err != nil {
+		return fmt.Errorf("invoice paid: set subscription credits: %w", err)
+	}
+	if err := db.RecordCreditTransaction(ctx, sub.UserID, 100, "subscription_renewal", "subscription", stripeSubID, "Subscription renewed"); err != nil {
+		return fmt.Errorf("invoice paid: record transaction: %w", err)
+	}
+
+	slog.Info("webhook: subscription credits renewed", "userID", sub.UserID, "stripeSubID", stripeSubID, "invoiceID", inv.ID)
 	return nil
 }
 
