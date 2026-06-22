@@ -6,8 +6,8 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
 
 ## Tasks
 
-- [ ] 1. Shared UI Elements
-  - [ ] 1.1 Create `CodeBlock.svelte` and `CopyButton.svelte` shared elements
+- [x] 1. Shared UI Elements
+  - [x] 1.1 Create `CodeBlock.svelte` and `CopyButton.svelte` shared elements
     - Create `src/lib/shared/elements/CodeBlock.svelte` with props: `code: string`, `class?: string`
     - Render monospace text on `#080f1e` background with 1px `navy-lighter` border, rounded corners, horizontal scroll overflow
     - Embed `CopyButton` in the top-right corner of the code block
@@ -16,19 +16,19 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - If clicked during confirmation state, restart 2s timer without re-writing to clipboard
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-  - [ ] 1.2 Create `InfoBox.svelte` shared element
+  - [x] 1.2 Create `InfoBox.svelte` shared element
     - Create `src/lib/shared/elements/InfoBox.svelte` with props: `variant: 'blue' | 'green' | 'orange' | 'red'`, `icon?: string`, `class?: string`
     - Render with variant brand-color at 8% opacity background, 25% opacity border, border-radius 10px
     - Support `{@render children?.()}` for content projection
     - _Requirements: 12.3_
 
-  - [ ] 1.3 Create `MethodBadge.svelte` shared element
+  - [x] 1.3 Create `MethodBadge.svelte` shared element
     - Create `src/lib/shared/elements/MethodBadge.svelte` with props: `method: 'GET' | 'POST' | 'DEL' | 'PATCH' | 'PUT'`, `size?: 'sm' | 'md'`
     - Color mapping: POST → blue, GET → green, DEL → red
     - Size `sm` for sidebar, `md` for endpoint cards
     - _Requirements: 4.2, 8.2_
 
-  - [ ] 1.4 Create `FeatureCard.svelte` shared element
+  - [x] 1.4 Create `FeatureCard.svelte` shared element
     - Create `src/lib/shared/elements/FeatureCard.svelte` with props: `icon: string`, `iconColor: string`, `title: string`, `description: string`
     - Render icon + title + description in a card layout
     - _Requirements: 5.3_
