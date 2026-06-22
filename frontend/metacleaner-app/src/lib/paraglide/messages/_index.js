@@ -530,6 +530,112 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Apikeys_Guide_Title1Inputs */
 /** @typedef {{}} Apikeys_Error_Loadfailed2Inputs */
 /** @typedef {{}} Apikeys_Error_Retry1Inputs */
+/** @typedef {{}} Docs_Meta_TitleInputs */
+/** @typedef {{}} Docs_Nav_DocsInputs */
+/** @typedef {{}} Docs_Nav_BackInputs */
+/** @typedef {{}} Docs_Sidebar_Endpointsheading1Inputs */
+/** @typedef {{}} Docs_Sidebar_IntroInputs */
+/** @typedef {{}} Docs_Sidebar_AuthInputs */
+/** @typedef {{}} Docs_Sidebar_ErrorsInputs */
+/** @typedef {{}} Docs_Intro_TitleInputs */
+/** @typedef {{}} Docs_Intro_SubtitleInputs */
+/** @typedef {{}} Docs_Intro_DescriptionInputs */
+/** @typedef {{}} Docs_Intro_Feature_Upload_TitleInputs */
+/** @typedef {{}} Docs_Intro_Feature_Upload_DescInputs */
+/** @typedef {{}} Docs_Intro_Feature_Clean_TitleInputs */
+/** @typedef {{}} Docs_Intro_Feature_Clean_DescInputs */
+/** @typedef {{}} Docs_Intro_Feature_Async_TitleInputs */
+/** @typedef {{}} Docs_Intro_Feature_Async_DescInputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Title1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step1_Title1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step1_Desc1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step2_Title1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step2_Desc1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step3_Title1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step3_Desc1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step4_Title1Inputs */
+/** @typedef {{}} Docs_Intro_Quickstart_Step4_Desc1Inputs */
+/** @typedef {{}} Docs_Intro_Ratelimit1Inputs */
+/** @typedef {{}} Docs_Intro_Formatslabel1Inputs */
+/** @typedef {{}} Docs_Auth_TitleInputs */
+/** @typedef {{}} Docs_Auth_SubtitleInputs */
+/** @typedef {{}} Docs_Auth_DescriptionInputs */
+/** @typedef {{}} Docs_Auth_Infobox1Inputs */
+/** @typedef {{}} Docs_Auth_Bestpractices_Title1Inputs */
+/** @typedef {{}} Docs_Auth_Bestpractice_11Inputs */
+/** @typedef {{}} Docs_Auth_Bestpractice_21Inputs */
+/** @typedef {{}} Docs_Auth_Bestpractice_31Inputs */
+/** @typedef {{}} Docs_Auth_Bestpractice_41Inputs */
+/** @typedef {{}} Docs_Auth_Error401label1Inputs */
+/** @typedef {{}} Docs_Auth_Error403label1Inputs */
+/** @typedef {{}} Docs_Errors_TitleInputs */
+/** @typedef {{}} Docs_Errors_SubtitleInputs */
+/** @typedef {{}} Docs_Errors_DescriptionInputs */
+/** @typedef {{}} Docs_Errors_Status2xx_TitleInputs */
+/** @typedef {{}} Docs_Errors_Status2xx_DescInputs */
+/** @typedef {{}} Docs_Errors_Status4xx_TitleInputs */
+/** @typedef {{}} Docs_Errors_Status4xx_DescInputs */
+/** @typedef {{}} Docs_Errors_Status5xx_TitleInputs */
+/** @typedef {{}} Docs_Errors_Status5xx_DescInputs */
+/** @typedef {{}} Docs_Errors_Table_StatusInputs */
+/** @typedef {{}} Docs_Errors_Table_CodeInputs */
+/** @typedef {{}} Docs_Errors_Table_DescriptionInputs */
+/** @typedef {{}} Docs_Errors_Table_SolutionInputs */
+/** @typedef {{}} Docs_Errors_RetryInputs */
+/** @typedef {{}} Docs_Errors_Entry_Invalidinput_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Invalidinput_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Unsupportedformat_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Unsupportedformat_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Unauthorized_DescInputs */
+/** @typedef {{}} Docs_Errors_Entry_Unauthorized_SolutionInputs */
+/** @typedef {{}} Docs_Errors_Entry_Forbidden_DescInputs */
+/** @typedef {{}} Docs_Errors_Entry_Forbidden_SolutionInputs */
+/** @typedef {{}} Docs_Errors_Entry_Notfound_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Notfound_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Validationerror_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Validationerror_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Ratelimit_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Ratelimit_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Internalerror_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Internalerror_Solution1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Serviceunavailable_Desc1Inputs */
+/** @typedef {{}} Docs_Errors_Entry_Serviceunavailable_Solution1Inputs */
+/** @typedef {{}} Docs_Endpoints_TitleInputs */
+/** @typedef {{}} Docs_Endpoints_SubtitleInputs */
+/** @typedef {{}} Docs_Endpoint_Upload_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Upload_Param_File_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Upload_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Upload_Response_Error_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Clean_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Param_Fileid_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Opt_Stripgps_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Opt_Stripexif_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Opt_Stripiptc_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Response_Error_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Status_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Status_Param_Jobid_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Status_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Status_Response_Error_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Download_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Download_PlaceholderInputs */
+/** @typedef {{}} Docs_Endpoint_Metadata_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Metadata_PlaceholderInputs */
+/** @typedef {{}} Docs_Endpoint_Delete_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Delete_PlaceholderInputs */
+/** @typedef {{}} Docs_Common_RequiredInputs */
+/** @typedef {{}} Docs_Common_OptionalInputs */
+/** @typedef {{}} Docs_Common_Defaultvalue1Inputs */
+/** @typedef {{}} Docs_Common_TypeInputs */
+/** @typedef {{}} Docs_Common_FieldInputs */
+/** @typedef {{}} Docs_Common_Requestheaders1Inputs */
+/** @typedef {{}} Docs_Common_ParametersInputs */
+/** @typedef {{}} Docs_Common_OptionsInputs */
+/** @typedef {{}} Docs_Common_Curlexample1Inputs */
+/** @typedef {{}} Docs_Common_Successresponse1Inputs */
+/** @typedef {{}} Docs_Common_Errorresponse1Inputs */
+/** @typedef {{}} Docs_Common_Statusvalues1Inputs */
+/** @typedef {{}} Docs_Common_PlaceholderInputs */
 import * as __en from "./en.js"
 import * as __cs from "./cs.js"
 /**
@@ -8411,3 +8517,1593 @@ const apikeys_error_retry1 = /** @type {((inputs?: Apikeys_Error_Retry1Inputs, o
 	return __cs.apikeys_error_retry1(inputs)
 });
 export { apikeys_error_retry1 as "apiKeys.error.retry" }
+/**
+* | output |
+* | --- |
+* | "MetaCleaner — API Documentation" |
+*
+* @param {Docs_Meta_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_meta_title = /** @type {((inputs?: Docs_Meta_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Meta_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_meta_title(inputs)
+	return __cs.docs_meta_title(inputs)
+});
+export { docs_meta_title as "docs.meta.title" }
+/**
+* | output |
+* | --- |
+* | "Docs" |
+*
+* @param {Docs_Nav_DocsInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_nav_docs = /** @type {((inputs?: Docs_Nav_DocsInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Nav_DocsInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_nav_docs(inputs)
+	return __cs.docs_nav_docs(inputs)
+});
+export { docs_nav_docs as "docs.nav.docs" }
+/**
+* | output |
+* | --- |
+* | "Back to app" |
+*
+* @param {Docs_Nav_BackInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_nav_back = /** @type {((inputs?: Docs_Nav_BackInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Nav_BackInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_nav_back(inputs)
+	return __cs.docs_nav_back(inputs)
+});
+export { docs_nav_back as "docs.nav.back" }
+/**
+* | output |
+* | --- |
+* | "Endpoints" |
+*
+* @param {Docs_Sidebar_Endpointsheading1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_endpointsheading1 = /** @type {((inputs?: Docs_Sidebar_Endpointsheading1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_Endpointsheading1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_endpointsheading1(inputs)
+	return __cs.docs_sidebar_endpointsheading1(inputs)
+});
+export { docs_sidebar_endpointsheading1 as "docs.sidebar.endpointsHeading" }
+/**
+* | output |
+* | --- |
+* | "Introduction" |
+*
+* @param {Docs_Sidebar_IntroInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_intro = /** @type {((inputs?: Docs_Sidebar_IntroInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_IntroInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_intro(inputs)
+	return __cs.docs_sidebar_intro(inputs)
+});
+export { docs_sidebar_intro as "docs.sidebar.intro" }
+/**
+* | output |
+* | --- |
+* | "Authentication" |
+*
+* @param {Docs_Sidebar_AuthInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_auth = /** @type {((inputs?: Docs_Sidebar_AuthInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_AuthInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_auth(inputs)
+	return __cs.docs_sidebar_auth(inputs)
+});
+export { docs_sidebar_auth as "docs.sidebar.auth" }
+/**
+* | output |
+* | --- |
+* | "Error Codes" |
+*
+* @param {Docs_Sidebar_ErrorsInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_errors = /** @type {((inputs?: Docs_Sidebar_ErrorsInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_ErrorsInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_errors(inputs)
+	return __cs.docs_sidebar_errors(inputs)
+});
+export { docs_sidebar_errors as "docs.sidebar.errors" }
+/**
+* | output |
+* | --- |
+* | "Introduction" |
+*
+* @param {Docs_Intro_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_title = /** @type {((inputs?: Docs_Intro_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_title(inputs)
+	return __cs.docs_intro_title(inputs)
+});
+export { docs_intro_title as "docs.intro.title" }
+/**
+* | output |
+* | --- |
+* | "API Overview & Quick Start" |
+*
+* @param {Docs_Intro_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_subtitle = /** @type {((inputs?: Docs_Intro_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_subtitle(inputs)
+	return __cs.docs_intro_subtitle(inputs)
+});
+export { docs_intro_subtitle as "docs.intro.subtitle" }
+/**
+* | output |
+* | --- |
+* | "The MetaCleaner API provides programmatic access to metadata cleaning for images and videos. Upload files, run async cleaning jobs, and download cleaned vers..." |
+*
+* @param {Docs_Intro_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_description = /** @type {((inputs?: Docs_Intro_DescriptionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_DescriptionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_description(inputs)
+	return __cs.docs_intro_description(inputs)
+});
+export { docs_intro_description as "docs.intro.description" }
+/**
+* | output |
+* | --- |
+* | "File Upload" |
+*
+* @param {Docs_Intro_Feature_Upload_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_upload_title = /** @type {((inputs?: Docs_Intro_Feature_Upload_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Upload_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_upload_title(inputs)
+	return __cs.docs_intro_feature_upload_title(inputs)
+});
+export { docs_intro_feature_upload_title as "docs.intro.feature.upload.title" }
+/**
+* | output |
+* | --- |
+* | "Upload photos and videos up to 500 MB. Supports JPG, PNG, HEIC, WEBP, MP4, and MOV formats." |
+*
+* @param {Docs_Intro_Feature_Upload_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_upload_desc = /** @type {((inputs?: Docs_Intro_Feature_Upload_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Upload_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_upload_desc(inputs)
+	return __cs.docs_intro_feature_upload_desc(inputs)
+});
+export { docs_intro_feature_upload_desc as "docs.intro.feature.upload.desc" }
+/**
+* | output |
+* | --- |
+* | "Metadata Cleaning" |
+*
+* @param {Docs_Intro_Feature_Clean_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_clean_title = /** @type {((inputs?: Docs_Intro_Feature_Clean_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Clean_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_clean_title(inputs)
+	return __cs.docs_intro_feature_clean_title(inputs)
+});
+export { docs_intro_feature_clean_title as "docs.intro.feature.clean.title" }
+/**
+* | output |
+* | --- |
+* | "Strip GPS, EXIF, IPTC, and other sensitive metadata fields while preserving the original file quality." |
+*
+* @param {Docs_Intro_Feature_Clean_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_clean_desc = /** @type {((inputs?: Docs_Intro_Feature_Clean_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Clean_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_clean_desc(inputs)
+	return __cs.docs_intro_feature_clean_desc(inputs)
+});
+export { docs_intro_feature_clean_desc as "docs.intro.feature.clean.desc" }
+/**
+* | output |
+* | --- |
+* | "Async Processing" |
+*
+* @param {Docs_Intro_Feature_Async_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_async_title = /** @type {((inputs?: Docs_Intro_Feature_Async_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Async_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_async_title(inputs)
+	return __cs.docs_intro_feature_async_title(inputs)
+});
+export { docs_intro_feature_async_title as "docs.intro.feature.async.title" }
+/**
+* | output |
+* | --- |
+* | "Long-running jobs execute asynchronously. Poll the status endpoint to track progress and retrieve results." |
+*
+* @param {Docs_Intro_Feature_Async_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_feature_async_desc = /** @type {((inputs?: Docs_Intro_Feature_Async_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Feature_Async_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_feature_async_desc(inputs)
+	return __cs.docs_intro_feature_async_desc(inputs)
+});
+export { docs_intro_feature_async_desc as "docs.intro.feature.async.desc" }
+/**
+* | output |
+* | --- |
+* | "Quick Start" |
+*
+* @param {Docs_Intro_Quickstart_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_title1 = /** @type {((inputs?: Docs_Intro_Quickstart_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_title1(inputs)
+	return __cs.docs_intro_quickstart_title1(inputs)
+});
+export { docs_intro_quickstart_title1 as "docs.intro.quickStart.title" }
+/**
+* | output |
+* | --- |
+* | "Upload" |
+*
+* @param {Docs_Intro_Quickstart_Step1_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step1_title1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step1_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step1_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step1_title1(inputs)
+	return __cs.docs_intro_quickstart_step1_title1(inputs)
+});
+export { docs_intro_quickstart_step1_title1 as "docs.intro.quickStart.step1.title" }
+/**
+* | output |
+* | --- |
+* | "Upload your file and receive a file_id." |
+*
+* @param {Docs_Intro_Quickstart_Step1_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step1_desc1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step1_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step1_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step1_desc1(inputs)
+	return __cs.docs_intro_quickstart_step1_desc1(inputs)
+});
+export { docs_intro_quickstart_step1_desc1 as "docs.intro.quickStart.step1.desc" }
+/**
+* | output |
+* | --- |
+* | "Clean" |
+*
+* @param {Docs_Intro_Quickstart_Step2_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step2_title1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step2_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step2_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step2_title1(inputs)
+	return __cs.docs_intro_quickstart_step2_title1(inputs)
+});
+export { docs_intro_quickstart_step2_title1 as "docs.intro.quickStart.step2.title" }
+/**
+* | output |
+* | --- |
+* | "Start a cleaning job and receive a job_id." |
+*
+* @param {Docs_Intro_Quickstart_Step2_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step2_desc1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step2_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step2_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step2_desc1(inputs)
+	return __cs.docs_intro_quickstart_step2_desc1(inputs)
+});
+export { docs_intro_quickstart_step2_desc1 as "docs.intro.quickStart.step2.desc" }
+/**
+* | output |
+* | --- |
+* | "Check Status" |
+*
+* @param {Docs_Intro_Quickstart_Step3_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step3_title1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step3_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step3_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step3_title1(inputs)
+	return __cs.docs_intro_quickstart_step3_title1(inputs)
+});
+export { docs_intro_quickstart_step3_title1 as "docs.intro.quickStart.step3.title" }
+/**
+* | output |
+* | --- |
+* | "Poll until status is completed." |
+*
+* @param {Docs_Intro_Quickstart_Step3_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step3_desc1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step3_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step3_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step3_desc1(inputs)
+	return __cs.docs_intro_quickstart_step3_desc1(inputs)
+});
+export { docs_intro_quickstart_step3_desc1 as "docs.intro.quickStart.step3.desc" }
+/**
+* | output |
+* | --- |
+* | "Download" |
+*
+* @param {Docs_Intro_Quickstart_Step4_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step4_title1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step4_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step4_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step4_title1(inputs)
+	return __cs.docs_intro_quickstart_step4_title1(inputs)
+});
+export { docs_intro_quickstart_step4_title1 as "docs.intro.quickStart.step4.title" }
+/**
+* | output |
+* | --- |
+* | "Download the cleaned file using the file_id." |
+*
+* @param {Docs_Intro_Quickstart_Step4_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_quickstart_step4_desc1 = /** @type {((inputs?: Docs_Intro_Quickstart_Step4_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Quickstart_Step4_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_quickstart_step4_desc1(inputs)
+	return __cs.docs_intro_quickstart_step4_desc1(inputs)
+});
+export { docs_intro_quickstart_step4_desc1 as "docs.intro.quickStart.step4.desc" }
+/**
+* | output |
+* | --- |
+* | "Rate limit: 60 requests per minute per API key. The API returns HTTP 429 when the limit is exceeded. The limit resets every minute." |
+*
+* @param {Docs_Intro_Ratelimit1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_ratelimit1 = /** @type {((inputs?: Docs_Intro_Ratelimit1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Ratelimit1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_ratelimit1(inputs)
+	return __cs.docs_intro_ratelimit1(inputs)
+});
+export { docs_intro_ratelimit1 as "docs.intro.rateLimit" }
+/**
+* | output |
+* | --- |
+* | "Supported formats" |
+*
+* @param {Docs_Intro_Formatslabel1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_intro_formatslabel1 = /** @type {((inputs?: Docs_Intro_Formatslabel1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Intro_Formatslabel1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_intro_formatslabel1(inputs)
+	return __cs.docs_intro_formatslabel1(inputs)
+});
+export { docs_intro_formatslabel1 as "docs.intro.formatsLabel" }
+/**
+* | output |
+* | --- |
+* | "Authentication" |
+*
+* @param {Docs_Auth_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_title = /** @type {((inputs?: Docs_Auth_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_title(inputs)
+	return __cs.docs_auth_title(inputs)
+});
+export { docs_auth_title as "docs.auth.title" }
+/**
+* | output |
+* | --- |
+* | "Bearer Token Authentication" |
+*
+* @param {Docs_Auth_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_subtitle = /** @type {((inputs?: Docs_Auth_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_subtitle(inputs)
+	return __cs.docs_auth_subtitle(inputs)
+});
+export { docs_auth_subtitle as "docs.auth.subtitle" }
+/**
+* | output |
+* | --- |
+* | "The MetaCleaner API uses Bearer token authentication. Every request must include a valid API key in the HTTP Authorization header." |
+*
+* @param {Docs_Auth_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_description = /** @type {((inputs?: Docs_Auth_DescriptionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_DescriptionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_description(inputs)
+	return __cs.docs_auth_description(inputs)
+});
+export { docs_auth_description as "docs.auth.description" }
+/**
+* | output |
+* | --- |
+* | "Generate API keys in your account under Settings → API Keys. The key is shown in full only once at creation time — copy it immediately and store it securely." |
+*
+* @param {Docs_Auth_Infobox1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_infobox1 = /** @type {((inputs?: Docs_Auth_Infobox1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Infobox1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_infobox1(inputs)
+	return __cs.docs_auth_infobox1(inputs)
+});
+export { docs_auth_infobox1 as "docs.auth.infoBox" }
+/**
+* | output |
+* | --- |
+* | "Security Best Practices" |
+*
+* @param {Docs_Auth_Bestpractices_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_bestpractices_title1 = /** @type {((inputs?: Docs_Auth_Bestpractices_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Bestpractices_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_bestpractices_title1(inputs)
+	return __cs.docs_auth_bestpractices_title1(inputs)
+});
+export { docs_auth_bestpractices_title1 as "docs.auth.bestPractices.title" }
+/**
+* | output |
+* | --- |
+* | "Never include API keys in client-side code or commit them to version control" |
+*
+* @param {Docs_Auth_Bestpractice_11Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_bestpractice_11 = /** @type {((inputs?: Docs_Auth_Bestpractice_11Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Bestpractice_11Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_bestpractice_11(inputs)
+	return __cs.docs_auth_bestpractice_11(inputs)
+});
+export { docs_auth_bestpractice_11 as "docs.auth.bestPractice.1" }
+/**
+* | output |
+* | --- |
+* | "Store keys as environment variables or use a secrets manager (e.g., AWS Secrets Manager, HashiCorp Vault)" |
+*
+* @param {Docs_Auth_Bestpractice_21Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_bestpractice_21 = /** @type {((inputs?: Docs_Auth_Bestpractice_21Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Bestpractice_21Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_bestpractice_21(inputs)
+	return __cs.docs_auth_bestpractice_21(inputs)
+});
+export { docs_auth_bestpractice_21 as "docs.auth.bestPractice.2" }
+/**
+* | output |
+* | --- |
+* | "Revoke and regenerate compromised keys immediately from the API Keys settings page" |
+*
+* @param {Docs_Auth_Bestpractice_31Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_bestpractice_31 = /** @type {((inputs?: Docs_Auth_Bestpractice_31Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Bestpractice_31Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_bestpractice_31(inputs)
+	return __cs.docs_auth_bestpractice_31(inputs)
+});
+export { docs_auth_bestpractice_31 as "docs.auth.bestPractice.3" }
+/**
+* | output |
+* | --- |
+* | "All communication uses HTTPS. HTTP requests are rejected." |
+*
+* @param {Docs_Auth_Bestpractice_41Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_bestpractice_41 = /** @type {((inputs?: Docs_Auth_Bestpractice_41Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Bestpractice_41Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_bestpractice_41(inputs)
+	return __cs.docs_auth_bestpractice_41(inputs)
+});
+export { docs_auth_bestpractice_41 as "docs.auth.bestPractice.4" }
+/**
+* | output |
+* | --- |
+* | "401 Unauthorized" |
+*
+* @param {Docs_Auth_Error401label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_error401label1 = /** @type {((inputs?: Docs_Auth_Error401label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Error401label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_error401label1(inputs)
+	return __cs.docs_auth_error401label1(inputs)
+});
+export { docs_auth_error401label1 as "docs.auth.error401Label" }
+/**
+* | output |
+* | --- |
+* | "403 Forbidden" |
+*
+* @param {Docs_Auth_Error403label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_auth_error403label1 = /** @type {((inputs?: Docs_Auth_Error403label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Auth_Error403label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_auth_error403label1(inputs)
+	return __cs.docs_auth_error403label1(inputs)
+});
+export { docs_auth_error403label1 as "docs.auth.error403Label" }
+/**
+* | output |
+* | --- |
+* | "Error Codes" |
+*
+* @param {Docs_Errors_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_title = /** @type {((inputs?: Docs_Errors_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_title(inputs)
+	return __cs.docs_errors_title(inputs)
+});
+export { docs_errors_title as "docs.errors.title" }
+/**
+* | output |
+* | --- |
+* | "HTTP Status Codes & Error Reference" |
+*
+* @param {Docs_Errors_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_subtitle = /** @type {((inputs?: Docs_Errors_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_subtitle(inputs)
+	return __cs.docs_errors_subtitle(inputs)
+});
+export { docs_errors_subtitle as "docs.errors.subtitle" }
+/**
+* | output |
+* | --- |
+* | "All API errors return a consistent JSON response with a status, error code, human-readable message, and optional details object." |
+*
+* @param {Docs_Errors_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_description = /** @type {((inputs?: Docs_Errors_DescriptionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_DescriptionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_description(inputs)
+	return __cs.docs_errors_description(inputs)
+});
+export { docs_errors_description as "docs.errors.description" }
+/**
+* | output |
+* | --- |
+* | "2xx Success" |
+*
+* @param {Docs_Errors_Status2xx_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status2xx_title = /** @type {((inputs?: Docs_Errors_Status2xx_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status2xx_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status2xx_title(inputs)
+	return __cs.docs_errors_status2xx_title(inputs)
+});
+export { docs_errors_status2xx_title as "docs.errors.status2xx.title" }
+/**
+* | output |
+* | --- |
+* | "The request was received, understood, and processed successfully." |
+*
+* @param {Docs_Errors_Status2xx_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status2xx_desc = /** @type {((inputs?: Docs_Errors_Status2xx_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status2xx_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status2xx_desc(inputs)
+	return __cs.docs_errors_status2xx_desc(inputs)
+});
+export { docs_errors_status2xx_desc as "docs.errors.status2xx.desc" }
+/**
+* | output |
+* | --- |
+* | "4xx Client Error" |
+*
+* @param {Docs_Errors_Status4xx_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status4xx_title = /** @type {((inputs?: Docs_Errors_Status4xx_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status4xx_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status4xx_title(inputs)
+	return __cs.docs_errors_status4xx_title(inputs)
+});
+export { docs_errors_status4xx_title as "docs.errors.status4xx.title" }
+/**
+* | output |
+* | --- |
+* | "The request contains invalid input, missing authentication, or references a resource that does not exist." |
+*
+* @param {Docs_Errors_Status4xx_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status4xx_desc = /** @type {((inputs?: Docs_Errors_Status4xx_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status4xx_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status4xx_desc(inputs)
+	return __cs.docs_errors_status4xx_desc(inputs)
+});
+export { docs_errors_status4xx_desc as "docs.errors.status4xx.desc" }
+/**
+* | output |
+* | --- |
+* | "5xx Server Error" |
+*
+* @param {Docs_Errors_Status5xx_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status5xx_title = /** @type {((inputs?: Docs_Errors_Status5xx_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status5xx_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status5xx_title(inputs)
+	return __cs.docs_errors_status5xx_title(inputs)
+});
+export { docs_errors_status5xx_title as "docs.errors.status5xx.title" }
+/**
+* | output |
+* | --- |
+* | "An unexpected server-side error occurred. Retry with exponential backoff." |
+*
+* @param {Docs_Errors_Status5xx_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_status5xx_desc = /** @type {((inputs?: Docs_Errors_Status5xx_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Status5xx_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_status5xx_desc(inputs)
+	return __cs.docs_errors_status5xx_desc(inputs)
+});
+export { docs_errors_status5xx_desc as "docs.errors.status5xx.desc" }
+/**
+* | output |
+* | --- |
+* | "HTTP Status" |
+*
+* @param {Docs_Errors_Table_StatusInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_table_status = /** @type {((inputs?: Docs_Errors_Table_StatusInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Table_StatusInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_table_status(inputs)
+	return __cs.docs_errors_table_status(inputs)
+});
+export { docs_errors_table_status as "docs.errors.table.status" }
+/**
+* | output |
+* | --- |
+* | "Error Code" |
+*
+* @param {Docs_Errors_Table_CodeInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_table_code = /** @type {((inputs?: Docs_Errors_Table_CodeInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Table_CodeInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_table_code(inputs)
+	return __cs.docs_errors_table_code(inputs)
+});
+export { docs_errors_table_code as "docs.errors.table.code" }
+/**
+* | output |
+* | --- |
+* | "Description" |
+*
+* @param {Docs_Errors_Table_DescriptionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_table_description = /** @type {((inputs?: Docs_Errors_Table_DescriptionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Table_DescriptionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_table_description(inputs)
+	return __cs.docs_errors_table_description(inputs)
+});
+export { docs_errors_table_description as "docs.errors.table.description" }
+/**
+* | output |
+* | --- |
+* | "Solution" |
+*
+* @param {Docs_Errors_Table_SolutionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_table_solution = /** @type {((inputs?: Docs_Errors_Table_SolutionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Table_SolutionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_table_solution(inputs)
+	return __cs.docs_errors_table_solution(inputs)
+});
+export { docs_errors_table_solution as "docs.errors.table.solution" }
+/**
+* | output |
+* | --- |
+* | "For 429 (rate limit) and 5xx (server) errors, implement exponential backoff with a maximum of 3 retry attempts. Start with a 1-second delay and double it on ..." |
+*
+* @param {Docs_Errors_RetryInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_retry = /** @type {((inputs?: Docs_Errors_RetryInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_RetryInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_retry(inputs)
+	return __cs.docs_errors_retry(inputs)
+});
+export { docs_errors_retry as "docs.errors.retry" }
+/**
+* | output |
+* | --- |
+* | "The request body or parameters contain invalid values" |
+*
+* @param {Docs_Errors_Entry_Invalidinput_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_invalidinput_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Invalidinput_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Invalidinput_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_invalidinput_desc1(inputs)
+	return __cs.docs_errors_entry_invalidinput_desc1(inputs)
+});
+export { docs_errors_entry_invalidinput_desc1 as "docs.errors.entry.invalidInput.desc" }
+/**
+* | output |
+* | --- |
+* | "Check the request body and ensure all required fields are valid" |
+*
+* @param {Docs_Errors_Entry_Invalidinput_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_invalidinput_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Invalidinput_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Invalidinput_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_invalidinput_solution1(inputs)
+	return __cs.docs_errors_entry_invalidinput_solution1(inputs)
+});
+export { docs_errors_entry_invalidinput_solution1 as "docs.errors.entry.invalidInput.solution" }
+/**
+* | output |
+* | --- |
+* | "The uploaded file format is not supported" |
+*
+* @param {Docs_Errors_Entry_Unsupportedformat_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_unsupportedformat_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Unsupportedformat_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Unsupportedformat_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_unsupportedformat_desc1(inputs)
+	return __cs.docs_errors_entry_unsupportedformat_desc1(inputs)
+});
+export { docs_errors_entry_unsupportedformat_desc1 as "docs.errors.entry.unsupportedFormat.desc" }
+/**
+* | output |
+* | --- |
+* | "Use a supported format: JPG, PNG, HEIC, WEBP, MP4, or MOV" |
+*
+* @param {Docs_Errors_Entry_Unsupportedformat_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_unsupportedformat_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Unsupportedformat_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Unsupportedformat_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_unsupportedformat_solution1(inputs)
+	return __cs.docs_errors_entry_unsupportedformat_solution1(inputs)
+});
+export { docs_errors_entry_unsupportedformat_solution1 as "docs.errors.entry.unsupportedFormat.solution" }
+/**
+* | output |
+* | --- |
+* | "Missing or invalid API key in the Authorization header" |
+*
+* @param {Docs_Errors_Entry_Unauthorized_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_unauthorized_desc = /** @type {((inputs?: Docs_Errors_Entry_Unauthorized_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Unauthorized_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_unauthorized_desc(inputs)
+	return __cs.docs_errors_entry_unauthorized_desc(inputs)
+});
+export { docs_errors_entry_unauthorized_desc as "docs.errors.entry.unauthorized.desc" }
+/**
+* | output |
+* | --- |
+* | "Include a valid Bearer token in the Authorization header" |
+*
+* @param {Docs_Errors_Entry_Unauthorized_SolutionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_unauthorized_solution = /** @type {((inputs?: Docs_Errors_Entry_Unauthorized_SolutionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Unauthorized_SolutionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_unauthorized_solution(inputs)
+	return __cs.docs_errors_entry_unauthorized_solution(inputs)
+});
+export { docs_errors_entry_unauthorized_solution as "docs.errors.entry.unauthorized.solution" }
+/**
+* | output |
+* | --- |
+* | "The API key does not have permission to access this resource" |
+*
+* @param {Docs_Errors_Entry_Forbidden_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_forbidden_desc = /** @type {((inputs?: Docs_Errors_Entry_Forbidden_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Forbidden_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_forbidden_desc(inputs)
+	return __cs.docs_errors_entry_forbidden_desc(inputs)
+});
+export { docs_errors_entry_forbidden_desc as "docs.errors.entry.forbidden.desc" }
+/**
+* | output |
+* | --- |
+* | "Check that your API key has the required permissions" |
+*
+* @param {Docs_Errors_Entry_Forbidden_SolutionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_forbidden_solution = /** @type {((inputs?: Docs_Errors_Entry_Forbidden_SolutionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Forbidden_SolutionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_forbidden_solution(inputs)
+	return __cs.docs_errors_entry_forbidden_solution(inputs)
+});
+export { docs_errors_entry_forbidden_solution as "docs.errors.entry.forbidden.solution" }
+/**
+* | output |
+* | --- |
+* | "The requested resource (file or job) does not exist" |
+*
+* @param {Docs_Errors_Entry_Notfound_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_notfound_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Notfound_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Notfound_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_notfound_desc1(inputs)
+	return __cs.docs_errors_entry_notfound_desc1(inputs)
+});
+export { docs_errors_entry_notfound_desc1 as "docs.errors.entry.notFound.desc" }
+/**
+* | output |
+* | --- |
+* | "Verify the file_id or job_id is correct and belongs to your account" |
+*
+* @param {Docs_Errors_Entry_Notfound_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_notfound_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Notfound_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Notfound_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_notfound_solution1(inputs)
+	return __cs.docs_errors_entry_notfound_solution1(inputs)
+});
+export { docs_errors_entry_notfound_solution1 as "docs.errors.entry.notFound.solution" }
+/**
+* | output |
+* | --- |
+* | "One or more required request fields are missing or invalid" |
+*
+* @param {Docs_Errors_Entry_Validationerror_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_validationerror_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Validationerror_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Validationerror_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_validationerror_desc1(inputs)
+	return __cs.docs_errors_entry_validationerror_desc1(inputs)
+});
+export { docs_errors_entry_validationerror_desc1 as "docs.errors.entry.validationError.desc" }
+/**
+* | output |
+* | --- |
+* | "Review the error details field for specific validation messages" |
+*
+* @param {Docs_Errors_Entry_Validationerror_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_validationerror_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Validationerror_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Validationerror_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_validationerror_solution1(inputs)
+	return __cs.docs_errors_entry_validationerror_solution1(inputs)
+});
+export { docs_errors_entry_validationerror_solution1 as "docs.errors.entry.validationError.solution" }
+/**
+* | output |
+* | --- |
+* | "The request rate limit has been exceeded" |
+*
+* @param {Docs_Errors_Entry_Ratelimit_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_ratelimit_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Ratelimit_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Ratelimit_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_ratelimit_desc1(inputs)
+	return __cs.docs_errors_entry_ratelimit_desc1(inputs)
+});
+export { docs_errors_entry_ratelimit_desc1 as "docs.errors.entry.rateLimit.desc" }
+/**
+* | output |
+* | --- |
+* | "Wait for the rate limit to reset (1 minute) or use exponential backoff" |
+*
+* @param {Docs_Errors_Entry_Ratelimit_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_ratelimit_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Ratelimit_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Ratelimit_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_ratelimit_solution1(inputs)
+	return __cs.docs_errors_entry_ratelimit_solution1(inputs)
+});
+export { docs_errors_entry_ratelimit_solution1 as "docs.errors.entry.rateLimit.solution" }
+/**
+* | output |
+* | --- |
+* | "An unexpected error occurred on the server" |
+*
+* @param {Docs_Errors_Entry_Internalerror_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_internalerror_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Internalerror_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Internalerror_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_internalerror_desc1(inputs)
+	return __cs.docs_errors_entry_internalerror_desc1(inputs)
+});
+export { docs_errors_entry_internalerror_desc1 as "docs.errors.entry.internalError.desc" }
+/**
+* | output |
+* | --- |
+* | "Retry the request with exponential backoff. Contact support if the issue persists." |
+*
+* @param {Docs_Errors_Entry_Internalerror_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_internalerror_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Internalerror_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Internalerror_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_internalerror_solution1(inputs)
+	return __cs.docs_errors_entry_internalerror_solution1(inputs)
+});
+export { docs_errors_entry_internalerror_solution1 as "docs.errors.entry.internalError.solution" }
+/**
+* | output |
+* | --- |
+* | "The service is temporarily unavailable for maintenance" |
+*
+* @param {Docs_Errors_Entry_Serviceunavailable_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_serviceunavailable_desc1 = /** @type {((inputs?: Docs_Errors_Entry_Serviceunavailable_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Serviceunavailable_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_serviceunavailable_desc1(inputs)
+	return __cs.docs_errors_entry_serviceunavailable_desc1(inputs)
+});
+export { docs_errors_entry_serviceunavailable_desc1 as "docs.errors.entry.serviceUnavailable.desc" }
+/**
+* | output |
+* | --- |
+* | "Retry after a short delay. Check the status page for ongoing incidents." |
+*
+* @param {Docs_Errors_Entry_Serviceunavailable_Solution1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_errors_entry_serviceunavailable_solution1 = /** @type {((inputs?: Docs_Errors_Entry_Serviceunavailable_Solution1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Errors_Entry_Serviceunavailable_Solution1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_errors_entry_serviceunavailable_solution1(inputs)
+	return __cs.docs_errors_entry_serviceunavailable_solution1(inputs)
+});
+export { docs_errors_entry_serviceunavailable_solution1 as "docs.errors.entry.serviceUnavailable.solution" }
+/**
+* | output |
+* | --- |
+* | "API Endpoints" |
+*
+* @param {Docs_Endpoints_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoints_title = /** @type {((inputs?: Docs_Endpoints_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoints_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoints_title(inputs)
+	return __cs.docs_endpoints_title(inputs)
+});
+export { docs_endpoints_title as "docs.endpoints.title" }
+/**
+* | output |
+* | --- |
+* | "Complete endpoint reference" |
+*
+* @param {Docs_Endpoints_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoints_subtitle = /** @type {((inputs?: Docs_Endpoints_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoints_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoints_subtitle(inputs)
+	return __cs.docs_endpoints_subtitle(inputs)
+});
+export { docs_endpoints_subtitle as "docs.endpoints.subtitle" }
+/**
+* | output |
+* | --- |
+* | "Upload a file to the MetaCleaner API. Returns a file_id used in subsequent cleaning and download requests." |
+*
+* @param {Docs_Endpoint_Upload_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_upload_desc = /** @type {((inputs?: Docs_Endpoint_Upload_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Upload_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_upload_desc(inputs)
+	return __cs.docs_endpoint_upload_desc(inputs)
+});
+export { docs_endpoint_upload_desc as "docs.endpoint.upload.desc" }
+/**
+* | output |
+* | --- |
+* | "The binary file to upload (multipart/form-data). Maximum size: 500 MB." |
+*
+* @param {Docs_Endpoint_Upload_Param_File_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_upload_param_file_desc = /** @type {((inputs?: Docs_Endpoint_Upload_Param_File_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Upload_Param_File_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_upload_param_file_desc(inputs)
+	return __cs.docs_endpoint_upload_param_file_desc(inputs)
+});
+export { docs_endpoint_upload_param_file_desc as "docs.endpoint.upload.param.file.desc" }
+/**
+* | output |
+* | --- |
+* | "201 Created" |
+*
+* @param {Docs_Endpoint_Upload_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_upload_response_success_label = /** @type {((inputs?: Docs_Endpoint_Upload_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Upload_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_upload_response_success_label(inputs)
+	return __cs.docs_endpoint_upload_response_success_label(inputs)
+});
+export { docs_endpoint_upload_response_success_label as "docs.endpoint.upload.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "400 Bad Request" |
+*
+* @param {Docs_Endpoint_Upload_Response_Error_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_upload_response_error_label = /** @type {((inputs?: Docs_Endpoint_Upload_Response_Error_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Upload_Response_Error_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_upload_response_error_label(inputs)
+	return __cs.docs_endpoint_upload_response_error_label(inputs)
+});
+export { docs_endpoint_upload_response_error_label as "docs.endpoint.upload.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Start an asynchronous metadata cleaning job for a previously uploaded file. Returns a job_id to track progress." |
+*
+* @param {Docs_Endpoint_Clean_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_desc = /** @type {((inputs?: Docs_Endpoint_Clean_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_desc(inputs)
+	return __cs.docs_endpoint_clean_desc(inputs)
+});
+export { docs_endpoint_clean_desc as "docs.endpoint.clean.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the file to clean (obtained from the upload response)" |
+*
+* @param {Docs_Endpoint_Clean_Param_Fileid_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_param_fileid_desc1 = /** @type {((inputs?: Docs_Endpoint_Clean_Param_Fileid_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Param_Fileid_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_param_fileid_desc1(inputs)
+	return __cs.docs_endpoint_clean_param_fileid_desc1(inputs)
+});
+export { docs_endpoint_clean_param_fileid_desc1 as "docs.endpoint.clean.param.fileId.desc" }
+/**
+* | output |
+* | --- |
+* | "Remove GPS location data from the file" |
+*
+* @param {Docs_Endpoint_Clean_Opt_Stripgps_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_opt_stripgps_desc1 = /** @type {((inputs?: Docs_Endpoint_Clean_Opt_Stripgps_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Opt_Stripgps_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_opt_stripgps_desc1(inputs)
+	return __cs.docs_endpoint_clean_opt_stripgps_desc1(inputs)
+});
+export { docs_endpoint_clean_opt_stripgps_desc1 as "docs.endpoint.clean.opt.stripGps.desc" }
+/**
+* | output |
+* | --- |
+* | "Remove EXIF camera metadata from the file" |
+*
+* @param {Docs_Endpoint_Clean_Opt_Stripexif_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_opt_stripexif_desc1 = /** @type {((inputs?: Docs_Endpoint_Clean_Opt_Stripexif_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Opt_Stripexif_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_opt_stripexif_desc1(inputs)
+	return __cs.docs_endpoint_clean_opt_stripexif_desc1(inputs)
+});
+export { docs_endpoint_clean_opt_stripexif_desc1 as "docs.endpoint.clean.opt.stripExif.desc" }
+/**
+* | output |
+* | --- |
+* | "Remove IPTC/XMP copyright and editorial metadata" |
+*
+* @param {Docs_Endpoint_Clean_Opt_Stripiptc_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_opt_stripiptc_desc1 = /** @type {((inputs?: Docs_Endpoint_Clean_Opt_Stripiptc_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Opt_Stripiptc_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_opt_stripiptc_desc1(inputs)
+	return __cs.docs_endpoint_clean_opt_stripiptc_desc1(inputs)
+});
+export { docs_endpoint_clean_opt_stripiptc_desc1 as "docs.endpoint.clean.opt.stripIptc.desc" }
+/**
+* | output |
+* | --- |
+* | "202 Accepted" |
+*
+* @param {Docs_Endpoint_Clean_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_response_success_label = /** @type {((inputs?: Docs_Endpoint_Clean_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_response_success_label(inputs)
+	return __cs.docs_endpoint_clean_response_success_label(inputs)
+});
+export { docs_endpoint_clean_response_success_label as "docs.endpoint.clean.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Clean_Response_Error_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_response_error_label = /** @type {((inputs?: Docs_Endpoint_Clean_Response_Error_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Response_Error_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_response_error_label(inputs)
+	return __cs.docs_endpoint_clean_response_error_label(inputs)
+});
+export { docs_endpoint_clean_response_error_label as "docs.endpoint.clean.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Check the status of a cleaning job. Poll this endpoint until the status is completed or failed." |
+*
+* @param {Docs_Endpoint_Status_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_status_desc = /** @type {((inputs?: Docs_Endpoint_Status_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Status_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_status_desc(inputs)
+	return __cs.docs_endpoint_status_desc(inputs)
+});
+export { docs_endpoint_status_desc as "docs.endpoint.status.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the cleaning job (obtained from the clean response)" |
+*
+* @param {Docs_Endpoint_Status_Param_Jobid_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_status_param_jobid_desc1 = /** @type {((inputs?: Docs_Endpoint_Status_Param_Jobid_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Status_Param_Jobid_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_status_param_jobid_desc1(inputs)
+	return __cs.docs_endpoint_status_param_jobid_desc1(inputs)
+});
+export { docs_endpoint_status_param_jobid_desc1 as "docs.endpoint.status.param.jobId.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Status_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_status_response_success_label = /** @type {((inputs?: Docs_Endpoint_Status_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Status_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_status_response_success_label(inputs)
+	return __cs.docs_endpoint_status_response_success_label(inputs)
+});
+export { docs_endpoint_status_response_success_label as "docs.endpoint.status.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Status_Response_Error_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_status_response_error_label = /** @type {((inputs?: Docs_Endpoint_Status_Response_Error_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Status_Response_Error_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_status_response_error_label(inputs)
+	return __cs.docs_endpoint_status_response_error_label(inputs)
+});
+export { docs_endpoint_status_response_error_label as "docs.endpoint.status.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Download the cleaned file. Only available after the associated cleaning job reaches the completed state." |
+*
+* @param {Docs_Endpoint_Download_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_desc = /** @type {((inputs?: Docs_Endpoint_Download_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_desc(inputs)
+	return __cs.docs_endpoint_download_desc(inputs)
+});
+export { docs_endpoint_download_desc as "docs.endpoint.download.desc" }
+/**
+* | output |
+* | --- |
+* | "Full documentation will be available after backend integration is complete." |
+*
+* @param {Docs_Endpoint_Download_PlaceholderInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_placeholder = /** @type {((inputs?: Docs_Endpoint_Download_PlaceholderInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_PlaceholderInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_placeholder(inputs)
+	return __cs.docs_endpoint_download_placeholder(inputs)
+});
+export { docs_endpoint_download_placeholder as "docs.endpoint.download.placeholder" }
+/**
+* | output |
+* | --- |
+* | "Retrieve metadata information about a file, including which metadata fields are present and their values." |
+*
+* @param {Docs_Endpoint_Metadata_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_metadata_desc = /** @type {((inputs?: Docs_Endpoint_Metadata_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Metadata_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_metadata_desc(inputs)
+	return __cs.docs_endpoint_metadata_desc(inputs)
+});
+export { docs_endpoint_metadata_desc as "docs.endpoint.metadata.desc" }
+/**
+* | output |
+* | --- |
+* | "Full documentation will be available after backend integration is complete." |
+*
+* @param {Docs_Endpoint_Metadata_PlaceholderInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_metadata_placeholder = /** @type {((inputs?: Docs_Endpoint_Metadata_PlaceholderInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Metadata_PlaceholderInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_metadata_placeholder(inputs)
+	return __cs.docs_endpoint_metadata_placeholder(inputs)
+});
+export { docs_endpoint_metadata_placeholder as "docs.endpoint.metadata.placeholder" }
+/**
+* | output |
+* | --- |
+* | "Permanently delete a file and all associated cleaning jobs. This action cannot be undone." |
+*
+* @param {Docs_Endpoint_Delete_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_delete_desc = /** @type {((inputs?: Docs_Endpoint_Delete_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Delete_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_delete_desc(inputs)
+	return __cs.docs_endpoint_delete_desc(inputs)
+});
+export { docs_endpoint_delete_desc as "docs.endpoint.delete.desc" }
+/**
+* | output |
+* | --- |
+* | "Full documentation will be available after backend integration is complete." |
+*
+* @param {Docs_Endpoint_Delete_PlaceholderInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_delete_placeholder = /** @type {((inputs?: Docs_Endpoint_Delete_PlaceholderInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Delete_PlaceholderInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_delete_placeholder(inputs)
+	return __cs.docs_endpoint_delete_placeholder(inputs)
+});
+export { docs_endpoint_delete_placeholder as "docs.endpoint.delete.placeholder" }
+/**
+* | output |
+* | --- |
+* | "Required" |
+*
+* @param {Docs_Common_RequiredInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_required = /** @type {((inputs?: Docs_Common_RequiredInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_RequiredInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_required(inputs)
+	return __cs.docs_common_required(inputs)
+});
+export { docs_common_required as "docs.common.required" }
+/**
+* | output |
+* | --- |
+* | "Optional" |
+*
+* @param {Docs_Common_OptionalInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_optional = /** @type {((inputs?: Docs_Common_OptionalInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_OptionalInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_optional(inputs)
+	return __cs.docs_common_optional(inputs)
+});
+export { docs_common_optional as "docs.common.optional" }
+/**
+* | output |
+* | --- |
+* | "Default" |
+*
+* @param {Docs_Common_Defaultvalue1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_defaultvalue1 = /** @type {((inputs?: Docs_Common_Defaultvalue1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Defaultvalue1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_defaultvalue1(inputs)
+	return __cs.docs_common_defaultvalue1(inputs)
+});
+export { docs_common_defaultvalue1 as "docs.common.defaultValue" }
+/**
+* | output |
+* | --- |
+* | "Type" |
+*
+* @param {Docs_Common_TypeInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_type = /** @type {((inputs?: Docs_Common_TypeInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_TypeInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_type(inputs)
+	return __cs.docs_common_type(inputs)
+});
+export { docs_common_type as "docs.common.type" }
+/**
+* | output |
+* | --- |
+* | "Field" |
+*
+* @param {Docs_Common_FieldInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_field = /** @type {((inputs?: Docs_Common_FieldInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_FieldInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_field(inputs)
+	return __cs.docs_common_field(inputs)
+});
+export { docs_common_field as "docs.common.field" }
+/**
+* | output |
+* | --- |
+* | "Request Headers" |
+*
+* @param {Docs_Common_Requestheaders1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_requestheaders1 = /** @type {((inputs?: Docs_Common_Requestheaders1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Requestheaders1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_requestheaders1(inputs)
+	return __cs.docs_common_requestheaders1(inputs)
+});
+export { docs_common_requestheaders1 as "docs.common.requestHeaders" }
+/**
+* | output |
+* | --- |
+* | "Parameters" |
+*
+* @param {Docs_Common_ParametersInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_parameters = /** @type {((inputs?: Docs_Common_ParametersInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_ParametersInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_parameters(inputs)
+	return __cs.docs_common_parameters(inputs)
+});
+export { docs_common_parameters as "docs.common.parameters" }
+/**
+* | output |
+* | --- |
+* | "Options" |
+*
+* @param {Docs_Common_OptionsInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_options = /** @type {((inputs?: Docs_Common_OptionsInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_OptionsInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_options(inputs)
+	return __cs.docs_common_options(inputs)
+});
+export { docs_common_options as "docs.common.options" }
+/**
+* | output |
+* | --- |
+* | "cURL Example" |
+*
+* @param {Docs_Common_Curlexample1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_curlexample1 = /** @type {((inputs?: Docs_Common_Curlexample1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Curlexample1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_curlexample1(inputs)
+	return __cs.docs_common_curlexample1(inputs)
+});
+export { docs_common_curlexample1 as "docs.common.curlExample" }
+/**
+* | output |
+* | --- |
+* | "Success Response" |
+*
+* @param {Docs_Common_Successresponse1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_successresponse1 = /** @type {((inputs?: Docs_Common_Successresponse1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Successresponse1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_successresponse1(inputs)
+	return __cs.docs_common_successresponse1(inputs)
+});
+export { docs_common_successresponse1 as "docs.common.successResponse" }
+/**
+* | output |
+* | --- |
+* | "Error Response" |
+*
+* @param {Docs_Common_Errorresponse1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_errorresponse1 = /** @type {((inputs?: Docs_Common_Errorresponse1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Errorresponse1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_errorresponse1(inputs)
+	return __cs.docs_common_errorresponse1(inputs)
+});
+export { docs_common_errorresponse1 as "docs.common.errorResponse" }
+/**
+* | output |
+* | --- |
+* | "Status Values" |
+*
+* @param {Docs_Common_Statusvalues1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_statusvalues1 = /** @type {((inputs?: Docs_Common_Statusvalues1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_Statusvalues1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_statusvalues1(inputs)
+	return __cs.docs_common_statusvalues1(inputs)
+});
+export { docs_common_statusvalues1 as "docs.common.statusValues" }
+/**
+* | output |
+* | --- |
+* | "Full documentation will be available after backend integration is complete." |
+*
+* @param {Docs_Common_PlaceholderInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_common_placeholder = /** @type {((inputs?: Docs_Common_PlaceholderInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Common_PlaceholderInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_common_placeholder(inputs)
+	return __cs.docs_common_placeholder(inputs)
+});
+export { docs_common_placeholder as "docs.common.placeholder" }

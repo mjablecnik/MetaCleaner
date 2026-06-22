@@ -36,21 +36,21 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
 - [x] 2. Checkpoint — Shared elements compile
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Data Layer and i18n
-  - [ ] 3.1 Create `docsRepository.ts` typed data module
+- [x] 3. Data Layer and i18n
+  - [x] 3.1 Create `docsRepository.ts` typed data module
     - Create `src/lib/repositories/docsRepository.ts` with all TypeScript interfaces: `DocsSection`, `FeatureCardData`, `QuickStartStep`, `CodeExample`, `ErrorEntry`, `EndpointParam`, `EndpointResponse`, `EndpointData`, `SidebarSection`, `SidebarEndpoint`, `DocsConfig`
     - Implement getter functions: `getDocsConfig()`, `getSidebarSections()`, `getSidebarEndpoints()`, `getFeatureCards()`, `getQuickStartSteps()`, `getSupportedFormats()`, `getErrorEntries()`, `getEndpoints()`, `getCodeExamples()`
     - All translatable strings use `tx()` for reactive locale support
     - Code content (URLs, cURL, JSON) remains locale-independent
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 11.4_
 
-  - [ ] 3.2 Add i18n message keys for docs page
+  - [x] 3.2 Add i18n message keys for docs page
     - Add all docs-related keys to `messages/en.json` and `messages/cs.json`
     - Cover: section titles, subtitles, descriptions, info box content, table headers, button labels, sidebar labels, endpoint descriptions, error descriptions/solutions, best practices, format badges
     - Ensure no hardcoded strings in templates — all text through Paraglide
     - _Requirements: 11.1, 11.2, 11.3, 6.7_
 
-- [ ] 4. Checkpoint — Data module compiles with type safety
+- [x] 4. Checkpoint — Data module compiles with type safety
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Route Setup and Auth Guard
