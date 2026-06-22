@@ -67,15 +67,15 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Configure NavBar on docs page with `showBackButton: true`, `backHref: '/'`, back label from i18n
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-- [ ] 6. Sidebar with Scrollspy
-  - [ ] 6.1 Create `DocsSidebar.svelte` component
+- [x] 6. Sidebar with Scrollspy
+  - [x] 6.1 Create `DocsSidebar.svelte` component
     - Create `src/routes/docs/components/DocsSidebar.svelte` with props: `sections`, `endpoints`, `activeId`, `onNavigate`
     - List top-level sections (Introduction, Authentication, Error Codes) with Font Awesome icons
     - List endpoint entries grouped under "Endpoints" heading with MethodBadge prefix
     - Highlight active link with blue text, inactive with muted gray, 200ms transition
     - _Requirements: 4.1, 4.2, 4.5_
 
-  - [ ] 6.2 Implement scrollspy with IntersectionObserver in `+page.svelte`
+  - [x] 6.2 Implement scrollspy with IntersectionObserver in `+page.svelte`
     - Use `IntersectionObserver` with `rootMargin: '-80px 0px -60% 0px'` to detect topmost visible section
     - Track `activeId` via `$state`, update on intersection changes
     - Implement smooth-scroll navigation on sidebar link click with navbar offset
