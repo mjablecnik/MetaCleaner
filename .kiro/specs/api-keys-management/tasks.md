@@ -234,19 +234,19 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Test copy button in success state
     - _Requirements: 1.4, 1.5, 1.6_
 
-- [ ] 11. Frontend integration wiring
-  - [ ] 11.1 Wire revocation flow in KeysListSection
+- [x] 11. Frontend integration wiring
+  - [x] 11.1 Wire revocation flow in KeysListSection
     - Add revoke action to KeyRow for active keys
     - Call `revokeApiKey`, update key row to revoked state without page reload
     - Handle 409 error (already revoked)
     - _Requirements: 4.1, 4.5, 4.6_
 
-  - [ ] 11.2 Handle clipboard errors in KeyRow
+  - [x] 11.2 Handle clipboard errors in KeyRow
     - Catch clipboard write failures
     - Display inline error message near copy button
     - _Requirements: 10.2_
 
-  - [ ] 11.3 Remove `onSettings` prop usage from parent components
+  - [x] 11.3 Remove `onSettings` prop usage from parent components
     - Update `+layout.svelte` or any parent that passes `onSettings` to UserDropdown/MobileHamburgerMenu
     - Remove the prop and any associated callback logic
     - _Requirements: 7.5_
