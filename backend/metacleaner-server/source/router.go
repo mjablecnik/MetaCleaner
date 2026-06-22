@@ -227,6 +227,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/billing/subscription — authenticated
 	mux.Handle("GET /api/billing/subscription", HandleGetSubscription(db))
 
+	// GET /api/billing/credits — authenticated
+	mux.Handle("GET /api/billing/credits", HandleGetCredits(db))
+
 	// GET /api/health
 	mux.Handle("GET /api/health", HandleHealth(cfg, db))
 

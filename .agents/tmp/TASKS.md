@@ -11,9 +11,9 @@
 - [x] 9. [HIGH] Add `case "invoice.paid"` to webhook switch in `billing_webhook.go` — implement `handleInvoicePaid` that resets subscription_credits=100 on renewal invoices (skip initial invoice by checking billing_reason or existing subscription)
 - [x] 10. [HIGH] Fix `handleSubscriptionDeleted` in `billing_webhook.go` — after updating status to cancelled, call `SetSubscriptionCredits(ctx, userID, 0)` (requires looking up userID from subscription)
 - [x] 11. [HIGH] Add credit check to `HandleCreateJob` in `handlers.go` — before creating the job, verify user's total credits ≥ len(files); reject with 402 and descriptive error if insufficient
-- [ ] 12. [HIGH] Add credit deduction after successful file processing in `handlers.go` or `pipeline.go` — deduct 1 credit per processed file and record transaction with type=usage
-- [ ] 13. [MEDIUM] Add `HandleGetCredits` handler in `billing_handlers.go` — returns JSON with subscription_credits, purchased_credits, total_credits, and transactions array (last 50)
-- [ ] 14. [MEDIUM] Register `GET /api/billing/credits` route in `router.go` with auth middleware
+- [x] 12. [HIGH] Add credit deduction after successful file processing in `handlers.go` or `pipeline.go` — deduct 1 credit per processed file and record transaction with type=usage
+- [x] 13. [MEDIUM] Add `HandleGetCredits` handler in `billing_handlers.go` — returns JSON with subscription_credits, purchased_credits, total_credits, and transactions array (last 50)
+- [x] 14. [MEDIUM] Register `GET /api/billing/credits` route in `router.go` with auth middleware
 - [ ] 15. [MEDIUM] Fix JSON field mismatch in `frontend/metacleaner-app/src/lib/types/billing.ts` — rename `credit_balance` to `total_credits` to match backend's `SubscriptionStatusResponse`
 - [ ] 16. [LOW] Add `PUBLIC_APP_URL=https://app.metacleaner.com` to `frontend/metacleaner-web/.env.example`
 - [ ] 17. [LOW] Delete legacy pricing files from metacleaner-web: `src/routes/pricing/sections/PricingPlansSection.svelte`, `src/routes/pricing/sections/PricingHeaderSection.svelte`, and `src/routes/pricing/components/` directory (BillingToggle, PricingCard, EnterpriseBanner + their stories)
