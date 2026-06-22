@@ -8,7 +8,6 @@
 		user: User | null;
 		open?: boolean;
 		onToggle?: () => void;
-		onSettings?: () => void;
 		onLogout?: () => void;
 		wrapperId?: string;
 	}
@@ -17,7 +16,6 @@
 		user,
 		open = $bindable(false),
 		onToggle,
-		onSettings,
 		onLogout,
 		wrapperId = 'userDropdown'
 	}: Props = $props();
@@ -59,18 +57,9 @@
 			<i class="fa-solid fa-tag text-sm text-text-muted"></i>
 			<span>{tx('common.nav.pricing')}</span>
 		</a>
-		<a
-			class="lang-option"
-			href={resolve('/settings' as Pathname)}
-			onclick={(e) => {
-				if (onSettings) {
-					e.preventDefault();
-					onSettings();
-				}
-			}}
-		>
-			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
-			<span>{tx('common.nav.settings')}</span>
+		<a class="lang-option" href={resolve('/api-keys' as Pathname)}>
+			<i class="fa-solid fa-key text-sm text-text-muted"></i>
+			<span>{tx('common.nav.apiKeys')}</span>
 		</a>
 		<div
 			class="lang-option lang-option-danger"

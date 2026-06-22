@@ -7,6 +7,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Common_Nav_Reporthistory1Inputs */
 /** @typedef {{}} Common_Nav_PricingInputs */
 /** @typedef {{}} Common_Nav_SettingsInputs */
+/** @typedef {{}} Common_Nav_Apikeys1Inputs */
 /** @typedef {{}} Common_Nav_LogoutInputs */
 /** @typedef {{}} Common_Nav_LanguageInputs */
 /** @typedef {{}} Common_Stats_FilesInputs */
@@ -583,6 +584,21 @@ const common_nav_settings = /** @type {((inputs?: Common_Nav_SettingsInputs, opt
 	return __cs.common_nav_settings(inputs)
 });
 export { common_nav_settings as "common.nav.settings" }
+/**
+* | output |
+* | --- |
+* | "API Keys" |
+*
+* @param {Common_Nav_Apikeys1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const common_nav_apikeys1 = /** @type {((inputs?: Common_Nav_Apikeys1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Common_Nav_Apikeys1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.common_nav_apikeys1(inputs)
+	return __cs.common_nav_apikeys1(inputs)
+});
+export { common_nav_apikeys1 as "common.nav.apiKeys" }
 /**
 * | output |
 * | --- |

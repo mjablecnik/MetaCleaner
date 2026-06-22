@@ -124,20 +124,20 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
 - [x] 6. Checkpoint - Backend fully wired
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Frontend navigation update
-  - [ ] 7.1 Update UserDropdown to replace Settings with API Keys link
+- [x] 7. Frontend navigation update
+  - [x] 7.1 Update UserDropdown to replace Settings with API Keys link
     - Remove `onSettings` prop from the interface
     - Replace Settings `<a>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon
     - Use i18n key `common.nav.apiKeys`
     - _Requirements: 7.1, 7.3, 7.4, 7.5_
 
-  - [ ] 7.2 Update MobileHamburgerMenu to replace Settings with API Keys link
+  - [x] 7.2 Update MobileHamburgerMenu to replace Settings with API Keys link
     - Remove `onSettings` prop from the interface
     - Replace Settings `<button>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon
     - Use i18n key `common.nav.apiKeys`
     - _Requirements: 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 7.3 Add i18n keys to `messages/en.json` and `messages/cs.json`
+  - [x] 7.3 Add i18n keys to `messages/en.json` and `messages/cs.json`
     - Add all API keys i18n keys as defined in the design document
     - Include navigation key `common.nav.apiKeys`
     - _Requirements: 7.4, 8.1_

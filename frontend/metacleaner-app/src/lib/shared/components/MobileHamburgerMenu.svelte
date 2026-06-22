@@ -11,7 +11,6 @@
 		langOptions: Language[];
 		open?: boolean;
 		onSelect: (code: string) => void;
-		onSettings?: () => void;
 		onLogout?: () => void;
 		wrapperId?: string;
 	}
@@ -21,7 +20,6 @@
 		langOptions,
 		open = $bindable(false),
 		onSelect,
-		onSettings,
 		onLogout,
 		wrapperId = 'hamburgerDropdown'
 	}: Props = $props();
@@ -144,22 +142,20 @@
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
 			</a>
 
-			<!-- Settings -->
-			<button
+			<!-- API Keys -->
+			<a
+				href={resolve('/api-keys' as Pathname)}
+				onclick={handleClose}
 				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
-				onclick={() => {
-					onSettings?.();
-					open = false;
-				}}
 			>
 				<div
 					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
 				>
-					<i class="fa-solid fa-gear"></i>
+					<i class="fa-solid fa-key"></i>
 				</div>
-				<span class="text-sm font-medium">{tx('common.nav.settings')}</span>
+				<span class="text-sm font-medium">{tx('common.nav.apiKeys')}</span>
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
-			</button>
+			</a>
 
 			<div class="my-3 border-t border-gray-800"></div>
 
