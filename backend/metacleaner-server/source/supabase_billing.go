@@ -281,6 +281,31 @@ func (c *SupabaseClient) RecordCreditTransaction(ctx context.Context, userID str
 	return c.doJSON(ctx, http.MethodPost, c.restURL("credit_transactions"), rec, &rows)
 }
 
+// GetCreditTransactions returns up to limit recent credit_transactions for a user, ordered newest first.
+func (c *SupabaseClient) GetCreditTransactions(ctx context.Context, userID string, limit int) ([]CreditTransaction, error) {
+	var rows []dbCreditTransaction
+	url := c.restURL(fmt.Sprintf("credit_transactions?user_id=eq.%s&order=created_at.desc&limit=%d", userID, limit))
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return nil, fmt.Errorf("get credit transactions: %w", err)
+	}
+	txs := make([]CreditTransaction, len(rows))
+	for i, r := range rows {
+		txs[i] = CreditTransaction{
+			ID:           r.ID,
+			UserID:       r.UserID,
+			Amount:       r.Amount,
+			Type:         r.Type,
+			CreditSource: r.CreditSource,
+			ReferenceID:  r.ReferenceID,
+			Description:  r.Description,
+		}
+		if r.CreatedAt != nil {
+			txs[i].CreatedAt = *r.CreatedAt
+		}
+	}
+	return txs, nil
+}
+
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
 func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSubID string) (*Subscription, error) {
 	var rows []dbSubscription
