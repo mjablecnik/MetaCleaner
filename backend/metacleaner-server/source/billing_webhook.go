@@ -176,6 +176,13 @@ func handleCheckoutSessionCompleted(ctx context.Context, db *SupabaseClient, ses
 		return err
 	}
 
+	if err := db.SetSubscriptionCredits(ctx, userID, 100); err != nil {
+		return fmt.Errorf("subscription activation: set credits: %w", err)
+	}
+	if err := db.RecordCreditTransaction(ctx, userID, 100, "subscription_renewal", "subscription", stripeSubID, "Subscription activated"); err != nil {
+		return fmt.Errorf("subscription activation: record transaction: %w", err)
+	}
+
 	slog.Info("webhook: subscription activated", "userID", userID, "planID", planID, "stripeSubID", stripeSubID)
 	return nil
 }

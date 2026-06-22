@@ -7,7 +7,7 @@
 - [x] 5. [HIGH] Add `RecordCreditTransaction` method to `supabase_billing.go` — inserts row into `credit_transactions` with user_id, amount, type, credit_source, reference_id, description
 - [x] 6. [HIGH] Add `GetCreditTransactions` method to `supabase_billing.go` — fetches recent credit_transactions for a user (ordered desc, limited)
 - [x] 7. [HIGH] Fix `handleCheckoutSessionCompleted` in `billing_webhook.go` — when mode == "payment", read credit_pack metadata, call `AddPurchasedCredits(50)` and `RecordCreditTransaction` with type=purchase
-- [ ] 8. [HIGH] Fix `handleCheckoutSessionCompleted` in `billing_webhook.go` — after `CreateSubscription`, call `UpsertCreditBalance` to set subscription_credits=100 and `RecordCreditTransaction` with type=subscription_renewal
+- [x] 8. [HIGH] Fix `handleCheckoutSessionCompleted` in `billing_webhook.go` — after `CreateSubscription`, call `UpsertCreditBalance` to set subscription_credits=100 and `RecordCreditTransaction` with type=subscription_renewal
 - [ ] 9. [HIGH] Add `case "invoice.paid"` to webhook switch in `billing_webhook.go` — implement `handleInvoicePaid` that resets subscription_credits=100 on renewal invoices (skip initial invoice by checking billing_reason or existing subscription)
 - [ ] 10. [HIGH] Fix `handleSubscriptionDeleted` in `billing_webhook.go` — after updating status to cancelled, call `SetSubscriptionCredits(ctx, userID, 0)` (requires looking up userID from subscription)
 - [ ] 11. [HIGH] Add credit check to `HandleCreateJob` in `handlers.go` — before creating the job, verify user's total credits ≥ len(files); reject with 402 and descriptive error if insufficient
