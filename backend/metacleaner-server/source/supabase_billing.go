@@ -1,8 +1,11 @@
 package source
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 )
@@ -158,6 +161,39 @@ func (c *SupabaseClient) GetCreditBalance(ctx context.Context, userID string) (s
 		return 0, 0, nil
 	}
 	return rows[0].SubscriptionCredits, rows[0].PurchasedCredits, nil
+}
+
+// UpsertCreditBalance creates or updates the credit_balances row for the given user.
+func (c *SupabaseClient) UpsertCreditBalance(ctx context.Context, userID string, subCredits, purchasedCredits int) error {
+	rec := dbCreditBalance{
+		UserID:              userID,
+		SubscriptionCredits: subCredits,
+		PurchasedCredits:    purchasedCredits,
+	}
+	data, err := json.Marshal(rec)
+	if err != nil {
+		return fmt.Errorf("marshal credit balance: %w", err)
+	}
+
+	req, err := c.newRequest(ctx, http.MethodPost, c.restURL("credit_balances"), bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Prefer", "resolution=merge-duplicates,return=minimal")
+
+	resp, err := c.doWithTimeout(ctx, req)
+	if err != nil {
+		return fmt.Errorf("upsert credit balance: %w", err)
+	}
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	if resp.StatusCode >= 300 {
+		return fmt.Errorf("upsert credit balance: status %d: %s", resp.StatusCode, body)
+	}
+	return nil
 }
 
 // GetSubscriptionByStripeID returns a subscription by its Stripe subscription ID.
