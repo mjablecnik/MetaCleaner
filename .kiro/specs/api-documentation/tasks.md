@@ -158,27 +158,27 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Generate all 4 variants (blue, green, orange, red), verify rendered component applies correct background (8% opacity) and border (25% opacity) of variant brand-color, with border-radius 10px
     - **Validates: Requirements 12.3**
 
-- [ ] 12. Unit and Component Tests (Vitest)
-  - [ ]* 12.1 Write unit tests for `docsRepository.ts` data completeness
+- [x] 12. Unit and Component Tests (Vitest)
+  - [x]* 12.1 Write unit tests for `docsRepository.ts` data completeness
     - Verify all endpoints have required fields (method, path, params, responses)
     - Verify all translation keys resolve to non-empty strings for both locales
     - Verify code examples contain non-empty `code` and `displayHtml`
     - _Requirements: 10.1, 10.2_
 
-  - [ ]* 12.2 Write component tests for CodeBlock and CopyButton
+  - [x]* 12.2 Write component tests for CodeBlock and CopyButton
     - Test CodeBlock renders with correct classes and embedded CopyButton
     - Test CopyButton clipboard interaction with mocked `navigator.clipboard`
     - Test 2s confirmation state and timer restart on re-click
     - Test silent fail when clipboard API unavailable
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [ ]* 12.3 Write component tests for InfoBox, MethodBadge, and FeatureCard
+  - [x]* 12.3 Write component tests for InfoBox, MethodBadge, and FeatureCard
     - Test InfoBox renders all 4 variants with correct background/border colors
     - Test MethodBadge renders correct colors per HTTP method
     - Test FeatureCard renders icon, title, description
     - _Requirements: 12.3, 4.2, 5.3_
 
-  - [ ]* 12.4 Write component tests for EndpointCard and DocsSidebar
+  - [x]* 12.4 Write component tests for EndpointCard and DocsSidebar
     - Test EndpointCard toggles expand/collapse on click
     - Test expanded state shows all required sub-sections
     - Test border color change on expand/collapse
