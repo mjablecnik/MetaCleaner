@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { tx } from '$lib/shared/utils/i18n';
 	import CodeBlock from '$lib/shared/elements/CodeBlock.svelte';
 	import MethodBadge from '$lib/shared/elements/MethodBadge.svelte';
@@ -11,7 +12,7 @@
 
 	const { endpoint, initialOpen = false }: Props = $props();
 
-	let open = $state(initialOpen);
+	let open = $state(untrack(() => initialOpen));
 
 	const statusBadgeColor: Record<string, string> = {
 		pending: 'bg-gray-700/40 text-text-muted border-gray-700',

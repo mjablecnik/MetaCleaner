@@ -123,7 +123,7 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Clean options table for `/files/clean`, status values badges for `/jobs/{job_id}/status`
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9_
 
-- [ ] 10. Checkpoint — All sections render with correct content
+- [x] 10. Checkpoint — All sections render with correct content
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Property-Based Tests (fast-check)
