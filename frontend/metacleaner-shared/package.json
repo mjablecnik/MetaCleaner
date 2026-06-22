@@ -1,0 +1,16 @@
+{
+	"name": "metacleaner-shared",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"svelte": "./src/index.ts",
+	"exports": {
+		".": "./src/index.ts",
+		"./components/*": "./src/components/*",
+		"./types": "./src/types/pricing.ts",
+		"./data": "./src/data/pricing.ts"
+	},
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	}
+}

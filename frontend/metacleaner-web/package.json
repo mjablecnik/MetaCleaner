@@ -16,6 +16,9 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright install && playwright test"
 	},
+	"dependencies": {
+		"metacleaner-shared": "workspace:*"
+	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@inlang/paraglide-js": "^2.18.2",

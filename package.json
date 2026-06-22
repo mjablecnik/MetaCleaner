@@ -3,6 +3,8 @@
   "private": true,
   "workspaces": [
     "frontend/metacleaner-app",
+    "frontend/metacleaner-shared",
+    "frontend/metacleaner-web",
     "terminal/metacleaner-cli"
   ]
 }

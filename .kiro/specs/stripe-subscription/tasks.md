@@ -2,20 +2,20 @@
 
 ## Task 1: Create Shared Pricing Package
 
-- [ ] 1.1 Create `frontend/metacleaner-shared/package.json` with name, svelte peer dependency, and exports config
-- [ ] 1.2 Create `frontend/metacleaner-shared/tsconfig.json` for TypeScript resolution
-- [ ] 1.3 Move pricing types (`Plan`, `EnterprisePlan`) and data functions (`pricingRepository`, `getEnterprise`, `getPlanPrice`) from `metacleaner-web/src/lib/repositories/pricing.ts` to `metacleaner-shared/src/data/pricing.ts`
-- [ ] 1.4 Create `metacleaner-shared/src/types/pricing.ts` exporting `Plan`, `EnterprisePlan` interfaces
-- [ ] 1.5 Move `BillingToggle.svelte` to `metacleaner-shared/src/components/BillingToggle.svelte` — refactor to accept `translate` prop instead of direct Paraglide import
-- [ ] 1.6 Move `PricingCard.svelte` to `metacleaner-shared/src/components/PricingCard.svelte` — refactor to accept `translate` and `translateParam` props, add `onSelect` callback and `isCurrent` prop
-- [ ] 1.7 Move `EnterpriseBanner.svelte` to `metacleaner-shared/src/components/EnterpriseBanner.svelte` — refactor to accept `translate` prop
-- [ ] 1.8 Move `PricingHeaderSection.svelte` to `metacleaner-shared/src/components/PricingHeaderSection.svelte` — refactor to accept `translate` prop
-- [ ] 1.9 Move `PricingPlansSection.svelte` to `metacleaner-shared/src/components/PricingPlansSection.svelte` — refactor to accept `translate`, `onPlanSelect`, and `currentPlanId` props
-- [ ] 1.10 Create `metacleaner-shared/src/index.ts` barrel export for all components, types, and data functions
-- [ ] 1.11 Add `"frontend/metacleaner-shared"` and `"frontend/metacleaner-web"` to root workspace `package.json` workspaces array
-- [ ] 1.12 Add `"metacleaner-shared": "workspace:*"` to metacleaner-web `package.json` dependencies and update imports in `src/routes/pricing/` to use the shared package
-- [ ] 1.13 Add `"metacleaner-shared": "workspace:*"` to metacleaner-app `package.json` dependencies
-- [ ] 1.14 Verify metacleaner-web pricing page still renders correctly after refactor (run `bun run check` in metacleaner-web)
+- [x] 1.1 Create `frontend/metacleaner-shared/package.json` with name, svelte peer dependency, and exports config
+- [x] 1.2 Create `frontend/metacleaner-shared/tsconfig.json` for TypeScript resolution
+- [x] 1.3 Move pricing types (`Plan`, `EnterprisePlan`) and data functions (`pricingRepository`, `getEnterprise`, `getPlanPrice`) from `metacleaner-web/src/lib/repositories/pricing.ts` to `metacleaner-shared/src/data/pricing.ts`
+- [x] 1.4 Create `metacleaner-shared/src/types/pricing.ts` exporting `Plan`, `EnterprisePlan` interfaces
+- [x] 1.5 Move `BillingToggle.svelte` to `metacleaner-shared/src/components/BillingToggle.svelte` — refactor to accept `translate` prop instead of direct Paraglide import
+- [x] 1.6 Move `PricingCard.svelte` to `metacleaner-shared/src/components/PricingCard.svelte` — refactor to accept `translate` and `translateParam` props, add `onSelect` callback and `isCurrent` prop
+- [x] 1.7 Move `EnterpriseBanner.svelte` to `metacleaner-shared/src/components/EnterpriseBanner.svelte` — refactor to accept `translate` prop
+- [x] 1.8 Move `PricingHeaderSection.svelte` to `metacleaner-shared/src/components/PricingHeaderSection.svelte` — refactor to accept `translate` prop
+- [x] 1.9 Move `PricingPlansSection.svelte` to `metacleaner-shared/src/components/PricingPlansSection.svelte` — refactor to accept `translate`, `onPlanSelect`, and `currentPlanId` props
+- [x] 1.10 Create `metacleaner-shared/src/index.ts` barrel export for all components, types, and data functions
+- [x] 1.11 Add `"frontend/metacleaner-shared"` and `"frontend/metacleaner-web"` to root workspace `package.json` workspaces array
+- [x] 1.12 Add `"metacleaner-shared": "workspace:*"` to metacleaner-web `package.json` dependencies and update imports in `src/routes/pricing/` to use the shared package
+- [x] 1.13 Add `"metacleaner-shared": "workspace:*"` to metacleaner-app `package.json` dependencies
+- [x] 1.14 Verify metacleaner-web pricing page still renders correctly after refactor (run `bun run check` in metacleaner-web)
 
 ## Task 2: Pricing Page in metacleaner-app
 
