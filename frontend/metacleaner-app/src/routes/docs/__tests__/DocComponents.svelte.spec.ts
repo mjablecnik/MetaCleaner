@@ -3,7 +3,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import EndpointCard from '../components/EndpointCard.svelte';
 import DocsSidebar from '../components/DocsSidebar.svelte';
-import { getEndpoints, getSidebarSections, getSidebarEndpoints } from '$lib/repositories/docsRepository';
+import {
+	getEndpoints,
+	getSidebarSections,
+	getSidebarEndpoints
+} from '$lib/repositories/docsRepository';
 
 const endpoints = getEndpoints();
 const fullEndpoint = endpoints.find((e) => !e.isMinimal)!;
@@ -38,7 +42,9 @@ describe('EndpointCard', () => {
 
 	it('shows cURL example when expanded', async () => {
 		render(EndpointCard, { endpoint: fullEndpoint, initialOpen: true });
-		await expect.element(page.getByText(/api\.metacleaner\.com/, { exact: false }).first()).toBeInTheDocument();
+		await expect
+			.element(page.getByText(/api\.metacleaner\.com/, { exact: false }).first())
+			.toBeInTheDocument();
 	});
 
 	it('collapses when clicked again', async () => {
@@ -75,7 +81,9 @@ describe('EndpointCard', () => {
 		const header = container.querySelector('button') as HTMLButtonElement;
 		header.click();
 		// Wait for expanded content
-		await expect.element(page.getByText(/api\.metacleaner\.com/, { exact: false }).first()).not.toBeInTheDocument();
+		await expect
+			.element(page.getByText(/api\.metacleaner\.com/, { exact: false }).first())
+			.not.toBeInTheDocument();
 		const clockIcon = container.querySelector('.fa-clock');
 		expect(clockIcon).not.toBeNull();
 	});

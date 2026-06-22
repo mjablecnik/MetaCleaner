@@ -437,7 +437,8 @@ export function getEndpoints(): EndpointData[] {
 			curlExample: {
 				id: 'download-curl',
 				code: 'curl https://api.metacleaner.com/v1/files/{file_id}/download \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml: 'curl https://api.metacleaner.com/v1/files/{file_id}/download \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				displayHtml:
+					'curl https://api.metacleaner.com/v1/files/{file_id}/download \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
 			},
 			responses: []
 		},
@@ -457,7 +458,8 @@ export function getEndpoints(): EndpointData[] {
 			curlExample: {
 				id: 'metadata-curl',
 				code: 'curl https://api.metacleaner.com/v1/files/{file_id}/metadata \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml: 'curl https://api.metacleaner.com/v1/files/{file_id}/metadata \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				displayHtml:
+					'curl https://api.metacleaner.com/v1/files/{file_id}/metadata \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
 			},
 			responses: []
 		},
@@ -477,7 +479,8 @@ export function getEndpoints(): EndpointData[] {
 			curlExample: {
 				id: 'delete-curl',
 				code: 'curl -X DELETE https://api.metacleaner.com/v1/files/{file_id} \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml: 'curl -X DELETE https://api.metacleaner.com/v1/files/{file_id} \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				displayHtml:
+					'curl -X DELETE https://api.metacleaner.com/v1/files/{file_id} \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
 			},
 			responses: []
 		}

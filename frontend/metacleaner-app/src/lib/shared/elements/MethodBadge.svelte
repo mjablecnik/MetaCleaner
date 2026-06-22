@@ -24,7 +24,9 @@
 </script>
 
 <span
-	class="inline-flex items-center rounded border font-bold uppercase tracking-wider {colorMap[method]} {sizeMap[size]}"
+	class="inline-flex items-center rounded border font-bold tracking-wider uppercase {colorMap[
+		method
+	]} {sizeMap[size]}"
 >
 	{method}
 </span>

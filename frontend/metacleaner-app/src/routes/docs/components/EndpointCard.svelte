@@ -83,17 +83,14 @@
 							<table class="w-full text-sm">
 								<thead>
 									<tr class="border-b border-gray-800 bg-navy-card">
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.common.field')}</th
 										>
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.common.type')}</th
 										>
 										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted">Req.</th>
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.errors.table.description')}</th
 										>
 									</tr>
@@ -135,20 +132,16 @@
 							<table class="w-full text-sm">
 								<thead>
 									<tr class="border-b border-gray-800 bg-navy-card">
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.common.field')}</th
 										>
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.common.type')}</th
 										>
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.common.defaultValue')}</th
 										>
-										<th
-											class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
 											>{tx('docs.errors.table.description')}</th
 										>
 									</tr>
@@ -181,10 +174,11 @@
 							{tx('docs.common.statusValues')}
 						</p>
 						<div class="flex flex-wrap gap-2">
-							{#each endpoint.statusValues as val}
+							{#each endpoint.statusValues as val (val)}
 								<span
-									class="rounded border px-2.5 py-1 font-mono text-xs font-medium {statusBadgeColor[val] ??
-										'bg-gray-700/40 text-text-muted border-gray-700'}">{val}</span
+									class="rounded border px-2.5 py-1 font-mono text-xs font-medium {statusBadgeColor[
+										val
+									] ?? 'border-gray-700 bg-gray-700/40 text-text-muted'}">{val}</span
 								>
 							{/each}
 						</div>
@@ -210,7 +204,9 @@
 								<div>
 									<div class="mb-1.5 flex items-center gap-2">
 										<span
-											class="rounded border px-1.5 py-0.5 font-mono text-xs font-semibold {responseBadgeColor(resp.variant)}"
+											class="rounded border px-1.5 py-0.5 font-mono text-xs font-semibold {responseBadgeColor(
+												resp.variant
+											)}"
 										>
 											{resp.status}
 										</span>

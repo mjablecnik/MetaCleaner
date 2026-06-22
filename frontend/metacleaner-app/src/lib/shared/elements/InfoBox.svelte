@@ -38,9 +38,7 @@
 	const v = $derived(variantMap[variant]);
 </script>
 
-<div
-	class="flex gap-3 rounded-[10px] border p-4 {v.bg} {v.border} {extraClass}"
->
+<div class="flex gap-3 rounded-[10px] border p-4 {v.bg} {v.border} {extraClass}">
 	{#if icon}
 		<i class="fa-solid {icon} mt-0.5 flex-shrink-0 {v.icon}"></i>
 	{/if}

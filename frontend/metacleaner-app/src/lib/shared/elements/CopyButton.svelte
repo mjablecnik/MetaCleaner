@@ -38,8 +38,8 @@
 	aria-label="Copy to clipboard"
 >
 	{#if confirmed}
-		<i class="fa-solid fa-check text-brand-green text-xs"></i>
+		<i class="fa-solid fa-check text-xs text-brand-green"></i>
 	{:else}
-		<i class="fa-regular fa-copy text-text-muted text-xs hover:text-white"></i>
+		<i class="fa-regular fa-copy text-xs text-text-muted hover:text-white"></i>
 	{/if}
 </button>

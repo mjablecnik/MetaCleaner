@@ -53,7 +53,7 @@
 	<div class="mb-6">
 		<h3 class="mb-3 text-base font-semibold text-white">{tx('docs.auth.bestPractices.title')}</h3>
 		<ul class="flex flex-col gap-2">
-			{#each bestPractices as key, i}
+			{#each bestPractices as key, i (i)}
 				<li class="flex items-start gap-2.5 text-sm text-text-muted">
 					<span
 						class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-blue/10 text-[10px] font-bold text-brand-blue"

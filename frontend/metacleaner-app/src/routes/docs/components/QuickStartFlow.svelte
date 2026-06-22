@@ -31,7 +31,7 @@
 				<div
 					class="flex flex-wrap items-center gap-0.5 rounded-md border border-gray-800 bg-[#080f1e] px-3 py-1.5 font-mono text-xs"
 				>
-					{#each step.codeSnippets as snippet}
+					{#each step.codeSnippets as snippet, i (i)}
 						<span class={snippet.color}>{snippet.text}</span>
 					{/each}
 				</div>

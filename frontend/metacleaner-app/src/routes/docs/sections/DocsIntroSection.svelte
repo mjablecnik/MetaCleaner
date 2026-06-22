@@ -57,7 +57,7 @@
 			{tx('docs.intro.formatsLabel')}
 		</p>
 		<div class="flex flex-wrap gap-2">
-			{#each formats as fmt}
+			{#each formats as fmt (fmt)}
 				<span
 					class="rounded-md border border-gray-700 bg-navy-lighter px-2.5 py-1 font-mono text-xs font-medium text-text-muted"
 				>

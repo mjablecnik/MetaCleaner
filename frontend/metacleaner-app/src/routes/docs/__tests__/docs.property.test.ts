@@ -20,9 +20,7 @@ interface ScrollspyEntry {
 }
 
 function computeScrollspyActiveId(entries: ScrollspyEntry[], currentActiveId: string): string {
-	const visible = entries
-		.filter((e) => e.isIntersecting)
-		.sort((a, b) => a.top - b.top);
+	const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.top - b.top);
 	return visible.length > 0 ? visible[0].id : currentActiveId;
 }
 
@@ -383,12 +381,9 @@ describe('Property 5: Code block content is locale-independent', () => {
 		const examplesSecond = Object.values(getCodeExamples());
 
 		fc.assert(
-			fc.property(
-				fc.integer({ min: 0, max: examplesFirst.length - 1 }),
-				(idx) => {
-					expect(examplesFirst[idx].code).toBe(examplesSecond[idx].code);
-				}
-			),
+			fc.property(fc.integer({ min: 0, max: examplesFirst.length - 1 }), (idx) => {
+				expect(examplesFirst[idx].code).toBe(examplesSecond[idx].code);
+			}),
 			{ numRuns: examplesFirst.length }
 		);
 	});

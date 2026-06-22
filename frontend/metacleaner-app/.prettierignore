@@ -7,3 +7,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Design mockups (raw HTML prototypes — not project source)
+/.design/
