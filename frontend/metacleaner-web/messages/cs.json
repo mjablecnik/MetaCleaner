@@ -91,6 +91,7 @@
 	"about_contact_form_submit": "Odeslat zprávu",
 	"about_contact_form_success": "Vaše zpráva byla úspěšně odeslána. Brzy se vám ozveme.",
 	"about_contact_form_error": "Něco se pokazilo. Zkuste to prosím znovu.",
+	"about_contact_form_error_rate_limit": "Odeslali jste příliš mnoho zpráv. Počkejte prosím pár minut a zkuste to znovu.",
 	"about_contact_form_error_required": "Toto pole je povinné.",
 	"about_contact_form_error_email": "Zadejte prosím platnou e-mailovou adresu.",
 	"about_contact_form_error_max_length": "Toto pole překračuje maximální povolenou délku.",

@@ -45,7 +45,7 @@
 		if (success) {
 			isSuccess = true;
 		} else {
-			submitError = error ?? m.about_contact_form_error();
+			submitError = error === 'rate_limit' ? 'rate_limit' : 'generic';
 		}
 	}
 </script>
@@ -150,7 +150,11 @@
 			{#if submitError}
 				<div class="flex items-start gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
 					<i class="fa-solid fa-circle-exclamation text-red-400 mt-0.5"></i>
-					<p class="text-sm text-red-400">{m.about_contact_form_error()}</p>
+					<p class="text-sm text-red-400">
+						{submitError === 'rate_limit'
+							? m.about_contact_form_error_rate_limit()
+							: m.about_contact_form_error()}
+					</p>
 				</div>
 			{/if}
 
