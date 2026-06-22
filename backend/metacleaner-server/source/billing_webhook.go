@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -104,8 +105,24 @@ func HandleStripeWebhook(cfg Config, db *SupabaseClient) http.HandlerFunc {
 }
 
 func handleCheckoutSessionCompleted(ctx context.Context, db *SupabaseClient, sess *stripe.CheckoutSession) error {
+	if sess.Mode == stripe.CheckoutSessionModePayment {
+		userID := sess.Metadata["user_id"]
+		if userID == "" {
+			slog.Warn("webhook: checkout.session.completed (payment) missing user_id metadata", "sessionID", sess.ID)
+			return nil
+		}
+		if err := db.AddPurchasedCredits(ctx, userID, 50); err != nil {
+			return fmt.Errorf("credit pack purchase: add credits: %w", err)
+		}
+		if err := db.RecordCreditTransaction(ctx, userID, 50, "purchase", "purchased", sess.ID, "Credit pack purchase"); err != nil {
+			return fmt.Errorf("credit pack purchase: record transaction: %w", err)
+		}
+		slog.Info("webhook: credit pack purchased", "userID", userID, "sessionID", sess.ID)
+		return nil
+	}
+
 	if sess.Mode != stripe.CheckoutSessionModeSubscription {
-		slog.Info("webhook: checkout completed in payment mode, skipping subscription creation", "sessionID", sess.ID)
+		slog.Info("webhook: checkout completed in unsupported mode, skipping", "mode", sess.Mode, "sessionID", sess.ID)
 		return nil
 	}
 
