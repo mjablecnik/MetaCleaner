@@ -38,6 +38,11 @@ type Config struct {
 	AppleTeamID            string
 	SupabaseTimeout        time.Duration
 	MaxConcurrentJobs      int
+	StripeSecretKey        string
+	StripeWebhookSecret    string
+	StripePriceProMonth    string
+	StripePriceProYear     string
+	StripePriceCreditPack  string
 }
 
 func LoadConfig() (Config, error) {
@@ -106,6 +111,11 @@ func LoadConfig() (Config, error) {
 	cfg.FrontendURL = os.Getenv("FRONTEND_URL")
 	cfg.AndroidCertFingerprint = os.Getenv("ANDROID_CERT_FINGERPRINT")
 	cfg.AppleTeamID = os.Getenv("APPLE_TEAM_ID")
+	cfg.StripeSecretKey = os.Getenv("STRIPE_SECRET_KEY")
+	cfg.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
+	cfg.StripePriceProMonth = os.Getenv("STRIPE_PRICE_PRO_MONTH")
+	cfg.StripePriceProYear = os.Getenv("STRIPE_PRICE_PRO_YEAR")
+	cfg.StripePriceCreditPack = os.Getenv("STRIPE_PRICE_CREDIT_PACK")
 
 	if cfg.SupabaseURL == "" {
 		return Config{}, &ErrConfig{
