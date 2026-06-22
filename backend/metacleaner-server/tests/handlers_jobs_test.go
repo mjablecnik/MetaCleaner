@@ -30,6 +30,8 @@ func newMockSupabase(t *testing.T, jobID string) *httptest.Server {
 			now := time.Now().UTC().Format(time.RFC3339)
 			fmt.Fprintf(w, `[{"id":%q,"status":"processing","total_files":1,"files_completed":0,"fields_removed":0,"gps_locations_removed":0,"created_at":%q}]`,
 				jobID, now)
+		case strings.HasSuffix(path, "/credit_balances") && r.Method == http.MethodGet:
+			w.Write([]byte(`[{"user_id":"test-user","subscription_credits":100,"purchased_credits":0}]`))
 		default:
 			w.Write([]byte(`[]`))
 		}

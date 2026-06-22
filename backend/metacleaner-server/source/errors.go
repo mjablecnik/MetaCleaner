@@ -19,6 +19,7 @@ const (
 	ErrRateLimitExceeded   = "RATE_LIMIT_EXCEEDED"
 	ErrJobNotReady         = "JOB_NOT_READY"
 	ErrFilesExpired        = "FILES_EXPIRED"
+	ErrInsufficientCredits = "INSUFFICIENT_CREDITS"
 )
 
 type ErrorResponse struct {

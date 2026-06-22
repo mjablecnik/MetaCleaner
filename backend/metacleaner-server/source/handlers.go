@@ -252,6 +252,17 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			})
 		}
 
+		subCredits, purchasedCredits, err := db.GetCreditBalance(r.Context(), userID)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to check credit balance")
+			return
+		}
+		if subCredits+purchasedCredits < len(files) {
+			WriteError(w, http.StatusPaymentRequired, ErrInsufficientCredits,
+				fmt.Sprintf("Insufficient credits: need %d, have %d", len(files), subCredits+purchasedCredits))
+			return
+		}
+
 		job := &Job{
 			UserID:     userID,
 			Status:     "processing",
