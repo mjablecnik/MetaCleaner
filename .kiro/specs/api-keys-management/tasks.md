@@ -121,7 +121,7 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
     - Wire rate limiter instance into middleware/handler chain
     - _Requirements: 1.1, 2.1, 3.2, 4.1, 6.1_
 
-- [ ] 6. Checkpoint - Backend fully wired
+- [x] 6. Checkpoint - Backend fully wired
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Frontend navigation update
