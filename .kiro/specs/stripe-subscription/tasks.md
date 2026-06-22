@@ -79,7 +79,7 @@
 
 ## Task 10: Website CTA Redirect
 
-- [ ] 10.1 Update metacleaner-web pricing page to pass `onPlanSelect` callback that redirects to app URL with plan + billing query params
-- [ ] 10.2 Add `PUBLIC_APP_URL` environment variable to metacleaner-web for configuring the app redirect target
-- [ ] 10.3 Update metacleaner-web `.env.example` with `PUBLIC_APP_URL`
+- [x] 10.1 Update metacleaner-web pricing page to pass `onPlanSelect` callback that redirects to app URL with plan + billing query params
+- [x] 10.2 Add `PUBLIC_APP_URL` environment variable to metacleaner-web for configuring the app redirect target
+- [x] 10.3 Update metacleaner-web `.env.example` with `PUBLIC_APP_URL`
 
