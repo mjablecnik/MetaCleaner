@@ -92,7 +92,7 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Use the existing shared app layout (+layout.svelte with NavBar, user dropdown, language switcher) — do NOT create a separate custom navbar for docs. Place "API" badge and version badge in the page content area header.
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-- [ ] 8. Checkpoint — Route, sidebar, and layout functional
+- [x] 8. Checkpoint — Route, sidebar, and layout functional
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Documentation Sections
