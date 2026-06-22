@@ -62,7 +62,7 @@
 		</span>
 	</div>
 
-	<div class="flex gap-8">
+	<div class="flex items-start gap-8">
 		<!-- Sidebar (desktop only) -->
 		<aside class="hidden lg:block">
 			<DocsSidebar

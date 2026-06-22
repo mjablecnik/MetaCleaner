@@ -82,8 +82,8 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
     - Ensure exactly one active link at all times while scrolling
     - _Requirements: 4.3, 4.4_
 
-- [ ] 7. Page Layout and Responsive Design
-  - [ ] 7.1 Implement responsive page layout in `+page.svelte`
+- [x] 7. Page Layout and Responsive Design
+  - [x] 7.1 Implement responsive page layout in `+page.svelte`
     - Desktop (lg+): sticky sidebar (w-56, 224px) left panel below navbar + main content area with 32px gap
     - Mobile (<lg): hide sidebar, full-width single-column main content
     - Constrain content to max-width 1200px, centered horizontally
