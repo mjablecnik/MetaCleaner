@@ -56,13 +56,13 @@
 
 ## Task 7: Backend Webhook Endpoint
 
-- [ ] 7.1 Create `source/billing_webhook.go` with `HandleStripeWebhook(cfg, db)` handler
-- [ ] 7.2 Implement Stripe signature verification using webhook secret
-- [ ] 7.3 Handle `checkout.session.completed` — create subscription record in database
-- [ ] 7.4 Handle `customer.subscription.updated` — update subscription status and plan details
-- [ ] 7.5 Handle `customer.subscription.deleted` — mark subscription as cancelled
-- [ ] 7.6 Handle `invoice.payment_failed` — mark subscription as past_due
-- [ ] 7.7 Register `POST /api/billing/webhook` route in router (no auth middleware — signature-verified)
+- [x] 7.1 Create `source/billing_webhook.go` with `HandleStripeWebhook(cfg, db)` handler
+- [x] 7.2 Implement Stripe signature verification using webhook secret
+- [x] 7.3 Handle `checkout.session.completed` — create subscription record in database
+- [x] 7.4 Handle `customer.subscription.updated` — update subscription status and plan details
+- [x] 7.5 Handle `customer.subscription.deleted` — mark subscription as cancelled
+- [x] 7.6 Handle `invoice.payment_failed` — mark subscription as past_due
+- [x] 7.7 Register `POST /api/billing/webhook` route in router (no auth middleware — signature-verified)
 
 ## Task 8: Backend Subscription Status Endpoint
 
