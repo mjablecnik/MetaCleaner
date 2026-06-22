@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+            brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+            text: { main: '#ffffff', muted: '#94a3b8' }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          boxShadow: {
+            'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+            'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { margin:0; padding:0; background-color:#0a1628; color:#fff; font-family:'Inter',sans-serif; }
+    ::-webkit-scrollbar { display:none; }
+    .method-get { background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
+    .method-post { background:rgba(59,130,246,0.15); color:#3b82f6; border:1px solid rgba(59,130,246,0.3); }
+    .method-delete { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+    .code-block { background:#080f1e; border:1px solid #1e293b; border-radius:10px; font-family:'Courier New',monospace; font-size:11px; line-height:1.7; overflow-x:auto; }
+    .endpoint-card { transition:border-color 0.2s; }
+    .endpoint-card.open { border-color:#3b82f6; }
+    .chevron { transition:transform 0.2s; }
+    .chevron.rotated { transform:rotate(180deg); }
+    .drawer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:40; }
+    .drawer-overlay.open { display:block; }
+    .drawer { transform:translateX(-100%); transition:transform 0.3s ease; position:fixed; top:0; left:0; height:100%; width:75%; max-width:280px; background:#111d33; z-index:50; overflow-y:auto; }
+    .drawer.open { transform:translateX(0); }
+    .nav-link { color:#94a3b8; font-size:13px; cursor:pointer; transition:color 0.15s; display:flex; align-items:center; padding:10px 12px; border-radius:8px; }
+    .nav-link:hover, .nav-link.active { color:#fff; background:rgba(255,255,255,0.05); }
+    .nav-link.active { color:#3b82f6; }
+    .bottom-tab { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#94a3b8; font-size:10px; padding:8px 0; flex:1; cursor:pointer; transition:color 0.15s; }
+    .bottom-tab.active { color:#3b82f6; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen pb-16">
+
+  <!-- Drawer Overlay -->
+  <div id="drawer-overlay" class="drawer-overlay" onclick="closeDrawer()"></div>
+
+  <!-- Side Drawer -->
+  <div id="side-drawer" class="drawer">
+    <div class="flex items-center justify-between p-4 border-b border-gray-800">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-brand-blue flex items-center justify-center shadow-glow-blue">
+          <i class="fa-solid fa-shield-halved text-sm text-white"></i>
+        </div>
+        <span class="font-bold text-white">Metadoc</span>
+        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-blue/20 text-brand-blue border border-brand-blue/30">API</span>
+      </div>
+      <button onclick="closeDrawer()" class="w-9 h-9 flex items-center justify-center text-text-muted">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="p-4 flex flex-col gap-1">
+      <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2 px-2">Obsah</p>
+      <a class="nav-link"><i class="fa-solid fa-book-open mr-2 text-xs"></i>Úvod</a>
+      <a class="nav-link"><i class="fa-solid fa-lock mr-2 text-xs"></i>Autentizace</a>
+      <a class="nav-link"><i class="fa-solid fa-triangle-exclamation mr-2 text-xs"></i>Chybové kódy</a>
+      <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mt-4 mb-2 px-2">Endpointy</p>
+      <a class="nav-link active" onclick="closeDrawer()"><span class="text-brand-blue text-[10px] font-bold mr-2">POST</span>Upload</a>
+      <a class="nav-link" onclick="closeDrawer()"><span class="text-brand-blue text-[10px] font-bold mr-2">POST</span>Clean</a>
+      <a class="nav-link" onclick="closeDrawer()"><span class="text-brand-green text-[10px] font-bold mr-2">GET</span>Status</a>
+      <a class="nav-link" onclick="closeDrawer()"><span class="text-brand-green text-[10px] font-bold mr-2">GET</span>Download</a>
+      <a class="nav-link" onclick="closeDrawer()"><span class="text-brand-green text-[10px] font-bold mr-2">GET</span>Metadata</a>
+      <a class="nav-link" onclick="closeDrawer()"><span class="text-brand-red text-[10px] font-bold mr-2">DEL</span>Delete</a>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-30">
+    <div class="px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center text-text-muted rounded-lg hover:bg-navy-lighter">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-brand-blue flex items-center justify-center shadow-glow-blue">
+            <i class="fa-solid fa-shield-halved text-sm text-white"></i>
+          </div>
+          <span class="font-bold text-white text-base">Metadoc</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-blue/20 text-brand-blue border border-brand-blue/30">API</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-text-muted bg-navy-lighter border border-gray-700 px-2 py-1 rounded-lg font-mono">v1.0</span>
+        <button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-brand-blue text-white text-xs font-semibold shadow-glow-blue">
+          <i class="fa-solid fa-key text-[10px]"></i> Klíč
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Quick Nav Pills -->
+  <div id="quick-nav" class="w-full bg-navy-main border-b border-gray-800 px-4 py-2 overflow-x-auto">
+    <div class="flex gap-2 min-w-max">
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-brand-blue/20 text-brand-blue border border-brand-blue/30 font-semibold whitespace-nowrap">Upload</button>
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted border border-gray-700 whitespace-nowrap">Clean</button>
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted border border-gray-700 whitespace-nowrap">Status</button>
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted border border-gray-700 whitespace-nowrap">Download</button>
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted border border-gray-700 whitespace-nowrap">Metadata</button>
+      <button class="text-[11px] px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted border border-gray-700 whitespace-nowrap">Delete</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="api-main" class="w-full max-w-2xl mx-auto px-3 py-4 flex flex-col gap-4">
+
+    <!-- UPLOAD -->
+    <div id="ep-upload" class="endpoint-card open bg-navy-card rounded-2xl border border-gray-700 shadow-card overflow-hidden">
+      <button class="w-full flex items-center gap-3 p-4 bg-navy-lighter/20 active:bg-navy-lighter/40" onclick="toggleCard('ep-upload', 'body-upload', 'chev-upload')">
+        <span class="method-post px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase shrink-0">POST</span>
+        <code class="text-sm text-white font-mono flex-1 text-left truncate">/files/upload</code>
+        <i id="chev-upload" class="fa-solid fa-chevron-up text-text-muted text-xs chevron rotated"></i>
+      </button>
+      <div id="body-upload" class="px-4 pb-5 border-t border-gray-800 pt-4 flex flex-col gap-4">
+        <p class="text-xs text-text-muted leading-relaxed">Nahraje jeden nebo více souborů. Podporované formáty: <span class="text-white font-medium">JPG, PNG, HEIC, WEBP, MP4, MOV</span>. Max. <span class="text-white font-medium">500 MB</span>.</p>
+        <!-- Headers -->
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Request Headers</p>
+          <div class="code-block p-3">
+            <span class="text-brand-green">Authorization</span><span class="text-white">: Bearer </span><span class="text-brand-orange">YOUR_API_KEY</span><br>
+            <span class="text-brand-green">Content-Type</span><span class="text-white">: multipart/form-data</span>
+          </div>
+        </div>
+        <!-- Params as cards -->
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Request Body</p>
+          <div class="flex flex-col gap-2">
+            <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3">
+              <div class="flex items-center justify-between mb-1">
+                <code class="text-brand-blue text-xs font-mono">files[]</code>
+                <span class="text-[10px] text-text-muted bg-navy-lighter px-2 py-0.5 rounded-full">File</span>
+                <span class="text-brand-green text-xs font-bold">Povinné</span>
+              </div>
+              <p class="text-[11px] text-text-muted">Jeden nebo více souborů (max 500 MB)</p>
+            </div>
+            <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3">
+              <div class="flex items-center justify-between mb-1">
+                <code class="text-brand-blue text-xs font-mono">session_id</code>
+                <span class="text-[10px] text-text-muted bg-navy-lighter px-2 py-0.5 rounded-full">string</span>
+                <span class="text-text-muted text-xs">Volitelné</span>
+              </div>
+              <p class="text-[11px] text-text-muted">ID relace pro seskupení souborů</p>
+            </div>
+          </div>
+        </div>
+        <!-- cURL -->
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Příklad (cURL)</p>
+          <div class="code-block p-3 relative">
+            <button class="absolute top-2 right-2 text-text-muted bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1"><i class="fa-solid fa-copy text-[10px]"></i> Kopírovat</button>
+            <span class="text-brand-orange">curl</span><span class="text-white"> -X POST \</span><br>
+            <span class="text-white">&nbsp;&nbsp;</span><span class="text-brand-green">"https://docs.metacleaner.app/v1/files/upload"</span><span class="text-white"> \</span><br>
+            <span class="text-white">&nbsp;&nbsp;-H </span><span class="text-brand-green">"Authorization: Bearer YOUR_API_KEY"</span><span class="text-white"> \</span><br>
+            <span class="text-white">&nbsp;&nbsp;-F </span><span class="text-brand-green">"files[]=@photo.jpg"</span><span class="text-white"> \</span><br>
+            <span class="text-white">&nbsp;&nbsp;-F </span><span class="text-brand-green">"session_id=abc123"</span>
+          </div>
+        </div>
+        <!-- Responses -->
+        <div class="flex flex-col gap-3">
+          <div>
+            <p class="text-[11px] font-semibold text-brand-green uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-check mr-1"></i>200 – Úspěch</p>
+            <div class="code-block p-3">
+              <span class="text-text-muted">{</span><br>
+              <span class="text-brand-green">"status"</span><span class="text-white">: </span><span class="text-brand-orange">"success"</span><span class="text-white">,</span><br>
+              <span class="text-brand-green">"session_id"</span><span class="text-white">: </span><span class="text-brand-orange">"abc123"</span><span class="text-white">,</span><br>
+              <span class="text-brand-green">"file_id"</span><span class="text-white">: </span><span class="text-brand-orange">"f_001"</span><br>
+              <span class="text-text-muted">}</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-[11px] font-semibold text-brand-red uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-xmark mr-1"></i>413 – Soubor příliš velký</p>
+            <div class="code-block p-3">
+              <span class="text-text-muted">{</span><br>
+              <span class="text-brand-green">"code"</span><span class="text-white">: </span><span class="text-brand-orange">"FILE_TOO_LARGE"</span><span class="text-white">,</span><br>
+              <span class="text-brand-green">"message"</span><span class="text-white">: </span><span class="text-brand-orange">"Max 500 MB"</span><br>
+              <span class="text-text-muted">}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLEAN -->
+    <div id="ep-clean" class="endpoint-card bg-navy-card rounded-2xl border border-gray-700 shadow-card overflow-hidden">
+      <button class="w-full flex items-center gap-3 p-4 bg-navy-lighter/20 active:bg-navy-lighter/40" onclick="toggleCard('ep-clean', 'body-clean', 'chev-clean')">
+        <span class="method-post px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase shrink-0">POST</span>
+        <code class="text-sm text-white font-mono flex-1 text-left truncate">/files/clean</code>
+        <i id="chev-clean" class="fa-solid fa-chevron-down text-text-muted text-xs chevron"></i>
+      </button>
+      <div id="body-clean" class="hidden px-4 pb-5 border-t border-gray-800 pt-4 flex flex-col gap-4">
+        <p class="text-xs text-text-muted leading-relaxed">Spustí asynchronní čištění metadat. Vrací <code class="text-brand-blue text-xs bg-navy-main px-1 py-0.5 rounded">job_id</code> pro sledování průběhu.</p>
+        <!-- Options -->
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Parametry options</p>
+          <div class="flex flex-col gap-2">
+            <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3 flex items-center justify-between">
+              <code class="text-brand-blue text-xs font-mono">strip_gps</code>
+              <span class="text-[10px] text-text-muted">boolean</span>
+              <span class="text-brand-green text-xs font-bold">true</span>
+            </div>
+            <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3 flex items-center justify-between">
+              <code class="text-brand-blue text-xs font-mono">strip_exif</code>
+              <span class="text-[10px] text-text-muted">boolean</span>
+              <span class="text-brand-green text-xs font-bold">true</span>
+            </div>
+            <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3 flex items-center justify-between">
+              <code class="text-brand-blue text-xs font-mono">strip_iptc</code>
+              <span class="text-[10px] text-text-muted">boolean</span>
+              <span class="text-brand-green text-xs font-bold">true</span>
+            </div>
+          </div>
+        </div>
+        <!-- Request Body -->
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Request Body (JSON)</p>
+          <div class="code-block p-3 relative">
+            <button class="absolute top-2 right-2 text-text-muted bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1"><i class="fa-solid fa-copy text-[10px]"></i> Kopírovat</button>
+            <span class="text-text-muted">{</span><br>
+            <span class="text-brand-green">"session_id"</span><span class="text-white">: </span><span class="text-brand-orange">"abc123"</span><span class="text-white">,</span><br>
+            <span class="text-brand-green">"file_ids"</span><span class="text-white">: [</span><span class="text-brand-orange">"f_001"</span><span class="text-white">, </span><span class="text-brand-orange">"f_002"</span><span class="text-white">],</span><br>
+            <span class="text-brand-green">"options"</span><span class="text-white">: { </span><span class="text-brand-green">"strip_gps"</span><span class="text-white">: </span><span class="text-brand-blue">true</span><span class="text-white"> }</span><br>
+            <span class="text-text-muted">}</span>
+          </div>
+        </div>
+        <!-- Responses -->
+        <div class="flex flex-col gap-3">
+          <div>
+            <p class="text-[11px] font-semibold text-brand-green uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-check mr-1"></i>202 – Přijato</p>
+            <div class="code-block p-3">
+              <span class="text-text-muted">{</span><br>
+              <span class="text-brand-green">"status"</span><span class="text-white">: </span><span class="text-brand-orange">"accepted"</span><span class="text-white">,</span><br>
+              <span class="text-brand-green">"job_id"</span><span class="text-white">: </span><span class="text-brand-orange">"job_xyz"</span><br>
+              <span class="text-text-muted">}</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-[11px] font-semibold text-brand-red uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-xmark mr-1"></i>404 – Soubor nenalezen</p>
+            <div class="code-block p-3">
+              <span class="text-text-muted">{</span><br>
+              <span class="text-brand-green">"code"</span><span class="text-white">: </span><span class="text-brand-orange">"FILE_NOT_FOUND"</span><span class="text-white">,</span><br>
+              <span class="text-brand-green">"file_id"</span><span class="text-white">: </span><span class="text-brand-orange">"f_002"</span><br>
+              <span class="text-text-muted">}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS -->
+    <div id="ep-status" class="endpoint-card bg-navy-card rounded-2xl border border-gray-700 shadow-card overflow-hidden">
+      <button class="w-full flex items-center gap-3 p-4 bg-navy-lighter/20 active:bg-navy-lighter/40" onclick="toggleCard('ep-status', 'body-status', 'chev-status')">
+        <span class="method-get px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase shrink-0">GET</span>
+        <code class="text-xs text-white font-mono flex-1 text-left truncate">/jobs/{job_id}/status</code>
+        <i id="chev-status" class="fa-solid fa-chevron-down text-text-muted text-xs chevron"></i>
+      </button>
+      <div id="body-status" class="hidden px-4 pb-5 border-t border-gray-800 pt-4 flex flex-col gap-4">
+        <p class="text-xs text-text-muted leading-relaxed">Vrací aktuální stav úlohy identifikované pomocí <code class="text-brand-blue text-xs bg-navy-main px-1 py-0.5 rounded">job_id</code>. Stav se aktualizuje v reálném čase.</p>
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">URL Parametry</p>
+          <div class="bg-navy-main/60 rounded-xl border border-gray-800 p-3">
+            <div class="flex items-center justify-between mb-1">
+              <code class="text-brand-blue text-xs font-mono">job_id</code>
+              <span class="text-[10px] text-text-muted bg-navy-lighter px-2 py-0.5 rounded-full">string</span>
+            </div>
+            <p class="text-[11px] text-text-muted">ID úlohy z odpovědi /clean</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-[11px] font-semibold text-text-muted uppercase tracking-wider mb-2">Možné hodnoty status</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs px-3 py-1.5 rounded-lg bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-mono">pending</span>
+            <span class="text-xs px-3 py-1.5 rounded-lg bg-brand-orange/10 border border-brand-orange/30 text-brand-orange font-mono">processing</span>
+            <span class="text-xs px-3 py-1.5 rounded-lg bg-brand-green/10 border border-brand-green/30 text-brand-green font-mono">completed</span>
+            <span class="text-xs px-3 py-1.5 rounded-lg bg-brand-red/10 border border-brand-red/30 text-brand-red font-mono">failed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Tab Bar -->
+  <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-navy-card border-t border-gray-800 flex z-30">
+    <button class="bottom-tab active">
+      <i class="fa-solid fa-book-open text-base"></i>
+      <span>Docs</span>
+    </button>
+    <button class="bottom-tab">
+      <i class="fa-solid fa-lock text-base"></i>
+      <span>Auth</span>
+    </button>
+    <button class="bottom-tab">
+      <i class="fa-solid fa-key text-base"></i>
+      <span>API Klíč</span>
+    </button>
+    <button class="bottom-tab">
+      <i class="fa-solid fa-triangle-exclamation text-base"></i>
+      <span>Chyby</span>
+    </button>
+  </nav>
+
+  <script>
+    function openDrawer() {
+      document.getElementById('side-drawer').classList.add('open');
+      document.getElementById('drawer-overlay').classList.add('open');
+    }
+    function closeDrawer() {
+      document.getElementById('side-drawer').classList.remove('open');
+      document.getElementById('drawer-overlay').classList.remove('open');
+    }
+    function toggleCard(cardId, bodyId, chevId) {
+      const card = document.getElementById(cardId);
+      const body = document.getElementById(bodyId);
+      const chev = document.getElementById(chevId);
+      const isOpen = !body.classList.contains('hidden');
+      if (isOpen) {
+        body.classList.add('hidden');
+        chev.classList.remove('rotated');
+        card.classList.remove('open');
+      } else {
+        body.classList.remove('hidden');
+        chev.classList.add('rotated');
+        card.classList.add('open');
+      }
+    }
+    // Init ep-upload as open
+    document.getElementById('ep-upload').classList.add('open');
+  </script>
+</body>
+</html>

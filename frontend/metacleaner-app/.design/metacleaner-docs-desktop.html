@@ -1,0 +1,900 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .code-block
+      {
+        background: #080f1e;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .nav-link
+      {
+        color: #94a3b8;
+        font-size: 13px;
+        transition: color 0.15s;
+        cursor: pointer;
+      }
+
+      .nav-link:hover
+      {
+        color: #fff;
+      }
+
+      .nav-link.active
+      {
+        color: #3b82f6;
+      }
+
+      .sidebar-section
+      {
+        border-left: 2px solid #1e293b;
+      }
+
+      .sidebar-section .nav-link
+      {
+        padding-left: 14px;
+      }
+
+      .section-card
+      {
+        background: #111d33;
+        border: 1px solid #1e293b;
+        border-radius: 16px;
+      }
+
+      .info-box-blue
+      {
+        background: rgba(59, 130, 246, 0.08);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        border-radius: 10px;
+      }
+
+      .info-box-green
+      {
+        background: rgba(34, 197, 94, 0.08);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        border-radius: 10px;
+      }
+
+      .info-box-orange
+      {
+        background: rgba(249, 115, 22, 0.08);
+        border: 1px solid rgba(249, 115, 22, 0.25);
+        border-radius: 10px;
+      }
+
+      .info-box-red
+      {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        border-radius: 10px;
+      }
+
+      .error-row:hover
+      {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .step-line
+      {
+        border-left: 2px solid #1e293b;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col">
+    <!-- Navbar -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-50">
+      <div
+        class="max-w-[1200px] mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+            <i class="fa-solid fa-shield-halved text-lg"></i></div>
+          <div class="flex items-center gap-2"><span
+              class="text-xl font-bold tracking-tight">MetaCleaner</span><span
+              class="text-xs font-bold px-2 py-0.5 rounded bg-brand-blue/20 text-brand-blue border border-brand-blue/30">API</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4"><span
+            class="text-xs text-text-muted bg-navy-lighter border border-gray-700 px-3 py-1.5 rounded-lg font-mono">v1.0</span><button
+            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-blue text-white text-sm font-semibold hover:bg-blue-500 transition-all shadow-glow-blue"><i
+              class="fa-solid fa-key text-xs"></i> API Klíč</button></div>
+      </div>
+    </nav>
+    <div class="max-w-[1200px] mx-auto w-full flex gap-8 px-6 py-8">
+      <!-- Sidebar -->
+      <aside id="sidebar"
+        class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-24 self-start">
+        <p
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2 px-2">
+          Obsah</p><a href="#sec-intro"
+          class="nav-link active px-2 py-1.5 rounded font-medium"><i
+            class="fa-solid fa-book-open mr-2 text-xs"></i>Úvod</a><a
+          href="#sec-auth" class="nav-link px-2 py-1.5 rounded"><i
+            class="fa-solid fa-lock mr-2 text-xs"></i>Autentizace</a><a
+          href="#sec-errors" class="nav-link px-2 py-1.5 rounded"><i
+            class="fa-solid fa-triangle-exclamation mr-2 text-xs"></i>Chybové
+          kódy</a>
+        <p
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest mt-4 mb-2 px-2">
+          Endpointy</p>
+        <div class="sidebar-section pl-4 flex flex-col gap-0.5"><a href="#"
+            class="nav-link py-1.5 rounded"><span
+              class="text-brand-blue text-[10px] font-bold mr-1.5">POST</span>Upload</a><a
+            href="#" class="nav-link py-1.5 rounded"><span
+              class="text-brand-blue text-[10px] font-bold mr-1.5">POST</span>Clean</a><a
+            href="#" class="nav-link py-1.5 rounded"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Status</a><a
+            href="#" class="nav-link py-1.5 rounded"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Download</a><a
+            href="#" class="nav-link py-1.5 rounded"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Metadata</a><a
+            href="#" class="nav-link py-1.5 rounded"><span
+              class="text-brand-red text-[10px] font-bold mr-1.5">DEL</span>Delete</a>
+        </div>
+      </aside><!-- Main Content -->
+      <main id="api-main" class="flex-1 min-w-0 flex flex-col gap-8">
+        <!-- ===== INTRO SECTION ===== -->
+        <section id="sec-intro" class="flex flex-col gap-5">
+          <!-- Header -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-brand-blue/20 border border-brand-blue/30 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-book-open text-brand-blue text-sm"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-white tracking-tight">Úvod</h1>
+              <p class="text-text-muted text-xs mt-0.5">Začněte pracovat s
+                Metadoc API</p>
+            </div>
+          </div><!-- Intro card -->
+          <div class="section-card p-6 flex flex-col gap-5">
+            <p class="text-sm text-text-muted leading-relaxed">
+              Vítejte v dokumentaci <span
+                class="text-white font-semibold">Metadoc API</span> – RESTful
+              rozhraní pro automatizované čištění a správu metadat souborů. API
+              umožňuje nahrávat soubory, odstraňovat citlivá metadata (GPS,
+              EXIF, IPTC) a stahovat vyčištěné verze přímo z vašich aplikací.
+            </p><!-- Base URL -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Base URL</p>
+              <div
+                class="code-block p-4 flex items-center justify-between gap-4">
+                <span><span class="text-brand-green">https://</span><span
+                    class="text-white">docs.metacleaner.app</span><span
+                    class="text-brand-blue">/v1</span></span><button
+                  onclick="copyText('https://docs.metacleaner.app/v1', this)"
+                  class="text-text-muted hover:text-white bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1 shrink-0 transition-colors"><i
+                    class="fa-solid fa-copy text-[10px]"></i> Kopírovat</button>
+              </div>
+            </div><!-- Features grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div
+                class="bg-navy-main/60 rounded-xl p-4 border border-gray-800/60 flex flex-col gap-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-brand-green/15 flex items-center justify-center">
+                  <i
+                    class="fa-solid fa-shield-halved text-brand-green text-xs"></i>
+                </div>
+                <p class="text-white text-sm font-semibold">Bezpečné čištění</p>
+                <p class="text-text-muted text-xs leading-relaxed">Odstraní GPS,
+                  EXIF a IPTC metadata bez poškození kvality souboru.</p>
+              </div>
+              <div
+                class="bg-navy-main/60 rounded-xl p-4 border border-gray-800/60 flex flex-col gap-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-brand-blue/15 flex items-center justify-center">
+                  <i class="fa-solid fa-bolt text-brand-blue text-xs"></i></div>
+                <p class="text-white text-sm font-semibold">Asynchronní
+                  zpracování</p>
+                <p class="text-text-muted text-xs leading-relaxed">Soubory se
+                  zpracovávají na pozadí. Sledujte průběh pomocí job_id.</p>
+              </div>
+              <div
+                class="bg-navy-main/60 rounded-xl p-4 border border-gray-800/60 flex flex-col gap-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-brand-orange/15 flex items-center justify-center">
+                  <i
+                    class="fa-solid fa-layer-group text-brand-orange text-xs"></i>
+                </div>
+                <p class="text-white text-sm font-semibold">Dávkové zpracování
+                </p>
+                <p class="text-text-muted text-xs leading-relaxed">Zpracujte
+                  více souborů najednou pomocí sessions a file_ids.</p>
+              </div>
+            </div><!-- Supported formats -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                Podporované formáty</p>
+              <div class="flex flex-wrap gap-2"><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">JPG</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">PNG</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">HEIC</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">WEBP</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">MP4</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">MOV</span>
+              </div>
+            </div><!-- Quick start flow -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                Rychlý start – tok volání</p>
+              <div class="flex flex-col gap-0 pl-2">
+                <div class="flex gap-4 pb-4">
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      1</div>
+                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                  </div>
+                  <div class="pb-1">
+                    <p class="text-white text-sm font-semibold mb-0.5">Nahrajte
+                      soubory</p>
+                    <p class="text-text-muted text-xs">Volejte
+                      <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">POST /files/upload</code>
+                      — získáte
+                      <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">file_id</code>
+                      pro každý soubor.</p>
+                  </div>
+                </div>
+                <div class="flex gap-4 pb-4">
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      2</div>
+                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                  </div>
+                  <div class="pb-1">
+                    <p class="text-white text-sm font-semibold mb-0.5">Spusťte
+                      čištění</p>
+                    <p class="text-text-muted text-xs">Volejte
+                      <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">POST /files/clean</code>
+                      s
+                      <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">file_ids</code>
+                      — získáte
+                      <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">job_id</code>.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-4 pb-4">
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      3</div>
+                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                  </div>
+                  <div class="pb-1">
+                    <p class="text-white text-sm font-semibold mb-0.5">Sledujte
+                      průběh</p>
+                    <p class="text-text-muted text-xs">Volejte
+                      <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">GET /jobs/{'{job_id}'}/status</code>
+                      dokud stav není
+                      <code class="text-brand-green bg-navy-main px-1.5 py-0.5 rounded">completed</code>.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex flex-col items-center">
+                    <div
+                      class="w-7 h-7 rounded-full bg-brand-green flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      4</div>
+                  </div>
+                  <div>
+                    <p class="text-white text-sm font-semibold mb-0.5">Stáhněte
+                      výsledek</p>
+                    <p class="text-text-muted text-xs">Volejte
+                      <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">GET /files/{'{file_id}'}/download</code>
+                      pro stažení vyčištěného souboru.</p>
+                  </div>
+                </div>
+              </div>
+            </div><!-- Rate limits info box -->
+            <div class="info-box-orange p-4 flex gap-3 items-start"><i
+                class="fa-solid fa-gauge-high text-brand-orange mt-0.5 text-sm shrink-0"></i>
+              <div>
+                <p class="text-white text-sm font-semibold mb-1">Limity
+                  požadavků (Rate Limiting)</p>
+                <p class="text-text-muted text-xs leading-relaxed">Každý API
+                  klíč je omezen na <span class="text-white font-medium">120
+                    požadavků za minutu</span>. Při překročení limitu vrátí API
+                  odpověď
+                  <code class="text-brand-orange bg-navy-main px-1 rounded">429 Too Many Requests</code>.
+                  Limit se resetuje každou minutu.</p>
+              </div>
+            </div>
+          </div>
+        </section><!-- ===== AUTHENTICATION SECTION ===== -->
+        <section id="sec-auth" class="flex flex-col gap-5">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-brand-green/20 border border-brand-green/30 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-lock text-brand-green text-sm"></i></div>
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">
+                Autentizace</h2>
+              <p class="text-text-muted text-xs mt-0.5">Zabezpečení přístupu k
+                API pomocí API klíčů</p>
+            </div>
+          </div>
+          <div class="section-card p-6 flex flex-col gap-5">
+            <p class="text-sm text-text-muted leading-relaxed">
+              Metadoc API používá autentizaci pomocí <span
+                class="text-white font-semibold">Bearer tokenů</span>. Každý
+              požadavek musí obsahovat platný API klíč v HTTP hlavičce
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">Authorization</code>.
+            </p><!-- Auth header example -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Authorization Header</p>
+              <div class="code-block p-4 relative"><button
+                  onclick="copyText('Authorization: Bearer YOUR_API_KEY', this)"
+                  class="absolute top-3 right-3 text-text-muted hover:text-white bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1 transition-colors"><i
+                    class="fa-solid fa-copy text-[10px]"></i>
+                  Kopírovat</button><span
+                  class="text-brand-green">Authorization</span><span
+                  class="text-white">: Bearer </span><span
+                  class="text-brand-orange">YOUR_API_KEY</span></div>
+            </div><!-- How to get API key -->
+            <div class="info-box-blue p-4 flex gap-3 items-start"><i
+                class="fa-solid fa-circle-info text-brand-blue mt-0.5 text-sm shrink-0"></i>
+              <div>
+                <p class="text-white text-sm font-semibold mb-1">Jak získat API
+                  klíč</p>
+                <p class="text-text-muted text-xs leading-relaxed">API klíč
+                  vygenerujete ve svém účtu v sekci <span
+                    class="text-white font-medium">Nastavení → API Klíče</span>.
+                  Klíč se zobrazí pouze jednou při vytvoření – uložte jej na
+                  bezpečné místo.</p>
+              </div>
+            </div><!-- Full example with cURL -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Příklad autentizovaného požadavku (cURL)</p>
+              <div class="code-block p-4 relative"><button
+                  onclick="copyText(`curl -X GET \\\n  \" https:=""
+                  docs.metacleaner.app="" v1="" jobs="" job_xyz="" status\"=""
+                  \\\n="" -h="" \"authorization:="" bearer=""
+                  your_api_key\"`,="" this)"=""
+                  class="absolute top-3 right-3 text-text-muted hover:text-white bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1 transition-colors"><i
+                    class="fa-solid fa-copy text-[10px]"></i>
+                  Kopírovat</button><span
+                  class="text-brand-orange">curl</span><span class="text-white">
+                  -X GET \</span><br><span
+                  class="text-white">&nbsp;&nbsp;</span><span
+                  class="text-brand-green">"https://docs.metacleaner.app/v1/jobs/job_xyz/status"</span><span
+                  class="text-white"> \</span><br><span
+                  class="text-white">&nbsp;&nbsp;-H </span><span
+                  class="text-brand-green">"Authorization: Bearer
+                  YOUR_API_KEY"</span></div>
+            </div><!-- Security best practices -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                Bezpečnostní doporučení</p>
+              <div class="flex flex-col gap-2">
+                <div
+                  class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                  <i
+                    class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                  <p class="text-text-muted text-xs leading-relaxed">Nikdy
+                    nezahrnujte API klíč přímo do kódu na straně klienta
+                    (JavaScript, mobilní aplikace).</p>
+                </div>
+                <div
+                  class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                  <i
+                    class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                  <p class="text-text-muted text-xs leading-relaxed">Ukládejte
+                    klíč jako proměnnou prostředí
+                    (<code class="text-brand-blue bg-navy-main px-1 rounded">ENV</code>)
+                    nebo použijte správce tajemství.</p>
+                </div>
+                <div
+                  class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                  <i
+                    class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                  <p class="text-text-muted text-xs leading-relaxed">Při
+                    podezření na kompromitaci klíče jej okamžitě revokujte a
+                    vygenerujte nový v nastavení účtu.</p>
+                </div>
+                <div
+                  class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                  <i
+                    class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                  <p class="text-text-muted text-xs leading-relaxed">Veškerá
+                    komunikace probíhá přes <span
+                      class="text-white font-medium">HTTPS</span>. Požadavky
+                    přes HTTP jsou automaticky odmítnuty.</p>
+                </div>
+              </div>
+            </div><!-- Auth error responses -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Chybové odpovědi autentizace</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p
+                    class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-circle-xmark mr-1.5"></i>401 –
+                    Neautorizováno</p>
+                  <div class="code-block p-4"><span
+                      class="text-text-muted">{</span><br><span
+                      class="text-brand-green">"status"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"error"</span><span
+                      class="text-white">,</span><br><span
+                      class="text-brand-green">"code"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"INVALID_API_KEY"</span><span
+                      class="text-white">,</span><br><span
+                      class="text-brand-green">"message"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"API key is
+                      invalid"</span><br><span class="text-text-muted">}</span>
+                  </div>
+                </div>
+                <div>
+                  <p
+                    class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-circle-xmark mr-1.5"></i>403 – Přístup
+                    zakázán</p>
+                  <div class="code-block p-4"><span
+                      class="text-text-muted">{</span><br><span
+                      class="text-brand-green">"status"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"error"</span><span
+                      class="text-white">,</span><br><span
+                      class="text-brand-green">"code"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"FORBIDDEN"</span><span
+                      class="text-white">,</span><br><span
+                      class="text-brand-green">"message"</span><span
+                      class="text-white">: </span><span
+                      class="text-brand-orange">"Access denied"</span><br><span
+                      class="text-text-muted">}</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section><!-- ===== ERROR CODES SECTION ===== -->
+        <section id="sec-errors" class="flex flex-col gap-5">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-brand-red/20 border border-brand-red/30 flex items-center justify-center shrink-0">
+              <i
+                class="fa-solid fa-triangle-exclamation text-brand-red text-sm"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white tracking-tight">Chybové
+                kódy</h2>
+              <p class="text-text-muted text-xs mt-0.5">Přehled všech stavových
+                kódů a jejich významů</p>
+            </div>
+          </div>
+          <div class="section-card p-6 flex flex-col gap-6">
+            <p class="text-sm text-text-muted leading-relaxed">
+              Metadoc API používá standardní <span
+                class="text-white font-semibold">HTTP stavové kódy</span> k
+              indikaci úspěchu nebo neúspěchu požadavku. Všechny chybové
+              odpovědi mají konzistentní JSON strukturu s poli
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">status</code>,
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">code</code>
+              a
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">message</code>.
+            </p><!-- Error response structure -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Struktura chybové odpovědi</p>
+              <div class="code-block p-4"><span
+                  class="text-text-muted">{</span><br><span
+                  class="text-brand-green">"status"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-orange">"error"</span><span
+                  class="text-white">,</span><br><span
+                  class="text-brand-green">"code"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-orange">"ERROR_CODE"</span><span
+                  class="text-white">, </span><span class="text-text-muted">//
+                  Strojově čitelný kód chyby</span><br><span
+                  class="text-brand-green">"message"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-orange">"Human readable message"</span><span
+                  class="text-white">, </span><span class="text-text-muted">//
+                  Popis pro vývojáře</span><br><span
+                  class="text-brand-green">"details"</span><span
+                  class="text-white">: </span><span class="text-text-muted">{
+                  ... }</span><span class="text-white"> </span><span
+                  class="text-text-muted">// Volitelné doplňující
+                  informace</span><br><span class="text-text-muted">}</span>
+              </div>
+            </div><!-- HTTP Status Codes overview -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                HTTP Stavové kódy</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  class="info-box-green p-3.5 flex gap-3 items-start rounded-xl">
+                  <span
+                    class="text-brand-green font-bold font-mono text-sm shrink-0">2xx</span>
+                  <div>
+                    <p class="text-white text-xs font-semibold mb-0.5">Úspěch
+                    </p>
+                    <p class="text-text-muted text-xs">Požadavek byl úspěšně
+                      zpracován.</p>
+                  </div>
+                </div>
+                <div
+                  class="info-box-orange p-3.5 flex gap-3 items-start rounded-xl">
+                  <span
+                    class="text-brand-orange font-bold font-mono text-sm shrink-0">4xx</span>
+                  <div>
+                    <p class="text-white text-xs font-semibold mb-0.5">Chyba
+                      klienta</p>
+                    <p class="text-text-muted text-xs">Neplatný požadavek ze
+                      strany klienta.</p>
+                  </div>
+                </div>
+                <div
+                  class="info-box-red p-3.5 flex gap-3 items-start rounded-xl">
+                  <span
+                    class="text-brand-red font-bold font-mono text-sm shrink-0">5xx</span>
+                  <div>
+                    <p class="text-white text-xs font-semibold mb-0.5">Chyba
+                      serveru</p>
+                    <p class="text-text-muted text-xs">Neočekávaná chyba na
+                      straně serveru.</p>
+                  </div>
+                </div>
+                <div
+                  class="info-box-blue p-3.5 flex gap-3 items-start rounded-xl">
+                  <span
+                    class="text-brand-blue font-bold font-mono text-sm shrink-0">3xx</span>
+                  <div>
+                    <p class="text-white text-xs font-semibold mb-0.5">
+                      Přesměrování</p>
+                    <p class="text-text-muted text-xs">Klient by měl přesměrovat
+                      požadavek.</p>
+                  </div>
+                </div>
+              </div>
+            </div><!-- Full error table -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">
+                Kompletní přehled chybových kódů</p>
+              <div class="overflow-x-auto rounded-xl border border-gray-800">
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="bg-navy-main/70">
+                      <th
+                        class="px-4 py-3 text-left text-text-muted font-semibold">
+                        HTTP</th>
+                      <th
+                        class="px-4 py-3 text-left text-text-muted font-semibold">
+                        Kód chyby</th>
+                      <th
+                        class="px-4 py-3 text-left text-text-muted font-semibold">
+                        Popis</th>
+                      <th
+                        class="px-4 py-3 text-left text-text-muted font-semibold">
+                        Řešení</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-green font-bold font-mono">200</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-green">OK</td>
+                      <td class="px-4 py-3 text-text-muted">Požadavek úspěšný
+                      </td>
+                      <td class="px-4 py-3 text-text-muted">—</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-green font-bold font-mono">202</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-green">ACCEPTED
+                      </td>
+                      <td class="px-4 py-3 text-text-muted">Asynchronní úloha
+                        přijata ke zpracování</td>
+                      <td class="px-4 py-3 text-text-muted">Sledujte stav přes
+                        <code class="text-brand-blue bg-navy-main px-1 rounded">/status</code>
+                      </td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">400</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">
+                        BAD_REQUEST</td>
+                      <td class="px-4 py-3 text-text-muted">Chybný formát nebo
+                        chybějící parametry</td>
+                      <td class="px-4 py-3 text-text-muted">Zkontrolujte tělo
+                        požadavku a parametry</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-red font-bold font-mono">401</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-red">
+                        INVALID_API_KEY</td>
+                      <td class="px-4 py-3 text-text-muted">Chybějící nebo
+                        neplatný API klíč</td>
+                      <td class="px-4 py-3 text-text-muted">Ověřte platnost API
+                        klíče v hlavičce</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-red font-bold font-mono">403</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-red">FORBIDDEN
+                      </td>
+                      <td class="px-4 py-3 text-text-muted">Nedostatečná
+                        oprávnění pro operaci</td>
+                      <td class="px-4 py-3 text-text-muted">Zkontrolujte plán a
+                        oprávnění klíče</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-red font-bold font-mono">404</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-red">
+                        FILE_NOT_FOUND</td>
+                      <td class="px-4 py-3 text-text-muted">Soubor nebo úloha
+                        nebyla nalezena</td>
+                      <td class="px-4 py-3 text-text-muted">Ověřte správnost
+                        <code class="text-brand-blue bg-navy-main px-1 rounded">file_id</code>
+                        nebo
+                        <code class="text-brand-blue bg-navy-main px-1 rounded">job_id</code>
+                      </td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">409</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">CONFLICT
+                      </td>
+                      <td class="px-4 py-3 text-text-muted">Soubor již byl
+                        zpracován nebo je konflikt</td>
+                      <td class="px-4 py-3 text-text-muted">Nahrajte soubor
+                        znovu s novým session_id</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">413</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">
+                        FILE_TOO_LARGE</td>
+                      <td class="px-4 py-3 text-text-muted">Soubor překračuje
+                        maximální povolenou velikost</td>
+                      <td class="px-4 py-3 text-text-muted">Soubor musí být
+                        menší než 500 MB</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">415</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">
+                        UNSUPPORTED_FORMAT</td>
+                      <td class="px-4 py-3 text-text-muted">Nepodporovaný formát
+                        souboru</td>
+                      <td class="px-4 py-3 text-text-muted">Použijte JPG, PNG,
+                        HEIC, WEBP, MP4 nebo MOV</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">422</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">
+                        VALIDATION_ERROR</td>
+                      <td class="px-4 py-3 text-text-muted">Neplatné hodnoty
+                        parametrů v požadavku</td>
+                      <td class="px-4 py-3 text-text-muted">Zkontrolujte typy a
+                        hodnoty všech parametrů</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-orange font-bold font-mono">429</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-orange">
+                        RATE_LIMIT_EXCEEDED</td>
+                      <td class="px-4 py-3 text-text-muted">Překročen limit
+                        požadavků (120/min)</td>
+                      <td class="px-4 py-3 text-text-muted">Počkejte na reset
+                        limitu nebo zpomalte volání</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-red font-bold font-mono">500</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-red">
+                        INTERNAL_ERROR</td>
+                      <td class="px-4 py-3 text-text-muted">Neočekávaná interní
+                        chyba serveru</td>
+                      <td class="px-4 py-3 text-text-muted">Zkuste znovu za
+                        chvíli nebo kontaktujte podporu</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60 error-row">
+                      <td class="px-4 py-3"><span
+                          class="text-brand-red font-bold font-mono">503</span>
+                      </td>
+                      <td class="px-4 py-3 font-mono text-brand-red">
+                        SERVICE_UNAVAILABLE</td>
+                      <td class="px-4 py-3 text-text-muted">Služba je dočasně
+                        nedostupná (údržba)</td>
+                      <td class="px-4 py-3 text-text-muted">Sledujte status
+                        stránku a zkuste znovu</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- Retry strategy -->
+            <div class="info-box-blue p-4 flex gap-3 items-start"><i
+                class="fa-solid fa-rotate-right text-brand-blue mt-0.5 text-sm shrink-0"></i>
+              <div>
+                <p class="text-white text-sm font-semibold mb-1">Doporučená
+                  strategie opakování (Retry)</p>
+                <p class="text-text-muted text-xs leading-relaxed mb-2">Pro
+                  chyby
+                  <code class="text-brand-orange bg-navy-main px-1 rounded">429</code>
+                  a
+                  <code class="text-brand-red bg-navy-main px-1 rounded">5xx</code>
+                  doporučujeme implementovat exponenciální zpětné přihlášení
+                  (exponential backoff):</p>
+                <div class="code-block p-3"><span class="text-text-muted">#
+                    Čekací doby: </span><span class="text-brand-green">1s → 2s →
+                    4s → 8s → 16s</span><br><span
+                    class="text-brand-green">delay</span><span
+                    class="text-white"> = </span><span
+                    class="text-brand-blue">2</span><span class="text-white"> **
+                  </span><span class="text-brand-green">attempt</span><span
+                    class="text-white"> </span><span class="text-text-muted">#
+                    max 5 pokusů</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      function copyText(text, btn)
+      {
+        navigator.clipboard.writeText(text).then(function()
+        {
+          const original = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fa-solid fa-check text-[10px]"></i> Zkopírováno';
+          btn.classList.add('text-brand-green');
+          setTimeout(function()
+          {
+            btn.innerHTML = original;
+            btn.classList.remove('text-brand-green');
+          }, 2000);
+        });
+      }
+
+      // Sidebar active link on scroll
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('aside .nav-link[href^="#"]');
+      window.addEventListener('scroll', function()
+      {
+        let current = '';
+        sections.forEach(function(section)
+        {
+          const sectionTop = section.offsetTop - 120;
+          if (window.scrollY >= sectionTop)
+          {
+            current = section.getAttribute('id');
+          }
+        });
+        navLinks.forEach(function(link)
+        {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + current)
+          {
+            link.classList.add('active');
+          }
+        });
+      });
+    </script>
+  </body>
+
+</html>

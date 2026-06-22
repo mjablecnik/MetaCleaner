@@ -1,0 +1,613 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              navy:
+              {
+                main: '#0a1628',
+                card: '#111d33',
+                lighter: '#1e293b'
+              },
+              brand:
+              {
+                green: '#22c55e',
+                orange: '#f97316',
+                red: '#ef4444',
+                blue: '#3b82f6'
+              },
+              text:
+              {
+                main: '#ffffff',
+                muted: '#94a3b8'
+              }
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            },
+            boxShadow:
+            {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        margin: 0;
+        padding: 0;
+        background-color: #0a1628;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      .method-get
+      {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+
+      .method-post
+      {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+
+      .method-delete
+      {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+
+      .method-patch
+      {
+        background: rgba(249, 115, 22, 0.15);
+        color: #f97316;
+        border: 1px solid rgba(249, 115, 22, 0.3);
+      }
+
+      .endpoint-card
+      {
+        transition: border-color 0.2s;
+      }
+
+      .endpoint-card:hover
+      {
+        border-color: #374151;
+      }
+
+      .endpoint-card.open
+      {
+        border-color: #3b82f6;
+      }
+
+      .code-block
+      {
+        background: #080f1e;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      .nav-link
+      {
+        color: #94a3b8;
+        font-size: 13px;
+        transition: color 0.15s;
+        cursor: pointer;
+      }
+
+      .nav-link:hover,
+      .nav-link.active
+      {
+        color: #fff;
+      }
+
+      .nav-link.active
+      {
+        color: #3b82f6;
+      }
+
+      .sidebar-section
+      {
+        border-left: 2px solid #1e293b;
+      }
+
+      .sidebar-section .nav-link.active
+      {
+        border-left: 2px solid #3b82f6;
+        margin-left: -2px;
+        padding-left: 14px;
+      }
+
+      .collapse-content
+      {
+        display: none;
+      }
+
+      .collapse-content.open
+      {
+        display: block;
+      }
+
+      .chevron
+      {
+        transition: transform 0.2s;
+      }
+
+      .chevron.open
+      {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col">
+    <!-- Navbar -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <nav id="navbar"
+      class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-50">
+      <div
+        class="max-w-[1200px] mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+            <i class="fa-solid fa-shield-halved text-lg"></i></div>
+          <div class="flex items-center gap-2"><span
+              class="text-xl font-bold tracking-tight">Metadoc</span><span
+              class="text-xs font-bold px-2 py-0.5 rounded bg-brand-blue/20 text-brand-blue border border-brand-blue/30">API</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-4"><span
+            class="text-xs text-text-muted bg-navy-lighter border border-gray-700 px-3 py-1.5 rounded-lg font-mono">v1.0</span><a
+            href="#"
+            class="text-sm text-text-muted hover:text-white transition-colors"><i
+              class="fa-solid fa-arrow-left mr-1.5 text-xs"></i>Zpět</a><button
+            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-blue text-white text-sm font-semibold hover:bg-blue-500 transition-all shadow-glow-blue"><i
+              class="fa-solid fa-key text-xs"></i> API Klíč</button></div>
+      </div>
+    </nav>
+    <div class="max-w-[1200px] mx-auto w-full flex gap-8 px-6 py-8">
+      <!-- Sidebar -->
+      <aside id="sidebar"
+        class="hidden lg:flex flex-col gap-1 w-56 shrink-0 sticky top-24 self-start">
+        <p
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2 px-2">
+          Obsah</p><a class="nav-link px-2 py-1.5 rounded font-medium"><i
+            class="fa-solid fa-book-open mr-2 text-xs"></i>Úvod</a><a
+          class="nav-link px-2 py-1.5 rounded"><i
+            class="fa-solid fa-lock mr-2 text-xs"></i>Autentizace</a><a
+          class="nav-link px-2 py-1.5 rounded"><i
+            class="fa-solid fa-triangle-exclamation mr-2 text-xs"></i>Chybové
+          kódy</a>
+        <p
+          class="text-[10px] font-bold uppercase text-text-muted tracking-widest mt-4 mb-2 px-2">
+          Endpointy</p>
+        <div class="sidebar-section pl-4 flex flex-col gap-0.5"><a
+            class="nav-link px-2 py-1.5 rounded active"><span
+              class="text-brand-blue text-[10px] font-bold mr-1.5">POST</span>Upload</a><a
+            class="nav-link px-2 py-1.5 rounded active"><span
+              class="text-brand-blue text-[10px] font-bold mr-1.5">POST</span>Clean</a><a
+            class="nav-link px-2 py-1.5 rounded active"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Status</a><a
+            class="nav-link px-2 py-1.5 rounded"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Download</a><a
+            class="nav-link px-2 py-1.5 rounded"><span
+              class="text-brand-green text-[10px] font-bold mr-1.5">GET</span>Metadata</a><a
+            class="nav-link px-2 py-1.5 rounded"><span
+              class="text-brand-red text-[10px] font-bold mr-1.5">DEL</span>Delete</a>
+        </div>
+      </aside><!-- Main -->
+      <main id="api-main" class="flex-1 min-w-0 flex flex-col gap-6">
+        <!-- UPLOAD - OPEN -->
+        <div id="ep-upload"
+          class="endpoint-card open bg-navy-card rounded-2xl border border-brand-blue shadow-card overflow-hidden">
+          <div class="w-full flex items-center gap-4 p-5 bg-navy-lighter/20">
+            <span
+              class="method-post px-3 py-1 rounded-lg text-xs font-bold uppercase min-w-[52px] text-center">POST</span><code class="text-sm text-white font-mono flex-1">/files/upload</code><span
+              class="text-text-muted text-sm hidden sm:block">Nahrání
+              souboru</span>
+            <div class="flex items-center gap-2 ml-auto"><i
+                class="fa-solid fa-chevron-up text-text-muted text-xs"></i>
+            </div>
+          </div>
+          <div
+            class="px-5 pb-6 border-t border-gray-800 pt-5 flex flex-col gap-5">
+            <p class="text-sm text-text-muted leading-relaxed">Nahraje jeden
+              nebo více souborů na server pro následné zpracování. Podporované
+              formáty: <span class="text-white font-medium">JPG, PNG, HEIC,
+                WEBP, MP4, MOV</span>. Maximální velikost jednoho souboru je
+              <span class="text-white font-medium">500 MB</span>.</p>
+            <!-- Headers -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Request Headers</p>
+              <div class="code-block p-4"><span
+                  class="text-brand-green">Authorization</span><span
+                  class="text-white">: Bearer </span><span
+                  class="text-brand-orange">YOUR_API_KEY</span><br><span
+                  class="text-brand-green">Content-Type</span><span
+                  class="text-white">: multipart/form-data</span></div>
+            </div><!-- Request Body -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Request Body (multipart)</p>
+              <div class="overflow-x-auto rounded-xl border border-gray-800">
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="bg-navy-main/60">
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Pole</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Typ</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Povinné</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Popis</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">files[]
+                      </td>
+                      <td class="px-4 py-2.5 text-text-muted">File</td>
+                      <td class="px-4 py-2.5"><span
+                          class="text-brand-green font-bold">✓</span></td>
+                      <td class="px-4 py-2.5 text-text-muted">Jeden nebo více
+                        souborů (max 500 MB)</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">
+                        session_id</td>
+                      <td class="px-4 py-2.5 text-text-muted">string</td>
+                      <td class="px-4 py-2.5 text-text-muted">—</td>
+                      <td class="px-4 py-2.5 text-text-muted">Volitelné ID
+                        relace pro seskupení souborů</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- Example cURL -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Příklad (cURL)</p>
+              <div class="code-block p-4 relative"><button
+                  class="absolute top-3 right-3 text-text-muted hover:text-white bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1"><i
+                    class="fa-solid fa-copy text-[10px]"></i>
+                  Kopírovat</button><span
+                  class="text-brand-orange">curl</span><span class="text-white">
+                  -X POST \</span><br><span
+                  class="text-white">&nbsp;&nbsp;</span><span
+                  class="text-brand-green">"https://docs.metacleaner.app/v1/files/upload"</span><span
+                  class="text-white"> \</span><br><span
+                  class="text-white">&nbsp;&nbsp;-H </span><span
+                  class="text-brand-green">"Authorization: Bearer
+                  YOUR_API_KEY"</span><span class="text-white">
+                  \</span><br><span class="text-white">&nbsp;&nbsp;-F
+                </span><span
+                  class="text-brand-green">"files[]=@photo.jpg"</span><span
+                  class="text-white"> \</span><br><span
+                  class="text-white">&nbsp;&nbsp;-F </span><span
+                  class="text-brand-green">"session_id=abc123"</span></div>
+            </div><!-- Responses -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p
+                  class="text-xs font-semibold text-brand-green uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-circle-check mr-1.5"></i>200 – Úspěch
+                </p>
+                <div class="code-block p-4"><span
+                    class="text-text-muted">{</span><br><span
+                    class="text-brand-green">"status"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"success"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"session_id"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"abc123"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"files"</span><span
+                    class="text-white">: [{</span><br><span
+                    class="text-brand-green">"file_id"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"f_001"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"name"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"photo.jpg"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"size"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-blue">2048576</span><br><span
+                    class="text-white">}]</span><br><span
+                    class="text-text-muted">}</span></div>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-circle-xmark mr-1.5"></i>413 – Soubor
+                  příliš velký</p>
+                <div class="code-block p-4"><span
+                    class="text-text-muted">{</span><br><span
+                    class="text-brand-green">"status"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"error"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"code"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"FILE_TOO_LARGE"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"message"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"Max 500 MB"</span><br><span
+                    class="text-text-muted">}</span></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- CLEAN - OPEN -->
+        <div id="ep-clean"
+          class="endpoint-card open bg-navy-card rounded-2xl border border-brand-blue shadow-card overflow-hidden">
+          <div class="w-full flex items-center gap-4 p-5 bg-navy-lighter/20">
+            <span
+              class="method-post px-3 py-1 rounded-lg text-xs font-bold uppercase min-w-[52px] text-center">POST</span><code class="text-sm text-white font-mono flex-1">/files/clean</code><span
+              class="text-text-muted text-sm hidden sm:block">Spustit
+              čištění</span>
+            <div class="flex items-center gap-2 ml-auto"><i
+                class="fa-solid fa-chevron-up text-text-muted text-xs"></i>
+            </div>
+          </div>
+          <div
+            class="px-5 pb-6 border-t border-gray-800 pt-5 flex flex-col gap-5">
+            <p class="text-sm text-text-muted leading-relaxed">Spustí
+              asynchronní proces čištění metadat pro zadané soubory. Vrací
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">job_id</code>
+              pro sledování průběhu zpracování.</p><!-- Options table -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Parametry options</p>
+              <div class="overflow-x-auto rounded-xl border border-gray-800">
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="bg-navy-main/60">
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Parametr</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Typ</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Výchozí</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Popis</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">
+                        strip_gps</td>
+                      <td class="px-4 py-2.5 text-text-muted">boolean</td>
+                      <td class="px-4 py-2.5 text-brand-green">true</td>
+                      <td class="px-4 py-2.5 text-text-muted">Odstraní GPS
+                        souřadnice</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">
+                        strip_exif</td>
+                      <td class="px-4 py-2.5 text-text-muted">boolean</td>
+                      <td class="px-4 py-2.5 text-brand-green">true</td>
+                      <td class="px-4 py-2.5 text-text-muted">Odstraní EXIF
+                        metadata</td>
+                    </tr>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">
+                        strip_iptc</td>
+                      <td class="px-4 py-2.5 text-text-muted">boolean</td>
+                      <td class="px-4 py-2.5 text-brand-green">true</td>
+                      <td class="px-4 py-2.5 text-text-muted">Odstraní IPTC data
+                        (autor, popis)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- Request Body -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Request Body (JSON)</p>
+              <div class="code-block p-4 relative"><button
+                  class="absolute top-3 right-3 text-text-muted hover:text-white bg-navy-lighter px-2 py-1 rounded text-[10px] flex items-center gap-1"><i
+                    class="fa-solid fa-copy text-[10px]"></i>
+                  Kopírovat</button><span
+                  class="text-text-muted">{</span><br><span
+                  class="text-brand-green">"session_id"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-orange">"abc123"</span><span
+                  class="text-white">,</span><br><span
+                  class="text-brand-green">"file_ids"</span><span
+                  class="text-white">: [</span><span
+                  class="text-brand-orange">"f_001"</span><span
+                  class="text-white">, </span><span
+                  class="text-brand-orange">"f_002"</span><span
+                  class="text-white">],</span><br><span
+                  class="text-brand-green">"options"</span><span
+                  class="text-white">: {</span><br><span
+                  class="text-brand-green">"strip_gps"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-blue">true</span><span
+                  class="text-white">,</span><br><span
+                  class="text-brand-green">"strip_exif"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-blue">true</span><span
+                  class="text-white">,</span><br><span
+                  class="text-brand-green">"strip_iptc"</span><span
+                  class="text-white">: </span><span
+                  class="text-brand-blue">true</span><br><span
+                  class="text-white">}</span><br><span
+                  class="text-text-muted">}</span></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p
+                  class="text-xs font-semibold text-brand-green uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-circle-check mr-1.5"></i>202 – Přijato
+                </p>
+                <div class="code-block p-4"><span
+                    class="text-text-muted">{</span><br><span
+                    class="text-brand-green">"status"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"accepted"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"job_id"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"job_xyz"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"estimated_s"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-blue">5</span><br><span
+                    class="text-text-muted">}</span></div>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-circle-xmark mr-1.5"></i>404 – Soubor
+                  nenalezen</p>
+                <div class="code-block p-4"><span
+                    class="text-text-muted">{</span><br><span
+                    class="text-brand-green">"status"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"error"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"code"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"FILE_NOT_FOUND"</span><span
+                    class="text-white">,</span><br><span
+                    class="text-brand-green">"file_id"</span><span
+                    class="text-white">: </span><span
+                    class="text-brand-orange">"f_002"</span><br><span
+                    class="text-text-muted">}</span></div>
+              </div>
+            </div>
+          </div>
+        </div><!-- STATUS - OPEN -->
+        <div id="ep-status"
+          class="endpoint-card open bg-navy-card rounded-2xl border border-brand-blue shadow-card overflow-hidden">
+          <div class="w-full flex items-center gap-4 p-5 bg-navy-lighter/20">
+            <span
+              class="method-get px-3 py-1 rounded-lg text-xs font-bold uppercase min-w-[52px] text-center">GET</span><code class="text-sm text-white font-mono flex-1">/jobs/{job_id}/status</code><span
+              class="text-text-muted text-sm hidden sm:block">Stav úlohy</span>
+            <div class="flex items-center gap-2 ml-auto"><i
+                class="fa-solid fa-chevron-up text-text-muted text-xs"></i>
+            </div>
+          </div>
+          <div
+            class="px-5 pb-6 border-t border-gray-800 pt-5 flex flex-col gap-5">
+            <p class="text-sm text-text-muted leading-relaxed">Vrací aktuální
+              stav čisticí úlohy identifikované pomocí
+              <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">job_id</code>.
+              Stav se aktualizuje v reálném čase.</p>
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                URL Parametry</p>
+              <div class="overflow-x-auto rounded-xl border border-gray-800">
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="bg-navy-main/60">
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Parametr</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Typ</th>
+                      <th
+                        class="px-4 py-2.5 text-left text-text-muted font-semibold">
+                        Popis</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-800/60">
+                      <td class="px-4 py-2.5 font-mono text-brand-blue">job_id
+                      </td>
+                      <td class="px-4 py-2.5 text-text-muted">string</td>
+                      <td class="px-4 py-2.5 text-text-muted">ID úlohy z
+                        odpovědi /clean</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div><!-- Possible statuses -->
+            <div>
+              <p
+                class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+                Možné hodnoty status</p>
+              <div class="flex flex-wrap gap-2"><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-brand-blue/10 border border-brand-blue/30 text-brand-blue font-mono">pending</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-brand-orange/10 border border-brand-orange/30 text-brand-orange font-mono">processing</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-brand-green/10 border border-brand-green/30 text-brand-green font-mono">completed</span><span
+                  class="text-xs px-3 py-1.5 rounded-lg bg-brand-red/10 border border-brand-red/30 text-brand-red font-mono">failed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+
+</html>

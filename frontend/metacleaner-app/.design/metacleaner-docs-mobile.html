@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+                        brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+                        text: { main: '#ffffff', muted: '#94a3b8' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    boxShadow: {
+                        'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+                        'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+                        'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; padding: 0; background-color: #0a1628; color: #fff; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { display: none; }
+        .code-block { background: #080f1e; border: 1px solid #1e293b; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.7; overflow-x: auto; }
+        .nav-link { color: #94a3b8; font-size: 13px; transition: color 0.15s; cursor: pointer; }
+        .nav-link:hover { color: #fff; }
+        .nav-link.active { color: #3b82f6; }
+        .section-card { background: #111d33; border: 1px solid #1e293b; border-radius: 16px; }
+        .info-box-blue { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 10px; }
+        .info-box-green { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); border-radius: 10px; }
+        .info-box-orange { background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.25); border-radius: 10px; }
+        .info-box-red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; }
+        .error-row:hover { background: rgba(255,255,255,0.02); }
+        .drawer-overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .accordion-content.open { max-height: 2000px; }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-icon.open { transform: rotate(180deg); }
+        .tab-pill { transition: all 0.2s ease; }
+        .tab-pill.active { background: #3b82f6; color: #fff; }
+        .bottom-nav-item.active { color: #3b82f6; }
+        .bottom-nav-item { color: #94a3b8; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen pb-20">
+
+    <!-- Top Navbar -->
+    <nav id="navbar" class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-50">
+        <div class="px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue shrink-0">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-bold tracking-tight">Metadoc</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-brand-blue/20 text-brand-blue border border-brand-blue/30">API</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-text-muted bg-navy-lighter border border-gray-700 px-2 py-1 rounded-lg font-mono">v1.0</span>
+                <button id="menu-btn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-navy-lighter border border-gray-700 text-text-muted" aria-label="Menu">
+                    <i class="fa-solid fa-bars text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section Nav Pills (horizontal scroll) -->
+    <div id="section-nav" class="sticky top-[57px] z-40 bg-navy-main border-b border-gray-800/60 px-4 py-2.5">
+        <div class="flex gap-2 overflow-x-auto">
+            <a href="#sec-intro" class="tab-pill active text-xs font-semibold px-3 py-1.5 rounded-full bg-navy-lighter whitespace-nowrap" onclick="setActiveTab(this)">
+                <i class="fa-solid fa-book-open mr-1.5 text-[10px]"></i>Úvod
+            </a>
+            <a href="#sec-auth" class="tab-pill text-xs font-semibold px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted whitespace-nowrap" onclick="setActiveTab(this)">
+                <i class="fa-solid fa-lock mr-1.5 text-[10px]"></i>Autentizace
+            </a>
+            <a href="#sec-errors" class="tab-pill text-xs font-semibold px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted whitespace-nowrap" onclick="setActiveTab(this)">
+                <i class="fa-solid fa-triangle-exclamation mr-1.5 text-[10px]"></i>Chybové kódy
+            </a>
+            <a href="#" class="tab-pill text-xs font-semibold px-3 py-1.5 rounded-full bg-navy-lighter text-text-muted whitespace-nowrap">
+                <i class="fa-solid fa-plug mr-1.5 text-[10px]"></i>Endpointy
+            </a>
+        </div>
+    </div>
+
+    <!-- Drawer Overlay -->
+    <div id="drawer-overlay" class="fixed inset-0 z-50 hidden drawer-overlay" onclick="closeDrawer()"></div>
+
+    <!-- Slide-over Drawer -->
+    <aside id="drawer" class="fixed top-0 right-0 z-[60] h-full w-72 bg-navy-card border-l border-gray-800 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-800">
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-brand-blue flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-white text-xs"></i>
+                </div>
+                <span class="font-bold text-white">Metadoc API</span>
+            </div>
+            <button onclick="closeDrawer()" class="w-9 h-9 rounded-xl bg-navy-lighter flex items-center justify-center text-text-muted">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-1">
+            <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2 px-2">Obsah</p>
+            <a href="#sec-intro" onclick="closeDrawer()" class="nav-link active px-3 py-3 rounded-xl flex items-center gap-2 font-medium bg-brand-blue/10 border border-brand-blue/20">
+                <i class="fa-solid fa-book-open text-xs text-brand-blue"></i>Úvod
+            </a>
+            <a href="#sec-auth" onclick="closeDrawer()" class="nav-link px-3 py-3 rounded-xl flex items-center gap-2">
+                <i class="fa-solid fa-lock text-xs"></i>Autentizace
+            </a>
+            <a href="#sec-errors" onclick="closeDrawer()" class="nav-link px-3 py-3 rounded-xl flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-xs"></i>Chybové kódy
+            </a>
+            <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mt-4 mb-2 px-2">Endpointy</p>
+            <div class="border-l-2 border-navy-lighter ml-2 pl-3 flex flex-col gap-0.5">
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-blue text-[10px] font-bold bg-brand-blue/10 px-1.5 py-0.5 rounded">POST</span>Upload
+                </a>
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-blue text-[10px] font-bold bg-brand-blue/10 px-1.5 py-0.5 rounded">POST</span>Clean
+                </a>
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-green text-[10px] font-bold bg-brand-green/10 px-1.5 py-0.5 rounded">GET</span>Status
+                </a>
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-green text-[10px] font-bold bg-brand-green/10 px-1.5 py-0.5 rounded">GET</span>Download
+                </a>
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-green text-[10px] font-bold bg-brand-green/10 px-1.5 py-0.5 rounded">GET</span>Metadata
+                </a>
+                <a href="#" onclick="closeDrawer()" class="nav-link py-2.5 rounded-xl px-2 flex items-center gap-2">
+                    <span class="text-brand-red text-[10px] font-bold bg-brand-red/10 px-1.5 py-0.5 rounded">DEL</span>Delete
+                </a>
+            </div>
+        </div>
+        <div class="px-4 py-4 border-t border-gray-800">
+            <button class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold shadow-glow-blue">
+                <i class="fa-solid fa-key text-xs"></i> Získat API Klíč
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="api-main" class="w-full max-w-2xl mx-auto px-4 py-5 flex flex-col gap-6">
+
+        <!-- ===== INTRO SECTION ===== -->
+        <section id="sec-intro" class="flex flex-col gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-blue/20 border border-brand-blue/30 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-book-open text-brand-blue text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white tracking-tight">Úvod</h1>
+                    <p class="text-text-muted text-xs mt-0.5">Začněte pracovat s Metadoc API</p>
+                </div>
+            </div>
+
+            <div class="section-card p-4 flex flex-col gap-4">
+                <p class="text-sm text-text-muted leading-relaxed">
+                    Vítejte v dokumentaci <span class="text-white font-semibold">Metadoc API</span> – RESTful rozhraní pro automatizované čištění a správu metadat souborů. API umožňuje nahrávat soubory, odstraňovat citlivá metadata (GPS, EXIF, IPTC) a stahovat vyčištěné verze přímo z vašich aplikací.
+                </p>
+
+                <!-- Base URL -->
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2">Base URL</p>
+                    <div class="code-block p-3 flex items-center justify-between gap-2">
+                        <span class="text-xs break-all"><span class="text-brand-green">https://</span><span class="text-white">docs.metacleaner.app</span><span class="text-brand-blue">/v1</span></span>
+                        <button onclick="copyText('https://docs.metacleaner.app/v1', this)" class="text-text-muted hover:text-white bg-navy-lighter px-2 py-1.5 rounded text-[10px] flex items-center gap-1 shrink-0 min-h-[36px] transition-colors">
+                            <i class="fa-solid fa-copy text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feature cards -->
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="bg-navy-main/60 rounded-xl p-3.5 border border-gray-800/60 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-green/15 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-shield-halved text-brand-green text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-white text-sm font-semibold mb-0.5">Bezpečné čištění</p>
+                            <p class="text-text-muted text-xs leading-relaxed">Odstraní GPS, EXIF a IPTC metadata bez poškození kvality souboru.</p>
+                        </div>
+                    </div>
+                    <div class="bg-navy-main/60 rounded-xl p-3.5 border border-gray-800/60 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-blue/15 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-bolt text-brand-blue text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-white text-sm font-semibold mb-0.5">Asynchronní zpracování</p>
+                            <p class="text-text-muted text-xs leading-relaxed">Soubory se zpracovávají na pozadí. Sledujte průběh pomocí job_id.</p>
+                        </div>
+                    </div>
+                    <div class="bg-navy-main/60 rounded-xl p-3.5 border border-gray-800/60 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-orange/15 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-layer-group text-brand-orange text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-white text-sm font-semibold mb-0.5">Dávkové zpracování</p>
+                            <p class="text-text-muted text-xs leading-relaxed">Zpracujte více souborů najednou pomocí sessions a file_ids.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Supported formats -->
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2">Podporované formáty</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">JPG</span>
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">PNG</span>
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">HEIC</span>
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">WEBP</span>
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">MP4</span>
+                        <span class="text-xs px-3 py-1.5 rounded-lg bg-navy-lighter border border-gray-700 text-white font-mono font-medium">MOV</span>
+                    </div>
+                </div>
+
+                <!-- Quick start accordion -->
+                <div>
+                    <button class="w-full flex items-center justify-between py-2" onclick="toggleAccordion('quickstart')">
+                        <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest">Rychlý start – tok volání</p>
+                        <i id="quickstart-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon open"></i>
+                    </button>
+                    <div id="quickstart-content" class="accordion-content open">
+                        <div class="flex flex-col gap-0 pl-1 pt-2">
+                            <div class="flex gap-3 pb-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">1</div>
+                                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                                </div>
+                                <div class="pb-1 flex-1">
+                                    <p class="text-white text-sm font-semibold mb-0.5">Nahrajte soubory</p>
+                                    <p class="text-text-muted text-xs leading-relaxed">Volejte <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">POST /files/upload</code> — získáte <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">file_id</code> pro každý soubor.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 pb-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">2</div>
+                                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                                </div>
+                                <div class="pb-1 flex-1">
+                                    <p class="text-white text-sm font-semibold mb-0.5">Spusťte čištění</p>
+                                    <p class="text-text-muted text-xs leading-relaxed">Volejte <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">POST /files/clean</code> s <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">file_ids</code> — získáte <code class="text-brand-orange bg-navy-main px-1.5 py-0.5 rounded">job_id</code>.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3 pb-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-7 h-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold shrink-0">3</div>
+                                    <div class="w-px flex-1 bg-gray-700 mt-1.5"></div>
+                                </div>
+                                <div class="pb-1 flex-1">
+                                    <p class="text-white text-sm font-semibold mb-0.5">Sledujte průběh</p>
+                                    <p class="text-text-muted text-xs leading-relaxed">Volejte <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">GET /jobs/{'{job_id}'}/status</code> dokud stav není <code class="text-brand-green bg-navy-main px-1.5 py-0.5 rounded">completed</code>.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-7 h-7 rounded-full bg-brand-green flex items-center justify-center text-white text-xs font-bold shrink-0">4</div>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-semibold mb-0.5">Stáhněte výsledek</p>
+                                    <p class="text-text-muted text-xs leading-relaxed">Volejte <code class="text-brand-blue bg-navy-main px-1.5 py-0.5 rounded">GET /files/{'{file_id}'}/download</code> pro stažení vyčištěného souboru.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rate limits -->
+                <div class="info-box-orange p-4 flex gap-3 items-start">
+                    <i class="fa-solid fa-gauge-high text-brand-orange mt-0.5 text-sm shrink-0"></i>
+                    <div>
+                        <p class="text-white text-sm font-semibold mb-1">Limity požadavků (Rate Limiting)</p>
+                        <p class="text-text-muted text-xs leading-relaxed">Každý API klíč je omezen na <span class="text-white font-medium">120 požadavků za minutu</span>. Při překročení vrátí API odpověď <code class="text-brand-orange bg-navy-main px-1 rounded">429 Too Many Requests</code>. Limit se resetuje každou minutu.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== AUTHENTICATION SECTION ===== -->
+        <section id="sec-auth" class="flex flex-col gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-green/20 border border-brand-green/30 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-lock text-brand-green text-sm"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white tracking-tight">Autentizace</h2>
+                    <p class="text-text-muted text-xs mt-0.5">Zabezpečení přístupu k API pomocí API klíčů</p>
+                </div>
+            </div>
+
+            <div class="section-card p-4 flex flex-col gap-4">
+                <p class="text-sm text-text-muted leading-relaxed">
+                    Metadoc API používá autentizaci pomocí <span class="text-white font-semibold">Bearer tokenů</span>. Každý požadavek musí obsahovat platný API klíč v HTTP hlavičce <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">Authorization</code>.
+                </p>
+
+                <!-- Auth header -->
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2">Authorization Header</p>
+                    <div class="code-block p-3 relative pr-16">
+                        <button onclick="copyText('Authorization: Bearer YOUR_API_KEY', this)" class="absolute top-2.5 right-2.5 text-text-muted hover:text-white bg-navy-lighter px-2 py-1.5 rounded text-[10px] flex items-center gap-1 min-h-[32px] transition-colors">
+                            <i class="fa-solid fa-copy text-[10px]"></i>
+                        </button>
+                        <span class="text-brand-green">Authorization</span><span class="text-white">: Bearer </span><span class="text-brand-orange">YOUR_API_KEY</span>
+                    </div>
+                </div>
+
+                <!-- How to get API key -->
+                <div class="info-box-blue p-4 flex gap-3 items-start">
+                    <i class="fa-solid fa-circle-info text-brand-blue mt-0.5 text-sm shrink-0"></i>
+                    <div>
+                        <p class="text-white text-sm font-semibold mb-1">Jak získat API klíč</p>
+                        <p class="text-text-muted text-xs leading-relaxed">API klíč vygenerujete ve svém účtu v sekci <span class="text-white font-medium">Nastavení → API Klíče</span>. Klíč se zobrazí pouze jednou při vytvoření – uložte jej na bezpečné místo.</p>
+                    </div>
+                </div>
+
+                <!-- CTA button -->
+                <button class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-brand-blue text-white text-sm font-semibold shadow-glow-blue">
+                    <i class="fa-solid fa-key text-xs"></i> Získat API Klíč
+                </button>
+
+                <!-- cURL example accordion -->
+                <div class="border-t border-gray-800/60 pt-3">
+                    <button class="w-full flex items-center justify-between py-1" onclick="toggleAccordion('curl')">
+                        <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest">Příklad (cURL)</p>
+                        <i id="curl-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon open"></i>
+                    </button>
+                    <div id="curl-content" class="accordion-content open pt-2">
+                        <div class="code-block p-3 relative pr-12">
+                            <button onclick="copyText('curl -X GET https://docs.metacleaner.app/v1/jobs/job_xyz/status -H \"Authorization: Bearer YOUR_API_KEY\"', this)" class="absolute top-2.5 right-2.5 text-text-muted hover:text-white bg-navy-lighter px-2 py-1.5 rounded text-[10px] flex items-center gap-1 min-h-[32px] transition-colors">
+                                <i class="fa-solid fa-copy text-[10px]"></i>
+                            </button>
+                            <span class="text-brand-orange">curl</span><span class="text-white"> -X GET \</span><br>
+                            <span class="text-white">&nbsp;&nbsp;</span><span class="text-brand-green">"https://docs.metacleaner.app/v1/jobs/job_xyz/status"</span><span class="text-white"> \</span><br>
+                            <span class="text-white">&nbsp;&nbsp;-H </span><span class="text-brand-green">"Authorization: Bearer YOUR_API_KEY"</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security best practices accordion -->
+                <div class="border-t border-gray-800/60 pt-3">
+                    <button class="w-full flex items-center justify-between py-1" onclick="toggleAccordion('security')">
+                        <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest">Bezpečnostní doporučení</p>
+                        <i id="security-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon"></i>
+                    </button>
+                    <div id="security-content" class="accordion-content pt-2">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                                <i class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-text-muted text-xs leading-relaxed">Nikdy nezahrnujte API klíč přímo do kódu na straně klienta (JavaScript, mobilní aplikace).</p>
+                            </div>
+                            <div class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                                <i class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-text-muted text-xs leading-relaxed">Ukládejte klíč jako proměnnou prostředí (<code class="text-brand-blue bg-navy-main px-1 rounded">ENV</code>) nebo použijte správce tajemství.</p>
+                            </div>
+                            <div class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                                <i class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-text-muted text-xs leading-relaxed">Při podezření na kompromitaci klíče jej okamžitě revokujte a vygenerujte nový v nastavení účtu.</p>
+                            </div>
+                            <div class="flex items-start gap-3 bg-navy-main/50 rounded-xl p-3 border border-gray-800/50">
+                                <i class="fa-solid fa-circle-check text-brand-green text-xs mt-0.5 shrink-0"></i>
+                                <p class="text-text-muted text-xs leading-relaxed">Veškerá komunikace probíhá přes <span class="text-white font-medium">HTTPS</span>. Požadavky přes HTTP jsou automaticky odmítnuty.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth errors accordion -->
+                <div class="border-t border-gray-800/60 pt-3">
+                    <button class="w-full flex items-center justify-between py-1" onclick="toggleAccordion('autherrors')">
+                        <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest">Chybové odpovědi</p>
+                        <i id="autherrors-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon"></i>
+                    </button>
+                    <div id="autherrors-content" class="accordion-content pt-3">
+                        <div class="flex flex-col gap-3">
+                            <div>
+                                <p class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                                    <i class="fa-solid fa-circle-xmark mr-1.5"></i>401 – Neautorizováno
+                                </p>
+                                <div class="code-block p-3">
+                                    <span class="text-text-muted">{</span><br>
+                                    <span class="text-brand-green">"status"</span><span class="text-white">: </span><span class="text-brand-orange">"error"</span><span class="text-white">,</span><br>
+                                    <span class="text-brand-green">"code"</span><span class="text-white">: </span><span class="text-brand-orange">"INVALID_API_KEY"</span><span class="text-white">,</span><br>
+                                    <span class="text-brand-green">"message"</span><span class="text-white">: </span><span class="text-brand-orange">"API key is invalid"</span><br>
+                                    <span class="text-text-muted">}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-brand-red uppercase tracking-wider mb-2">
+                                    <i class="fa-solid fa-circle-xmark mr-1.5"></i>403 – Přístup zakázán
+                                </p>
+                                <div class="code-block p-3">
+                                    <span class="text-text-muted">{</span><br>
+                                    <span class="text-brand-green">"status"</span><span class="text-white">: </span><span class="text-brand-orange">"error"</span><span class="text-white">,</span><br>
+                                    <span class="text-brand-green">"code"</span><span class="text-white">: </span><span class="text-brand-orange">"FORBIDDEN"</span><span class="text-white">,</span><br>
+                                    <span class="text-brand-green">"message"</span><span class="text-white">: </span><span class="text-brand-orange">"Access denied"</span><br>
+                                    <span class="text-text-muted">}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ERROR CODES SECTION ===== -->
+        <section id="sec-errors" class="flex flex-col gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-red/20 border border-brand-red/30 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-red text-sm"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white tracking-tight">Chybové kódy</h2>
+                    <p class="text-text-muted text-xs mt-0.5">Přehled všech stavových kódů</p>
+                </div>
+            </div>
+
+            <div class="section-card p-4 flex flex-col gap-4">
+                <p class="text-sm text-text-muted leading-relaxed">
+                    Metadoc API používá standardní <span class="text-white font-semibold">HTTP stavové kódy</span>. Všechny chybové odpovědi mají konzistentní JSON strukturu s poli
+                    <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">status</code>,
+                    <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">code</code> a
+                    <code class="text-brand-blue text-xs bg-navy-main px-1.5 py-0.5 rounded">message</code>.
+                </p>
+
+                <!-- Error structure -->
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-2">Struktura chybové odpovědi</p>
+                    <div class="code-block p-3">
+                        <span class="text-text-muted">{</span><br>
+                        <span class="text-brand-green">"status"</span><span class="text-white">: </span><span class="text-brand-orange">"error"</span><span class="text-white">,</span><br>
+                        <span class="text-brand-green">"code"</span><span class="text-white">: </span><span class="text-brand-orange">"ERROR_CODE"</span><span class="text-white">, </span><span class="text-text-muted">// strojový kód</span><br>
+                        <span class="text-brand-green">"message"</span><span class="text-white">: </span><span class="text-brand-orange">"Human readable message"</span><span class="text-white">,</span><br>
+                        <span class="text-brand-green">"details"</span><span class="text-white">: </span><span class="text-text-muted">{ ... } // volitelné</span><br>
+                        <span class="text-text-muted">}</span>
+                    </div>
+                </div>
+
+                <!-- HTTP code overview: 2 cols on mobile -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div class="info-box-green p-3 flex gap-2.5 items-start rounded-xl">
+                        <span class="text-brand-green font-bold font-mono text-sm shrink-0">2xx</span>
+                        <div>
+                            <p class="text-white text-xs font-semibold mb-0.5">Úspěch</p>
+                            <p class="text-text-muted text-[11px]">Požadavek zpracován.</p>
+                        </div>
+                    </div>
+                    <div class="info-box-orange p-3 flex gap-2.5 items-start rounded-xl">
+                        <span class="text-brand-orange font-bold font-mono text-sm shrink-0">4xx</span>
+                        <div>
+                            <p class="text-white text-xs font-semibold mb-0.5">Chyba klienta</p>
+                            <p class="text-text-muted text-[11px]">Neplatný požadavek.</p>
+                        </div>
+                    </div>
+                    <div class="info-box-red p-3 flex gap-2.5 items-start rounded-xl">
+                        <span class="text-brand-red font-bold font-mono text-sm shrink-0">5xx</span>
+                        <div>
+                            <p class="text-white text-xs font-semibold mb-0.5">Chyba serveru</p>
+                            <p class="text-text-muted text-[11px]">Interní chyba.</p>
+                        </div>
+                    </div>
+                    <div class="info-box-blue p-3 flex gap-2.5 items-start rounded-xl">
+                        <span class="text-brand-blue font-bold font-mono text-sm shrink-0">3xx</span>
+                        <div>
+                            <p class="text-white text-xs font-semibold mb-0.5">Přesměrování</p>
+                            <p class="text-text-muted text-[11px]">Přesměrujte dotaz.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error codes list (accordion per group) -->
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-text-muted tracking-widest mb-3">Kompletní přehled chybových kódů</p>
+                    <div class="flex flex-col gap-2">
+
+                        <!-- Success group -->
+                        <div class="rounded-xl border border-gray-800/60 overflow-hidden">
+                            <button onclick="toggleAccordion('err2xx')" class="w-full flex items-center justify-between px-4 py-3 bg-navy-main/50">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-brand-green font-bold font-mono text-xs">2xx</span>
+                                    <span class="text-white text-xs font-semibold">Úspěšné odpovědi</span>
+                                </div>
+                                <i id="err2xx-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon"></i>
+                            </button>
+                            <div id="err2xx-content" class="accordion-content">
+                                <div class="divide-y divide-gray-800/60">
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-green font-bold font-mono text-xs w-8 shrink-0 mt-0.5">200</span>
+                                        <div>
+                                            <span class="font-mono text-brand-green text-xs font-semibold">OK</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Požadavek úspěšný.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-green font-bold font-mono text-xs w-8 shrink-0 mt-0.5">202</span>
+                                        <div>
+                                            <span class="font-mono text-brand-green text-xs font-semibold">ACCEPTED</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Asynchronní úloha přijata. Sledujte přes <code class="text-brand-blue bg-navy-main px-1 rounded">/status</code>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4xx group -->
+                        <div class="rounded-xl border border-gray-800/60 overflow-hidden">
+                            <button onclick="toggleAccordion('err4xx')" class="w-full flex items-center justify-between px-4 py-3 bg-navy-main/50">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-brand-orange font-bold font-mono text-xs">4xx</span>
+                                    <span class="text-white text-xs font-semibold">Chyby klienta</span>
+                                </div>
+                                <i id="err4xx-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon open"></i>
+                            </button>
+                            <div id="err4xx-content" class="accordion-content open">
+                                <div class="divide-y divide-gray-800/60">
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">400</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">BAD_REQUEST</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Chybný formát nebo chybějící parametry.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Zkontrolujte tělo požadavku.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-red font-bold font-mono text-xs w-8 shrink-0 mt-0.5">401</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-red text-xs font-semibold">INVALID_API_KEY</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Chybějící nebo neplatný API klíč.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Ověřte platnost API klíče.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-red font-bold font-mono text-xs w-8 shrink-0 mt-0.5">403</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-red text-xs font-semibold">FORBIDDEN</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Nedostatečná oprávnění pro operaci.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Zkontrolujte plán a oprávnění.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-red font-bold font-mono text-xs w-8 shrink-0 mt-0.5">404</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-red text-xs font-semibold">FILE_NOT_FOUND</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Soubor nebo úloha nebyla nalezena.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Ověřte <code class="text-brand-blue bg-navy-main px-1 rounded">file_id</code> nebo <code class="text-brand-blue bg-navy-main px-1 rounded">job_id</code>.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">409</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">CONFLICT</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Soubor již byl zpracován nebo je konflikt.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Nahrajte znovu s novým session_id.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">413</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">FILE_TOO_LARGE</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Soubor překračuje maximální povolenou velikost.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Soubor musí být menší než 500 MB.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">415</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">UNSUPPORTED_FORMAT</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Nepodporovaný formát souboru.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Použijte JPG, PNG, HEIC, WEBP, MP4 nebo MOV.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">422</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">VALIDATION_ERROR</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Neplatné hodnoty parametrů v požadavku.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Zkontrolujte typy a hodnoty parametrů.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-orange font-bold font-mono text-xs w-8 shrink-0 mt-0.5">429</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-orange text-xs font-semibold">RATE_LIMIT_EXCEEDED</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Překročen limit požadavků (120/min).</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Počkejte na reset nebo zpomalte volání.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5xx group -->
+                        <div class="rounded-xl border border-gray-800/60 overflow-hidden">
+                            <button onclick="toggleAccordion('err5xx')" class="w-full flex items-center justify-between px-4 py-3 bg-navy-main/50">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-brand-red font-bold font-mono text-xs">5xx</span>
+                                    <span class="text-white text-xs font-semibold">Chyby serveru</span>
+                                </div>
+                                <i id="err5xx-icon" class="fa-solid fa-chevron-down text-text-muted text-xs accordion-icon"></i>
+                            </button>
+                            <div id="err5xx-content" class="accordion-content">
+                                <div class="divide-y divide-gray-800/60">
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-red font-bold font-mono text-xs w-8 shrink-0 mt-0.5">500</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-red text-xs font-semibold">INTERNAL_ERROR</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Neočekávaná interní chyba serveru.</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Zkuste znovu nebo kontaktujte podporu.</p>
+                                        </div>
+                                    </div>
+                                    <div class="px-4 py-3 flex items-start gap-3">
+                                        <span class="text-brand-red font-bold font-mono text-xs w-8 shrink-0 mt-0.5">503</span>
+                                        <div class="flex-1">
+                                            <span class="font-mono text-brand-red text-xs font-semibold">SERVICE_UNAVAILABLE</span>
+                                            <p class="text-text-muted text-xs mt-0.5">Služba je dočasně nedostupná (údržba).</p>
+                                            <p class="text-text-muted text-[11px] mt-1 italic">→ Sledujte status stránku a zkuste znovu.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Retry strategy -->
+                <div class="info-box-blue p-4 flex gap-3 items-start">
+                    <i class="fa-solid fa-rotate-right text-brand-blue mt-0.5 text-sm shrink-0"></i>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-semibold mb-1">Doporučená strategie opakování (Retry)</p>
+                        <p class="text-text-muted text-xs leading-relaxed mb-2">Pro chyby <code class="text-brand-orange bg-navy-main px-1 rounded">429</code> a <code class="text-brand-red bg-navy-main px-1 rounded">5xx</code> doporučujeme exponenciální backoff:</p>
+                        <div class="code-block p-3">
+                            <span class="text-text-muted"># Čekací doby: </span><span class="text-brand-green">1s → 2s → 4s → 8s → 16s</span><br>
+                            <span class="text-brand-green">delay</span><span class="text-white"> = </span><span class="text-brand-blue">2</span><span class="text-white"> ** </span><span class="text-brand-green">attempt</span><span class="text-text-muted"> # max 5 pokusů</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-40 bg-navy-card border-t border-gray-800 flex">
+        <a href="#sec-intro" onclick="setBottomNav(this)" class="bottom-nav-item active flex-1 flex flex-col items-center justify-center py-3 gap-1 min-h-[56px]">
+            <i class="fa-solid fa-book-open text-sm"></i>
+            <span class="text-[10px] font-medium">Úvod</span>
+        </a>
+        <a href="#sec-auth" onclick="setBottomNav(this)" class="bottom-nav-item flex-1 flex flex-col items-center justify-center py-3 gap-1 min-h-[56px]">
+            <i class="fa-solid fa-lock text-sm"></i>
+            <span class="text-[10px] font-medium">Autentizace</span>
+        </a>
+        <a href="#sec-errors" onclick="setBottomNav(this)" class="bottom-nav-item flex-1 flex flex-col items-center justify-center py-3 gap-1 min-h-[56px]">
+            <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+            <span class="text-[10px] font-medium">Chyby</span>
+        </a>
+        <a href="#" onclick="setBottomNav(this)" class="bottom-nav-item flex-1 flex flex-col items-center justify-center py-3 gap-1 min-h-[56px]">
+            <i class="fa-solid fa-plug text-sm"></i>
+            <span class="text-[10px] font-medium">Endpointy</span>
+        </a>
+    </nav>
+
+    <script>
+        // Drawer
+        const menuBtn = document.getElementById('menu-btn');
+        const drawer = document.getElementById('drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+
+        menuBtn.addEventListener('click', function() {
+            drawer.classList.remove('translate-x-full');
+            drawerOverlay.classList.remove('hidden');
+        });
+
+        function closeDrawer() {
+            drawer.classList.add('translate-x-full');
+            drawerOverlay.classList.add('hidden');
+        }
+
+        // Accordions
+        function toggleAccordion(id) {
+            const content = document.getElementById(id + '-content');
+            const icon = document.getElementById(id + '-icon');
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+
+        // Copy text
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(function() {
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i>';
+                btn.classList.add('text-brand-green');
+                setTimeout(function() {
+                    btn.innerHTML = original;
+                    btn.classList.remove('text-brand-green');
+                }, 2000);
+            });
+        }
+
+        // Tab pills
+        function setActiveTab(el) {
+            document.querySelectorAll('.tab-pill').forEach(t => {
+                t.classList.remove('active');
+                t.classList.add('text-text-muted');
+            });
+            el.classList.add('active');
+            el.classList.remove('text-text-muted');
+        }
+
+        // Bottom nav
+        function setBottomNav(el) {
+            document.querySelectorAll('.bottom-nav-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Scroll-based active section tracking
+        const sections = document.querySelectorAll('section[id]');
+        const tabPills = document.querySelectorAll('#section-nav .tab-pill');
+        const bottomNavItems = document.querySelectorAll('#bottom-nav .bottom-nav-item');
+
+        window.addEventListener('scroll', function() {
+            let current = '';
+            sections.forEach(function(section) {
+                const sectionTop = section.offsetTop - 130;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tabPills.forEach(function(tab) {
+                tab.classList.remove('active');
+                tab.classList.add('text-text-muted');
+                if (tab.getAttribute('href') === '#' + current) {
+                    tab.classList.add('active');
+                    tab.classList.remove('text-text-muted');
+                }
+            });
+
+            bottomNavItems.forEach(function(item) {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
