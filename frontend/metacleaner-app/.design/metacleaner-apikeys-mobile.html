@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Keys</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = {autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+                        brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+                        text: { main: '#ffffff', muted: '#94a3b8' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    boxShadow: {
+                        'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+                        'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+                        'glow-red': '0 0 20px rgba(239,68,68,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; padding: 0; background-color: #0a1628; color: #fff; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { display: none; }
+        .section-card { background: #111d33; border: 1px solid #1e293b; border-radius: 16px; }
+        .key-row { border-bottom: 1px solid rgba(30,41,59,0.7); }
+        .key-row:last-child { border-bottom: none; }
+        .code-mono { font-family: 'Courier New', monospace; font-size: 11px; }
+        .badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+        .modal-bg { background: rgba(10,22,40,0.9); backdrop-filter: blur(6px); }
+        .info-box-blue { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 10px; }
+        .info-box-red { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 10px; }
+        .info-box-green { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); border-radius: 10px; }
+        .guide-open { background: rgba(59,130,246,0.05); border-top: 1px solid rgba(59,130,246,0.15); }
+    </style>
+</head>
+<body class="flex flex-col">
+    <!-- Navbar -->
+    <nav id="navbar" class="w-full border-b border-gray-800 bg-navy-main sticky top-0 z-50">
+        <div class="w-full px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                </div>
+                <span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-navy-lighter border border-gray-700">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" class="w-6 h-6 rounded-full object-cover">
+                    <span class="text-xs text-white font-medium">Jan N.</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="w-full px-4 py-6 flex flex-col gap-5 pb-24">
+
+        <!-- Page Header -->
+        <div id="page-header" class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-green/15 border border-brand-green/30 flex items-center justify-center shrink-0 shadow-glow-green">
+                    <i class="fa-solid fa-key text-brand-green text-base"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-tight">API Klíče</h1>
+                    <p class="text-text-muted text-xs mt-0.5">Správa přístupových klíčů</p>
+                </div>
+            </div>
+            <button class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand-green text-white text-sm font-semibold shadow-glow-green shrink-0 min-h-[44px]">
+                <i class="fa-solid fa-plus text-xs"></i> Nový klíč
+            </button>
+        </div>
+
+        <!-- Stats Row -->
+        <div id="usage-summary" class="grid grid-cols-3 gap-2.5">
+            <div class="section-card p-3 flex flex-col items-center gap-1.5">
+                <div class="w-8 h-8 rounded-lg bg-brand-blue/15 border border-brand-blue/20 flex items-center justify-center">
+                    <i class="fa-solid fa-key text-brand-blue text-xs"></i>
+                </div>
+                <p class="text-white text-xl font-bold leading-none">3</p>
+                <p class="text-text-muted text-[10px] text-center leading-tight">Aktivní klíče</p>
+            </div>
+            <div class="section-card p-3 flex flex-col items-center gap-1.5">
+                <div class="w-8 h-8 rounded-lg bg-brand-green/15 border border-brand-green/20 flex items-center justify-center">
+                    <i class="fa-solid fa-chart-bar text-brand-green text-xs"></i>
+                </div>
+                <p class="text-white text-xl font-bold leading-none">1 247</p>
+                <p class="text-text-muted text-[10px] text-center leading-tight">Požadavky</p>
+            </div>
+            <div class="section-card p-3 flex flex-col items-center gap-1.5">
+                <div class="w-8 h-8 rounded-lg bg-brand-orange/15 border border-brand-orange/20 flex items-center justify-center">
+                    <i class="fa-solid fa-gauge-high text-brand-orange text-xs"></i>
+                </div>
+                <p class="text-white text-xl font-bold leading-none">120</p>
+                <p class="text-text-muted text-[10px] text-center leading-tight">Limit/min</p>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box-blue p-3.5 flex gap-2.5 items-start">
+            <i class="fa-solid fa-circle-info text-brand-blue mt-0.5 text-sm shrink-0"></i>
+            <div>
+                <p class="text-white text-xs font-semibold mb-0.5">Bezpečnost API klíčů</p>
+                <p class="text-text-muted text-xs leading-relaxed">Klíč se zobrazí pouze jednou při vytvoření. Uchovávejte jej jako proměnnou prostředí a nikdy jej nezahrnujte do kódu na straně klienta.</p>
+            </div>
+        </div>
+
+        <!-- API Keys List -->
+        <div id="keys-section" class="section-card overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+                <p class="text-sm font-semibold text-white">Vaše API klíče</p>
+                <span class="badge bg-navy-lighter text-text-muted border border-gray-700">3 klíče</span>
+            </div>
+            <!-- Key 1 -->
+            <div id="key-row-1" class="key-row px-4 py-4 flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-brand-green/10 border border-brand-green/25 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-key text-brand-green text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <p class="text-white font-semibold text-sm">Produkční klíč</p>
+                            <span class="badge bg-brand-green/15 text-brand-green border border-brand-green/25">Aktivní</span>
+                        </div>
+                        <p class="text-text-muted text-xs mt-0.5">Vytvořen 12. 3. 2025 · Před 2 minutami</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex-1 flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2 min-w-0">
+                        <span class="code-mono text-text-muted truncate flex-1">mtd_live_••••••••••••Kx9p</span>
+                        <button class="text-text-muted ml-1 min-w-[28px] min-h-[28px] flex items-center justify-center"><i class="fa-solid fa-eye text-xs"></i></button>
+                    </div>
+                    <button class="p-2.5 rounded-lg bg-navy-lighter border border-gray-700 text-text-muted text-xs min-w-[40px] min-h-[40px] flex items-center justify-center"><i class="fa-solid fa-copy"></i></button>
+                    <button class="p-2.5 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red text-xs min-w-[40px] min-h-[40px] flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+            <!-- Key 2 -->
+            <div id="key-row-2" class="key-row px-4 py-4 flex flex-col gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-brand-green/10 border border-brand-green/25 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-key text-brand-green text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <p class="text-white font-semibold text-sm">Testovací klíč</p>
+                            <span class="badge bg-brand-green/15 text-brand-green border border-brand-green/25">Aktivní</span>
+                            <span class="badge bg-navy-lighter text-text-muted border border-gray-700">Test</span>
+                        </div>
+                        <p class="text-text-muted text-xs mt-0.5">Vytvořen 5. 4. 2025 · Před 3 hodinami</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex-1 flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2 min-w-0">
+                        <span class="code-mono text-text-muted truncate flex-1">mtd_test_••••••••••••Rz4m</span>
+                        <button class="text-text-muted ml-1 min-w-[28px] min-h-[28px] flex items-center justify-center"><i class="fa-solid fa-eye text-xs"></i></button>
+                    </div>
+                    <button class="p-2.5 rounded-lg bg-navy-lighter border border-gray-700 text-text-muted text-xs min-w-[40px] min-h-[40px] flex items-center justify-center"><i class="fa-solid fa-copy"></i></button>
+                    <button class="p-2.5 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red text-xs min-w-[40px] min-h-[40px] flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+            <!-- Key 3 Revoked -->
+            <div id="key-row-3" class="key-row px-4 py-4 flex flex-col gap-3 opacity-60">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gray-700/30 border border-gray-700 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-key text-text-muted text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <p class="text-white font-semibold text-sm">CI/CD Pipeline</p>
+                            <span class="badge bg-brand-red/15 text-brand-red border border-brand-red/25">Revokován</span>
+                        </div>
+                        <p class="text-text-muted text-xs mt-0.5">Vytvořen 18. 1. 2025 · Revokován 2. 5. 2025</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex-1 flex items-center gap-2 bg-navy-main border border-gray-700 rounded-lg px-3 py-2 min-w-0">
+                        <span class="code-mono text-text-muted truncate flex-1">mtd_live_••••••••••••Pj7n</span>
+                    </div>
+                    <button disabled class="p-2.5 rounded-lg bg-navy-lighter border border-gray-700 text-gray-600 text-xs min-w-[40px] min-h-[40px] flex items-center justify-center cursor-not-allowed"><i class="fa-solid fa-copy"></i></button>
+                    <button class="p-2.5 rounded-lg bg-brand-red/10 border border-brand-red/25 text-brand-red text-xs min-w-[40px] min-h-[40px] flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Guide — OPEN STATE -->
+        <div id="usage-guide" class="section-card overflow-hidden">
+            <!-- Header — open state -->
+            <button class="w-full px-4 py-4 flex items-center justify-between gap-2 min-h-[52px] border-b border-blue-900/40" style="background: rgba(59,130,246,0.07);">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-brand-blue text-sm"></i>
+                    <p class="text-white font-semibold text-sm">Jak použít API klíč</p>
+                </div>
+                <i class="fa-solid fa-chevron-down text-brand-blue text-xs" style="transform: rotate(180deg);"></i>
+            </button>
+
+            <!-- Content — open -->
+            <div id="guide-content" class="px-4 pt-4 pb-5 flex flex-col gap-5" style="background: rgba(59,130,246,0.03);">
+
+                <!-- Step 1: Authorization Header -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-5 h-5 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center shrink-0">
+                            <span class="text-brand-blue text-[9px] font-bold">1</span>
+                        </div>
+                        <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Authorization Header</p>
+                    </div>
+                    <div class="bg-navy-main border border-gray-800 rounded-xl p-3.5 font-mono text-xs overflow-x-auto relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] text-text-muted uppercase tracking-widest font-semibold">HTTP Header</span>
+                            <button class="flex items-center gap-1 text-[10px] text-brand-blue px-2 py-1 rounded-md bg-brand-blue/10 border border-brand-blue/20 font-semibold">
+                                <i class="fa-solid fa-copy text-[9px]"></i> Kopírovat
+                            </button>
+                        </div>
+                        <div class="leading-relaxed">
+                            <span class="text-brand-green">Authorization</span><span class="text-text-muted">: </span><span class="text-white">Bearer </span><span class="text-brand-orange">YOUR_API_KEY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: cURL example -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-5 h-5 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center shrink-0">
+                            <span class="text-brand-blue text-[9px] font-bold">2</span>
+                        </div>
+                        <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">Příklad cURL</p>
+                    </div>
+                    <div class="bg-navy-main border border-gray-800 rounded-xl p-3.5 font-mono text-xs overflow-x-auto relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] text-text-muted uppercase tracking-widest font-semibold">Terminal</span>
+                            <button class="flex items-center gap-1 text-[10px] text-brand-blue px-2 py-1 rounded-md bg-brand-blue/10 border border-brand-blue/20 font-semibold">
+                                <i class="fa-solid fa-copy text-[9px]"></i> Kopírovat
+                            </button>
+                        </div>
+                        <div class="leading-relaxed space-y-0.5">
+                            <div><span class="text-brand-orange">curl</span> <span class="text-text-muted">-X GET \</span></div>
+                            <div class="pl-2"><span class="text-text-muted">-H </span><span class="text-brand-green">"Authorization: Bearer mtd_live_..."</span> <span class="text-text-muted">\</span></div>
+                            <div class="pl-2"><span class="text-brand-green">"https://api.metadoc.app/v1/clean"</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: JavaScript example -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-5 h-5 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center shrink-0">
+                            <span class="text-brand-blue text-[9px] font-bold">3</span>
+                        </div>
+                        <p class="text-xs font-semibold text-text-muted uppercase tracking-wider">JavaScript / Fetch</p>
+                    </div>
+                    <div class="bg-navy-main border border-gray-800 rounded-xl p-3.5 font-mono text-xs overflow-x-auto relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] text-text-muted uppercase tracking-widest font-semibold">JS</span>
+                            <button class="flex items-center gap-1 text-[10px] text-brand-blue px-2 py-1 rounded-md bg-brand-blue/10 border border-brand-blue/20 font-semibold">
+                                <i class="fa-solid fa-copy text-[9px]"></i> Kopírovat
+                            </button>
+                        </div>
+                        <div class="leading-relaxed space-y-0.5">
+                            <div><span class="text-brand-blue">fetch</span><span class="text-white">(</span><span class="text-brand-green">'https://api.metadoc.app/v1/clean'</span><span class="text-white">, {</span></div>
+                            <div class="pl-3"><span class="text-text-muted">headers: {</span></div>
+                            <div class="pl-6"><span class="text-brand-green">'Authorization'</span><span class="text-text-muted">: </span><span class="text-brand-green">`Bearer </span><span class="text-brand-orange">${'{'}<span class="text-white">API_KEY</span>{'}'}</span><span class="text-brand-green">`</span></div>
+                            <div class="pl-3"><span class="text-text-muted">}</span></div>
+                            <div><span class="text-white">})</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tip box -->
+                <div class="flex gap-2.5 items-start p-3.5 rounded-xl" style="background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.2);">
+                    <i class="fa-solid fa-lightbulb text-brand-green text-sm mt-0.5 shrink-0"></i>
+                    <div>
+                        <p class="text-white text-xs font-semibold mb-0.5">Tip: Použijte proměnné prostředí</p>
+                        <p class="text-text-muted text-xs leading-relaxed">Nikdy nezahrnujte API klíč přímo do kódu. Uložte jej jako <span class="text-brand-green font-mono text-[11px]">METACLEANER_API_KEY</span> v souboru <span class="text-brand-green font-mono text-[11px]">.env</span>.</p>
+                    </div>
+                </div>
+
+                <!-- Docs link -->
+                <button class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-brand-blue/30 text-brand-blue text-sm font-semibold min-h-[48px]" style="background: rgba(59,130,246,0.07);">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    Zobrazit plnou dokumentaci API
+                </button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
