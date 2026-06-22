@@ -126,34 +126,34 @@ Implement an authenticated `/docs` page in the MetaCleaner SvelteKit app that re
 - [x] 10. Checkpoint — All sections render with correct content
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Property-Based Tests (fast-check)
-  - [ ]* 11.1 Write property test for scrollspy single-active invariant
+- [x] 11. Property-Based Tests (fast-check)
+  - [x]* 11.1 Write property test for scrollspy single-active invariant
     - **Property 1: Scrollspy single-active invariant**
     - Generate random scroll offsets within page bounds, simulate IntersectionObserver entries
     - Assert exactly one sidebar link is active at all times — never zero, never more than one
     - **Validates: Requirements 4.4**
 
-  - [ ]* 11.2 Write property test for endpoint card expand completeness
+  - [x]* 11.2 Write property test for endpoint card expand completeness
     - **Property 2: Endpoint card expand reveals complete content**
     - Select random endpoint from data set, verify expanded card renders: description, headers CodeBlock, params table, cURL CodeBlock with CopyButton, success + error response CodeBlocks
     - **Validates: Requirements 8.3, 8.4**
 
-  - [ ]* 11.3 Write property test for copy button plain text correctness
+  - [x]* 11.3 Write property test for copy button plain text correctness
     - **Property 3: Copy button copies correct plain text**
     - Generate all code blocks from data, simulate click, verify clipboard write matches exact plain-text content (non-empty, no HTML markup)
     - **Validates: Requirements 9.1**
 
-  - [ ]* 11.4 Write property test for i18n completeness
+  - [x]* 11.4 Write property test for i18n completeness
     - **Property 4: i18n completeness — all docs keys resolve**
     - Generate all translation keys used in docs data × both locales (cs, en), verify each returns non-empty string ≠ raw key
     - **Validates: Requirements 10.2, 11.1**
 
-  - [ ]* 11.5 Write property test for code block locale independence
+  - [x]* 11.5 Write property test for code block locale independence
     - **Property 5: Code block content is locale-independent**
     - Generate all code blocks × both locales, verify rendered code content is identical regardless of active locale
     - **Validates: Requirements 11.4**
 
-  - [ ]* 11.6 Write property test for info box variant styling
+  - [x]* 11.6 Write property test for info box variant styling
     - **Property 6: Info box variant styling correctness**
     - Generate all 4 variants (blue, green, orange, red), verify rendered component applies correct background (8% opacity) and border (25% opacity) of variant brand-color, with border-radius 10px
     - **Validates: Requirements 12.3**
