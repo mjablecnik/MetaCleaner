@@ -5,8 +5,11 @@ WORKDIR /app
 
 # Copy workspace manifests for dependency install
 COPY package.json bun.lock ./
+COPY frontend/metacleaner-shared ./frontend/metacleaner-shared
 COPY frontend/metacleaner-app/package.json ./frontend/metacleaner-app/
 COPY terminal/metacleaner-cli/package.json ./terminal/metacleaner-cli/
+# Stubs for workspaces not needed at build time (bun requires all listed workspaces present)
+COPY frontend/metacleaner-web/package.json ./frontend/metacleaner-web/
 
 RUN bun install --frozen-lockfile
 

@@ -8,7 +8,6 @@
 		apiKey: ApiKey;
 		onDelete: (key: ApiKey) => void;
 		onRevoke: (key: ApiKey) => void;
-		onUpdate: (key: ApiKey) => void;
 	}
 
 	const { apiKey, onDelete, onRevoke }: Props = $props();
@@ -75,9 +74,7 @@
 				? 'border-brand-green/25 bg-brand-green/10'
 				: 'border-gray-700 bg-gray-700/30'}"
 		>
-			<i
-				class="fa-solid fa-key text-sm {isActive ? 'text-brand-green' : 'text-text-muted'}"
-			></i>
+			<i class="fa-solid fa-key text-sm {isActive ? 'text-brand-green' : 'text-text-muted'}"></i>
 		</div>
 		<div class="min-w-0 flex-1">
 			<div class="flex flex-wrap items-center gap-2">

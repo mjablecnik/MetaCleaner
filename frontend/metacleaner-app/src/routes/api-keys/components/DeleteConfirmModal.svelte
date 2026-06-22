@@ -45,7 +45,7 @@
 	<div
 		role="button"
 		tabindex="-1"
-		class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-navy-main/85 backdrop-blur-[4px]"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-navy-main/85 px-4 backdrop-blur-[4px]"
 		onclick={(e) => {
 			if (e.target === e.currentTarget) handleClose();
 		}}
@@ -74,8 +74,8 @@
 			>
 				<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0 text-sm text-brand-red"></i>
 				<p class="text-xs leading-relaxed text-text-muted">
-					{tx('apiKeys.deleteModal.warning')} All applications using this key will immediately lose
-					API access.
+					{tx('apiKeys.deleteModal.warning')} All applications using this key will immediately lose API
+					access.
 				</p>
 			</div>
 			{#if deleteError}

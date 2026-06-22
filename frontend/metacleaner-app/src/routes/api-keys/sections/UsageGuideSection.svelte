@@ -50,7 +50,8 @@
 					<span class="text-white">&nbsp;&nbsp;headers: &#123;</span><br />
 					<span class="text-white">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="text-brand-green"
 						>Authorization</span
-					><span class="text-white">: </span><span class="text-brand-green">`Bearer $&#123;apiKey&#125;`</span
+					><span class="text-white">: </span><span class="text-brand-green"
+						>`Bearer $&#123;apiKey&#125;`</span
 					><br />
 					<span class="text-white">&nbsp;&nbsp;&#125;</span><br />
 					<span class="text-white">&#125;)</span>
@@ -96,10 +97,10 @@
 				<div
 					class="rounded-xl border border-gray-800 bg-navy-main p-3.5 font-mono text-xs leading-relaxed"
 				>
-					<span class="text-brand-orange">fetch</span><span class="text-white">(url, &#123;</span><br
-					/>
-					<span class="text-white">&nbsp;&nbsp;headers: &#123; </span><span
-						class="text-brand-green">Authorization</span
+					<span class="text-brand-orange">fetch</span><span class="text-white">(url, &#123;</span
+					><br />
+					<span class="text-white">&nbsp;&nbsp;headers: &#123; </span><span class="text-brand-green"
+						>Authorization</span
 					><span class="text-white">: `Bearer $&#123;key&#125;` &#125;</span><br />
 					<span class="text-white">&#125;)</span>
 				</div>

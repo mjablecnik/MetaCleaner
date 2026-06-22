@@ -100,7 +100,7 @@
 	<div
 		role="button"
 		tabindex="-1"
-		class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-navy-main/85 backdrop-blur-[4px]"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-navy-main/85 px-4 backdrop-blur-[4px]"
 		onclick={(e) => {
 			if (e.target === e.currentTarget) handleClose();
 		}}
@@ -153,7 +153,7 @@
 					<div
 						class="flex items-center justify-between gap-3 rounded-xl border border-brand-green/30 bg-navy-main p-4"
 					>
-						<span class="break-all font-mono text-xs text-brand-green">{createdKey}</span>
+						<span class="font-mono text-xs break-all text-brand-green">{createdKey}</span>
 						<button
 							onclick={copyKey}
 							class="flex shrink-0 items-center gap-1 rounded-lg border border-brand-green/30 bg-brand-green/15 px-3 py-1.5 text-xs font-semibold text-brand-green transition-all hover:bg-brand-green/25"
@@ -186,7 +186,7 @@
 							bind:value={name}
 							placeholder="e.g. Production server, CI/CD..."
 							maxlength="100"
-							class="w-full rounded-xl border bg-navy-main px-4 py-3 text-sm text-white placeholder:text-text-muted transition-colors focus:outline-none {nameError
+							class="w-full rounded-xl border bg-navy-main px-4 py-3 text-sm text-white transition-colors placeholder:text-text-muted focus:outline-none {nameError
 								? 'border-brand-red focus:border-brand-red'
 								: 'border-gray-700 focus:border-brand-green'}"
 						/>
@@ -209,7 +209,7 @@
 							placeholder="Description of the key's purpose..."
 							rows={2}
 							maxlength="500"
-							class="w-full resize-none rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white placeholder:text-text-muted transition-colors focus:border-brand-green focus:outline-none"
+							class="w-full resize-none rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white transition-colors placeholder:text-text-muted focus:border-brand-green focus:outline-none"
 						></textarea>
 					</div>
 					{#if submitError}

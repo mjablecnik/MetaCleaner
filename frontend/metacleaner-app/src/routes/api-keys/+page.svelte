@@ -86,7 +86,6 @@
 			onCreateKey={() => (showCreateModal = true)}
 			onDelete={(key) => (keyToDelete = key)}
 			onRevoke={handleKeyUpdated}
-			onUpdate={handleKeyUpdated}
 		/>
 		<UsageGuideSection />
 	{/if}
