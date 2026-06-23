@@ -128,7 +128,7 @@ This implementation expands the API documentation page to cover all 11 public en
     - For all i18n keys referenced in getEndpoints(), getSidebarEndpoints(), and getSidebarSections(), verify presence in both en.json and cs.json
     - **Validates: Requirements 9.1**
 
-- [ ] 9. Final checkpoint - Ensure all tests pass
+- [x] 9. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

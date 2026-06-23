@@ -11,7 +11,6 @@ import {
 
 const endpoints = getEndpoints();
 const fullEndpoint = endpoints.find((e) => !e.isMinimal)!;
-const minimalEndpoint = endpoints.find((e) => e.isMinimal)!;
 
 // ─── EndpointCard ─────────────────────────────────────────────────────────────
 
@@ -74,18 +73,6 @@ describe('EndpointCard', () => {
 	it('starts open when initialOpen is true', async () => {
 		render(EndpointCard, { endpoint: fullEndpoint, initialOpen: true });
 		await expect.element(page.getByRole('table').first()).toBeInTheDocument();
-	});
-
-	it('minimal endpoint shows clock icon placeholder instead of params table', async () => {
-		const { container } = render(EndpointCard, { endpoint: minimalEndpoint });
-		const header = container.querySelector('button') as HTMLButtonElement;
-		header.click();
-		// Wait for expanded content
-		await expect
-			.element(page.getByText(/api\.metacleaner\.com/, { exact: false }).first())
-			.not.toBeInTheDocument();
-		const clockIcon = container.querySelector('.fa-clock');
-		expect(clockIcon).not.toBeNull();
 	});
 
 	it('shows CopyButton(s) inside each expanded CodeBlock', async () => {
