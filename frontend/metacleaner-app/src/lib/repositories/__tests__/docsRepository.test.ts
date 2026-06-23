@@ -222,7 +222,9 @@ describe('getEndpoints', () => {
 
 	it('full endpoints with path parameters have matching params entries', () => {
 		for (const ep of getEndpoints().filter((e) => !e.isMinimal && e.path.includes('{'))) {
-			expect(ep.params.length, `${ep.id} has path params but empty params array`).toBeGreaterThan(0);
+			expect(ep.params.length, `${ep.id} has path params but empty params array`).toBeGreaterThan(
+				0
+			);
 		}
 	});
 

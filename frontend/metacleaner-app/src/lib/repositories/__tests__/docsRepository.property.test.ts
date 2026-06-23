@@ -3,11 +3,7 @@ import * as fc from 'fast-check';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-	getEndpoints,
-	getSidebarEndpoints,
-	getSidebarSections
-} from '../docsRepository.js';
+import { getEndpoints, getSidebarEndpoints, getSidebarSections } from '../docsRepository.js';
 
 // ── Load en.json and cs.json directly to verify key presence ─────────────────
 
@@ -78,10 +74,7 @@ describe('Property 1: i18n key completeness in en.json and cs.json', () => {
 	it('all sidebar group keys (docs.sidebar.group.*) are present in en.json', () => {
 		fc.assert(
 			fc.property(fc.constantFrom(...sidebarGroupKeys), (key) => {
-				expect(
-					key in enMessages,
-					`sidebar group key "${key}" is missing from en.json`
-				).toBe(true);
+				expect(key in enMessages, `sidebar group key "${key}" is missing from en.json`).toBe(true);
 			}),
 			{ numRuns: sidebarGroupKeys.length }
 		);
@@ -90,10 +83,7 @@ describe('Property 1: i18n key completeness in en.json and cs.json', () => {
 	it('all sidebar group keys (docs.sidebar.group.*) are present in cs.json', () => {
 		fc.assert(
 			fc.property(fc.constantFrom(...sidebarGroupKeys), (key) => {
-				expect(
-					key in csMessages,
-					`sidebar group key "${key}" is missing from cs.json`
-				).toBe(true);
+				expect(key in csMessages, `sidebar group key "${key}" is missing from cs.json`).toBe(true);
 			}),
 			{ numRuns: sidebarGroupKeys.length }
 		);

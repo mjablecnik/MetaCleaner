@@ -1,3 +1,7 @@
+# Paraglide generated
+src/paraglide/
+src/lib/paraglide/
+
 # Package Managers
 package-lock.json
 pnpm-lock.yaml
