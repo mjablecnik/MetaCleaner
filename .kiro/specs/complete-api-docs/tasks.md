@@ -106,7 +106,7 @@ This implementation expands the API documentation page to cover all 11 public en
     - Use natural Czech text for all endpoint descriptions, parameter descriptions, and response labels
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 7. Checkpoint - Frontend data and i18n complete
+- [x] 7. Checkpoint - Frontend data and i18n complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Update and write frontend tests
