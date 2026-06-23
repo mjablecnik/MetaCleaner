@@ -32,14 +32,14 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Implement `isInsufficientCredits(totalCost: number, creditBalance: number): boolean` — returns true when totalCost > creditBalance
     - _Requirements: 3.5, 4.5, 5.1, 5.5, 6.1_
 
-- [ ] 2. Extend API client and create billing store
-  - [ ] 2.1 Add billing API functions to `metaCleanerApi.ts`
+- [x] 2. Extend API client and create billing store
+  - [x] 2.1 Add billing API functions to `metaCleanerApi.ts`
     - Add `SubscriptionResponse`, `CreditsResponse`, and `CreditTransaction` interfaces
     - Implement `getSubscription(): Promise<SubscriptionResponse>` — calls `GET /api/billing/subscription`
     - Implement `getCredits(): Promise<CreditsResponse>` — calls `GET /api/billing/credits`
     - _Requirements: 9.1, 9.2, 9.3_
 
-  - [ ] 2.2 Create `billingStore.svelte.ts`
+  - [x] 2.2 Create `billingStore.svelte.ts`
     - Create `src/lib/stores/billingStore.svelte.ts`
     - Implement reactive state using `$state`: credits (number | null), subscriptionCredits, purchasedCredits, planId, planStatus, isLoading, hasError
     - Implement derived getters: `isFreeUser`, `isPaidPlan`, `monthlyAllowance`

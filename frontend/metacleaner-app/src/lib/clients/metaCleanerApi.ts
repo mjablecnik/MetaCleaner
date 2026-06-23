@@ -174,3 +174,46 @@ export async function healthCheck(): Promise<HealthResponse> {
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json();
 }
+
+// ─── Billing Types ──────────────────────────────────────────────
+
+export interface SubscriptionResponse {
+	plan_id: string;
+	status: string;
+	billing_period?: string;
+	current_period_end?: string;
+	subscription_credits: number;
+	purchased_credits: number;
+	total_credits: number;
+}
+
+export interface CreditTransaction {
+	id: string;
+	amount: number;
+	type: string;
+	credit_source: string;
+	reference_id?: string;
+	description?: string;
+	created_at: string;
+}
+
+export interface CreditsResponse {
+	subscription_credits: number;
+	purchased_credits: number;
+	total_credits: number;
+	transactions: CreditTransaction[];
+}
+
+// ─── Billing Endpoints ──────────────────────────────────────────
+
+export async function getSubscription(): Promise<SubscriptionResponse> {
+	const res = await apiFetch('/api/billing/subscription');
+	if (!res.ok) throw await parseErrorResponse(res);
+	return res.json();
+}
+
+export async function getCredits(): Promise<CreditsResponse> {
+	const res = await apiFetch('/api/billing/credits');
+	if (!res.ok) throw await parseErrorResponse(res);
+	return res.json();
+}
