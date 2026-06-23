@@ -192,44 +192,44 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Plan names remain in English (Free, Pro, Pro+)
     - _Requirements: 11.1, 11.3, 11.4, 11.5_
 
-- [ ] 9. Write property-based tests for utility modules
-  - [ ]* 9.1 Write property test for `formatCreditCount`
+- [x] 9. Write property-based tests for utility modules
+  - [x]* 9.1 Write property test for `formatCreditCount`
     - **Property 1: Credit display formatting**
     - For any non-negative integer n: returns string(n) when n ≤ 99999, returns "99,999+" when n > 99999
     - Use fast-check with `fc.nat()` arbitrary
     - **Validates: Requirements 1.2**
 
-  - [ ]* 9.2 Write property test for `getCreditColorScheme`
+  - [x]* 9.2 Write property test for `getCreditColorScheme`
     - **Property 2: Credit balance color scheme determination**
     - For any non-negative integer: returns 'warning' when 0, 'success' when > 0
     - Use fast-check with `fc.nat()` arbitrary
     - **Validates: Requirements 1.3, 1.4, 10.6**
 
-  - [ ]* 9.3 Write property test for `getPlanStyle`
+  - [x]* 9.3 Write property test for `getPlanStyle`
     - **Property 3: Plan-to-style mapping consistency**
     - For any combination of planId and status from defined sets: returns correct style (gray/lock for free/null/cancelled, blue/star for pro active/trialing, orange/star for proplus active/trialing)
     - Use fast-check with `fc.constantFrom(...)` for plan IDs and statuses
     - **Validates: Requirements 2.2, 2.3, 2.4, 10.2**
 
-  - [ ]* 9.4 Write property test for `computeProgressRatio`
+  - [x]* 9.4 Write property test for `computeProgressRatio`
     - **Property 4: Progress bar ratio computation**
     - For any pair (remaining, allowance) with allowance > 0: ratio equals Math.min(remaining/allowance, 1) clamped to [0, 1]. When allowance is 0, ratio is 0.
     - Use fast-check with `fc.nat()` for both values
     - **Validates: Requirements 3.2, 3.5**
 
-  - [ ]* 9.5 Write property test for `computeTotalCost`
+  - [x]* 9.5 Write property test for `computeTotalCost`
     - **Property 5: Total credit cost computation**
     - For any array of files with type field: returns count of files whose type is NOT "unknown"
     - Use fast-check with `fc.array(fc.record({ type: fc.constantFrom('image', 'video', 'unknown') }))`
     - **Validates: Requirements 5.1, 5.2**
 
-  - [ ]* 9.6 Write property test for `isInsufficientCredits`
+  - [x]* 9.6 Write property test for `isInsufficientCredits`
     - **Property 6: Insufficient credits determination**
     - For any pair (totalCost, creditBalance): returns true when totalCost > creditBalance, false otherwise
     - Use fast-check with `fc.nat()` for both values
     - **Validates: Requirements 5.5, 6.1, 6.2, 6.5**
 
-  - [ ]* 9.7 Write property test for `creditLabel`
+  - [x]* 9.7 Write property test for `creditLabel`
     - **Property 7: Czech credit plural forms**
     - For any non-negative integer n: cs locale returns "kredit" (n=1), "kredity" (n 2-4), "kreditů" (else); en locale returns "credit" (n=1), "credits" (else)
     - Use fast-check with `fc.nat()` arbitrary
