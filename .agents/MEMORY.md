@@ -666,3 +666,9 @@
 - Problem: The spec says to create `scripts/migration004.sql` but that file already exists (Stripe billing migration). Creating it would overwrite existing billing schema.
 - Solution: Create `scripts/migration005.sql` instead for the API keys table.
 - Source: create-code, 2026-06-22
+
+## Svelte 5 $derived short-circuit dependency tracking bug in server tests
+- Project: metacleaner-app
+- Problem: When a `$derived` value uses `&&` and the first operand evaluates to `false`, the second operand is never read (short-circuit). In server-side vitest tests (non-component context), the second operand's reactive signal is then NOT added to the dependency set. On the next re-evaluation triggered by the first operand changing, the second operand reads a stale value, returning the wrong result. Specific case: `isPaidPlan = $derived((planId === 'pro' || planId === 'proplus') && (planStatus === 'active' || planStatus === 'trialing'))` returned `true` instead of `false` after going from `proplus/trialing` → `free/free` (clear) → `pro/cancelled` (refresh).
+- Solution: Swap operands so the more-volatile / always-relevant signal is in the first position: `$derived((planStatus === 'active' || planStatus === 'trialing') && (planId === 'pro' || planId === 'proplus'))`. This ensures `planStatus` is always tracked. Use `$derived.by(() => { const a = dep1; const b = dep2; return ...; })` as an alternative to force all dependencies to be captured upfront.
+- Source: create-code, 2026-06-23

@@ -12,8 +12,8 @@ function createBillingStore() {
 
 	const isFreeUser = $derived(planId === 'free' || planStatus === 'cancelled' || planStatus === 'free');
 	const isPaidPlan = $derived(
-		(planId === 'pro' || planId === 'proplus') &&
-			(planStatus === 'active' || planStatus === 'trialing')
+		(planStatus === 'active' || planStatus === 'trialing') &&
+			(planId === 'pro' || planId === 'proplus')
 	);
 	const monthlyAllowance = $derived(
 		(PLAN_CONFIG[planId as keyof typeof PLAN_CONFIG] ?? PLAN_CONFIG.free).monthlyAllowance

@@ -236,7 +236,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - **Validates: Requirements 11.3**
 
 - [ ] 10. Write unit tests for store and components
-  - [ ]* 10.1 Write unit tests for `billingStore`
+  - [x]* 10.1 Write unit tests for `billingStore`
     - Test initial state (credits null, isLoading false)
     - Test refresh success: updates all state fields
     - Test refresh failure with no cached data: hasError true, credits null
