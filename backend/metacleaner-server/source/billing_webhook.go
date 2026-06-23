@@ -32,7 +32,9 @@ func HandleStripeWebhook(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		}
 
 		sig := r.Header.Get("Stripe-Signature")
-		event, err := webhook.ConstructEvent(body, sig, cfg.StripeWebhookSecret)
+		event, err := webhook.ConstructEventWithOptions(body, sig, cfg.StripeWebhookSecret, webhook.ConstructEventOptions{
+			IgnoreAPIVersionMismatch: true,
+		})
 		if err != nil {
 			slog.Warn("webhook: signature verification failed", "error", err)
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "invalid webhook signature")

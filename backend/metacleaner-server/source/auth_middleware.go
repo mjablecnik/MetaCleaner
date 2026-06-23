@@ -418,6 +418,7 @@ func isExemptPath(path string) bool {
 	return strings.HasPrefix(path, "/api/auth/") ||
 		strings.HasPrefix(path, "/api/public/") ||
 		path == "/api/health" ||
+		path == "/api/billing/webhook" ||
 		strings.HasPrefix(path, "/.well-known/")
 }
 
