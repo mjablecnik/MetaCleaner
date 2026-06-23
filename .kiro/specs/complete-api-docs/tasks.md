@@ -122,7 +122,7 @@ This implementation expands the API documentation page to cover all 11 public en
     - Verify `getQuickStartSteps()` uses updated API paths
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.3, 2.4, 2.5, 3.1, 4.1, 4.3, 5.1, 5.3, 5.5, 6.1, 7.1, 8.1, 8.2, 8.3, 11.1, 11.2, 11.3, 11.4_
 
-  - [ ]* 8.2 Write property test for i18n key completeness
+  - [x]* 8.2 Write property test for i18n key completeness
     - **Property 1: i18n key completeness**
     - Create `src/lib/repositories/__tests__/docsRepository.property.test.ts` using Vitest + fast-check
     - For all i18n keys referenced in getEndpoints(), getSidebarEndpoints(), and getSidebarSections(), verify presence in both en.json and cs.json
