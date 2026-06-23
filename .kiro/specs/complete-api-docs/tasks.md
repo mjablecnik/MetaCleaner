@@ -35,7 +35,7 @@ This implementation expands the API documentation page to cover all 11 public en
     - Assert `credits_remaining == subCredits + purchasedCredits`, `plan` matches active subscription or "free", `rate_limit_rpm == cfg.RateLimitRPM`
     - **Validates: Requirements 10.2**
 
-- [ ] 2. Checkpoint - Backend endpoint complete
+- [x] 2. Checkpoint - Backend endpoint complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 3. Update docsRepository.ts — remove deprecated, update existing, add new endpoints
