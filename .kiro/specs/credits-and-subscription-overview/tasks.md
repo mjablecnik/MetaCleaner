@@ -179,13 +179,13 @@ This plan implements credit balance visibility, subscription plan display, credi
 - [x] 7. Checkpoint - Ensure all integration compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Add i18n translation keys
-  - [ ] 8.1 Add English translation keys to `messages/en.json`
+- [x] 8. Add i18n translation keys
+  - [x] 8.1 Add English translation keys to `messages/en.json`
     - Add keys for: CreditBalanceIndicator ("credits"), PlanPill labels, CreditsBanner (title, remaining text, upgrade CTA), CostBadge label, CreditSummaryRow (cost text, insufficient message), ProOverlay (title, description, chips, CTA, price hint), UpgradeModal (title, description, CTA, dismiss)
     - Keep plan names in English (Free, Pro, Pro+) — not translated
     - _Requirements: 11.1, 11.2, 11.4, 11.5_
 
-  - [ ] 8.2 Add Czech translation keys to `messages/cs.json`
+  - [x] 8.2 Add Czech translation keys to `messages/cs.json`
     - Mirror all English keys with Czech translations
     - Use Czech plural forms via creditPlural utility where applicable
     - Price hint: "2,99 €/měsíc" format
