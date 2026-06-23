@@ -6,26 +6,26 @@ This plan implements credit balance visibility, subscription plan display, credi
 
 ## Tasks
 
-- [ ] 1. Create pure utility modules
-  - [ ] 1.1 Create `formatCredits.ts` utility
+- [x] 1. Create pure utility modules
+  - [x] 1.1 Create `formatCredits.ts` utility
     - Create `src/lib/shared/utils/formatCredits.ts`
     - Implement `formatCreditCount(n: number): string` — returns string representation for n ≤ 99,999, returns "99,999+" for n > 99,999
     - Implement `getCreditColorScheme(balance: number): 'warning' | 'success'` — returns 'warning' when balance is 0, 'success' otherwise
     - _Requirements: 1.2, 1.3, 1.4, 10.6_
 
-  - [ ] 1.2 Create `planStyleMap.ts` utility
+  - [x] 1.2 Create `planStyleMap.ts` utility
     - Create `src/lib/shared/utils/planStyleMap.ts`
     - Define `PlanStyle` interface with dotColor, glowColor, borderColor, bgGradient, textColor, icon, label fields
     - Define `PLAN_CONFIG` constant with monthlyAllowance for each plan (free=3, pro=100, proplus=100)
     - Implement `getPlanStyle(planId: string | null, status: string | null): PlanStyle` — returns gray/lock for free/null/cancelled, blue/star for pro active/trialing, orange/star for proplus active/trialing
     - _Requirements: 2.2, 2.3, 2.4, 10.2_
 
-  - [ ] 1.3 Create `creditPlural.ts` utility
+  - [x] 1.3 Create `creditPlural.ts` utility
     - Create `src/lib/shared/utils/creditPlural.ts`
     - Implement `creditLabel(count: number, locale: 'en' | 'cs'): string` — English: "credit"/"credits"; Czech: "kredit"/"kredity"/"kreditů" based on count
     - _Requirements: 11.3_
 
-  - [ ] 1.4 Create `creditCost.ts` utility
+  - [x] 1.4 Create `creditCost.ts` utility
     - Create `src/lib/shared/utils/creditCost.ts`
     - Implement `computeTotalCost(files: Array<{ type: string }>): number` — returns count of files whose type is NOT "unknown"
     - Implement `computeProgressRatio(remaining: number, allowance: number): number` — returns clamped [0, 1] ratio, 0 when allowance is 0
