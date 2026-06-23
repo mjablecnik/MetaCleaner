@@ -111,7 +111,7 @@ func postRequest(handler http.HandlerFunc, body interface{}, resetAndGet func() 
 // HTTP 400 for every malformed email and does not reach Supabase (Requirement 1.3).
 func TestProperty_RegisterRejectsInvalidEmail(t *testing.T) {
 	client, resetAndGet := newValidationTestAuthClient(t)
-	handler := src.HandleRegister(client)
+	handler := src.HandleRegister(client, nullDB(t))
 
 	rapid.Check(t, func(t *rapid.T) {
 		email := drawInvalidEmail(t)
@@ -133,7 +133,7 @@ func TestProperty_RegisterRejectsInvalidEmail(t *testing.T) {
 // Supabase (Requirement 1.4).
 func TestProperty_RegisterRejectsOutOfRangePassword(t *testing.T) {
 	client, resetAndGet := newValidationTestAuthClient(t)
-	handler := src.HandleRegister(client)
+	handler := src.HandleRegister(client, nullDB(t))
 
 	rapid.Check(t, func(t *rapid.T) {
 		password := drawOutOfRangePassword(t, 8, 72)
@@ -155,7 +155,7 @@ func TestProperty_RegisterRejectsOutOfRangePassword(t *testing.T) {
 // reach Supabase (Requirement 1.9).
 func TestProperty_RegisterRejectsWhitespaceOnlyNames(t *testing.T) {
 	client, resetAndGet := newValidationTestAuthClient(t)
-	handler := src.HandleRegister(client)
+	handler := src.HandleRegister(client, nullDB(t))
 
 	rapid.Check(t, func(t *rapid.T) {
 		field := rapid.SampledFrom([]string{"first_name", "last_name"}).Draw(t, "field")

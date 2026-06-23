@@ -105,7 +105,7 @@ func postWithAuthHeader(handler http.HandlerFunc, body interface{}, token string
 // from HandleRegister contains exactly {error, message, timestamp} (Requirement 11.2).
 func TestProperty_RegisterErrorFormatConsistency(t *testing.T) {
 	client := newErrorFormatAuthClient(t)
-	handler := src.HandleRegister(client)
+	handler := src.HandleRegister(client, nullDB(t))
 
 	rapid.Check(t, func(t *rapid.T) {
 		// Choose between: invalid email, out-of-range password, whitespace name,

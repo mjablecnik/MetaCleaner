@@ -6,8 +6,8 @@ This implementation expands the API documentation page to cover all 11 public en
 
 ## Tasks
 
-- [ ] 1. Implement GET /api/account backend endpoint
-  - [ ] 1.1 Create account handler in Go
+- [x] 1. Implement GET /api/account backend endpoint
+  - [x] 1.1 Create account handler in Go
     - Create `source/account_handlers.go` with `HandleAccount(cfg Config, db *SupabaseClient) http.HandlerFunc`
     - Use `UserIDFromContext` for authentication check
     - Call `db.GetCreditBalance` for credits and `db.GetSubscriptionByUserID` for plan
@@ -15,12 +15,12 @@ This implementation expands the API documentation page to cover all 11 public en
     - Return 401 if no valid auth, 500 if DB query fails
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-  - [ ] 1.2 Register account route in router.go
+  - [x] 1.2 Register account route in router.go
     - Add `mux.Handle("GET /api/account", rateLimited(HandleAccount(cfg, db)))` in `router.go`
     - Place it inside the auth middleware chain (before the `cors` wrapping)
     - _Requirements: 10.1, 10.5_
 
-  - [ ]* 1.3 Write unit tests for HandleAccount
+  - [x]* 1.3 Write unit tests for HandleAccount
     - Create `tests/account_handlers_test.go`
     - Test 401 response when no auth header
     - Test 200 response with correct JSON shape for user with active subscription

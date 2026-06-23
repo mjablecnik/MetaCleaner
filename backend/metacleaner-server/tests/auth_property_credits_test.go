@@ -45,7 +45,8 @@ func (tr *creditsCallTracker) resetCounts() {
 // state to tr. The server is closed when t finishes. Generating userID/email via
 // rapid and storing them in tr.currentUserID / tr.currentEmail before each
 // rapid iteration lets the same server serve different identities.
-func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) *src.SupabaseAuthClient {
+// Returns both a SupabaseAuthClient and a SupabaseClient pointing at the same server.
+func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) (*src.SupabaseAuthClient, *src.SupabaseClient) {
 	t.Helper()
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -106,18 +107,24 @@ func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) *src.Supabas
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("[]"))
 
+		// Credit balance upsert — just acknowledge, we don't track these
+		case strings.HasPrefix(path, "/rest/v1/credit_balances"):
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("[]"))
+
 		default:
 			http.NotFound(w, r)
 		}
 	}))
 	t.Cleanup(srv.Close)
 
-	return src.NewSupabaseAuthClient(src.Config{
+	cfg := src.Config{
 		SupabaseURL:            srv.URL,
 		SupabaseAPIKey:         "test-anon-key",
 		SupabaseServiceRoleKey: "test-service-key",
 		FrontendURL:            "https://example.com",
-	})
+	}
+	return src.NewSupabaseAuthClient(cfg), src.NewSupabaseClient(cfg)
 }
 
 // drawValidEmail generates a simple RFC-valid email for property inputs.
@@ -143,8 +150,8 @@ func drawUserID(rt *rapid.T) string {
 // creates exactly one profile with credits=3, regardless of the user identity.
 func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 	tr := &creditsCallTracker{}
-	client := newCreditsTrackingClient(t, tr)
-	handler := src.HandleRegister(client)
+	client, db := newCreditsTrackingClient(t, tr)
+	handler := src.HandleRegister(client, db)
 
 	rapid.Check(t, func(rt *rapid.T) {
 		tr.currentUserID = drawUserID(rt)
@@ -181,8 +188,8 @@ func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 //  2. Second OAuth callback (returning user) does not create an additional profile.
 func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 	tr := &creditsCallTracker{}
-	client := newCreditsTrackingClient(t, tr)
-	handler := src.HandleOAuthCallback(client)
+	client, db := newCreditsTrackingClient(t, tr)
+	handler := src.HandleOAuthCallback(client, db)
 
 	rapid.Check(t, func(rt *rapid.T) {
 		tr.currentUserID = drawUserID(rt)
@@ -227,8 +234,8 @@ func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 //  2. Second magic-link callback (returning user) does not create an additional profile.
 func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 	tr := &creditsCallTracker{}
-	client := newCreditsTrackingClient(t, tr)
-	handler := src.HandleMagicLinkCallback(client)
+	client, db := newCreditsTrackingClient(t, tr)
+	handler := src.HandleMagicLinkCallback(client, db)
 
 	rapid.Check(t, func(rt *rapid.T) {
 		tr.currentUserID = drawUserID(rt)
@@ -272,7 +279,7 @@ func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 // of the user identity.
 func TestProperty_TrialCreditsNotModifiedByLoginRefresh(t *testing.T) {
 	tr := &creditsCallTracker{}
-	client := newCreditsTrackingClient(t, tr)
+	client, _ := newCreditsTrackingClient(t, tr)
 	loginHandler := src.HandleLogin(client)
 	refreshHandler := src.HandleRefresh(client)
 

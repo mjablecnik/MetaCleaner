@@ -41,6 +41,27 @@ func newFakeAuthClient(t *testing.T, handler http.Handler) *src.SupabaseAuthClie
 	})
 }
 
+// newFakeAuthAndDBClients starts a fake Supabase HTTP server and returns both
+// a SupabaseAuthClient and a SupabaseClient pointing at the same server.
+func newFakeAuthAndDBClients(t *testing.T, handler http.Handler) (*src.SupabaseAuthClient, *src.SupabaseClient) {
+	t.Helper()
+	srv := httptest.NewServer(handler)
+	t.Cleanup(srv.Close)
+	cfg := src.Config{
+		SupabaseURL:            srv.URL,
+		SupabaseAPIKey:         "test-anon-key",
+		SupabaseServiceRoleKey: "test-service-key",
+		FrontendURL:            "https://example.com",
+	}
+	return src.NewSupabaseAuthClient(cfg), src.NewSupabaseClient(cfg)
+}
+
+// nullDB returns a SupabaseClient that will never be called (for validation-failure tests).
+func nullDB(t *testing.T) *src.SupabaseClient {
+	t.Helper()
+	return src.NewSupabaseClient(src.Config{SupabaseURL: "http://127.0.0.1:0"})
+}
+
 func postBody(t *testing.T, path string, v interface{}) *http.Request {
 	t.Helper()
 	data, _ := json.Marshal(v)
@@ -73,19 +94,23 @@ func fakeSess() map[string]interface{} {
 
 func TestHandleRegister_Success(t *testing.T) {
 	profileCreated := false
-	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case r.URL.Path == "/auth/v1/signup":
 			writeJSONResp(w, http.StatusOK, map[string]interface{}{"id": "user-001", "email": "alice@example.com"})
 		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles"):
 			profileCreated = true
 			w.WriteHeader(http.StatusCreated)
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/credit_balances"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte(`[]`))
 		default:
 			http.NotFound(w, r)
 		}
 	}))
 
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, db)
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "last_name": "Smith", "password": "password123",
 	})
@@ -107,7 +132,7 @@ func TestHandleRegister_Success(t *testing.T) {
 
 func TestHandleRegister_InvalidBody(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodPost, "/api/auth/register", strings.NewReader("not-json"))
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -118,7 +143,7 @@ func TestHandleRegister_InvalidBody(t *testing.T) {
 
 func TestHandleRegister_MissingEmail(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"first_name": "Alice", "last_name": "Smith", "password": "password123",
 	})
@@ -131,7 +156,7 @@ func TestHandleRegister_MissingEmail(t *testing.T) {
 
 func TestHandleRegister_WhitespaceOnlyFirstName(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "   ", "last_name": "Smith", "password": "password123",
 	})
@@ -148,7 +173,7 @@ func TestHandleRegister_WhitespaceOnlyFirstName(t *testing.T) {
 
 func TestHandleRegister_MissingLastName(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "password": "password123",
 	})
@@ -161,7 +186,7 @@ func TestHandleRegister_MissingLastName(t *testing.T) {
 
 func TestHandleRegister_InvalidEmailFormat(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "not-an-email", "first_name": "Alice", "last_name": "Smith", "password": "password123",
 	})
@@ -178,7 +203,7 @@ func TestHandleRegister_InvalidEmailFormat(t *testing.T) {
 
 func TestHandleRegister_PasswordTooShort(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "last_name": "Smith", "password": "short",
 	})
@@ -195,7 +220,7 @@ func TestHandleRegister_PasswordTooShort(t *testing.T) {
 
 func TestHandleRegister_PasswordTooLong(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "last_name": "Smith",
 		"password": strings.Repeat("a", 73),
@@ -217,7 +242,7 @@ func TestHandleRegister_DuplicateEmail(t *testing.T) {
 			writeSupabaseErr(w, 422, "user_already_exists", "User already registered")
 		}
 	}))
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "last_name": "Smith", "password": "password123",
 	})
@@ -238,7 +263,7 @@ func TestHandleRegister_SupabaseUnavailable(t *testing.T) {
 			writeSupabaseErr(w, 503, "service_unavailable", "Service unavailable")
 		}
 	}))
-	handler := src.HandleRegister(authClient)
+	handler := src.HandleRegister(authClient, nullDB(t))
 	req := postBody(t, "/api/auth/register", map[string]string{
 		"email": "alice@example.com", "first_name": "Alice", "last_name": "Smith", "password": "password123",
 	})
@@ -819,7 +844,7 @@ func TestHandleMagicLink_SupabaseUnavailable(t *testing.T) {
 
 func TestHandleMagicLinkCallback_Success(t *testing.T) {
 	profileChecked := false
-	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case r.URL.Path == "/auth/v1/verify":
 			writeJSONResp(w, http.StatusOK, map[string]interface{}{
@@ -831,10 +856,13 @@ func TestHandleMagicLinkCallback_Success(t *testing.T) {
 			writeJSONResp(w, http.StatusOK, []interface{}{}) // new user
 		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") && r.Method == http.MethodPost:
 			w.WriteHeader(http.StatusCreated)
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/credit_balances"):
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("[]"))
 		}
 	}))
 
-	handler := src.HandleMagicLinkCallback(authClient)
+	handler := src.HandleMagicLinkCallback(authClient, db)
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?token_hash=abc123&type=magiclink", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -852,7 +880,7 @@ func TestHandleMagicLinkCallback_Success(t *testing.T) {
 }
 
 func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T) {
-	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case r.URL.Path == "/auth/v1/verify":
 			writeJSONResp(w, http.StatusOK, map[string]interface{}{
@@ -863,10 +891,13 @@ func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T
 			writeJSONResp(w, http.StatusOK, []interface{}{}) // new user
 		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") && r.Method == http.MethodPost:
 			w.WriteHeader(http.StatusCreated)
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/credit_balances"):
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("[]"))
 		}
 	}))
 
-	handler := src.HandleMagicLinkCallback(authClient)
+	handler := src.HandleMagicLinkCallback(authClient, db)
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?token_hash=abc123&type=signup", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -885,7 +916,7 @@ func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T
 
 func TestHandleMagicLinkCallback_ErrorParam(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleMagicLinkCallback(authClient)
+	handler := src.HandleMagicLinkCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?error=access_denied", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -900,7 +931,7 @@ func TestHandleMagicLinkCallback_ErrorParam(t *testing.T) {
 
 func TestHandleMagicLinkCallback_MissingTokenHash(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleMagicLinkCallback(authClient)
+	handler := src.HandleMagicLinkCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -919,7 +950,7 @@ func TestHandleMagicLinkCallback_InvalidToken(t *testing.T) {
 			writeSupabaseErr(w, 422, "otp_expired", "Token expired")
 		}
 	}))
-	handler := src.HandleMagicLinkCallback(authClient)
+	handler := src.HandleMagicLinkCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?token_hash=expired&type=magiclink", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -985,7 +1016,7 @@ func addPKCECookie(req *http.Request, verifier string) {
 }
 
 func TestHandleOAuthCallback_Success(t *testing.T) {
-	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case strings.Contains(r.URL.RawQuery, "grant_type=pkce"):
 			writeJSONResp(w, http.StatusOK, map[string]interface{}{
@@ -1001,10 +1032,13 @@ func TestHandleOAuthCallback_Success(t *testing.T) {
 			writeJSONResp(w, http.StatusOK, []interface{}{}) // new user
 		case strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") && r.Method == http.MethodPost:
 			w.WriteHeader(http.StatusCreated)
+		case strings.HasPrefix(r.URL.Path, "/rest/v1/credit_balances"):
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("[]"))
 		}
 	}))
 
-	handler := src.HandleOAuthCallback(authClient)
+	handler := src.HandleOAuthCallback(authClient, db)
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/oauth/callback?code=auth-code-123", nil)
 	addPKCECookie(req, "test-verifier")
 	rr := httptest.NewRecorder()
@@ -1021,7 +1055,7 @@ func TestHandleOAuthCallback_Success(t *testing.T) {
 
 func TestHandleOAuthCallback_ErrorParam(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleOAuthCallback(authClient)
+	handler := src.HandleOAuthCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/oauth/callback?error=access_denied", nil)
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -1036,7 +1070,7 @@ func TestHandleOAuthCallback_ErrorParam(t *testing.T) {
 
 func TestHandleOAuthCallback_MissingCode(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleOAuthCallback(authClient)
+	handler := src.HandleOAuthCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/oauth/callback", nil)
 	addPKCECookie(req, "test-verifier")
 	rr := httptest.NewRecorder()
@@ -1052,7 +1086,7 @@ func TestHandleOAuthCallback_MissingCode(t *testing.T) {
 
 func TestHandleOAuthCallback_MissingPKCECookie(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleOAuthCallback(authClient)
+	handler := src.HandleOAuthCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/oauth/callback?code=auth-code", nil)
 	// no cookie set
 	rr := httptest.NewRecorder()
@@ -1072,7 +1106,7 @@ func TestHandleOAuthCallback_InvalidCode(t *testing.T) {
 			writeSupabaseErr(w, 400, "invalid_grant", "Invalid authorization code")
 		}
 	}))
-	handler := src.HandleOAuthCallback(authClient)
+	handler := src.HandleOAuthCallback(authClient, nullDB(t))
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/oauth/callback?code=bad-code", nil)
 	addPKCECookie(req, "test-verifier")
 	rr := httptest.NewRecorder()

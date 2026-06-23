@@ -41,6 +41,12 @@ func UserIDFromContext(ctx context.Context) string {
 	return v
 }
 
+// ContextWithUserID returns a new context with the given userID set.
+// Used in unit tests to simulate authenticated requests.
+func ContextWithUserID(ctx context.Context, userID string) context.Context {
+	return context.WithValue(ctx, userIDKey, userID)
+}
+
 // KeyIDFromContext returns the API key ID stored in ctx when the request was authenticated
 // via an API key. Returns empty string if the request used JWT authentication.
 func KeyIDFromContext(ctx context.Context) string {
