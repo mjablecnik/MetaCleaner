@@ -67,7 +67,9 @@
 			<a
 				href={resolve(item.href)}
 				class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors duration-200
-					{activeId === item.id ? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue' : 'border border-transparent text-text-muted hover:text-white'}"
+					{activeId === item.id
+					? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue'
+					: 'border border-transparent text-text-muted hover:text-white'}"
 			>
 				<i class="fa-solid {item.icon} text-[10px]"></i>
 				<span>{tx(item.labelKey)}</span>
@@ -95,15 +97,15 @@
 					{/each}
 
 					<li class="mt-2">
-						<p
-							class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase"
-						>
+						<p class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase">
 							{tx('docs.sidebar.endpointsHeading')}
 						</p>
 						<a
 							href={resolve('/docs/endpoints')}
 							class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
-								{activeId === 'ep-endpoints' ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
+								{activeId === 'ep-endpoints'
+								? 'font-semibold text-brand-blue'
+								: 'text-text-muted hover:text-white'}"
 						>
 							<i class="fa-solid fa-code w-4 text-center text-xs"></i>
 							<span>{tx('docs.sidebar.allEndpoints')}</span>

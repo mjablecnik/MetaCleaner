@@ -26,9 +26,7 @@ describe('UpgradeModal', () => {
 
 	it('renders description text', async () => {
 		render(UpgradeModal, { onDismiss: vi.fn() });
-		await expect
-			.element(page.getByText(/Get access to your cleaning history/))
-			.toBeInTheDocument();
+		await expect.element(page.getByText(/Get access to your cleaning history/)).toBeInTheDocument();
 	});
 
 	it('renders upgrade CTA button "Upgrade to Pro"', async () => {

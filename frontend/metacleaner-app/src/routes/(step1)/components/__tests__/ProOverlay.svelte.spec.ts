@@ -53,9 +53,7 @@ describe('ProOverlay', () => {
 
 	it('renders CTA button "Unlock Pro plan"', async () => {
 		render(ProOverlay, {});
-		await expect
-			.element(page.getByRole('button', { name: 'Unlock Pro plan' }))
-			.toBeInTheDocument();
+		await expect.element(page.getByRole('button', { name: 'Unlock Pro plan' })).toBeInTheDocument();
 	});
 
 	it('renders price hint text', async () => {

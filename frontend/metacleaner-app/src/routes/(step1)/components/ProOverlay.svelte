@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class="pointer-events-auto absolute inset-0 flex flex-col items-center justify-end rounded-2xl bg-gradient-to-b from-transparent via-navy-main/60 to-navy-main/95 pb-6 pt-8"
+	class="pointer-events-auto absolute inset-0 flex flex-col items-center justify-end rounded-2xl bg-gradient-to-b from-transparent via-navy-main/60 to-navy-main/95 pt-8 pb-6"
 >
 	<div class="flex flex-col items-center gap-4 px-6 text-center">
 		<!-- Lock icon with Pro badge -->
@@ -21,7 +21,7 @@
 				<i class="fa-solid fa-lock text-xl text-text-muted"></i>
 			</div>
 			<span
-				class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-brand-orange to-orange-500 text-[9px] font-black text-white"
+				class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-brand-orange to-orange-500 text-[9px] font-black text-white"
 			>
 				<i class="fa-solid fa-star text-[7px]"></i>
 			</span>
@@ -67,7 +67,7 @@
 		<!-- CTA button -->
 		<button
 			onclick={handleUpgrade}
-			class="w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3 text-sm font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
+			class="shadow-glow-orange w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3 text-sm font-bold text-white transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
 		>
 			{tx('proOverlay.cta')}
 		</button>

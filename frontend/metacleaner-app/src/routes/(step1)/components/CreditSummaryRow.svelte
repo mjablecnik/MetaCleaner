@@ -27,13 +27,13 @@
 	const iconClass = $derived(insufficient ? 'text-orange-400' : 'text-text-muted');
 	const labelClass = $derived(insufficient ? 'text-orange-300' : 'text-text-muted');
 	const badgeBorderClass = $derived(
-		insufficient ? 'border-orange-500/40 bg-orange-950/20 text-orange-400' : 'border-brand-green/30 bg-brand-green/10 text-brand-green'
+		insufficient
+			? 'border-orange-500/40 bg-orange-950/20 text-orange-400'
+			: 'border-brand-green/30 bg-brand-green/10 text-brand-green'
 	);
 </script>
 
-<div
-	class="flex items-center gap-3 rounded-xl border px-4 py-2.5 {containerClass}"
->
+<div class="flex items-center gap-3 rounded-xl border px-4 py-2.5 {containerClass}">
 	<i class="fa-solid fa-circle-info text-sm {iconClass}"></i>
 
 	<span class="flex-1 text-sm {labelClass}">

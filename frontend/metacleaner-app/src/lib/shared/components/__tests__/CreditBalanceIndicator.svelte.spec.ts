@@ -23,9 +23,7 @@ describe('CreditBalanceIndicator', () => {
 		});
 		// In compact mode, no text element for "credits" label should appear
 		const spans = container.querySelectorAll('span');
-		const hasCreditsLabel = Array.from(spans).some(
-			(s) => s.textContent?.trim() === 'credits'
-		);
+		const hasCreditsLabel = Array.from(spans).some((s) => s.textContent?.trim() === 'credits');
 		expect(hasCreditsLabel).toBe(false);
 	});
 

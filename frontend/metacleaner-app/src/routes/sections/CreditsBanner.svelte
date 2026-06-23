@@ -16,8 +16,14 @@
 		isPaidPlan: boolean;
 	}
 
-	const { credits, subscriptionCredits, monthlyAllowance, planId, planStatus, isPaidPlan }: Props =
-		$props();
+	const {
+		credits: _credits,
+		subscriptionCredits,
+		monthlyAllowance,
+		planId,
+		planStatus,
+		isPaidPlan
+	}: Props = $props();
 
 	const planStyle = $derived(getPlanStyle(planId, planStatus));
 	const progressRatio = $derived(computeProgressRatio(subscriptionCredits, monthlyAllowance));
@@ -28,9 +34,7 @@
 	}
 </script>
 
-<div
-	class="rounded-xl border border-gray-800 bg-navy-card px-4 py-3 lg:px-5 lg:py-4"
->
+<div class="rounded-xl border border-gray-800 bg-navy-card px-4 py-3 lg:px-5 lg:py-4">
 	<!-- Desktop layout -->
 	<div class="hidden items-center gap-4 lg:flex">
 		<div class="flex items-center gap-2">
@@ -64,7 +68,7 @@
 		{#if !isPaidPlan}
 			<button
 				onclick={handleUpgrade}
-				class="flex-shrink-0 rounded-lg bg-gradient-to-r from-brand-orange to-orange-500 px-4 py-2 text-xs font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400"
+				class="shadow-glow-orange flex-shrink-0 rounded-lg bg-gradient-to-r from-brand-orange to-orange-500 px-4 py-2 text-xs font-bold text-white transition-all hover:from-orange-500 hover:to-orange-400"
 			>
 				{tx('credits.banner.upgrade')}
 			</button>
@@ -78,7 +82,8 @@
 		<div class="flex flex-1 flex-col gap-1">
 			<div class="flex items-center gap-2">
 				<span class="text-xs font-bold text-white">{subscriptionCredits}</span>
-				<span class="text-[10px] text-text-muted">{tx('credits.banner.of')} {monthlyAllowance}</span>
+				<span class="text-[10px] text-text-muted">{tx('credits.banner.of')} {monthlyAllowance}</span
+				>
 				<!-- Plan badge (compact) -->
 				<span
 					class="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-bold

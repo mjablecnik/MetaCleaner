@@ -17,16 +17,10 @@
 	const isWarning = $derived(colorScheme === 'warning');
 
 	const dotClass = $derived(
-		isWarning
-			? 'bg-orange-400 shadow-orange-400/30'
-			: 'bg-brand-green shadow-brand-green/30'
+		isWarning ? 'bg-orange-400 shadow-orange-400/30' : 'bg-brand-green shadow-brand-green/30'
 	);
-	const borderClass = $derived(
-		isWarning ? 'border-orange-500/40' : 'border-brand-green/30'
-	);
-	const bgClass = $derived(
-		isWarning ? 'bg-orange-950/40' : 'bg-brand-green/[0.08]'
-	);
+	const borderClass = $derived(isWarning ? 'border-orange-500/40' : 'border-brand-green/30');
+	const bgClass = $derived(isWarning ? 'bg-orange-950/40' : 'bg-brand-green/[0.08]');
 	const textClass = $derived(isWarning ? 'text-orange-400' : 'text-brand-green');
 
 	const label = $derived(

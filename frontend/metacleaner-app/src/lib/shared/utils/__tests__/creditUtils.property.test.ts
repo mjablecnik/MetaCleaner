@@ -18,9 +18,12 @@ describe('formatCreditCount', () => {
 
 	it('returns "99,999+" for n > 99999', () => {
 		fc.assert(
-			fc.property(fc.nat({ max: 1_000_000 }).filter((n) => n > 99999), (n) => {
-				expect(formatCreditCount(n)).toBe('99,999+');
-			}),
+			fc.property(
+				fc.nat({ max: 1_000_000 }).filter((n) => n > 99999),
+				(n) => {
+					expect(formatCreditCount(n)).toBe('99,999+');
+				}
+			),
 			{ numRuns: 200 }
 		);
 	});
@@ -42,9 +45,12 @@ describe('getCreditColorScheme', () => {
 
 	it('returns "success" for any positive balance', () => {
 		fc.assert(
-			fc.property(fc.nat({ max: 1_000_000 }).filter((n) => n > 0), (n) => {
-				expect(getCreditColorScheme(n)).toBe('success');
-			}),
+			fc.property(
+				fc.nat({ max: 1_000_000 }).filter((n) => n > 0),
+				(n) => {
+					expect(getCreditColorScheme(n)).toBe('success');
+				}
+			),
 			{ numRuns: 300 }
 		);
 	});
@@ -57,42 +63,33 @@ describe('getPlanStyle', () => {
 
 	it('returns gray/lock style for free plan regardless of status', () => {
 		fc.assert(
-			fc.property(
-				fc.constantFrom('active', 'trialing', 'cancelled', null),
-				(status) => {
-					const style = getPlanStyle('free', status);
-					expect(style.icon).toBe('lock');
-					expect(style.label).toBe('Free');
-				}
-			),
+			fc.property(fc.constantFrom('active', 'trialing', 'cancelled', null), (status) => {
+				const style = getPlanStyle('free', status);
+				expect(style.icon).toBe('lock');
+				expect(style.label).toBe('Free');
+			}),
 			{ numRuns: 50 }
 		);
 	});
 
 	it('returns gray/lock style for null planId', () => {
 		fc.assert(
-			fc.property(
-				fc.constantFrom('active', 'trialing', 'cancelled', null),
-				(status) => {
-					const style = getPlanStyle(null, status);
-					expect(style.icon).toBe('lock');
-					expect(style.label).toBe('Free');
-				}
-			),
+			fc.property(fc.constantFrom('active', 'trialing', 'cancelled', null), (status) => {
+				const style = getPlanStyle(null, status);
+				expect(style.icon).toBe('lock');
+				expect(style.label).toBe('Free');
+			}),
 			{ numRuns: 50 }
 		);
 	});
 
 	it('returns gray/lock style for cancelled status on any plan', () => {
 		fc.assert(
-			fc.property(
-				fc.constantFrom('pro', 'proplus', 'free', null),
-				(planId) => {
-					const style = getPlanStyle(planId, 'cancelled');
-					expect(style.icon).toBe('lock');
-					expect(style.label).toBe('Free');
-				}
-			),
+			fc.property(fc.constantFrom('pro', 'proplus', 'free', null), (planId) => {
+				const style = getPlanStyle(planId, 'cancelled');
+				expect(style.icon).toBe('lock');
+				expect(style.label).toBe('Free');
+			}),
 			{ numRuns: 50 }
 		);
 	});
@@ -240,28 +237,20 @@ describe('computeTotalCost', () => {
 describe('isInsufficientCredits', () => {
 	it('returns true when totalCost > creditBalance', () => {
 		fc.assert(
-			fc.property(
-				fc.nat({ max: 1000 }),
-				fc.nat({ max: 1000 }),
-				(creditBalance, extra) => {
-					const totalCost = creditBalance + extra + 1; // strictly greater
-					expect(isInsufficientCredits(totalCost, creditBalance)).toBe(true);
-				}
-			),
+			fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (creditBalance, extra) => {
+				const totalCost = creditBalance + extra + 1; // strictly greater
+				expect(isInsufficientCredits(totalCost, creditBalance)).toBe(true);
+			}),
 			{ numRuns: 300 }
 		);
 	});
 
 	it('returns false when totalCost <= creditBalance', () => {
 		fc.assert(
-			fc.property(
-				fc.nat({ max: 1000 }),
-				fc.nat({ max: 1000 }),
-				(totalCost, extra) => {
-					const creditBalance = totalCost + extra; // creditBalance >= totalCost
-					expect(isInsufficientCredits(totalCost, creditBalance)).toBe(false);
-				}
-			),
+			fc.property(fc.nat({ max: 1000 }), fc.nat({ max: 1000 }), (totalCost, extra) => {
+				const creditBalance = totalCost + extra; // creditBalance >= totalCost
+				expect(isInsufficientCredits(totalCost, creditBalance)).toBe(false);
+			}),
 			{ numRuns: 300 }
 		);
 	});
@@ -284,9 +273,12 @@ describe('creditLabel', () => {
 
 	it('en: returns "credits" for any count != 1', () => {
 		fc.assert(
-			fc.property(fc.nat({ max: 10_000 }).filter((n) => n !== 1), (n) => {
-				expect(creditLabel(n, 'en')).toBe('credits');
-			}),
+			fc.property(
+				fc.nat({ max: 10_000 }).filter((n) => n !== 1),
+				(n) => {
+					expect(creditLabel(n, 'en')).toBe('credits');
+				}
+			),
 			{ numRuns: 200 }
 		);
 	});

@@ -121,34 +121,32 @@
 				<UpgradeModal onDismiss={handleUpgradeModalDismiss} />
 			</div>
 		</div>
+	{:else if isLoading}
+		<div class="flex items-center justify-center py-20">
+			<div class="flex flex-col items-center gap-3">
+				<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+				<p class="text-sm text-text-muted">{tx('common.loading')}</p>
+			</div>
+		</div>
+	{:else if loadError}
+		<div
+			class="flex flex-col items-center gap-4 rounded-2xl border border-red-800/50 bg-brand-red/10 p-8 text-center"
+		>
+			<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
+			<p class="text-sm font-semibold text-white">
+				{tx('common.error')}
+			</p>
+			<p class="text-xs text-text-muted">{loadError}</p>
+		</div>
 	{:else}
-		{#if isLoading}
-			<div class="flex items-center justify-center py-20">
-				<div class="flex flex-col items-center gap-3">
-					<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
-					<p class="text-sm text-text-muted">{tx('common.loading')}</p>
-				</div>
-			</div>
-		{:else if loadError}
-			<div
-				class="flex flex-col items-center gap-4 rounded-2xl border border-red-800/50 bg-brand-red/10 p-8 text-center"
-			>
-				<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
-				<p class="text-sm font-semibold text-white">
-					{tx('common.error')}
-				</p>
-				<p class="text-xs text-text-muted">{loadError}</p>
-			</div>
-		{:else}
-			<ReportDetailHeader {reportDetail} {userEmail} onDownloadPdf={handleDownloadPdf} />
-			<SummaryStatsRow {stats} class="fade-in-up delay-1" />
-			<ReportChartCard {reportDetail} />
-			<FileAccordionList files={reportDetail?.files ?? []} />
+		<ReportDetailHeader {reportDetail} {userEmail} onDownloadPdf={handleDownloadPdf} />
+		<SummaryStatsRow {stats} class="fade-in-up delay-1" />
+		<ReportChartCard {reportDetail} />
+		<FileAccordionList files={reportDetail?.files ?? []} />
 
-			<div class="fade-in-up mt-4 pb-4 text-center text-sm text-text-muted delay-4 lg:mt-8">
-				<p>{tx('common.footer.copyright', { year: new Date().getFullYear() })}</p>
-			</div>
-		{/if}
+		<div class="fade-in-up mt-4 pb-4 text-center text-sm text-text-muted delay-4 lg:mt-8">
+			<p>{tx('common.footer.copyright', { year: new Date().getFullYear() })}</p>
+		</div>
 	{/if}
 </main>
 

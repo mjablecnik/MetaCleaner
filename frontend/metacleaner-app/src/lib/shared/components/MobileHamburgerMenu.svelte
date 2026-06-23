@@ -95,11 +95,7 @@
 					<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 					<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
 					<p class="mt-1.5 flex items-center gap-1 text-xs font-medium {planStyle.textColor}">
-						<i
-							class="fa-solid {planStyle.icon === 'lock'
-								? 'fa-lock'
-								: 'fa-star'} text-[9px]"
-						></i>
+						<i class="fa-solid {planStyle.icon === 'lock' ? 'fa-lock' : 'fa-star'} text-[9px]"></i>
 						{planStyle.label}
 					</p>
 				</div>

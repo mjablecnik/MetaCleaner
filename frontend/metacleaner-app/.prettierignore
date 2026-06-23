@@ -10,3 +10,4 @@ bun.lockb
 
 # Design mockups (raw HTML prototypes — not project source)
 /.design/
+/.design-old/

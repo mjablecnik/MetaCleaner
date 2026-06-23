@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@source "../../../metacleaner-shared/src/**/*.{svelte,ts}";
+@source '../../../metacleaner-shared/src/**/*.{svelte,ts}';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 

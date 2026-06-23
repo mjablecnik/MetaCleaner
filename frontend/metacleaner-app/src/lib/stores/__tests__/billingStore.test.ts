@@ -225,7 +225,9 @@ describe('billingStore', () => {
 	});
 
 	it('clear resets planId and planStatus to free', async () => {
-		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'proplus', status: 'active' }));
+		mockGetSubscription.mockResolvedValue(
+			makeSubResponse({ plan_id: 'proplus', status: 'active' })
+		);
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 
@@ -274,9 +276,7 @@ describe('billingStore', () => {
 	});
 
 	it('isFreeUser is true when planStatus is cancelled', async () => {
-		mockGetSubscription.mockResolvedValue(
-			makeSubResponse({ plan_id: 'pro', status: 'cancelled' })
-		);
+		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelled' }));
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 
@@ -315,9 +315,7 @@ describe('billingStore', () => {
 	});
 
 	it('isPaidPlan is false for cancelled subscription', async () => {
-		mockGetSubscription.mockResolvedValue(
-			makeSubResponse({ plan_id: 'pro', status: 'cancelled' })
-		);
+		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelled' }));
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 

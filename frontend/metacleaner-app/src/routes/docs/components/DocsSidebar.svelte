@@ -20,9 +20,7 @@
 				<button
 					onclick={() => onNavigate(section.id)}
 					class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200
-						{activeId === section.id
-						? 'font-semibold text-brand-blue'
-						: 'text-text-muted hover:text-white'}"
+						{activeId === section.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 				>
 					<i class="fa-solid {section.icon} w-4 text-center text-xs"></i>
 					<span>{tx(section.labelKey)}</span>
@@ -41,9 +39,7 @@
 					<button
 						onclick={() => onNavigate(endpoint.id)}
 						class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200
-							{activeId === endpoint.id
-							? 'font-semibold text-brand-blue'
-							: 'text-text-muted hover:text-white'}"
+							{activeId === endpoint.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 					>
 						<span><MethodBadge method={endpoint.method} size="sm" /></span>
 						<span>{endpoint.label}</span>

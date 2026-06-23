@@ -50,11 +50,7 @@
 		<FileListCard />
 
 		<!-- CreditSummaryRow below file list -->
-		<CreditSummaryRow
-			{totalCost}
-			fileCount={totalCost}
-			creditBalance={billingStore.credits}
-		/>
+		<CreditSummaryRow {totalCost} fileCount={totalCost} creditBalance={billingStore.credits} />
 
 		<!-- Mobile CTA hint card -->
 		<div
