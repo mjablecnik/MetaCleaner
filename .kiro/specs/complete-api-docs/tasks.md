@@ -28,7 +28,7 @@ This implementation expands the API documentation page to cover all 11 public en
     - Test 500 response when DB returns error
     - _Requirements: 10.2, 10.3, 10.4_
 
-  - [ ]* 1.4 Write property test for account endpoint computation
+  - [x]* 1.4 Write property test for account endpoint computation
     - **Property 2: Account endpoint returns correct computed state**
     - Create `tests/account_property_test.go` using `pgregory.net/rapid`
     - Generate random (subscriptionCredits, purchasedCredits, planID, rateLimitRPM) tuples
