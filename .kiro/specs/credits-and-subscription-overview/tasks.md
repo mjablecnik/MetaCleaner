@@ -132,7 +132,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Hide PlanPill on mobile viewports (Req 2.8)
     - _Requirements: 1.5, 1.6, 2.5, 2.8, 2.9_
 
-  - [ ] 6.2 Modify `MobileHamburgerMenu.svelte` to show credit and plan info
+  - [x] 6.2 Modify `MobileHamburgerMenu.svelte` to show credit and plan info
     - Add credit section card below user info: pulsing green dot, bolt icon, credit count, "credits remaining" text, progress bar, "of X" allowance text
     - Display plan name with color scheme from getPlanStyle in user info section
     - Add upgrade CTA button at bottom for Free users (hidden for paid plans)

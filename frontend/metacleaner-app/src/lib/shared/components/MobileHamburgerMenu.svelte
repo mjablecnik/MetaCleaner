@@ -6,6 +6,11 @@
 	import { locale } from '$lib/locale.svelte';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
+	import { billingStore } from '$lib/stores/billingStore.svelte';
+	import { getPlanStyle } from '$lib/shared/utils/planStyleMap';
+	import { formatCreditCount, getCreditColorScheme } from '$lib/shared/utils/formatCredits';
+	import { computeProgressRatio } from '$lib/shared/utils/creditCost';
+	import { creditLabel } from '$lib/shared/utils/creditPlural';
 
 	interface Props {
 		user: User | null;
@@ -85,9 +90,59 @@
 		<div class="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4">
 			<!-- User info -->
 			{#if user}
+				{@const planStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
 				<div class="mb-3 rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3">
 					<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 					<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
+					<p class="mt-1.5 flex items-center gap-1 text-xs font-medium {planStyle.textColor}">
+						<i
+							class="fa-solid {planStyle.icon === 'lock'
+								? 'fa-lock'
+								: 'fa-star'} text-[9px]"
+						></i>
+						{planStyle.label}
+					</p>
+				</div>
+			{/if}
+
+			<!-- Credit section -->
+			{#if billingStore.credits !== null}
+				{@const credits = billingStore.credits}
+				{@const isWarning = getCreditColorScheme(credits) === 'warning'}
+				{@const progressRatio = computeProgressRatio(credits, billingStore.monthlyAllowance)}
+				{@const cardBorder = isWarning ? 'border-orange-500/40' : 'border-brand-green/30'}
+				{@const cardBg = isWarning ? 'bg-orange-950/30' : 'bg-brand-green/[0.06]'}
+				{@const dotClass = isWarning
+					? 'bg-orange-400 shadow-orange-400/30'
+					: 'bg-brand-green shadow-brand-green/30'}
+				{@const textClass = isWarning ? 'text-orange-400' : 'text-brand-green'}
+				{@const barClass = isWarning ? 'bg-orange-500' : 'bg-brand-green'}
+				<div class="mb-3 rounded-xl border px-4 py-3 {cardBorder} {cardBg}">
+					<div class="mb-2 flex items-center gap-2">
+						<span class="relative flex h-1.5 w-1.5 flex-shrink-0">
+							<span
+								class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 {dotClass}"
+								style="animation-duration: 2s"
+							></span>
+							<span class="relative inline-flex h-1.5 w-1.5 rounded-full {dotClass}"></span>
+						</span>
+						<i class="fa-solid fa-bolt text-[9px] {textClass}"></i>
+						<span class="text-sm font-bold {textClass}">{formatCreditCount(credits)}</span>
+						<span class="text-xs {textClass}"
+							>{creditLabel(credits, locale.current as 'en' | 'cs')}
+							{tx('credits.banner.remaining')}</span
+						>
+					</div>
+					<div class="mb-1 h-1 w-full overflow-hidden rounded-full bg-navy-lighter">
+						<div
+							class="h-full rounded-full transition-all {barClass}"
+							style="width: {Math.round(progressRatio * 100)}%"
+						></div>
+					</div>
+					<p class="text-[10px] text-text-muted">
+						{tx('credits.banner.of')}
+						{billingStore.monthlyAllowance}
+					</p>
 				</div>
 			{/if}
 
@@ -180,6 +235,18 @@
 			</a>
 
 			<div class="my-3 border-t border-gray-800"></div>
+
+			<!-- Upgrade CTA (Free users only) -->
+			{#if billingStore.isFreeUser}
+				<a
+					href={resolve('/pricing' as Pathname)}
+					onclick={handleClose}
+					class="mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
+				>
+					<i class="fa-solid fa-arrow-right text-xs"></i>
+					{tx('credits.banner.upgrade')}
+				</a>
+			{/if}
 
 			<!-- Logout -->
 			<button
