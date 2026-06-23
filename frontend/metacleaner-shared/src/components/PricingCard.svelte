@@ -121,7 +121,7 @@
 			>
 				{translate(plan.ctaKey)}
 			</button>
-		{:else if plan.id === 'pack'}
+		{:else if plan.id === 'pack' || plan.id === 'proplus'}
 			<button
 				onclick={handleSelect}
 				class="w-full rounded-xl bg-brand-blue py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
@@ -207,7 +207,7 @@
 			>
 				{translate(plan.ctaKey)}
 			</button>
-		{:else if plan.id === 'pack'}
+		{:else if plan.id === 'pack' || plan.id === 'proplus'}
 			<button
 				onclick={handleSelect}
 				class="mt-auto w-full rounded-lg bg-brand-blue py-3 font-semibold text-white transition-colors hover:bg-blue-600"

@@ -83,9 +83,9 @@ export function pricingRepository(): Plan[] {
 				'pricing_feat_proplus_3',
 				'pricing_feat_proplus_4'
 			],
-			ctaKey: 'pricing_cta_coming_soon',
+			ctaKey: 'pricing_cta_activate_proplus',
 			featured: false,
-			disabled: true
+			disabled: false
 		}
 	];
 }

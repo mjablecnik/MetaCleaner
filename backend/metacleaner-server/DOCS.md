@@ -138,7 +138,7 @@ All variables are read at startup. `SUPABASE_URL` and `SUPABASE_API_KEY` are req
 | `TEMP_STORAGE_PATH` | `/tmp/metacleaner` | Root directory for temporary file storage |
 | `SUPABASE_URL` | _(required)_ | Supabase project URL, e.g. `https://abc.supabase.co` |
 | `SUPABASE_API_KEY` | _(required)_ | Supabase service role key (not the anon key) |
-| `RATE_LIMIT_RPM` | `10` | Maximum upload requests per minute per IP |
+| `RATE_LIMIT_RPM` | `60` | Maximum upload requests per minute per IP |
 
 ---
 

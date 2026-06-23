@@ -38,11 +38,13 @@ type Config struct {
 	AppleTeamID            string
 	SupabaseTimeout        time.Duration
 	MaxConcurrentJobs      int
-	StripeSecretKey        string
-	StripeWebhookSecret    string
-	StripePriceProMonth    string
-	StripePriceProYear     string
-	StripePriceCreditPack  string
+	StripeSecretKey          string
+	StripeWebhookSecret      string
+	StripePriceProMonth      string
+	StripePriceProYear       string
+	StripePriceProPlusMonth  string
+	StripePriceProPlusYear   string
+	StripePriceCreditPack    string
 }
 
 func LoadConfig() (Config, error) {
@@ -115,6 +117,8 @@ func LoadConfig() (Config, error) {
 	cfg.StripeWebhookSecret = os.Getenv("STRIPE_WEBHOOK_SECRET")
 	cfg.StripePriceProMonth = os.Getenv("STRIPE_PRICE_PRO_MONTH")
 	cfg.StripePriceProYear = os.Getenv("STRIPE_PRICE_PRO_YEAR")
+	cfg.StripePriceProPlusMonth = os.Getenv("STRIPE_PRICE_PROPLUS_MONTH")
+	cfg.StripePriceProPlusYear = os.Getenv("STRIPE_PRICE_PROPLUS_YEAR")
 	cfg.StripePriceCreditPack = os.Getenv("STRIPE_PRICE_CREDIT_PACK")
 
 	if cfg.SupabaseURL == "" {

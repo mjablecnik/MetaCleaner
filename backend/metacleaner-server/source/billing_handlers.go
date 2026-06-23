@@ -271,13 +271,28 @@ func resolvePriceAndMode(cfg Config, planID, billingPeriod string) (priceID, mod
 		default:
 			return "", "", fmt.Errorf("billing_period must be monthly or yearly for plan %q", planID)
 		}
+	case "proplus":
+		switch billingPeriod {
+		case "monthly":
+			if cfg.StripePriceProPlusMonth == "" {
+				return "", "", fmt.Errorf("Stripe price for pro+ monthly is not configured")
+			}
+			return cfg.StripePriceProPlusMonth, string(stripe.CheckoutSessionModeSubscription), nil
+		case "yearly":
+			if cfg.StripePriceProPlusYear == "" {
+				return "", "", fmt.Errorf("Stripe price for pro+ yearly is not configured")
+			}
+			return cfg.StripePriceProPlusYear, string(stripe.CheckoutSessionModeSubscription), nil
+		default:
+			return "", "", fmt.Errorf("billing_period must be monthly or yearly for plan %q", planID)
+		}
 	case "credits":
 		if cfg.StripePriceCreditPack == "" {
 			return "", "", fmt.Errorf("Stripe price for credit pack is not configured")
 		}
 		return cfg.StripePriceCreditPack, string(stripe.CheckoutSessionModePayment), nil
 	default:
-		return "", "", fmt.Errorf("unknown plan_id %q: must be pro or credits", planID)
+		return "", "", fmt.Errorf("unknown plan_id %q: must be pro, proplus, or credits", planID)
 	}
 }
 
