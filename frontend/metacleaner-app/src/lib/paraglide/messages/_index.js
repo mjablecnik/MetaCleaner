@@ -659,6 +659,44 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Upgrademodal_Description1Inputs */
 /** @typedef {{}} Upgrademodal_Cta1Inputs */
 /** @typedef {{}} Upgrademodal_Dismiss1Inputs */
+/** @typedef {{}} Docs_Sidebar_EndpointsInputs */
+/** @typedef {{}} Docs_Sidebar_Group_Fileprocessing1Inputs */
+/** @typedef {{}} Docs_Sidebar_Group_ReportsInputs */
+/** @typedef {{}} Docs_Sidebar_Group_AccountInputs */
+/** @typedef {{}} Docs_Sidebar_Group_SystemInputs */
+/** @typedef {{}} Docs_Endpoint_Clean_Param_Fileids_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Download_Param_Id_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Download_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Download_Response_Error_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Jobdownload_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobdownload_Param_Id_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobdownload_Response_Success_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobdownload_Response_Error_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Param_Id_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Param_Token_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Response_Fileprogress_Label2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Response_Filecomplete_Label2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Response_Jobcomplete_Label2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Response_Error401_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Response_Error400_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportslist_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportslist_Response_Success_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportslist_Response_Error401_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportdetail_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportdetail_Param_Id_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportdetail_Response_Success_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportdetail_Response_Error_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportpdf_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportpdf_Param_Id_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportpdf_Response_Success_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportpdf_Response_Error_Label1Inputs */
+/** @typedef {{}} Docs_Endpoint_Account_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Account_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Account_Response_Error401_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Health_DescInputs */
+/** @typedef {{}} Docs_Endpoint_Health_Response_Success_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Health_Response_Error_LabelInputs */
 import * as __en from "./en.js"
 import * as __cs from "./cs.js"
 /**
@@ -10474,3 +10512,573 @@ const upgrademodal_dismiss1 = /** @type {((inputs?: Upgrademodal_Dismiss1Inputs,
 	return __cs.upgrademodal_dismiss1(inputs)
 });
 export { upgrademodal_dismiss1 as "upgradeModal.dismiss" }
+/**
+* | output |
+* | --- |
+* | "Endpoints" |
+*
+* @param {Docs_Sidebar_EndpointsInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_endpoints = /** @type {((inputs?: Docs_Sidebar_EndpointsInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_EndpointsInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_endpoints(inputs)
+	return __cs.docs_sidebar_endpoints(inputs)
+});
+export { docs_sidebar_endpoints as "docs.sidebar.endpoints" }
+/**
+* | output |
+* | --- |
+* | "File Processing" |
+*
+* @param {Docs_Sidebar_Group_Fileprocessing1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_group_fileprocessing1 = /** @type {((inputs?: Docs_Sidebar_Group_Fileprocessing1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_Group_Fileprocessing1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_group_fileprocessing1(inputs)
+	return __cs.docs_sidebar_group_fileprocessing1(inputs)
+});
+export { docs_sidebar_group_fileprocessing1 as "docs.sidebar.group.fileProcessing" }
+/**
+* | output |
+* | --- |
+* | "Reports" |
+*
+* @param {Docs_Sidebar_Group_ReportsInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_group_reports = /** @type {((inputs?: Docs_Sidebar_Group_ReportsInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_Group_ReportsInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_group_reports(inputs)
+	return __cs.docs_sidebar_group_reports(inputs)
+});
+export { docs_sidebar_group_reports as "docs.sidebar.group.reports" }
+/**
+* | output |
+* | --- |
+* | "Account" |
+*
+* @param {Docs_Sidebar_Group_AccountInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_group_account = /** @type {((inputs?: Docs_Sidebar_Group_AccountInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_Group_AccountInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_group_account(inputs)
+	return __cs.docs_sidebar_group_account(inputs)
+});
+export { docs_sidebar_group_account as "docs.sidebar.group.account" }
+/**
+* | output |
+* | --- |
+* | "System" |
+*
+* @param {Docs_Sidebar_Group_SystemInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_sidebar_group_system = /** @type {((inputs?: Docs_Sidebar_Group_SystemInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Sidebar_Group_SystemInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_sidebar_group_system(inputs)
+	return __cs.docs_sidebar_group_system(inputs)
+});
+export { docs_sidebar_group_system as "docs.sidebar.group.system" }
+/**
+* | output |
+* | --- |
+* | "Array of file IDs to clean (obtained from upload responses)" |
+*
+* @param {Docs_Endpoint_Clean_Param_Fileids_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_param_fileids_desc1 = /** @type {((inputs?: Docs_Endpoint_Clean_Param_Fileids_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_Param_Fileids_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_param_fileids_desc1(inputs)
+	return __cs.docs_endpoint_clean_param_fileids_desc1(inputs)
+});
+export { docs_endpoint_clean_param_fileids_desc1 as "docs.endpoint.clean.param.fileIds.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the cleaned file to download (obtained from the job status response)" |
+*
+* @param {Docs_Endpoint_Download_Param_Id_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_param_id_desc = /** @type {((inputs?: Docs_Endpoint_Download_Param_Id_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_Param_Id_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_param_id_desc(inputs)
+	return __cs.docs_endpoint_download_param_id_desc(inputs)
+});
+export { docs_endpoint_download_param_id_desc as "docs.endpoint.download.param.id.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK (binary file)" |
+*
+* @param {Docs_Endpoint_Download_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_response_success_label = /** @type {((inputs?: Docs_Endpoint_Download_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_response_success_label(inputs)
+	return __cs.docs_endpoint_download_response_success_label(inputs)
+});
+export { docs_endpoint_download_response_success_label as "docs.endpoint.download.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Download_Response_Error_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_response_error_label = /** @type {((inputs?: Docs_Endpoint_Download_Response_Error_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_Response_Error_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_response_error_label(inputs)
+	return __cs.docs_endpoint_download_response_error_label(inputs)
+});
+export { docs_endpoint_download_response_error_label as "docs.endpoint.download.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Download all cleaned files from a completed job as a single ZIP archive." |
+*
+* @param {Docs_Endpoint_Jobdownload_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobdownload_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobdownload_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobdownload_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobdownload_desc1(inputs)
+	return __cs.docs_endpoint_jobdownload_desc1(inputs)
+});
+export { docs_endpoint_jobdownload_desc1 as "docs.endpoint.jobDownload.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the completed cleaning job" |
+*
+* @param {Docs_Endpoint_Jobdownload_Param_Id_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobdownload_param_id_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobdownload_Param_Id_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobdownload_Param_Id_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobdownload_param_id_desc1(inputs)
+	return __cs.docs_endpoint_jobdownload_param_id_desc1(inputs)
+});
+export { docs_endpoint_jobdownload_param_id_desc1 as "docs.endpoint.jobDownload.param.id.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK (ZIP archive)" |
+*
+* @param {Docs_Endpoint_Jobdownload_Response_Success_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobdownload_response_success_label1 = /** @type {((inputs?: Docs_Endpoint_Jobdownload_Response_Success_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobdownload_Response_Success_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobdownload_response_success_label1(inputs)
+	return __cs.docs_endpoint_jobdownload_response_success_label1(inputs)
+});
+export { docs_endpoint_jobdownload_response_success_label1 as "docs.endpoint.jobDownload.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Jobdownload_Response_Error_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobdownload_response_error_label1 = /** @type {((inputs?: Docs_Endpoint_Jobdownload_Response_Error_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobdownload_Response_Error_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobdownload_response_error_label1(inputs)
+	return __cs.docs_endpoint_jobdownload_response_error_label1(inputs)
+});
+export { docs_endpoint_jobdownload_response_error_label1 as "docs.endpoint.jobDownload.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "WebSocket endpoint for receiving real-time metadata cleaning progress events. Authenticate by passing your API key as the token query parameter, since browse..." |
+*
+* @param {Docs_Endpoint_Jobprogress_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_desc1 as "docs.endpoint.jobProgress.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the cleaning job to monitor" |
+*
+* @param {Docs_Endpoint_Jobprogress_Param_Id_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_param_id_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Param_Id_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Param_Id_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_param_id_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_param_id_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_param_id_desc1 as "docs.endpoint.jobProgress.param.id.desc" }
+/**
+* | output |
+* | --- |
+* | "Your API key, passed as a query parameter for WebSocket authentication" |
+*
+* @param {Docs_Endpoint_Jobprogress_Param_Token_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_param_token_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Param_Token_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Param_Token_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_param_token_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_param_token_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_param_token_desc1 as "docs.endpoint.jobProgress.param.token.desc" }
+/**
+* | output |
+* | --- |
+* | "file_progress event" |
+*
+* @param {Docs_Endpoint_Jobprogress_Response_Fileprogress_Label2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_response_fileprogress_label2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Response_Fileprogress_Label2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Response_Fileprogress_Label2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_response_fileprogress_label2(inputs)
+	return __cs.docs_endpoint_jobprogress_response_fileprogress_label2(inputs)
+});
+export { docs_endpoint_jobprogress_response_fileprogress_label2 as "docs.endpoint.jobProgress.response.fileProgress.label" }
+/**
+* | output |
+* | --- |
+* | "file_complete event" |
+*
+* @param {Docs_Endpoint_Jobprogress_Response_Filecomplete_Label2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_response_filecomplete_label2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Response_Filecomplete_Label2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Response_Filecomplete_Label2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_response_filecomplete_label2(inputs)
+	return __cs.docs_endpoint_jobprogress_response_filecomplete_label2(inputs)
+});
+export { docs_endpoint_jobprogress_response_filecomplete_label2 as "docs.endpoint.jobProgress.response.fileComplete.label" }
+/**
+* | output |
+* | --- |
+* | "job_complete event" |
+*
+* @param {Docs_Endpoint_Jobprogress_Response_Jobcomplete_Label2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_response_jobcomplete_label2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Response_Jobcomplete_Label2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Response_Jobcomplete_Label2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_response_jobcomplete_label2(inputs)
+	return __cs.docs_endpoint_jobprogress_response_jobcomplete_label2(inputs)
+});
+export { docs_endpoint_jobprogress_response_jobcomplete_label2 as "docs.endpoint.jobProgress.response.jobComplete.label" }
+/**
+* | output |
+* | --- |
+* | "401 Unauthorized" |
+*
+* @param {Docs_Endpoint_Jobprogress_Response_Error401_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_response_error401_label1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Response_Error401_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Response_Error401_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_response_error401_label1(inputs)
+	return __cs.docs_endpoint_jobprogress_response_error401_label1(inputs)
+});
+export { docs_endpoint_jobprogress_response_error401_label1 as "docs.endpoint.jobProgress.response.error401.label" }
+/**
+* | output |
+* | --- |
+* | "400 Bad Request" |
+*
+* @param {Docs_Endpoint_Jobprogress_Response_Error400_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_response_error400_label1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Response_Error400_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Response_Error400_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_response_error400_label1(inputs)
+	return __cs.docs_endpoint_jobprogress_response_error400_label1(inputs)
+});
+export { docs_endpoint_jobprogress_response_error400_label1 as "docs.endpoint.jobProgress.response.error400.label" }
+/**
+* | output |
+* | --- |
+* | "Retrieve a list of all cleaning reports for the authenticated user." |
+*
+* @param {Docs_Endpoint_Reportslist_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportslist_desc1 = /** @type {((inputs?: Docs_Endpoint_Reportslist_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportslist_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportslist_desc1(inputs)
+	return __cs.docs_endpoint_reportslist_desc1(inputs)
+});
+export { docs_endpoint_reportslist_desc1 as "docs.endpoint.reportsList.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Reportslist_Response_Success_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportslist_response_success_label1 = /** @type {((inputs?: Docs_Endpoint_Reportslist_Response_Success_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportslist_Response_Success_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportslist_response_success_label1(inputs)
+	return __cs.docs_endpoint_reportslist_response_success_label1(inputs)
+});
+export { docs_endpoint_reportslist_response_success_label1 as "docs.endpoint.reportsList.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "401 Unauthorized" |
+*
+* @param {Docs_Endpoint_Reportslist_Response_Error401_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportslist_response_error401_label1 = /** @type {((inputs?: Docs_Endpoint_Reportslist_Response_Error401_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportslist_Response_Error401_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportslist_response_error401_label1(inputs)
+	return __cs.docs_endpoint_reportslist_response_error401_label1(inputs)
+});
+export { docs_endpoint_reportslist_response_error401_label1 as "docs.endpoint.reportsList.response.error401.label" }
+/**
+* | output |
+* | --- |
+* | "Retrieve the full details of a specific cleaning report, including per-file results." |
+*
+* @param {Docs_Endpoint_Reportdetail_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportdetail_desc1 = /** @type {((inputs?: Docs_Endpoint_Reportdetail_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportdetail_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportdetail_desc1(inputs)
+	return __cs.docs_endpoint_reportdetail_desc1(inputs)
+});
+export { docs_endpoint_reportdetail_desc1 as "docs.endpoint.reportDetail.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the report to retrieve" |
+*
+* @param {Docs_Endpoint_Reportdetail_Param_Id_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportdetail_param_id_desc1 = /** @type {((inputs?: Docs_Endpoint_Reportdetail_Param_Id_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportdetail_Param_Id_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportdetail_param_id_desc1(inputs)
+	return __cs.docs_endpoint_reportdetail_param_id_desc1(inputs)
+});
+export { docs_endpoint_reportdetail_param_id_desc1 as "docs.endpoint.reportDetail.param.id.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Reportdetail_Response_Success_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportdetail_response_success_label1 = /** @type {((inputs?: Docs_Endpoint_Reportdetail_Response_Success_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportdetail_Response_Success_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportdetail_response_success_label1(inputs)
+	return __cs.docs_endpoint_reportdetail_response_success_label1(inputs)
+});
+export { docs_endpoint_reportdetail_response_success_label1 as "docs.endpoint.reportDetail.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Reportdetail_Response_Error_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportdetail_response_error_label1 = /** @type {((inputs?: Docs_Endpoint_Reportdetail_Response_Error_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportdetail_Response_Error_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportdetail_response_error_label1(inputs)
+	return __cs.docs_endpoint_reportdetail_response_error_label1(inputs)
+});
+export { docs_endpoint_reportdetail_response_error_label1 as "docs.endpoint.reportDetail.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Returns a signed URL for downloading the PDF version of a cleaning report." |
+*
+* @param {Docs_Endpoint_Reportpdf_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportpdf_desc1 = /** @type {((inputs?: Docs_Endpoint_Reportpdf_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportpdf_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportpdf_desc1(inputs)
+	return __cs.docs_endpoint_reportpdf_desc1(inputs)
+});
+export { docs_endpoint_reportpdf_desc1 as "docs.endpoint.reportPdf.desc" }
+/**
+* | output |
+* | --- |
+* | "ID of the report to generate a PDF download URL for" |
+*
+* @param {Docs_Endpoint_Reportpdf_Param_Id_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportpdf_param_id_desc1 = /** @type {((inputs?: Docs_Endpoint_Reportpdf_Param_Id_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportpdf_Param_Id_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportpdf_param_id_desc1(inputs)
+	return __cs.docs_endpoint_reportpdf_param_id_desc1(inputs)
+});
+export { docs_endpoint_reportpdf_param_id_desc1 as "docs.endpoint.reportPdf.param.id.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Reportpdf_Response_Success_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportpdf_response_success_label1 = /** @type {((inputs?: Docs_Endpoint_Reportpdf_Response_Success_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportpdf_Response_Success_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportpdf_response_success_label1(inputs)
+	return __cs.docs_endpoint_reportpdf_response_success_label1(inputs)
+});
+export { docs_endpoint_reportpdf_response_success_label1 as "docs.endpoint.reportPdf.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "404 Not Found" |
+*
+* @param {Docs_Endpoint_Reportpdf_Response_Error_Label1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportpdf_response_error_label1 = /** @type {((inputs?: Docs_Endpoint_Reportpdf_Response_Error_Label1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportpdf_Response_Error_Label1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportpdf_response_error_label1(inputs)
+	return __cs.docs_endpoint_reportpdf_response_error_label1(inputs)
+});
+export { docs_endpoint_reportpdf_response_error_label1 as "docs.endpoint.reportPdf.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Returns the authenticated user's account information including remaining credits, subscription plan, and API rate limit." |
+*
+* @param {Docs_Endpoint_Account_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_account_desc = /** @type {((inputs?: Docs_Endpoint_Account_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Account_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_account_desc(inputs)
+	return __cs.docs_endpoint_account_desc(inputs)
+});
+export { docs_endpoint_account_desc as "docs.endpoint.account.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Account_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_account_response_success_label = /** @type {((inputs?: Docs_Endpoint_Account_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Account_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_account_response_success_label(inputs)
+	return __cs.docs_endpoint_account_response_success_label(inputs)
+});
+export { docs_endpoint_account_response_success_label as "docs.endpoint.account.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "401 Unauthorized" |
+*
+* @param {Docs_Endpoint_Account_Response_Error401_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_account_response_error401_label = /** @type {((inputs?: Docs_Endpoint_Account_Response_Error401_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Account_Response_Error401_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_account_response_error401_label(inputs)
+	return __cs.docs_endpoint_account_response_error401_label(inputs)
+});
+export { docs_endpoint_account_response_error401_label as "docs.endpoint.account.response.error401.label" }
+/**
+* | output |
+* | --- |
+* | "Returns the service health status and version information. This endpoint does not require authentication and can be used for uptime monitoring." |
+*
+* @param {Docs_Endpoint_Health_DescInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_health_desc = /** @type {((inputs?: Docs_Endpoint_Health_DescInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Health_DescInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_health_desc(inputs)
+	return __cs.docs_endpoint_health_desc(inputs)
+});
+export { docs_endpoint_health_desc as "docs.endpoint.health.desc" }
+/**
+* | output |
+* | --- |
+* | "200 OK" |
+*
+* @param {Docs_Endpoint_Health_Response_Success_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_health_response_success_label = /** @type {((inputs?: Docs_Endpoint_Health_Response_Success_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Health_Response_Success_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_health_response_success_label(inputs)
+	return __cs.docs_endpoint_health_response_success_label(inputs)
+});
+export { docs_endpoint_health_response_success_label as "docs.endpoint.health.response.success.label" }
+/**
+* | output |
+* | --- |
+* | "503 Service Unavailable" |
+*
+* @param {Docs_Endpoint_Health_Response_Error_LabelInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_health_response_error_label = /** @type {((inputs?: Docs_Endpoint_Health_Response_Error_LabelInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Health_Response_Error_LabelInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_health_response_error_label(inputs)
+	return __cs.docs_endpoint_health_response_error_label(inputs)
+});
+export { docs_endpoint_health_response_error_label as "docs.endpoint.health.response.error.label" }

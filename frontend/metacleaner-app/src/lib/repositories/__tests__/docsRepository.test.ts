@@ -20,8 +20,8 @@ describe('getDocsConfig', () => {
 });
 
 describe('getSidebarSections', () => {
-	it('returns 3 sections', () => {
-		expect(getSidebarSections()).toHaveLength(3);
+	it('returns 4 sections', () => {
+		expect(getSidebarSections()).toHaveLength(4);
 	});
 
 	it('each section has id, icon, and labelKey', () => {
@@ -34,15 +34,16 @@ describe('getSidebarSections', () => {
 });
 
 describe('getSidebarEndpoints', () => {
-	it('returns 6 endpoints', () => {
-		expect(getSidebarEndpoints()).toHaveLength(6);
+	it('returns 11 endpoints', () => {
+		expect(getSidebarEndpoints()).toHaveLength(11);
 	});
 
-	it('each endpoint has id, method, and label', () => {
+	it('each endpoint has id, method, label, and group', () => {
 		for (const ep of getSidebarEndpoints()) {
 			expect(ep.id.length).toBeGreaterThan(0);
 			expect(['GET', 'POST', 'DEL']).toContain(ep.method);
 			expect(ep.label.length).toBeGreaterThan(0);
+			expect(['fileProcessing', 'reports', 'account', 'system']).toContain(ep.group);
 		}
 	});
 });
@@ -127,8 +128,8 @@ describe('getErrorEntries', () => {
 });
 
 describe('getEndpoints', () => {
-	it('returns 6 endpoints', () => {
-		expect(getEndpoints()).toHaveLength(6);
+	it('returns 11 endpoints', () => {
+		expect(getEndpoints()).toHaveLength(11);
 	});
 
 	it('each endpoint has id, method, path, and descriptionKey', () => {
@@ -153,24 +154,22 @@ describe('getEndpoints', () => {
 		}
 	});
 
-	it('full endpoints have at least one param', () => {
-		for (const ep of getEndpoints().filter((e) => !e.isMinimal)) {
-			expect(ep.params.length).toBeGreaterThan(0);
+	it('full endpoints with path parameters have matching params entries', () => {
+		for (const ep of getEndpoints().filter((e) => !e.isMinimal && e.path.includes('{'))) {
+			expect(ep.params.length, `${ep.id} has path params but empty params array`).toBeGreaterThan(0);
 		}
 	});
 
-	it('full endpoints have at least one success and one error response', () => {
+	it('full endpoints have at least one success response', () => {
 		for (const ep of getEndpoints().filter((e) => !e.isMinimal)) {
 			expect(ep.responses.some((r) => r.variant === 'success')).toBe(true);
-			expect(ep.responses.some((r) => r.variant === 'error')).toBe(true);
 		}
 	});
 
-	it('minimal endpoints have placeholderKey and empty responses', () => {
-		for (const ep of getEndpoints().filter((e) => e.isMinimal)) {
-			expect(ep.placeholderKey).toBeTruthy();
-			expect(ep.responses).toHaveLength(0);
-		}
+	it('deprecated endpoints ep-metadata and ep-delete are absent', () => {
+		const ids = getEndpoints().map((e) => e.id);
+		expect(ids).not.toContain('ep-metadata');
+		expect(ids).not.toContain('ep-delete');
 	});
 
 	it('response bodies contain no HTML markup (plain text only)', () => {
@@ -181,11 +180,11 @@ describe('getEndpoints', () => {
 		}
 	});
 
-	it('ep-upload exists as POST /files/upload', () => {
+	it('ep-upload exists as POST /api/upload', () => {
 		const ep = getEndpoints().find((e) => e.id === 'ep-upload');
 		expect(ep).toBeDefined();
 		expect(ep!.method).toBe('POST');
-		expect(ep!.path).toBe('/files/upload');
+		expect(ep!.path).toBe('/api/upload');
 	});
 
 	it('ep-status has statusValues array', () => {

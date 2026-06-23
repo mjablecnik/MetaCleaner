@@ -73,6 +73,7 @@ export interface SidebarEndpoint {
 	id: string;
 	method: 'GET' | 'POST' | 'DEL';
 	label: string;
+	group: 'fileProcessing' | 'reports' | 'account' | 'system';
 }
 
 export interface DocsConfig {
@@ -91,18 +92,24 @@ export function getSidebarSections(): SidebarSection[] {
 	return [
 		{ id: 'sec-intro', icon: 'fa-house', labelKey: 'docs.sidebar.intro' },
 		{ id: 'sec-auth', icon: 'fa-lock', labelKey: 'docs.sidebar.auth' },
-		{ id: 'sec-errors', icon: 'fa-triangle-exclamation', labelKey: 'docs.sidebar.errors' }
+		{ id: 'sec-errors', icon: 'fa-triangle-exclamation', labelKey: 'docs.sidebar.errors' },
+		{ id: 'sec-endpoints', icon: 'fa-plug', labelKey: 'docs.sidebar.endpoints' }
 	];
 }
 
 export function getSidebarEndpoints(): SidebarEndpoint[] {
 	return [
-		{ id: 'ep-upload', method: 'POST', label: 'Upload' },
-		{ id: 'ep-clean', method: 'POST', label: 'Clean' },
-		{ id: 'ep-status', method: 'GET', label: 'Status' },
-		{ id: 'ep-download', method: 'GET', label: 'Download' },
-		{ id: 'ep-metadata', method: 'GET', label: 'Metadata' },
-		{ id: 'ep-delete', method: 'DEL', label: 'Delete' }
+		{ id: 'ep-upload', method: 'POST', label: 'Upload', group: 'fileProcessing' },
+		{ id: 'ep-clean', method: 'POST', label: 'Create Job', group: 'fileProcessing' },
+		{ id: 'ep-status', method: 'GET', label: 'Job Status', group: 'fileProcessing' },
+		{ id: 'ep-job-progress', method: 'GET', label: 'Job Progress', group: 'fileProcessing' },
+		{ id: 'ep-job-download', method: 'GET', label: 'Job Download', group: 'fileProcessing' },
+		{ id: 'ep-download', method: 'GET', label: 'File Download', group: 'fileProcessing' },
+		{ id: 'ep-reports-list', method: 'GET', label: 'List Reports', group: 'reports' },
+		{ id: 'ep-report-detail', method: 'GET', label: 'Report Detail', group: 'reports' },
+		{ id: 'ep-report-pdf', method: 'GET', label: 'Report PDF', group: 'reports' },
+		{ id: 'ep-account', method: 'GET', label: 'Account Info', group: 'account' },
+		{ id: 'ep-health', method: 'GET', label: 'Health Check', group: 'system' }
 	];
 }
 
@@ -137,7 +144,7 @@ export function getQuickStartSteps(): QuickStartStep[] {
 			descriptionKey: 'docs.intro.quickStart.step1.desc',
 			codeSnippets: [
 				{ text: 'POST', color: 'text-brand-blue' },
-				{ text: ' /files/upload', color: 'text-white' },
+				{ text: ' /api/upload', color: 'text-white' },
 				{ text: '  →  ', color: 'text-muted' },
 				{ text: 'file_id', color: 'text-brand-green' }
 			]
@@ -148,7 +155,7 @@ export function getQuickStartSteps(): QuickStartStep[] {
 			descriptionKey: 'docs.intro.quickStart.step2.desc',
 			codeSnippets: [
 				{ text: 'POST', color: 'text-brand-blue' },
-				{ text: ' /files/clean', color: 'text-white' },
+				{ text: ' /api/jobs', color: 'text-white' },
 				{ text: '  →  ', color: 'text-muted' },
 				{ text: 'job_id', color: 'text-brand-green' }
 			]
@@ -159,7 +166,7 @@ export function getQuickStartSteps(): QuickStartStep[] {
 			descriptionKey: 'docs.intro.quickStart.step3.desc',
 			codeSnippets: [
 				{ text: 'GET', color: 'text-brand-green' },
-				{ text: ' /jobs/{job_id}/status', color: 'text-white' },
+				{ text: ' /api/jobs/{id}', color: 'text-white' },
 				{ text: '  →  ', color: 'text-muted' },
 				{ text: 'completed', color: 'text-brand-green' }
 			]
@@ -170,7 +177,7 @@ export function getQuickStartSteps(): QuickStartStep[] {
 			descriptionKey: 'docs.intro.quickStart.step4.desc',
 			codeSnippets: [
 				{ text: 'GET', color: 'text-brand-green' },
-				{ text: ' /files/{file_id}/download', color: 'text-white' }
+				{ text: ' /api/files/{id}/download', color: 'text-white' }
 			],
 			isLast: true
 		}
@@ -242,10 +249,11 @@ export function getErrorEntries(): ErrorEntry[] {
 
 export function getEndpoints(): EndpointData[] {
 	return [
+		// ── File Processing ────────────────────────────────────────────────────
 		{
 			id: 'ep-upload',
 			method: 'POST',
-			path: '/files/upload',
+			path: '/api/upload',
 			descriptionKey: 'docs.endpoint.upload.desc',
 			headers: {
 				id: 'upload-headers',
@@ -262,10 +270,10 @@ export function getEndpoints(): EndpointData[] {
 			],
 			curlExample: {
 				id: 'upload-curl',
-				code: `curl -X POST https://api.metacleaner.com/v1/files/upload \\
+				code: `curl -X POST https://api.metacleaner.com/v1/api/upload \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@photo.jpg"`,
-				displayHtml: `curl -X POST https://api.metacleaner.com/v1/files/upload \\
+				displayHtml: `curl -X POST https://api.metacleaner.com/v1/api/upload \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@photo.jpg"`
 			},
@@ -298,7 +306,7 @@ export function getEndpoints(): EndpointData[] {
 		{
 			id: 'ep-clean',
 			method: 'POST',
-			path: '/files/clean',
+			path: '/api/jobs',
 			descriptionKey: 'docs.endpoint.clean.desc',
 			headers: {
 				id: 'clean-headers',
@@ -307,10 +315,10 @@ export function getEndpoints(): EndpointData[] {
 			},
 			params: [
 				{
-					name: 'file_id',
-					type: 'string',
+					name: 'file_ids',
+					type: 'string[]',
 					required: true,
-					descriptionKey: 'docs.endpoint.clean.param.fileId.desc'
+					descriptionKey: 'docs.endpoint.clean.param.fileIds.desc'
 				}
 			],
 			optionsParams: [
@@ -335,14 +343,14 @@ export function getEndpoints(): EndpointData[] {
 			],
 			curlExample: {
 				id: 'clean-curl',
-				code: `curl -X POST https://api.metacleaner.com/v1/files/clean \\
+				code: `curl -X POST https://api.metacleaner.com/v1/api/jobs \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{"file_id":"f_abc123xyz","options":{"strip_gps":true,"strip_exif":true}}'`,
-				displayHtml: `curl -X POST https://api.metacleaner.com/v1/files/clean \\
+  -d '{"file_ids":["f_abc123xyz","f_def456uvw"],"options":{"strip_gps":true,"strip_exif":true}}'`,
+				displayHtml: `curl -X POST https://api.metacleaner.com/v1/api/jobs \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
-  -d '{"file_id":"f_abc123xyz","options":{"strip_gps":true,"strip_exif":true}}'`
+  -d '{"file_ids":["f_abc123xyz","f_def456uvw"],"options":{"strip_gps":true,"strip_exif":true}}'`
 			},
 			responses: [
 				{
@@ -352,7 +360,7 @@ export function getEndpoints(): EndpointData[] {
 					body: `{
   "status": "accepted",
   "job_id": "job_def456uvw",
-  "file_id": "f_abc123xyz",
+  "file_ids": ["f_abc123xyz", "f_def456uvw"],
   "created_at": "2024-01-15T10:30:05Z"
 }`
 				},
@@ -363,7 +371,7 @@ export function getEndpoints(): EndpointData[] {
 					body: `{
   "status": "error",
   "code": "NOT_FOUND",
-  "message": "File not found or does not belong to your account"
+  "message": "One or more files not found or do not belong to your account"
 }`
 				}
 			]
@@ -371,7 +379,7 @@ export function getEndpoints(): EndpointData[] {
 		{
 			id: 'ep-status',
 			method: 'GET',
-			path: '/jobs/{job_id}/status',
+			path: '/api/jobs/{id}',
 			descriptionKey: 'docs.endpoint.status.desc',
 			headers: {
 				id: 'status-headers',
@@ -380,7 +388,7 @@ export function getEndpoints(): EndpointData[] {
 			},
 			params: [
 				{
-					name: 'job_id',
+					name: 'id',
 					type: 'string',
 					required: true,
 					descriptionKey: 'docs.endpoint.status.param.jobId.desc'
@@ -389,9 +397,9 @@ export function getEndpoints(): EndpointData[] {
 			statusValues: ['pending', 'processing', 'completed', 'failed'],
 			curlExample: {
 				id: 'status-curl',
-				code: `curl https://api.metacleaner.com/v1/jobs/job_def456uvw/status \\
+				code: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/jobs/job_def456uvw/status \\
+				displayHtml: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -402,8 +410,8 @@ export function getEndpoints(): EndpointData[] {
 					body: `{
   "status": "completed",
   "job_id": "job_def456uvw",
-  "file_id": "f_abc123xyz",
-  "cleaned_file_id": "f_ghi789rst",
+  "file_ids": ["f_abc123xyz"],
+  "cleaned_file_ids": ["f_ghi789rst"],
   "fields_removed": 42,
   "gps_removed": true,
   "completed_at": "2024-01-15T10:30:12Z"
@@ -422,67 +430,441 @@ export function getEndpoints(): EndpointData[] {
 			]
 		},
 		{
+			id: 'ep-job-progress',
+			method: 'GET',
+			path: '/api/jobs/{id}/progress',
+			descriptionKey: 'docs.endpoint.jobProgress.desc',
+			headers: {
+				id: 'job-progress-headers',
+				code: 'Authorization: Bearer YOUR_API_KEY (via ?token= query parameter)',
+				displayHtml: 'Authorization: Bearer YOUR_API_KEY (via ?token= query parameter)'
+			},
+			params: [
+				{
+					name: 'id',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.jobProgress.param.id.desc'
+				},
+				{
+					name: 'token',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.jobProgress.param.token.desc'
+				}
+			],
+			statusValues: [
+				'file_progress',
+				'file_complete',
+				'file_error',
+				'job_complete',
+				'job_error',
+				'report_ready'
+			],
+			curlExample: {
+				id: 'job-progress-curl',
+				code: `const ws = new WebSocket(
+  'wss://api.metacleaner.com/v1/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
+);
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data.type, data.overallProgress);
+};`,
+				displayHtml: `const ws = new WebSocket(
+  'wss://api.metacleaner.com/v1/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
+);
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data.type, data.overallProgress);
+};`
+			},
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.jobProgress.response.fileProgress.label',
+					variant: 'success',
+					body: `{
+  "type": "file_progress",
+  "fileId": "f_abc123xyz",
+  "status": "processing",
+  "overallProgress": 45,
+  "fieldsRemoved": 12,
+  "filesCompleted": 0,
+  "totalFiles": 2
+}`
+				},
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.jobProgress.response.fileComplete.label',
+					variant: 'success',
+					body: `{
+  "type": "file_complete",
+  "fileId": "f_abc123xyz",
+  "status": "completed",
+  "overallProgress": 50,
+  "fieldsRemoved": 38,
+  "filesCompleted": 1,
+  "totalFiles": 2
+}`
+				},
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.jobProgress.response.jobComplete.label',
+					variant: 'success',
+					body: `{
+  "type": "job_complete",
+  "fileId": "",
+  "status": "completed",
+  "overallProgress": 100,
+  "fieldsRemoved": 76,
+  "filesCompleted": 2,
+  "totalFiles": 2
+}`
+				},
+				{
+					status: 401,
+					labelKey: 'docs.endpoint.jobProgress.response.error401.label',
+					variant: 'error',
+					body: `{
+  "error": "UNAUTHORIZED",
+  "message": "Missing or invalid token"
+}`
+				},
+				{
+					status: 400,
+					labelKey: 'docs.endpoint.jobProgress.response.error400.label',
+					variant: 'error',
+					body: `{
+  "error": "BAD_REQUEST",
+  "message": "Missing job id"
+}`
+				}
+			]
+		},
+		{
+			id: 'ep-job-download',
+			method: 'GET',
+			path: '/api/jobs/{id}/download',
+			descriptionKey: 'docs.endpoint.jobDownload.desc',
+			headers: {
+				id: 'job-download-headers',
+				code: 'Authorization: Bearer YOUR_API_KEY',
+				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
+			},
+			params: [
+				{
+					name: 'id',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.jobDownload.param.id.desc'
+				}
+			],
+			curlExample: {
+				id: 'job-download-curl',
+				code: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw/download \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -o cleaned.zip`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw/download \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -o cleaned.zip`
+			},
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.jobDownload.response.success.label',
+					variant: 'success',
+					body: `Content-Type: application/zip
+Content-Disposition: attachment; filename="cleaned.zip"
+
+[binary ZIP archive]`
+				},
+				{
+					status: 404,
+					labelKey: 'docs.endpoint.jobDownload.response.error.label',
+					variant: 'error',
+					body: `{
+  "error": "NOT_FOUND",
+  "message": "Job not found or does not belong to your account"
+}`
+				}
+			]
+		},
+		{
 			id: 'ep-download',
 			method: 'GET',
-			path: '/files/{file_id}/download',
+			path: '/api/files/{id}/download',
 			descriptionKey: 'docs.endpoint.download.desc',
-			isMinimal: true,
-			placeholderKey: 'docs.endpoint.download.placeholder',
 			headers: {
 				id: 'download-headers',
 				code: 'Authorization: Bearer YOUR_API_KEY',
 				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
 			},
-			params: [],
+			params: [
+				{
+					name: 'id',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.download.param.id.desc'
+				}
+			],
 			curlExample: {
 				id: 'download-curl',
-				code: 'curl https://api.metacleaner.com/v1/files/{file_id}/download \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml:
-					'curl https://api.metacleaner.com/v1/files/{file_id}/download \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				code: `curl https://api.metacleaner.com/v1/api/files/f_ghi789rst/download \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -o cleaned_photo.jpg`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/files/f_ghi789rst/download \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -o cleaned_photo.jpg`
 			},
-			responses: []
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.download.response.success.label',
+					variant: 'success',
+					body: `Content-Type: image/jpeg
+Content-Disposition: attachment; filename="cleaned_photo.jpg"
+
+[binary file content]`
+				},
+				{
+					status: 404,
+					labelKey: 'docs.endpoint.download.response.error.label',
+					variant: 'error',
+					body: `{
+  "error": "NOT_FOUND",
+  "message": "File not found or does not belong to your account"
+}`
+				}
+			]
 		},
+		// ── Reports ────────────────────────────────────────────────────────────
 		{
-			id: 'ep-metadata',
+			id: 'ep-reports-list',
 			method: 'GET',
-			path: '/files/{file_id}/metadata',
-			descriptionKey: 'docs.endpoint.metadata.desc',
-			isMinimal: true,
-			placeholderKey: 'docs.endpoint.metadata.placeholder',
+			path: '/api/reports',
+			descriptionKey: 'docs.endpoint.reportsList.desc',
 			headers: {
-				id: 'metadata-headers',
+				id: 'reports-list-headers',
 				code: 'Authorization: Bearer YOUR_API_KEY',
 				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
 			},
 			params: [],
 			curlExample: {
-				id: 'metadata-curl',
-				code: 'curl https://api.metacleaner.com/v1/files/{file_id}/metadata \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml:
-					'curl https://api.metacleaner.com/v1/files/{file_id}/metadata \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				id: 'reports-list-curl',
+				code: `curl https://api.metacleaner.com/v1/api/reports \\
+  -H "Authorization: Bearer YOUR_API_KEY"`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/reports \\
+  -H "Authorization: Bearer YOUR_API_KEY"`
 			},
-			responses: []
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.reportsList.response.success.label',
+					variant: 'success',
+					body: `[
+  {
+    "id": "rpt_abc123",
+    "created_at": "2024-01-15T10:30:12Z",
+    "file_count": 3,
+    "fields_removed": 127,
+    "gps_removed": 2,
+    "status": "completed"
+  }
+]`
+				},
+				{
+					status: 401,
+					labelKey: 'docs.endpoint.reportsList.response.error401.label',
+					variant: 'error',
+					body: `{
+  "error": "UNAUTHORIZED",
+  "message": "Missing or invalid Authorization header"
+}`
+				}
+			]
 		},
 		{
-			id: 'ep-delete',
-			method: 'DEL',
-			path: '/files/{file_id}',
-			descriptionKey: 'docs.endpoint.delete.desc',
-			isMinimal: true,
-			placeholderKey: 'docs.endpoint.delete.placeholder',
+			id: 'ep-report-detail',
+			method: 'GET',
+			path: '/api/reports/{id}',
+			descriptionKey: 'docs.endpoint.reportDetail.desc',
 			headers: {
-				id: 'delete-headers',
+				id: 'report-detail-headers',
+				code: 'Authorization: Bearer YOUR_API_KEY',
+				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
+			},
+			params: [
+				{
+					name: 'id',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.reportDetail.param.id.desc'
+				}
+			],
+			curlExample: {
+				id: 'report-detail-curl',
+				code: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123 \\
+  -H "Authorization: Bearer YOUR_API_KEY"`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123 \\
+  -H "Authorization: Bearer YOUR_API_KEY"`
+			},
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.reportDetail.response.success.label',
+					variant: 'success',
+					body: `{
+  "id": "rpt_abc123",
+  "created_at": "2024-01-15T10:30:12Z",
+  "files": [
+    {
+      "file_id": "f_abc123xyz",
+      "filename": "photo.jpg",
+      "fields_removed": 42,
+      "gps_removed": true,
+      "status": "completed"
+    }
+  ],
+  "total_fields_removed": 42,
+  "total_gps_removed": 1,
+  "status": "completed"
+}`
+				},
+				{
+					status: 404,
+					labelKey: 'docs.endpoint.reportDetail.response.error.label',
+					variant: 'error',
+					body: `{
+  "error": "NOT_FOUND",
+  "message": "Report not found or does not belong to your account"
+}`
+				}
+			]
+		},
+		{
+			id: 'ep-report-pdf',
+			method: 'GET',
+			path: '/api/reports/{id}/pdf',
+			descriptionKey: 'docs.endpoint.reportPdf.desc',
+			headers: {
+				id: 'report-pdf-headers',
+				code: 'Authorization: Bearer YOUR_API_KEY',
+				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
+			},
+			params: [
+				{
+					name: 'id',
+					type: 'string',
+					required: true,
+					descriptionKey: 'docs.endpoint.reportPdf.param.id.desc'
+				}
+			],
+			curlExample: {
+				id: 'report-pdf-curl',
+				code: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123/pdf \\
+  -H "Authorization: Bearer YOUR_API_KEY"`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123/pdf \\
+  -H "Authorization: Bearer YOUR_API_KEY"`
+			},
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.reportPdf.response.success.label',
+					variant: 'success',
+					body: `{
+  "url": "https://storage.metacleaner.com/reports/rpt_abc123.pdf?token=..."
+}`
+				},
+				{
+					status: 404,
+					labelKey: 'docs.endpoint.reportPdf.response.error.label',
+					variant: 'error',
+					body: `{
+  "error": "NOT_FOUND",
+  "message": "Report not found or does not belong to your account"
+}`
+				}
+			]
+		},
+		// ── Account ────────────────────────────────────────────────────────────
+		{
+			id: 'ep-account',
+			method: 'GET',
+			path: '/api/account',
+			descriptionKey: 'docs.endpoint.account.desc',
+			headers: {
+				id: 'account-headers',
 				code: 'Authorization: Bearer YOUR_API_KEY',
 				displayHtml: 'Authorization: Bearer YOUR_API_KEY'
 			},
 			params: [],
 			curlExample: {
-				id: 'delete-curl',
-				code: 'curl -X DELETE https://api.metacleaner.com/v1/files/{file_id} \\\n  -H "Authorization: Bearer YOUR_API_KEY"',
-				displayHtml:
-					'curl -X DELETE https://api.metacleaner.com/v1/files/{file_id} \\\n  -H "Authorization: Bearer YOUR_API_KEY"'
+				id: 'account-curl',
+				code: `curl https://api.metacleaner.com/v1/api/account \\
+  -H "Authorization: Bearer YOUR_API_KEY"`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/account \\
+  -H "Authorization: Bearer YOUR_API_KEY"`
 			},
-			responses: []
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.account.response.success.label',
+					variant: 'success',
+					body: `{
+  "credits_remaining": 450,
+  "plan": "pro",
+  "rate_limit_rpm": 60
+}`
+				},
+				{
+					status: 401,
+					labelKey: 'docs.endpoint.account.response.error401.label',
+					variant: 'error',
+					body: `{
+  "error": "UNAUTHORIZED",
+  "message": "Missing or invalid Authorization header"
+}`
+				}
+			]
+		},
+		// ── System ─────────────────────────────────────────────────────────────
+		{
+			id: 'ep-health',
+			method: 'GET',
+			path: '/api/health',
+			descriptionKey: 'docs.endpoint.health.desc',
+			headers: {
+				id: 'health-headers',
+				code: '(no authentication required)',
+				displayHtml: '(no authentication required)'
+			},
+			params: [],
+			curlExample: {
+				id: 'health-curl',
+				code: `curl https://api.metacleaner.com/v1/api/health`,
+				displayHtml: `curl https://api.metacleaner.com/v1/api/health`
+			},
+			responses: [
+				{
+					status: 200,
+					labelKey: 'docs.endpoint.health.response.success.label',
+					variant: 'success',
+					body: `{
+  "status": "ok",
+  "version": "1.4.2",
+  "timestamp": "2024-01-15T10:30:00Z"
+}`
+				},
+				{
+					status: 503,
+					labelKey: 'docs.endpoint.health.response.error.label',
+					variant: 'error',
+					body: `{
+  "status": "error",
+  "message": "Service temporarily unavailable"
+}`
+				}
+			]
 		}
 	];
 }

@@ -142,12 +142,13 @@ describe('Property 2: Endpoint card expand completeness', () => {
 		);
 	});
 
-	it('every full endpoint has at least one param entry', () => {
+	it('every full endpoint with path parameters has matching param entries', () => {
+		const pathParamEndpoints = fullEndpoints.filter((ep) => ep.path.includes('{'));
 		fc.assert(
-			fc.property(fc.constantFrom(...fullEndpoints), (ep) => {
+			fc.property(fc.constantFrom(...pathParamEndpoints), (ep) => {
 				expect(ep.params.length).toBeGreaterThan(0);
 			}),
-			{ numRuns: fullEndpoints.length }
+			{ numRuns: pathParamEndpoints.length }
 		);
 	});
 
@@ -187,16 +188,11 @@ describe('Property 2: Endpoint card expand completeness', () => {
 		);
 	});
 
-	it('every minimal endpoint has a placeholderKey instead of responses', () => {
-		fc.assert(
-			fc.property(fc.constantFrom(...minimalEndpoints), (ep) => {
-				expect(ep.isMinimal).toBe(true);
-				expect(ep.placeholderKey).toBeTruthy();
-				expect((ep.placeholderKey as string).length).toBeGreaterThan(0);
-				expect(ep.responses).toHaveLength(0);
-			}),
-			{ numRuns: minimalEndpoints.length }
-		);
+	it('deprecated endpoints ep-metadata and ep-delete are absent', () => {
+		const ids = endpoints.map((ep) => ep.id);
+		expect(ids).not.toContain('ep-metadata');
+		expect(ids).not.toContain('ep-delete');
+		expect(minimalEndpoints).toHaveLength(0);
 	});
 
 	it('curlExample code does not contain HTML markup', () => {
