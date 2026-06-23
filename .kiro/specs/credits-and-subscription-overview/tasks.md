@@ -120,7 +120,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate an `UpgradeModal.stories.svelte` file showing the full modal with all elements
     - _Requirements: 8.1, 8.2, 8.3, 8.5_
 
-- [ ] 5. Checkpoint - Ensure new components compile
+- [x] 5. Checkpoint - Ensure new components compile
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Integrate into existing components

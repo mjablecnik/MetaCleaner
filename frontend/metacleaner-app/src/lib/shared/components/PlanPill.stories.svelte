@@ -19,11 +19,11 @@
 	<PlanPill planId="free" planStatus="free" />
 </Story>
 
-<Story name="Pro (active)">
+<Story name="Pro (active)" exportName="ProActive">
 	<PlanPill planId="pro" planStatus="active" />
 </Story>
 
-<Story name="Pro+ (active)">
+<Story name="Pro+ (active)" exportName="ProPlusActive">
 	<PlanPill planId="proplus" planStatus="active" />
 </Story>
 
