@@ -22,6 +22,7 @@ import type {
 import * as api from '$lib/clients/metaCleanerApi.js';
 import { authStore } from '$lib/auth/auth.svelte.js';
 import { cleaningResultsStore } from '$lib/stores/cleaningResultsStore.svelte.js';
+import { billingStore } from '$lib/stores/billingStore.svelte.js';
 
 // ─── Accumulated per-file data during WebSocket progress ────────
 
@@ -105,6 +106,7 @@ async function pollUntilComplete(
 
 			if (status.status === 'completed') {
 				if (status.reportId) setReportId(status.reportId);
+				void billingStore.refreshCreditsOnly();
 				callbacks.onComplete(buildResultsFromStatus(status, accumulatedResults));
 				return;
 			}
@@ -238,6 +240,7 @@ function dispatchWsMessage(
 			const jobCompleteReportId = typeof msg.reportId === 'string' ? msg.reportId : '';
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			setJobCompleted();
+			void billingStore.refreshCreditsOnly();
 			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
 			break;
 		}

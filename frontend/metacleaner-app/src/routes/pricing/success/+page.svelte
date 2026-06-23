@@ -4,10 +4,12 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { authStore } from '$lib/auth/auth.svelte';
+	import { billingStore } from '$lib/stores/billingStore.svelte.js';
 
 	onMount(() => {
-		// Refresh subscription status after successful checkout
+		// Refresh subscription and billing data after successful checkout
 		authStore.fetchSubscription();
+		void billingStore.refresh();
 	});
 </script>
 

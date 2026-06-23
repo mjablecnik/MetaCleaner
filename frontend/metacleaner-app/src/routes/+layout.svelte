@@ -11,6 +11,7 @@
 	import { getLanguages, type Language } from '$lib/repositories/languageRepository';
 	import { appState } from '$lib/stores/appState.svelte';
 	import { authStore } from '$lib/auth/auth.svelte.js';
+	import { billingStore } from '$lib/stores/billingStore.svelte.js';
 
 	let { children } = $props();
 
@@ -25,6 +26,15 @@
 			});
 		} else if (authStore.isAuthReady && !authStore.isAuthenticated) {
 			user = null;
+		}
+	});
+
+	// Sync billing data with auth state
+	$effect(() => {
+		if (authStore.isAuthReady && authStore.isAuthenticated) {
+			void billingStore.refresh();
+		} else if (authStore.isAuthReady && !authStore.isAuthenticated) {
+			billingStore.clear();
 		}
 	});
 

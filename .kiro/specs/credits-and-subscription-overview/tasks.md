@@ -163,13 +163,13 @@ This plan implements credit balance visibility, subscription plan display, credi
     - When subscription status is unknown (error): default to showing ProOverlay
     - _Requirements: 7.1, 7.2, 7.5, 7.7_
 
-  - [ ] 6.6 Add feature gating to reports pages
+  - [x] 6.6 Add feature gating to reports pages
     - Modify `/reports` page: show UpgradeModal for Free users, skeleton while loading, normal content for paid users
     - Modify `/report/[id]` page: show UpgradeModal for Free users, skeleton while loading, normal content for paid users
     - UpgradeModal dismiss navigates to `/`
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.6_
 
-  - [ ] 6.7 Wire billing store refresh triggers
+  - [x] 6.7 Wire billing store refresh triggers
     - Call `billingStore.refresh()` after successful authentication in authStore
     - Call `billingStore.refreshCreditsOnly()` after cleaning job completion in cleaning service
     - Call `billingStore.refresh()` on Stripe checkout success URL detection
