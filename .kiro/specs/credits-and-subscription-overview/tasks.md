@@ -235,7 +235,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Use fast-check with `fc.nat()` arbitrary
     - **Validates: Requirements 11.3**
 
-- [ ] 10. Write unit tests for store and components
+- [x] 10. Write unit tests for store and components
   - [x]* 10.1 Write unit tests for `billingStore`
     - Test initial state (credits null, isLoading false)
     - Test refresh success: updates all state fields
@@ -245,7 +245,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Test derived getters: isFreeUser, isPaidPlan, monthlyAllowance
     - _Requirements: 9.1, 9.4, 9.5, 9.6_
 
-  - [ ]* 10.2 Write unit tests for UI components
+  - [x]* 10.2 Write unit tests for UI components
     - CreditBalanceIndicator: renders correct count, skeleton on loading, hides on error, warning on zero
     - PlanPill: renders correct style per plan, click navigates to /pricing
     - CreditsBanner: shows/hides upgrade CTA based on plan
