@@ -9,6 +9,9 @@
 	import LanguageDropdown from './LanguageDropdown.svelte';
 	import UserDropdown from './UserDropdown.svelte';
 	import MobileHamburgerMenu from './MobileHamburgerMenu.svelte';
+	import CreditBalanceIndicator from './CreditBalanceIndicator.svelte';
+	import PlanPill from './PlanPill.svelte';
+	import { billingStore } from '$lib/stores/billingStore.svelte';
 
 	interface Props {
 		user: User | null;
@@ -162,17 +165,35 @@
 					wrapperId="nav-langDropdown"
 				/>
 			{/if}
+			{#if user}
+				<PlanPill planId={billingStore.planId} planStatus={billingStore.planStatus} />
+				<CreditBalanceIndicator
+					credits={billingStore.credits}
+					isLoading={billingStore.isLoading}
+					hasError={billingStore.hasError}
+				/>
+			{/if}
 			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" {onLogout} />
 		</div>
 
-		<!-- Mobile hamburger menu (always shown on mobile) -->
-		<MobileHamburgerMenu
-			{user}
-			{langOptions}
-			bind:open={hamburgerMenuOpen}
-			onSelect={handleLangSelect}
-			wrapperId="nav-hamburgerDropdown"
-			{onLogout}
-		/>
+		<!-- Mobile right side: compact credit indicator + hamburger -->
+		<div class="flex items-center gap-2 lg:hidden">
+			{#if user}
+				<CreditBalanceIndicator
+					credits={billingStore.credits}
+					isLoading={billingStore.isLoading}
+					hasError={billingStore.hasError}
+					compact={true}
+				/>
+			{/if}
+			<MobileHamburgerMenu
+				{user}
+				{langOptions}
+				bind:open={hamburgerMenuOpen}
+				onSelect={handleLangSelect}
+				wrapperId="nav-hamburgerDropdown"
+				{onLogout}
+			/>
+		</div>
 	</div>
 </nav>

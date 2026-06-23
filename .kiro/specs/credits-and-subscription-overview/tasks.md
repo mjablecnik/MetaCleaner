@@ -124,7 +124,7 @@ This plan implements credit balance visibility, subscription plan display, credi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Integrate into existing components
-  - [ ] 6.1 Modify `NavBar.svelte` to include credit and plan pills
+  - [x] 6.1 Modify `NavBar.svelte` to include credit and plan pills
     - Import billingStore and pass state to CreditBalanceIndicator and PlanPill
     - Position CreditBalanceIndicator between LanguageDropdown and UserDropdown (desktop)
     - Position PlanPill between CreditBalanceIndicator and LanguageDropdown (desktop)
