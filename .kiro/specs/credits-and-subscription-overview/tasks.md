@@ -156,7 +156,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - On mobile: ensure the MobileBottomCta (fixed bottom bar) also shows the CostIndicatorButton and respects the same disabled/insufficient state as the desktop button
     - _Requirements: 3.1, 5.1, 5.3, 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 6.5 Add feature gating to Risk Scanner card in Step2
+  - [x] 6.5 Add feature gating to Risk Scanner card in Step2
     - When billingStore.isFreeUser is true: blur Risk Scanner card content (CSS blur 4px, pointer-events disabled)
     - Render ProOverlay over the blurred content
     - When isPaidPlan: render Risk Scanner normally

@@ -11,8 +11,10 @@
 	import MobileRiskBanner from '../../(step1)/sections/MobileRiskBanner.svelte';
 	import CreditsBanner from '../CreditsBanner.svelte';
 	import CreditSummaryRow from '../../(step1)/components/CreditSummaryRow.svelte';
+	import ProOverlay from '../../(step1)/components/ProOverlay.svelte';
 
 	const totalCost = $derived(computeTotalCost(scannerStore.files));
+	const showProOverlay = $derived(billingStore.isFreeUser || billingStore.hasError);
 	const insufficient = $derived(
 		billingStore.credits !== null && isInsufficientCredits(totalCost, billingStore.credits)
 	);
@@ -86,8 +88,13 @@
 	</div>
 
 	<!-- Right: risk scanner panel (desktop only) -->
-	<div class="hidden flex-col lg:flex">
-		<RiskScannerCard />
+	<div class="relative hidden flex-col lg:flex">
+		<div class={showProOverlay ? 'pointer-events-none blur-[4px]' : ''}>
+			<RiskScannerCard />
+		</div>
+		{#if showProOverlay}
+			<ProOverlay />
+		{/if}
 	</div>
 </div>
 
