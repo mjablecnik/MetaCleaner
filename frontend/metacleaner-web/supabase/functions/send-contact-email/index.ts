@@ -43,14 +43,45 @@ function getAllowedOrigins(): string[] {
 		'https://metacleaner.app',
 		'https://www.metacleaner.app',
 		'http://localhost:5173',
-		'http://localhost:4173'
+		'http://localhost:4173',
+		'http://localhost:3001'
 	];
 }
 
-function getCorsHeaders(requestOrigin: string | null): Record<string, string> {
+function isProduction(): boolean {
+	const env = Deno.env.get('ENVIRONMENT') ?? 'development';
+	return env === 'production';
+}
+
+function isAllowedOrigin(origin: string): boolean {
 	const allowedOrigins = getAllowedOrigins();
+	if (allowedOrigins.includes(origin)) return true;
+
+	// Allow localhost and private network origins only in non-production
+	if (!isProduction()) {
+		try {
+			const url = new URL(origin);
+			const host = url.hostname;
+			if (
+				host === 'localhost' ||
+				host === '127.0.0.1' ||
+				host.startsWith('192.168.') ||
+				host.startsWith('10.') ||
+				host.startsWith('172.')
+			) {
+				return true;
+			}
+		} catch {
+			// Invalid URL — not allowed
+		}
+	}
+
+	return false;
+}
+
+function getCorsHeaders(requestOrigin: string | null): Record<string, string> {
 	const origin =
-		requestOrigin && allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0];
+		requestOrigin && isAllowedOrigin(requestOrigin) ? requestOrigin : getAllowedOrigins()[0];
 
 	return {
 		'Access-Control-Allow-Origin': origin,
@@ -193,10 +224,10 @@ Deno.serve(async (req) => {
 				'api-key': brevoApiKey
 			},
 			body: JSON.stringify({
-				sender: { name: 'MetaCleaner Contact', email: senderEmail },
+				sender: { name: 'MetaCleaner', email: senderEmail },
 				replyTo: { name: data.senderName, email: data.senderEmail },
 				to: [{ email: recipient }],
-				subject: `[Contact] ${data.subject}`,
+				subject: `Contact form message`,
 				textContent: `From: ${data.senderName} (${data.senderEmail})\n\nSubject: ${data.subject}\n\n${data.message}`
 			})
 		});

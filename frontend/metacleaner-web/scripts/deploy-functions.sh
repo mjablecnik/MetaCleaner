@@ -2,17 +2,51 @@
 set -euo pipefail
 
 # Deploy Supabase Edge Functions for metacleaner-web
-# Prerequisites:
-#   - Supabase CLI installed (npx supabase or brew install supabase/tap/supabase)
-#   - Logged in: supabase login
-#   - BREVO_API_KEY set in .env
+# Usage:
+#   ./scripts/deploy-functions.sh              # defaults to development
+#   ./scripts/deploy-functions.sh --env dev    # development
+#   ./scripts/deploy-functions.sh --env prod   # production
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROJECT_REF="asxkfzpsxglifgmtgujx"
+
+# Project refs
+DEV_PROJECT_REF="asxkfzpsxglifgmtgujx"
+PROD_PROJECT_REF="asxkfzpsxglifgmtgujx"  # TODO: Replace with production project ref when available
+
+# Parse --env argument
+DEPLOY_ENV="development"
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --env)
+      shift
+      case "${1:-}" in
+        prod|production) DEPLOY_ENV="production" ;;
+        dev|development) DEPLOY_ENV="development" ;;
+        *) echo "Error: Invalid environment '$1'. Use 'dev' or 'prod'."; exit 2 ;;
+      esac
+      shift
+      ;;
+    *)
+      echo "Error: Unknown argument '$1'. Usage: $0 [--env dev|prod]"
+      exit 2
+      ;;
+  esac
+done
+
+# Select project ref based on environment
+if [ "$DEPLOY_ENV" = "production" ]; then
+  PROJECT_REF="$PROD_PROJECT_REF"
+  ENV_FILE="$PROJECT_DIR/.env.production"
+else
+  PROJECT_REF="$DEV_PROJECT_REF"
+  ENV_FILE="$PROJECT_DIR/.env"
+fi
 
 echo "=== MetaCleaner Web — Deploy Edge Functions ==="
-echo "Project: $PROJECT_REF"
+echo "Environment: $DEPLOY_ENV"
+echo "Project:     $PROJECT_REF"
+echo "Env file:    $ENV_FILE"
 echo ""
 
 # Check if supabase CLI is available
@@ -22,36 +56,30 @@ if ! command -v supabase &> /dev/null; then
   exit 2
 fi
 
-# Set secrets from .env (only non-VITE_ keys with non-empty values)
-ENV_FILE="$PROJECT_DIR/.env"
+# Set secrets from env file
 if [ -f "$ENV_FILE" ]; then
-  echo "Setting secrets from .env (excluding VITE_* and empty values)..."
+  echo "Setting secrets from $(basename "$ENV_FILE") (excluding VITE_* and empty values)..."
 
-  # Filter: skip comments, empty lines, VITE_* prefixed, and keys with empty values
   SECRETS=""
   while IFS= read -r line; do
-    # Skip comments and empty lines
     [[ -z "$line" || "$line" =~ ^# ]] && continue
-    # Skip VITE_ prefixed variables (those are for the frontend build)
     [[ "$line" =~ ^VITE_ ]] && continue
-    # Skip lines with empty values (KEY= or KEY="")
     key="${line%%=*}"
     value="${line#*=}"
     [[ -z "$value" || "$value" == '""' || "$value" == "''" ]] && continue
-
     SECRETS="$SECRETS $line"
   done < "$ENV_FILE"
 
+  # Always set ENVIRONMENT secret
+  SECRETS="$SECRETS ENVIRONMENT=$DEPLOY_ENV"
+
   if [ -n "$SECRETS" ]; then
     echo "$SECRETS" | xargs supabase secrets set --project-ref "$PROJECT_REF"
-  else
-    echo "No secrets to set (all values empty or VITE_ prefixed)."
   fi
   echo ""
 else
-  echo "No .env found — skipping secret setup."
-  echo "To set secrets manually:"
-  echo "  supabase secrets set BREVO_API_KEY=your-key --project-ref $PROJECT_REF"
+  echo "No env file found at $ENV_FILE — setting ENVIRONMENT secret only."
+  supabase secrets set "ENVIRONMENT=$DEPLOY_ENV" --project-ref "$PROJECT_REF"
   echo ""
 fi
 
@@ -62,12 +90,13 @@ supabase functions deploy send-contact-email \
   --no-verify-jwt
 
 echo ""
-echo "✓ Deployment complete!"
+echo "✓ Deployment complete! ($DEPLOY_ENV)"
 echo ""
 echo "Function URL:"
 echo "  https://$PROJECT_REF.supabase.co/functions/v1/send-contact-email"
 echo ""
-echo "Required secrets (set via .env or 'supabase secrets set'):"
-echo "  BREVO_API_KEY          — Brevo transactional email API key"
-echo "  CONTACT_RECIPIENT      — (optional) Override recipient, default: hello@metacleaner.app"
-echo "  CONTACT_SENDER_EMAIL   — (optional) Verified sender in Brevo, default: noreply@metacleaner.app"
+echo "Secrets set:"
+echo "  ENVIRONMENT=$DEPLOY_ENV"
+echo "  BREVO_API_KEY (from env file)"
+echo "  CONTACT_RECIPIENT (from env file, if set)"
+echo "  CONTACT_SENDER_EMAIL (from env file, if set)"

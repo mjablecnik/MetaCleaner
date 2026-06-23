@@ -4,7 +4,11 @@ FROM oven/bun:1 AS build
 WORKDIR /app
 
 ARG PUBLIC_APP_URL=https://app.metacleaner.com
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
 ENV PUBLIC_APP_URL=$PUBLIC_APP_URL
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
 # Copy workspace manifest files so bun can resolve the full workspace graph
 COPY package.json bun.lock ./

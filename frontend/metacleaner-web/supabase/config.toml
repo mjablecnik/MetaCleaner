@@ -1,2 +1,5 @@
-[project]
-id = "asxkfzpsxglifgmtgujx"
+# Supabase local config
+# Project ref is passed via --project-ref in deploy scripts
+
+[api]
+enabled = true
