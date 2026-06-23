@@ -672,3 +672,21 @@
 - Problem: When a `$derived` value uses `&&` and the first operand evaluates to `false`, the second operand is never read (short-circuit). In server-side vitest tests (non-component context), the second operand's reactive signal is then NOT added to the dependency set. On the next re-evaluation triggered by the first operand changing, the second operand reads a stale value, returning the wrong result. Specific case: `isPaidPlan = $derived((planId === 'pro' || planId === 'proplus') && (planStatus === 'active' || planStatus === 'trialing'))` returned `true` instead of `false` after going from `proplus/trialing` → `free/free` (clear) → `pro/cancelled` (refresh).
 - Solution: Swap operands so the more-volatile / always-relevant signal is in the first position: `$derived((planStatus === 'active' || planStatus === 'trialing') && (planId === 'pro' || planId === 'proplus'))`. This ensures `planStatus` is always tracked. Use `$derived.by(() => { const a = dep1; const b = dep2; return ...; })` as an alternative to force all dependencies to be captured upfront.
 - Source: create-code, 2026-06-23
+
+## vitest-browser page.getByText: case-insensitive substring matching causes strict mode violations
+- Project: metacleaner-app
+- Problem: `page.getByText('Risk Scanner')` matched both the h3 element AND the p element containing "Unlock Risk Scanner to detect..." because Playwright's `getByText` defaults to case-insensitive substring matching (`exact: false`). This causes "strict mode violation: X elements resolved" errors that appear as 15s timeouts.
+- Solution: Use `page.getByText('text', { exact: true })` to match elements whose full normalized text equals the query (avoids substring matches). For text that appears in BOTH desktop and mobile layouts (two DOM copies), use `expect(container.textContent).toContain('text')` instead. Use `page.getByRole('heading', { name: 'X' })` for heading elements to avoid ambiguity.
+- Source: create-code, 2026-06-23
+
+## vitest-browser: missing component import causes cascade test failures across all subsequent files
+- Project: metacleaner-app
+- Problem: `DocComponents.svelte.spec.ts` imported `DocsSidebar.svelte` which didn't exist. The `TypeError: Failed to fetch dynamically imported module` error ran first (alphabetically) and corrupted the browser test environment for all subsequent test files, causing seemingly unrelated button-click tests to fail (callbacks not being called).
+- Solution: Create the missing `DocsSidebar.svelte` component. Once the import error is gone, all downstream tests pass. Always check for import errors first when multiple unrelated browser tests fail together.
+- Source: create-code, 2026-06-23
+
+## vitest-browser: CSS lg:hidden elements not found by page.getByRole() at desktop viewport
+- Project: metacleaner-app
+- Problem: `page.getByRole('button', { name: /pattern/i })` cannot find buttons wrapped in `lg:hidden` containers when Playwright runs at default desktop viewport (1280x720). Tailwind's responsive `hidden lg:flex` / `lg:hidden` classes apply `display:none` at the evaluated viewport, removing elements from the accessibility tree.
+- Solution: For tests that need to find "mobile-only" UI, either: (a) change the button to use a label visible at desktop viewport size, or (b) use `container.querySelector()` which ignores CSS visibility. When both mobile and desktop variants exist, use `.first()` / `.last()` to target the correct one by DOM order.
+- Source: create-code, 2026-06-23
