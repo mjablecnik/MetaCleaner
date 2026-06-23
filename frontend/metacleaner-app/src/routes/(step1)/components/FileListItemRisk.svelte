@@ -3,6 +3,7 @@
 	import { formatSize } from '$lib/shared/utils/format';
 	import type { QueuedFile } from '$lib/scanner/types';
 	import ScanProgressIndicator from './ScanProgressIndicator.svelte';
+	import CostBadge from '$lib/shared/elements/CostBadge.svelte';
 
 	interface Props {
 		file: QueuedFile;
@@ -128,6 +129,9 @@
 		{/if}
 	</div>
 	<div class="flex items-center gap-2">
+		{#if !isUnknown}
+			<CostBadge cost={1} />
+		{/if}
 		<span
 			class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
 			>{ext}</span

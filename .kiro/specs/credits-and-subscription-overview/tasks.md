@@ -140,7 +140,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Use semi-transparent green background/border for credit card container
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-  - [ ] 6.3 Modify `FileListItemRisk.svelte` to show cost badge
+  - [x] 6.3 Modify `FileListItemRisk.svelte` to show cost badge
     - Add CostBadge (cost=1) to right side of each file row, before format badge
     - Hide CostBadge when file type is "unknown"
     - Show CostBadge even during "pending" or "scanning" states
