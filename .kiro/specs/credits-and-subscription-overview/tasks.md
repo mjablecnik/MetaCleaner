@@ -53,8 +53,8 @@ This plan implements credit balance visibility, subscription plan display, credi
 - [x] 3. Checkpoint - Ensure utilities and store compile
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Create new UI components
-  - [ ] 4.1 Create `CreditBalanceIndicator` component
+- [x] 4. Create new UI components
+  - [x] 4.1 Create `CreditBalanceIndicator` component
     - Create `src/lib/shared/components/CreditBalanceIndicator.svelte`
     - Props: credits (number | null), isLoading, hasError, compact (boolean, for mobile)
     - Render pill with pulsing green dot (2s cycle), bolt icon, credit count, and localized "credits" label
@@ -67,7 +67,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate a `CreditBalanceIndicator.stories.svelte` file with states: loaded, loading (skeleton), zero credits (warning), high count, compact mode, stale data (warning icon)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 9.4_
 
-  - [ ] 4.2 Create `PlanPill` component
+  - [x] 4.2 Create `PlanPill` component
     - Create `src/lib/shared/components/PlanPill.svelte`
     - Props: planId (string), planStatus (string)
     - Render pill with 6px dot, lock/star icon, plan name text using `getPlanStyle`
@@ -76,7 +76,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate a `PlanPill.stories.svelte` file with states: Free, Pro, Pro+, hover states
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6, 2.7_
 
-  - [ ] 4.3 Create `CreditsBanner` section component
+  - [x] 4.3 Create `CreditsBanner` section component
     - Create `src/routes/sections/CreditsBanner.svelte`
     - Props: credits, subscriptionCredits, monthlyAllowance, planId, planStatus, isPaidPlan
     - Render bolt icon, "Credit balance" label, plan badge (using getPlanStyle), remaining X of Y text, horizontal progress bar
@@ -86,14 +86,14 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate a `CreditsBanner.stories.svelte` file with states: Free with low credits, Pro (no CTA), zero credits, mobile compact
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ] 4.4 Create `CostBadge` element
+  - [x] 4.4 Create `CostBadge` element
     - Create `src/lib/shared/elements/CostBadge.svelte`
     - Props: cost (number)
     - Render small badge with bolt icon and cost number in green styling (green text, green border, semi-transparent green background)
     - Co-locate a `CostBadge.stories.svelte` file with state: standard (cost=1)
     - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ] 4.5 Create `CreditSummaryRow` component
+  - [x] 4.5 Create `CreditSummaryRow` component
     - Create `src/routes/(step1)/components/CreditSummaryRow.svelte`
     - Props: totalCost, fileCount, creditBalance (number | null)
     - Render info icon, "Cleaning cost for X files" text, total badge with bolt icon
@@ -103,7 +103,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate a `CreditSummaryRow.stories.svelte` file with states: normal, warning (insufficient), neutral (balance unknown)
     - _Requirements: 5.1, 5.2, 5.4, 5.5, 5.6, 6.2, 6.3, 6.4_
 
-  - [ ] 4.6 Create `ProOverlay` component
+  - [x] 4.6 Create `ProOverlay` component
     - Create `src/routes/(step1)/components/ProOverlay.svelte`
     - Self-contained — reads i18n keys internally, no props needed
     - Render lock icon with Pro star badge, "Risk Scanner" title + "PRO" badge, description, feature preview chips (GPS detection, Identity, Risk score), upgrade CTA button, price hint text
@@ -112,7 +112,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Co-locate a `ProOverlay.stories.svelte` file showing the full overlay with all elements
     - _Requirements: 7.2, 7.3, 7.4, 7.6_
 
-  - [ ] 4.7 Create `UpgradeModal` component
+  - [x] 4.7 Create `UpgradeModal` component
     - Create `src/lib/shared/components/UpgradeModal.svelte`
     - Props: onDismiss (() => void)
     - Render lock icon, title, description (cleaning history, file details, PDF), upgrade CTA button (navigates to pricing), dismiss button (calls onDismiss)
