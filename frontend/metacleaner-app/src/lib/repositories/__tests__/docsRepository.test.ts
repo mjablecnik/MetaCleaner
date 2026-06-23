@@ -31,6 +31,12 @@ describe('getSidebarSections', () => {
 			expect(s.labelKey).toMatch(/^docs\./);
 		}
 	});
+
+	it('includes an endpoints section (sec-endpoints)', () => {
+		const section = getSidebarSections().find((s) => s.id === 'sec-endpoints');
+		expect(section).toBeDefined();
+		expect(section!.labelKey).toBe('docs.sidebar.endpoints');
+	});
 });
 
 describe('getSidebarEndpoints', () => {
@@ -45,6 +51,42 @@ describe('getSidebarEndpoints', () => {
 			expect(ep.label.length).toBeGreaterThan(0);
 			expect(['fileProcessing', 'reports', 'account', 'system']).toContain(ep.group);
 		}
+	});
+
+	it('groups are ordered fileProcessing → reports → account → system', () => {
+		const groups = getSidebarEndpoints().map((ep) => ep.group);
+		const groupOrder = ['fileProcessing', 'reports', 'account', 'system'];
+		let lastSeen = -1;
+		for (const g of groups) {
+			const idx = groupOrder.indexOf(g);
+			expect(idx).toBeGreaterThanOrEqual(lastSeen);
+			lastSeen = idx;
+		}
+		expect(groups.some((g) => g === 'fileProcessing')).toBe(true);
+		expect(groups.some((g) => g === 'reports')).toBe(true);
+		expect(groups.some((g) => g === 'account')).toBe(true);
+		expect(groups.some((g) => g === 'system')).toBe(true);
+	});
+
+	it('fileProcessing group includes Upload, Create Job, Job Status, Job Progress, Job Download, File Download in order', () => {
+		const fpIds = getSidebarEndpoints()
+			.filter((ep) => ep.group === 'fileProcessing')
+			.map((ep) => ep.id);
+		expect(fpIds).toEqual([
+			'ep-upload',
+			'ep-clean',
+			'ep-status',
+			'ep-job-progress',
+			'ep-job-download',
+			'ep-download'
+		]);
+	});
+
+	it('reports group includes List Reports, Report Detail, Report PDF in order', () => {
+		const rIds = getSidebarEndpoints()
+			.filter((ep) => ep.group === 'reports')
+			.map((ep) => ep.id);
+		expect(rIds).toEqual(['ep-reports-list', 'ep-report-detail', 'ep-report-pdf']);
 	});
 });
 
@@ -84,6 +126,30 @@ describe('getQuickStartSteps', () => {
 	it('last step has isLast flag', () => {
 		const steps = getQuickStartSteps();
 		expect(steps[3].isLast).toBe(true);
+	});
+
+	it('step 1 code snippet uses /api/upload', () => {
+		const step = getQuickStartSteps()[0];
+		const text = step.codeSnippets.map((s) => s.text).join('');
+		expect(text).toContain('/api/upload');
+	});
+
+	it('step 2 code snippet uses /api/jobs', () => {
+		const step = getQuickStartSteps()[1];
+		const text = step.codeSnippets.map((s) => s.text).join('');
+		expect(text).toContain('/api/jobs');
+	});
+
+	it('step 3 code snippet uses /api/jobs/{id}', () => {
+		const step = getQuickStartSteps()[2];
+		const text = step.codeSnippets.map((s) => s.text).join('');
+		expect(text).toContain('/api/jobs/{id}');
+	});
+
+	it('step 4 code snippet uses /api/files/{id}/download', () => {
+		const step = getQuickStartSteps()[3];
+		const text = step.codeSnippets.map((s) => s.text).join('');
+		expect(text).toContain('/api/files/{id}/download');
 	});
 });
 
@@ -199,6 +265,41 @@ describe('getEndpoints', () => {
 		expect(ep).toBeDefined();
 		expect(ep!.optionsParams).toBeDefined();
 		expect(ep!.optionsParams!.length).toBeGreaterThan(0);
+	});
+
+	it('ep-clean exists as POST /api/jobs', () => {
+		const ep = getEndpoints().find((e) => e.id === 'ep-clean');
+		expect(ep).toBeDefined();
+		expect(ep!.method).toBe('POST');
+		expect(ep!.path).toBe('/api/jobs');
+	});
+
+	it('ep-status exists as GET /api/jobs/{id}', () => {
+		const ep = getEndpoints().find((e) => e.id === 'ep-status');
+		expect(ep).toBeDefined();
+		expect(ep!.method).toBe('GET');
+		expect(ep!.path).toBe('/api/jobs/{id}');
+	});
+
+	it('ep-download is not minimal and has path /api/files/{id}/download', () => {
+		const ep = getEndpoints().find((e) => e.id === 'ep-download');
+		expect(ep).toBeDefined();
+		expect(ep!.isMinimal).toBeFalsy();
+		expect(ep!.placeholderKey).toBeUndefined();
+		expect(ep!.path).toBe('/api/files/{id}/download');
+	});
+
+	it('ep-job-progress has statusValues with exactly 6 event types', () => {
+		const ep = getEndpoints().find((e) => e.id === 'ep-job-progress');
+		expect(ep).toBeDefined();
+		expect(ep!.statusValues).toBeDefined();
+		expect(ep!.statusValues).toHaveLength(6);
+		expect(ep!.statusValues).toContain('file_progress');
+		expect(ep!.statusValues).toContain('file_complete');
+		expect(ep!.statusValues).toContain('file_error');
+		expect(ep!.statusValues).toContain('job_complete');
+		expect(ep!.statusValues).toContain('job_error');
+		expect(ep!.statusValues).toContain('report_ready');
 	});
 });
 

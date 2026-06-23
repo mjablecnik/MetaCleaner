@@ -110,7 +110,7 @@ This implementation expands the API documentation page to cover all 11 public en
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Update and write frontend tests
-  - [ ] 8.1 Update docsRepository.test.ts for new structure
+  - [x] 8.1 Update docsRepository.test.ts for new structure
     - Update `getEndpoints()` tests to assert 11 entries
     - Verify `ep-metadata` and `ep-delete` are absent
     - Verify updated paths (`/api/upload`, `/api/jobs`, `/api/jobs/{id}`)
