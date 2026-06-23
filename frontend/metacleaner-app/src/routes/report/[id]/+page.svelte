@@ -2,6 +2,9 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import { apiCleaningService } from '$lib/services/apiCleaningService';
 	import { getReportPdf } from '$lib/clients/metaCleanerApi';
 	import { getCurrentUser } from '$lib/repositories/userRepository';
@@ -11,11 +14,21 @@
 	import ReportChartCard from '../sections/ReportChartCard.svelte';
 	import FileAccordionList from '../sections/FileAccordionList.svelte';
 	import MobileBottomCta from '$lib/shared/components/MobileBottomCta.svelte';
+	import { billingStore } from '$lib/stores/billingStore.svelte';
+	import UpgradeModal from '$lib/shared/components/UpgradeModal.svelte';
 
 	let reportDetail = $state<ReportDetail | null>(null);
 	let isLoading = $state(true);
 	let loadError = $state<string | null>(null);
 	let userEmail = $state('');
+
+	const isBillingReady = $derived(
+		!billingStore.isLoading && (billingStore.credits !== null || billingStore.hasError)
+	);
+
+	function handleUpgradeModalDismiss() {
+		goto(resolve('/' as Pathname));
+	}
 
 	function formatTimeMs(ms: number): string {
 		if (!Number.isFinite(ms) || ms <= 0) return '0ms';
@@ -69,6 +82,10 @@
 	}
 
 	onMount(() => {
+		if (billingStore.credits === null && !billingStore.isLoading) {
+			billingStore.refresh();
+		}
+
 		apiCleaningService
 			.getReportDetail(reportId ?? '')
 			.then((detail) => {
@@ -94,32 +111,44 @@
 <main
 	class="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-6 pt-4 pb-40 lg:gap-6 lg:pt-0 lg:pb-24"
 >
-	{#if isLoading}
+	{#if !isBillingReady}
 		<div class="flex items-center justify-center py-20">
-			<div class="flex flex-col items-center gap-3">
-				<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
-				<p class="text-sm text-text-muted">{tx('common.loading')}</p>
+			<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+		</div>
+	{:else if billingStore.isFreeUser}
+		<div class="flex items-center justify-center py-20">
+			<div class="w-full max-w-sm rounded-2xl border border-gray-700 bg-navy-card shadow-2xl">
+				<UpgradeModal onDismiss={handleUpgradeModalDismiss} />
 			</div>
 		</div>
-	{:else if loadError}
-		<div
-			class="flex flex-col items-center gap-4 rounded-2xl border border-red-800/50 bg-brand-red/10 p-8 text-center"
-		>
-			<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
-			<p class="text-sm font-semibold text-white">
-				{tx('common.error')}
-			</p>
-			<p class="text-xs text-text-muted">{loadError}</p>
-		</div>
 	{:else}
-		<ReportDetailHeader {reportDetail} {userEmail} onDownloadPdf={handleDownloadPdf} />
-		<SummaryStatsRow {stats} class="fade-in-up delay-1" />
-		<ReportChartCard {reportDetail} />
-		<FileAccordionList files={reportDetail?.files ?? []} />
+		{#if isLoading}
+			<div class="flex items-center justify-center py-20">
+				<div class="flex flex-col items-center gap-3">
+					<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+					<p class="text-sm text-text-muted">{tx('common.loading')}</p>
+				</div>
+			</div>
+		{:else if loadError}
+			<div
+				class="flex flex-col items-center gap-4 rounded-2xl border border-red-800/50 bg-brand-red/10 p-8 text-center"
+			>
+				<i class="fa-solid fa-triangle-exclamation text-2xl text-brand-red"></i>
+				<p class="text-sm font-semibold text-white">
+					{tx('common.error')}
+				</p>
+				<p class="text-xs text-text-muted">{loadError}</p>
+			</div>
+		{:else}
+			<ReportDetailHeader {reportDetail} {userEmail} onDownloadPdf={handleDownloadPdf} />
+			<SummaryStatsRow {stats} class="fade-in-up delay-1" />
+			<ReportChartCard {reportDetail} />
+			<FileAccordionList files={reportDetail?.files ?? []} />
 
-		<div class="fade-in-up mt-4 pb-4 text-center text-sm text-text-muted delay-4 lg:mt-8">
-			<p>{tx('common.footer.copyright', { year: new Date().getFullYear() })}</p>
-		</div>
+			<div class="fade-in-up mt-4 pb-4 text-center text-sm text-text-muted delay-4 lg:mt-8">
+				<p>{tx('common.footer.copyright', { year: new Date().getFullYear() })}</p>
+			</div>
+		{/if}
 	{/if}
 </main>
 

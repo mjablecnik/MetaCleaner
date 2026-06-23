@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
-	import { beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { appState } from '$lib/stores/appState.svelte';
@@ -16,6 +16,8 @@
 	import MobileFilters from './sections/MobileFilters.svelte';
 	import ReportsTable from './sections/ReportsTable.svelte';
 	import ReportsList from './sections/ReportsList.svelte';
+	import { billingStore } from '$lib/stores/billingStore.svelte';
+	import UpgradeModal from '$lib/shared/components/UpgradeModal.svelte';
 
 	let activeFilter = $state('all');
 	let searchQuery = $state('');
@@ -27,6 +29,14 @@
 
 	let reports = $state<Report[]>([]);
 	let stats = $state<ReportSummaryStats | null>(null);
+
+	const isBillingReady = $derived(
+		!billingStore.isLoading && (billingStore.credits !== null || billingStore.hasError)
+	);
+
+	function handleUpgradeModalDismiss() {
+		goto(resolve('/' as Pathname));
+	}
 
 	// Reset app state when navigating back to the main cleaning page so the user
 	// sees the idle state rather than the previous success/error result.
@@ -106,6 +116,10 @@
 	}
 
 	onMount(() => {
+		if (billingStore.credits === null && !billingStore.isLoading) {
+			billingStore.refresh();
+		}
+
 		apiCleaningService
 			.getReports()
 			.then((data) => {
@@ -128,33 +142,45 @@
 <main
 	class="mx-auto mt-4 flex w-full max-w-[1100px] flex-col gap-4 px-6 pb-28 lg:mt-0 lg:gap-6 lg:pb-24"
 >
-	<ReportsHeader totalReports={stats?.totalReports ?? 0} />
-
-	{#if isLoading}
-		<div class="flex items-center justify-center py-12">
+	{#if !isBillingReady}
+		<div class="flex items-center justify-center py-20">
 			<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
 		</div>
-	{:else if loadError}
-		<div
-			class="rounded-xl border border-red-800/50 bg-brand-red/10 p-4 text-center text-sm text-brand-red"
-		>
-			<i class="fa-solid fa-triangle-exclamation mr-2"></i>
-			{loadError}
+	{:else if billingStore.isFreeUser}
+		<div class="flex items-center justify-center py-20">
+			<div class="w-full max-w-sm rounded-2xl border border-gray-700 bg-navy-card shadow-2xl">
+				<UpgradeModal onDismiss={handleUpgradeModalDismiss} />
+			</div>
 		</div>
 	{:else}
-		<SummaryStatsRow stats={summaryStats} class="fade-in-up delay-1" />
-		<FiltersBar {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
-		<MobileFilters {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
-		<ReportsTable
-			reports={filteredReports}
-			totalCount={reports.length}
-			onDownload={downloadReport}
-		/>
-		<ReportsList
-			reports={filteredReports}
-			totalCount={reports.length}
-			onDownload={downloadReport}
-		/>
+		<ReportsHeader totalReports={stats?.totalReports ?? 0} />
+
+		{#if isLoading}
+			<div class="flex items-center justify-center py-12">
+				<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+			</div>
+		{:else if loadError}
+			<div
+				class="rounded-xl border border-red-800/50 bg-brand-red/10 p-4 text-center text-sm text-brand-red"
+			>
+				<i class="fa-solid fa-triangle-exclamation mr-2"></i>
+				{loadError}
+			</div>
+		{:else}
+			<SummaryStatsRow stats={summaryStats} class="fade-in-up delay-1" />
+			<FiltersBar {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
+			<MobileFilters {activeFilter} bind:searchQuery onFilterChange={(f) => (activeFilter = f)} />
+			<ReportsTable
+				reports={filteredReports}
+				totalCount={reports.length}
+				onDownload={downloadReport}
+			/>
+			<ReportsList
+				reports={filteredReports}
+				totalCount={reports.length}
+				onDownload={downloadReport}
+			/>
+		{/if}
 	{/if}
 </main>
 
