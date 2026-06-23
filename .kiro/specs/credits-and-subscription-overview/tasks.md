@@ -50,7 +50,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - On error with previous data: keep last known values and set `hasError = true` (Req 9.4)
     - _Requirements: 1.7, 1.8, 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-- [ ] 3. Checkpoint - Ensure utilities and store compile
+- [x] 3. Checkpoint - Ensure utilities and store compile
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Create new UI components
