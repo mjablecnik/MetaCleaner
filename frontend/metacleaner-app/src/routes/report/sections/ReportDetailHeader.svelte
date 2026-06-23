@@ -48,7 +48,7 @@
 			class="flex items-center gap-2 rounded-xl bg-brand-green px-5 py-2.5 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400"
 		>
 			<i class="fa-solid fa-file-pdf"></i>
-			<span>{tx('report.actions.downloadPdfShort')}</span>
+			<span>{tx('report.actions.downloadPdf')}</span>
 		</button>
 		<button
 			onclick={() => window.print()}

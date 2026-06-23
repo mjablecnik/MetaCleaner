@@ -123,7 +123,7 @@ This plan implements credit balance visibility, subscription plan display, credi
 - [x] 5. Checkpoint - Ensure new components compile
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Integrate into existing components
+- [x] 6. Integrate into existing components
   - [x] 6.1 Modify `NavBar.svelte` to include credit and plan pills
     - Import billingStore and pass state to CreditBalanceIndicator and PlanPill
     - Position CreditBalanceIndicator between LanguageDropdown and UserDropdown (desktop)
@@ -254,7 +254,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - UpgradeModal: renders all elements, dismiss calls onDismiss
     - _Requirements: 1.1–1.8, 2.1–2.9, 3.1–3.6, 5.1–5.6, 7.2–7.4, 8.3, 8.5_
 
-- [ ] 11. Final checkpoint - Ensure all tests pass
+- [x] 11. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
