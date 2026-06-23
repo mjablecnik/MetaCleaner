@@ -30,7 +30,7 @@
 
 	const navProps = $derived.by(() => {
 		const path = page.url.pathname;
-		if (path === '/docs') {
+		if (path.startsWith('/docs')) {
 			return {
 				logoHref: '/' as string | undefined,
 				compact: true,

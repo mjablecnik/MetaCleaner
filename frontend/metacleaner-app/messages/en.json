@@ -532,6 +532,7 @@
 	"docs.nav.docs": "Docs",
 	"docs.nav.back": "Back to app",
 	"docs.sidebar.endpointsHeading": "Endpoints",
+	"docs.sidebar.allEndpoints": "All Endpoints",
 	"docs.sidebar.intro": "Introduction",
 	"docs.sidebar.auth": "Authentication",
 	"docs.sidebar.errors": "Error Codes",

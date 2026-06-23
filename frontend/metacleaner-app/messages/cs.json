@@ -532,6 +532,7 @@
 	"docs.nav.docs": "Dokumentace",
 	"docs.nav.back": "Zpět do aplikace",
 	"docs.sidebar.endpointsHeading": "Endpointy",
+	"docs.sidebar.allEndpoints": "Všechny endpointy",
 	"docs.sidebar.intro": "Úvod",
 	"docs.sidebar.auth": "Autentizace",
 	"docs.sidebar.errors": "Chybové kódy",
