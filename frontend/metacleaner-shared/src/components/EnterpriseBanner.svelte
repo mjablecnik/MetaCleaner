@@ -5,35 +5,40 @@
 		enterprise: EnterprisePlan;
 		size?: 'desktop' | 'mobile';
 		translate: (key: string) => string;
+		onContact?: () => void;
 	}
 
-	const { enterprise, size = 'desktop', translate }: Props = $props();
+	const { enterprise, size = 'desktop', translate, onContact }: Props = $props();
 
 	const isMobile = $derived(size === 'mobile');
 </script>
 
 {#if isMobile}
-	<div class="w-full bg-navy-card border border-border rounded-2xl p-5 flex flex-col gap-4 mb-6">
+	<div
+		class="mb-6 flex w-full flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-5"
+	>
 		<div>
-			<h4 class="text-base font-bold mb-1">{translate(enterprise.titleKey)}</h4>
-			<p class="text-xs text-text-muted leading-relaxed">{translate(enterprise.descKey)}</p>
+			<h4 class="mb-1 text-base font-bold">{translate(enterprise.titleKey)}</h4>
+			<p class="text-xs leading-relaxed text-text-muted">{translate(enterprise.descKey)}</p>
 		</div>
 		<button
-			class="w-full py-3 rounded-xl border border-border-strong text-white font-semibold text-sm hover:bg-navy-lighter transition-colors"
+			onclick={onContact}
+			class="w-full rounded-xl border border-gray-700 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-lighter"
 		>
 			{translate(enterprise.ctaKey)}
 		</button>
 	</div>
 {:else}
 	<div
-		class="w-full bg-navy-card border border-border rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6"
+		class="flex w-full flex-col items-center justify-between gap-6 rounded-2xl border border-gray-800 bg-navy-card p-6 md:flex-row"
 	>
 		<div>
-			<h4 class="text-lg font-bold mb-2">{translate(enterprise.titleKey)}</h4>
+			<h4 class="mb-2 text-lg font-bold">{translate(enterprise.titleKey)}</h4>
 			<p class="text-sm text-text-muted">{translate(enterprise.descKey)}</p>
 		</div>
 		<button
-			class="px-6 py-3 rounded-lg border border-border-strong text-white font-semibold hover:bg-navy-lighter transition-colors whitespace-nowrap"
+			onclick={onContact}
+			class="rounded-lg border border-gray-700 px-6 py-3 font-semibold whitespace-nowrap text-white transition-colors hover:bg-navy-lighter"
 		>
 			{translate(enterprise.ctaKey)}
 		</button>

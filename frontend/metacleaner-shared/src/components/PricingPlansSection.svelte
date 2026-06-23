@@ -10,16 +10,26 @@
 		translate: (key: string) => string;
 		translateParam?: (key: string, params: Record<string, string>) => string;
 		onPlanSelect?: (planId: string, billing: 'monthly' | 'yearly') => void;
+		onEnterpriseContact?: () => void;
 		currentPlanId?: string | null;
 	}
 
-	const { plans, isYearly, enterprise, translate, translateParam, onPlanSelect, currentPlanId }: Props = $props();
+	const {
+		plans,
+		isYearly,
+		enterprise,
+		translate,
+		translateParam,
+		onPlanSelect,
+		onEnterpriseContact,
+		currentPlanId
+	}: Props = $props();
 </script>
 
 <!-- Desktop Plans -->
-<div class="hidden md:flex w-full flex-col items-center">
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-10">
-		{#each plans as plan, i (i)}
+<div class="hidden w-full flex-col items-center md:flex">
+	<div class="mb-10 grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+		{#each plans as plan (plan.id)}
 			<PricingCard
 				{plan}
 				{isYearly}
@@ -31,13 +41,13 @@
 			/>
 		{/each}
 	</div>
-	<EnterpriseBanner {enterprise} size="desktop" {translate} />
+	<EnterpriseBanner {enterprise} size="desktop" {translate} onContact={onEnterpriseContact} />
 </div>
 
 <!-- Mobile Plans -->
-<div class="md:hidden w-full flex flex-col items-center">
-	<div class="flex flex-col gap-4 w-full mb-6">
-		{#each plans as plan, i (i)}
+<div class="flex w-full flex-col items-center md:hidden">
+	<div class="mb-6 flex w-full flex-col gap-4">
+		{#each plans as plan (plan.id)}
 			<PricingCard
 				{plan}
 				{isYearly}
@@ -49,5 +59,5 @@
 			/>
 		{/each}
 	</div>
-	<EnterpriseBanner {enterprise} size="mobile" {translate} />
+	<EnterpriseBanner {enterprise} size="mobile" {translate} onContact={onEnterpriseContact} />
 </div>
