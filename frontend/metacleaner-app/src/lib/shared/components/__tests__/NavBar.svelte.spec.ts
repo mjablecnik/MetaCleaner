@@ -189,7 +189,8 @@ describe('Bug Condition 2: NavBar logo onLogoClick callback — app reset integr
 		});
 		// When onLogoClick is provided without logoHref, logo is wrapped in a <button>
 		// (NavBar: {#if logoHref} <a> {:else if onLogoClick} <button>)
-		const logoButton = container.querySelector('button.cursor-pointer');
+		// Logo button has bg-transparent p-0 classes — distinct from PlanPill (which has rounded-full border)
+		const logoButton = container.querySelector('button.cursor-pointer.bg-transparent');
 		expect(logoButton).not.toBeNull();
 		// And no <a href="/"> wrapping the logo should exist
 		const logoAnchor = container.querySelector('a[href="/"]');
@@ -220,7 +221,8 @@ describe('Bug Condition 2: NavBar logo onLogoClick callback — app reset integr
 		// NavBar: {#if logoHref} takes priority, renders <a> not <button>
 		const logoAnchor = container.querySelector('a[href="/"]');
 		expect(logoAnchor).not.toBeNull();
-		const logoButton = container.querySelector('button.cursor-pointer');
+		// Logo button has bg-transparent p-0 classes — distinct from PlanPill (which has rounded-full border)
+		const logoButton = container.querySelector('button.cursor-pointer.bg-transparent');
 		expect(logoButton).toBeNull();
 	});
 
@@ -231,7 +233,8 @@ describe('Bug Condition 2: NavBar logo onLogoClick callback — app reset integr
 		});
 		// NavBar: {:else} renders a plain div with no interactivity
 		const logoAnchor = container.querySelector('a[href="/"]');
-		const logoButton = container.querySelector('button.cursor-pointer');
+		// Logo button has bg-transparent p-0 classes — distinct from PlanPill (which has rounded-full border)
+		const logoButton = container.querySelector('button.cursor-pointer.bg-transparent');
 		expect(logoAnchor).toBeNull();
 		expect(logoButton).toBeNull();
 	});

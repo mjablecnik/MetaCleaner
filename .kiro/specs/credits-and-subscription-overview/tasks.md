@@ -176,7 +176,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Call `billingStore.clear()` on logout
     - _Requirements: 9.1, 9.2, 9.3_
 
-- [ ] 7. Checkpoint - Ensure all integration compiles
+- [x] 7. Checkpoint - Ensure all integration compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Add i18n translation keys
