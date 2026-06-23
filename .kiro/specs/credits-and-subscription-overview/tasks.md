@@ -146,7 +146,7 @@ This plan implements credit balance visibility, subscription plan display, credi
     - Show CostBadge even during "pending" or "scanning" states
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-  - [ ] 6.4 Modify Step2 (FilesReady) to integrate billing UI
+  - [x] 6.4 Modify Step2 (FilesReady) to integrate billing UI
     - Add CreditsBanner above file list
     - Add CreditSummaryRow below file list
     - Add CostIndicatorButton (pill with bolt icon + total cost) inside "Start Cleaning" button
