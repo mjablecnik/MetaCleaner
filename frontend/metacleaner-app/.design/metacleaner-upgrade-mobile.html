@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+              brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+              text: { main: '#ffffff', muted: '#94a3b8' }
+            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
+            boxShadow: {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+              'glow-orange': '0 0 20px rgba(249,115,22,0.3)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { margin:0; padding:0; background-color:#0a1628; color:#fff; font-family:'Inter',sans-serif; }
+      ::-webkit-scrollbar { display:none; }
+      .dashed-border-anim {
+        background-image: linear-gradient(90deg,#334155 50%,transparent 50%),linear-gradient(90deg,#334155 50%,transparent 50%),linear-gradient(0deg,#334155 50%,transparent 50%),linear-gradient(0deg,#334155 50%,transparent 50%);
+        background-repeat: repeat-x,repeat-x,repeat-y,repeat-y;
+        background-size: 15px 2px,15px 2px,2px 15px,2px 15px;
+        background-position: left top,right bottom,left bottom,right top;
+        animation: border-dance 1s infinite linear;
+      }
+      @keyframes border-dance {
+        0% { background-position: left top,right bottom,left bottom,right top; }
+        100% { background-position: left 15px top,right 15px bottom,left bottom 15px,right top 15px; }
+      }
+      .lang-dropdown-menu { display:none; position:absolute; right:0; top:calc(100% + 8px); background:#111d33; border:1px solid #374151; border-radius:10px; min-width:160px; z-index:200; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+      .lang-dropdown-menu.open { display:block; }
+      .lang-option { display:flex; align-items:center; gap:10px; padding:12px 16px; cursor:pointer; font-size:13px; font-weight:500; color:#94a3b8; transition:background .15s,color .15s; }
+      .lang-option:hover { background:#1e293b; color:#fff; }
+      .lang-option.active { color:#fff; background:#1e293b; }
+      .file-row { transition:background 0.15s; }
+      .blur-scanner { filter:blur(5px); pointer-events:none; user-select:none; }
+      .pro-overlay {
+        position:absolute; inset:0; border-radius:1rem; z-index:10;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        background:linear-gradient(to bottom,rgba(10,22,40,0.1) 0%,rgba(10,22,40,0.9) 35%,rgba(10,22,40,0.98) 100%);
+      }
+      .pro-badge { background:linear-gradient(135deg,#f97316,#fb923c); box-shadow:0 0 20px rgba(249,115,22,0.4); }
+      .upgrade-btn { background:linear-gradient(135deg,#f97316,#ea580c); box-shadow:0 0 24px rgba(249,115,22,0.35); transition:all 0.2s; }
+      .upgrade-btn:active { box-shadow:0 0 32px rgba(249,115,22,0.5); transform:scale(0.98); }
+      .credits-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.7); animation:pulse-dot 2s infinite; }
+      @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+      .credit-cost-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); font-size:11px; font-weight:700; color:#22c55e; }
+      .drawer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:300; }
+      .drawer-overlay.open { display:block; }
+      .side-drawer { position:fixed; top:0; right:-100%; width:80%; max-width:320px; height:100%; background:#111d33; border-left:1px solid #1e293b; z-index:400; transition:right 0.3s ease; overflow-y:auto; }
+      .side-drawer.open { right:0; }
+      .pro-overlay-content { position:relative; z-index:11; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+<!-- Drawer Overlay -->
+<div id="drawerOverlay" onclick="closeDrawer()" class="drawer-overlay"></div>
+
+<!-- Side Drawer -->
+<div id="sideDrawer" class="side-drawer">
+  <div class="flex items-center justify-between px-5 py-5 border-b border-gray-700">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white"><i class="fa-solid fa-shield-halved text-base"></i></div>
+      <span class="text-lg font-bold">MetaCleaner</span>
+    </div>
+    <button onclick="closeDrawer()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-navy-lighter text-text-muted"><i class="fa-solid fa-xmark text-lg"></i></button>
+  </div>
+  <div class="px-4 py-4 border-b border-gray-700">
+    <div class="flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60">
+      <div class="w-10 h-10 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center"><i class="fa-solid fa-user text-brand-blue text-sm"></i></div>
+      <div>
+        <p class="text-sm font-semibold text-white">Jana Nováková</p>
+        <p class="text-xs text-text-muted">jana.novakova@email.cz</p>
+      </div>
+    </div>
+  </div>
+  <div class="px-4 py-3 border-b border-gray-700">
+    <div class="flex items-center gap-3 px-3 py-3 rounded-xl bg-green-900/20 border border-brand-green/20">
+      <span class="credits-dot"></span>
+      <i class="fa-solid fa-bolt text-brand-green text-xs"></i>
+      <div class="flex-1">
+        <p class="text-xs font-bold text-white">12 kreditů zbývá</p>
+        <div class="w-full bg-navy-lighter rounded-full h-1.5 mt-1">
+          <div class="h-1.5 rounded-full bg-gradient-to-r from-brand-green to-green-400" style="width:60%"></div>
+        </div>
+      </div>
+      <span class="text-xs text-text-muted">z 20</span>
+    </div>
+  </div>
+  <nav class="px-4 py-3 flex flex-col gap-1">
+    <div class="lang-option rounded-xl"><i class="fa-solid fa-gear text-text-muted text-sm"></i><span>Nastavení</span></div>
+    <div class="lang-option rounded-xl text-brand-red"><i class="fa-solid fa-right-from-bracket text-sm text-brand-red"></i><span>Odhlásit se</span></div>
+  </nav>
+  <div class="px-4 pb-6 mt-2">
+    <button class="upgrade-btn w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-dots text-xs"></i>Získat Pro plán</button>
+  </div>
+</div>
+
+<!-- Mobile Navbar -->
+<nav id="navbar" class="w-full px-4 py-4 flex justify-between items-center z-50 bg-navy-main border-b border-navy-card sticky top-0">
+  <div class="flex items-center gap-2.5">
+    <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue"><i class="fa-solid fa-shield-halved text-base"></i></div>
+    <span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-900/30 border border-brand-green/25">
+      <span class="credits-dot"></span><i class="fa-solid fa-bolt text-[9px] text-brand-green"></i><span class="text-xs font-bold text-white">12</span>
+    </div>
+    <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-navy-lighter border border-gray-700 text-white"><i class="fa-solid fa-bars text-sm"></i></button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main id="app-main" class="w-full max-w-lg mx-auto px-4 pt-5 pb-32 flex flex-col gap-4">
+
+  <!-- Header -->
+  <div id="app-header" class="flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-white leading-tight">Čištění metadat</h1>
+        <p class="text-text-muted text-xs mt-1">Odstraňte skrytá metadata lokálně na zařízení.</p>
+      </div>
+      <div class="flex items-center gap-1.5 bg-navy-card border border-gray-700 rounded-xl px-3 py-2 flex-shrink-0">
+        <div class="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></div>
+        <span class="text-[10px] font-semibold text-text-muted">Připraveno</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credits Banner -->
+  <div id="credits-banner" class="w-full bg-navy-card border border-gray-800 rounded-2xl px-4 py-3.5 flex items-center gap-3 shadow-card">
+    <div class="w-9 h-9 rounded-xl bg-brand-green/10 border border-brand-green/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-bolt text-brand-green text-sm"></i></div>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-bold text-white">12 z 20 kreditů</span>
+        <span class="text-[10px] font-semibold text-brand-green bg-brand-green/10 border border-brand-green/20 px-1.5 py-0.5 rounded-full">Free</span>
+      </div>
+      <div class="w-full bg-navy-lighter rounded-full h-1.5">
+        <div class="h-1.5 rounded-full bg-gradient-to-r from-brand-green to-green-400" style="width:60%"></div>
+      </div>
+    </div>
+    <button class="upgrade-btn flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-white font-bold text-xs flex-shrink-0"><i class="fa-solid fa-arrow-up-right-dots text-[10px]"></i>Pro</button>
+  </div>
+
+  <!-- Upload Card -->
+  <div id="upload-zone-card" class="bg-navy-card rounded-2xl border border-gray-800 p-4 flex flex-col gap-3.5 shadow-card">
+    <div class="flex items-center justify-between">
+      <h3 class="font-semibold text-base text-white">Nahrát soubory</h3>
+      <div class="flex gap-1 flex-wrap">
+        <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">JPG</span>
+        <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">PNG</span>
+        <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">HEIC</span>
+        <span class="px-1.5 py-0.5 rounded bg-navy-lighter text-[9px] font-bold text-white uppercase">MP4</span>
+      </div>
+    </div>
+    <div id="drop-zone" onclick="document.getElementById('fileInput').click()" class="dashed-border-anim rounded-xl bg-navy-main/50 flex flex-col items-center justify-center gap-2 cursor-pointer py-6">
+      <div class="w-11 h-11 rounded-full bg-navy-lighter flex items-center justify-center text-brand-blue text-lg shadow-glow-blue"><i class="fa-solid fa-plus"></i></div>
+      <p class="text-xs text-text-muted">Klepněte pro přidání souborů</p>
+      <input type="file" id="fileInput" multiple accept="image/*,video/*" class="hidden">
+    </div>
+    <div id="file-list" class="flex flex-col gap-2">
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-semibold text-white">Soubory <span class="text-text-muted font-normal">(4)</span></span>
+        <button class="text-xs text-text-muted flex items-center gap-1"><i class="fa-solid fa-trash text-[10px]"></i>Vymazat vše</button>
+      </div>
+      <div id="file-items" class="flex flex-col gap-2">
+        <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800">
+          <div class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-image text-brand-blue text-sm"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate">IMG_4821.jpg</p>
+            <div class="flex items-center gap-1.5 mt-0.5"><span class="text-[10px] text-text-muted">3.2 MB</span><span class="w-1 h-1 rounded-full bg-gray-600"></span><span class="text-[10px] text-brand-orange font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i>12 polí</span></div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0"><span class="credit-cost-badge"><i class="fa-solid fa-bolt text-[8px]"></i>1</span><button class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+        </div>
+        <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-red-900/30">
+          <div class="w-9 h-9 rounded-lg bg-brand-red/10 border border-brand-red/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-image text-brand-red text-sm"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate">photo_holiday_2024.heic</p>
+            <div class="flex items-center gap-1.5 mt-0.5"><span class="text-[10px] text-text-muted">8.7 MB</span><span class="w-1 h-1 rounded-full bg-gray-600"></span><span class="text-[10px] text-brand-red font-medium flex items-center gap-1"><i class="fa-solid fa-location-dot text-[8px]"></i>GPS!</span></div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0"><span class="credit-cost-badge"><i class="fa-solid fa-bolt text-[8px]"></i>1</span><button class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+        </div>
+        <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800">
+          <div class="w-9 h-9 rounded-lg bg-brand-orange/10 border border-brand-orange/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-video text-brand-orange text-sm"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate">video_prague_walk.mp4</p>
+            <div class="flex items-center gap-1.5 mt-0.5"><span class="text-[10px] text-text-muted">142.5 MB</span><span class="w-1 h-1 rounded-full bg-gray-600"></span><span class="text-[10px] text-brand-orange font-medium flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i>8 polí</span></div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0"><span class="credit-cost-badge"><i class="fa-solid fa-bolt text-[8px]"></i>3</span><button class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+        </div>
+        <div class="file-row flex items-center gap-3 px-3 py-3 rounded-xl bg-navy-main/60 border border-gray-800">
+          <div class="w-9 h-9 rounded-lg bg-brand-blue/10 border border-brand-blue/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-image text-brand-blue text-sm"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-white truncate">screenshot_map.png</p>
+            <div class="flex items-center gap-1.5 mt-0.5"><span class="text-[10px] text-text-muted">1.1 MB</span><span class="w-1 h-1 rounded-full bg-gray-600"></span><span class="text-[10px] text-text-muted flex items-center gap-1"><i class="fa-solid fa-circle-check text-brand-green text-[8px]"></i>3 pole</span></div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0"><span class="credit-cost-badge"><i class="fa-solid fa-bolt text-[8px]"></i>1</span><button class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fa-solid fa-xmark text-sm"></i></button></div>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-navy-main/60 border border-brand-green/15">
+      <div class="flex items-center gap-1.5 text-xs text-text-muted"><i class="fa-solid fa-circle-info text-[11px]"></i><span>4 soubory ke čištění</span></div>
+      <div class="flex items-center gap-1.5"><span class="text-xs text-text-muted">Celkem:</span>
+        <div class="flex items-center gap-1 bg-brand-green/10 border border-brand-green/25 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-bolt text-brand-green text-[10px]"></i><span class="text-sm font-black text-brand-green">6 kreditů</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk Scanner Card -->
+  <div id="status-card" class="relative bg-navy-card rounded-2xl border border-gray-800 shadow-card overflow-hidden">
+    <!-- Blurred background content -->
+    <div class="blur-scanner p-4 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-semibold text-base text-white">Risk Scanner</h3>
+        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-brand-red/10 text-brand-red border border-brand-red/20 uppercase tracking-wider flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-brand-red inline-block"></span>Vysoké riziko</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="relative w-24 h-24 flex-shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 36 36" class="absolute inset-0 w-full h-full -rotate-90">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" stroke-width="3"></circle>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#ef4444" stroke-width="3.5" stroke-dasharray="72 28" stroke-linecap="round"></circle>
+          </svg>
+          <div class="text-center z-10"><span class="text-2xl font-black text-brand-red leading-none">72</span><p class="text-[8px] text-text-muted uppercase tracking-wider mt-0.5">Risk</p></div>
+        </div>
+        <div class="flex-1 flex flex-col gap-1.5">
+          <p class="text-xs font-bold text-white">Únik osobních dat je pravděpodobný</p>
+          <div class="flex items-center gap-1 flex-wrap mt-0.5">
+            <span class="px-1.5 py-0.5 rounded bg-brand-red/15 text-brand-red text-[9px] font-bold border border-brand-red/25">GPS</span>
+            <span class="px-1.5 py-0.5 rounded bg-brand-orange/15 text-brand-orange text-[9px] font-bold border border-brand-orange/25">Identita</span>
+            <span class="px-1.5 py-0.5 rounded bg-brand-orange/15 text-brand-orange text-[9px] font-bold border border-brand-orange/25">Zařízení</span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl bg-brand-red/10 border border-brand-red/25">
+          <span class="text-[9px] font-bold uppercase tracking-widest text-brand-red">Nyní</span><span class="text-xl font-black text-brand-red">72</span><span class="text-[9px] text-text-muted">Risk Score</span>
+        </div>
+        <div class="flex flex-col items-center gap-1.5 px-3 py-2.5 rounded-xl bg-brand-green/10 border border-brand-green/25">
+          <span class="text-[9px] font-bold uppercase tracking-widest text-brand-green">Po čištění</span><span class="text-xl font-black text-brand-green">100</span><span class="text-[9px] text-text-muted">Clean Score</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pro Overlay -->
+    <div class="pro-overlay px-4">
+      <div class="pro-overlay-content flex flex-col items-center gap-4 text-center w-full max-w-xs">
+        <!-- Lock icon with pro badge -->
+        <div class="relative">
+          <div class="w-16 h-16 rounded-2xl bg-navy-lighter border border-gray-700 flex items-center justify-center shadow-glow-orange">
+            <i class="fa-solid fa-lock text-2xl text-text-muted"></i>
+          </div>
+          <div class="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full pro-badge flex items-center justify-center">
+            <i class="fa-solid fa-star text-white text-[9px]"></i>
+          </div>
+        </div>
+        <!-- Title & description -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex items-center justify-center gap-2">
+            <span class="text-base font-black text-white">Risk Scanner</span>
+            <span class="pro-badge px-2 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider">PRO</span>
+          </div>
+          <p class="text-xs text-text-muted leading-relaxed max-w-[220px] mx-auto">Odemkněte detailní analýzu rizik, GPS odhalení a skóre ochrany soukromí.</p>
+        </div>
+        <!-- Risk preview chips -->
+        <div class="flex items-center justify-center gap-1.5 flex-wrap">
+          <span class="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand-red/15 border border-brand-red/30 text-brand-red text-[10px] font-bold"><i class="fa-solid fa-location-dot text-[9px]"></i>GPS detekce</span>
+          <span class="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand-orange/15 border border-brand-orange/30 text-brand-orange text-[10px] font-bold"><i class="fa-solid fa-user-secret text-[9px]"></i>Identita</span>
+          <span class="flex items-center gap-1 px-2 py-1 rounded-lg bg-brand-blue/15 border border-brand-blue/30 text-brand-blue text-[10px] font-bold"><i class="fa-solid fa-shield-halved text-[9px]"></i>Risk skóre</span>
+        </div>
+        <!-- CTA Button -->
+        <button class="upgrade-btn w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-up-right-dots text-xs"></i>Odemknout Pro plán
+        </button>
+        <p class="text-[10px] text-text-muted">Od 2,99 € / měsíc · Zrušit kdykoliv</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function openDrawer() {
+    const drawer = document.getElementById('sideDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    
+    if (drawer.classList.contains('open')) {
+      closeDrawer();
+    } else {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+    }
+  }
+
+  function closeDrawer() {
+    const drawer = document.getElementById('sideDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+
+  function toggleLangSection() {
+    const langSection = document.getElementById('langSection');
+    langSection.classList.toggle('hidden');
+  }
+
+  function setLang(langCode, flag, label) {
+    // Implementation for language switching
+    console.log(`Switching to ${label} (${langCode})`);
+  }
+</script>
+
+</body>
+</html>
