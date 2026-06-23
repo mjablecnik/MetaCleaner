@@ -18,7 +18,7 @@ var emailRegex = regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
 
 // HandleRegister handles POST /api/auth/register.
 // Validates input, creates a Supabase auth user, and inserts a profile record.
-func HandleRegister(authClient *SupabaseAuthClient) http.HandlerFunc {
+func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req RegisterRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -84,6 +84,11 @@ func HandleRegister(authClient *SupabaseAuthClient) http.HandlerFunc {
 			LoggerFromContext(r.Context()).Warn("register: failed to create profile", "userId", user.ID, "error", err)
 			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
 			return
+		}
+
+		// Provision initial trial credits in credit_balances table (used by billing system).
+		if err := db.UpsertCreditBalance(r.Context(), user.ID, 3, 0); err != nil {
+			LoggerFromContext(r.Context()).Warn("register: failed to create credit balance", "userId", user.ID, "error", err)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -413,7 +418,7 @@ func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
 // creates a profile for new users, and redirects to the frontend with tokens as query
 // parameters. Email confirmations (type=signup) redirect to /email-verified; all other
 // types (magic link, etc.) redirect to /login.
-func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
+func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		frontendLogin := authClient.frontendURL + "/login"
 		frontendEmailVerified := authClient.frontendURL + "/email-verified"
@@ -456,6 +461,11 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 				Credits:          3,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
+			}
+
+			// Provision initial trial credits in credit_balances table (used by billing system).
+			if err := db.UpsertCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
+				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}
 		}
 
@@ -556,7 +566,7 @@ func HandleOAuthInitiate(authClient *SupabaseAuthClient) http.HandlerFunc {
 // Reads the PKCE verifier from the cookie, exchanges the authorization code for a
 // session, creates a profile for new OAuth users, and redirects to the frontend
 // with tokens as query parameters.
-func HandleOAuthCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
+func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		frontendLogin := authClient.frontendURL + "/login"
 
@@ -611,6 +621,11 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient) http.HandlerFunc {
 				Credits:          3,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create profile", "userId", session.User.ID, "error", createErr)
+			}
+
+			// Provision initial trial credits in credit_balances table (used by billing system).
+			if err := db.UpsertCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
+				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}
 		}
 

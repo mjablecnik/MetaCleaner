@@ -151,7 +151,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
 	// POST /api/auth/register — rate limited
-	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient)))
+	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient, db)))
 
 	// POST /api/auth/login — rate limited
 	mux.Handle("POST /api/auth/login", authRateLimited(HandleLogin(authClient)))
@@ -175,7 +175,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/auth/reset-password", HandleResetPassword(authClient))
 
 	// GET /api/auth/oauth/callback — must be registered before the {provider} wildcard
-	mux.Handle("GET /api/auth/oauth/callback", HandleOAuthCallback(authClient))
+	mux.Handle("GET /api/auth/oauth/callback", HandleOAuthCallback(authClient, db))
 
 	// GET /api/auth/oauth/{provider} — initiates the OAuth flow
 	mux.Handle("GET /api/auth/oauth/{provider}", HandleOAuthInitiate(authClient))
@@ -184,7 +184,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/auth/magic-link", authRL.MagicLinkMiddleware(HandleMagicLink(authClient)))
 
 	// GET /api/auth/magic-link/callback — receives token_hash from Supabase magic link email
-	mux.Handle("GET /api/auth/magic-link/callback", HandleMagicLinkCallback(authClient))
+	mux.Handle("GET /api/auth/magic-link/callback", HandleMagicLinkCallback(authClient, db))
 
 	// POST /api/upload — rate limited
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
