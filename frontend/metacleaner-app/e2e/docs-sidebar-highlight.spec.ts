@@ -205,3 +205,80 @@ test.describe('Docs sidebar highlight — hash navigation', () => {
 		await expect(cleanSidebarLink).toHaveClass(/text-brand-blue/);
 	});
 });
+
+test.describe('Docs sidebar highlight — sequential sidebar clicks', () => {
+	test('clicking sidebar links one after another opens each card', async ({ page }) => {
+		await goToDocs(page);
+
+		// Click ep-upload in sidebar
+		await page.locator('aside a[href*="#ep-upload"]').click();
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Click ep-clean in sidebar — must also open even though ep-upload is already open
+		await page.locator('aside a[href*="#ep-clean"]').click();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Click ep-status in sidebar — third sequential click must work too
+		await page.locator('aside a[href*="#ep-status"]').click();
+		await expect(page.locator('#ep-status .border-t')).toBeVisible({ timeout: 5000 });
+
+		// All three are still open simultaneously
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible();
+		await expect(page.locator('#ep-status .border-t')).toBeVisible();
+	});
+
+	test('all sidebar-opened cards are highlighted in sidebar', async ({ page }) => {
+		await goToDocs(page);
+
+		await page.locator('aside a[href*="#ep-upload"]').click();
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		await page.locator('aside a[href*="#ep-clean"]').click();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Both sidebar entries are highlighted
+		await expect(page.locator('aside a[href*="#ep-upload"]')).toHaveClass(/font-semibold/);
+		await expect(page.locator('aside a[href*="#ep-clean"]')).toHaveClass(/font-semibold/);
+	});
+
+	test('cards opened via sidebar can be toggled closed by clicking their header', async ({
+		page
+	}) => {
+		await goToDocs(page);
+
+		// Open two cards via sidebar
+		await page.locator('aside a[href*="#ep-upload"]').click();
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		await page.locator('aside a[href*="#ep-clean"]').click();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Close ep-upload by clicking its card header directly
+		await page.locator('#ep-upload > button').click();
+		await expect(page.locator('#ep-upload .border-t')).not.toBeVisible();
+		await expect(page.locator('aside a[href*="#ep-upload"]')).not.toHaveClass(/font-semibold/);
+
+		// ep-clean is still open and highlighted
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible();
+		await expect(page.locator('aside a[href*="#ep-clean"]')).toHaveClass(/font-semibold/);
+	});
+
+	test('after hash navigation, clicking a different sidebar link opens that card too', async ({
+		page
+	}) => {
+		// Start with hash — ep-upload opens via URL
+		await goToDocs(page, '/docs/endpoints#ep-upload');
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Now click a different endpoint in the sidebar
+		await page.locator('aside a[href*="#ep-clean"]').click();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible({ timeout: 5000 });
+
+		// ep-clean sidebar entry is highlighted
+		await expect(page.locator('aside a[href*="#ep-clean"]')).toHaveClass(/font-semibold/);
+
+		// ep-upload is still open (we only added ep-clean, didn't close ep-upload)
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible();
+	});
+});

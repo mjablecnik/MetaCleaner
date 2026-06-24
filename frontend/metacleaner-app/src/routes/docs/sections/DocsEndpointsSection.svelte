@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import { page } from '$app/state';
-	import { onMount, getContext } from 'svelte';
+	import { onMount, getContext, untrack } from 'svelte';
 	import EndpointCard from '../components/EndpointCard.svelte';
 	import { getEndpoints } from '$lib/repositories/docsRepository';
 
@@ -27,7 +27,9 @@
 	$effect(() => {
 		if (targetId) {
 			activeEndpointId = targetId;
-			handleToggle(targetId, true);
+			// untrack prevents ctx.ids from becoming a dependency of this effect,
+			// which would cause an infinite reactive loop when ctx.update() writes back.
+			untrack(() => handleToggle(targetId, true));
 			// Scroll to the target endpoint card
 			requestAnimationFrame(() => {
 				const el = document.getElementById(targetId);
