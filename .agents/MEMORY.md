@@ -1,5 +1,11 @@
 # Memory
 
+## docsRepository tests fail after WS endpoint added (baseUrl, method, success-response assertions)
+- Project: metacleaner-app
+- Problem: After adding the WebSocket endpoint (`method: 'WS'`) and removing `/v1` from `baseUrl`, 10 tests broke: (1) `baseUrl` assertion still expected `/v1`, (2) method-validity checks only allowed `['GET','POST','DEL']` not `'WS'`, (3) "full endpoints have at least one success response" included WS (which legitimately has only error responses), (4) i18n placeholder regex `/\$\{.*\}/` false-positived on JS template literals in WS curl examples (`${data.fileId}`).
+- Solution: Update `baseUrl` expectations to `'https://api.metacleaner.com'`; add `'WS'` to valid method arrays; filter `ep.method !== 'WS'` in the success-response test; change i18n regex to `/\$\{[^}.]+\}/` so JS property accesses (`${data.prop}`) are excluded (they contain dots).
+- Source: check-build, 2026-06-24
+
 ## vitest-browser-svelte: page.locator() unavailable — use container.querySelector or page.getByRole
 - Project: metacleaner-app
 - Problem: `page.locator('.fa-copy')` throws `TypeError: page.locator is not a function` in `vitest-browser-svelte` browser tests. The `page` object from `vitest/browser` does not expose a `.locator()` CSS-selector method in this project's vitest 4.x setup.
