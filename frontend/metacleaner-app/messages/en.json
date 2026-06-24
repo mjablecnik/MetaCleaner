@@ -678,7 +678,7 @@
 	"upgradeModal.description": "Get access to your cleaning history, detailed file reports, and downloadable PDF reports.",
 	"upgradeModal.cta": "Upgrade to Pro",
 	"upgradeModal.dismiss": "Continue for free",
-	"docs.sidebar.endpoints": "Endpoints",
+	"docs.sidebar.endpoints": "API Endpoints",
 	"docs.sidebar.group.fileProcessing": "File Processing",
 	"docs.sidebar.group.reports": "Reports",
 	"docs.sidebar.group.account": "Account",

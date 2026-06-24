@@ -18,31 +18,33 @@
 	const sectionRouteMap: Record<string, string> = {
 		'sec-intro': '/docs',
 		'sec-auth': '/docs/auth',
-		'sec-errors': '/docs/errors'
+		'sec-errors': '/docs/errors',
+		'sec-endpoints': '/docs/endpoints'
 	};
 
 	const activeId = $derived.by(() => {
 		const path = page.url.pathname;
 		if (path === '/docs/auth') return 'sec-auth';
 		if (path === '/docs/errors') return 'sec-errors';
-		if (path === '/docs/endpoints') return 'ep-endpoints';
+		if (path === '/docs/endpoints') return 'sec-endpoints';
 		return 'sec-intro';
 	});
 
-	const mobileNavItems = $derived([
-		...sidebarSections.map((s) => ({
+	// Track which endpoint is currently active (from URL hash)
+	const activeEndpointId = $derived(
+		page.url.pathname === '/docs/endpoints' && page.url.hash
+			? page.url.hash.slice(1)
+			: ''
+	);
+
+	const mobileNavItems = $derived(
+		sidebarSections.map((s) => ({
 			id: s.id,
 			icon: s.icon,
 			labelKey: s.labelKey,
 			href: sectionRouteMap[s.id] ?? '/docs'
-		})),
-		{
-			id: 'ep-endpoints',
-			icon: 'fa-code',
-			labelKey: 'docs.sidebar.endpointsHeading',
-			href: '/docs/endpoints'
-		}
-	]);
+		}))
+	);
 </script>
 
 <div class="mx-auto w-full max-w-[1100px] px-4 lg:px-6">
@@ -100,22 +102,12 @@
 						<p class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase">
 							{tx('docs.sidebar.endpointsHeading')}
 						</p>
-						<a
-							href={resolve('/docs/endpoints')}
-							class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
-								{activeId === 'ep-endpoints'
-								? 'font-semibold text-brand-blue'
-								: 'text-text-muted hover:text-white'}"
-						>
-							<i class="fa-solid fa-code w-4 text-center text-xs"></i>
-							<span>{tx('docs.sidebar.allEndpoints')}</span>
-						</a>
 						{#each sidebarEndpoints as ep (ep.id)}
 							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								href={resolve('/docs/endpoints') + '#' + ep.id}
 								class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
-									{activeId === 'ep-endpoints' ? 'text-text-muted/80' : 'text-text-muted hover:text-white'}"
+									{activeEndpointId === ep.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 							>
 								<MethodBadge method={ep.method} size="sm" />
 								<span class="truncate">{ep.label}</span>
