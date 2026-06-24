@@ -111,6 +111,7 @@
 							<span>{tx('docs.sidebar.allEndpoints')}</span>
 						</a>
 						{#each sidebarEndpoints as ep (ep.id)}
+							<!-- eslint-disable svelte/no-navigation-without-resolve -->
 							<a
 								href={resolve('/docs/endpoints') + '#' + ep.id}
 								class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
@@ -119,6 +120,7 @@
 								<MethodBadge method={ep.method} size="sm" />
 								<span class="truncate">{ep.label}</span>
 							</a>
+							<!-- eslint-enable svelte/no-navigation-without-resolve -->
 						{/each}
 					</li>
 				</ul>

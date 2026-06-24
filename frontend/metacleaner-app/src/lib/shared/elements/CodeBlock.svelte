@@ -36,10 +36,7 @@
 	}
 
 	function escapeHtml(str: string): string {
-		return str
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;');
+		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
 	function highlightJson(source: string): string {
@@ -60,14 +57,11 @@
 				);
 				// Highlight string values in arrays
 				result = result.replace(
-					/(?<=[\[,]\s*)(&quot;|")((?:[^"\\]|\\.)*)(&quot;|")/g,
+					/(?<=[[,]\s*)(&quot;|")((?:[^"\\]|\\.)*)(&quot;|")/g,
 					'<span class="text-brand-green">"$2"</span>'
 				);
 				// Highlight numbers
-				result = result.replace(
-					/:\s*(\d+\.?\d*)/g,
-					': <span class="text-brand-green">$1</span>'
-				);
+				result = result.replace(/:\s*(\d+\.?\d*)/g, ': <span class="text-brand-green">$1</span>');
 				// Highlight booleans and null
 				result = result.replace(
 					/:\s*(true|false|null)\b/g,
@@ -75,7 +69,7 @@
 				);
 				// Highlight punctuation (braces, brackets, commas, colons) in gray
 				result = result.replace(
-					/(?<!["\w<\/-])([{}[\],:])/g,
+					/(?<!["\w</-])([{}[\],:])/g,
 					'<span class="text-text-muted">$1</span>'
 				);
 				return result;
@@ -89,10 +83,7 @@
 			.map((line) => {
 				let result = escapeHtml(line);
 				// Highlight quoted strings first (before other rules inject HTML)
-				result = result.replace(
-					/"([^"]*?)"/g,
-					'<span class="text-brand-orange">"$1"</span>'
-				);
+				result = result.replace(/"([^"]*?)"/g, '<span class="text-brand-orange">"$1"</span>');
 				// Highlight curl command
 				result = result.replace(/^(curl)\b/, '<span class="text-brand-blue">$1</span>');
 				// Highlight flags: -X, -H, -F, -d, -o (only flags not inside quotes/spans)
@@ -116,22 +107,16 @@
 					'<span class="text-brand-blue">$1</span>'
 				);
 				// Highlight JS method/property assignments (.onmessage =)
-				result = result.replace(
-					/(\.\w+)\s*=/g,
-					'<span class="text-brand-blue">$1</span> ='
-				);
+				result = result.replace(/(\.\w+)\s*=/g, '<span class="text-brand-blue">$1</span> =');
 				// Highlight punctuation (braces, brackets, commas, colons) not inside HTML tags
-				result = result.replace(
-					/([{}[\],:])/g,
-					(match, p1, offset, str) => {
-						// Skip if inside an HTML tag (between < and >)
-						const before = str.substring(0, offset);
-						const lastOpen = before.lastIndexOf('<');
-						const lastClose = before.lastIndexOf('>');
-						if (lastOpen > lastClose) return match;
-						return `<span class="text-text-muted">${p1}</span>`;
-					}
-				);
+				result = result.replace(/([{}[\],:])/g, (match, p1, offset, str) => {
+					// Skip if inside an HTML tag (between < and >)
+					const before = str.substring(0, offset);
+					const lastOpen = before.lastIndexOf('<');
+					const lastClose = before.lastIndexOf('>');
+					if (lastOpen > lastClose) return match;
+					return `<span class="text-text-muted">${p1}</span>`;
+				});
 				return result;
 			})
 			.join('\n');
@@ -159,6 +144,8 @@
 	<div class="absolute top-2 right-2 z-10">
 		<CopyButton text={code} />
 	</div>
+	<!-- eslint-disable svelte/no-at-html-tags -->
 	<pre
 		class="overflow-x-auto p-4 pr-10 font-mono text-sm leading-relaxed whitespace-pre text-white">{@html highlighted}</pre>
+	<!-- eslint-enable svelte/no-at-html-tags -->
 </div>

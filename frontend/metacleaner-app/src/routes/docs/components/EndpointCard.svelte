@@ -88,7 +88,9 @@
 					<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase">
 						{tx('docs.ws.connection')}
 					</p>
-					<CodeBlock code={`wss://your-server.com${endpoint.path.replace('{id}', '<job_id>')}?token=YOUR_API_KEY`} />
+					<CodeBlock
+						code={`wss://your-server.com${endpoint.path.replace('{id}', '<job_id>')}?token=YOUR_API_KEY`}
+					/>
 				</div>
 
 				<!-- Authentication note -->
@@ -111,20 +113,32 @@
 							<table class="w-full text-sm">
 								<thead>
 									<tr class="border-b border-gray-800 bg-navy-card">
-										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted">{tx('docs.common.field')}</th>
-										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted">{tx('docs.common.type')}</th>
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+											>{tx('docs.common.field')}</th
+										>
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+											>{tx('docs.common.type')}</th
+										>
 										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted">Req.</th>
-										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted">{tx('docs.errors.table.description')}</th>
+										<th class="px-3 py-2 text-left text-xs font-semibold text-text-muted"
+											>{tx('docs.errors.table.description')}</th
+										>
 									</tr>
 								</thead>
 								<tbody>
 									{#each endpoint.params as param (param.name)}
 										<tr class="border-b border-gray-800/50 last:border-0">
-											<td class="px-3 py-2"><code class="text-xs text-brand-blue">{param.name}</code></td>
-											<td class="px-3 py-2"><code class="text-xs text-brand-orange">{param.type}</code></td>
+											<td class="px-3 py-2"
+												><code class="text-xs text-brand-blue">{param.name}</code></td
+											>
+											<td class="px-3 py-2"
+												><code class="text-xs text-brand-orange">{param.type}</code></td
+											>
 											<td class="px-3 py-2">
 												{#if param.required}
-													<span class="text-xs font-medium text-brand-green">{tx('docs.common.required')}</span>
+													<span class="text-xs font-medium text-brand-green"
+														>{tx('docs.common.required')}</span
+													>
 												{:else}
 													<span class="text-xs text-text-muted">{tx('docs.common.optional')}</span>
 												{/if}
@@ -147,7 +161,9 @@
 						<div class="relative ml-3 border-l border-gray-700 pl-5">
 							{#each endpoint.wsLifecycle as step (step.number)}
 								<div class="relative mb-4 last:mb-0">
-									<div class="absolute -left-[27px] flex h-5 w-5 items-center justify-center rounded-full border border-purple-500/40 bg-purple-500/20 text-[10px] font-bold text-purple-400">
+									<div
+										class="absolute -left-[27px] flex h-5 w-5 items-center justify-center rounded-full border border-purple-500/40 bg-purple-500/20 text-[10px] font-bold text-purple-400"
+									>
 										{step.number}
 									</div>
 									<p class="text-sm font-medium text-white">{tx(step.titleKey)}</p>
@@ -167,8 +183,10 @@
 						<div class="flex flex-wrap gap-2">
 							{#each endpoint.statusValues as val (val)}
 								<span
-									class="rounded border px-2.5 py-1 font-mono text-xs font-medium {statusBadgeColor[val] ?? 'border-gray-700 bg-gray-700/40 text-text-muted'}"
-								>{val}</span>
+									class="rounded border px-2.5 py-1 font-mono text-xs font-medium {statusBadgeColor[
+										val
+									] ?? 'border-gray-700 bg-gray-700/40 text-text-muted'}">{val}</span
+								>
 							{/each}
 						</div>
 					</div>
@@ -185,8 +203,10 @@
 								<div class="rounded-lg border border-gray-800 bg-navy-card/50 p-4">
 									<div class="mb-2 flex items-center gap-2">
 										<span
-											class="rounded border px-2 py-0.5 font-mono text-xs font-bold {statusBadgeColor[msg.type] ?? 'border-gray-700 bg-gray-700/40 text-text-muted'}"
-										>{msg.type}</span>
+											class="rounded border px-2 py-0.5 font-mono text-xs font-bold {statusBadgeColor[
+												msg.type
+											] ?? 'border-gray-700 bg-gray-700/40 text-text-muted'}">{msg.type}</span
+										>
 										<span class="text-xs text-text-muted">{tx(msg.descriptionKey)}</span>
 									</div>
 									<CodeBlock code={msg.exampleBody} />
@@ -215,7 +235,9 @@
 								<div>
 									<div class="mb-1.5 flex items-center gap-2">
 										<span
-											class="rounded border px-1.5 py-0.5 font-mono text-xs font-semibold {responseBadgeColor(resp.variant)}"
+											class="rounded border px-1.5 py-0.5 font-mono text-xs font-semibold {responseBadgeColor(
+												resp.variant
+											)}"
 										>
 											{resp.status}
 										</span>

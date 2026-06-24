@@ -175,16 +175,17 @@ describe('Property 2: Endpoint card expand completeness', () => {
 		);
 	});
 
-	it('every full endpoint has at least one success and one error response', () => {
+	it('every full HTTP endpoint has at least one success and one error response', () => {
+		const httpEndpoints = fullEndpoints.filter((ep) => ep.method !== 'WS');
 		fc.assert(
-			fc.property(fc.constantFrom(...fullEndpoints), (ep) => {
+			fc.property(fc.constantFrom(...httpEndpoints), (ep) => {
 				expect(ep.responses.length).toBeGreaterThanOrEqual(2);
 				const hasSuccess = ep.responses.some((r) => r.variant === 'success');
 				const hasError = ep.responses.some((r) => r.variant === 'error');
 				expect(hasSuccess).toBe(true);
 				expect(hasError).toBe(true);
 			}),
-			{ numRuns: fullEndpoints.length }
+			{ numRuns: httpEndpoints.length }
 		);
 	});
 
@@ -245,7 +246,7 @@ describe('Property 3: Copy button plain text correctness', () => {
 
 	it('base-url code example is the canonical API URL', () => {
 		const examples = getCodeExamples();
-		expect(examples['base-url'].code).toBe('https://api.metacleaner.com/v1');
+		expect(examples['base-url'].code).toBe('https://api.metacleaner.com');
 	});
 
 	it('auth-header code example follows Bearer token format', () => {
@@ -363,8 +364,10 @@ describe('Property 5: Code block content is locale-independent', () => {
 	it('code content does not contain i18n placeholders or locale tokens', () => {
 		fc.assert(
 			fc.property(fc.constantFrom(...allCodeBlocks), (block) => {
-				// Code blocks should not contain locale-specific text markers
-				expect(block.code).not.toMatch(/\$\{.*\}/);
+				// Code blocks should not contain locale-specific text markers.
+				// Use [^}.] to avoid false positives on JS template literals (${data.prop})
+				// which appear in WebSocket code examples and are not i18n patterns.
+				expect(block.code).not.toMatch(/\$\{[^}.]+\}/);
 				expect(block.code).not.toMatch(/{{.*}}/);
 			}),
 			{ numRuns: allCodeBlocks.length }
@@ -387,7 +390,7 @@ describe('Property 5: Code block content is locale-independent', () => {
 	it('endpoint curl examples reference the canonical API base URL', () => {
 		fc.assert(
 			fc.property(fc.constantFrom(...allEndpoints), (ep) => {
-				expect(ep.curlExample.code).toContain('api.metacleaner.com/v1');
+				expect(ep.curlExample.code).toContain('api.metacleaner.com');
 			}),
 			{ numRuns: allEndpoints.length }
 		);
@@ -493,7 +496,7 @@ describe('Property 6: Info box variant styling correctness', () => {
 	it('sidebar endpoints each have a valid HTTP method', () => {
 		fc.assert(
 			fc.property(fc.constantFrom(...getSidebarEndpoints()), (ep) => {
-				expect(['GET', 'POST', 'DEL']).toContain(ep.method);
+				expect(['GET', 'POST', 'DEL', 'WS']).toContain(ep.method);
 			}),
 			{ numRuns: getSidebarEndpoints().length }
 		);

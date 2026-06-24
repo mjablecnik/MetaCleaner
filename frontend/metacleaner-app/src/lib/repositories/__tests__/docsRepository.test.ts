@@ -15,7 +15,7 @@ describe('getDocsConfig', () => {
 	it('returns apiVersion and baseUrl', () => {
 		const config = getDocsConfig();
 		expect(config.apiVersion).toBe('v1');
-		expect(config.baseUrl).toBe('https://api.metacleaner.com/v1');
+		expect(config.baseUrl).toBe('https://api.metacleaner.com');
 	});
 });
 
@@ -47,7 +47,7 @@ describe('getSidebarEndpoints', () => {
 	it('each endpoint has id, method, label, and group', () => {
 		for (const ep of getSidebarEndpoints()) {
 			expect(ep.id.length).toBeGreaterThan(0);
-			expect(['GET', 'POST', 'DEL']).toContain(ep.method);
+			expect(['GET', 'POST', 'DEL', 'WS']).toContain(ep.method);
 			expect(ep.label.length).toBeGreaterThan(0);
 			expect(['fileProcessing', 'reports', 'account', 'system']).toContain(ep.group);
 		}
@@ -201,7 +201,7 @@ describe('getEndpoints', () => {
 	it('each endpoint has id, method, path, and descriptionKey', () => {
 		for (const ep of getEndpoints()) {
 			expect(ep.id.length).toBeGreaterThan(0);
-			expect(['GET', 'POST', 'DEL']).toContain(ep.method);
+			expect(['GET', 'POST', 'DEL', 'WS']).toContain(ep.method);
 			expect(ep.path).toMatch(/^\//);
 			expect(ep.descriptionKey).toMatch(/^docs\./);
 		}
@@ -216,7 +216,7 @@ describe('getEndpoints', () => {
 
 	it('each endpoint has a curlExample referencing the canonical base URL', () => {
 		for (const ep of getEndpoints()) {
-			expect(ep.curlExample.code).toContain('api.metacleaner.com/v1');
+			expect(ep.curlExample.code).toContain('api.metacleaner.com');
 		}
 	});
 
@@ -229,7 +229,7 @@ describe('getEndpoints', () => {
 	});
 
 	it('full endpoints have at least one success response', () => {
-		for (const ep of getEndpoints().filter((e) => !e.isMinimal)) {
+		for (const ep of getEndpoints().filter((e) => !e.isMinimal && e.method !== 'WS')) {
 			expect(ep.responses.some((r) => r.variant === 'success')).toBe(true);
 		}
 	});
@@ -325,7 +325,7 @@ describe('getCodeExamples', () => {
 	});
 
 	it('base-url is the canonical API URL', () => {
-		expect(getCodeExamples()['base-url'].code).toBe('https://api.metacleaner.com/v1');
+		expect(getCodeExamples()['base-url'].code).toBe('https://api.metacleaner.com');
 	});
 
 	it('auth-header follows Bearer token format', () => {

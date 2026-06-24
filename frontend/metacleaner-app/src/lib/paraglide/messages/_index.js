@@ -638,6 +638,27 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Docs_Common_Errorresponse1Inputs */
 /** @typedef {{}} Docs_Common_Statusvalues1Inputs */
 /** @typedef {{}} Docs_Common_PlaceholderInputs */
+/** @typedef {{}} Docs_Ws_ConnectionInputs */
+/** @typedef {{}} Docs_Ws_Authnote1Inputs */
+/** @typedef {{}} Docs_Ws_LifecycleInputs */
+/** @typedef {{}} Docs_Ws_Eventtypes1Inputs */
+/** @typedef {{}} Docs_Ws_Messagereference1Inputs */
+/** @typedef {{}} Docs_Ws_Usageexample1Inputs */
+/** @typedef {{}} Docs_Ws_Connectionerrors1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Connect_Title1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Connect_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Receive_Title1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Receive_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Complete_Title1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Complete_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Title1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Desc1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Fileprogress_Desc2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Filecomplete_Desc2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Fileerror_Desc2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Jobcomplete_Desc2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Joberror_Desc2Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Reportready_Desc2Inputs */
 /** @typedef {{}} Credits_Indicator_CreditsInputs */
 /** @typedef {{}} Credits_Banner_TitleInputs */
 /** @typedef {{}} Credits_Banner_RemainingInputs */
@@ -697,6 +718,17 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Docs_Endpoint_Health_DescInputs */
 /** @typedef {{}} Docs_Endpoint_Health_Response_Success_LabelInputs */
 /** @typedef {{}} Docs_Endpoint_Health_Response_Error_LabelInputs */
+/** @typedef {{}} Docs_Endpoint_Upload_ShortInputs */
+/** @typedef {{}} Docs_Endpoint_Clean_ShortInputs */
+/** @typedef {{}} Docs_Endpoint_Status_ShortInputs */
+/** @typedef {{}} Docs_Endpoint_Jobprogress_Short1Inputs */
+/** @typedef {{}} Docs_Endpoint_Jobdownload_Short1Inputs */
+/** @typedef {{}} Docs_Endpoint_Download_ShortInputs */
+/** @typedef {{}} Docs_Endpoint_Reportslist_Short1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportdetail_Short1Inputs */
+/** @typedef {{}} Docs_Endpoint_Reportpdf_Short1Inputs */
+/** @typedef {{}} Docs_Endpoint_Account_ShortInputs */
+/** @typedef {{}} Docs_Endpoint_Health_ShortInputs */
 import * as __en from "./en.js"
 import * as __cs from "./cs.js"
 /**
@@ -747,7 +779,7 @@ export { common_nav_reporthistory1 as "common.nav.reportHistory" }
 /**
 * | output |
 * | --- |
-* | "Pricing" |
+* | "Subscription" |
 *
 * @param {Common_Nav_PricingInputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
@@ -8655,7 +8687,7 @@ export { docs_sidebar_endpointsheading1 as "docs.sidebar.endpointsHeading" }
 /**
 * | output |
 * | --- |
-* | "All Endpoints" |
+* | "API Endpoints" |
 *
 * @param {Docs_Sidebar_Allendpoints1Inputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
@@ -10200,6 +10232,321 @@ export { docs_common_placeholder as "docs.common.placeholder" }
 /**
 * | output |
 * | --- |
+* | "Connection URL" |
+*
+* @param {Docs_Ws_ConnectionInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_connection = /** @type {((inputs?: Docs_Ws_ConnectionInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_ConnectionInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_connection(inputs)
+	return __cs.docs_ws_connection(inputs)
+});
+export { docs_ws_connection as "docs.ws.connection" }
+/**
+* | output |
+* | --- |
+* | "WebSocket connections cannot use custom HTTP headers. Pass your API key as the token query parameter instead of the Authorization header." |
+*
+* @param {Docs_Ws_Authnote1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_authnote1 = /** @type {((inputs?: Docs_Ws_Authnote1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_Authnote1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_authnote1(inputs)
+	return __cs.docs_ws_authnote1(inputs)
+});
+export { docs_ws_authnote1 as "docs.ws.authNote" }
+/**
+* | output |
+* | --- |
+* | "Connection Lifecycle" |
+*
+* @param {Docs_Ws_LifecycleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_lifecycle = /** @type {((inputs?: Docs_Ws_LifecycleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_LifecycleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_lifecycle(inputs)
+	return __cs.docs_ws_lifecycle(inputs)
+});
+export { docs_ws_lifecycle as "docs.ws.lifecycle" }
+/**
+* | output |
+* | --- |
+* | "Event Types" |
+*
+* @param {Docs_Ws_Eventtypes1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_eventtypes1 = /** @type {((inputs?: Docs_Ws_Eventtypes1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_Eventtypes1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_eventtypes1(inputs)
+	return __cs.docs_ws_eventtypes1(inputs)
+});
+export { docs_ws_eventtypes1 as "docs.ws.eventTypes" }
+/**
+* | output |
+* | --- |
+* | "Message Reference" |
+*
+* @param {Docs_Ws_Messagereference1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_messagereference1 = /** @type {((inputs?: Docs_Ws_Messagereference1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_Messagereference1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_messagereference1(inputs)
+	return __cs.docs_ws_messagereference1(inputs)
+});
+export { docs_ws_messagereference1 as "docs.ws.messageReference" }
+/**
+* | output |
+* | --- |
+* | "Usage Example (JavaScript)" |
+*
+* @param {Docs_Ws_Usageexample1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_usageexample1 = /** @type {((inputs?: Docs_Ws_Usageexample1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_Usageexample1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_usageexample1(inputs)
+	return __cs.docs_ws_usageexample1(inputs)
+});
+export { docs_ws_usageexample1 as "docs.ws.usageExample" }
+/**
+* | output |
+* | --- |
+* | "Connection Errors (HTTP, before upgrade)" |
+*
+* @param {Docs_Ws_Connectionerrors1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_ws_connectionerrors1 = /** @type {((inputs?: Docs_Ws_Connectionerrors1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Ws_Connectionerrors1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_ws_connectionerrors1(inputs)
+	return __cs.docs_ws_connectionerrors1(inputs)
+});
+export { docs_ws_connectionerrors1 as "docs.ws.connectionErrors" }
+/**
+* | output |
+* | --- |
+* | "Connect" |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Connect_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_connect_title1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Connect_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Connect_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_connect_title1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_connect_title1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_connect_title1 as "docs.endpoint.jobProgress.lifecycle.connect.title" }
+/**
+* | output |
+* | --- |
+* | "Open a WebSocket connection to the progress URL with your API key as the token query parameter." |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Connect_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_connect_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Connect_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Connect_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_connect_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_connect_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_connect_desc1 as "docs.endpoint.jobProgress.lifecycle.connect.desc" }
+/**
+* | output |
+* | --- |
+* | "Receive Events" |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Receive_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_receive_title1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Receive_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Receive_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_receive_title1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_receive_title1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_receive_title1 as "docs.endpoint.jobProgress.lifecycle.receive.title" }
+/**
+* | output |
+* | --- |
+* | "The server streams progress events as JSON messages. Each message has a type field indicating the event kind." |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Receive_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_receive_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Receive_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Receive_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_receive_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_receive_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_receive_desc1 as "docs.endpoint.jobProgress.lifecycle.receive.desc" }
+/**
+* | output |
+* | --- |
+* | "Job Completes" |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Complete_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_complete_title1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Complete_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Complete_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_complete_title1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_complete_title1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_complete_title1 as "docs.endpoint.jobProgress.lifecycle.complete.title" }
+/**
+* | output |
+* | --- |
+* | "When all files are processed, the server sends job_complete (with reportId) followed by report_ready, then closes the connection." |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Complete_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_complete_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Complete_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Complete_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_complete_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_complete_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_complete_desc1 as "docs.endpoint.jobProgress.lifecycle.complete.desc" }
+/**
+* | output |
+* | --- |
+* | "Disconnect" |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_disconnect_title1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_disconnect_title1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_disconnect_title1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_disconnect_title1 as "docs.endpoint.jobProgress.lifecycle.disconnect.title" }
+/**
+* | output |
+* | --- |
+* | "The server closes the WebSocket after job completion. If you disconnect early, the job continues processing on the server." |
+*
+* @param {Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Desc1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_lifecycle_disconnect_desc1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Desc1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Lifecycle_Disconnect_Desc1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_lifecycle_disconnect_desc1(inputs)
+	return __cs.docs_endpoint_jobprogress_lifecycle_disconnect_desc1(inputs)
+});
+export { docs_endpoint_jobprogress_lifecycle_disconnect_desc1 as "docs.endpoint.jobProgress.lifecycle.disconnect.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when a file starts processing or progress updates" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Fileprogress_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_fileprogress_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Fileprogress_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Fileprogress_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_fileprogress_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_fileprogress_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_fileprogress_desc2 as "docs.endpoint.jobProgress.ws.fileProgress.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when a file has been successfully cleaned" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Filecomplete_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_filecomplete_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Filecomplete_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Filecomplete_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_filecomplete_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_filecomplete_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_filecomplete_desc2 as "docs.endpoint.jobProgress.ws.fileComplete.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when cleaning a file fails" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Fileerror_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_fileerror_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Fileerror_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Fileerror_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_fileerror_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_fileerror_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_fileerror_desc2 as "docs.endpoint.jobProgress.ws.fileError.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when all files in the job have been processed" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Jobcomplete_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_jobcomplete_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Jobcomplete_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Jobcomplete_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_jobcomplete_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_jobcomplete_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_jobcomplete_desc2 as "docs.endpoint.jobProgress.ws.jobComplete.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when the entire job fails unexpectedly" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Joberror_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_joberror_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Joberror_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Joberror_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_joberror_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_joberror_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_joberror_desc2 as "docs.endpoint.jobProgress.ws.jobError.desc" }
+/**
+* | output |
+* | --- |
+* | "Sent when the PDF report is generated and available for download" |
+*
+* @param {Docs_Endpoint_Jobprogress_Ws_Reportready_Desc2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_ws_reportready_desc2 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Ws_Reportready_Desc2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Ws_Reportready_Desc2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_ws_reportready_desc2(inputs)
+	return __cs.docs_endpoint_jobprogress_ws_reportready_desc2(inputs)
+});
+export { docs_endpoint_jobprogress_ws_reportready_desc2 as "docs.endpoint.jobProgress.ws.reportReady.desc" }
+/**
+* | output |
+* | --- |
 * | "credits" |
 *
 * @param {Credits_Indicator_CreditsInputs} inputs
@@ -11082,3 +11429,168 @@ const docs_endpoint_health_response_error_label = /** @type {((inputs?: Docs_End
 	return __cs.docs_endpoint_health_response_error_label(inputs)
 });
 export { docs_endpoint_health_response_error_label as "docs.endpoint.health.response.error.label" }
+/**
+* | output |
+* | --- |
+* | "Upload files for cleaning" |
+*
+* @param {Docs_Endpoint_Upload_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_upload_short = /** @type {((inputs?: Docs_Endpoint_Upload_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Upload_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_upload_short(inputs)
+	return __cs.docs_endpoint_upload_short(inputs)
+});
+export { docs_endpoint_upload_short as "docs.endpoint.upload.short" }
+/**
+* | output |
+* | --- |
+* | "Create a cleaning job" |
+*
+* @param {Docs_Endpoint_Clean_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_clean_short = /** @type {((inputs?: Docs_Endpoint_Clean_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Clean_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_clean_short(inputs)
+	return __cs.docs_endpoint_clean_short(inputs)
+});
+export { docs_endpoint_clean_short as "docs.endpoint.clean.short" }
+/**
+* | output |
+* | --- |
+* | "Get job status" |
+*
+* @param {Docs_Endpoint_Status_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_status_short = /** @type {((inputs?: Docs_Endpoint_Status_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Status_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_status_short(inputs)
+	return __cs.docs_endpoint_status_short(inputs)
+});
+export { docs_endpoint_status_short as "docs.endpoint.status.short" }
+/**
+* | output |
+* | --- |
+* | "Real-time progress (WebSocket)" |
+*
+* @param {Docs_Endpoint_Jobprogress_Short1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobprogress_short1 = /** @type {((inputs?: Docs_Endpoint_Jobprogress_Short1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobprogress_Short1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobprogress_short1(inputs)
+	return __cs.docs_endpoint_jobprogress_short1(inputs)
+});
+export { docs_endpoint_jobprogress_short1 as "docs.endpoint.jobProgress.short" }
+/**
+* | output |
+* | --- |
+* | "Download cleaned files (ZIP)" |
+*
+* @param {Docs_Endpoint_Jobdownload_Short1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_jobdownload_short1 = /** @type {((inputs?: Docs_Endpoint_Jobdownload_Short1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Jobdownload_Short1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_jobdownload_short1(inputs)
+	return __cs.docs_endpoint_jobdownload_short1(inputs)
+});
+export { docs_endpoint_jobdownload_short1 as "docs.endpoint.jobDownload.short" }
+/**
+* | output |
+* | --- |
+* | "Download a single file" |
+*
+* @param {Docs_Endpoint_Download_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_download_short = /** @type {((inputs?: Docs_Endpoint_Download_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Download_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_download_short(inputs)
+	return __cs.docs_endpoint_download_short(inputs)
+});
+export { docs_endpoint_download_short as "docs.endpoint.download.short" }
+/**
+* | output |
+* | --- |
+* | "List cleaning reports" |
+*
+* @param {Docs_Endpoint_Reportslist_Short1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportslist_short1 = /** @type {((inputs?: Docs_Endpoint_Reportslist_Short1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportslist_Short1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportslist_short1(inputs)
+	return __cs.docs_endpoint_reportslist_short1(inputs)
+});
+export { docs_endpoint_reportslist_short1 as "docs.endpoint.reportsList.short" }
+/**
+* | output |
+* | --- |
+* | "Get report detail" |
+*
+* @param {Docs_Endpoint_Reportdetail_Short1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportdetail_short1 = /** @type {((inputs?: Docs_Endpoint_Reportdetail_Short1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportdetail_Short1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportdetail_short1(inputs)
+	return __cs.docs_endpoint_reportdetail_short1(inputs)
+});
+export { docs_endpoint_reportdetail_short1 as "docs.endpoint.reportDetail.short" }
+/**
+* | output |
+* | --- |
+* | "Get PDF download URL" |
+*
+* @param {Docs_Endpoint_Reportpdf_Short1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_reportpdf_short1 = /** @type {((inputs?: Docs_Endpoint_Reportpdf_Short1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Reportpdf_Short1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_reportpdf_short1(inputs)
+	return __cs.docs_endpoint_reportpdf_short1(inputs)
+});
+export { docs_endpoint_reportpdf_short1 as "docs.endpoint.reportPdf.short" }
+/**
+* | output |
+* | --- |
+* | "Get account info" |
+*
+* @param {Docs_Endpoint_Account_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_account_short = /** @type {((inputs?: Docs_Endpoint_Account_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Account_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_account_short(inputs)
+	return __cs.docs_endpoint_account_short(inputs)
+});
+export { docs_endpoint_account_short as "docs.endpoint.account.short" }
+/**
+* | output |
+* | --- |
+* | "Service health check" |
+*
+* @param {Docs_Endpoint_Health_ShortInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const docs_endpoint_health_short = /** @type {((inputs?: Docs_Endpoint_Health_ShortInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Docs_Endpoint_Health_ShortInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.docs_endpoint_health_short(inputs)
+	return __cs.docs_endpoint_health_short(inputs)
+});
+export { docs_endpoint_health_short as "docs.endpoint.health.short" }
