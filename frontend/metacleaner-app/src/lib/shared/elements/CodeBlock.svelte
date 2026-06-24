@@ -120,6 +120,18 @@
 					/(\.\w+)\s*=/g,
 					'<span class="text-brand-blue">$1</span> ='
 				);
+				// Highlight punctuation (braces, brackets, commas, colons) not inside HTML tags
+				result = result.replace(
+					/([{}[\],:])/g,
+					(match, p1, offset, str) => {
+						// Skip if inside an HTML tag (between < and >)
+						const before = str.substring(0, offset);
+						const lastOpen = before.lastIndexOf('<');
+						const lastClose = before.lastIndexOf('>');
+						if (lastOpen > lastClose) return match;
+						return `<span class="text-text-muted">${p1}</span>`;
+					}
+				);
 				return result;
 			})
 			.join('\n');
