@@ -335,7 +335,13 @@ func (m *AuthMiddleware) validateAPIKey(ctx context.Context, token string) (user
 		return "", "", &authError{code: ErrAuthUnauthorized, message: "invalid API key"}
 	}
 	if apiKey == nil {
+		slog.Warn("auth-middleware: api key not found by hash", "hashPrefix", hash[:8])
 		return "", "", &authError{code: ErrAuthUnauthorized, message: "invalid or revoked API key"}
+	}
+	slog.Debug("auth-middleware: api key resolved", "userID", apiKey.UserID, "keyID", apiKey.ID)
+	if apiKey.UserID == "" {
+		slog.Error("auth-middleware: api key has empty user_id", "keyID", apiKey.ID)
+		return "", "", &authError{code: ErrAuthUnauthorized, message: "API key has no associated user"}
 	}
 	return apiKey.UserID, apiKey.ID, nil
 }

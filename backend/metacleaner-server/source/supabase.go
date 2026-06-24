@@ -684,8 +684,28 @@ func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]Repo
 	if userID != "" {
 		url += "&user_id=eq." + userID
 	}
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
-		return nil, err
+
+	// Retry up to 2 additional times on empty result when user filter is active,
+	// to handle Supabase cold start returning stale empty responses.
+	for attempt := 0; attempt < 3; attempt++ {
+		rows = nil
+		if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+			if attempt < 2 {
+				slog.Warn("list-reports: query failed, retrying", "attempt", attempt, "error", err)
+				time.Sleep(300 * time.Millisecond)
+				continue
+			}
+			slog.Error("list-reports: PostgREST query failed", "userID", userID, "error", err)
+			return nil, err
+		}
+		if len(rows) > 0 || userID == "" {
+			break
+		}
+		// Empty result with user filter — could be cold start, retry
+		if attempt < 2 {
+			slog.Warn("list-reports: empty result, retrying", "userID", userID, "attempt", attempt)
+			time.Sleep(300 * time.Millisecond)
+		}
 	}
 
 	summaries := make([]ReportSummary, len(rows))

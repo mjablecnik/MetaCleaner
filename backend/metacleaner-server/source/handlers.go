@@ -667,6 +667,7 @@ func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *W
 func HandleListReports(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
+		keyID := KeyIDFromContext(r.Context())
 		reports, err := db.ListReports(r.Context(), userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch reports")
@@ -674,6 +675,9 @@ func HandleListReports(db *SupabaseClient) http.HandlerFunc {
 		}
 		if reports == nil {
 			reports = []ReportSummary{}
+		}
+		if keyID != "" {
+			slog.Info("list-reports", "userID", userID, "keyID", keyID, "reportCount", len(reports))
 		}
 		stats := CalculateReportSummary(reports)
 		w.Header().Set("Content-Type", "application/json")

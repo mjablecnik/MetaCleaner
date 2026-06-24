@@ -137,11 +137,24 @@ func (c *SupabaseClient) RevokeAPIKey(ctx context.Context, keyID, userID string)
 // LookupAPIKeyByHash finds an active API key by its SHA-256 hash.
 // Returns nil if no active key matches.
 func (c *SupabaseClient) LookupAPIKeyByHash(ctx context.Context, hash string) (*APIKey, error) {
-	var rows []dbAPIKey
 	url := c.restURL("api_keys?key_hash=eq." + hash + "&status=eq.active&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
-		return nil, fmt.Errorf("lookup api key by hash: %w", err)
+
+	// Retry up to 2 additional times on empty result to handle Supabase cold start
+	// where PostgREST may return empty before the DB connection is fully warm.
+	var rows []dbAPIKey
+	for attempt := 0; attempt < 3; attempt++ {
+		rows = nil
+		if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+			return nil, fmt.Errorf("lookup api key by hash: %w", err)
+		}
+		if len(rows) > 0 {
+			break
+		}
+		if attempt < 2 {
+			time.Sleep(200 * time.Millisecond)
+		}
 	}
+
 	if len(rows) == 0 {
 		return nil, nil
 	}
