@@ -17,9 +17,16 @@
 	let open = $state(untrack(() => initialOpen));
 
 	$effect(() => {
-		if (forceOpen && !open) {
-			open = true;
-			onToggle?.(endpoint.id, true);
+		if (forceOpen) {
+			// untrack prevents `open` from being a dependency of this effect.
+			// Without it, closing the card (open=false) would re-trigger the effect
+			// while forceOpen is still true, immediately re-opening the card.
+			untrack(() => {
+				if (!open) {
+					open = true;
+					onToggle?.(endpoint.id, true);
+				}
+			});
 		}
 	});
 

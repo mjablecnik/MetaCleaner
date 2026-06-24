@@ -282,3 +282,51 @@ test.describe('Docs sidebar highlight — sequential sidebar clicks', () => {
 		await expect(page.locator('#ep-upload .border-t')).toBeVisible();
 	});
 });
+
+test.describe('Docs sidebar highlight — closing hash-opened card', () => {
+	test('card opened via hash URL can be closed by clicking its header', async ({ page }) => {
+		await goToDocs(page, '/docs/endpoints#ep-upload');
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Close the card by clicking its header
+		await page.locator('#ep-upload > button').click();
+
+		// Card must stay closed
+		await expect(page.locator('#ep-upload .border-t')).not.toBeVisible();
+
+		// Sidebar entry must be de-highlighted
+		await expect(page.locator('aside a[href*="#ep-upload"]')).not.toHaveClass(/font-semibold/);
+	});
+
+	test('card opened via sidebar click can be closed even while hash points to it', async ({
+		page
+	}) => {
+		await goToDocs(page, '/docs/endpoints#ep-upload');
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Close ep-upload
+		await page.locator('#ep-upload > button').click();
+		await expect(page.locator('#ep-upload .border-t')).not.toBeVisible();
+
+		// Open another card via sidebar — should work normally
+		await page.locator('aside a[href*="#ep-clean"]').click();
+		await expect(page.locator('#ep-clean .border-t')).toBeVisible({ timeout: 5000 });
+
+		// ep-upload must remain closed
+		await expect(page.locator('#ep-upload .border-t')).not.toBeVisible();
+	});
+
+	test('card opened via hash can be re-opened after being manually closed', async ({ page }) => {
+		await goToDocs(page, '/docs/endpoints#ep-upload');
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible({ timeout: 5000 });
+
+		// Close it
+		await page.locator('#ep-upload > button').click();
+		await expect(page.locator('#ep-upload .border-t')).not.toBeVisible();
+
+		// Re-open it by clicking header again
+		await page.locator('#ep-upload > button').click();
+		await expect(page.locator('#ep-upload .border-t')).toBeVisible();
+		await expect(page.locator('aside a[href*="#ep-upload"]')).toHaveClass(/font-semibold/);
+	});
+});
