@@ -380,6 +380,13 @@ func (m *AuthMiddleware) Middleware(next http.Handler) http.Handler {
 					}
 				}
 
+				// Endpoint access control — API keys can only access whitelisted paths
+				if !isAllowedForAPIKey(r.URL.Path) {
+					WriteError(w, http.StatusForbidden, ErrAPIKeyForbidden,
+						"this endpoint is not available for API key authentication")
+					return
+				}
+
 				// Update last_used_at asynchronously — failure is non-fatal
 				go func() {
 					if updateErr := m.db.UpdateAPIKeyLastUsed(context.Background(), keyID); updateErr != nil {
@@ -426,6 +433,29 @@ func isExemptPath(path string) bool {
 		path == "/api/health" ||
 		path == "/api/billing/webhook" ||
 		strings.HasPrefix(path, "/.well-known/")
+}
+
+// --- API Key endpoint access control ---
+
+// apiKeyAllowedPrefixes defines which URL path prefixes are accessible via API key authentication.
+// All other endpoints require JWT (app session) authentication.
+var apiKeyAllowedPrefixes = []string{
+	"/api/upload",
+	"/api/jobs",
+	"/api/files/",
+	"/api/reports",
+	"/api/health",
+	"/api/public/",
+}
+
+// isAllowedForAPIKey checks whether the given path is accessible for API key authenticated requests.
+func isAllowedForAPIKey(path string) bool {
+	for _, prefix := range apiKeyAllowedPrefixes {
+		if path == prefix || strings.HasPrefix(path, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 // authError carries an error code and human-readable message for auth failures.
