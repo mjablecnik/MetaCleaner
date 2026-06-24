@@ -1,5 +1,5 @@
 <script lang="ts">
-	type Method = 'GET' | 'POST' | 'DEL' | 'PATCH' | 'PUT';
+	type Method = 'GET' | 'POST' | 'DEL' | 'PATCH' | 'PUT' | 'WS';
 	type Size = 'sm' | 'md';
 
 	interface Props {
@@ -14,7 +14,8 @@
 		GET: 'bg-brand-green/10 border-brand-green/30 text-brand-green',
 		DEL: 'bg-brand-red/10 border-brand-red/30 text-brand-red',
 		PATCH: 'bg-brand-orange/10 border-brand-orange/30 text-brand-orange',
-		PUT: 'bg-brand-orange/10 border-brand-orange/30 text-brand-orange'
+		PUT: 'bg-brand-orange/10 border-brand-orange/30 text-brand-orange',
+		WS: 'bg-purple-500/10 border-purple-500/30 text-purple-400'
 	};
 
 	const sizeMap: Record<Size, string> = {

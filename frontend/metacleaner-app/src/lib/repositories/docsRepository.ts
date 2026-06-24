@@ -48,9 +48,21 @@ export interface EndpointResponse {
 	body: string;
 }
 
+export interface WsMessageType {
+	type: string;
+	descriptionKey: string;
+	exampleBody: string;
+}
+
+export interface WsLifecycleStep {
+	number: number;
+	titleKey: string;
+	descriptionKey: string;
+}
+
 export interface EndpointData {
 	id: string;
-	method: 'GET' | 'POST' | 'DEL';
+	method: 'GET' | 'POST' | 'DEL' | 'WS';
 	path: string;
 	shortDescriptionKey: string;
 	descriptionKey: string;
@@ -62,6 +74,9 @@ export interface EndpointData {
 	responses: EndpointResponse[];
 	isMinimal?: boolean;
 	placeholderKey?: string;
+	protocol?: 'rest' | 'websocket';
+	wsMessages?: WsMessageType[];
+	wsLifecycle?: WsLifecycleStep[];
 }
 
 export interface SidebarSection {
@@ -72,7 +87,7 @@ export interface SidebarSection {
 
 export interface SidebarEndpoint {
 	id: string;
-	method: 'GET' | 'POST' | 'DEL';
+	method: 'GET' | 'POST' | 'DEL' | 'WS';
 	label: string;
 	group: 'fileProcessing' | 'reports' | 'account' | 'system';
 }
@@ -103,7 +118,7 @@ export function getSidebarEndpoints(): SidebarEndpoint[] {
 		{ id: 'ep-upload', method: 'POST', label: 'Upload', group: 'fileProcessing' },
 		{ id: 'ep-clean', method: 'POST', label: 'Create Job', group: 'fileProcessing' },
 		{ id: 'ep-status', method: 'GET', label: 'Job Status', group: 'fileProcessing' },
-		{ id: 'ep-job-progress', method: 'GET', label: 'Job Progress', group: 'fileProcessing' },
+		{ id: 'ep-job-progress', method: 'WS', label: 'Job Progress', group: 'fileProcessing' },
 		{ id: 'ep-job-download', method: 'GET', label: 'Job Download', group: 'fileProcessing' },
 		{ id: 'ep-download', method: 'GET', label: 'File Download', group: 'fileProcessing' },
 		{ id: 'ep-reports-list', method: 'GET', label: 'List Reports', group: 'reports' },
@@ -435,10 +450,11 @@ export function getEndpoints(): EndpointData[] {
 		},
 		{
 			id: 'ep-job-progress',
-			method: 'GET',
+			method: 'WS',
 			path: '/api/jobs/{id}/progress',
 			shortDescriptionKey: 'docs.endpoint.jobProgress.short',
 			descriptionKey: 'docs.endpoint.jobProgress.desc',
+			protocol: 'websocket',
 			headers: {
 				id: 'job-progress-headers',
 				code: 'Authorization: Bearer YOUR_API_KEY (via ?token= query parameter)',
@@ -466,66 +482,179 @@ export function getEndpoints(): EndpointData[] {
 				'job_error',
 				'report_ready'
 			],
+			wsLifecycle: [
+				{
+					number: 1,
+					titleKey: 'docs.endpoint.jobProgress.lifecycle.connect.title',
+					descriptionKey: 'docs.endpoint.jobProgress.lifecycle.connect.desc'
+				},
+				{
+					number: 2,
+					titleKey: 'docs.endpoint.jobProgress.lifecycle.receive.title',
+					descriptionKey: 'docs.endpoint.jobProgress.lifecycle.receive.desc'
+				},
+				{
+					number: 3,
+					titleKey: 'docs.endpoint.jobProgress.lifecycle.complete.title',
+					descriptionKey: 'docs.endpoint.jobProgress.lifecycle.complete.desc'
+				},
+				{
+					number: 4,
+					titleKey: 'docs.endpoint.jobProgress.lifecycle.disconnect.title',
+					descriptionKey: 'docs.endpoint.jobProgress.lifecycle.disconnect.desc'
+				}
+			],
+			wsMessages: [
+				{
+					type: 'file_progress',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.fileProgress.desc',
+					exampleBody: `{
+  "type": "file_progress",
+  "fileId": "f-a1b2c3d4",
+  "status": "in_progress",
+  "progress": 45,
+  "fieldsRemoved": 12,
+  "gpsRemoved": false,
+  "overallProgress": 25,
+  "filesCompleted": 0,
+  "totalFiles": 4,
+  "currentFileId": "f-a1b2c3d4",
+  "totalTimeMs": 0
+}`
+				},
+				{
+					type: 'file_complete',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.fileComplete.desc',
+					exampleBody: `{
+  "type": "file_complete",
+  "fileId": "f-a1b2c3d4",
+  "status": "done",
+  "progress": 100,
+  "fieldsRemoved": 38,
+  "gpsRemoved": true,
+  "overallProgress": 50,
+  "filesCompleted": 1,
+  "totalFiles": 4,
+  "totalTimeMs": 1250
+}`
+				},
+				{
+					type: 'file_error',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.fileError.desc',
+					exampleBody: `{
+  "type": "file_error",
+  "fileId": "f-e5f6g7h8",
+  "status": "error",
+  "errorCode": "PROCESSING_FAILED",
+  "message": "ExifTool returned non-zero exit code",
+  "overallProgress": 75,
+  "filesCompleted": 2,
+  "totalFiles": 4,
+  "totalTimeMs": 3200
+}`
+				},
+				{
+					type: 'job_complete',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.jobComplete.desc',
+					exampleBody: `{
+  "type": "job_complete",
+  "jobId": "uuid-job-123",
+  "overallProgress": 100,
+  "filesCompleted": 4,
+  "totalFiles": 4,
+  "fieldsRemoved": 87,
+  "gpsLocationsRemoved": 3,
+  "totalTimeMs": 4800,
+  "reportId": "uuid-report-456"
+}`
+				},
+				{
+					type: 'job_error',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.jobError.desc',
+					exampleBody: `{
+  "type": "job_error",
+  "jobId": "uuid-job-123",
+  "errorCode": "PIPELINE_FAILED",
+  "message": "Job processing failed unexpectedly",
+  "totalTimeMs": 2100
+}`
+				},
+				{
+					type: 'report_ready',
+					descriptionKey: 'docs.endpoint.jobProgress.ws.reportReady.desc',
+					exampleBody: `{
+  "type": "report_ready",
+  "jobId": "uuid-job-123",
+  "reportId": "uuid-report-456"
+}`
+				}
+			],
 			curlExample: {
 				id: 'job-progress-curl',
 				code: `const ws = new WebSocket(
   'wss://api.metacleaner.com/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
 );
+
+ws.onopen = () => {
+  console.log('Connected to job progress stream');
+};
+
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log(data.type, data.overallProgress);
+  switch (data.type) {
+    case 'file_progress':
+      console.log(\`File \${data.fileId}: \${data.overallProgress}%\`);
+      break;
+    case 'file_complete':
+      console.log(\`File \${data.fileId} done, \${data.fieldsRemoved} fields removed\`);
+      break;
+    case 'job_complete':
+      console.log(\`Job done! Report: \${data.reportId}\`);
+      ws.close();
+      break;
+    case 'file_error':
+    case 'job_error':
+      console.error(\`Error: \${data.message}\`);
+      break;
+  }
+};
+
+ws.onclose = () => {
+  console.log('Connection closed');
 };`,
 				displayHtml: `const ws = new WebSocket(
   'wss://api.metacleaner.com/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
 );
+
+ws.onopen = () => {
+  console.log('Connected to job progress stream');
+};
+
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log(data.type, data.overallProgress);
+  switch (data.type) {
+    case 'file_progress':
+      console.log(\`File \${data.fileId}: \${data.overallProgress}%\`);
+      break;
+    case 'file_complete':
+      console.log(\`File \${data.fileId} done, \${data.fieldsRemoved} fields removed\`);
+      break;
+    case 'job_complete':
+      console.log(\`Job done! Report: \${data.reportId}\`);
+      ws.close();
+      break;
+    case 'file_error':
+    case 'job_error':
+      console.error(\`Error: \${data.message}\`);
+      break;
+  }
+};
+
+ws.onclose = () => {
+  console.log('Connection closed');
 };`
 			},
 			responses: [
-				{
-					status: 200,
-					labelKey: 'docs.endpoint.jobProgress.response.fileProgress.label',
-					variant: 'success',
-					body: `{
-  "type": "file_progress",
-  "fileId": "f_abc123xyz",
-  "status": "processing",
-  "overallProgress": 45,
-  "fieldsRemoved": 12,
-  "filesCompleted": 0,
-  "totalFiles": 2
-}`
-				},
-				{
-					status: 200,
-					labelKey: 'docs.endpoint.jobProgress.response.fileComplete.label',
-					variant: 'success',
-					body: `{
-  "type": "file_complete",
-  "fileId": "f_abc123xyz",
-  "status": "completed",
-  "overallProgress": 50,
-  "fieldsRemoved": 38,
-  "filesCompleted": 1,
-  "totalFiles": 2
-}`
-				},
-				{
-					status: 200,
-					labelKey: 'docs.endpoint.jobProgress.response.jobComplete.label',
-					variant: 'success',
-					body: `{
-  "type": "job_complete",
-  "fileId": "",
-  "status": "completed",
-  "overallProgress": 100,
-  "fieldsRemoved": 76,
-  "filesCompleted": 2,
-  "totalFiles": 2
-}`
-				},
 				{
 					status: 401,
 					labelKey: 'docs.endpoint.jobProgress.response.error401.label',

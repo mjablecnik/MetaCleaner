@@ -87,7 +87,7 @@
 {/snippet}
 
 <nav
-	class="sticky top-0 z-50 w-full border-b border-gray-800/50 bg-navy-main lg:static lg:border-0"
+	class="sticky top-0 z-50 w-full border-b border-gray-800/50 bg-navy-main lg:border-0"
 	class:no-print={noPrint}
 >
 	<div

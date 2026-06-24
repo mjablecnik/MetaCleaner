@@ -45,7 +45,7 @@
 	]);
 </script>
 
-<div class="mx-auto w-full max-w-[1200px] px-4 lg:px-6">
+<div class="mx-auto w-full max-w-[1100px] px-4 lg:px-6">
 	<!-- Page header: API badge + version -->
 	<div class="flex items-center gap-3 py-4 lg:py-6">
 		<div
@@ -112,7 +112,7 @@
 						</a>
 						{#each sidebarEndpoints as ep (ep.id)}
 							<a
-								href={resolve('/docs/endpoints')}
+								href={resolve('/docs/endpoints') + '#' + ep.id}
 								class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
 									{activeId === 'ep-endpoints' ? 'text-text-muted/80' : 'text-text-muted hover:text-white'}"
 							>
