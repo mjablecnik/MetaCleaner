@@ -9,18 +9,24 @@
 		endpoint: EndpointData;
 		initialOpen?: boolean;
 		forceOpen?: boolean;
+		onToggle?: (id: string, isOpen: boolean) => void;
 	}
 
-	const { endpoint, initialOpen = false, forceOpen = false }: Props = $props();
+	const { endpoint, initialOpen = false, forceOpen = false, onToggle }: Props = $props();
 
 	let open = $state(untrack(() => initialOpen));
 
-	// React to forceOpen changes (e.g., when sidebar link is clicked)
 	$effect(() => {
-		if (forceOpen) {
+		if (forceOpen && !open) {
 			open = true;
+			onToggle?.(endpoint.id, true);
 		}
 	});
+
+	function toggle() {
+		open = !open;
+		onToggle?.(endpoint.id, open);
+	}
 
 	const isWebSocket = $derived(endpoint.protocol === 'websocket');
 
@@ -53,7 +59,7 @@
 >
 	<!-- Collapsible header -->
 	<button
-		onclick={() => (open = !open)}
+		onclick={toggle}
 		class="flex w-full items-center gap-3 bg-navy-card px-5 py-4 text-left"
 	>
 		<MethodBadge method={endpoint.method} size="md" />

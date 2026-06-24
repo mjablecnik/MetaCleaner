@@ -2,6 +2,7 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { setContext } from 'svelte';
 	import MethodBadge from '$lib/shared/elements/MethodBadge.svelte';
 	import {
 		getDocsConfig,
@@ -30,12 +31,22 @@
 		return 'sec-intro';
 	});
 
-	// Track which endpoint is currently active (from URL hash)
-	const activeEndpointId = $derived(
-		page.url.pathname === '/docs/endpoints' && page.url.hash
-			? page.url.hash.slice(1)
-			: ''
-	);
+	let openEndpointIds = $state<Set<string>>(new Set());
+
+	setContext('openEndpoints', {
+		get ids() {
+			return openEndpointIds;
+		},
+		update(newIds: Set<string>) {
+			openEndpointIds = newIds;
+		}
+	});
+
+	$effect(() => {
+		if (page.url.pathname !== '/docs/endpoints') {
+			openEndpointIds = new Set();
+		}
+	});
 
 	const mobileNavItems = $derived(
 		sidebarSections.map((s) => ({
@@ -107,7 +118,7 @@
 							<a
 								href={resolve('/docs/endpoints') + '#' + ep.id}
 								class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
-									{activeEndpointId === ep.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
+									{openEndpointIds.has(ep.id) ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 							>
 								<MethodBadge method={ep.method} size="sm" />
 								<span class="truncate">{ep.label}</span>
