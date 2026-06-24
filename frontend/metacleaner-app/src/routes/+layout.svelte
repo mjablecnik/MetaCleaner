@@ -55,7 +55,7 @@
 				logoHref: '/' as string | undefined,
 				compact: true,
 				showLangDropdown: true,
-				showBackButton: true,
+				showBackButton: false,
 				backHref: '/',
 				backLabel: tx('reports.nav.backToCleaning')
 			};
@@ -65,7 +65,7 @@
 				logoHref: '/' as string | undefined,
 				compact: true,
 				showLangDropdown: true,
-				showBackButton: true,
+				showBackButton: false,
 				backAction: () => history.back(),
 				backLabel: tx('report.nav.backToResults'),
 				reducedDesktopPadding: true,

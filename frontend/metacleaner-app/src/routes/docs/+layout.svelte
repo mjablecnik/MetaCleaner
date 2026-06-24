@@ -80,7 +80,7 @@
 	<!-- Desktop layout: sticky sidebar + scrollable content -->
 	<div class="flex items-start gap-8">
 		<!-- Sidebar (desktop only) — sticky so it stays visible during scroll -->
-		<aside class="hidden lg:block">
+		<aside class="hidden self-start lg:block">
 			<nav class="sticky top-[88px] w-56 shrink-0">
 				<ul class="flex flex-col gap-0.5">
 					{#each sidebarSections as section (section.id)}

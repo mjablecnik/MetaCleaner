@@ -4,6 +4,7 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { locale, switchLocale } from '$lib/locale.svelte';
+	import { page } from '$app/state';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
 	import LanguageDropdown from './LanguageDropdown.svelte';
@@ -66,6 +67,14 @@
 		if (!t.closest('#nav-langDropdown')) langDropdownOpen = false;
 		if (!t.closest('#nav-userDropdown')) userDropdownOpen = false;
 	}
+
+	// Close all menus/dropdowns on route change
+	$effect(() => {
+		void page.url.pathname;
+		userDropdownOpen = false;
+		langDropdownOpen = false;
+		hamburgerMenuOpen = false;
+	});
 
 	onMount(() => {
 		document.addEventListener('click', handleClickOutside);
