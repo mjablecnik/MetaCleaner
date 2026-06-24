@@ -69,12 +69,15 @@
 					/(?<=[[,]\s*)(&quot;|")((?:[^"\\]|\\.)*)(&quot;|")/g,
 					'<span class="text-brand-green">"$2"</span>'
 				);
-				// Highlight numbers
-				result = result.replace(/:\s*(\d+\.?\d*)/g, ': <span class="text-brand-green">$1</span>');
-				// Highlight booleans and null
+				// Highlight numbers (only bare values after colon, not inside already-highlighted strings)
 				result = result.replace(
-					/:\s*(true|false|null)\b/g,
-					': <span class="text-brand-orange">$1</span>'
+					/(<\/span>)(\s*:\s*)(\d+\.?\d*)/g,
+					'$1$2<span class="text-brand-green">$3</span>'
+				);
+				// Highlight booleans and null (only bare values after colon)
+				result = result.replace(
+					/(<\/span>)(\s*:\s*)(true|false|null)\b/g,
+					'$1$2<span class="text-brand-orange">$3</span>'
 				);
 				// Highlight punctuation (braces, brackets, commas, colons) in gray
 				result = result.replace(
