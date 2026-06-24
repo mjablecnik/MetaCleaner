@@ -694,5 +694,16 @@
 	"docs.endpoint.account.response.error401.label": "401 Unauthorized",
 	"docs.endpoint.health.desc": "Returns the service health status and version information. This endpoint does not require authentication and can be used for uptime monitoring.",
 	"docs.endpoint.health.response.success.label": "200 OK",
-	"docs.endpoint.health.response.error.label": "503 Service Unavailable"
+	"docs.endpoint.health.response.error.label": "503 Service Unavailable",
+	"docs.endpoint.upload.short": "Upload files for cleaning",
+	"docs.endpoint.clean.short": "Create a cleaning job",
+	"docs.endpoint.status.short": "Get job status",
+	"docs.endpoint.jobProgress.short": "Real-time progress (WebSocket)",
+	"docs.endpoint.jobDownload.short": "Download cleaned files (ZIP)",
+	"docs.endpoint.download.short": "Download a single file",
+	"docs.endpoint.reportsList.short": "List cleaning reports",
+	"docs.endpoint.reportDetail.short": "Get report detail",
+	"docs.endpoint.reportPdf.short": "Get PDF download URL",
+	"docs.endpoint.account.short": "Get account info",
+	"docs.endpoint.health.short": "Service health check"
 }

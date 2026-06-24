@@ -42,7 +42,7 @@
 	>
 		<MethodBadge method={endpoint.method} size="md" />
 		<code class="min-w-0 flex-1 truncate font-mono text-sm text-white">{endpoint.path}</code>
-		<span class="hidden text-xs text-text-muted lg:block">{tx(endpoint.descriptionKey)}</span>
+		<span class="hidden text-xs text-text-muted lg:block">{tx(endpoint.shortDescriptionKey)}</span>
 		<i
 			class="fa-solid fa-chevron-down ml-2 flex-shrink-0 text-xs text-text-muted transition-transform duration-200 {open
 				? 'rotate-180'

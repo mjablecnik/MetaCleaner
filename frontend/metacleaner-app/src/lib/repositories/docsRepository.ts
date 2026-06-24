@@ -52,6 +52,7 @@ export interface EndpointData {
 	id: string;
 	method: 'GET' | 'POST' | 'DEL';
 	path: string;
+	shortDescriptionKey: string;
 	descriptionKey: string;
 	headers: CodeExample;
 	params: EndpointParam[];
@@ -254,6 +255,7 @@ export function getEndpoints(): EndpointData[] {
 			id: 'ep-upload',
 			method: 'POST',
 			path: '/api/upload',
+			shortDescriptionKey: 'docs.endpoint.upload.short',
 			descriptionKey: 'docs.endpoint.upload.desc',
 			headers: {
 				id: 'upload-headers',
@@ -307,6 +309,7 @@ export function getEndpoints(): EndpointData[] {
 			id: 'ep-clean',
 			method: 'POST',
 			path: '/api/jobs',
+			shortDescriptionKey: 'docs.endpoint.clean.short',
 			descriptionKey: 'docs.endpoint.clean.desc',
 			headers: {
 				id: 'clean-headers',
@@ -380,6 +383,7 @@ export function getEndpoints(): EndpointData[] {
 			id: 'ep-status',
 			method: 'GET',
 			path: '/api/jobs/{id}',
+			shortDescriptionKey: 'docs.endpoint.status.short',
 			descriptionKey: 'docs.endpoint.status.desc',
 			headers: {
 				id: 'status-headers',
@@ -433,6 +437,7 @@ export function getEndpoints(): EndpointData[] {
 			id: 'ep-job-progress',
 			method: 'GET',
 			path: '/api/jobs/{id}/progress',
+			shortDescriptionKey: 'docs.endpoint.jobProgress.short',
 			descriptionKey: 'docs.endpoint.jobProgress.desc',
 			headers: {
 				id: 'job-progress-headers',
@@ -545,6 +550,7 @@ ws.onmessage = (event) => {
 			id: 'ep-job-download',
 			method: 'GET',
 			path: '/api/jobs/{id}/download',
+			shortDescriptionKey: 'docs.endpoint.jobDownload.short',
 			descriptionKey: 'docs.endpoint.jobDownload.desc',
 			headers: {
 				id: 'job-download-headers',
@@ -593,6 +599,7 @@ Content-Disposition: attachment; filename="cleaned.zip"
 			id: 'ep-download',
 			method: 'GET',
 			path: '/api/files/{id}/download',
+			shortDescriptionKey: 'docs.endpoint.download.short',
 			descriptionKey: 'docs.endpoint.download.desc',
 			headers: {
 				id: 'download-headers',
@@ -642,6 +649,7 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			id: 'ep-reports-list',
 			method: 'GET',
 			path: '/api/reports',
+			shortDescriptionKey: 'docs.endpoint.reportsList.short',
 			descriptionKey: 'docs.endpoint.reportsList.desc',
 			headers: {
 				id: 'reports-list-headers',
@@ -687,6 +695,7 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			id: 'ep-report-detail',
 			method: 'GET',
 			path: '/api/reports/{id}',
+			shortDescriptionKey: 'docs.endpoint.reportDetail.short',
 			descriptionKey: 'docs.endpoint.reportDetail.desc',
 			headers: {
 				id: 'report-detail-headers',
@@ -745,6 +754,7 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			id: 'ep-report-pdf',
 			method: 'GET',
 			path: '/api/reports/{id}/pdf',
+			shortDescriptionKey: 'docs.endpoint.reportPdf.short',
 			descriptionKey: 'docs.endpoint.reportPdf.desc',
 			headers: {
 				id: 'report-pdf-headers',
@@ -791,6 +801,7 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			id: 'ep-account',
 			method: 'GET',
 			path: '/api/account',
+			shortDescriptionKey: 'docs.endpoint.account.short',
 			descriptionKey: 'docs.endpoint.account.desc',
 			headers: {
 				id: 'account-headers',
@@ -832,6 +843,7 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			id: 'ep-health',
 			method: 'GET',
 			path: '/api/health',
+			shortDescriptionKey: 'docs.endpoint.health.short',
 			descriptionKey: 'docs.endpoint.health.desc',
 			headers: {
 				id: 'health-headers',

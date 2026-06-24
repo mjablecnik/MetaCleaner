@@ -694,5 +694,16 @@
 	"docs.endpoint.account.response.error401.label": "401 Unauthorized",
 	"docs.endpoint.health.desc": "Vrátí stav služby a informace o verzi. Tento endpoint nevyžaduje autentizaci a lze jej použít pro monitoring dostupnosti.",
 	"docs.endpoint.health.response.success.label": "200 OK",
-	"docs.endpoint.health.response.error.label": "503 Service Unavailable"
+	"docs.endpoint.health.response.error.label": "503 Service Unavailable",
+	"docs.endpoint.upload.short": "Nahrát soubory k vyčištění",
+	"docs.endpoint.clean.short": "Vytvořit čisticí úlohu",
+	"docs.endpoint.status.short": "Zjistit stav úlohy",
+	"docs.endpoint.jobProgress.short": "Průběh v reálném čase (WebSocket)",
+	"docs.endpoint.jobDownload.short": "Stáhnout vyčištěné soubory (ZIP)",
+	"docs.endpoint.download.short": "Stáhnout jeden soubor",
+	"docs.endpoint.reportsList.short": "Seznam reportů",
+	"docs.endpoint.reportDetail.short": "Detail reportu",
+	"docs.endpoint.reportPdf.short": "URL ke stažení PDF",
+	"docs.endpoint.account.short": "Informace o účtu",
+	"docs.endpoint.health.short": "Stav služby"
 }
