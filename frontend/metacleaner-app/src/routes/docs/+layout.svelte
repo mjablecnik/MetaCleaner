@@ -65,7 +65,7 @@
 	<div class="mb-4 flex gap-1 overflow-x-auto lg:hidden">
 		{#each mobileNavItems as item (item.id)}
 			<a
-				href={resolve(item.href)}
+				href={resolve(item.href as any)}
 				class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors duration-200
 					{activeId === item.id
 					? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue'
@@ -86,7 +86,7 @@
 					{#each sidebarSections as section (section.id)}
 						<li>
 							<a
-								href={resolve(sectionRouteMap[section.id] ?? '/docs')}
+								href={resolve((sectionRouteMap[section.id] ?? '/docs') as any)}
 								class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200
 									{activeId === section.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 							>
