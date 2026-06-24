@@ -78,14 +78,39 @@
 	}
 
 	async function copyKey() {
-		try {
-			await navigator.clipboard.writeText(createdKey);
+		const text = createdKey;
+		let success = false;
+
+		if (navigator.clipboard && window.isSecureContext) {
+			try {
+				await navigator.clipboard.writeText(text);
+				success = true;
+			} catch {
+				success = false;
+			}
+		}
+
+		if (!success) {
+			try {
+				const textarea = document.createElement('textarea');
+				textarea.value = text;
+				textarea.style.position = 'fixed';
+				textarea.style.left = '-9999px';
+				textarea.style.opacity = '0';
+				document.body.appendChild(textarea);
+				textarea.select();
+				success = document.execCommand('copy');
+				document.body.removeChild(textarea);
+			} catch {
+				success = false;
+			}
+		}
+
+		if (success) {
 			copySuccess = true;
 			setTimeout(() => {
 				copySuccess = false;
 			}, 2000);
-		} catch {
-			// Clipboard write failed silently
 		}
 	}
 </script>

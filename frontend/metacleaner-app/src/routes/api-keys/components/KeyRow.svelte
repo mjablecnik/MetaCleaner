@@ -12,14 +12,10 @@
 
 	const { apiKey, onDelete, onRevoke }: Props = $props();
 
-	let isRevealed = $state(false);
-	let copySuccess = $state(false);
-	let copyError = $state(false);
 	let isRevoking = $state(false);
 	let revokeError = $state<string | null>(null);
 
-	const keyDisplayHint = $derived(`${apiKey.key_prefix}${'•'.repeat(22)}${apiKey.key_suffix}`);
-	const maskedDisplay = '•'.repeat(34);
+	const keyDisplayHint = $derived(`${apiKey.key_prefix}${'•'.repeat(18)}${apiKey.key_suffix}`);
 
 	const isActive = $derived(apiKey.status === 'active');
 
@@ -30,22 +26,6 @@
 			month: 'short',
 			year: 'numeric'
 		});
-	}
-
-	async function copyKey() {
-		copyError = false;
-		try {
-			await navigator.clipboard.writeText(keyDisplayHint);
-			copySuccess = true;
-			setTimeout(() => {
-				copySuccess = false;
-			}, 2000);
-		} catch {
-			copyError = true;
-			setTimeout(() => {
-				copyError = false;
-			}, 2000);
-		}
 	}
 
 	async function handleRevoke() {
@@ -103,35 +83,9 @@
 	<div class="flex flex-shrink-0 flex-wrap items-center gap-2">
 		<div class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-main px-3 py-2">
 			<span class="font-mono text-xs text-text-muted">
-				{isRevealed ? keyDisplayHint : maskedDisplay}
+				{keyDisplayHint}
 			</span>
-			{#if isActive}
-				<button
-					onclick={() => (isRevealed = !isRevealed)}
-					class="ml-1 text-text-muted transition-colors hover:text-white"
-					aria-label={isRevealed ? 'Hide key' : 'Show key'}
-				>
-					<i class="fa-solid {isRevealed ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i>
-				</button>
-			{/if}
 		</div>
-		{#if copyError}
-			<span class="text-xs text-brand-red">Copy failed</span>
-		{/if}
-		<button
-			onclick={copyKey}
-			disabled={!isActive}
-			title="Copy"
-			class="rounded-lg border p-2 text-xs transition-all {isActive
-				? 'border-gray-700 bg-navy-lighter text-text-muted hover:border-gray-600 hover:text-white'
-				: 'cursor-not-allowed border-gray-700 bg-navy-lighter text-gray-600'}"
-		>
-			{#if copySuccess}
-				<i class="fa-solid fa-check text-brand-green"></i>
-			{:else}
-				<i class="fa-solid fa-copy"></i>
-			{/if}
-		</button>
 		{#if isActive}
 			<button
 				onclick={handleRevoke}
