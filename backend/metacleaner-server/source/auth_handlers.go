@@ -79,14 +79,13 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 			LastName:         strings.TrimSpace(req.LastName),
 			Email:            req.Email,
 			SubscriptionType: "free",
-			Credits:          3,
 		}); err != nil {
 			LoggerFromContext(r.Context()).Warn("register: failed to create profile", "userId", user.ID, "error", err)
 			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
 			return
 		}
 
-		// Provision initial trial credits in credit_balances table (used by billing system).
+		// Provision initial trial credits in credit_balances table.
 		if err := db.UpsertCreditBalance(r.Context(), user.ID, 3, 0); err != nil {
 			LoggerFromContext(r.Context()).Warn("register: failed to create credit balance", "userId", user.ID, "error", err)
 		}
@@ -449,7 +448,7 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			return
 		}
 
-		// Create profile only for first-time magic link users (empty first/last name, credits=3).
+		// Create profile only for first-time magic link users.
 		existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
 		if existing == nil {
 			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
@@ -458,12 +457,11 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 				LastName:         "",
 				Email:            session.User.Email,
 				SubscriptionType: "free",
-				Credits:          3,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
 
-			// Provision initial trial credits in credit_balances table (used by billing system).
+			// Provision initial trial credits in credit_balances table.
 			if err := db.UpsertCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
 				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}
@@ -618,12 +616,11 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) htt
 				LastName:         lastName,
 				Email:            session.User.Email,
 				SubscriptionType: "free",
-				Credits:          3,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
 
-			// Provision initial trial credits in credit_balances table (used by billing system).
+			// Provision initial trial credits in credit_balances table.
 			if err := db.UpsertCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}

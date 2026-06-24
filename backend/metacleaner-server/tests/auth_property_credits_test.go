@@ -22,22 +22,29 @@ import (
 	src "metacleaner-server/source"
 )
 
-// creditsCallTracker records calls to Supabase REST profile endpoints so tests
-// can assert that credits=3 is set exactly once and never modified.
+// creditsCallTracker records calls to Supabase REST profile and credit_balances
+// endpoints so tests can assert that the profile is created exactly once and
+// trial credits are provisioned in credit_balances.
 type creditsCallTracker struct {
 	currentUserID string
 	currentEmail  string
 
-	profileCreated bool
-	storedCredits  int
-	createCount    int
-	modifyCount    int // PATCH or PUT on profiles — must stay 0
+	profileCreated       bool
+	creditBalanceCreated bool
+	subCredits           int
+	purchasedCredits     int
+	createCount          int
+	balanceUpsertCount   int
+	modifyCount          int // PATCH or PUT on profiles — must stay 0
 }
 
 func (tr *creditsCallTracker) resetCounts() {
 	tr.profileCreated = false
-	tr.storedCredits = 0
+	tr.creditBalanceCreated = false
+	tr.subCredits = 0
+	tr.purchasedCredits = 0
 	tr.createCount = 0
+	tr.balanceUpsertCount = 0
 	tr.modifyCount = 0
 }
 
@@ -84,7 +91,7 @@ func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) (*src.Supaba
 					{
 						"id": tr.currentUserID, "email": tr.currentEmail,
 						"first_name": "", "last_name": "",
-						"subscription_type": "free", "credits": tr.storedCredits,
+						"subscription_type": "free",
 					},
 				})
 			} else {
@@ -93,10 +100,7 @@ func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) (*src.Supaba
 
 		// CreateProfile (POST /rest/v1/profiles)
 		case strings.HasPrefix(path, "/rest/v1/profiles") && r.Method == http.MethodPost:
-			var profile src.UserProfile
-			json.NewDecoder(r.Body).Decode(&profile)
 			tr.createCount++
-			tr.storedCredits = profile.Credits
 			tr.profileCreated = true
 			w.WriteHeader(http.StatusCreated)
 
@@ -107,8 +111,20 @@ func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) (*src.Supaba
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("[]"))
 
-		// Credit balance upsert — just acknowledge, we don't track these
+		// Credit balance upsert — track the values
 		case strings.HasPrefix(path, "/rest/v1/credit_balances"):
+			if r.Method == http.MethodPost {
+				var body map[string]interface{}
+				json.NewDecoder(r.Body).Decode(&body)
+				if sc, ok := body["subscription_credits"]; ok {
+					tr.subCredits = int(sc.(float64))
+				}
+				if pc, ok := body["purchased_credits"]; ok {
+					tr.purchasedCredits = int(pc.(float64))
+				}
+				tr.balanceUpsertCount++
+				tr.creditBalanceCreated = true
+			}
 			w.WriteHeader(http.StatusCreated)
 			w.Write([]byte("[]"))
 
@@ -147,7 +163,7 @@ func drawUserID(rt *rapid.T) string {
 // --- Property tests ---
 
 // TestProperty_TrialCreditsEmailRegistration verifies that HandleRegister always
-// creates exactly one profile with credits=3, regardless of the user identity.
+// creates exactly one profile and provisions 3 trial credits in credit_balances.
 func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 	tr := &creditsCallTracker{}
 	client, db := newCreditsTrackingClient(t, tr)
@@ -174,8 +190,14 @@ func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 		if tr.createCount != 1 {
 			rt.Fatalf("expected exactly 1 CreateProfile call, got %d", tr.createCount)
 		}
-		if tr.storedCredits != 3 {
-			rt.Fatalf("expected credits=3, got %d", tr.storedCredits)
+		if tr.balanceUpsertCount != 1 {
+			rt.Fatalf("expected exactly 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
+		}
+		if tr.subCredits != 3 {
+			rt.Fatalf("expected subscription_credits=3 in credit_balances, got %d", tr.subCredits)
+		}
+		if tr.purchasedCredits != 0 {
+			rt.Fatalf("expected purchased_credits=0 in credit_balances, got %d", tr.purchasedCredits)
 		}
 		if tr.modifyCount != 0 {
 			rt.Fatalf("expected 0 profile modifications, got %d", tr.modifyCount)
@@ -184,8 +206,8 @@ func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 }
 
 // TestProperty_TrialCreditsOAuthCallback verifies two properties:
-//  1. First OAuth callback (new user) creates exactly one profile with credits=3.
-//  2. Second OAuth callback (returning user) does not create an additional profile.
+//  1. First OAuth callback (new user) creates exactly one profile and provisions 3 credits in credit_balances.
+//  2. Second OAuth callback (returning user) does not create an additional profile or credit balance.
 func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 	tr := &creditsCallTracker{}
 	client, db := newCreditsTrackingClient(t, tr)
@@ -206,12 +228,16 @@ func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 		if tr.createCount != 1 {
 			rt.Fatalf("first OAuth: expected 1 CreateProfile call, got %d", tr.createCount)
 		}
-		if tr.storedCredits != 3 {
-			rt.Fatalf("first OAuth: expected credits=3, got %d", tr.storedCredits)
+		if tr.balanceUpsertCount != 1 {
+			rt.Fatalf("first OAuth: expected 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
+		}
+		if tr.subCredits != 3 {
+			rt.Fatalf("first OAuth: expected subscription_credits=3, got %d", tr.subCredits)
 		}
 
 		// --- Second visit: returning user (profile already exists) ---
 		prevCreate := tr.createCount
+		prevBalance := tr.balanceUpsertCount
 		req2 := oauthCallbackRequest("test-code-456", "test-verifier-def")
 		rr2 := httptest.NewRecorder()
 		handler(rr2, req2)
@@ -220,8 +246,9 @@ func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 			rt.Fatalf("second OAuth: expected no new CreateProfile call, but createCount grew from %d to %d",
 				prevCreate, tr.createCount)
 		}
-		if tr.storedCredits != 3 {
-			rt.Fatalf("second OAuth: credits must still be 3, got %d", tr.storedCredits)
+		if tr.balanceUpsertCount != prevBalance {
+			rt.Fatalf("second OAuth: expected no new credit_balances upsert, but count grew from %d to %d",
+				prevBalance, tr.balanceUpsertCount)
 		}
 		if tr.modifyCount != 0 {
 			rt.Fatalf("expected 0 profile modifications, got %d", tr.modifyCount)
@@ -230,8 +257,8 @@ func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 }
 
 // TestProperty_TrialCreditsMagicLinkCallback verifies two properties:
-//  1. First magic-link callback (new user) creates exactly one profile with credits=3.
-//  2. Second magic-link callback (returning user) does not create an additional profile.
+//  1. First magic-link callback (new user) creates exactly one profile and provisions 3 credits in credit_balances.
+//  2. Second magic-link callback (returning user) does not create an additional profile or credit balance.
 func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 	tr := &creditsCallTracker{}
 	client, db := newCreditsTrackingClient(t, tr)
@@ -251,12 +278,16 @@ func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 		if tr.createCount != 1 {
 			rt.Fatalf("first magic-link: expected 1 CreateProfile call, got %d", tr.createCount)
 		}
-		if tr.storedCredits != 3 {
-			rt.Fatalf("first magic-link: expected credits=3, got %d", tr.storedCredits)
+		if tr.balanceUpsertCount != 1 {
+			rt.Fatalf("first magic-link: expected 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
+		}
+		if tr.subCredits != 3 {
+			rt.Fatalf("first magic-link: expected subscription_credits=3, got %d", tr.subCredits)
 		}
 
 		// --- Second visit: returning user ---
 		prevCreate := tr.createCount
+		prevBalance := tr.balanceUpsertCount
 		req2 := magicLinkCallbackRequest("token-hash-def456")
 		rr2 := httptest.NewRecorder()
 		handler(rr2, req2)
@@ -265,8 +296,9 @@ func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 			rt.Fatalf("second magic-link: expected no new CreateProfile call, but createCount grew from %d to %d",
 				prevCreate, tr.createCount)
 		}
-		if tr.storedCredits != 3 {
-			rt.Fatalf("second magic-link: credits must still be 3, got %d", tr.storedCredits)
+		if tr.balanceUpsertCount != prevBalance {
+			rt.Fatalf("second magic-link: expected no new credit_balances upsert, but count grew from %d to %d",
+				prevBalance, tr.balanceUpsertCount)
 		}
 		if tr.modifyCount != 0 {
 			rt.Fatalf("expected 0 profile modifications, got %d", tr.modifyCount)
@@ -287,10 +319,12 @@ func TestProperty_TrialCreditsNotModifiedByLoginRefresh(t *testing.T) {
 		tr.currentUserID = drawUserID(rt)
 		tr.currentEmail = drawValidEmail(rt)
 		tr.profileCreated = true // simulate existing account
-		tr.storedCredits = 3
+		tr.creditBalanceCreated = true
+		tr.subCredits = 3
 
 		// Capture baseline (should be 0 since we called resetCounts above-ish).
 		tr.createCount = 0
+		tr.balanceUpsertCount = 0
 		tr.modifyCount = 0
 
 		// Login

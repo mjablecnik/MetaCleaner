@@ -65,7 +65,6 @@ type UserProfile struct {
 	LastName         string     `json:"last_name"`
 	Email            string     `json:"email"`
 	SubscriptionType string     `json:"subscription_type"`
-	Credits          int        `json:"credits"`
 	CreatedAt        *time.Time `json:"created_at,omitempty"`
 	UpdatedAt        *time.Time `json:"updated_at,omitempty"`
 }
@@ -395,13 +394,10 @@ func (c *SupabaseAuthClient) GetUser(ctx context.Context, accessToken string) (*
 
 // --- Profile management (uses service role to bypass RLS) ---
 
-// CreateProfile inserts a new row into the profiles table with default free tier and 3 trial credits.
+// CreateProfile inserts a new row into the profiles table with default free tier.
 func (c *SupabaseAuthClient) CreateProfile(ctx context.Context, profile UserProfile) error {
 	if profile.SubscriptionType == "" {
 		profile.SubscriptionType = "free"
-	}
-	if profile.Credits == 0 {
-		profile.Credits = 3
 	}
 	data, _ := json.Marshal(profile)
 	req, err := c.newAdminRequest(ctx, http.MethodPost, c.restURL("profiles"), bytes.NewReader(data))
