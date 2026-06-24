@@ -84,7 +84,7 @@ export interface DocsConfig {
 export function getDocsConfig(): DocsConfig {
 	return {
 		apiVersion: 'v1',
-		baseUrl: 'https://api.metacleaner.com/v1'
+		baseUrl: 'https://api.metacleaner.com'
 	};
 }
 
@@ -270,10 +270,10 @@ export function getEndpoints(): EndpointData[] {
 			],
 			curlExample: {
 				id: 'upload-curl',
-				code: `curl -X POST https://api.metacleaner.com/v1/api/upload \\
+				code: `curl -X POST https://api.metacleaner.com/api/upload \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@photo.jpg"`,
-				displayHtml: `curl -X POST https://api.metacleaner.com/v1/api/upload \\
+				displayHtml: `curl -X POST https://api.metacleaner.com/api/upload \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -F "file=@photo.jpg"`
 			},
@@ -343,11 +343,11 @@ export function getEndpoints(): EndpointData[] {
 			],
 			curlExample: {
 				id: 'clean-curl',
-				code: `curl -X POST https://api.metacleaner.com/v1/api/jobs \\
+				code: `curl -X POST https://api.metacleaner.com/api/jobs \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"file_ids":["f_abc123xyz","f_def456uvw"],"options":{"strip_gps":true,"strip_exif":true}}'`,
-				displayHtml: `curl -X POST https://api.metacleaner.com/v1/api/jobs \\
+				displayHtml: `curl -X POST https://api.metacleaner.com/api/jobs \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"file_ids":["f_abc123xyz","f_def456uvw"],"options":{"strip_gps":true,"strip_exif":true}}'`
@@ -397,9 +397,9 @@ export function getEndpoints(): EndpointData[] {
 			statusValues: ['pending', 'processing', 'completed', 'failed'],
 			curlExample: {
 				id: 'status-curl',
-				code: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw \\
+				code: `curl https://api.metacleaner.com/api/jobs/job_def456uvw \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw \\
+				displayHtml: `curl https://api.metacleaner.com/api/jobs/job_def456uvw \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -464,14 +464,14 @@ export function getEndpoints(): EndpointData[] {
 			curlExample: {
 				id: 'job-progress-curl',
 				code: `const ws = new WebSocket(
-  'wss://api.metacleaner.com/v1/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
+  'wss://api.metacleaner.com/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
 );
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
   console.log(data.type, data.overallProgress);
 };`,
 				displayHtml: `const ws = new WebSocket(
-  'wss://api.metacleaner.com/v1/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
+  'wss://api.metacleaner.com/api/jobs/job_def456uvw/progress?token=YOUR_API_KEY'
 );
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
@@ -561,10 +561,10 @@ ws.onmessage = (event) => {
 			],
 			curlExample: {
 				id: 'job-download-curl',
-				code: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw/download \\
+				code: `curl https://api.metacleaner.com/api/jobs/job_def456uvw/download \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -o cleaned.zip`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/jobs/job_def456uvw/download \\
+				displayHtml: `curl https://api.metacleaner.com/api/jobs/job_def456uvw/download \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -o cleaned.zip`
 			},
@@ -609,10 +609,10 @@ Content-Disposition: attachment; filename="cleaned.zip"
 			],
 			curlExample: {
 				id: 'download-curl',
-				code: `curl https://api.metacleaner.com/v1/api/files/f_ghi789rst/download \\
+				code: `curl https://api.metacleaner.com/api/files/f_ghi789rst/download \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -o cleaned_photo.jpg`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/files/f_ghi789rst/download \\
+				displayHtml: `curl https://api.metacleaner.com/api/files/f_ghi789rst/download \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -o cleaned_photo.jpg`
 			},
@@ -651,9 +651,9 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			params: [],
 			curlExample: {
 				id: 'reports-list-curl',
-				code: `curl https://api.metacleaner.com/v1/api/reports \\
+				code: `curl https://api.metacleaner.com/api/reports \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/reports \\
+				displayHtml: `curl https://api.metacleaner.com/api/reports \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -703,9 +703,9 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			],
 			curlExample: {
 				id: 'report-detail-curl',
-				code: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123 \\
+				code: `curl https://api.metacleaner.com/api/reports/rpt_abc123 \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123 \\
+				displayHtml: `curl https://api.metacleaner.com/api/reports/rpt_abc123 \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -761,9 +761,9 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			],
 			curlExample: {
 				id: 'report-pdf-curl',
-				code: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123/pdf \\
+				code: `curl https://api.metacleaner.com/api/reports/rpt_abc123/pdf \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/reports/rpt_abc123/pdf \\
+				displayHtml: `curl https://api.metacleaner.com/api/reports/rpt_abc123/pdf \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -800,9 +800,9 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			params: [],
 			curlExample: {
 				id: 'account-curl',
-				code: `curl https://api.metacleaner.com/v1/api/account \\
+				code: `curl https://api.metacleaner.com/api/account \\
   -H "Authorization: Bearer YOUR_API_KEY"`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/account \\
+				displayHtml: `curl https://api.metacleaner.com/api/account \\
   -H "Authorization: Bearer YOUR_API_KEY"`
 			},
 			responses: [
@@ -841,8 +841,8 @@ Content-Disposition: attachment; filename="cleaned_photo.jpg"
 			params: [],
 			curlExample: {
 				id: 'health-curl',
-				code: `curl https://api.metacleaner.com/v1/api/health`,
-				displayHtml: `curl https://api.metacleaner.com/v1/api/health`
+				code: `curl https://api.metacleaner.com/api/health`,
+				displayHtml: `curl https://api.metacleaner.com/api/health`
 			},
 			responses: [
 				{
@@ -878,9 +878,9 @@ export function getCodeExamples(): Record<string, CodeExample> {
 		},
 		'auth-curl': {
 			id: 'auth-curl',
-			code: `curl https://api.metacleaner.com/v1/files/upload \\
+			code: `curl https://api.metacleaner.com/api/upload \\
   -H "Authorization: Bearer mc_live_abc123xyz..."`,
-			displayHtml: `curl https://api.metacleaner.com/v1/files/upload \\
+			displayHtml: `curl https://api.metacleaner.com/api/upload \\
   -H "Authorization: Bearer mc_live_abc123xyz..."`
 		},
 		'auth-401': {
@@ -932,8 +932,8 @@ export function getCodeExamples(): Record<string, CodeExample> {
 		},
 		'base-url': {
 			id: 'base-url',
-			code: 'https://api.metacleaner.com/v1',
-			displayHtml: 'https://api.metacleaner.com/v1'
+			code: 'https://api.metacleaner.com',
+			displayHtml: 'https://api.metacleaner.com'
 		}
 	};
 }
