@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-MetaCleaner Backend is a Go HTTP server that strips metadata from uploaded media files (photos/videos), provides real-time WebSocket progress updates, persists job/report data in Supabase, generates PDF reports, and manages temporary file storage with automatic cleanup.
+MetaCleaner Backend is a Go HTTP server that strips metadata from uploaded media files (photos/videos), provides real-time WebSocket progress updates, persists job/report data in Supabase, generates PDF reports with QR codes, manages billing/subscriptions via Stripe, supports API key authentication, and manages temporary file storage with automatic cleanup.
 
 The backend lives in `backend/metacleaner-server/`.
 
@@ -12,11 +12,13 @@ The backend lives in `backend/metacleaner-server/`.
 - **Routing**: `net/http` built-in (Go 1.22+ pattern matching with `{id}` path params)
 - **WebSocket**: gorilla/websocket
 - **PDF Generation**: signintech/gopdf
+- **QR Codes**: skip2/go-qrcode
+- **Payments**: stripe/stripe-go v82
 - **Config**: godotenv + environment variables
 - **Database**: Supabase PostgREST (HTTP calls, no ORM)
 - **Storage**: Supabase Storage (PDF reports only)
-- **Auth**: Supabase Auth (JWT validation)
-- **Rate Limiting**: Custom per-IP token bucket (golang.org/x/time/rate)
+- **Auth**: Supabase Auth (JWT validation) + API key auth
+- **Rate Limiting**: Custom per-IP token bucket (golang.org/x/time/rate) + per-API-key limiter
 - **Testing**: `go test` + pgregory.net/rapid (property-based tests)
 - **External Tools**: ExifTool (images), FFmpeg (videos) — invoked as subprocesses
 - **Deployment**: Fly.io with Docker (multi-stage build)
@@ -31,27 +33,43 @@ backend/metacleaner-server/
 │   ├── config.go            # Config struct + env loading
 │   ├── router.go            # Route registration + middleware chain
 │   ├── handlers.go          # REST endpoint handlers (upload, jobs, reports, download)
+│   ├── account_handlers.go  # Account endpoint handlers
 │   ├── auth_handlers.go     # Auth endpoint handlers (register, login, OAuth, etc.)
-│   ├── auth_middleware.go   # JWT validation middleware
+│   ├── auth_middleware.go   # JWT + API key validation middleware
 │   ├── auth_models.go       # Auth request/response types
 │   ├── auth_rate_limiter.go # Auth-specific rate limiting
+│   ├── apikey_handlers.go   # API key CRUD handlers
+│   ├── apikey_models.go     # API key data types
+│   ├── apikey_rate_limiter.go # Per-API-key rate limiting
+│   ├── billing_handlers.go  # Stripe billing/checkout handlers
+│   ├── billing_webhook.go   # Stripe webhook handler
 │   ├── models.go            # Data types, validation functions, constants
 │   ├── errors.go            # Error codes, ErrorResponse, WriteError helper
 │   ├── pipeline.go          # CleaningPipeline orchestration
+│   ├── job_worker.go        # Concurrent job worker pool
 │   ├── websocket.go         # WebSocketHub for real-time progress
-│   ├── pdf.go               # PDF report generation
+│   ├── pdf.go               # PDF report generation with QR codes
+│   ├── logger.go            # Structured logging setup (JSON/text based on APP_ENV)
+│   ├── request_id.go        # Request ID middleware
 │   ├── supabase.go          # Supabase DB client (PostgREST + Storage)
 │   ├── supabase_auth.go     # Supabase Auth client
+│   ├── supabase_apikeys.go  # Supabase API key data access
+│   ├── supabase_billing.go  # Supabase billing data access
 │   ├── cleanup.go           # Periodic temp file cleanup scheduler
 │   └── well_known.go        # /.well-known endpoints (App Links)
 ├── tests/                   # All test files (separate directory)
 │   ├── handlers_test.go
 │   ├── pipeline_test.go
+│   ├── pipeline_integration_test.go
 │   ├── auth_*_test.go
 │   └── ...
 ├── scripts/
 │   ├── migration.sql        # Initial DB schema
-│   └── migration002.sql     # Schema updates
+│   ├── migration002.sql     # Schema updates
+│   ├── migration003.sql
+│   ├── migration004.sql
+│   ├── migration005.sql
+│   └── migration006.sql
 ├── Dockerfile               # Multi-stage build
 ├── fly.toml                 # Fly.io deployment config
 ├── fly-setup.sh             # Idempotent Fly.io setup script
@@ -85,11 +103,11 @@ Middleware wraps handlers via `func(http.Handler) http.Handler`:
 
 ```go
 cors := corsMiddleware(cfg.FrontendOrigin)
-authMW := NewAuthMiddleware(cfg)
-return cors(authMW.Middleware(mux))
+authMW := NewAuthMiddleware(cfg, db, apiKeyRL)
+return securityHeadersMiddleware(RequestIDMiddleware(cors(authMW.Middleware(mux))))
 ```
 
-Order: CORS → Auth → Rate Limit (per-route) → Handler
+Order: Security Headers → Request ID → CORS → Auth (JWT + API key) → Rate Limit (per-route) → Handler
 
 ### Error Responses
 
@@ -110,10 +128,16 @@ Error codes are constants defined in `errors.go`.
 
 Config is loaded from environment variables with sensible defaults. Required vars (SUPABASE_URL, SUPABASE_API_KEY) cause a fatal exit if missing. Non-sensitive vars are also in `fly.toml [env]`.
 
+### Structured Logging
+
+- `APP_ENV=production` → JSON logs at Info level
+- `APP_ENV=development` (default) → Text logs at Debug level
+- Every request gets a unique request ID via `RequestIDMiddleware`
+
 ### Supabase Integration
 
 - No ORM — direct HTTP calls to PostgREST and Storage REST APIs
-- `SupabaseClient` handles DB queries (jobs, reports, files)
+- `SupabaseClient` handles DB queries (jobs, reports, files, billing, API keys)
 - `SupabaseAuthClient` handles auth operations (register, login, OAuth)
 - Signed URLs for PDF downloads from Supabase Storage
 
@@ -126,7 +150,25 @@ Files are processed sequentially within a job. The pipeline:
 4. Categorizes fields into GPS/EXIF/XMP/ID3/MP4/PNG
 5. Saves cleaned file to temp storage
 6. Broadcasts progress via WebSocket hub
-7. On job completion: creates report in DB, generates PDF
+7. On job completion: creates report in DB, generates PDF with QR code
+
+### Job Worker Pool
+
+Concurrent pipeline executions are limited by `MaxConcurrentJobs` (default: 3) via `JobWorkerPool`. This prevents resource exhaustion from parallel cleaning operations.
+
+### Stripe Billing
+
+- Checkout sessions created via `POST /api/billing/checkout`
+- Webhook handles subscription lifecycle events (checkout.session.completed, invoice.paid, customer.subscription.updated/deleted)
+- Subscription and credit data stored in Supabase
+- Credit-based system with per-plan allowances
+
+### API Key Authentication
+
+- Users can create, list, revoke, activate, and delete API keys
+- API keys authenticate requests as an alternative to JWT
+- Per-API-key rate limiting (120 RPM default)
+- Auth middleware checks both Authorization header (JWT) and X-API-Key header
 
 ### File Storage
 
@@ -137,6 +179,29 @@ Files are processed sequentially within a job. The pipeline:
 
 ## API Endpoints
 
+### Auth
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /api/auth/register | User registration |
+| POST | /api/auth/login | User login |
+| POST | /api/auth/logout | User logout |
+| POST | /api/auth/refresh | Token refresh |
+| GET | /api/auth/me | Current user profile |
+| PATCH | /api/auth/profile | Update first_name/last_name |
+| POST | /api/auth/change-email | Initiate email change |
+| POST | /api/auth/change-password | Change password |
+| DELETE | /api/auth/account | Delete user account |
+| POST | /api/auth/forgot-password | Request password reset |
+| POST | /api/auth/verify-reset-code | Verify reset code |
+| POST | /api/auth/reset-password | Set new password |
+| GET | /api/auth/oauth/{provider} | Initiate OAuth flow |
+| GET | /api/auth/oauth/callback | OAuth callback |
+| POST | /api/auth/magic-link | Send magic link |
+| GET | /api/auth/magic-link/callback | Magic link callback |
+
+### Files & Jobs
+
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | /api/upload | Multipart file upload |
@@ -145,22 +210,44 @@ Files are processed sequentially within a job. The pipeline:
 | GET | /api/jobs/{id}/progress | WebSocket progress stream |
 | GET | /api/jobs/{id}/download | Download job as ZIP |
 | GET | /api/files/{id}/download | Download single cleaned file |
+
+### Reports
+
+| Method | Path | Description |
+|--------|------|-------------|
 | GET | /api/reports | List all reports |
 | GET | /api/reports/{id} | Get report detail |
 | GET | /api/reports/{id}/pdf | Download report PDF |
+| GET | /api/public/reports/{id} | Public report (no auth, QR code) |
+| GET | /api/public/reports/{id}/pdf | Public PDF (no auth, QR code) |
+
+### Billing
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /api/billing/checkout | Create Stripe checkout session |
+| POST | /api/billing/webhook | Stripe webhook (signature-verified) |
+| GET | /api/billing/subscription | Get user subscription |
+| GET | /api/billing/credits | Get user credits |
+
+### API Keys
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /api/keys | Create a new API key |
+| GET | /api/keys | List API keys |
+| DELETE | /api/keys/{id} | Delete API key |
+| PATCH | /api/keys/{id}/revoke | Revoke an active API key |
+| PATCH | /api/keys/{id}/activate | Re-activate a revoked API key |
+
+### Other
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /api/account | Get account info |
 | GET | /api/health | Health check |
-| POST | /api/auth/register | User registration |
-| POST | /api/auth/login | User login |
-| POST | /api/auth/logout | User logout |
-| POST | /api/auth/refresh | Token refresh |
-| GET | /api/auth/me | Current user profile |
-| POST | /api/auth/forgot-password | Request password reset |
-| POST | /api/auth/verify-reset-code | Verify reset code |
-| POST | /api/auth/reset-password | Set new password |
-| GET | /api/auth/oauth/{provider} | Initiate OAuth flow |
-| GET | /api/auth/oauth/callback | OAuth callback |
-| POST | /api/auth/magic-link | Send magic link |
-| GET | /api/auth/magic-link/callback | Magic link callback |
+| GET | /.well-known/assetlinks.json | Android App Links |
+| GET | /.well-known/apple-app-site-association | iOS Universal Links |
 
 ## Testing Conventions
 
