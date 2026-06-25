@@ -18,11 +18,11 @@ No new shared elements needed — existing elements (`AccordionCard`, `CopyButto
 
 - [x] 5. [HIGH] Create `SettingsAccordionCard` component in `settings/components/` — mobile-collapsible / desktop-always-open accordion card with icon, title, subtitle, chevron; replaces inline `.acc-content` pattern
 - [x] 6. [HIGH] Create `SettingsAccordionCard.stories.svelte` — states: Open, Closed, DesktopAlwaysOpen
-- [ ] 7. [HIGH] Create `SettingsHeaderSection` in `settings/sections/` — page title, subtitle, icon badge, last-login info
-- [ ] 8. [HIGH] Create `SettingsHeaderSection.stories.svelte`
-- [ ] 9. [HIGH] Create `AccountInfoSection` in `settings/sections/` — avatar with edit button, badges, name/email/company form fields, save button; props: profile data
-- [ ] 10. [HIGH] Create `AccountInfoSection.stories.svelte`
-- [ ] 11. [HIGH] Create `ChangePasswordSection` in `settings/sections/` — current/new/confirm password fields using shared `PasswordInput`, `PasswordStrengthMeter`, save button; props: callbacks
+- [x] 7. [HIGH] Create `SettingsHeaderSection` in `settings/sections/` — page title, subtitle, icon badge, last-login info
+- [x] 8. [HIGH] Create `SettingsHeaderSection.stories.svelte`
+- [x] 9. [HIGH] Create `AccountInfoSection` in `settings/sections/` — avatar with edit button, badges, name/email/company form fields, save button; props: profile data
+- [x] 10. [HIGH] Create `AccountInfoSection.stories.svelte`
+- [x] 11. [HIGH] Create `ChangePasswordSection` in `settings/sections/` — current/new/confirm password fields using shared `PasswordInput`, `PasswordStrengthMeter`, save button; props: callbacks
 - [ ] 12. [HIGH] Create `ChangePasswordSection.stories.svelte`
 - [ ] 13. [HIGH] Create `ApiKeysSection` in `settings/sections/` — production key card (pulsing dot, active badge) + test key card (dashed border, sandbox badge), each with eye toggle + copy using shared `CopyButton`; props: apiKeys data, copy callback
 - [ ] 14. [HIGH] Create `ApiKeysSection.stories.svelte`
