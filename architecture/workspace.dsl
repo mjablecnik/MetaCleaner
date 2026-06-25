@@ -2,6 +2,10 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for stripping hidden meta
 
     !identifiers hierarchical
 
+    configuration {
+        scope softwaresystem
+    }
+
     model {
 
         # ==========================================================================
@@ -147,14 +151,14 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for stripping hidden meta
         # RELATIONSHIPS — LEVEL 1: System Context
         # ==========================================================================
 
-        user -> metacleaner "Removes metadata from photos and videos using"
-        developer -> metacleaner "Automates metadata scanning and cleaning via CLI tool or REST API keys using"
-        metacleaner -> supabase "Stores user accounts, job records, reports, API keys, billing data, and PDF files in"
-        metacleaner -> stripe "Processes subscription payments and credit pack purchases via"
+        user -> metacleaner "Removes metadata from photos and videos using" "HTTPS"
+        developer -> metacleaner "Automates metadata scanning and cleaning via CLI tool or REST API keys using" "HTTPS / CLI"
+        metacleaner -> supabase "Stores user accounts, job records, reports, API keys, billing data, and PDF files in" "HTTPS"
+        metacleaner -> stripe "Processes subscription payments and credit pack purchases via" "HTTPS"
         stripe -> metacleaner "Sends payment confirmation and subscription update events to" "HTTPS Webhooks"
-        metacleaner -> exiftool "Removes image metadata by invoking"
-        metacleaner -> ffmpeg "Removes video metadata by invoking"
-        metacleaner -> brevo "Routes contact form submissions via"
+        metacleaner -> exiftool "Removes image metadata by invoking" "Subprocess"
+        metacleaner -> ffmpeg "Removes video metadata by invoking" "Subprocess"
+        metacleaner -> brevo "Routes contact form submissions via" "HTTPS"
 
         # ==========================================================================
         # RELATIONSHIPS — LEVEL 2: Containers
@@ -163,7 +167,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for stripping hidden meta
         user -> metacleaner.marketingWebsite "Discovers the product, reads pricing, and submits contact form via" "HTTPS"
         user -> metacleaner.webApp "Uploads files, reviews risk analysis, monitors progress, and downloads cleaned files via" "HTTPS"
         user -> metacleaner.mobileApp "Uploads files and downloads cleaned files on Android via" "HTTPS"
-        developer -> metacleaner.cliTool "Scans, cleans, and compares file metadata from the terminal using"
+        developer -> metacleaner.cliTool "Scans, cleans, and compares file metadata from the terminal using" "CLI"
 
         metacleaner.webApp -> metacleaner.backendApi "Uploads files, creates jobs, and manages account via" "HTTPS REST API"
         metacleaner.webApp -> metacleaner.backendApi "Streams real-time cleaning progress via" "WebSocket (wss://)"
@@ -171,8 +175,8 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for stripping hidden meta
         metacleaner.mobileApp -> metacleaner.backendApi "Streams real-time cleaning progress via" "WebSocket (wss://)"
         metacleaner.cliTool -> metacleaner.backendApi "Uploads files, polls job status, and downloads cleaned files via" "HTTP REST API"
 
-        metacleaner.webApp -> metacleaner.sharedLib "Uses pricing UI components and tier data from"
-        metacleaner.marketingWebsite -> metacleaner.sharedLib "Uses pricing UI components and tier data from"
+        metacleaner.webApp -> metacleaner.sharedLib "Uses pricing UI components and tier data from" "npm workspace"
+        metacleaner.marketingWebsite -> metacleaner.sharedLib "Uses pricing UI components and tier data from" "npm workspace"
 
         metacleaner.backendApi -> supabase "Reads and writes job records, reports, profiles, API keys, and billing data via" "HTTPS — PostgREST API"
         metacleaner.backendApi -> supabase "Registers, authenticates, and manages users; validates JWTs; handles OAuth and magic links via" "HTTPS — Supabase Auth API"
@@ -192,62 +196,62 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for stripping hidden meta
         metacleaner.cliTool -> metacleaner.backendApi.httpRouter "Sends all HTTP requests to" "HTTP"
         stripe -> metacleaner.backendApi.httpRouter "Delivers webhook POST requests to" "HTTPS"
 
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authMiddleware "Validates JWT / API key tokens for protected routes via"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.rateLimiter "Enforces per-route rate limits via"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.uploadHandler "Routes POST /api/upload to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.jobHandler "Routes /api/jobs/*, /api/files/*, /api/reports/*, /api/public/reports/* to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authHandler "Routes /api/auth/* to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.billingHandler "Routes /api/billing/* to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.apiKeyHandler "Routes /api/keys/* to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.accountHandler "Routes GET /api/account to"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.wellKnownHandler "Routes /.well-known/* to"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authMiddleware "Validates JWT / API key tokens for protected routes via" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.rateLimiter "Enforces per-route rate limits via" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.uploadHandler "Routes POST /api/upload to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.jobHandler "Routes /api/jobs/*, /api/files/*, /api/reports/*, /api/public/reports/* to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authHandler "Routes /api/auth/* to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.billingHandler "Routes /api/billing/* to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.apiKeyHandler "Routes /api/keys/* to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.accountHandler "Routes GET /api/account to" "Function call"
+        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.wellKnownHandler "Routes /.well-known/* to" "Function call"
 
-        metacleaner.backendApi.authMiddleware -> metacleaner.backendApi.supabaseClient "Validates JWT signature and API key hashes via"
+        metacleaner.backendApi.authMiddleware -> metacleaner.backendApi.supabaseClient "Validates JWT signature and API key hashes via" "Function call"
 
-        metacleaner.backendApi.uploadHandler -> metacleaner.backendApi.supabaseClient "Records uploaded file metadata in the database via"
+        metacleaner.backendApi.uploadHandler -> metacleaner.backendApi.supabaseClient "Records uploaded file metadata in the database via" "Function call"
 
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.cleaningPipeline "Starts and monitors the metadata removal pipeline via"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.websocketHub "Subscribes to and forwards real-time progress events from"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.supabaseClient "Creates, updates, and queries cleaning job records in the database via"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.pdfGenerator "Requests PDF report generation after job completion from"
+        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.cleaningPipeline "Starts and monitors the metadata removal pipeline via" "Function call"
+        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.websocketHub "Subscribes to and forwards real-time progress events from" "Function call"
+        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.supabaseClient "Creates, updates, and queries cleaning job records in the database via" "Function call"
+        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.pdfGenerator "Requests PDF report generation after job completion from" "Function call"
 
-        metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "Publishes file_progress, file_complete, file_error, and job_complete events to"
+        metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "Publishes file_progress, file_complete, file_error, and job_complete events to" "Function call"
         metacleaner.backendApi.cleaningPipeline -> exiftool "Executes to strip metadata from image files" "Subprocess"
         metacleaner.backendApi.cleaningPipeline -> ffmpeg "Executes to strip metadata from video files" "Subprocess"
 
-        metacleaner.backendApi.authHandler -> metacleaner.backendApi.supabaseClient "Registers, authenticates, and manages user sessions via"
-        metacleaner.backendApi.billingHandler -> metacleaner.backendApi.supabaseClient "Updates subscription records and credit balances via"
+        metacleaner.backendApi.authHandler -> metacleaner.backendApi.supabaseClient "Registers, authenticates, and manages user sessions via" "Function call"
+        metacleaner.backendApi.billingHandler -> metacleaner.backendApi.supabaseClient "Updates subscription records and credit balances via" "Function call"
         metacleaner.backendApi.billingHandler -> stripe "Creates Checkout sessions and verifies webhook HMAC signatures via" "HTTPS"
-        metacleaner.backendApi.apiKeyHandler -> metacleaner.backendApi.supabaseClient "Creates, retrieves, revokes, and deletes API key records via"
-        metacleaner.backendApi.accountHandler -> metacleaner.backendApi.supabaseClient "Reads user profile and billing subscription data via"
+        metacleaner.backendApi.apiKeyHandler -> metacleaner.backendApi.supabaseClient "Creates, retrieves, revokes, and deletes API key records via" "Function call"
+        metacleaner.backendApi.accountHandler -> metacleaner.backendApi.supabaseClient "Reads user profile and billing subscription data via" "Function call"
 
-        metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "Uploads generated PDF to Supabase Storage and retrieves signed URL via"
+        metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "Uploads generated PDF to Supabase Storage and retrieves signed URL via" "Function call"
 
         metacleaner.backendApi.supabaseClient -> supabase "Reads and writes all application data via" "HTTPS — PostgREST + Auth + Storage APIs"
 
-        metacleaner.backendApi.cleanupScheduler -> metacleaner.backendApi.supabaseClient "Queries expired job records to identify temporary files ready for deletion via"
+        metacleaner.backendApi.cleanupScheduler -> metacleaner.backendApi.supabaseClient "Queries expired job records to identify temporary files ready for deletion via" "Function call"
 
         # ==========================================================================
         # RELATIONSHIPS — LEVEL 3: Components — Web Application
         # ==========================================================================
 
-        metacleaner.webApp.uploadWizard -> metacleaner.webApp.metadataScanner "Triggers browser-side pre-scan of selected files via"
-        metacleaner.webApp.uploadWizard -> metacleaner.webApp.riskAnalyzer "Calculates per-field privacy risk scores via"
-        metacleaner.webApp.uploadWizard -> metacleaner.webApp.apiClient "Uploads files, creates jobs, and monitors job status via"
-        metacleaner.webApp.uploadWizard -> metacleaner.webApp.apiClient "Opens WebSocket connection for real-time progress streaming via"
-        metacleaner.webApp.billingUI -> metacleaner.webApp.apiClient "Fetches subscription status and initiates Stripe Checkout session via"
-        metacleaner.webApp.reportViewer -> metacleaner.webApp.apiClient "Fetches cleaning report list and report details via"
-        metacleaner.webApp.apiKeysUI -> metacleaner.webApp.apiClient "Sends API key create, revoke, activate, and delete requests via"
-        metacleaner.webApp.authModule -> metacleaner.webApp.apiClient "Sends authentication and token refresh requests via"
+        metacleaner.webApp.uploadWizard -> metacleaner.webApp.metadataScanner "Triggers browser-side pre-scan of selected files via" "Function call"
+        metacleaner.webApp.uploadWizard -> metacleaner.webApp.riskAnalyzer "Calculates per-field privacy risk scores via" "Function call"
+        metacleaner.webApp.uploadWizard -> metacleaner.webApp.apiClient "Uploads files, creates jobs, and monitors job status via" "Function call"
+        metacleaner.webApp.uploadWizard -> metacleaner.webApp.apiClient "Opens WebSocket connection for real-time progress streaming via" "WebSocket"
+        metacleaner.webApp.billingUI -> metacleaner.webApp.apiClient "Fetches subscription status and initiates Stripe Checkout session via" "Function call"
+        metacleaner.webApp.reportViewer -> metacleaner.webApp.apiClient "Fetches cleaning report list and report details via" "Function call"
+        metacleaner.webApp.apiKeysUI -> metacleaner.webApp.apiClient "Sends API key create, revoke, activate, and delete requests via" "Function call"
+        metacleaner.webApp.authModule -> metacleaner.webApp.apiClient "Sends authentication and token refresh requests via" "Function call"
         metacleaner.webApp.apiClient -> metacleaner.backendApi "Sends all HTTP and WebSocket requests to" "HTTPS REST + WebSocket"
 
         # ==========================================================================
         # RELATIONSHIPS — LEVEL 3: Components — CLI Tool
         # ==========================================================================
 
-        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliScanner "Invokes for the scan and compare commands"
-        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliServerClient "Invokes for the clean command and all backend API interactions"
-        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliFormatter "Passes results to for terminal or JSON output"
+        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliScanner "Invokes for the scan and compare commands" "Function call"
+        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliServerClient "Invokes for the clean command and all backend API interactions" "Function call"
+        metacleaner.cliTool.commandParser -> metacleaner.cliTool.cliFormatter "Passes results to for terminal or JSON output" "Function call"
         metacleaner.cliTool.cliServerClient -> metacleaner.backendApi "Uploads files, creates jobs, polls job status, and downloads cleaned results from" "HTTP REST"
 
         # ==========================================================================
