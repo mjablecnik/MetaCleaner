@@ -41,9 +41,7 @@
 						{#if showDefault}
 							<code class="text-xs text-text-muted">{param.default ?? '—'}</code>
 						{:else if param.required}
-							<span class="text-xs font-medium text-brand-green"
-								>{tx('docs.common.required')}</span
-							>
+							<span class="text-xs font-medium text-brand-green">{tx('docs.common.required')}</span>
 						{:else}
 							<span class="text-xs text-text-muted">{tx('docs.common.optional')}</span>
 						{/if}

@@ -16,13 +16,13 @@
 </script>
 
 <Story name="Default">
-	<div class="max-w-md p-4 flex flex-col gap-4">
+	<div class="flex max-w-md flex-col gap-4 p-4">
 		<ChangePasswordSection />
 	</div>
 </Story>
 
 <Story name="With Save Handler">
-	<div class="max-w-md p-4 flex flex-col gap-4">
+	<div class="flex max-w-md flex-col gap-4 p-4">
 		<ChangePasswordSection onSave={() => {}} />
 	</div>
 </Story>

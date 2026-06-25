@@ -18,11 +18,7 @@ export interface PasswordErrors {
 	confirm?: string;
 }
 
-export function validatePassword(
-	current: string,
-	newPwd: string,
-	confirm: string
-): PasswordErrors {
+export function validatePassword(current: string, newPwd: string, confirm: string): PasswordErrors {
 	const errors: PasswordErrors = {};
 	if (current.length === 0) {
 		errors.current = 'settings.validation.currentPasswordRequired';

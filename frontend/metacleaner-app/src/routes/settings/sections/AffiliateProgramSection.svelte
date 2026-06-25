@@ -36,7 +36,7 @@
 
 <!-- Affiliate link -->
 <div class="flex flex-col gap-1.5">
-	<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
+	<label class="text-xs font-semibold tracking-wider text-text-muted uppercase"
 		>{tx('settings.affiliate.linkLabel')}</label
 	>
 	<div class="flex gap-2">
@@ -49,7 +49,7 @@
 		<button
 			type="button"
 			onclick={handleCopyLink}
-			class="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-brand-orange/30 bg-brand-orange/10 px-4 py-2.5 text-sm font-bold text-brand-orange transition-colors hover:bg-brand-orange/20"
+			class="flex flex-shrink-0 items-center gap-1.5 rounded-xl border border-brand-orange/30 bg-brand-orange/10 px-4 py-2.5 text-sm font-bold whitespace-nowrap text-brand-orange transition-colors hover:bg-brand-orange/20"
 		>
 			<i class="fa-solid fa-copy text-xs"></i>
 			{tx('settings.affiliate.copyButton')}

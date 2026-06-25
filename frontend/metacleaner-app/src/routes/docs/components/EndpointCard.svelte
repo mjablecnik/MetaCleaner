@@ -62,10 +62,7 @@
 		: 'border-gray-800'}"
 >
 	<!-- Collapsible header -->
-	<button
-		onclick={toggle}
-		class="flex w-full items-center gap-3 bg-navy-card px-5 py-4 text-left"
-	>
+	<button onclick={toggle} class="flex w-full items-center gap-3 bg-navy-card px-5 py-4 text-left">
 		<MethodBadge method={endpoint.method} size="md" />
 		<code class="min-w-0 flex-1 truncate font-mono text-sm text-white">{endpoint.path}</code>
 		<span class="hidden text-xs text-text-muted lg:block">{tx(endpoint.shortDescriptionKey)}</span>

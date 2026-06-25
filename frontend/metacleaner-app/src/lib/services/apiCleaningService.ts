@@ -107,7 +107,10 @@ async function pollUntilComplete(
 			if (status.status === 'completed') {
 				if (status.reportId) setReportId(status.reportId);
 				// Optimistically deduct credits immediately so UI updates instantly.
-				const filesCompleted = typeof status.filesCompleted === 'number' ? status.filesCompleted : accumulatedResults.length;
+				const filesCompleted =
+					typeof status.filesCompleted === 'number'
+						? status.filesCompleted
+						: accumulatedResults.length;
 				billingStore.optimisticDeduct(filesCompleted);
 				// Confirm with server after backend finishes the DB write.
 				setTimeout(() => {
@@ -247,7 +250,8 @@ function dispatchWsMessage(
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			setJobCompleted();
 			// Optimistically deduct credits immediately so UI updates instantly.
-			const filesCompleted = typeof msg.filesCompleted === 'number' ? msg.filesCompleted : accumulatedResults.length;
+			const filesCompleted =
+				typeof msg.filesCompleted === 'number' ? msg.filesCompleted : accumulatedResults.length;
 			billingStore.optimisticDeduct(filesCompleted);
 			// Confirm with server after backend finishes the DB write.
 			setTimeout(() => {

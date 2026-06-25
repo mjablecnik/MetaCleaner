@@ -15,31 +15,8 @@
 	});
 </script>
 
-<script>
-	const mockProfile = {
-		name: 'Jana Nováková',
-		email: 'jana.novakova@email.cz',
-		avatarUrl: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg',
-		plan: 'pro',
-		verified: true,
-		company: '',
-		lastLogin: 'today, 09:41'
-	};
-
-	const mockProfileWithCompany = {
-		...mockProfile,
-		company: 'Acme Corp'
-	};
-</script>
-
 <Story name="Default">
 	<div class="max-w-md p-4">
-		<AccountInfoSection profile={mockProfile} />
-	</div>
-</Story>
-
-<Story name="With Company">
-	<div class="max-w-md p-4">
-		<AccountInfoSection profile={mockProfileWithCompany} />
+		<AccountInfoSection />
 	</div>
 </Story>

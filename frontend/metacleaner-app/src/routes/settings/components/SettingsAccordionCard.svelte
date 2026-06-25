@@ -58,7 +58,9 @@
 	>
 		<div class="flex items-center gap-3">
 			<div
-				class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass[colorVariant]}"
+				class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass[
+					colorVariant
+				]}"
 			>
 				<i class="{icon} text-sm {iconClass[colorVariant]}"></i>
 			</div>
@@ -68,8 +70,9 @@
 			</div>
 			{#if badge}
 				<span
-					class="mr-1 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider lg:mr-0 {badgeClass[colorVariant]}"
-					>{badge}</span
+					class="mr-1 rounded-full border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase lg:mr-0 {badgeClass[
+						colorVariant
+					]}">{badge}</span
 				>
 			{/if}
 			<i
@@ -81,7 +84,7 @@
 
 	<!-- Content: hidden on mobile unless open, always visible on desktop -->
 	<div
-		class="acc-content gap-4 border-t border-gray-800 px-5 pb-5 pt-4 lg:px-6 lg:py-5"
+		class="acc-content gap-4 border-t border-gray-800 px-5 pt-4 pb-5 lg:px-6 lg:py-5"
 		class:open={isOpen}
 	>
 		{@render children()}

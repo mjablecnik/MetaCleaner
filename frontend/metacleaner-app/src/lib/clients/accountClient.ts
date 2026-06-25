@@ -74,11 +74,11 @@ export async function changeEmail(newEmail: string): Promise<void> {
 	if (!res.ok) throw await parseErrorResponse(res);
 }
 
-export async function changePassword(
-	currentPassword: string,
-	newPassword: string
-): Promise<void> {
-	const req: ChangePasswordRequest = { current_password: currentPassword, new_password: newPassword };
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+	const req: ChangePasswordRequest = {
+		current_password: currentPassword,
+		new_password: newPassword
+	};
 	const res = await apiFetch('/api/auth/change-password', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

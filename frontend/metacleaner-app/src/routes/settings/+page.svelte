@@ -1,21 +1,10 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import Toast from '$lib/shared/components/Toast.svelte';
-	import {
-		getSettingsProfile,
-		getAffiliateStats,
-		getApiKeys
-	} from '$lib/repositories/settingsRepository';
-	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
 	import SettingsAccordionCard from './components/SettingsAccordionCard.svelte';
 	import AccountInfoSection from './sections/AccountInfoSection.svelte';
 	import ChangePasswordSection from './sections/ChangePasswordSection.svelte';
-	import AffiliateProgramSection from './sections/AffiliateProgramSection.svelte';
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
-
-	const profile = getSettingsProfile();
-	const affiliateStats = getAffiliateStats();
-	const apiKeys = getApiKeys();
 
 	let showToast = $state(false);
 	let toastMessage = $state('');
@@ -29,20 +18,13 @@
 			showToast = false;
 		}, 3000);
 	}
-
-	function copyToClipboard(text: string, msg: string) {
-		navigator.clipboard.writeText(text).catch(() => {});
-		triggerToast(msg);
-	}
 </script>
 
 <svelte:head>
 	<title>{tx('settings.meta.title')}</title>
 </svelte:head>
 
-<main class="mx-auto w-full max-w-[1100px] px-4 pb-24 pt-4 lg:px-6 lg:pt-0">
-	<SettingsHeaderSection lastLogin={profile.lastLogin} />
-
+<main class="mx-auto w-full max-w-[1100px] px-6 pt-4 pb-24 lg:pt-0">
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
 		<!-- LEFT COLUMN -->
 		<div class="flex flex-col gap-4 lg:gap-6">
@@ -54,7 +36,7 @@
 				defaultOpen={true}
 				animationDelay="delay-2"
 			>
-				<AccountInfoSection {profile} onSave={() => triggerToast(tx('settings.account.saveSuccess'))} />
+				<AccountInfoSection onSave={() => triggerToast(tx('settings.account.saveSuccess'))} />
 			</SettingsAccordionCard>
 
 			<SettingsAccordionCard
@@ -67,16 +49,7 @@
 				<ChangePasswordSection onSave={() => triggerToast(tx('settings.password.saveSuccess'))} />
 			</SettingsAccordionCard>
 
-			<SettingsAccordionCard
-				icon="fa-solid fa-users"
-				colorVariant="orange"
-				title={tx('settings.affiliate.title')}
-				subtitle={tx('settings.affiliate.subtitle')}
-				badge={tx('settings.affiliate.activeBadge')}
-				animationDelay="delay-4"
-			>
-				<AffiliateProgramSection {affiliateStats} onCopy={copyToClipboard} />
-			</SettingsAccordionCard>
+			<!-- DangerZoneSection placed here after task 4.7 -->
 		</div>
 
 		<!-- RIGHT COLUMN -->
@@ -88,8 +61,20 @@
 				subtitle={tx('settings.apiKeys.subtitle')}
 				animationDelay="delay-2"
 			>
-				<ApiKeysSection {apiKeys} />
+				<ApiKeysSection />
 			</SettingsAccordionCard>
+
+			<!-- Affiliate Program: planned for future release -->
+			<!-- <SettingsAccordionCard
+				icon="fa-solid fa-users"
+				colorVariant="orange"
+				title={tx('settings.affiliate.title')}
+				subtitle={tx('settings.affiliate.subtitle')}
+				badge={tx('settings.affiliate.activeBadge')}
+				animationDelay="delay-3"
+			>
+				<AffiliateProgramSection />
+			</SettingsAccordionCard> -->
 		</div>
 	</div>
 </main>

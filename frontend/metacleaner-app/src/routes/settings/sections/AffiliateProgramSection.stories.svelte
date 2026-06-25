@@ -32,19 +32,19 @@
 </script>
 
 <Story name="Default">
-	<div class="max-w-md p-4 flex flex-col gap-4">
+	<div class="flex max-w-md flex-col gap-4 p-4">
 		<AffiliateProgramSection affiliateStats={mockStats} />
 	</div>
 </Story>
 
 <Story name="High Activity">
-	<div class="max-w-md p-4 flex flex-col gap-4">
+	<div class="flex max-w-md flex-col gap-4 p-4">
 		<AffiliateProgramSection affiliateStats={highStats} />
 	</div>
 </Story>
 
 <Story name="With Copy Handler">
-	<div class="max-w-md p-4 flex flex-col gap-4">
+	<div class="flex max-w-md flex-col gap-4 p-4">
 		<AffiliateProgramSection affiliateStats={mockStats} onCopy={() => {}} />
 	</div>
 </Story>

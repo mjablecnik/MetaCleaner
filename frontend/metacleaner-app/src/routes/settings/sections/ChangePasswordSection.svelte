@@ -28,7 +28,7 @@
 </script>
 
 <div class="flex flex-col gap-1.5">
-	<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
+	<label class="text-xs font-semibold tracking-wider text-text-muted uppercase"
 		>{tx('settings.password.currentLabel')}</label
 	>
 	<PasswordInput
@@ -40,7 +40,7 @@
 </div>
 
 <div class="flex flex-col gap-1.5">
-	<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
+	<label class="text-xs font-semibold tracking-wider text-text-muted uppercase"
 		>{tx('settings.password.newLabel')}</label
 	>
 	<PasswordInput
@@ -53,7 +53,7 @@
 </div>
 
 <div class="flex flex-col gap-1.5">
-	<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
+	<label class="text-xs font-semibold tracking-wider text-text-muted uppercase"
 		>{tx('settings.password.confirmLabel')}</label
 	>
 	<PasswordInput
