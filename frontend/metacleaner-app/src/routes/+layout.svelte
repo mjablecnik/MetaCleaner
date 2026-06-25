@@ -72,6 +72,14 @@
 				noPrint: true
 			};
 		}
+		if (path === '/settings') {
+			return {
+				logoHref: '/' as string | undefined,
+				showBackButton: true,
+				backHref: '/',
+				backLabel: 'Zpět na čištění'
+			};
+		}
 		if (path !== '/') {
 			return { logoHref: '/' as string | undefined };
 		}
