@@ -425,8 +425,13 @@ func (m *AuthMiddleware) Middleware(next http.Handler) http.Handler {
 
 // isExemptPath returns true for paths that do not require authentication.
 func isExemptPath(path string) bool {
-	// /api/auth/me requires authentication (user profile endpoint)
-	if path == "/api/auth/me" {
+	// These /api/auth/ paths require authentication despite the /api/auth/ prefix.
+	switch path {
+	case "/api/auth/me",
+		"/api/auth/profile",
+		"/api/auth/change-email",
+		"/api/auth/change-password",
+		"/api/auth/account":
 		return false
 	}
 	// WebSocket progress endpoint handles its own auth via ?token= query param

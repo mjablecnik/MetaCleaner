@@ -57,6 +57,23 @@ type MagicLinkRequest struct {
 	Email string `json:"email"`
 }
 
+// UpdateProfileRequest is the body expected at PATCH /api/auth/profile.
+type UpdateProfileRequest struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// ChangeEmailRequest is the body expected at POST /api/auth/change-email.
+type ChangeEmailRequest struct {
+	NewEmail string `json:"new_email"`
+}
+
+// ChangePasswordRequest is the body expected at POST /api/auth/change-password.
+type ChangePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
 // --- Response structs ---
 
 // AuthUser contains the subset of user data returned to the frontend.

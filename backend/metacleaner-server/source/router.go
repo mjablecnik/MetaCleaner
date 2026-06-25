@@ -165,6 +165,18 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// GET /api/auth/me
 	mux.Handle("GET /api/auth/me", HandleMe(authClient))
 
+	// PATCH /api/auth/profile — update first_name and last_name (authenticated)
+	mux.Handle("PATCH /api/auth/profile", HandleUpdateProfile(authClient))
+
+	// POST /api/auth/change-email — initiate email change, sends verification email (authenticated)
+	mux.Handle("POST /api/auth/change-email", HandleChangeEmail(authClient))
+
+	// POST /api/auth/change-password — verify current password, set new password (authenticated)
+	mux.Handle("POST /api/auth/change-password", HandleChangePassword(authClient))
+
+	// DELETE /api/auth/account — permanently delete the authenticated user's account
+	mux.Handle("DELETE /api/auth/account", HandleDeleteAccount(authClient))
+
 	// POST /api/auth/forgot-password — rate limited
 	mux.Handle("POST /api/auth/forgot-password", authRateLimited(HandleForgotPassword(authClient)))
 

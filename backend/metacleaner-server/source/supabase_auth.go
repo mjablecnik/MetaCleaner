@@ -442,3 +442,58 @@ func (c *SupabaseAuthClient) GetProfile(ctx context.Context, userID string) (*Us
 	}
 	return &profiles[0], nil
 }
+
+// UpdateProfile updates a user's first_name and last_name in the profiles table.
+func (c *SupabaseAuthClient) UpdateProfile(ctx context.Context, userID, firstName, lastName string) (*UserProfile, error) {
+	payload := map[string]interface{}{
+		"first_name": firstName,
+		"last_name":  lastName,
+	}
+	data, _ := json.Marshal(payload)
+	req, err := c.newAdminRequest(ctx, http.MethodPatch, c.restURL("profiles?id=eq."+userID), bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Prefer", "return=representation")
+
+	resp, err := c.doWithTimeout(req)
+	if err != nil {
+		return nil, fmt.Errorf("update profile: %w", err)
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("update profile: status %d: %s", resp.StatusCode, body)
+	}
+
+	var profiles []UserProfile
+	if err := json.Unmarshal(body, &profiles); err != nil || len(profiles) == 0 {
+		return nil, fmt.Errorf("update profile: no result returned")
+	}
+	return &profiles[0], nil
+}
+
+// AdminUpdateUser updates a user's attributes via the Supabase Admin API.
+// attrs may include "email", "password", or "user_metadata".
+func (c *SupabaseAuthClient) AdminUpdateUser(ctx context.Context, userID string, attrs map[string]interface{}) (*SupabaseAuthUser, error) {
+	data, _ := json.Marshal(attrs)
+	req, err := c.newAdminRequest(ctx, http.MethodPut, c.authURL("admin/users/"+userID), bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	var user SupabaseAuthUser
+	if err := c.doRequest(req, &user); err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// AdminDeleteUser permanently removes a user via the Supabase Admin API.
+func (c *SupabaseAuthClient) AdminDeleteUser(ctx context.Context, userID string) error {
+	req, err := c.newAdminRequest(ctx, http.MethodDelete, c.authURL("admin/users/"+userID), nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Del("Content-Type")
+	return c.doRequest(req, nil)
+}
