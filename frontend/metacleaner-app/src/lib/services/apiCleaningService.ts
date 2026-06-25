@@ -106,8 +106,10 @@ async function pollUntilComplete(
 
 			if (status.status === 'completed') {
 				if (status.reportId) setReportId(status.reportId);
-				// Credits are deducted on the backend after job completion.
-				// Wait briefly for the DB write to complete, then refresh.
+				// Optimistically deduct credits immediately so UI updates instantly.
+				const filesCompleted = typeof status.filesCompleted === 'number' ? status.filesCompleted : accumulatedResults.length;
+				billingStore.optimisticDeduct(filesCompleted);
+				// Confirm with server after backend finishes the DB write.
 				setTimeout(() => {
 					void billingStore.refreshCreditsOnly();
 				}, 2000);
@@ -244,8 +246,10 @@ function dispatchWsMessage(
 			const jobCompleteReportId = typeof msg.reportId === 'string' ? msg.reportId : '';
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			setJobCompleted();
-			// Credits are deducted on the backend after job_complete is broadcast.
-			// Wait briefly for the DB write to complete, then refresh.
+			// Optimistically deduct credits immediately so UI updates instantly.
+			const filesCompleted = typeof msg.filesCompleted === 'number' ? msg.filesCompleted : accumulatedResults.length;
+			billingStore.optimisticDeduct(filesCompleted);
+			// Confirm with server after backend finishes the DB write.
 			setTimeout(() => {
 				void billingStore.refreshCreditsOnly();
 			}, 2000);

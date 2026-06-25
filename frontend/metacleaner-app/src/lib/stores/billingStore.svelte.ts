@@ -9,6 +9,7 @@ function createBillingStore() {
 	let planStatus = $state('free');
 	let isLoading = $state(false);
 	let hasError = $state(false);
+	let pendingDeductUntil = 0; // timestamp until which server values higher than local are ignored
 
 	const isFreeUser = $derived(
 		planId === 'free' || planStatus === 'cancelled' || planStatus === 'free'
@@ -32,6 +33,14 @@ function createBillingStore() {
 
 			planId = sub.plan_id ?? 'free';
 			planStatus = sub.status ?? 'free';
+
+			// If an optimistic deduct is pending, don't let stale server data overwrite our lower local value.
+			if (Date.now() < pendingDeductUntil && credits !== null && cred.total_credits > credits) {
+				// Server hasn't caught up yet — keep local optimistic value, only update plan info.
+				hasError = false;
+				return;
+			}
+
 			subscriptionCredits = cred.subscription_credits;
 			purchasedCredits = cred.purchased_credits;
 			credits = cred.total_credits;
@@ -47,6 +56,12 @@ function createBillingStore() {
 	async function refreshCreditsOnly(): Promise<void> {
 		try {
 			const cred = await getCredits();
+
+			// If an optimistic deduct is pending, don't let stale server data overwrite our lower local value.
+			if (Date.now() < pendingDeductUntil && credits !== null && cred.total_credits > credits) {
+				return;
+			}
+
 			subscriptionCredits = cred.subscription_credits;
 			purchasedCredits = cred.purchased_credits;
 			credits = cred.total_credits;
@@ -64,6 +79,20 @@ function createBillingStore() {
 		planStatus = 'free';
 		isLoading = false;
 		hasError = false;
+	}
+
+	/** Optimistically deduct credits from the local state (before server confirms). */
+	function optimisticDeduct(amount: number): void {
+		if (credits !== null) {
+			credits = Math.max(0, credits - amount);
+		}
+		// Deduct from subscription credits first, then purchased
+		const fromSub = Math.min(subscriptionCredits, amount);
+		subscriptionCredits -= fromSub;
+		const fromPurchased = Math.min(purchasedCredits, amount - fromSub);
+		purchasedCredits -= fromPurchased;
+		// Guard: ignore server responses that return a higher value for the next 3s
+		pendingDeductUntil = Date.now() + 3000;
 	}
 
 	return {
@@ -99,6 +128,7 @@ function createBillingStore() {
 		},
 		refresh,
 		refreshCreditsOnly,
+		optimisticDeduct,
 		clear
 	};
 }
