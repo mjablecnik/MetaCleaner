@@ -54,14 +54,6 @@
 			<i class="fa-solid fa-clock-rotate-left text-sm text-text-muted"></i>
 			<span>{tx('common.nav.reportHistory')}</span>
 		</a>
-		<a class="lang-option" href={resolve('/settings' as Pathname)}>
-			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
-			<span>{tx('common.nav.settings')}</span>
-		</a>
-		<a class="lang-option" href={resolve('/pricing' as Pathname)}>
-			<i class="fa-solid fa-tag text-sm text-text-muted"></i>
-			<span>{tx('common.nav.pricing')}</span>
-		</a>
 		<a
 			class="lang-option"
 			href={resolve('/docs' as Pathname)}
@@ -75,6 +67,14 @@
 			<span class={page.url.pathname === '/docs' ? 'font-semibold text-brand-blue' : ''}
 				>{tx('docs.nav.docs')}</span
 			>
+		</a>
+		<a class="lang-option" href={resolve('/pricing' as Pathname)}>
+			<i class="fa-solid fa-tag text-sm text-text-muted"></i>
+			<span>{tx('common.nav.pricing')}</span>
+		</a>
+		<a class="lang-option" href={resolve('/settings' as Pathname)}>
+			<i class="fa-solid fa-gear text-sm text-text-muted"></i>
+			<span>{tx('common.nav.settings')}</span>
 		</a>
 		<div
 			class="lang-option lang-option-danger"

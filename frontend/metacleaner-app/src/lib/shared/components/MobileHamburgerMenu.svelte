@@ -179,36 +179,6 @@
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
 			</a>
 
-			<!-- Settings -->
-			<a
-				href={resolve('/settings' as Pathname)}
-				onclick={handleClose}
-				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
-			>
-				<div
-					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
-				>
-					<i class="fa-solid fa-gear"></i>
-				</div>
-				<span class="text-sm font-medium">{tx('common.nav.settings')}</span>
-				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
-			</a>
-
-			<!-- Pricing -->
-			<a
-				href={resolve('/pricing' as Pathname)}
-				onclick={handleClose}
-				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
-			>
-				<div
-					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
-				>
-					<i class="fa-solid fa-tag"></i>
-				</div>
-				<span class="text-sm font-medium">{tx('common.nav.pricing')}</span>
-				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
-			</a>
-
 			<!-- Docs -->
 			<a
 				href={resolve('/docs' as Pathname)}
@@ -227,6 +197,36 @@
 				<span class="text-sm font-medium {page.url.pathname === '/docs' ? 'font-semibold' : ''}"
 					>{tx('docs.nav.docs')}</span
 				>
+				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
+			</a>
+
+			<!-- Pricing -->
+			<a
+				href={resolve('/pricing' as Pathname)}
+				onclick={handleClose}
+				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
+			>
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
+				>
+					<i class="fa-solid fa-tag"></i>
+				</div>
+				<span class="text-sm font-medium">{tx('common.nav.pricing')}</span>
+				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
+			</a>
+
+			<!-- Settings -->
+			<a
+				href={resolve('/settings' as Pathname)}
+				onclick={handleClose}
+				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
+			>
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
+				>
+					<i class="fa-solid fa-gear"></i>
+				</div>
+				<span class="text-sm font-medium">{tx('common.nav.settings')}</span>
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
 			</a>
 
