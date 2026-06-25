@@ -6,7 +6,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
 
 ## Tasks
 
-- [ ] 1. Restore page header and simplify SettingsHeaderSection
+- [x] 1. Restore page header and simplify SettingsHeaderSection
   - Remove the `Props` interface and `lastLogin` prop from `frontend/metacleaner-app/src/routes/settings/sections/SettingsHeaderSection.svelte`
   - Remove the last-login badge `<div>` (the block with `sm:flex`, `fa-solid fa-clock`, and the lastLogin binding)
   - Simplify the outer `<div>` layout from `flex-col sm:flex-row sm:items-center sm:justify-between` to a simple `flex items-center gap-3 lg:gap-4`
@@ -14,7 +14,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - In `frontend/metacleaner-app/src/routes/settings/+page.svelte`, import `SettingsHeaderSection` and render it above the grid (inside `<main>`, before the `<div class="grid ...">`)
   - _Fixes: 2.1_
 
-- [ ] 2. Remove avatar/icon row and merge email into unified form in AccountInfoSection
+- [x] 2. Remove avatar/icon row and merge email into unified form in AccountInfoSection
   - In `frontend/metacleaner-app/src/routes/settings/sections/AccountInfoSection.svelte`:
   - Delete the entire "Avatar row" block (`<div class="flex items-center gap-4">` containing the `fa-user` icon div and the badges div)
   - Add badges directly at the top of the `{:else}` loaded content block: `<div class="mb-3 flex items-center gap-1.5 lg:gap-2">` with `Badge` components for Pro and Verified

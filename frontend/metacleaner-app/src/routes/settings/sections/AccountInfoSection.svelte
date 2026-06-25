@@ -33,17 +33,16 @@
 
 	let originalFirstName = $state('');
 	let originalLastName = $state('');
+	let originalEmail = $state('');
 
 	let firstNameError = $state('');
 	let lastNameError = $state('');
+	let emailError = $state('');
 
 	let saveLoading = $state(false);
 	let saveSuccess = $state(false);
+	let emailChangedSuccess = $state(false);
 	let saveError = $state('');
-
-	let emailLoading = $state(false);
-	let emailSuccess = $state(false);
-	let emailError = $state('');
 
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
@@ -63,6 +62,7 @@
 			email = profile.email ?? '';
 			originalFirstName = firstName;
 			originalLastName = lastName;
+			originalEmail = email;
 		} catch {
 			fetchError = tx('settings.account.fetchError');
 		} finally {
@@ -77,33 +77,45 @@
 	async function handleSave() {
 		firstNameError = '';
 		lastNameError = '';
+		emailError = '';
 		saveError = '';
 		saveSuccess = false;
+		emailChangedSuccess = false;
 
 		const fnErr = validateName(firstName);
 		const lnErr = validateName(lastName);
+		const emErr = validateEmail(email);
 
 		if (fnErr) firstNameError = tx(fnErr as Parameters<typeof tx>[0]);
 		if (lnErr) lastNameError = tx(lnErr as Parameters<typeof tx>[0]);
+		if (emErr) emailError = tx(emErr as Parameters<typeof tx>[0]);
 
-		if (fnErr || lnErr) return;
+		if (fnErr || lnErr || emErr) return;
 
-		if (
-			isFormUnchanged(
-				{ first_name: originalFirstName, last_name: originalLastName },
-				{ first_name: firstName, last_name: lastName }
-			)
-		) {
-			onSave?.();
+		const nameUnchanged = isFormUnchanged(
+			{ first_name: originalFirstName, last_name: originalLastName },
+			{ first_name: firstName, last_name: lastName }
+		);
+		const emailUnchanged = email.trim() === originalEmail;
+
+		if (nameUnchanged && emailUnchanged) {
 			saveSuccess = true;
+			onSave?.();
 			return;
 		}
 
 		saveLoading = true;
 		try {
-			await updateProfile({ first_name: firstName.trim(), last_name: lastName.trim() });
-			originalFirstName = firstName.trim();
-			originalLastName = lastName.trim();
+			if (!nameUnchanged) {
+				await updateProfile({ first_name: firstName.trim(), last_name: lastName.trim() });
+				originalFirstName = firstName.trim();
+				originalLastName = lastName.trim();
+			}
+			if (!emailUnchanged) {
+				await changeEmail(email.trim());
+				originalEmail = email.trim();
+				emailChangedSuccess = true;
+			}
 			saveSuccess = true;
 			onSave?.();
 		} catch (err) {
@@ -116,45 +128,7 @@
 			saveLoading = false;
 		}
 	}
-
-	async function handleEmailChange() {
-		emailError = '';
-		emailSuccess = false;
-
-		const err = validateEmail(email);
-		if (err) {
-			emailError = tx(err as Parameters<typeof tx>[0]);
-			return;
-		}
-
-		emailLoading = true;
-		try {
-			await changeEmail(email.trim());
-			emailSuccess = true;
-		} catch (err) {
-			if (err instanceof AccountError) {
-				emailError = tx(accountErrorToI18nKey(err) as Parameters<typeof tx>[0]);
-			} else {
-				emailError = tx('settings.error.unknown');
-			}
-		} finally {
-			emailLoading = false;
-		}
-	}
 </script>
-
-<!-- Avatar row -->
-<div class="flex items-center gap-4">
-	<div
-		class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-brand-blue/40 bg-brand-blue/10"
-	>
-		<i class="fa-solid fa-user text-2xl text-brand-blue"></i>
-	</div>
-	<div class="flex items-center gap-1.5 lg:gap-2">
-		<Badge color="green" label={tx('settings.account.proBadge')} />
-		<Badge color="blue" label={tx('settings.account.verifiedBadge')} />
-	</div>
-</div>
 
 {#if fetchLoading}
 	<div class="flex items-center gap-2 text-sm text-text-muted">
@@ -171,6 +145,12 @@
 		{tx('settings.account.retry')}
 	</Button>
 {:else}
+	<!-- Badges -->
+	<div class="mb-3 flex items-center gap-1.5 lg:gap-2">
+		<Badge color="green" label={tx('settings.account.proBadge')} />
+		<Badge color="blue" label={tx('settings.account.verifiedBadge')} />
+	</div>
+
 	<!-- Name fields -->
 	<div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
 		<AuthTextInput
@@ -187,9 +167,23 @@
 		/>
 	</div>
 
+	<!-- Email field (same form) -->
+	<AuthTextInput
+		id="settings-email"
+		label={tx('settings.account.emailLabel')}
+		type="email"
+		bind:value={email}
+		error={emailError}
+	/>
+
 	{#if saveSuccess}
 		<p class="text-sm text-brand-green">
 			<i class="fa-solid fa-circle-check mr-1"></i>{tx('settings.account.saveSuccess')}
+		</p>
+	{/if}
+	{#if emailChangedSuccess}
+		<p class="text-sm text-brand-green">
+			<i class="fa-solid fa-envelope mr-1"></i>{tx('settings.account.emailChangeInfo')}
 		</p>
 	{/if}
 	{#if saveError}
@@ -206,30 +200,4 @@
 		{/if}
 		{tx('settings.account.saveButton')}
 	</Button>
-
-	<!-- Email change -->
-	<div class="border-t border-gray-700 pt-4">
-		<AuthTextInput
-			id="settings-email"
-			label={tx('settings.account.emailLabel')}
-			type="email"
-			bind:value={email}
-			error={emailError}
-		/>
-		{#if emailSuccess}
-			<p class="mt-2 text-sm text-brand-green">
-				<i class="fa-solid fa-circle-check mr-1"></i>{tx('settings.account.emailChangeInfo')}
-			</p>
-		{/if}
-		<div class="mt-3">
-			<Button variant="secondary" fullWidth disabled={emailLoading} onclick={handleEmailChange}>
-				{#if emailLoading}
-					<i class="fa-solid fa-circle-notch animate-spin"></i>
-				{:else}
-					<i class="fa-solid fa-envelope"></i>
-				{/if}
-				{tx('settings.account.emailChangeButton')}
-			</Button>
-		</div>
-	</div>
 {/if}
