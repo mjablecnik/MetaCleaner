@@ -1,4 +1,15 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
+	import {
+		getSettingsProfile,
+		getAffiliateStats,
+		getApiKeys
+	} from '$lib/repositories/settingsRepository';
+
+	const profile = getSettingsProfile();
+	const affiliateStats = getAffiliateStats();
+	const apiKeys = getApiKeys();
+
 	let profileOpen = $state(true);
 	let passwordOpen = $state(false);
 	let apiOpen = $state(false);
@@ -19,10 +30,10 @@
 
 	const strengthLevels = [
 		{ width: '0%', color: 'transparent', label: '' },
-		{ width: '25%', color: '#ef4444', label: 'Slabé' },
-		{ width: '50%', color: '#f97316', label: 'Průměrné' },
-		{ width: '75%', color: '#3b82f6', label: 'Dobré' },
-		{ width: '100%', color: '#22c55e', label: 'Silné' }
+		{ width: '25%', color: '#ef4444', label: 'settings.password.strength.weak' },
+		{ width: '50%', color: '#f97316', label: 'settings.password.strength.average' },
+		{ width: '75%', color: '#3b82f6', label: 'settings.password.strength.good' },
+		{ width: '100%', color: '#22c55e', label: 'settings.password.strength.strong' }
 	];
 
 	const strengthScore = $derived.by(() => {
@@ -53,7 +64,7 @@
 </script>
 
 <svelte:head>
-	<title>Nastavení účtu — MetaCleaner</title>
+	<title>{tx('settings.meta.title')}</title>
 </svelte:head>
 
 <main class="mx-auto w-full max-w-[1100px] px-4 pb-24 pt-4 lg:px-6 lg:pt-0">
@@ -68,9 +79,11 @@
 				<i class="fa-solid fa-gear text-xl text-brand-blue lg:text-3xl"></i>
 			</div>
 			<div>
-				<h1 class="text-xl font-bold leading-tight text-white lg:text-3xl">Nastavení účtu</h1>
+				<h1 class="text-xl font-bold leading-tight text-white lg:text-3xl">
+					{tx('settings.header.title')}
+				</h1>
 				<p class="mt-0.5 text-xs text-text-muted lg:mt-1 lg:text-sm">
-					Spravujte svůj profil, bezpečnost a API přístup
+					{tx('settings.header.subtitle')}
 				</p>
 			</div>
 		</div>
@@ -78,7 +91,11 @@
 			class="hidden items-center gap-2 rounded-xl border border-gray-800 bg-navy-card px-4 py-2.5 text-xs text-text-muted sm:flex"
 		>
 			<i class="fa-solid fa-clock text-xs text-brand-blue"></i>
-			<span>Poslední přihlášení: <span class="font-semibold text-white">dnes, 09:41</span></span>
+			<span
+				>{tx('settings.header.lastLogin')} <span class="font-semibold text-white"
+					>{profile.lastLogin}</span
+				></span
+			>
 		</div>
 	</div>
 
@@ -102,8 +119,10 @@
 							<i class="fa-solid fa-circle-user text-sm text-brand-blue"></i>
 						</div>
 						<div class="flex-1">
-							<h3 class="text-sm font-semibold text-white lg:text-base">Informace o účtu</h3>
-							<p class="text-[11px] text-text-muted">Základní údaje profilu</p>
+							<h3 class="text-sm font-semibold text-white lg:text-base">
+								{tx('settings.account.title')}
+							</h3>
+							<p class="text-[11px] text-text-muted">{tx('settings.account.subtitle')}</p>
 						</div>
 						<i
 							class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"
@@ -119,8 +138,8 @@
 					<div class="flex items-center gap-4">
 						<div class="relative flex-shrink-0">
 							<img
-								src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
-								alt="Jana Nováková"
+								src={profile.avatarUrl}
+								alt={profile.name}
 								class="h-16 w-16 rounded-2xl border-2 border-brand-blue/40 object-cover"
 							/>
 							<button
@@ -131,16 +150,16 @@
 							</button>
 						</div>
 						<div>
-							<p class="text-sm font-bold text-white lg:text-base">Jana Nováková</p>
-							<p class="text-xs text-text-muted">jana.novakova@email.cz</p>
+							<p class="text-sm font-bold text-white lg:text-base">{profile.name}</p>
+							<p class="text-xs text-text-muted">{profile.email}</p>
 							<div class="mt-1.5 flex items-center gap-1.5 lg:gap-2">
 								<span
 									class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[9px] font-bold uppercase text-brand-green"
-									>Pro plán</span
+									>{tx('settings.account.proBadge')}</span
 								>
 								<span
 									class="rounded-full border border-brand-blue/20 bg-brand-blue/10 px-2 py-0.5 text-[9px] font-bold uppercase text-brand-blue"
-									>Ověřen</span
+									>{tx('settings.account.verifiedBadge')}</span
 								>
 							</div>
 						</div>
@@ -149,42 +168,42 @@
 					<div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
 						<div class="flex flex-col gap-1.5">
 							<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-								>Jméno</label
+								>{tx('settings.account.nameLabel')}</label
 							>
 							<input
 								type="text"
-								value="Jana Nováková"
+								value={profile.name}
 								class="rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white transition-colors focus:border-brand-blue focus:outline-none lg:py-2.5"
 							/>
 						</div>
 						<div class="flex flex-col gap-1.5">
 							<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-								>E-mail</label
+								>{tx('settings.account.emailLabel')}</label
 							>
 							<input
 								type="email"
-								value="jana.novakova@email.cz"
+								value={profile.email}
 								class="rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white transition-colors focus:border-brand-blue focus:outline-none lg:py-2.5"
 							/>
 						</div>
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-							>Společnost (volitelné)</label
+							>{tx('settings.account.companyLabel')}</label
 						>
 						<input
 							type="text"
-							placeholder="Název vaší firmy"
+							placeholder={tx('settings.account.companyPlaceholder')}
 							class="rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white placeholder-gray-600 transition-colors focus:border-brand-blue focus:outline-none lg:py-2.5"
 						/>
 					</div>
 					<button
 						type="button"
-						onclick={() => showToast('Profil byl uložen')}
+						onclick={() => showToast(tx('settings.account.saveSuccess'))}
 						class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-blue py-3 text-sm font-bold text-white shadow-glow-blue transition-all hover:bg-blue-400 active:scale-95 lg:py-2.5"
 					>
 						<i class="fa-solid fa-floppy-disk"></i>
-						Uložit změny
+						{tx('settings.account.saveButton')}
 					</button>
 				</div>
 			</div>
@@ -205,8 +224,10 @@
 							<i class="fa-solid fa-lock text-sm text-brand-blue"></i>
 						</div>
 						<div class="flex-1">
-							<h3 class="text-sm font-semibold text-white lg:text-base">Změna hesla</h3>
-							<p class="text-[11px] text-text-muted">Aktualizujte své přihlašovací heslo</p>
+							<h3 class="text-sm font-semibold text-white lg:text-base">
+								{tx('settings.password.title')}
+							</h3>
+							<p class="text-[11px] text-text-muted">{tx('settings.password.subtitle')}</p>
 						</div>
 						<i
 							class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"
@@ -220,7 +241,7 @@
 				>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-							>Současné heslo</label
+							>{tx('settings.password.currentLabel')}</label
 						>
 						<div class="relative">
 							<input
@@ -241,7 +262,7 @@
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-							>Nové heslo</label
+							>{tx('settings.password.newLabel')}</label
 						>
 						<div class="relative">
 							<input
@@ -266,12 +287,12 @@
 							></div>
 						</div>
 						{#if strengthData.label}
-							<p class="text-[10px] text-text-muted">{strengthData.label}</p>
+							<p class="text-[10px] text-text-muted">{tx(strengthData.label)}</p>
 						{/if}
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-							>Potvrdit nové heslo</label
+							>{tx('settings.password.confirmLabel')}</label
 						>
 						<div class="relative">
 							<input
@@ -292,11 +313,11 @@
 					</div>
 					<button
 						type="button"
-						onclick={() => showToast('Heslo bylo úspěšně změněno')}
+						onclick={() => showToast(tx('settings.password.saveSuccess'))}
 						class="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-bold text-white shadow-glow-green transition-all hover:bg-green-400 active:scale-95 lg:py-2.5"
 					>
 						<i class="fa-solid fa-check"></i>
-						Uložit nové heslo
+						{tx('settings.password.saveButton')}
 					</button>
 				</div>
 			</div>
@@ -317,12 +338,14 @@
 							<i class="fa-solid fa-users text-sm text-brand-orange"></i>
 						</div>
 						<div class="flex-1">
-							<h3 class="text-sm font-semibold text-white lg:text-base">Affiliate program</h3>
-							<p class="text-[11px] text-text-muted">Sdílejte odkaz a získejte provizi</p>
+							<h3 class="text-sm font-semibold text-white lg:text-base">
+								{tx('settings.affiliate.title')}
+							</h3>
+							<p class="text-[11px] text-text-muted">{tx('settings.affiliate.subtitle')}</p>
 						</div>
 						<span
 							class="mr-1 rounded-full border border-brand-orange/30 bg-brand-orange/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-brand-orange lg:ml-auto lg:mr-0"
-							>Aktivní</span
+							>{tx('settings.affiliate.activeBadge')}</span
 						>
 						<i
 							class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"
@@ -336,40 +359,46 @@
 				>
 					<div class="grid grid-cols-3 gap-2 lg:gap-3">
 						<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-							<p class="text-2xl font-black text-brand-orange">7</p>
-							<p class="mt-0.5 text-[10px] text-text-muted">Referrals</p>
+							<p class="text-2xl font-black text-brand-orange">{affiliateStats.referrals}</p>
+							<p class="mt-0.5 text-[10px] text-text-muted">
+								{tx('settings.affiliate.referralsLabel')}
+							</p>
 						</div>
 						<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-							<p class="text-2xl font-black text-brand-green">3</p>
-							<p class="mt-0.5 text-[10px] text-text-muted">Konverze</p>
+							<p class="text-2xl font-black text-brand-green">{affiliateStats.conversions}</p>
+							<p class="mt-0.5 text-[10px] text-text-muted">
+								{tx('settings.affiliate.conversionsLabel')}
+							</p>
 						</div>
 						<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-							<p class="text-2xl font-black text-white">€12</p>
-							<p class="mt-0.5 text-[10px] text-text-muted">Výdělek</p>
+							<p class="text-2xl font-black text-white">{affiliateStats.earnings}</p>
+							<p class="mt-0.5 text-[10px] text-text-muted">
+								{tx('settings.affiliate.earningsLabel')}
+							</p>
 						</div>
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<label class="text-xs font-semibold uppercase tracking-wider text-text-muted"
-							>Váš affiliate odkaz</label
+							>{tx('settings.affiliate.linkLabel')}</label
 						>
 						<div class="flex gap-2">
 							<input
 								type="text"
 								readonly
-								value="https://settiq.io/ref/jana-novakova"
+								value={affiliateStats.affiliateLink}
 								class="min-w-0 flex-1 rounded-xl border border-gray-700 bg-navy-main px-3 py-2.5 font-mono text-sm text-text-muted focus:outline-none lg:px-4"
 							/>
 							<button
 								type="button"
 								onclick={() =>
 									copyToClipboard(
-										'https://settiq.io/ref/jana-novakova',
-										'Odkaz byl zkopírován'
+										affiliateStats.affiliateLink,
+										tx('settings.affiliate.linkCopied')
 									)}
 								class="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl border border-brand-orange/30 bg-brand-orange/10 px-4 py-2.5 text-sm font-bold text-brand-orange transition-colors hover:bg-brand-orange/20"
 							>
 								<i class="fa-solid fa-copy text-xs"></i>
-								Kopírovat
+								{tx('settings.affiliate.copyButton')}
 							</button>
 						</div>
 					</div>
@@ -380,9 +409,9 @@
 							class="fa-solid fa-circle-info mt-0.5 flex-shrink-0 text-sm text-brand-orange"
 						></i>
 						<p class="text-xs leading-relaxed text-text-muted">
-							Za každého platícího zákazníka získáte <span
-								class="font-semibold text-brand-orange">20% provizi</span
-							> po dobu 12 měsíců. Výplata probíhá každý měsíc.
+							{tx('settings.affiliate.commissionInfoPre')} <span
+								class="font-semibold text-brand-orange">{tx('settings.affiliate.commissionRate')}</span
+							> {tx('settings.affiliate.commissionInfoPost')}
 						</p>
 					</div>
 				</div>
@@ -407,8 +436,10 @@
 							<i class="fa-solid fa-code text-sm text-brand-green"></i>
 						</div>
 						<div class="flex-1">
-							<h3 class="text-sm font-semibold text-white lg:text-base">API klíče</h3>
-							<p class="text-[11px] text-text-muted">Přístup k Settiq REST API endpointům</p>
+							<h3 class="text-sm font-semibold text-white lg:text-base">
+								{tx('settings.apiKeys.title')}
+							</h3>
+							<p class="text-[11px] text-text-muted">{tx('settings.apiKeys.subtitle')}</p>
 						</div>
 						<i
 							class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"
@@ -425,18 +456,20 @@
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-2">
 								<div class="h-2 w-2 animate-pulse rounded-full bg-brand-green"></div>
-								<span class="text-xs font-semibold text-white">Production Key</span>
+								<span class="text-xs font-semibold text-white"
+									>{tx('settings.apiKeys.productionLabel')}</span
+								>
 							</div>
 							<span
 								class="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[9px] font-bold uppercase text-brand-green"
-								>Aktivní</span
+								>{tx('settings.apiKeys.activeBadge')}</span
 							>
 						</div>
 						<div class="flex gap-2">
 							<input
 								type={showApiKey ? 'text' : 'password'}
 								readonly
-								value="sk_live_a8f3k2m9x1qw5e7r0tyu6io4p"
+								value={apiKeys.production.key}
 								class="min-w-0 flex-1 rounded-lg border border-gray-700 bg-navy-card px-3 py-2 font-mono text-xs text-text-muted focus:outline-none"
 							/>
 							<button
@@ -449,16 +482,18 @@
 							<button
 								type="button"
 								onclick={() =>
-									copyToClipboard(
-										'sk_live_a8f3k2m9x1qw5e7r0tyu6io4p',
-										'API klíč zkopírován'
-									)}
+									copyToClipboard(apiKeys.production.key, tx('settings.apiKeys.keyCopied'))}
 								class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 text-brand-blue transition-colors hover:bg-brand-blue/20 lg:h-9 lg:w-9"
 							>
 								<i class="fa-solid fa-copy text-xs"></i>
 							</button>
 						</div>
-						<p class="text-[10px] text-text-muted">Vytvořen: 15. 4. 2025 · Použit: 2. 6. 2025</p>
+						<p class="text-[10px] text-text-muted">
+							{tx('settings.apiKeys.createdUsed', {
+								createdAt: apiKeys.production.createdAt,
+								lastUsed: apiKeys.production.lastUsed
+							})}
+						</p>
 					</div>
 					<!-- Test Key -->
 					<div
@@ -467,18 +502,20 @@
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-2">
 								<div class="h-2 w-2 rounded-full bg-gray-600"></div>
-								<span class="text-xs font-semibold text-text-muted">Test Key</span>
+								<span class="text-xs font-semibold text-text-muted"
+									>{tx('settings.apiKeys.testLabel')}</span
+								>
 							</div>
 							<span
 								class="rounded-full border border-gray-600 bg-gray-700/50 px-2 py-0.5 text-[9px] font-bold uppercase text-text-muted"
-								>Sandbox</span
+								>{tx('settings.apiKeys.sandboxBadge')}</span
 							>
 						</div>
 						<div class="flex gap-2">
 							<input
 								type={showTestKey ? 'text' : 'password'}
 								readonly
-								value="sk_test_z9d4n7h2s6bv1cx3lm8poq0wr"
+								value={apiKeys.test.key}
 								class="min-w-0 flex-1 rounded-lg border border-gray-700 bg-navy-card px-3 py-2 font-mono text-xs text-text-muted focus:outline-none"
 							/>
 							<button
@@ -491,10 +528,7 @@
 							<button
 								type="button"
 								onclick={() =>
-									copyToClipboard(
-										'sk_test_z9d4n7h2s6bv1cx3lm8poq0wr',
-										'Test klíč zkopírován'
-									)}
+									copyToClipboard(apiKeys.test.key, tx('settings.apiKeys.testKeyCopied'))}
 								class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 text-brand-blue transition-colors hover:bg-brand-blue/20 lg:h-9 lg:w-9"
 							>
 								<i class="fa-solid fa-copy text-xs"></i>
