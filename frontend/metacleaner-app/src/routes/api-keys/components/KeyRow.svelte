@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import Badge from '$lib/shared/elements/Badge.svelte';
-	import { revokeApiKey } from '$lib/clients/apiKeysClient';
+	import { revokeApiKey, activateApiKey } from '$lib/clients/apiKeysClient';
 	import type { ApiKey } from '$lib/clients/apiKeysClient';
 
 	interface Props {
@@ -13,7 +13,8 @@
 	const { apiKey, onDelete, onRevoke }: Props = $props();
 
 	let isRevoking = $state(false);
-	let revokeError = $state<string | null>(null);
+	let isActivating = $state(false);
+	let operationError = $state<string | null>(null);
 
 	const keyDisplayHint = $derived(`${apiKey.key_prefix}${'•'.repeat(18)}${apiKey.key_suffix}`);
 
@@ -31,14 +32,28 @@
 	async function handleRevoke() {
 		if (!isActive || isRevoking) return;
 		isRevoking = true;
-		revokeError = null;
+		operationError = null;
 		try {
 			const updated = await revokeApiKey(apiKey.id);
 			onRevoke(updated);
 		} catch (e: unknown) {
-			revokeError = e instanceof Error ? e.message : 'Failed to revoke key';
+			operationError = e instanceof Error ? e.message : 'Failed to revoke key';
 		} finally {
 			isRevoking = false;
+		}
+	}
+
+	async function handleActivate() {
+		if (isActive || isActivating) return;
+		isActivating = true;
+		operationError = null;
+		try {
+			const updated = await activateApiKey(apiKey.id);
+			onRevoke(updated);
+		} catch (e: unknown) {
+			operationError = e instanceof Error ? e.message : 'Failed to activate key';
+		} finally {
+			isActivating = false;
 		}
 	}
 </script>
@@ -73,9 +88,9 @@
 					· Revoked {formatDate(apiKey.revoked_at)}
 				{/if}
 			</p>
-			{#if revokeError}
+			{#if operationError}
 				<p class="mt-1 text-xs text-brand-red">
-					<i class="fa-solid fa-circle-exclamation mr-1"></i>{revokeError}
+					<i class="fa-solid fa-circle-exclamation mr-1"></i>{operationError}
 				</p>
 			{/if}
 		</div>
@@ -90,13 +105,26 @@
 			<button
 				onclick={handleRevoke}
 				disabled={isRevoking}
-				title="Revoke"
+				title={tx('apiKeys.action.revoke')}
 				class="rounded-lg border border-brand-orange/25 bg-brand-orange/10 p-2 text-xs text-brand-orange transition-all hover:bg-brand-orange/20 disabled:cursor-not-allowed disabled:opacity-60"
 			>
 				{#if isRevoking}
 					<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>
 				{:else}
 					<i class="fa-solid fa-ban text-xs"></i>
+				{/if}
+			</button>
+		{:else}
+			<button
+				onclick={handleActivate}
+				disabled={isActivating}
+				title={tx('apiKeys.action.activate')}
+				class="rounded-lg border border-brand-green/25 bg-brand-green/10 p-2 text-xs text-brand-green transition-all hover:bg-brand-green/20 disabled:cursor-not-allowed disabled:opacity-60"
+			>
+				{#if isActivating}
+					<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>
+				{:else}
+					<i class="fa-solid fa-rotate-left text-xs"></i>
 				{/if}
 			</button>
 		{/if}

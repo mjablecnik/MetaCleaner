@@ -134,6 +134,43 @@ func (c *SupabaseClient) RevokeAPIKey(ctx context.Context, keyID, userID string)
 	return &result, false, nil
 }
 
+// ActivateAPIKey sets the status of a revoked key back to 'active'.
+// Returns the updated record, or nil if not found / wrong user.
+// Returns alreadyActive=true if key is already active.
+func (c *SupabaseClient) ActivateAPIKey(ctx context.Context, keyID, userID string) (*APIKey, bool, error) {
+	// Fetch the key to validate ownership and current status.
+	var rows []dbAPIKey
+	url := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return nil, false, fmt.Errorf("activate api key lookup: %w", err)
+	}
+	if len(rows) == 0 {
+		return nil, false, nil
+	}
+
+	existing := rows[0]
+	if existing.Status == "active" {
+		result := dbAPIKeyToAPIKey(existing)
+		return &result, true, nil // true = already active
+	}
+
+	patch := map[string]interface{}{
+		"status":     "active",
+		"revoked_at": nil,
+	}
+	patchURL := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID)
+	var updated []dbAPIKey
+	if err := c.doJSON(ctx, http.MethodPatch, patchURL, patch, &updated); err != nil {
+		return nil, false, fmt.Errorf("activate api key patch: %w", err)
+	}
+
+	if len(updated) == 0 {
+		return nil, false, fmt.Errorf("activate api key: no row returned after patch")
+	}
+	result := dbAPIKeyToAPIKey(updated[0])
+	return &result, false, nil
+}
+
 // LookupAPIKeyByHash finds an active API key by its SHA-256 hash.
 // Returns nil if no active key matches.
 func (c *SupabaseClient) LookupAPIKeyByHash(ctx context.Context, hash string) (*APIKey, error) {

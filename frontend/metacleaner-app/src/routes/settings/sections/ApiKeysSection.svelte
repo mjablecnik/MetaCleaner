@@ -6,6 +6,7 @@
 	import {
 		listApiKeys,
 		revokeApiKey,
+		activateApiKey,
 		deleteApiKey,
 		type ApiKey
 	} from '$lib/clients/apiKeysClient.js';
@@ -14,18 +15,18 @@
 	interface Props {
 		showCreateModal?: boolean;
 		/** Called by parent when a key is created via the page-level modal */
-		addKey?: { key: ApiKey; fullKey?: string } | null;
+		addKey?: { key: ApiKey } | null;
 	}
 
 	let { showCreateModal = $bindable(false), addKey = null }: Props = $props();
 
+	let lastAddedKeyId = $state<string | null>(null);
+
 	// React to parent passing a newly created key
 	$effect(() => {
-		if (addKey) {
+		if (addKey && addKey.key.id !== lastAddedKeyId) {
+			lastAddedKeyId = addKey.key.id;
 			keys = [...keys, addKey.key];
-			if (addKey.fullKey) {
-				newKeyValues = new Map([...newKeyValues, [addKey.key.id, addKey.fullKey]]);
-			}
 		}
 	});
 
@@ -38,15 +39,18 @@
 
 	let operationError = $state('');
 	let revokingId = $state<string | null>(null);
+	let activatingId = $state<string | null>(null);
 	let deletingId = $state<string | null>(null);
-
-	let newKeyValues = $state<Map<string, string>>(new Map());
 
 	async function loadKeys() {
 		loadLoading = true;
 		loadError = '';
 		try {
-			keys = await listApiKeys();
+			const loaded = await listApiKeys();
+			// Sort by created_at ascending (oldest first, newest last)
+			keys = loaded.sort(
+				(a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+			);
 		} catch {
 			loadError = tx('apiKeys.error.loadFailed');
 		} finally {
@@ -68,6 +72,19 @@
 			operationError = tx('apiKeys.error.revokeFailed');
 		} finally {
 			revokingId = null;
+		}
+	}
+
+	async function handleActivate(key: ApiKey) {
+		operationError = '';
+		activatingId = key.id;
+		try {
+			const updated = await activateApiKey(key.id);
+			keys = keys.map((k) => (k.id === key.id ? updated : k));
+		} catch {
+			operationError = tx('apiKeys.error.activateFailed');
+		} finally {
+			activatingId = null;
 		}
 	}
 
@@ -97,9 +114,6 @@
 	}
 
 	function getDisplayValue(key: ApiKey): string {
-		if (newKeyValues.has(key.id)) {
-			return newKeyValues.get(key.id)!;
-		}
 		return `${key.key_prefix}${'•'.repeat(18)}${key.key_suffix}`;
 	}
 </script>
@@ -187,6 +201,19 @@
 									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
 								{:else}
 									<i class="fa-solid fa-ban text-xs"></i>
+								{/if}
+							</button>
+						{:else}
+							<button
+								aria-label={tx('apiKeys.action.activate')}
+								disabled={activatingId === key.id}
+								onclick={() => handleActivate(key)}
+								class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-brand-green/25 bg-brand-green/10 text-brand-green transition-all hover:bg-brand-green/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
+							>
+								{#if activatingId === key.id}
+									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
+								{:else}
+									<i class="fa-solid fa-rotate-left text-xs"></i>
 								{/if}
 							</button>
 						{/if}

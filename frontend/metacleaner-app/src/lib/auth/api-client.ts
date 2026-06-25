@@ -8,8 +8,28 @@ const REFRESH_BUFFER_MS = 60_000;
 let refreshPromise: Promise<void> | null = null;
 
 function isProtectedEndpoint(path: string): boolean {
-	if (path === '/api/auth/me') return true;
-	return !path.startsWith('/api/auth/') && path !== '/api/health';
+	// Health check is always public
+	if (path === '/api/health') return false;
+
+	// Public auth endpoints that don't require a token
+	const publicAuthPaths = [
+		'/api/auth/login',
+		'/api/auth/register',
+		'/api/auth/refresh',
+		'/api/auth/forgot-password',
+		'/api/auth/verify-reset-code',
+		'/api/auth/reset-password',
+		'/api/auth/magic-link',
+		'/api/auth/magic-link/callback',
+		'/api/auth/oauth/'
+	];
+
+	for (const p of publicAuthPaths) {
+		if (path === p || path.startsWith(p)) return false;
+	}
+
+	// Everything else (including /api/auth/me, /api/auth/profile, etc.) is protected
+	return true;
 }
 
 async function doRefreshWithRetry(): Promise<void> {

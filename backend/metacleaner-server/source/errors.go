@@ -23,6 +23,7 @@ const (
 	ErrValidationError       = "VALIDATION_ERROR"
 	ErrAPIKeyNotFound        = "API_KEY_NOT_FOUND"
 	ErrAPIKeyAlreadyRevoked  = "API_KEY_ALREADY_REVOKED"
+	ErrAPIKeyAlreadyActive   = "API_KEY_ALREADY_ACTIVE"
 	ErrAPIKeyForbidden       = "API_KEY_FORBIDDEN"
 )
 

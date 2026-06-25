@@ -18,10 +18,10 @@
 	let toastTimer: ReturnType<typeof setTimeout>;
 
 	let showCreateKeyModal = $state(false);
-	let newlyCreatedKey = $state<{ key: ApiKey; fullKey?: string } | null>(null);
+	let newlyCreatedKey = $state<{ key: ApiKey } | null>(null);
 
-	function handleKeyCreated(key: ApiKey, fullKey: string) {
-		newlyCreatedKey = { key, fullKey };
+	function handleKeyCreated(key: ApiKey, _fullKey: string) {
+		newlyCreatedKey = { key };
 		showCreateKeyModal = false;
 	}
 

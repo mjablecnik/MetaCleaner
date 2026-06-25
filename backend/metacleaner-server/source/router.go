@@ -255,6 +255,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// PATCH /api/keys/{id}/revoke — revoke an active API key
 	mux.Handle("PATCH /api/keys/{id}/revoke", HandleRevokeAPIKey(db))
 
+	// PATCH /api/keys/{id}/activate — re-activate a revoked API key
+	mux.Handle("PATCH /api/keys/{id}/activate", HandleActivateAPIKey(db))
+
 	// GET /api/account — authenticated
 	mux.Handle("GET /api/account", rateLimited(HandleAccount(cfg, db)))
 

@@ -155,3 +155,41 @@ func HandleRevokeAPIKey(db *SupabaseClient) http.HandlerFunc {
 		json.NewEncoder(w).Encode(apiKey)
 	}
 }
+
+// HandleActivateAPIKey handles PATCH /api/keys/{id}/activate.
+// Sets a revoked key status back to 'active' and clears the revocation timestamp.
+func HandleActivateAPIKey(db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		keyID := r.PathValue("id")
+		if keyID == "" {
+			WriteError(w, http.StatusBadRequest, ErrValidationError, "key ID is required")
+			return
+		}
+
+		apiKey, alreadyActive, err := db.ActivateAPIKey(r.Context(), keyID, userID)
+		if err != nil {
+			slog.Error("apikeys: failed to activate key", "userID", userID, "keyID", keyID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to activate API key")
+			return
+		}
+		if apiKey == nil {
+			WriteError(w, http.StatusNotFound, ErrAPIKeyNotFound, "API key not found")
+			return
+		}
+		if alreadyActive {
+			WriteError(w, http.StatusConflict, ErrAPIKeyAlreadyActive, "API key is already active")
+			return
+		}
+
+		slog.Info("apikeys: key activated", "userID", userID, "keyID", keyID)
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(apiKey)
+	}
+}
