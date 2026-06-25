@@ -214,7 +214,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Test DangerZoneSection + AccountDeletionModal: open→confirm→success/error, cancel
     - _Requirements: 5.1, 5.3, 6.5, 6.6, 7.5, 7.6_
 
-- [ ] 8. Final checkpoint
+- [x] 8. Final checkpoint
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
