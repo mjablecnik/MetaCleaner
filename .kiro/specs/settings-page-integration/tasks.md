@@ -102,7 +102,7 @@ This plan implements the full Settings page refactoring and backend integration.
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Frontend: Page layout refactoring and UI cleanup
-  - [ ] 4.1 Refactor Settings page layout and remove unused elements
+  - [x] 4.1 Refactor Settings page layout and remove unused elements
     - Rewrite `frontend/metacleaner-app/src/routes/settings/+page.svelte`
     - Remove `SettingsHeaderSection` import and rendering (removes back button + last login indicator)
     - Remove `AffiliateProgramSection` rendering; leave it as a commented-out section with `<!-- Affiliate Program: planned for future release -->` comment and position it after API Keys in the right column
@@ -112,7 +112,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Place ApiKeysSection in right column
     - _Requirements: 1.4, 1.5, 2.1, 3.1, 3.5, 3.6_
 
-  - [ ] 4.2 Refactor AccountInfoSection with shared elements and backend connection
+  - [x] 4.2 Refactor AccountInfoSection with shared elements and backend connection
     - Rewrite `frontend/metacleaner-app/src/routes/settings/sections/AccountInfoSection.svelte`
     - Remove avatar upload button — display only static `fa-solid fa-user` icon in a styled circle
     - Remove company input field entirely
