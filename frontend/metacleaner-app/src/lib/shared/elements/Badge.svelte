@@ -1,5 +1,5 @@
 <script lang="ts">
-	type Color = 'blue' | 'green' | 'red' | 'orange';
+	type Color = 'blue' | 'green' | 'red' | 'orange' | 'gray';
 
 	interface Props {
 		color?: Color;
@@ -35,6 +35,12 @@
 			bg: 'bg-brand-orange/10',
 			border: 'border-brand-orange/20',
 			dot: 'bg-brand-orange'
+		},
+		gray: {
+			text: 'text-text-muted',
+			bg: 'bg-gray-700/30',
+			border: 'border-gray-600/40',
+			dot: 'bg-gray-500'
 		}
 	};
 

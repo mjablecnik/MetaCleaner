@@ -127,7 +127,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Handle profile fetch failure with error message and retry action
     - _Requirements: 1.1, 1.2, 1.3, 3.2, 3.3, 3.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 5.10_
 
-  - [ ] 4.3 Refactor ChangePasswordSection with shared elements and backend connection
+  - [x] 4.3 Refactor ChangePasswordSection with shared elements and backend connection
     - Rewrite `frontend/metacleaner-app/src/routes/settings/sections/ChangePasswordSection.svelte`
     - Replace inline inputs with `AuthTextInput` (type=password with show/hide toggle)
     - Replace inline save button with `Button` element
@@ -138,7 +138,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Disable save button + show spinner while submitting
     - _Requirements: 1.1, 1.3, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8_
 
-  - [ ] 4.4 Rewrite ApiKeysSection with full CRUD from backend
+  - [x] 4.4 Rewrite ApiKeysSection with full CRUD from backend
     - Rewrite `frontend/metacleaner-app/src/routes/settings/sections/ApiKeysSection.svelte`
     - Replace mock data with live data: call `listApiKeys()` from `apiKeysClient.ts` on mount
     - Display key list showing name, key_prefix, status badge, created_at
