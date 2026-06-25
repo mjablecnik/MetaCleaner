@@ -31,9 +31,9 @@ No new shared elements needed — existing elements (`AccordionCard`, `CopyButto
 
 ## Phase 4 — Refactor Pages
 
-- [ ] 17. [HIGH] Refactor `settings/+page.svelte` to compose `SettingsHeaderSection` + 4 section components wrapped in `SettingsAccordionCard`, use shared `Toast` instead of inline toast, remove `<style>` block (move accordion responsive logic into `SettingsAccordionCard`)
-- [ ] 18. [LOW] (Optional) Split `docs/components/EndpointCard.svelte` (424 lines) into sub-components: `EndpointParams`, `EndpointResponse`, `EndpointCodeExample` — lower priority, docs-only component
+- [x] 17. [HIGH] Refactor `settings/+page.svelte` to compose `SettingsHeaderSection` + 4 section components wrapped in `SettingsAccordionCard`, use shared `Toast` instead of inline toast, remove `<style>` block (move accordion responsive logic into `SettingsAccordionCard`)
+- [x] 18. [LOW] (Optional) Split `docs/components/EndpointCard.svelte` (424 lines) into sub-components: `EndpointParams`, `EndpointResponse`, `EndpointCodeExample` — lower priority, docs-only component
 
 ## Final
 
-- [ ] 19. [MEDIUM] Verify all pages render correctly — no visual regressions, build passes (`bun run build`), Storybook builds (`bun run build-storybook`), no duplicated code in Settings page
+- [x] 19. [MEDIUM] Verify all pages render correctly — no visual regressions, build passes (`bun run build`), Storybook builds (`bun run build-storybook`), no duplicated code in Settings page
