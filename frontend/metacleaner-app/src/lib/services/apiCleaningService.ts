@@ -106,7 +106,11 @@ async function pollUntilComplete(
 
 			if (status.status === 'completed') {
 				if (status.reportId) setReportId(status.reportId);
-				void billingStore.refreshCreditsOnly();
+				// Credits are deducted on the backend after job completion.
+				// Wait briefly for the DB write to complete, then refresh.
+				setTimeout(() => {
+					void billingStore.refreshCreditsOnly();
+				}, 2000);
 				callbacks.onComplete(buildResultsFromStatus(status, accumulatedResults));
 				return;
 			}
@@ -240,7 +244,11 @@ function dispatchWsMessage(
 			const jobCompleteReportId = typeof msg.reportId === 'string' ? msg.reportId : '';
 			if (jobCompleteReportId) setReportId(jobCompleteReportId);
 			setJobCompleted();
-			void billingStore.refreshCreditsOnly();
+			// Credits are deducted on the backend after job_complete is broadcast.
+			// Wait briefly for the DB write to complete, then refresh.
+			setTimeout(() => {
+				void billingStore.refreshCreditsOnly();
+			}, 2000);
 			callbacks.onComplete(buildProcessingResults(msg, accumulatedResults, jobId));
 			break;
 		}

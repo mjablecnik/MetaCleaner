@@ -165,6 +165,41 @@ func (c *SupabaseClient) GetCreditBalance(ctx context.Context, userID string) (s
 
 // UpsertCreditBalance creates or updates the credit_balances row for the given user.
 func (c *SupabaseClient) UpsertCreditBalance(ctx context.Context, userID string, subCredits, purchasedCredits int) error {
+	payload := map[string]int{
+		"subscription_credits": subCredits,
+		"purchased_credits":    purchasedCredits,
+	}
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal credit balance: %w", err)
+	}
+
+	// Use PATCH to update the existing row. Falls back to POST (insert) if no row exists.
+	url := c.restURL("credit_balances?user_id=eq." + userID)
+	req, err := c.newRequest(ctx, http.MethodPatch, url, bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Prefer", "return=minimal")
+
+	resp, err := c.doWithTimeout(ctx, req)
+	if err != nil {
+		return fmt.Errorf("upsert credit balance: %w", err)
+	}
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+
+	if resp.StatusCode >= 300 {
+		return fmt.Errorf("upsert credit balance: status %d: %s", resp.StatusCode, body)
+	}
+	return nil
+}
+
+// CreateCreditBalance inserts a new credit_balances row for a user.
+// Used during registration to provision initial trial credits.
+func (c *SupabaseClient) CreateCreditBalance(ctx context.Context, userID string, subCredits, purchasedCredits int) error {
 	rec := dbCreditBalance{
 		UserID:              userID,
 		SubscriptionCredits: subCredits,
@@ -181,17 +216,17 @@ func (c *SupabaseClient) UpsertCreditBalance(ctx context.Context, userID string,
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Prefer", "resolution=merge-duplicates,return=minimal")
+	req.Header.Set("Prefer", "return=minimal")
 
 	resp, err := c.doWithTimeout(ctx, req)
 	if err != nil {
-		return fmt.Errorf("upsert credit balance: %w", err)
+		return fmt.Errorf("create credit balance: %w", err)
 	}
 	body, _ := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
-		return fmt.Errorf("upsert credit balance: status %d: %s", resp.StatusCode, body)
+		return fmt.Errorf("create credit balance: status %d: %s", resp.StatusCode, body)
 	}
 	return nil
 }
