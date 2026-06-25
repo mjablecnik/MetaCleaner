@@ -36,7 +36,6 @@
 
 	let firstNameError = $state('');
 	let lastNameError = $state('');
-	let emailError = $state('');
 
 	let saveLoading = $state(false);
 	let saveSuccess = $state(false);
@@ -44,7 +43,7 @@
 
 	let emailLoading = $state(false);
 	let emailSuccess = $state(false);
-	let emailError2 = $state('');
+	let emailError = $state('');
 
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
@@ -119,12 +118,12 @@
 	}
 
 	async function handleEmailChange() {
-		emailError2 = '';
+		emailError = '';
 		emailSuccess = false;
 
 		const err = validateEmail(email);
 		if (err) {
-			emailError2 = tx(err as Parameters<typeof tx>[0]);
+			emailError = tx(err as Parameters<typeof tx>[0]);
 			return;
 		}
 
@@ -134,9 +133,9 @@
 			emailSuccess = true;
 		} catch (err) {
 			if (err instanceof AccountError) {
-				emailError2 = tx(accountErrorToI18nKey(err) as Parameters<typeof tx>[0]);
+				emailError = tx(accountErrorToI18nKey(err) as Parameters<typeof tx>[0]);
 			} else {
-				emailError2 = tx('settings.error.unknown');
+				emailError = tx('settings.error.unknown');
 			}
 		} finally {
 			emailLoading = false;
@@ -163,7 +162,9 @@
 		<span>Loading...</span>
 	</div>
 {:else if fetchError}
-	<div class="rounded-xl border border-brand-red/30 bg-brand-red/10 px-4 py-3 text-sm text-brand-red">
+	<div
+		class="rounded-xl border border-brand-red/30 bg-brand-red/10 px-4 py-3 text-sm text-brand-red"
+	>
 		<i class="fa-solid fa-circle-exclamation mr-2"></i>{fetchError}
 	</div>
 	<Button variant="secondary" onclick={loadProfile}>
@@ -213,7 +214,7 @@
 			label={tx('settings.account.emailLabel')}
 			type="email"
 			bind:value={email}
-			error={emailError2}
+			error={emailError}
 		/>
 		{#if emailSuccess}
 			<p class="mt-2 text-sm text-brand-green">
