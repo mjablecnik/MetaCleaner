@@ -79,20 +79,52 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
     - `"apiKeys.lastUsedAt": "Použit"`
   - _Fixes: 2.5, 2.6, 2.7_
 
-- [ ] 9. Manual verification
-  - Load Settings page and verify page header is visible (gear icon + title + subtitle, no last login)
-  - Verify AccountInfoSection has no icon/avatar row, badges are at top, email is in same form as name fields, single Save button
-  - Test saving only name change → only profile update called
-  - Test saving only email change → email change called, verification info shown
-  - Test saving both → both calls made
-  - Verify ChangePasswordSection button is green (unchanged)
-  - Verify API key cards match design: masked input, eye toggle, copy button, dates, action buttons
-  - Test eye toggle on existing key → shows prefix+dots+suffix as plaintext
-  - Create a new key → full key visible, eye toggle reveals full value, copy copies full value
-  - Verify Affiliate section is visible but greyed out with "Coming Soon" badge and non-interactive
-  - Verify Danger Zone is still present at bottom of left column
-  - Test on mobile viewport: sections stack, accordions work, touch targets adequate
-  - Verify no horizontal overflow at any viewport width
+- [ ] 9. Write E2E tests for Settings page sections
+  - Create `frontend/metacleaner-app/e2e/settings.spec.ts`
+  - Add `injectAuth(page)` helper (same pattern as `docs-sidebar-highlight.spec.ts`) to bypass auth guard
+  - Add `mockSettingsApis(page)` helper that mocks: GET /api/auth/me (returns profile), GET /api/keys (returns mock keys list), PATCH /api/auth/profile, POST /api/auth/change-email, POST /api/auth/change-password, DELETE /api/auth/account, PATCH /api/keys/*/revoke, DELETE /api/keys/*, POST /api/keys
+  - **Desktop tests (1280×800 viewport):**
+    - Page header visible: heading "Account Settings" (or i18n equivalent), gear icon, subtitle text
+    - No last-login indicator on the page
+    - No avatar/icon row in account section (no `fa-user` icon in a 16×16 container)
+    - Badges (Pro, Verified) visible in account section
+    - First name + last name fields visible in account section
+    - Email field visible in same section (no border-t separator)
+    - Single "Save" button in account section (no separate "Change Email" button)
+    - Password section: 3 password fields (current, new, confirm) visible
+    - Password section: save button is green (has `bg-brand-green` class)
+    - Password strength meter visible below new password field
+    - API Keys section: "Create" button visible
+    - API Keys section: key cards rendered with masked input (type="password"), eye button, copy button
+    - API Keys section: creation date displayed per key card
+    - API Keys section: revoke + delete buttons visible per active key
+    - Affiliate section visible with "Coming Soon" badge
+    - Affiliate section has `opacity-50` or `pointer-events-none` (disabled styling)
+    - Danger Zone section visible with red styling and delete account button
+    - Two-column grid layout (left + right columns visible side by side)
+    - No horizontal scrollbar at 1280px width
+  - **Mobile tests (375×812 viewport):**
+    - Page header visible (smaller variant)
+    - Sections stacked in single column
+    - Account info accordion toggles open/close
+    - Password section accordion toggles open/close
+    - API Keys accordion toggles open/close
+    - Eye and copy buttons have minimum 44×44px touch target
+    - Affiliate section visible but disabled
+    - Danger Zone visible
+    - No horizontal scrollbar at 375px width
+  - **Interaction tests:**
+    - Click eye toggle on API key → input type changes from "password" to "text"
+    - Click eye toggle again → input type changes back to "password"
+    - Click "Save" in account section with unchanged data → no API call made (or instant success shown)
+    - Fill delete account button → modal appears with confirm/cancel
+    - Cancel in deletion modal → modal closes
+  - _Validates: all bugfix requirements 2.1–2.7 + regression 3.1–3.9_
+
+- [ ] 10. Manual verification
+  - Run E2E tests: `cd frontend/metacleaner-app && bun run test:e2e -- --grep settings`
+  - Verify all tests pass
+  - Quick visual spot-check in the browser to confirm layout matches design mockups
   - _Validates: all bugfix requirements + regression prevention_
 
 
@@ -111,7 +143,8 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   "waves": [
     { "id": 0, "tasks": ["1", "5", "7", "8"] },
     { "id": 1, "tasks": ["2", "3", "4", "6"] },
-    { "id": 2, "tasks": ["9"] }
+    { "id": 2, "tasks": ["9"] },
+    { "id": 3, "tasks": ["10"] }
   ]
 }
 ```
