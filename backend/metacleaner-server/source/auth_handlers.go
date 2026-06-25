@@ -74,11 +74,10 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 		}
 
 		if err := authClient.CreateProfile(r.Context(), UserProfile{
-			ID:               user.ID,
-			FirstName:        strings.TrimSpace(req.FirstName),
-			LastName:         strings.TrimSpace(req.LastName),
-			Email:            req.Email,
-			SubscriptionType: "free",
+			ID:        user.ID,
+			FirstName: strings.TrimSpace(req.FirstName),
+			LastName:  strings.TrimSpace(req.LastName),
+			Email:     req.Email,
 		}); err != nil {
 			LoggerFromContext(r.Context()).Warn("register: failed to create profile", "userId", user.ID, "error", err)
 			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
@@ -452,11 +451,10 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 		existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
 		if existing == nil {
 			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
-				ID:               session.User.ID,
-				FirstName:        "",
-				LastName:         "",
-				Email:            session.User.Email,
-				SubscriptionType: "free",
+				ID:        session.User.ID,
+				FirstName: "",
+				LastName:  "",
+				Email:     session.User.Email,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
@@ -611,11 +609,10 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) htt
 		if existing == nil {
 			firstName, lastName := extractOAuthName(session.User)
 			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
-				ID:               session.User.ID,
-				FirstName:        firstName,
-				LastName:         lastName,
-				Email:            session.User.Email,
-				SubscriptionType: "free",
+				ID:        session.User.ID,
+				FirstName: firstName,
+				LastName:  lastName,
+				Email:     session.User.Email,
 			}); createErr != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}

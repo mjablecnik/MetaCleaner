@@ -60,13 +60,12 @@ type supabaseAuthErrBody struct {
 
 // UserProfile is the profile record stored in the profiles table.
 type UserProfile struct {
-	ID               string     `json:"id"`
-	FirstName        string     `json:"first_name"`
-	LastName         string     `json:"last_name"`
-	Email            string     `json:"email"`
-	SubscriptionType string     `json:"subscription_type"`
-	CreatedAt        *time.Time `json:"created_at,omitempty"`
-	UpdatedAt        *time.Time `json:"updated_at,omitempty"`
+	ID        string     `json:"id"`
+	FirstName string     `json:"first_name"`
+	LastName  string     `json:"last_name"`
+	Email     string     `json:"email"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 // SupabaseAuthClient handles all Supabase Auth API interactions.
@@ -394,11 +393,8 @@ func (c *SupabaseAuthClient) GetUser(ctx context.Context, accessToken string) (*
 
 // --- Profile management (uses service role to bypass RLS) ---
 
-// CreateProfile inserts a new row into the profiles table with default free tier.
+// CreateProfile inserts a new row into the profiles table.
 func (c *SupabaseAuthClient) CreateProfile(ctx context.Context, profile UserProfile) error {
-	if profile.SubscriptionType == "" {
-		profile.SubscriptionType = "free"
-	}
 	data, _ := json.Marshal(profile)
 	req, err := c.newAdminRequest(ctx, http.MethodPost, c.restURL("profiles"), bytes.NewReader(data))
 	if err != nil {

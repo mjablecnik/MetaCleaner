@@ -480,12 +480,10 @@ func TestHandleMe_Success(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") {
 			writeJSONResp(w, http.StatusOK, []map[string]interface{}{{
-				"id":                "user-001",
-				"first_name":        "Alice",
-				"last_name":         "Smith",
-				"email":             "alice@example.com",
-				"subscription_type": "free",
-				"credits":           3,
+				"id":         "user-001",
+				"first_name": "Alice",
+				"last_name":  "Smith",
+				"email":      "alice@example.com",
 			}})
 		}
 	}))

@@ -91,7 +91,6 @@ func newCreditsTrackingClient(t *testing.T, tr *creditsCallTracker) (*src.Supaba
 					{
 						"id": tr.currentUserID, "email": tr.currentEmail,
 						"first_name": "", "last_name": "",
-						"subscription_type": "free",
 					},
 				})
 			} else {
