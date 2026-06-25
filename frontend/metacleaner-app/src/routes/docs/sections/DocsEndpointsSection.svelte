@@ -2,6 +2,7 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { page } from '$app/state';
 	import { onMount, getContext, untrack } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import EndpointCard from '../components/EndpointCard.svelte';
 	import { getEndpoints } from '$lib/repositories/docsRepository';
 
@@ -15,7 +16,7 @@
 	let activeEndpointId = $state('');
 
 	function handleToggle(id: string, isOpen: boolean) {
-		const next = new Set(ctx.ids);
+		const next = new SvelteSet(ctx.ids);
 		if (isOpen) {
 			next.add(id);
 		} else {
