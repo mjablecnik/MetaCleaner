@@ -46,7 +46,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - In the `handleDone()` function, call `onCreated(createdApiKey, createdKey)` instead of `onCreated(createdApiKey)`
   - _Fixes: 2.5_
 
-- [ ] 5. Add disabled prop to SettingsAccordionCard
+- [x] 5. Add disabled prop to SettingsAccordionCard
   - In `frontend/metacleaner-app/src/routes/settings/components/SettingsAccordionCard.svelte`:
   - Add `disabled?: boolean` to the `Props` interface with default `false`
   - Destructure `disabled = false` in the `$props()` call
