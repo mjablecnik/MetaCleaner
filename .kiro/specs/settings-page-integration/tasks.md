@@ -188,7 +188,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Ensure no navigation element points to the standalone API keys page
     - _Requirements: 4.6_
 
-  - [ ] 6.2 Add i18n translation keys for all new UI text
+  - [x] 6.2 Add i18n translation keys for all new UI text
     - Add all required keys to `messages/en.json` and `messages/cs.json` for:
       - Account info errors (firstNameRequired, lastNameRequired, emailInvalid)
       - Password errors (currentRequired, newLength, mismatch)
