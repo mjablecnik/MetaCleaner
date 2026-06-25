@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-25 07:45 — manual
+- Project: frontend (metacleaner-app)
+- Built the **Account Settings page** (`.agents/tmp/TASKS.md` / `PAGES.md`, both tasks done) from the `.design/metacleaner-settings-desktop.html` and `metacleaner-settings-mobile.html` mockups, with a desktop two-column grid (all sections visible) and a mobile single-column accordion (only "Account Info" open by default, others collapsible with rotating chevrons)
+- Implemented four section cards: **Account Info** (avatar with edit button, Pro/Ověřen badges, name/email/company form fields, "Uložit změny" save), **Change Password** (current/new/confirm password inputs with eye toggles and a realtime password-strength meter, green "Uložit nové heslo" save), **API Keys** (Production key with pulsing green dot + "Aktivní" badge and Test/Sandbox key with dashed border, each with eye-toggle, copy-to-clipboard, and metadata), and **Affiliate Program** (3-stat grid, readonly affiliate link with copy button, 20%-commission info box)
+- Added the settings navbar with MetaCleaner brand logo, "Zpět na čištění" back button, and user dropdown (email, "Nastavení" gear link, red "Odhlásit se" logout), plus copy-to-clipboard toast notifications (success/error, auto-dismiss 3s)
+- **Wired up navigation** (`0999347`): Settings reachable from the user dropdown menu, "Zpět na čištění" returns to the main cleaning page, and all internal links verified working
+- Commits: `20a7f9b` (desktop + mobile settings pages), `719a14c` (account/password/API-keys/affiliate sections), `0999347` (Settings page navigation wiring)
+
 ## 2026-06-18 10:32 — manual
 - Project: frontend (metacleaner-web)
 - Completed the full UI decomposition refactor of the marketing site (REFACTORING.md / TASKS.md, all 85 tasks done), breaking the three monolithic page files (Home 867 lines, Features 539, Pricing 398) into a Page → Sections → Components → Elements hierarchy with **no visual change** to any page
