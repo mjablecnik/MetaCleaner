@@ -5,6 +5,7 @@
 	import AccountInfoSection from './sections/AccountInfoSection.svelte';
 	import ChangePasswordSection from './sections/ChangePasswordSection.svelte';
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
+	import DangerZoneSection from './sections/DangerZoneSection.svelte';
 
 	let showToast = $state(false);
 	let toastMessage = $state('');
@@ -49,7 +50,7 @@
 				<ChangePasswordSection onSave={() => triggerToast(tx('settings.password.saveSuccess'))} />
 			</SettingsAccordionCard>
 
-			<!-- DangerZoneSection placed here after task 4.7 -->
+			<DangerZoneSection />
 		</div>
 
 		<!-- RIGHT COLUMN -->

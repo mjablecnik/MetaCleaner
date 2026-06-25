@@ -160,14 +160,14 @@ This plan implements the full Settings page refactoring and backend integration.
     - Loading state on submit button, error display on failure
     - _Requirements: 4.2, 4.3_
 
-  - [ ] 4.6 Create DeleteKeyModal component
+  - [x] 4.6 Create DeleteKeyModal component
     - Create `frontend/metacleaner-app/src/routes/settings/components/DeleteKeyModal.svelte`
     - Display key name in the confirmation message
     - Confirm/cancel buttons
     - On confirm: call `deleteApiKey`, close modal, remove key from list
     - _Requirements: 4.5_
 
-  - [ ] 4.7 Create DangerZoneSection and AccountDeletionModal
+  - [x] 4.7 Create DangerZoneSection and AccountDeletionModal
     - Create `frontend/metacleaner-app/src/routes/settings/sections/DangerZoneSection.svelte`
     - Render danger-zone styled area (red color scheme) with "Delete Account" button
     - Create `frontend/metacleaner-app/src/routes/settings/components/AccountDeletionModal.svelte`

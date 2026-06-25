@@ -803,5 +803,15 @@
 	"settings.apiKeys.createdUsed": "Vytvořen: {createdAt} · Použit: {lastUsed}",
 	"settings.apiKeys.testLabel": "Test Key",
 	"settings.apiKeys.sandboxBadge": "Sandbox",
-	"settings.apiKeys.testKeyCopied": "Test klíč zkopírován"
+	"settings.apiKeys.testKeyCopied": "Test klíč zkopírován",
+	"settings.dangerZone.title": "Nebezpečná zóna",
+	"settings.dangerZone.subtitle": "Nevratné akce účtu",
+	"settings.dangerZone.deleteTitle": "Smazat účet",
+	"settings.dangerZone.deleteDescription": "Trvale smažte svůj účet a všechna přidružená data. Tuto akci nelze vrátit.",
+	"settings.dangerZone.deleteButton": "Smazat účet",
+	"settings.deletion.title": "Smazat účet",
+	"settings.deletion.message": "Opravdu chcete trvale smazat svůj účet? Tato akce je nevratná.",
+	"settings.deletion.warning": "Všechna vaše data, soubory, reporty a API klíče budou trvale smazány.",
+	"settings.deletion.cancel": "Zrušit",
+	"settings.deletion.confirm": "Smazat můj účet"
 }

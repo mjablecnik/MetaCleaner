@@ -803,5 +803,15 @@
 	"settings.apiKeys.createdUsed": "Created: {createdAt} · Used: {lastUsed}",
 	"settings.apiKeys.testLabel": "Test Key",
 	"settings.apiKeys.sandboxBadge": "Sandbox",
-	"settings.apiKeys.testKeyCopied": "Test key copied"
+	"settings.apiKeys.testKeyCopied": "Test key copied",
+	"settings.dangerZone.title": "Danger Zone",
+	"settings.dangerZone.subtitle": "Irreversible account actions",
+	"settings.dangerZone.deleteTitle": "Delete Account",
+	"settings.dangerZone.deleteDescription": "Permanently delete your account and all associated data. This action cannot be undone.",
+	"settings.dangerZone.deleteButton": "Delete Account",
+	"settings.deletion.title": "Delete Account",
+	"settings.deletion.message": "Are you sure you want to permanently delete your account? This action is irreversible.",
+	"settings.deletion.warning": "All your data, files, reports, and API keys will be permanently deleted.",
+	"settings.deletion.cancel": "Cancel",
+	"settings.deletion.confirm": "Delete my account"
 }
