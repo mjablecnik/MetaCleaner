@@ -30,10 +30,10 @@
 
 	const strengthLevels = [
 		{ width: '0%', color: 'transparent', label: '' },
-		{ width: '25%', color: '#ef4444', label: 'settings.password.strength.weak' },
-		{ width: '50%', color: '#f97316', label: 'settings.password.strength.average' },
-		{ width: '75%', color: '#3b82f6', label: 'settings.password.strength.good' },
-		{ width: '100%', color: '#22c55e', label: 'settings.password.strength.strong' }
+		{ width: '25%', color: 'var(--color-brand-red)', label: 'settings.password.strength.weak' },
+		{ width: '50%', color: 'var(--color-brand-orange)', label: 'settings.password.strength.average' },
+		{ width: '75%', color: 'var(--color-brand-blue)', label: 'settings.password.strength.good' },
+		{ width: '100%', color: 'var(--color-brand-green)', label: 'settings.password.strength.strong' }
 	];
 
 	const strengthScore = $derived.by(() => {

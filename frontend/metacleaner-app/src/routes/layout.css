@@ -8,6 +8,7 @@
 	--color-navy-main: #0a1628; /* page background */
 	--color-navy-card: #111d33; /* card backgrounds, dropdowns */
 	--color-navy-lighter: #1e293b; /* badges, inputs, lighter surfaces */
+	--color-navy-deep: #080f1e; /* code block / terminal dark bg */
 	--color-navy-lighter-50: rgba(30, 41, 59, 0.5); /* semi-transparent lighter surface */
 	--color-navy-lighter-60: rgba(30, 41, 59, 0.6); /* semi-transparent lighter surface, stronger */
 	--color-navy-hover: #263347; /* social login button hover background */
