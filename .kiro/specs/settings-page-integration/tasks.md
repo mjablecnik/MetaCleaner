@@ -151,7 +151,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Show inline error messages on operation failure
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ] 4.5 Create CreateKeyModal component
+  - [x] 4.5 Create CreateKeyModal component
     - Create `frontend/metacleaner-app/src/routes/settings/components/CreateKeyModal.svelte`
     - Modal with name input (required, 1–100 chars) and optional note textarea (max 500 chars)
     - Validate using `validateApiKeyName` and `validateApiKeyNote` before submit
