@@ -26,7 +26,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - Keep the single `Button variant="primary"` for save (already green)
   - _Fixes: 2.2, 2.3; Preserves: 3.2, 3.3, 3.6, 3.7_
 
-- [ ] 3. Redesign API key cards to match design mockup
+- [x] 3. Redesign API key cards to match design mockup
   - In `frontend/metacleaner-app/src/routes/settings/sections/ApiKeysSection.svelte`:
   - Add new state: `let revealedKeys = $state<Set<string>>(new Set())` and `let newKeyValues = $state<Map<string, string>>(new Map())`
   - Add helper functions: `getDisplayValue(key)` returning full key from `newKeyValues` if revealed and available, otherwise `{prefix}••••••••{suffix}`; `toggleReveal(keyId)` toggling the Set; `copyKey(key)` copying to clipboard

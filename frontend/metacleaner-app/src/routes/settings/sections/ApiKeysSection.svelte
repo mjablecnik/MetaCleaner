@@ -24,6 +24,9 @@
 	let revokingId = $state<string | null>(null);
 	let deletingId = $state<string | null>(null);
 
+	let revealedKeys = $state<Set<string>>(new Set());
+	let newKeyValues = $state<Map<string, string>>(new Map());
+
 	async function loadKeys() {
 		loadLoading = true;
 		loadError = '';
@@ -74,13 +77,36 @@
 		}
 	}
 
-	function handleKeyCreated(key: ApiKey) {
+	function handleKeyCreated(key: ApiKey, fullKey?: string) {
 		keys = [...keys, key];
+		if (fullKey) {
+			newKeyValues = new Map([...newKeyValues, [key.id, fullKey]]);
+		}
 		showCreateModal = false;
 	}
 
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleDateString();
+	}
+
+	function getDisplayValue(key: ApiKey): string {
+		if (revealedKeys.has(key.id) && newKeyValues.has(key.id)) {
+			return newKeyValues.get(key.id)!;
+		}
+		return `${key.key_prefix}••••••••${key.key_suffix}`;
+	}
+
+	function toggleReveal(keyId: string) {
+		if (revealedKeys.has(keyId)) {
+			revealedKeys = new Set([...revealedKeys].filter((id) => id !== keyId));
+		} else {
+			revealedKeys = new Set([...revealedKeys, keyId]);
+		}
+	}
+
+	function copyKey(key: ApiKey) {
+		const value = newKeyValues.get(key.id) ?? `${key.key_prefix}••••••••${key.key_suffix}`;
+		navigator.clipboard.writeText(value).catch(() => {});
 	}
 </script>
 
@@ -131,54 +157,93 @@
 	{:else}
 		<div class="flex flex-col gap-3">
 			{#each keys as key (key.id)}
-				<div class="rounded-xl border border-gray-700 bg-navy-main px-4 py-3">
-					<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-						<div class="flex min-w-0 flex-col gap-1">
-							<div class="flex items-center gap-2">
-								<span class="truncate text-sm font-semibold text-white">{key.name}</span>
-								<Badge
-									color={key.status === 'active' ? 'green' : 'gray'}
-									label={key.status === 'active'
-										? tx('apiKeys.status.active')
-										: tx('apiKeys.status.revoked')}
-									dot={key.status === 'active'}
-								/>
-							</div>
-							<span class="truncate font-mono text-xs text-text-muted"
-								>{key.key_prefix}••••••••{key.key_suffix}</span
+				<div class="flex flex-col gap-3 rounded-xl border border-gray-800 bg-navy-main p-4">
+					<!-- Header row: dot + name + status badge -->
+					<div class="flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<div
+								class="h-2 w-2 rounded-full {key.status === 'active'
+									? 'animate-pulse bg-brand-green'
+									: 'bg-gray-600'}"
+							></div>
+							<span
+								class="text-xs font-semibold {key.status === 'active'
+									? 'text-white'
+									: 'text-text-muted'}">{key.name}</span
 							>
-							<span class="text-xs text-text-muted">{formatDate(key.created_at)}</span>
 						</div>
-						<div class="flex items-center justify-end gap-2 lg:flex-shrink-0 lg:justify-start">
-							{#if key.status === 'active'}
-								<Button
-									variant="secondary"
-									size="sm"
-									disabled={revokingId === key.id}
-									onclick={() => handleRevoke(key)}
-								>
-									{#if revokingId === key.id}
-										<i class="fa-solid fa-circle-notch animate-spin"></i>
-									{:else}
-										<i class="fa-solid fa-ban"></i>
-									{/if}
-									{tx('apiKeys.action.revoke')}
-								</Button>
-							{/if}
+						<Badge
+							color={key.status === 'active' ? 'green' : 'gray'}
+							label={key.status === 'active'
+								? tx('apiKeys.status.active')
+								: tx('apiKeys.status.revoked')}
+							dot={key.status === 'active'}
+						/>
+					</div>
+
+					<!-- Key value row: masked input + eye toggle + copy button -->
+					<div class="flex gap-2">
+						<input
+							type={revealedKeys.has(key.id) ? 'text' : 'password'}
+							readonly
+							value={getDisplayValue(key)}
+							class="min-w-0 flex-1 rounded-lg border border-gray-700 bg-navy-card px-3 py-2 font-mono text-xs text-text-muted focus:outline-none"
+						/>
+						<button
+							aria-label={revealedKeys.has(key.id)
+								? tx('apiKeys.action.hideKey')
+								: tx('apiKeys.action.showKey')}
+							onclick={() => toggleReveal(key.id)}
+							class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-text-muted transition-colors hover:text-white lg:min-h-0 lg:min-w-0"
+						>
+							<i
+								class="fa-solid {revealedKeys.has(key.id) ? 'fa-eye-slash' : 'fa-eye'} text-xs"
+							></i>
+						</button>
+						<button
+							aria-label={tx('apiKeys.action.copyKey')}
+							onclick={() => copyKey(key)}
+							class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 text-brand-blue transition-colors hover:bg-brand-blue/20 lg:min-h-0 lg:min-w-0"
+						>
+							<i class="fa-solid fa-copy text-xs"></i>
+						</button>
+					</div>
+
+					<!-- Dates row -->
+					<p class="text-[10px] text-text-muted">
+						{tx('apiKeys.createdAt')}: {formatDate(key.created_at)}{#if key.last_used_at} · {tx('apiKeys.lastUsedAt')}: {formatDate(key.last_used_at)}{/if}
+					</p>
+
+					<!-- Actions row -->
+					<div class="flex items-center gap-2">
+						{#if key.status === 'active'}
 							<Button
-								variant="danger"
+								variant="secondary"
 								size="sm"
-								disabled={deletingId === key.id}
-								onclick={() => handleDeleteClick(key)}
+								disabled={revokingId === key.id}
+								onclick={() => handleRevoke(key)}
 							>
-								{#if deletingId === key.id}
+								{#if revokingId === key.id}
 									<i class="fa-solid fa-circle-notch animate-spin"></i>
 								{:else}
-									<i class="fa-solid fa-trash"></i>
+									<i class="fa-solid fa-ban"></i>
 								{/if}
-								{tx('apiKeys.action.delete')}
+								{tx('apiKeys.action.revoke')}
 							</Button>
-						</div>
+						{/if}
+						<Button
+							variant="danger"
+							size="sm"
+							disabled={deletingId === key.id}
+							onclick={() => handleDeleteClick(key)}
+						>
+							{#if deletingId === key.id}
+								<i class="fa-solid fa-circle-notch animate-spin"></i>
+							{:else}
+								<i class="fa-solid fa-trash"></i>
+							{/if}
+							{tx('apiKeys.action.delete')}
+						</Button>
 					</div>
 				</div>
 			{/each}
