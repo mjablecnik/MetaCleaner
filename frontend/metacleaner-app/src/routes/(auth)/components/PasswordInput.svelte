@@ -56,7 +56,7 @@
 				type="button"
 				onclick={onToggle}
 				aria-label={visible ? ariaHideLabel : ariaShowLabel}
-				class="absolute top-1/2 right-3.5 -translate-y-1/2 p-1 text-sm text-text-muted transition-colors hover:text-white"
+				class="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-sm text-text-muted transition-colors hover:text-white"
 			>
 				<i class={visible ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'}></i>
 			</button>

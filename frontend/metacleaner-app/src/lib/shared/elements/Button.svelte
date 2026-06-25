@@ -31,7 +31,7 @@
 	}: Props = $props();
 
 	const sizeMap: Record<Size, string> = {
-		sm: 'px-3 py-2 text-xs rounded-lg',
+		sm: 'min-h-[44px] px-3 py-2 text-xs rounded-lg lg:min-h-0',
 		md: 'px-4 py-3 text-sm rounded-xl',
 		lg: 'px-5 py-3.5 text-sm rounded-xl'
 	};

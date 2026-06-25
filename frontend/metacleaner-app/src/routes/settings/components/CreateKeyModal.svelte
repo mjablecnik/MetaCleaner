@@ -91,7 +91,7 @@
 				<button
 					type="button"
 					aria-label={tx('common.dismiss')}
-					class="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-gray-700 hover:text-white"
+					class="flex h-11 w-11 items-center justify-center rounded-lg text-text-muted hover:bg-gray-700 hover:text-white"
 					onclick={onClose}
 				>
 					<i class="fa-solid fa-xmark text-sm"></i>

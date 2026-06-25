@@ -178,7 +178,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - While loading: disable confirm + cancel, show spinner
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
 
-- [ ] 5. Checkpoint — Frontend integration complete
+- [x] 5. Checkpoint — Frontend integration complete
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Navigation and route cleanup
@@ -199,7 +199,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - _Requirements: 5.7, 6.4, 6.7, 7.3_
 
 - [ ] 7. Responsive design verification and final polish
-  - [ ] 7.1 Verify responsive layout and touch targets
+  - [x] 7.1 Verify responsive layout and touch targets
     - Ensure two-column grid on desktop (≥1024px), single-column on mobile (<1024px)
     - Verify all buttons/inputs have min 44×44px touch targets on mobile
     - Verify no horizontal overflow at 320px–2560px viewports

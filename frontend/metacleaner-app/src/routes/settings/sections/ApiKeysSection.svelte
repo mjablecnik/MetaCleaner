@@ -132,7 +132,7 @@
 		<div class="flex flex-col gap-3">
 			{#each keys as key (key.id)}
 				<div class="rounded-xl border border-gray-700 bg-navy-main px-4 py-3">
-					<div class="flex items-start justify-between gap-3">
+					<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
 						<div class="flex min-w-0 flex-col gap-1">
 							<div class="flex items-center gap-2">
 								<span class="truncate text-sm font-semibold text-white">{key.name}</span>
@@ -144,12 +144,12 @@
 									dot={key.status === 'active'}
 								/>
 							</div>
-							<span class="font-mono text-xs text-text-muted"
+							<span class="truncate font-mono text-xs text-text-muted"
 								>{key.key_prefix}••••••••{key.key_suffix}</span
 							>
 							<span class="text-xs text-text-muted">{formatDate(key.created_at)}</span>
 						</div>
-						<div class="flex flex-shrink-0 items-center gap-2">
+						<div class="flex items-center justify-end gap-2 lg:flex-shrink-0 lg:justify-start">
 							{#if key.status === 'active'}
 								<Button
 									variant="secondary"
