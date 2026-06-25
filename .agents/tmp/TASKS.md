@@ -23,11 +23,11 @@ No new shared elements needed — existing elements (`AccordionCard`, `CopyButto
 - [x] 9. [HIGH] Create `AccountInfoSection` in `settings/sections/` — avatar with edit button, badges, name/email/company form fields, save button; props: profile data
 - [x] 10. [HIGH] Create `AccountInfoSection.stories.svelte`
 - [x] 11. [HIGH] Create `ChangePasswordSection` in `settings/sections/` — current/new/confirm password fields using shared `PasswordInput`, `PasswordStrengthMeter`, save button; props: callbacks
-- [ ] 12. [HIGH] Create `ChangePasswordSection.stories.svelte`
-- [ ] 13. [HIGH] Create `ApiKeysSection` in `settings/sections/` — production key card (pulsing dot, active badge) + test key card (dashed border, sandbox badge), each with eye toggle + copy using shared `CopyButton`; props: apiKeys data, copy callback
-- [ ] 14. [HIGH] Create `ApiKeysSection.stories.svelte`
-- [ ] 15. [HIGH] Create `AffiliateProgramSection` in `settings/sections/` — 3-stat grid, readonly affiliate link with copy, commission info box; props: affiliateStats, copy callback
-- [ ] 16. [HIGH] Create `AffiliateProgramSection.stories.svelte`
+- [x] 12. [HIGH] Create `ChangePasswordSection.stories.svelte`
+- [x] 13. [HIGH] Create `ApiKeysSection` in `settings/sections/` — production key card (pulsing dot, active badge) + test key card (dashed border, sandbox badge), each with eye toggle + copy using shared `CopyButton`; props: apiKeys data, copy callback
+- [x] 14. [HIGH] Create `ApiKeysSection.stories.svelte`
+- [x] 15. [HIGH] Create `AffiliateProgramSection` in `settings/sections/` — 3-stat grid, readonly affiliate link with copy, commission info box; props: affiliateStats, copy callback
+- [x] 16. [HIGH] Create `AffiliateProgramSection.stories.svelte`
 
 ## Phase 4 — Refactor Pages
 
