@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-25 07:58 — manual
+- Project: frontend (metacleaner-app)
+- Completed the **i18n + repository data refactor of the Settings page** (`.agents/tmp/TASKS.md` / `DATA_SPEC.md`, all 6 tasks done), the one remaining file (`src/routes/settings/+page.svelte`) that still held hardcoded strings after the page was first built
+- Extracted ~45 hardcoded (mostly Czech) UI strings into new `settings.*` Paraglide keys, added to both `messages/en.json` and `messages/cs.json` — covering account-info, change-password (incl. strength labels Weak/Average/Good/Strong), affiliate, and API-keys sections plus all toast/badge/button copy
+- Created `src/lib/repositories/settingsRepository.ts` with `getSettingsProfile()`, `getAffiliateStats()`, and `getApiKeys()` returning mock data (user name/email/avatar/plan/lastLogin, affiliate referrals/conversions/earnings/link, production + test API keys with created/last-used dates) — designed to be swapped for real API calls later
+- Replaced hardcoded text in `+page.svelte` with `tx()` calls and hardcoded data values with `settingsRepository` calls (~10 data fields); verified no hardcoded user-facing text remains and language switching works via the existing `LanguageDropdown`
+- Commits: `ee63240` (i18n + repository data layer for settings page), `ba2ffb0` (mark all settings i18n tasks complete after verification)
+
 ## 2026-06-25 07:45 — manual
 - Project: frontend (metacleaner-app)
 - Built the **Account Settings page** (`.agents/tmp/TASKS.md` / `PAGES.md`, both tasks done) from the `.design/metacleaner-settings-desktop.html` and `metacleaner-settings-mobile.html` mockups, with a desktop two-column grid (all sections visible) and a mobile single-column accordion (only "Account Info" open by default, others collapsible with rotating chevrons)
