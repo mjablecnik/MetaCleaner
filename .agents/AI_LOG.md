@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-25 08:23 — manual
+- Project: frontend (metacleaner-app)
+- Completed the **UI decomposition refactor of the Settings page** (`.agents/tmp/REFACTORING.md` / `TASKS.md`, all 19 tasks done), breaking the 656-line `settings/+page.svelte` monolith into a Page → Sections → Components hierarchy with no visual change
+- Phase 0 — tokenized remaining hardcoded hex: replaced the 4 strength-meter colors in `settings/+page.svelte` (`#ef4444`/`#f97316`/`#3b82f6`/`#22c55e`) with `var(--color-brand-red/orange/blue/green)`, and added a new `--color-navy-deep: #080f1e` token to `layout.css` replacing `bg-[#080f1e]` in `docs/components/QuickStartFlow.svelte` (`e6a17e4`)
+- Created `settings/components/SettingsAccordionCard.svelte` — reusable mobile-collapsible / desktop-always-open accordion wrapper (icon, title, subtitle, rotating chevron) — plus its `.stories.svelte` (`8bf0bf5`)
+- Created five section components under `settings/sections/`: `SettingsHeaderSection`, `AccountInfoSection`, `ChangePasswordSection` (reusing shared `PasswordInput` + `PasswordStrengthMeter` from auth instead of inline copies), `ApiKeysSection`, and `AffiliateProgramSection`, each with a co-located Storybook story (`fcf0c8f`, `6791b16`)
+- Refactored `settings/+page.svelte` to compose `SettingsHeaderSection` + the 4 section cards, using the shared `Toast` component and removing the inline `<style>` block (`123ff6c`)
+- Split the 424-line `docs/components/EndpointCard.svelte` into `EndpointParamsTable`, `EndpointResponsesGrid`, and `EndpointCodeSection` sub-components (`b4a4727`)
+- Marked all refactoring tasks complete in `TASKS.md` (`1a9fe44`)
+
 ## 2026-06-25 07:58 — manual
 - Project: frontend (metacleaner-app)
 - Completed the **i18n + repository data refactor of the Settings page** (`.agents/tmp/TASKS.md` / `DATA_SPEC.md`, all 6 tasks done), the one remaining file (`src/routes/settings/+page.svelte`) that still held hardcoded strings after the page was first built
