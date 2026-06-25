@@ -2,12 +2,19 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import type { AffiliateStats } from '$lib/repositories/settingsRepository';
 
+	const defaultStats: AffiliateStats = {
+		referrals: 0,
+		conversions: 0,
+		earnings: '€0',
+		affiliateLink: 'https://metacleaner.com/ref/...'
+	};
+
 	interface Props {
-		affiliateStats: AffiliateStats;
+		affiliateStats?: AffiliateStats;
 		onCopy?: (text: string, msg: string) => void;
 	}
 
-	let { affiliateStats, onCopy }: Props = $props();
+	let { affiliateStats = defaultStats, onCopy }: Props = $props();
 
 	function handleCopyLink() {
 		if (onCopy) {

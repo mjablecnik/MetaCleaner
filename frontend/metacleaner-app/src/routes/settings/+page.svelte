@@ -7,6 +7,7 @@
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
 	import DangerZoneSection from './sections/DangerZoneSection.svelte';
 	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
+	import AffiliateProgramSection from './sections/AffiliateProgramSection.svelte';
 
 	let showToast = $state(false);
 	let toastMessage = $state('');
@@ -67,17 +68,17 @@
 				<ApiKeysSection />
 			</SettingsAccordionCard>
 
-			<!-- Affiliate Program: planned for future release -->
-			<!-- <SettingsAccordionCard
+			<SettingsAccordionCard
 				icon="fa-solid fa-users"
 				colorVariant="orange"
 				title={tx('settings.affiliate.title')}
 				subtitle={tx('settings.affiliate.subtitle')}
-				badge={tx('settings.affiliate.activeBadge')}
+				badge={tx('settings.affiliate.comingSoonBadge')}
 				animationDelay="delay-3"
+				disabled={true}
 			>
 				<AffiliateProgramSection />
-			</SettingsAccordionCard> -->
+			</SettingsAccordionCard>
 		</div>
 	</div>
 </main>

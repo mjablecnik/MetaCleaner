@@ -53,7 +53,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - Add `{disabled ? 'opacity-50 pointer-events-none' : ''}` to the root `<div>` class string
   - _Fixes: 2.7_
 
-- [ ] 6. Uncomment Affiliate section and show as deactivated
+- [x] 6. Uncomment Affiliate section and show as deactivated
   - In `frontend/metacleaner-app/src/routes/settings/+page.svelte`:
   - Import `AffiliateProgramSection` from `./sections/AffiliateProgramSection.svelte`
   - Uncomment the Affiliate `SettingsAccordionCard` block in the right column
@@ -61,7 +61,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - Add `disabled={true}` prop to the `SettingsAccordionCard`
   - _Fixes: 2.7_
 
-- [ ] 7. Make AffiliateProgramSection work without external data
+- [x] 7. Make AffiliateProgramSection work without external data
   - In `frontend/metacleaner-app/src/routes/settings/sections/AffiliateProgramSection.svelte`:
   - Change `affiliateStats: AffiliateStats` to `affiliateStats?: AffiliateStats` in the Props interface
   - Add a `defaultStats` constant with zero values: `{ referrals: 0, conversions: 0, earnings: '€0', affiliateLink: 'https://metacleaner.com/ref/...' }`
