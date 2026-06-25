@@ -64,7 +64,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Export typed error handling (parse backend error codes to i18n keys)
     - _Requirements: 5.3, 5.4, 6.5, 7.5_
 
-  - [ ] 2.2 Create validation utility module
+  - [x] 2.2 Create validation utility module
     - Create `frontend/metacleaner-app/src/routes/settings/validation.ts`
     - Implement `validateName(value: string): string | null` — non-empty after trim, 1–100 chars
     - Implement `validateEmail(value: string): string | null` — matches `^[^@\s]+@[^@\s]+\.[^@\s]+$`
