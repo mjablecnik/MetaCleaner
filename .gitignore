@@ -3,3 +3,5 @@ old-code/
 node_modules/
 terminal/metacleaner-cli/images/
 .agents/checkpoints/
+.structurizr/
+architecture/workspace.json
