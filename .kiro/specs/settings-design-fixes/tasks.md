@@ -40,7 +40,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - Update `CreateKeyModal` usage: pass the full key value from the modal's `onCreated` callback (the modal already has `createdKey` state with the plaintext)
   - _Fixes: 2.5, 2.6; Preserves: 3.4, 3.5, 3.8_
 
-- [ ] 4. Update CreateKeyModal callback to pass plaintext key
+- [x] 4. Update CreateKeyModal callback to pass plaintext key
   - In `frontend/metacleaner-app/src/routes/settings/components/CreateKeyModal.svelte`:
   - Change the `onCreated` prop type from `(key: ApiKey) => void` to `(key: ApiKey, fullKey: string) => void`
   - In the `handleDone()` function, call `onCreated(createdApiKey, createdKey)` instead of `onCreated(createdApiKey)`

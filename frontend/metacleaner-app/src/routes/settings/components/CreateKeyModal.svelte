@@ -8,7 +8,7 @@
 
 	interface Props {
 		onClose: () => void;
-		onCreated: (key: ApiKey) => void;
+		onCreated: (key: ApiKey, fullKey: string) => void;
 	}
 
 	let { onClose, onCreated }: Props = $props();
@@ -49,7 +49,7 @@
 
 	function handleDone() {
 		if (createdApiKey) {
-			onCreated(createdApiKey);
+			onCreated(createdApiKey, createdKey!);
 		}
 		onClose();
 	}
