@@ -24,4 +24,4 @@
 
 ## Final
 
-- [ ] 6. [LOW] Verify all strings are translated, no hardcoded text remains in settings page, and language switching works correctly
+- [x] 6. [LOW] Verify all strings are translated, no hardcoded text remains in settings page, and language switching works correctly
