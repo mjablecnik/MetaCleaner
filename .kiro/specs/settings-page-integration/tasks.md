@@ -6,8 +6,8 @@ This plan implements the full Settings page refactoring and backend integration.
 
 ## Tasks
 
-- [ ] 1. Backend: New account management endpoints
-  - [ ] 1.1 Implement PATCH /api/auth/profile endpoint
+- [x] 1. Backend: New account management endpoints
+  - [x] 1.1 Implement PATCH /api/auth/profile endpoint
     - Add `HandleUpdateProfile` handler in `backend/metacleaner-server/source/account_handlers.go`
     - Parse JSON body into `UpdateProfileRequest` (first_name, last_name)
     - Validate: non-empty after trim, 1–100 chars each; return 400 VALIDATION_ERROR on failure
@@ -17,7 +17,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Register route in `router.go` under auth middleware
     - _Requirements: 5.2, 5.3, 5.7_
 
-  - [ ] 1.2 Implement POST /api/auth/change-email endpoint
+  - [x] 1.2 Implement POST /api/auth/change-email endpoint
     - Add `HandleChangeEmail` handler in `account_handlers.go`
     - Parse JSON body into `ChangeEmailRequest` (new_email)
     - Validate email format server-side (non-empty, contains @); return 400 on failure
@@ -27,7 +27,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Register route in `router.go`
     - _Requirements: 5.4, 5.5, 5.6_
 
-  - [ ] 1.3 Implement POST /api/auth/change-password endpoint
+  - [x] 1.3 Implement POST /api/auth/change-password endpoint
     - Add `HandleChangePassword` handler in `account_handlers.go`
     - Parse JSON body into `ChangePasswordRequest` (current_password, new_password)
     - Validate: current_password non-empty; new_password 8–72 chars; return 400 on failure
@@ -38,7 +38,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - Register route in `router.go`
     - _Requirements: 6.1, 6.2, 6.5_
 
-  - [ ] 1.4 Implement DELETE /api/auth/account endpoint
+  - [x] 1.4 Implement DELETE /api/auth/account endpoint
     - Add `HandleDeleteAccount` handler in `account_handlers.go`
     - Extract user ID from auth context; return 401 if missing
     - Call Supabase Admin `DeleteUser(userID)` to permanently remove the user
@@ -55,7 +55,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - _Requirements: 1.4, 5.2, 5.7, 6.1, 6.2, 7.5, 7.7_
 
 - [ ] 2. Frontend: Account client and validation utilities
-  - [ ] 2.1 Create account API client module
+  - [x] 2.1 Create account API client module
     - Create `frontend/metacleaner-app/src/lib/clients/accountClient.ts`
     - Implement `updateProfile(data: {first_name, last_name})` using `apiFetch` with PATCH /api/auth/profile
     - Implement `changeEmail(newEmail: string)` using `apiFetch` with POST /api/auth/change-email
