@@ -68,7 +68,7 @@ This plan fixes 7 visual/structural discrepancies between the Settings page impl
   - Use `affiliateStats = defaultStats` in the `$props()` destructuring
   - _Fixes: 2.7_
 
-- [ ] 8. Add i18n translation keys
+- [x] 8. Add i18n translation keys
   - In `frontend/metacleaner-app/messages/en.json`, add:
     - `"settings.affiliate.comingSoonBadge": "Coming Soon"`
     - `"apiKeys.createdAt": "Created"`
