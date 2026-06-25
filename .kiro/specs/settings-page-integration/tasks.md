@@ -98,7 +98,7 @@ This plan implements the full Settings page refactoring and backend integration.
     - **Validates: Requirements 6.1, 6.2, 6.3**
     - Generate arbitrary string triples; verify validatePassword rejects empty current, rejects new <8 or >72, rejects mismatch, accepts only when all pass
 
-- [ ] 3. Checkpoint — Backend endpoints and validation
+- [x] 3. Checkpoint — Backend endpoints and validation
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Frontend: Page layout refactoring and UI cleanup
