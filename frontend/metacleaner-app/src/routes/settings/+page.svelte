@@ -1,17 +1,29 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
+	import Badge from '$lib/shared/elements/Badge.svelte';
+	import Button from '$lib/shared/elements/Button.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import SettingsAccordionCard from './components/SettingsAccordionCard.svelte';
 	import AccountInfoSection from './sections/AccountInfoSection.svelte';
 	import ChangePasswordSection from './sections/ChangePasswordSection.svelte';
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
-	import DangerZoneSection from './sections/DangerZoneSection.svelte';
+	// import DangerZoneSection from './sections/DangerZoneSection.svelte';
 	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
 	import AffiliateProgramSection from './sections/AffiliateProgramSection.svelte';
+	import CreateKeyModal from './components/CreateKeyModal.svelte';
+	import type { ApiKey } from '$lib/clients/apiKeysClient.js';
 
 	let showToast = $state(false);
 	let toastMessage = $state('');
 	let toastTimer: ReturnType<typeof setTimeout>;
+
+	let showCreateKeyModal = $state(false);
+	let newlyCreatedKey = $state<{ key: ApiKey; fullKey?: string } | null>(null);
+
+	function handleKeyCreated(key: ApiKey, fullKey: string) {
+		newlyCreatedKey = { key, fullKey };
+		showCreateKeyModal = false;
+	}
 
 	function triggerToast(msg: string) {
 		toastMessage = msg;
@@ -40,6 +52,10 @@
 				defaultOpen={true}
 				animationDelay="delay-2"
 			>
+				{#snippet headerExtra()}
+					<Badge color="green" label={tx('settings.account.proBadge')} />
+					<Badge color="blue" label={tx('settings.account.verifiedBadge')} />
+				{/snippet}
 				<AccountInfoSection onSave={() => triggerToast(tx('settings.account.saveSuccess'))} />
 			</SettingsAccordionCard>
 
@@ -53,7 +69,8 @@
 				<ChangePasswordSection onSave={() => triggerToast(tx('settings.password.saveSuccess'))} />
 			</SettingsAccordionCard>
 
-			<DangerZoneSection />
+			<!-- DangerZoneSection — temporarily hidden, will be used later -->
+			<!-- <DangerZoneSection /> -->
 		</div>
 
 		<!-- RIGHT COLUMN -->
@@ -65,7 +82,13 @@
 				subtitle={tx('settings.apiKeys.subtitle')}
 				animationDelay="delay-2"
 			>
-				<ApiKeysSection />
+				{#snippet headerExtra()}
+					<Button variant="primary" size="sm" onclick={() => (showCreateKeyModal = true)}>
+						<i class="fa-solid fa-plus"></i>
+						{tx('apiKeys.createButton')}
+					</Button>
+				{/snippet}
+				<ApiKeysSection bind:showCreateModal={showCreateKeyModal} addKey={newlyCreatedKey} />
 			</SettingsAccordionCard>
 
 			<SettingsAccordionCard
@@ -82,5 +105,12 @@
 		</div>
 	</div>
 </main>
+
+{#if showCreateKeyModal}
+	<CreateKeyModal
+		onClose={() => (showCreateKeyModal = false)}
+		onCreated={handleKeyCreated}
+	/>
+{/if}
 
 <Toast message={toastMessage} show={showToast} />

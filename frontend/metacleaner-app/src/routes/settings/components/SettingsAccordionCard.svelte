@@ -12,6 +12,7 @@
 		defaultOpen?: boolean;
 		animationDelay?: string;
 		disabled?: boolean;
+		headerExtra?: Snippet;
 		children: Snippet;
 	}
 
@@ -24,6 +25,7 @@
 		defaultOpen = false,
 		animationDelay,
 		disabled = false,
+		headerExtra,
 		children
 	}: Props = $props();
 
@@ -76,6 +78,10 @@
 						colorVariant
 					]}">{badge}</span
 				>
+			{:else if headerExtra}
+				<div class="pointer-events-auto mr-1 flex items-center gap-1.5 lg:mr-0">
+					{@render headerExtra()}
+				</div>
 			{/if}
 			<i
 				class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"

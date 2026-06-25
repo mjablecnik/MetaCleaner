@@ -3,7 +3,6 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { apiFetch } from '$lib/auth/api-client.js';
 	import AuthTextInput from '$lib/shared/elements/AuthTextInput.svelte';
-	import Badge from '$lib/shared/elements/Badge.svelte';
 	import Button from '$lib/shared/elements/Button.svelte';
 	import {
 		updateProfile,
@@ -145,12 +144,6 @@
 		{tx('settings.account.retry')}
 	</Button>
 {:else}
-	<!-- Badges -->
-	<div class="mb-3 flex items-center gap-1.5 lg:gap-2">
-		<Badge color="green" label={tx('settings.account.proBadge')} />
-		<Badge color="blue" label={tx('settings.account.verifiedBadge')} />
-	</div>
-
 	<!-- Name fields -->
 	<div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
 		<AuthTextInput

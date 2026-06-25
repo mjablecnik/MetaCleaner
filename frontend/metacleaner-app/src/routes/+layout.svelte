@@ -75,9 +75,7 @@
 		if (path === '/settings') {
 			return {
 				logoHref: '/' as string | undefined,
-				showBackButton: true,
-				backHref: '/',
-				backLabel: 'Zpět na čištění'
+				showBackButton: false
 			};
 		}
 		if (path !== '/') {
