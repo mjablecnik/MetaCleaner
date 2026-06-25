@@ -62,10 +62,6 @@
 			<i class="fa-solid fa-tag text-sm text-text-muted"></i>
 			<span>{tx('common.nav.pricing')}</span>
 		</a>
-		<a class="lang-option" href={resolve('/api-keys' as Pathname)}>
-			<i class="fa-solid fa-key text-sm text-text-muted"></i>
-			<span>{tx('common.nav.apiKeys')}</span>
-		</a>
 		<a
 			class="lang-option"
 			href={resolve('/docs' as Pathname)}

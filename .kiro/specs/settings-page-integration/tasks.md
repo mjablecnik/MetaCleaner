@@ -182,7 +182,7 @@ This plan implements the full Settings page refactoring and backend integration.
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Navigation and route cleanup
-  - [ ] 6.1 Remove standalone /api-keys route from navigation
+  - [x] 6.1 Remove standalone /api-keys route from navigation
     - Remove or comment out the `/api-keys` link from NavBar configuration (sidebar/menu items)
     - If an `/api-keys` route page exists, comment it out or remove it from the routes directory
     - Ensure no navigation element points to the standalone API keys page
