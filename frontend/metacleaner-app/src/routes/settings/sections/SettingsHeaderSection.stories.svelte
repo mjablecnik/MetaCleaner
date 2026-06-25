@@ -16,9 +16,5 @@
 </script>
 
 <Story name="Default">
-	<SettingsHeaderSection lastLogin="today, 09:41" />
-</Story>
-
-<Story name="With Recent Login">
-	<SettingsHeaderSection lastLogin="2 minutes ago" />
+	<SettingsHeaderSection />
 </Story>

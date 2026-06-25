@@ -6,6 +6,7 @@
 	import ChangePasswordSection from './sections/ChangePasswordSection.svelte';
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
 	import DangerZoneSection from './sections/DangerZoneSection.svelte';
+	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
 
 	let showToast = $state(false);
 	let toastMessage = $state('');
@@ -26,6 +27,7 @@
 </svelte:head>
 
 <main class="mx-auto w-full max-w-[1100px] px-6 pt-4 pb-24 lg:pt-0">
+	<SettingsHeaderSection />
 	<div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
 		<!-- LEFT COLUMN -->
 		<div class="flex flex-col gap-4 lg:gap-6">
