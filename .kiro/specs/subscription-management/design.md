@@ -1,588 +1,373 @@
-# Design Document: Subscription Management
+# Design Document: Subscription Management — Ending Subscription State
 
 ## Overview
 
-This feature extends the `/pricing` page in the MetaCleaner app to support subscription management for active subscribers. The page conditionally renders either the existing plan selection grid (for non-subscribers) or a new Subscription Management UI (for subscribers). The management UI displays the current plan with credit usage, upgrade/downgrade options, cancellation controls, and usage statistics.
+This feature implements the "ending subscription" intermediate state in the MetaCleaner app. When a user cancels, the subscription transitions to `cancelling` status — a grace period where paid features remain active until `current_period_end`. The system currently mishandles this state: the billing store incorrectly classifies it as free, and no dedicated UI exists.
 
-The design introduces new frontend components in `src/lib/shared/sections/`, extends `billingClient.ts` with `changePlan` and `cancelSubscription` methods, and adds two backend Go endpoints (`POST /api/billing/change-plan` and `POST /api/billing/cancel`) that interact with the Stripe API to process plan changes.
+The design covers four areas:
+1. **Billing store fix** — add `isCancellingPlan` derived property and correct the `isFreeUser` logic
+2. **Frontend UI** — new "ending subscription" view with banner, countdown, plan card, reactivation CTA, usage stats, and "what happens after" sections
+3. **Backend endpoint** — `POST /api/billing/reactivate` to reverse a Stripe cancellation
+4. **i18n** — new translation keys for both English and Czech
+
+### Design Rationale
+
+The cancelling state is distinct from both "active" and "free" — users still have paid access but their subscription is winding down. The UI must clearly communicate this liminal state (orange theming, countdown urgency, reactivation CTA) while preserving the existing subscription management architecture.
 
 ## Architecture
 
+The feature fits cleanly into the existing architecture layers:
+
 ```mermaid
 graph TD
-    subgraph Frontend [SvelteKit App]
-        PricingPage["/pricing +page.svelte"]
-        BillingStore["billingStore.svelte.ts"]
-        BillingClient["billingClient.ts"]
-        
-        subgraph Components [Shared Sections]
-            CurrentPlanCard["CurrentPlanCard.svelte"]
-            UpgradeCard["UpgradeCard.svelte"]
-            DowngradeCard["DowngradeCard.svelte"]
-            CancelSection["CancelSection.svelte"]
-            UsageStatsCard["UsageStatsCard.svelte"]
-            ConfirmationModal["ConfirmationModal.svelte"]
-        end
+    subgraph Frontend
+        A[Pricing Page +page.svelte] --> B[billingStore.svelte.ts]
+        A --> C[New: CancellingView section]
+        C --> D[CancellationBanner]
+        C --> E[CancellingPlanCard]
+        C --> F[CountdownCard]
+        C --> G[ReactivateCard]
+        C --> H[UsageStatsCard variant]
+        C --> I[WhatHappensAfterCard]
+        C --> J[ReactivateModal]
+        A --> K[billingClient.ts]
     end
-    
-    subgraph Backend [Go Server]
-        ChangePlanHandler["HandleChangePlan"]
-        CancelHandler["HandleCancelSubscription"]
-        StripeClient["Stripe Go SDK"]
-        SupabaseDB["Supabase PostgREST"]
+
+    subgraph Backend
+        L[router.go] --> M[billing_handlers.go]
+        M --> N[New: HandleReactivateSubscription]
+        N --> O[Stripe SDK]
+        N --> P[Supabase DB]
     end
-    
-    PricingPage --> BillingStore
-    PricingPage --> Components
-    Components --> BillingClient
-    BillingClient -->|POST /api/billing/change-plan| ChangePlanHandler
-    BillingClient -->|POST /api/billing/cancel| CancelHandler
-    ChangePlanHandler --> StripeClient
-    ChangePlanHandler --> SupabaseDB
-    CancelHandler --> StripeClient
-    CancelHandler --> SupabaseDB
+
+    K -->|POST /api/billing/reactivate| L
+    B -->|GET /api/billing/subscription| L
 ```
 
-### Decision: Conditional Rendering at Route Level
-
-The `/pricing` route component checks `billingStore.isPaidPlan` to decide which UI to render. This keeps the logic centralized and avoids nested routing or separate pages, since the URL remains `/pricing` for both states.
-
-### Decision: Shared Section Components (not route-local)
-
-The subscription management components go in `src/lib/shared/sections/` rather than `src/routes/pricing/sections/` because:
-- They may be referenced from settings or account pages in the future
-- They follow the same pattern as `SummaryStatsRow` which already lives there
-- The Confirmation Modal is a general-purpose component usable across features
-
-### Decision: Stripe Proration for Upgrades, End-of-Period for Downgrades
-
-- **Upgrades**: Immediate switch with Stripe-calculated proration — the user gets access to the higher plan instantly
-- **Downgrades**: Scheduled at period end — the user retains full access to their current plan until the billing cycle completes
-- This matches user expectations and Stripe's native subscription update behavior
+**Key decisions:**
+- The cancelling view is a **third branch** in the pricing page's conditional rendering (alongside the active management UI and the pricing grid)
+- New UI components are created as sections in `src/lib/shared/sections/` since they're specific to the pricing page but could be reused if a settings billing view is added later
+- The reactivation endpoint mirrors the existing cancel endpoint pattern (factory handler, Stripe SDK call, DB update)
 
 ## Components and Interfaces
 
-### Frontend Component Tree
-
-```
-/pricing +page.svelte
-├── [if !isPaidPlan] PricingHeaderSection + PricingPlansSection (existing)
-├── [if isPaidPlan] Subscription Management UI
-│   ├── SubscriptionHeader (inline in page)
-│   ├── Grid (lg:grid-cols-5)
-│   │   ├── Left Column (lg:col-span-3)
-│   │   │   ├── CurrentPlanCard
-│   │   │   └── CancelSection
-│   │   └── Right Column (lg:col-span-2)
-│   │       ├── UpgradeCard (if available)
-│   │       ├── DowngradeCard (if available)
-│   │       └── UsageStatsCard
-│   └── ConfirmationModal (portal, conditionally rendered)
-└── [if isLoading && credits === null] Skeleton state
-```
-
-### Component Props Interfaces
+### 1. Billing Store Changes (`billingStore.svelte.ts`)
 
 ```typescript
-// CurrentPlanCard.svelte
-interface CurrentPlanCardProps {
-  planId: string;
-  planStatus: string;
-  billingPeriod: 'monthly' | 'yearly' | null;
-  price: string;
-  monthlyAllowance: number;
-  creditsUsed: number;
-  creditsRemaining: number;
-  renewalDate: string | null;
-  features: string[];
-  paymentMethod: string | null;    // e.g. "Visa •••• 4242"
-  nextPaymentDate: string | null;
-}
+// New derived property
+const isCancellingPlan = $derived(planStatus === 'cancelling');
 
-// UpgradeCard.svelte
-interface UpgradeCardProps {
-  targetPlanId: string;
-  targetPlanName: string;
-  targetPrice: string;
-  differentialFeatures: string[];  // features gained
-  onUpgrade: () => void;
-}
+// Fixed: exclude 'cancelling' from free user detection
+const isFreeUser = $derived(
+  planId === 'free' || planStatus === 'cancelled' || planStatus === 'free'
+  // 'cancelling' is intentionally NOT here — user still has paid access
+);
 
-// DowngradeCard.svelte
-interface DowngradeCardProps {
-  targetPlanId: string;
-  targetPlanName: string;
-  targetPrice: string;
-  featuresLost: string[];
-  onDowngrade: () => void;
-}
+// isPaidPlan remains unchanged — 'cancelling' is not 'active'/'trialing'
+// so isPaidPlan = false for cancelling users (correct: they can't upgrade/downgrade)
+```
 
-// CancelSection.svelte
-interface CancelSectionProps {
-  periodEndDate: string;
-  onCancel: () => void;
-}
+Exposed via the store's return object:
+```typescript
+get isCancellingPlan() { return isCancellingPlan; }
+```
 
-// UsageStatsCard.svelte
-interface UsageStatsCardProps {
-  creditsConsumed: number;
-  creditsRemaining: number;
-  monthlyAllowance: number;
-  renewalDate: string;
-}
+### 2. Pricing Page Routing Logic
 
-// ConfirmationModal.svelte
-interface ConfirmationModalProps {
-  title: string;
-  content: import('svelte').Snippet;
-  confirmLabel: string;
-  cancelLabel: string;
-  confirmStyle: 'primary' | 'danger' | 'secondary';
-  isLoading: boolean;
-  error: string | null;
-  onConfirm: () => void;
-  onCancel: () => void;
+The pricing page gains a third rendering branch:
+
+```svelte
+{#if showSkeleton}
+  <!-- skeleton -->
+{:else if billingStore.hasError && billingStore.credits === null}
+  <!-- error state -->
+{:else if billingStore.isCancellingPlan}
+  <!-- NEW: Ending subscription view -->
+  <CancellingView ... />
+{:else if showManagementUI}
+  <!-- Active subscription management -->
+{:else}
+  <!-- Pricing grid for free users -->
+{/if}
+```
+
+### 3. New Frontend Components
+
+| Component | Location | Props |
+|-----------|----------|-------|
+| `CancellingView` | `src/lib/shared/sections/CancellingView.svelte` | Wrapper orchestrating all cancelling sub-sections |
+| `CancellationBanner` | `src/lib/shared/sections/CancellationBanner.svelte` | `periodEndDate: string`, `onReactivate: () => void` |
+| `CancellingPlanCard` | `src/lib/shared/sections/CancellingPlanCard.svelte` | `planId, price, monthlyAllowance, creditsUsed, creditsRemaining, periodEndDate, features` |
+| `CountdownCard` | `src/lib/shared/sections/CountdownCard.svelte` | `periodEndDate: string` |
+| `ReactivateCard` | `src/lib/shared/sections/ReactivateCard.svelte` | `planId, price, billingPeriod, periodEndDate, onReactivate: () => void` |
+| `WhatHappensAfterCard` | `src/lib/shared/sections/WhatHappensAfterCard.svelte` | `periodEndDate: string, creditsRemaining: number` |
+| `ReactivateModal` | `src/lib/shared/sections/ReactivateModal.svelte` | `planId, price, billingPeriod, periodEndDate, onConfirm, onCancel, isLoading, error` |
+
+### 4. Billing Client Extension
+
+```typescript
+// New method in billingClient.ts
+async reactivateSubscription(): Promise<ReactivateResponse> {
+  const res = await fetch(buildApiUrl('/api/billing/reactivate'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${authStore.accessToken}`
+    }
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ message: res.statusText }));
+    throw new Error((body as { message?: string }).message || res.statusText);
+  }
+  return res.json() as Promise<ReactivateResponse>;
 }
 ```
 
-### billingClient.ts Extension
-
+New type in `src/lib/types/billing.ts`:
 ```typescript
-// New methods added to the existing billingClient object
-
-interface ChangePlanResponse {
+export interface ReactivateResponse {
   plan_id: string;
-  billing_period: 'monthly' | 'yearly';
   status: string;
   current_period_end: string;
-  prorated_amount?: number;        // present on upgrades
-  scheduled_change_date?: string;  // present on downgrades
-}
-
-export const billingClient = {
-  // ... existing methods (createCheckoutSession, getSubscription)
-
-  async changePlan(
-    planId: string,
-    billingPeriod: 'monthly' | 'yearly'
-  ): Promise<ChangePlanResponse> {
-    const res = await fetch(buildApiUrl('/api/billing/change-plan'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authStore.accessToken}`
-      },
-      body: JSON.stringify({ plan_id: planId, billing_period: billingPeriod })
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({ message: res.statusText }));
-      throw new Error((body as { message?: string }).message || res.statusText);
-    }
-    return res.json() as Promise<ChangePlanResponse>;
-  },
-
-  async cancelSubscription(): Promise<{ current_period_end: string }> {
-    const res = await fetch(buildApiUrl('/api/billing/cancel'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authStore.accessToken}`
-      }
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({ message: res.statusText }));
-      throw new Error((body as { message?: string }).message || res.statusText);
-    }
-    return res.json() as Promise<{ current_period_end: string }>;
-  }
-};
-```
-
-### billingStore.svelte.ts — Additional Derived State
-
-The existing billing store already provides `isPaidPlan`, `planId`, `planStatus`, `credits`, `monthlyAllowance`, `isLoading`, and `hasError`. No new state fields are needed. The components derive all display values from existing store properties:
-
-- `creditsUsed = monthlyAllowance - (subscriptionCredits + purchasedCredits)` (clamped to 0)
-- `creditsRemaining = subscriptionCredits + purchasedCredits`
-
-The `billingPeriod` and `currentPeriodEnd` are already available from the subscription response stored in `authStore.subscription`.
-
-### Backend Endpoints
-
-#### POST /api/billing/change-plan
-
-```go
-// Request body
-type ChangePlanRequest struct {
-    PlanID        string `json:"plan_id"`        // "pro" | "proplus"
-    BillingPeriod string `json:"billing_period"` // "monthly" | "yearly"
-}
-
-// Response body (200 OK)
-type ChangePlanResponse struct {
-    PlanID              string  `json:"plan_id"`
-    BillingPeriod       string  `json:"billing_period"`
-    Status              string  `json:"status"`
-    CurrentPeriodEnd    string  `json:"current_period_end"`
-    ProratedAmount      *int64  `json:"prorated_amount,omitempty"`
-    ScheduledChangeDate *string `json:"scheduled_change_date,omitempty"`
 }
 ```
 
-**Logic:**
-1. Validate JWT/API key auth
-2. Validate request body (plan_id ∈ {"pro", "proplus"}, billing_period ∈ {"monthly", "yearly"})
-3. Fetch user's current subscription from DB
-4. If no active subscription → 400 `NO_ACTIVE_SUBSCRIPTION`
-5. If same plan + period → 409 `BILLING_CONFLICT`
-6. Determine if upgrade (higher price) or downgrade (lower price)
-7. **Upgrade**: Call `stripe.Subscription.Update()` with `ProrationBehavior: "create_prorations"` and immediate item swap
-8. **Downgrade**: Call `stripe.Subscription.Update()` with `ProrationBehavior: "none"` and `BillingCycleAnchor: "unchanged"`, setting the schedule to swap at period end via `cancel_at_period_end` + new subscription creation, OR use Stripe's `schedule` API
-9. Update subscription record in DB
-10. Return response
-
-**Design decision — Stripe downgrade approach**: Use `stripe.SubscriptionSchedule` to schedule the plan change at the end of the current period. This is cleaner than cancel-and-recreate because it preserves the customer's billing history and avoids race conditions with webhooks.
-
-#### POST /api/billing/cancel
+### 5. Backend Reactivation Handler
 
 ```go
-// Response body (200 OK)
-type CancelResponse struct {
+// New error code constant
+const ErrNoCancellingSubscription = "NO_CANCELLING_SUBSCRIPTION"
+
+// ReactivateResponse is the response body for POST /api/billing/reactivate.
+type ReactivateResponse struct {
+    PlanID           string `json:"plan_id"`
+    Status           string `json:"status"`
     CurrentPeriodEnd string `json:"current_period_end"`
 }
+
+// HandleReactivateSubscription handles POST /api/billing/reactivate.
+// It reverses a cancellation by setting cancel_at_period_end: false on Stripe.
+func HandleReactivateSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        // 1. Get authenticated user ID
+        // 2. Fetch subscription from DB
+        // 3. Validate status == 'cancelling'
+        // 4. Call Stripe: subscription.Update with CancelAtPeriodEnd: false
+        // 5. Update DB status back to 'active'
+        // 6. Return ReactivateResponse
+    }
+}
 ```
 
-**Logic:**
-1. Validate JWT auth
-2. Fetch user's current subscription from DB
-3. If no active subscription → 400 `NO_ACTIVE_SUBSCRIPTION`
-4. If already cancelling/cancelled → 400 `ALREADY_CANCELLED`
-5. Call `stripe.Subscription.Update()` with `CancelAtPeriodEnd: true`
-6. Update subscription status in DB to "cancelling"
-7. Return `current_period_end` timestamp
-
-### Responsive Layout Strategy
-
+Route registration in `router.go`:
+```go
+mux.Handle("POST /api/billing/reactivate", rateLimited(HandleReactivateSubscription(cfg, db)))
 ```
-Desktop (≥ 1024px / lg breakpoint):
-┌─────────────────────────────────────────────────────┐
-│ Page Header                                         │
-├────────────────────────────┬────────────────────────┤
-│ Current Plan Card (3/5)    │ Upgrade Card (2/5)     │
-│                            ├────────────────────────┤
-│                            │ Downgrade Card         │
-├────────────────────────────┤────────────────────────┤
-│ Cancel Section             │ Usage Stats Card       │
-└────────────────────────────┴────────────────────────┘
-
-Mobile (< 1024px):
-┌──────────────────────┐
-│ Page Header          │
-├──────────────────────┤
-│ Current Plan Card    │
-├──────────────────────┤
-│ Upgrade Card         │
-├──────────────────────┤
-│ Downgrade Card       │
-├──────────────────────┤
-│ Usage Stats Card     │
-├──────────────────────┤
-│ Cancel Section       │
-└──────────────────────┘
-```
-
-Grid implementation:
-```svelte
-<div class="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-6">
-  <div class="flex flex-col gap-4 lg:col-span-3 lg:gap-5">
-    <CurrentPlanCard ... />
-    <CancelSection ... />
-  </div>
-  <div class="flex flex-col gap-4 lg:col-span-2 lg:gap-5">
-    <UpgradeCard ... />
-    <DowngradeCard ... />
-    <UsageStatsCard ... />
-  </div>
-</div>
-```
-
-On mobile the grid collapses to a single column. The section order on mobile (Current → Upgrade → Downgrade → Stats → Cancel) differs from the DOM order because CSS `order` utility classes reorder sections for the stacked mobile layout.
-
-### Confirmation Modal — Desktop vs Mobile
-
-```svelte
-<!-- ConfirmationModal.svelte -->
-<!-- Desktop: centered dialog -->
-<div class="fixed inset-0 z-50 hidden items-center justify-center lg:flex">
-  <div class="w-full max-w-[480px] rounded-2xl bg-navy-card border border-gray-700 p-6">
-    <!-- modal content -->
-  </div>
-</div>
-
-<!-- Mobile: bottom sheet -->
-<div class="fixed inset-0 z-50 flex items-end justify-center lg:hidden">
-  <div class="w-full max-w-lg rounded-t-2xl bg-navy-card border-t border-gray-800 p-6 pb-10
-              animate-slide-up">
-    <!-- modal content -->
-  </div>
-</div>
-```
-
-Animation keyframes defined in `layout.css`:
-- Desktop: `animate-fade-in` (opacity 0→1, 200ms ease)
-- Mobile: `animate-slide-up` (translateY(100%)→0, 300ms ease)
-
-Both variants:
-- Render a semi-transparent backdrop that closes the modal on click/tap
-- Respect `prefers-reduced-motion` by disabling animations
 
 ## Data Models
 
-### Frontend Types (additions to `src/lib/types/billing.ts`)
-
-```typescript
-// Extends existing SubscriptionStatus interface
-export interface SubscriptionStatus {
-  plan_id: string;
-  status: string;
-  billing_period: 'monthly' | 'yearly' | null;
-  current_period_end: string | null;
-  subscription_credits: number;
-  purchased_credits: number;
-  total_credits: number;
-}
-
-// New response type for change-plan endpoint
-export interface ChangePlanResponse {
-  plan_id: string;
-  billing_period: 'monthly' | 'yearly';
-  status: string;
-  current_period_end: string;
-  prorated_amount?: number;
-  scheduled_change_date?: string;
-}
-
-// New response type for cancel endpoint
-export interface CancelResponse {
-  current_period_end: string;
-}
-```
-
-### Backend Types (additions to `source/billing_handlers.go`)
-
-```go
-type ChangePlanRequest struct {
-    PlanID        string `json:"plan_id"`
-    BillingPeriod string `json:"billing_period"`
-}
-
-type ChangePlanResponse struct {
-    PlanID              string  `json:"plan_id"`
-    BillingPeriod       string  `json:"billing_period"`
-    Status              string  `json:"status"`
-    CurrentPeriodEnd    string  `json:"current_period_end"`
-    ProratedAmount      *int64  `json:"prorated_amount,omitempty"`
-    ScheduledChangeDate *string `json:"scheduled_change_date,omitempty"`
-}
-
-type CancelResponse struct {
-    CurrentPeriodEnd string `json:"current_period_end"`
-}
-```
-
-### Plan Hierarchy
-
-Plan ordering for upgrade/downgrade determination:
-
-```typescript
-const PLAN_HIERARCHY: Record<string, number> = {
-  free: 0,
-  pro: 1,
-  proplus: 2
-};
-```
-
-- If `PLAN_HIERARCHY[target] > PLAN_HIERARCHY[current]` → upgrade (immediate, proration)
-- If `PLAN_HIERARCHY[target] < PLAN_HIERARCHY[current]` → downgrade (end of period)
-
-### Data Flow
+### Subscription Status State Machine
 
 ```mermaid
-sequenceDiagram
-    participant User
-    participant PricingPage
-    participant Modal as ConfirmationModal
-    participant Client as billingClient
-    participant Store as billingStore
-    participant API as Backend API
-    participant Stripe
-
-    User->>PricingPage: Clicks "Upgrade to Pro+"
-    PricingPage->>Modal: Opens upgrade modal
-    User->>Modal: Clicks "Confirm upgrade"
-    Modal->>Client: changePlan("proplus", "monthly")
-    Client->>API: POST /api/billing/change-plan
-    API->>Stripe: Update subscription (proration)
-    Stripe-->>API: Updated subscription
-    API->>API: Update DB record
-    API-->>Client: 200 {plan_id, prorated_amount, ...}
-    Client-->>Modal: Success
-    Modal->>Store: billingStore.refresh()
-    Store->>API: GET /api/billing/subscription + credits
-    API-->>Store: Updated data
-    Store-->>PricingPage: Reactive update
-    PricingPage->>PricingPage: Re-renders with new plan
+stateDiagram-v2
+    [*] --> free: No subscription
+    free --> active: Checkout completed
+    active --> cancelling: User cancels (cancel_at_period_end=true)
+    cancelling --> active: User reactivates (cancel_at_period_end=false)
+    cancelling --> cancelled: Period ends (webhook)
+    cancelled --> free: UI treats as free
+    active --> active: Plan change (upgrade/downgrade)
 ```
+
+### Frontend State Mapping
+
+| `planStatus` | `isFreeUser` | `isPaidPlan` | `isCancellingPlan` | UI View |
+|---|---|---|---|---|
+| `'free'` | `true` | `false` | `false` | Pricing grid |
+| `'active'` | `false` | `true` | `false` | Subscription management |
+| `'trialing'` | `false` | `true` | `false` | Subscription management |
+| `'cancelling'` | `false` | `false` | `true` | **Ending subscription view** |
+| `'cancelled'` | `true` | `false` | `false` | Pricing grid |
+
+### Reactivation API Contract
+
+**Request:** `POST /api/billing/reactivate`
+- Headers: `Authorization: Bearer <jwt>`
+- Body: empty (no request body needed)
+
+**Success Response (200):**
+```json
+{
+  "plan_id": "pro",
+  "status": "active",
+  "current_period_end": "2025-02-01T23:59:00Z"
+}
+```
+
+**Error Responses:**
+| Status | Error Code | Condition |
+|--------|-----------|-----------|
+| 400 | `NO_CANCELLING_SUBSCRIPTION` | No subscription in `cancelling` state |
+| 401 | `AUTH_UNAUTHORIZED` | Missing or invalid auth token |
+| 502 | `BILLING_STRIPE_ERROR` | Stripe API call failed |
+
+### Countdown Calculation
+
+The countdown component computes remaining time client-side:
+
+```typescript
+// Derived from current_period_end
+const remaining = $derived.by(() => {
+  const end = new Date(periodEndDate).getTime();
+  const now = Date.now();
+  const diff = Math.max(0, end - now);
+  return {
+    days: Math.floor(diff / 86_400_000),
+    hours: Math.floor((diff % 86_400_000) / 3_600_000),
+    minutes: Math.floor((diff % 3_600_000) / 60_000)
+  };
+});
+```
+
+Updated every minute via `setInterval` with cleanup on unmount.
+
+
 
 ## Correctness Properties
 
 *A property is a characteristic or behavior that should hold true across all valid executions of a system — essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
 
-### Property 1: Conditional Page Rendering
+### Property 1: Cancelling status is not classified as free
 
-*For any* billing store state, the pricing page SHALL render the Subscription Management UI if and only if `isPaidPlan` is true (planStatus ∈ {"active", "trialing"} AND planId ∈ {"pro", "proplus"}), and SHALL render the plan selection grid otherwise.
+*For any* plan ID (including 'pro', 'proplus', 'free', or any string), when the plan status is `'cancelling'`, the billing store's `isFreeUser` derived property SHALL return `false`.
 
-**Validates: Requirements 1.1, 1.2, 11.4, 11.5**
+**Validates: Requirements 1.1**
 
-### Property 2: Credit Usage Bar Percentage Computation
+### Property 2: Monthly allowance preserved during cancellation
 
-*For any* non-negative integers `used` and `allowance`, the credit usage bar width percentage SHALL equal `Math.min(used / allowance, 1) * 100` when `allowance > 0`, and SHALL equal `0` when `allowance === 0`, with the result always in the range [0, 100].
+*For any* plan ID in `['pro', 'proplus']` with plan status `'cancelling'`, the billing store's `monthlyAllowance` SHALL equal the configured allowance for that plan ID (i.e., `PLAN_CONFIG[planId].monthlyAllowance`).
 
-**Validates: Requirements 2.2**
+**Validates: Requirements 1.4**
 
-### Property 3: Currency Formatting by Locale
+### Property 3: Countdown time decomposition is correct
 
-*For any* numeric amount and locale ∈ {"en", "cs"}, the formatted currency string SHALL place the € symbol before the amount with a period decimal separator for English (e.g., "€5.99"), and SHALL place the amount before the € symbol with a comma decimal separator for Czech (e.g., "5,99 €").
+*For any* future date (period end) and any current timestamp before it, decomposing the difference into days, hours, and minutes SHALL satisfy: `days * 86400000 + hours * 3600000 + minutes * 60000` is within 60000ms of the actual millisecond difference (accounting for truncation to minutes).
 
-**Validates: Requirements 10.2**
+**Validates: Requirements 5.1, 5.4**
 
-### Property 4: Date Formatting by Locale
+### Property 4: Progress bar ratio is bounded and monotonic
 
-*For any* valid Date and locale ∈ {"en", "cs"}, the formatted date string SHALL use dot separators in DD.MM.YYYY format for Czech and slash separators in MM/DD/YYYY format for English.
+*For any* three timestamps (cancellation time ≤ now ≤ period end), the progress ratio SHALL be in the range `[0, 1]` and SHALL equal `(now - cancellationTime) / (periodEnd - cancellationTime)`. When now equals cancellationTime, progress is 0. When now equals periodEnd, progress is 1.
 
-**Validates: Requirements 10.3**
+**Validates: Requirements 5.2**
 
-### Property 5: Cancel Section Visibility
+### Property 5: Reactivation calls Stripe with cancel_at_period_end=false
 
-*For any* billing store state, the Cancel Section SHALL be visible if and only if planStatus ∈ {"active", "trialing"} AND planId ∈ {"pro", "proplus"}. It SHALL NOT be visible when planStatus is "free", "cancelled", or planId is "free".
+*For any* authenticated user with a subscription in `'cancelling'` status, calling the reactivation endpoint SHALL invoke the Stripe subscription update with `cancel_at_period_end: false` for the user's Stripe subscription ID.
 
-**Validates: Requirements 5.1, 5.9**
+**Validates: Requirements 10.1**
 
-### Property 6: Usage Stats Computation
+### Property 6: Successful reactivation restores active state
 
-*For any* non-negative integers `subscriptionCredits`, `purchasedCredits`, and `monthlyAllowance`, the usage stats SHALL display: `creditsConsumed = Math.max(0, monthlyAllowance - (subscriptionCredits + purchasedCredits))`, `creditsRemaining = subscriptionCredits + purchasedCredits`, and `totalAllowance = monthlyAllowance`.
+*For any* cancelling subscription, when the Stripe update succeeds, the endpoint SHALL update the database status to `'active'` AND return a response containing `plan_id` matching the subscription's plan, `status: "active"`, and a valid `current_period_end` timestamp.
 
-**Validates: Requirements 6.1**
+**Validates: Requirements 10.2, 10.3**
 
-### Property 7: Change-Plan Upgrade Applies Immediately with Proration
+### Property 7: Reactivation rejected for non-cancelling subscriptions
 
-*For any* valid upgrade request (target plan has higher hierarchy rank than current plan), the backend SHALL instruct Stripe to apply the change immediately with proration and SHALL return a response containing a non-null `prorated_amount` field.
+*For any* subscription status that is NOT `'cancelling'` (including `'active'`, `'trialing'`, `'cancelled'`, `'free'`, or no subscription), calling the reactivation endpoint SHALL return HTTP 400 with error code `NO_CANCELLING_SUBSCRIPTION` and SHALL NOT call the Stripe API.
 
-**Validates: Requirements 8.2**
+**Validates: Requirements 10.4**
 
-### Property 8: Change-Plan Downgrade Schedules at Period End
+### Property 8: Stripe failure prevents database modification
 
-*For any* valid downgrade request (target plan has lower hierarchy rank than current plan), the backend SHALL instruct Stripe to schedule the change at the end of the current billing period and SHALL return a response containing a non-null `scheduled_change_date` field.
+*For any* cancelling subscription, if the Stripe API call fails (any error), the reactivation endpoint SHALL return HTTP 502 with error code `BILLING_STRIPE_ERROR` and SHALL NOT modify the database subscription status.
 
-**Validates: Requirements 8.3**
-
-### Property 9: Change-Plan Input Validation
-
-*For any* request body where `plan_id` ∉ {"pro", "proplus"} OR `billing_period` ∉ {"monthly", "yearly"} OR either field is missing, the backend SHALL return HTTP 400 with an error response in the standard ErrorResponse format.
-
-**Validates: Requirements 8.4**
-
-### Property 10: Change-Plan Same-Plan Conflict
-
-*For any* change-plan request where the `plan_id` and `billing_period` match the user's current subscription values, the backend SHALL return HTTP 409 with error code "BILLING_CONFLICT".
-
-**Validates: Requirements 8.6**
-
-### Property 11: Billing Client Error Response Parsing
-
-*For any* HTTP response with status ≥ 300 from the billing endpoints: if the response body is valid JSON containing a `message` field, the client SHALL throw an Error with that message; if the body cannot be parsed as JSON or lacks a `message` field, the client SHALL throw an Error containing the HTTP status text.
-
-**Validates: Requirements 12.3, 12.4**
+**Validates: Requirements 10.5**
 
 ## Error Handling
 
-### Frontend Error States
+### Frontend Errors
 
-| Error Scenario | Handling |
-|---|---|
-| Billing store fails to load | Show last cached values + warning indicator; offer retry button |
-| Change-plan API returns 4xx/5xx | Display localized error in modal; keep modal open for retry |
-| Cancel API returns 4xx/5xx | Display localized error in modal; re-enable buttons for retry |
-| Network timeout | Show connection error message with retry action |
-| Stripe checkout redirect fails | Display inline error on pricing page (existing pattern) |
+| Scenario | Handling |
+|----------|----------|
+| Billing store refresh fails while on cancelling view | Show stale data with yellow warning badge (existing pattern) |
+| Reactivation API call fails (network error) | Display inline error in modal; modal stays open; user can retry |
+| Reactivation API returns 400 (race condition — already reactivated) | Refresh billing store; if now active, close modal and show management UI |
+| Reactivation API returns 502 (Stripe error) | Show "Something went wrong" error in modal with retry option |
+| Countdown reaches zero while user is on page | Show 0 for all units; keep view (backend webhook handles actual transition) |
 
-### Backend Error Responses
+### Backend Errors
 
-| HTTP Status | Error Code | When |
-|---|---|---|
-| 400 | `BILLING_INVALID_PLAN` | Invalid plan_id or billing_period |
-| 400 | `NO_ACTIVE_SUBSCRIPTION` | User has no active subscription to modify/cancel |
-| 400 | `ALREADY_CANCELLED` | Subscription already scheduled for cancellation |
-| 409 | `BILLING_CONFLICT` | Target plan/period matches current subscription |
-| 502 | `BILLING_STRIPE_ERROR` | Stripe API call failed or unreachable |
+| Scenario | HTTP Status | Error Code | Behavior |
+|----------|-------------|-----------|----------|
+| No auth token | 401 | `AUTH_UNAUTHORIZED` | Standard auth middleware rejection |
+| No subscription found | 400 | `NO_CANCELLING_SUBSCRIPTION` | User has no subscription at all |
+| Subscription not in cancelling state | 400 | `NO_CANCELLING_SUBSCRIPTION` | Subscription exists but wrong status |
+| Stripe API failure | 502 | `BILLING_STRIPE_ERROR` | Database NOT modified |
+| Database update failure (after Stripe success) | 500 | `DATABASE_ERROR` | Stripe already updated — inconsistency logged for manual resolution |
+| Stripe config missing | 503 | `BILLING_CONFIG_ERROR` | Service misconfigured |
 
-### Loading States
+### Consistency Considerations
 
-- **Initial page load**: Full skeleton matching the two-column layout dimensions
-- **Modal confirm action**: Button enters loading state (spinner + disabled), other buttons disabled
-- **Post-action refresh**: No visible loading — data updates reactively via store refresh
-
-### Timeout Handling
-
-- Frontend fetch calls use a 15-second timeout for billing operations
-- If timeout elapses, show error in modal: "Request timed out. Please try again."
-- Backend Stripe calls use the configured HTTP client timeout (10s default)
+The reactivation operation is not atomic across Stripe + DB. If Stripe succeeds but the DB update fails:
+- The Stripe subscription is now active (cancel_at_period_end=false)
+- The DB still says 'cancelling'
+- On next billing store refresh, `GET /api/billing/subscription` returns 'cancelling' (stale DB)
+- Resolution: The existing Stripe webhook handler for `customer.subscription.updated` will eventually sync the status. Additionally, the error is logged at ERROR level for manual intervention if needed.
 
 ## Testing Strategy
 
 ### Unit Tests (Vitest)
 
-- **Credit usage percentage computation**: Verify the clamping and zero-allowance edge cases
-- **Currency formatting utility**: Test en/cs locale formatting rules
-- **Date formatting utility**: Test en/cs locale date output
-- **Plan hierarchy comparison**: Verify upgrade/downgrade detection logic
-- **billingClient methods**: Mock fetch, verify request shape and error handling
+**Billing store logic:**
+- Test `isFreeUser`, `isPaidPlan`, `isCancellingPlan` for all status values
+- Test `monthlyAllowance` derivation for each planId with cancelling status
 
-### Property-Based Tests (Vitest + fast-check)
+**Countdown calculation:**
+- Test time decomposition for various future dates
+- Test edge case: period end in the past → all zeros
+- Test progress ratio boundary values
 
-Property-based testing is appropriate for this feature because several acceptance criteria define universal properties over input spaces (numeric values, locale combinations, plan states).
+**Billing client:**
+- Test `reactivateSubscription()` calls correct endpoint with auth header
+- Test error response parsing
 
-**Library**: `fast-check` (already used in the CLI workspace; consistent choice)
+### Property Tests (Vitest + fast-check)
 
-**Configuration**: Minimum 100 iterations per property test.
+Property-based testing is appropriate for this feature because:
+- The billing store classification logic is a pure function of status/planId inputs
+- The countdown calculation is a pure math function of timestamps
+- The backend handler has clear universal properties about state transitions
+
+**Library:** `fast-check` (already used in the CLI project, consistent with monorepo)
+
+**Configuration:**
+- Minimum 100 iterations per property
+- Tag format: `Feature: subscription-management, Property {N}: {title}`
 
 **Properties to implement:**
-1. Credit usage bar computation (Property 2)
-2. Currency formatting correctness (Property 3)
-3. Date formatting correctness (Property 4)
-4. Conditional rendering logic (Property 1) — test the boolean derivation
-5. Cancel section visibility logic (Property 5) — test the boolean derivation
-6. Usage stats computation (Property 6)
-7. Billing client error parsing (Property 11)
+1. Store classification (Properties 1–2): Generate random planId/status combinations, verify derived values
+2. Countdown math (Properties 3–4): Generate random timestamp pairs, verify decomposition and ratio
+3. Backend handler (Properties 5–8): Generate random subscription states, mock Stripe, verify behavior
 
-**Tag format**: `// Feature: subscription-management, Property N: <description>`
+### Integration Tests (Go `testing`)
 
-### Backend Tests (Go `testing` + `pgregory.net/rapid`)
+**Backend reactivation handler:**
+- Happy path: cancelling → Stripe success → 200 with active status
+- Invalid state: active/free subscription → 400
+- Stripe failure: mock error → 502, DB unchanged
+- Missing auth: → 401
 
-- **Input validation** (Property 9): Generate random invalid request bodies, verify 400 responses
-- **Same-plan conflict** (Property 10): Generate matching plan/period pairs, verify 409
-- **Upgrade/downgrade routing** (Properties 7, 8): Generate plan transitions, verify correct Stripe call type (with mocked Stripe client)
+### Component Tests (Vitest browser mode)
 
-### Integration Tests
+- `CancellationBanner` renders with correct elements and calls onReactivate
+- `CountdownCard` displays correct countdown values
+- `ReactivateModal` shows loading/error states correctly
+- `CancellingPlanCard` displays plan data with expiring styling
+- `WhatHappensAfterCard` shows lost/retained items; accordion on mobile
 
-- Full upgrade flow: authenticate → change plan → verify DB update
-- Full cancel flow: authenticate → cancel → verify subscription status update
-- Webhook handling: Stripe events correctly update subscription state
+### E2E Tests (Playwright)
 
-### Component Tests (Storybook + Vitest Browser)
-
-- ConfirmationModal renders desktop dialog vs mobile bottom sheet
-- CurrentPlanCard displays all fields correctly
-- UpgradeCard/DowngradeCard conditional rendering based on current plan
-- CancelSection visibility based on subscription state
-- Skeleton loading states
+- Full flow: mock subscription API to return cancelling → verify ending subscription view renders
+- Reactivation flow: click reactivate → confirm modal → verify transition to active view
