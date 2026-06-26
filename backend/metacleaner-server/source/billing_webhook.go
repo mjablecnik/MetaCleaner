@@ -215,6 +215,14 @@ func handleCheckoutSessionCompleted(ctx context.Context, db *SupabaseClient, ses
 func handleSubscriptionUpdated(ctx context.Context, db *SupabaseClient, sub *stripe.Subscription) error {
 	status := string(sub.Status)
 
+	// If the subscription is still active but scheduled for cancellation at period end,
+	// preserve the "cancelling" status set by our cancel handler. Without this, the webhook
+	// would overwrite "cancelling" back to "active" because Stripe still reports it as active
+	// until the period actually ends.
+	if sub.CancelAtPeriodEnd && (status == "active" || status == "trialing") {
+		status = "cancelling"
+	}
+
 	// In stripe-go v82, period dates are on subscription items.
 	var periodStart, periodEnd *time.Time
 	if sub.Items != nil {
@@ -235,7 +243,7 @@ func handleSubscriptionUpdated(ctx context.Context, db *SupabaseClient, sub *str
 		return err
 	}
 
-	slog.Info("webhook: subscription updated", "stripeSubID", sub.ID, "status", status)
+	slog.Info("webhook: subscription updated", "stripeSubID", sub.ID, "status", status, "cancelAtPeriodEnd", sub.CancelAtPeriodEnd)
 	return nil
 }
 
