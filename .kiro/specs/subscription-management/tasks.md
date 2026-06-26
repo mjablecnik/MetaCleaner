@@ -153,8 +153,8 @@ This plan implements the subscription management feature that extends the `/pric
     - Ensure plan names (Free, Pro, Pro+) remain untranslated brand identifiers in both locales
     - _Requirements: 10.1, 10.4, 10.5_
 
-- [ ] 9. Update architecture documentation
-  - [ ] 9.1 Update architecture/workspace.dsl if significant architectural changes were introduced
+- [x] 9. Update architecture documentation
+  - [x] 9.1 Update architecture/workspace.dsl if significant architectural changes were introduced
     - Review if the new billing endpoints (change-plan, cancel) or the subscription management component layer represent a meaningful architectural change
     - If yes, update the Structurizr DSL to reflect new relationships or components (e.g., new Stripe interaction flows from the backend, new component-level views if applicable)
     - Follow the conventions in the `docs-architecture.md` steering file (short descriptions, no overflow, deduplication)

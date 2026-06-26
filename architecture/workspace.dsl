@@ -80,7 +80,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
 
                 uploadWizard = component "Upload Wizard" "Multi-step workflow: upload → scan → clean → download." "Svelte 5"
 
-                billingUI = component "Billing UI" "Plan status, upgrades, credit purchases." "Svelte 5"
+                billingUI = component "Billing UI" "Plan status, subscription management, upgrades, downgrades, cancellations, credit purchases." "Svelte 5"
 
                 reportViewer = component "Report Viewer" "Cleaning history and per-file report details." "Svelte 5"
 
@@ -123,7 +123,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
 
                 authService = component "Auth Service" "User lifecycle: login, OAuth, magic link, profile, account." "Go"
 
-                billingService = component "Billing Service" "Stripe checkout, webhooks, subscriptions, credits." "Go, stripe-go"
+                billingService = component "Billing Service" "Stripe checkout, webhooks, subscriptions, credits, plan changes, and cancellations." "Go, stripe-go"
 
                 apiKeyService = component "API Key Service" "API key CRUD and App Links endpoints." "Go"
 
@@ -342,6 +342,23 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
             metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "13. Uploads PDF to Storage"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "14. Broadcasts report_ready"
             metacleaner.webApp -> metacleaner.backendApi.requestPipeline "15. GET /api/files/{id}/download"
+
+            autoLayout tb 300 150
+        }
+
+        # ------------------------------------------------------------------
+        # DYNAMIC — Subscription Plan Change Flow
+        # ------------------------------------------------------------------
+        dynamic metacleaner.backendApi "SubscriptionChangePlanFlow" "Plan change from user action to Stripe update and store refresh." {
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "1. POST /api/billing/change-plan {plan_id, billing_period}"
+            metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.billingService "2. Routes to change-plan handler"
+            metacleaner.backendApi.billingService -> metacleaner.backendApi.supabaseClient "3. Fetches current subscription"
+            metacleaner.backendApi.supabaseClient -> metacleaner.backendApi.billingService "4. Returns subscription record"
+            metacleaner.backendApi.billingService -> stripe "5. Updates subscription (proration or schedule)"
+            stripe -> metacleaner.backendApi.billingService "6. Returns updated subscription"
+            metacleaner.backendApi.billingService -> metacleaner.backendApi.supabaseClient "7. Updates subscription record in DB"
+            metacleaner.backendApi.requestPipeline -> metacleaner.webApp "8. 200 {plan_id, billing_period, prorated_amount | scheduled_change_date}"
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "9. GET /api/billing/subscription (store refresh)"
 
             autoLayout tb 300 150
         }
