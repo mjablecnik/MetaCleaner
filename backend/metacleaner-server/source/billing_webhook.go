@@ -10,6 +10,7 @@ import (
 	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
+	stripesubscription "github.com/stripe/stripe-go/v82/subscription"
 	"github.com/stripe/stripe-go/v82/webhook"
 )
 
@@ -160,19 +161,28 @@ func handleCheckoutSessionCompleted(ctx context.Context, db *SupabaseClient, ses
 		stripeCustomerID = sess.Customer.ID
 	}
 
-	// Extract period dates from the first subscription item (where stripe-go v82 stores them).
+	// Extract period dates from the subscription.
+	// The webhook event often does not expand subscription items, so we fetch
+	// the full subscription from Stripe API to reliably get period dates.
 	var periodStart, periodEnd *time.Time
-	if sess.Subscription != nil && sess.Subscription.Items != nil {
-		for _, item := range sess.Subscription.Items.Data {
-			if item.CurrentPeriodStart != 0 {
-				t := time.Unix(item.CurrentPeriodStart, 0)
-				periodStart = &t
+	if stripeSubID != "" {
+		params := &stripe.SubscriptionParams{}
+		params.AddExpand("items")
+		fullSub, err := stripesubscription.Get(stripeSubID, params)
+		if err != nil {
+			slog.Warn("webhook: failed to fetch subscription from Stripe API, period dates may be nil", "stripeSubID", stripeSubID, "error", err)
+		} else if fullSub.Items != nil {
+			for _, item := range fullSub.Items.Data {
+				if item.CurrentPeriodStart != 0 {
+					t := time.Unix(item.CurrentPeriodStart, 0)
+					periodStart = &t
+				}
+				if item.CurrentPeriodEnd != 0 {
+					t := time.Unix(item.CurrentPeriodEnd, 0)
+					periodEnd = &t
+				}
+				break
 			}
-			if item.CurrentPeriodEnd != 0 {
-				t := time.Unix(item.CurrentPeriodEnd, 0)
-				periodEnd = &t
-			}
-			break
 		}
 	}
 
