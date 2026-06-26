@@ -6,8 +6,8 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
 
 ## Tasks
 
-- [ ] 1. Fix billing store and add `isCancellingPlan` derived property
-  - [ ] 1.1 Add `isCancellingPlan` derived property and fix `isFreeUser` logic in `billingStore.svelte.ts`
+- [x] 1. Fix billing store and add `isCancellingPlan` derived property
+  - [x] 1.1 Add `isCancellingPlan` derived property and fix `isFreeUser` logic in `billingStore.svelte.ts`
     - Add `const isCancellingPlan = $derived(planStatus === 'cancelling');`
     - Fix `isFreeUser` to NOT include `'cancelling'` status (currently it would match via `planStatus === 'cancelled'` fallback — ensure `'cancelling'` is explicitly excluded)
     - Expose `isCancellingPlan` via the store's return object as a getter
@@ -15,14 +15,14 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Verify `monthlyAllowance` remains at the paid level for `'cancelling'` + `'pro'`/`'proplus'` planId (already works via PLAN_CONFIG lookup)
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 1.2 Fix `isCancelledWithFutureAccess` in pricing page to remove old `'cancelled'` status check
+  - [x] 1.2 Fix `isCancelledWithFutureAccess` in pricing page to remove old `'cancelled'` status check
     - In `frontend/metacleaner-app/src/routes/pricing/+page.svelte`, remove the `isCancelledWithFutureAccess` derived variable
     - Remove the cancelled-with-future-access notice banner that uses it
     - Update `showManagementUI` to only check `billingStore.isPaidPlan` (no longer needs `isCancelledWithFutureAccess`)
     - _Requirements: 2.1_
 
-- [ ] 2. Implement backend reactivation endpoint
-  - [ ] 2.1 Add `HandleReactivateSubscription` handler in `billing_handlers.go`
+- [x] 2. Implement backend reactivation endpoint
+  - [x] 2.1 Add `HandleReactivateSubscription` handler in `billing_handlers.go`
     - Add `ErrNoCancellingSubscription = "NO_CANCELLING_SUBSCRIPTION"` error code constant
     - Add `ReactivateResponse` struct with `PlanID`, `Status`, `CurrentPeriodEnd` fields
     - Implement `HandleReactivateSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc`
@@ -35,7 +35,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Return 200 with `ReactivateResponse` containing plan_id, status "active", and current_period_end
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-  - [ ] 2.2 Register reactivation route in `router.go`
+  - [x] 2.2 Register reactivation route in `router.go`
     - Add `mux.Handle("POST /api/billing/reactivate", rateLimited(HandleReactivateSubscription(cfg, db)))` in the billing routes section
     - _Requirements: 10.1_
 

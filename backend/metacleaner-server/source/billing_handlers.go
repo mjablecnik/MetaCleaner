@@ -16,12 +16,13 @@ import (
 )
 
 const (
-	ErrBillingConflict      = "BILLING_CONFLICT"
-	ErrBillingInvalidPlan   = "BILLING_INVALID_PLAN"
-	ErrBillingStripeError   = "BILLING_STRIPE_ERROR"
-	ErrBillingConfigError   = "BILLING_CONFIG_ERROR"
-	ErrNoActiveSubscription = "NO_ACTIVE_SUBSCRIPTION"
-	ErrAlreadyCancelled     = "ALREADY_CANCELLED"
+	ErrBillingConflict           = "BILLING_CONFLICT"
+	ErrBillingInvalidPlan        = "BILLING_INVALID_PLAN"
+	ErrBillingStripeError        = "BILLING_STRIPE_ERROR"
+	ErrBillingConfigError        = "BILLING_CONFIG_ERROR"
+	ErrNoActiveSubscription      = "NO_ACTIVE_SUBSCRIPTION"
+	ErrAlreadyCancelled          = "ALREADY_CANCELLED"
+	ErrNoCancellingSubscription  = "NO_CANCELLING_SUBSCRIPTION"
 )
 
 // planHierarchy defines the upgrade/downgrade ordering for paid plans.
@@ -603,6 +604,91 @@ func HandleCancelSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		slog.Info("billing: subscription cancelled at period end", "userID", userID, "subID", existing.StripeSubscriptionID)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(CancelResponse{CurrentPeriodEnd: periodEndStr})
+	}
+}
+
+// ReactivateResponse is the response body for POST /api/billing/reactivate.
+type ReactivateResponse struct {
+	PlanID           string `json:"plan_id"`
+	Status           string `json:"status"`
+	CurrentPeriodEnd string `json:"current_period_end"`
+}
+
+// HandleReactivateSubscription handles POST /api/billing/reactivate.
+// It reverses a cancellation by setting cancel_at_period_end: false on Stripe.
+func HandleReactivateSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		existing, err := db.GetSubscriptionByUserID(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: reactivate: failed to get subscription", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve subscription")
+			return
+		}
+
+		if existing == nil || existing.Status != "cancelling" {
+			WriteError(w, http.StatusBadRequest, ErrNoCancellingSubscription, "no cancelling subscription found")
+			return
+		}
+		if existing.StripeSubscriptionID == "" {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "subscription has no Stripe ID")
+			return
+		}
+
+		if cfg.StripeSecretKey == "" {
+			WriteError(w, http.StatusServiceUnavailable, ErrBillingConfigError, "billing is not configured")
+			return
+		}
+		stripe.Key = cfg.StripeSecretKey
+
+		params := &stripe.SubscriptionParams{
+			CancelAtPeriodEnd: stripe.Bool(false),
+		}
+		updatedSub, err := stripesubscription.Update(existing.StripeSubscriptionID, params)
+		if err != nil {
+			slog.Error("billing: reactivate: stripe update failed", "userID", userID, "subID", existing.StripeSubscriptionID, "error", err)
+			WriteError(w, http.StatusBadGateway, ErrBillingStripeError, "reactivation could not be processed")
+			return
+		}
+
+		// Extract current_period_end from updated subscription items.
+		var periodEnd *time.Time
+		if updatedSub.Items != nil {
+			for _, item := range updatedSub.Items.Data {
+				if item.CurrentPeriodEnd != 0 {
+					t := time.Unix(item.CurrentPeriodEnd, 0)
+					periodEnd = &t
+				}
+				break
+			}
+		}
+		if periodEnd == nil {
+			periodEnd = existing.CurrentPeriodEnd
+		}
+
+		if err := db.UpdateSubscription(r.Context(), existing.StripeSubscriptionID, "active", "", nil, nil); err != nil {
+			slog.Error("billing: reactivate: failed to update subscription status", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to update subscription status")
+			return
+		}
+
+		var periodEndStr string
+		if periodEnd != nil {
+			periodEndStr = periodEnd.UTC().Format(time.RFC3339)
+		}
+
+		slog.Info("billing: subscription reactivated", "userID", userID, "subID", existing.StripeSubscriptionID)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(ReactivateResponse{
+			PlanID:           existing.PlanID,
+			Status:           "active",
+			CurrentPeriodEnd: periodEndStr,
+		})
 	}
 }
 
