@@ -28,11 +28,11 @@
 	});
 </script>
 
-<div class="rounded-2xl border border-gray-700/60 bg-navy-card p-5 shadow-card lg:p-6">
-	<div class="mb-4 flex items-center justify-between">
-		<h3 class="text-sm font-semibold tracking-wider text-text-muted uppercase">
+<div class="rounded-2xl border border-gray-800 bg-navy-card p-5">
+	<div class="mb-3 flex items-center justify-between">
+		<p class="text-xs font-semibold tracking-wider text-text-muted uppercase">
 			{tx('subscription.usageStats.title')}
-		</h3>
+		</p>
 		{#if hasError}
 			<span class="flex items-center gap-1 text-xs text-yellow-400">
 				<i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
@@ -44,31 +44,34 @@
 	{#if isLoading}
 		<div class="animate-pulse space-y-3">
 			{#each [1, 2, 3, 4] as _ (_)}
-				<div class="flex items-center justify-between">
-					<div class="h-3 w-1/2 rounded-lg bg-gray-700/40"></div>
-					<div class="h-3 w-1/4 rounded-lg bg-gray-700/60"></div>
-				</div>
+				<div class="h-16 rounded-xl bg-gray-700/40"></div>
 			{/each}
 		</div>
 	{:else}
-		<div class="space-y-3">
-			<div class="flex items-center justify-between text-sm">
-				<span class="text-text-muted">{tx('subscription.usageStats.consumed')}</span>
-				<span class="font-semibold text-white">{creditsConsumed}</span>
+		<div class="grid grid-cols-2 gap-3">
+			<div class="rounded-xl bg-navy-lighter p-3 text-center">
+				<div class="text-2xl font-black text-white">{creditsConsumed}</div>
+				<div class="mt-0.5 text-xs text-text-muted">
+					{tx('subscription.usageStats.consumed')}
+				</div>
 			</div>
-			<div class="flex items-center justify-between text-sm">
-				<span class="text-text-muted">{tx('subscription.usageStats.remaining')}</span>
-				<span class="font-semibold text-white">{creditsRemaining}</span>
+			<div class="rounded-xl bg-navy-lighter p-3 text-center">
+				<div class="text-2xl font-black text-brand-green">{creditsRemaining}</div>
+				<div class="mt-0.5 text-xs text-text-muted">
+					{tx('subscription.usageStats.remaining')}
+				</div>
 			</div>
-			<div class="flex items-center justify-between text-sm">
-				<span class="text-text-muted">{tx('subscription.usageStats.allowance')}</span>
-				<span class="font-semibold text-white">{monthlyAllowance}</span>
+			<div class="rounded-xl bg-navy-lighter p-3 text-center">
+				<div class="text-2xl font-black text-brand-blue">{monthlyAllowance}</div>
+				<div class="mt-0.5 text-xs text-text-muted">
+					{tx('subscription.usageStats.allowance')}
+				</div>
 			</div>
 			{#if renewalDate}
-				<div class="border-t border-gray-700/40 pt-3">
-					<div class="flex items-center justify-between text-sm">
-						<span class="text-text-muted">{tx('subscription.usageStats.renewal')}</span>
-						<span class="font-semibold text-white">{formattedRenewalDate()}</span>
+				<div class="rounded-xl bg-navy-lighter p-3 text-center">
+					<div class="text-lg font-black text-text-muted">{formattedRenewalDate()}</div>
+					<div class="mt-0.5 text-xs text-text-muted">
+						{tx('subscription.usageStats.renewal')}
 					</div>
 				</div>
 			{/if}

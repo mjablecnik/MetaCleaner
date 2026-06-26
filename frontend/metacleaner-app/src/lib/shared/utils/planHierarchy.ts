@@ -20,8 +20,10 @@ export function formatCurrency(amount: number, locale: 'en' | 'cs'): string {
 	return `€${formatted}`;
 }
 
-export function formatDate(date: Date | string, locale: 'en' | 'cs'): string {
+export function formatDate(date: Date | string | null | undefined, locale: 'en' | 'cs'): string {
+	if (!date) return '';
 	const d = typeof date === 'string' ? new Date(date) : date;
+	if (isNaN(d.getTime())) return '';
 	const day = String(d.getUTCDate()).padStart(2, '0');
 	const month = String(d.getUTCMonth() + 1).padStart(2, '0');
 	const year = d.getUTCFullYear();

@@ -65,7 +65,7 @@
 </script>
 
 <div
-	class="rounded-2xl border bg-navy-card shadow-card {style.borderColor} relative overflow-hidden p-5 lg:p-6"
+	class="relative rounded-2xl border-2 border-brand-blue/40 bg-navy-card p-5 shadow-glow-blue lg:p-6"
 >
 	{#if hasError}
 		<div
@@ -90,73 +90,100 @@
 			</div>
 		</div>
 	{:else}
+		<!-- Active plan badge -->
+		<div
+			class="absolute -top-3 left-5 rounded-full bg-brand-blue px-3 py-1 text-xs font-bold text-white"
+		>
+			{tx('subscription.currentPlan.title')}
+		</div>
+
 		<!-- Plan name and price -->
-		<div class="mb-4 flex items-start justify-between">
+		<div class="mt-2 mb-5 flex items-start justify-between">
 			<div>
-				<p class="mb-0.5 text-xs font-medium tracking-wider text-text-muted uppercase">
-					{tx('subscription.currentPlan.title')}
+				<h2 class="text-xl font-black lg:text-3xl">{style.label}</h2>
+				<p class="mt-1 text-xs text-text-muted lg:text-sm">
+					{monthlyAllowance}
+					{tx('subscription.currentPlan.photosPerMonth')}
 				</p>
-				<h3 class="text-2xl font-black {style.textColor}">{style.label}</h3>
 			</div>
 			{#if !isFree && price}
 				<div class="text-right">
-					<span class="text-xl font-bold text-white">{price}</span>
-					<span class="text-xs text-text-muted">{periodLabel()}</span>
+					<div class="text-2xl font-black lg:text-3xl">{price}</div>
+					<div class="text-xs text-text-muted lg:text-sm">{periodLabel()}</div>
 				</div>
 			{/if}
 		</div>
 
-		<!-- Credit usage bar -->
-		<div class="mb-4">
-			<div class="mb-1.5 flex items-center justify-between text-xs text-text-muted">
-				<span>{tx('subscription.currentPlan.creditsUsed')}: {creditsUsed}</span>
-				<span>{tx('subscription.currentPlan.creditsRemaining')}: {creditsRemaining}</span>
+		<!-- Credits Usage -->
+		<div class="mb-5">
+			<div class="mb-1.5 flex items-center justify-between lg:mb-2">
+				<span class="text-xs font-medium text-text-muted lg:text-sm">
+					{tx('subscription.currentPlan.creditsThisMonth')}
+				</span>
+				<span class="text-xs font-bold text-white lg:text-sm">
+					{creditsUsed} / {monthlyAllowance}
+				</span>
 			</div>
-			<div class="h-2 w-full overflow-hidden rounded-full bg-gray-700/60">
+			<div class="h-2 w-full overflow-hidden rounded-full bg-navy-lighter lg:h-2.5">
 				<div
-					class="h-full rounded-full transition-all duration-500 {style.dotColor}"
+					class="progress-bar h-full"
 					style="width: {barWidth()}%"
 				></div>
 			</div>
 			{#if renewalDate}
-				<p class="mt-1.5 text-right text-xs text-text-muted">
+				<p class="mt-1.5 text-xs text-text-muted lg:mt-2">
+					{creditsRemaining}
+					{tx('subscription.currentPlan.photosRemaining')} ·
 					{tx('subscription.currentPlan.renewal')}
 					{formattedRenewalDate()}
 				</p>
 			{/if}
 		</div>
 
-		<!-- Features -->
+		<!-- Plan Features -->
 		{#if features.length > 0}
-			<div class="mb-4">
-				<p class="mb-2 text-xs font-medium tracking-wider text-text-muted uppercase">
+			<div class="mb-4 rounded-xl bg-navy-lighter p-3 lg:mb-5 lg:p-4">
+				<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase lg:mb-3">
 					{tx('subscription.currentPlan.features')}
 				</p>
-				<ul class="space-y-1.5">
+				<div class="grid grid-cols-2 gap-x-3 gap-y-2 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-2.5">
 					{#each features as feature (feature)}
-						<li class="flex items-center gap-2 text-sm text-white">
-							<i class="fa-solid fa-check text-[11px] {style.textColor}"></i>
-							{feature}
-						</li>
+						<div class="flex items-center gap-2">
+							<i class="fa-solid fa-check text-xs text-brand-green"></i>
+							<span class="text-xs text-text-muted">{feature}</span>
+						</div>
 					{/each}
-				</ul>
+				</div>
 			</div>
 		{/if}
 
-		<!-- Billing info (hidden for free plan) -->
+		<!-- Billing info -->
 		{#if !isFree && paymentMethod}
-			<div class="border-t border-gray-700/60 pt-4">
-				<div class="flex items-center justify-between text-sm">
-					<span class="text-text-muted">{tx('subscription.currentPlan.paymentMethod')}</span>
+			<div
+				class="flex items-center gap-2 rounded-xl bg-navy-lighter px-3 py-2.5 lg:gap-3 lg:px-4 lg:py-3"
+			>
+				<i class="fa-regular fa-credit-card text-sm text-text-muted"></i>
+				<span class="text-xs text-text-muted lg:text-sm">
+					{tx('subscription.currentPlan.paymentLabel')}:
 					<span class="font-medium text-white">{paymentMethod}</span>
-				</div>
+				</span>
 				{#if nextPaymentDate}
-					<div class="mt-1.5 flex items-center justify-between text-sm">
-						<span class="text-text-muted">{tx('subscription.currentPlan.nextPayment')}</span>
+					<span class="ml-auto text-xs text-text-muted lg:text-sm">
+						{tx('subscription.currentPlan.nextPayment')}:
 						<span class="font-medium text-white">{formattedNextPaymentDate()}</span>
-					</div>
+					</span>
 				{/if}
+				<button class="ml-2 text-xs text-brand-blue hover:underline">
+					{tx('subscription.currentPlan.change')}
+				</button>
 			</div>
 		{/if}
 	{/if}
 </div>
+
+<style>
+	.progress-bar {
+		background: linear-gradient(90deg, #3b82f6, #60a5fa);
+		border-radius: 999px;
+	}
+</style>

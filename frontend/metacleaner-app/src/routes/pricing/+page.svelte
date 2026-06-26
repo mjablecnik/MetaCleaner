@@ -278,7 +278,7 @@
 {/snippet}
 
 <div class="flex min-h-screen w-full flex-col items-center">
-	<main class="mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-6 py-8 md:py-16">
+	<main class="mx-auto flex w-full max-w-[1100px] flex-1 flex-col px-4 py-8 lg:px-6 lg:py-10">
 		{#if showSkeleton}
 			<!-- Skeleton: matches subscription management layout dimensions -->
 			<div class="animate-pulse">
@@ -311,11 +311,41 @@
 			</div>
 		{:else if showManagementUI}
 			<!-- Subscription Management UI -->
-			<div class="mb-8">
+
+			<!-- Page Header: mobile (centered) -->
+			<div class="mb-6 w-full text-center lg:hidden">
+				<div
+					class="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/20"
+				>
+					<i class="fa-solid fa-crown text-xl text-brand-green"></i>
+				</div>
 				<h1 class="mb-1 text-2xl font-bold text-white">
 					{tx('subscription.management.header')}
 				</h1>
 				<p class="text-sm text-text-muted">{tx('subscription.management.subheader')}</p>
+			</div>
+
+			<!-- Page Header: desktop (horizontal with badge) -->
+			<div class="mb-8 hidden items-center gap-4 lg:flex">
+				<div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-green/20">
+					<i class="fa-solid fa-crown text-xl text-brand-green"></i>
+				</div>
+				<div>
+					<h1 class="text-2xl font-bold text-white">
+						{tx('subscription.management.header')}
+					</h1>
+					<p class="mt-0.5 text-sm text-text-muted">
+						{tx('subscription.management.subheader')}
+					</p>
+				</div>
+				<div
+					class="ml-auto flex items-center gap-2 rounded-xl border border-brand-blue/30 bg-brand-blue/10 px-4 py-2"
+				>
+					<i class="fa-solid fa-circle text-xs text-brand-green"></i>
+					<span class="text-sm font-semibold text-brand-blue">
+						{tx('subscription.management.activePlan')}: {currentPlanData?.nameText ?? billingStore.planId}
+					</span>
+				</div>
 			</div>
 
 			{#if isCancelledWithFutureAccess}
@@ -340,6 +370,8 @@
 						{creditsRemaining}
 						renewalDate={subscription?.current_period_end ?? null}
 						features={currentFeatures()}
+						paymentMethod={subscription?.payment_method ?? null}
+						nextPaymentDate={subscription?.current_period_end ?? null}
 						isLoading={false}
 						hasError={billingStore.hasError}
 					/>

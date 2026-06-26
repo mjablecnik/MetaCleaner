@@ -24,39 +24,57 @@
 	}
 </script>
 
-<div
-	class="rounded-2xl border border-blue-600/40 bg-gradient-to-br from-blue-950/60 to-navy-card p-5 shadow-card lg:p-6"
->
-	<div class="mb-4 flex items-start justify-between">
-		<div>
-			<p class="mb-0.5 text-xs font-medium tracking-wider text-blue-400/70 uppercase">
-				{upgradeTitle()}
-			</p>
-			<h3 class="text-xl font-bold text-white">{targetPlanName}</h3>
+<div class="relative overflow-hidden rounded-2xl border border-gray-800 bg-navy-card p-5">
+	<!-- Decorative circle (desktop only) -->
+	<div
+		class="absolute top-0 right-0 hidden h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-brand-orange/5 lg:block"
+	></div>
+
+	<!-- Header row -->
+	<div class="mb-1 flex items-center gap-3 lg:mb-1">
+		<div
+			class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
+		>
+			<i class="fa-solid fa-rocket text-brand-orange"></i>
 		</div>
-		<span class="text-lg font-bold text-blue-400">{targetPrice}</span>
+		<div>
+			<h3 class="text-sm font-bold">{upgradeTitle()}</h3>
+			<p class="text-xs text-text-muted">{tx('subscription.upgrade.subtitle')}</p>
+		</div>
+		<div class="ml-auto shrink-0 text-right">
+			<div class="text-base font-black lg:text-lg">{targetPrice}</div>
+			<div class="text-xs text-text-muted">{tx('subscription.upgrade.perMonth')}</div>
+		</div>
 	</div>
 
+	<!-- Features list (desktop: full list, mobile: compact subtitle) -->
 	{#if differentialFeatures.length > 0}
-		<div class="mb-5">
-			<p class="mb-2 text-xs font-medium tracking-wider text-text-muted uppercase">
-				{tx('subscription.upgrade.featuresGained')}
+		<!-- Mobile: compact features in subtitle -->
+		<div class="mt-2 mb-3 lg:hidden">
+			<p class="text-xs text-text-muted">
+				{differentialFeatures.join(' · ')}
 			</p>
-			<ul class="space-y-1.5">
+		</div>
+
+		<!-- Desktop: features in box -->
+		<div class="my-3 hidden rounded-xl bg-navy-lighter p-3 lg:block">
+			<div class="flex flex-col gap-1.5">
 				{#each differentialFeatures as feature (feature)}
-					<li class="flex items-center gap-2 text-sm text-white">
-						<i class="fa-solid fa-plus text-[11px] text-blue-400"></i>
-						{feature}
-					</li>
+					<div class="flex items-center gap-2">
+						<i class="fa-solid fa-check text-xs text-brand-orange"></i>
+						<span class="text-xs text-text-muted">{feature}</span>
+					</div>
 				{/each}
-			</ul>
+			</div>
 		</div>
 	{/if}
 
+	<!-- CTA Button -->
 	<button
 		onclick={onUpgrade}
-		class="w-full rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-blue/90 active:scale-[0.98]"
+		class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-orange py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600 active:scale-[0.98]"
 	>
-		{tx('subscription.upgrade.button')}
+		<i class="fa-solid fa-arrow-up text-xs"></i>
+		{tx('subscription.upgrade.button')} →
 	</button>
 </div>
