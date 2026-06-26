@@ -104,6 +104,7 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
 	report := BuildReport(job, files)
 	if err := db.CreateReport(ctx, report); err != nil {
+		slog.Error("job: CreateReport failed", "jobId", job.ID, "userID", job.UserID, "error", err)
 		return
 	}
 

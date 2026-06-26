@@ -32,10 +32,17 @@ func NewSupabaseClient(cfg Config) *SupabaseClient {
 		timeout = 10 * time.Second
 	}
 	return &SupabaseClient{
-		httpClient: &http.Client{Timeout: 30 * time.Second},
-		baseURL:    cfg.SupabaseURL,
-		apiKey:     key,
-		timeout:    timeout,
+		httpClient: &http.Client{
+			Timeout: 30 * time.Second,
+			Transport: &http.Transport{
+				MaxIdleConns:        20,
+				MaxIdleConnsPerHost: 10,
+				IdleConnTimeout:     90 * time.Second,
+			},
+		},
+		baseURL: cfg.SupabaseURL,
+		apiKey:  key,
+		timeout: timeout,
 	}
 }
 
@@ -182,8 +189,15 @@ func (c *SupabaseClient) doJSON(ctx context.Context, method, url string, payload
 
 		if result != nil && len(respBody) > 0 {
 			if err := json.Unmarshal(respBody, result); err != nil {
-				return fmt.Errorf("unmarshal response: %w", err)
+				lastErr = fmt.Errorf("unmarshal response: %w (body=%d bytes, status=%d)", err, len(respBody), resp.StatusCode)
+				slog.Warn("supabase: unmarshal failed, retrying", "method", method, "url", url, "bodyLen", len(respBody), "status", resp.StatusCode, "attempt", attempt)
+				continue
 			}
+		} else if result != nil && len(respBody) == 0 && method == http.MethodGet {
+			// GET returned 200 but empty body — likely a cold start/truncated response, retry
+			lastErr = fmt.Errorf("supabase %s %s: empty response body", method, url)
+			slog.Warn("supabase: empty response body, retrying", "method", method, "url", url, "attempt", attempt)
+			continue
 		}
 		return nil
 	}
@@ -680,32 +694,16 @@ func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID
 // ListReports returns all reports ordered by date descending, optionally filtered by user ID.
 func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]ReportSummary, error) {
 	var rows []dbReport
-	url := c.restURL("cleaning_reports?order=date.desc")
+	// Select only the columns needed for the summary list (avoid fetching large chart_data JSONB).
+	// Limit to 50 most recent reports to prevent oversized responses from Supabase free tier.
+	url := c.restURL("cleaning_reports?select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_seconds,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at&order=date.desc&limit=50")
 	if userID != "" {
 		url += "&user_id=eq." + userID
 	}
 
-	// Retry up to 2 additional times on empty result when user filter is active,
-	// to handle Supabase cold start returning stale empty responses.
-	for attempt := 0; attempt < 3; attempt++ {
-		rows = nil
-		if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
-			if attempt < 2 {
-				slog.Warn("list-reports: query failed, retrying", "attempt", attempt, "error", err)
-				time.Sleep(300 * time.Millisecond)
-				continue
-			}
-			slog.Error("list-reports: PostgREST query failed", "userID", userID, "error", err)
-			return nil, err
-		}
-		if len(rows) > 0 || userID == "" {
-			break
-		}
-		// Empty result with user filter — could be cold start, retry
-		if attempt < 2 {
-			slog.Warn("list-reports: empty result, retrying", "userID", userID, "attempt", attempt)
-			time.Sleep(300 * time.Millisecond)
-		}
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		slog.Error("list-reports: PostgREST query failed", "userID", userID, "error", err)
+		return nil, err
 	}
 
 	summaries := make([]ReportSummary, len(rows))
