@@ -4,6 +4,7 @@ import type {
 	CancelResponse,
 	ChangePlanResponse,
 	CheckoutResponse,
+	ReactivateResponse,
 	SubscriptionStatus
 } from '$lib/types/billing.js';
 
@@ -67,5 +68,20 @@ export const billingClient = {
 			throw new Error((body as { message?: string }).message || res.statusText);
 		}
 		return res.json() as Promise<CancelResponse>;
+	},
+
+	async reactivateSubscription(): Promise<ReactivateResponse> {
+		const res = await fetch(buildApiUrl('/api/billing/reactivate'), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authStore.accessToken}`
+			}
+		});
+		if (!res.ok) {
+			const body = await res.json().catch(() => ({ message: res.statusText }));
+			throw new Error((body as { message?: string }).message || res.statusText);
+		}
+		return res.json() as Promise<ReactivateResponse>;
 	}
 };

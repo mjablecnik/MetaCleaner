@@ -42,12 +42,12 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
 - [x] 3. Checkpoint — Ensure backend compiles
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Extend frontend billing client and types
-  - [ ] 4.1 Add `ReactivateResponse` type in `billing.ts`
+- [x] 4. Extend frontend billing client and types
+  - [x] 4.1 Add `ReactivateResponse` type in `billing.ts`
     - Add `ReactivateResponse` interface with `plan_id: string`, `status: string`, `current_period_end: string`
     - _Requirements: 11.2_
 
-  - [ ] 4.2 Add `reactivateSubscription()` method in `billingClient.ts`
+  - [x] 4.2 Add `reactivateSubscription()` method in `billingClient.ts`
     - Add async method that sends POST to `/api/billing/reactivate` with auth header
     - Parse error responses and throw with server's error message
     - Return typed `ReactivateResponse` on success

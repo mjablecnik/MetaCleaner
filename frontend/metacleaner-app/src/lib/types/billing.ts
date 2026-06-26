@@ -25,3 +25,9 @@ export interface ChangePlanResponse {
 export interface CancelResponse {
 	current_period_end: string;
 }
+
+export interface ReactivateResponse {
+	plan_id: string;
+	status: string;
+	current_period_end: string;
+}
