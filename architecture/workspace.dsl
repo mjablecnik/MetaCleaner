@@ -181,11 +181,13 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         stripe -> metacleaner.backendApi.requestPipeline "Webhook POST" "HTTPS"
 
         metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.cleaningPipeline "Upload + job requests" "Function call"
+        metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.websocketHub "WebSocket upgrade" "Function call"
         metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.authService "Auth requests" "Function call"
         metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.billingService "Billing requests" "Function call"
         metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.apiKeyService "API key requests" "Function call"
 
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "Emits progress events" "Function call"
+        metacleaner.backendApi.websocketHub -> metacleaner.webApp "Streams real-time progress" "WebSocket"
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "CRUD jobs + files" "Function call"
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.pdfGenerator "Generates report PDF" "Function call"
         metacleaner.backendApi.cleaningPipeline -> exiftool "Strips image metadata" "Subprocess"
@@ -329,7 +331,8 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
             metacleaner.webApp -> metacleaner.backendApi.requestPipeline "3. POST /api/jobs (file IDs)"
             metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.cleaningPipeline "4. Creates job, starts pipeline"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "5. Persists job + file records"
-            metacleaner.webApp -> metacleaner.backendApi.websocketHub "6. WebSocket connect for progress"
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "6. GET /api/jobs/{id}/progress (WebSocket upgrade)"
+            metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.websocketHub "6b. Upgrades to WebSocket"
             metacleaner.backendApi.cleaningPipeline -> exiftool "7. Strips image metadata"
             metacleaner.backendApi.cleaningPipeline -> ffmpeg "8. Strips video metadata"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "9. Broadcasts per-file progress"
