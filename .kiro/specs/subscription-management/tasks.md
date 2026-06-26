@@ -125,7 +125,7 @@ This plan implements the subscription management feature that extends the `/pric
     - Skeleton when first loading, warning on stale data
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 6. Checkpoint - Ensure components render correctly
+- [x] 6. Checkpoint - Ensure components render correctly
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Integrate subscription management into pricing page
