@@ -11,14 +11,25 @@ import (
 	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/checkout/session"
 	stripecustomer "github.com/stripe/stripe-go/v82/customer"
+	stripesubscription "github.com/stripe/stripe-go/v82/subscription"
+	stripesubschedule "github.com/stripe/stripe-go/v82/subscriptionschedule"
 )
 
 const (
-	ErrBillingConflict    = "BILLING_CONFLICT"
-	ErrBillingInvalidPlan = "BILLING_INVALID_PLAN"
-	ErrBillingStripeError = "BILLING_STRIPE_ERROR"
-	ErrBillingConfigError = "BILLING_CONFIG_ERROR"
+	ErrBillingConflict      = "BILLING_CONFLICT"
+	ErrBillingInvalidPlan   = "BILLING_INVALID_PLAN"
+	ErrBillingStripeError   = "BILLING_STRIPE_ERROR"
+	ErrBillingConfigError   = "BILLING_CONFIG_ERROR"
+	ErrNoActiveSubscription = "NO_ACTIVE_SUBSCRIPTION"
+	ErrAlreadyCancelled     = "ALREADY_CANCELLED"
 )
+
+// planHierarchy defines the upgrade/downgrade ordering for paid plans.
+var planHierarchy = map[string]int{
+	"free":    0,
+	"pro":     1,
+	"proplus": 2,
+}
 
 // CheckoutRequest is the request body for POST /api/billing/checkout.
 type CheckoutRequest struct {
@@ -293,6 +304,305 @@ func resolvePriceAndMode(cfg Config, planID, billingPeriod string) (priceID, mod
 		return cfg.StripePriceCreditPack, string(stripe.CheckoutSessionModePayment), nil
 	default:
 		return "", "", fmt.Errorf("unknown plan_id %q: must be pro, proplus, or credits", planID)
+	}
+}
+
+// ChangePlanRequest is the request body for POST /api/billing/change-plan.
+type ChangePlanRequest struct {
+	PlanID        string `json:"plan_id"`
+	BillingPeriod string `json:"billing_period"`
+}
+
+// ChangePlanResponse is the response body for POST /api/billing/change-plan.
+type ChangePlanResponse struct {
+	PlanID              string  `json:"plan_id"`
+	BillingPeriod       string  `json:"billing_period"`
+	Status              string  `json:"status"`
+	CurrentPeriodEnd    string  `json:"current_period_end"`
+	ProratedAmount      *int64  `json:"prorated_amount,omitempty"`
+	ScheduledChangeDate *string `json:"scheduled_change_date,omitempty"`
+}
+
+// CancelResponse is the response body for POST /api/billing/cancel.
+type CancelResponse struct {
+	CurrentPeriodEnd string `json:"current_period_end"`
+}
+
+// HandleChangePlan handles POST /api/billing/change-plan.
+// It upgrades or downgrades the authenticated user's subscription plan via Stripe.
+func HandleChangePlan(cfg Config, db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		var req ChangePlanRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, "invalid request body")
+			return
+		}
+
+		if req.PlanID == "" || req.BillingPeriod == "" {
+			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, "plan_id and billing_period are required")
+			return
+		}
+		if req.PlanID != "pro" && req.PlanID != "proplus" {
+			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, "plan_id must be pro or proplus")
+			return
+		}
+		if req.BillingPeriod != "monthly" && req.BillingPeriod != "yearly" {
+			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, "billing_period must be monthly or yearly")
+			return
+		}
+
+		existing, err := db.GetSubscriptionByUserID(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: change-plan: failed to get subscription", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve subscription")
+			return
+		}
+		if existing == nil || (existing.Status != "active" && existing.Status != "trialing") {
+			WriteError(w, http.StatusBadRequest, ErrNoActiveSubscription, "no active subscription found")
+			return
+		}
+		if existing.PlanID == req.PlanID && existing.BillingPeriod == req.BillingPeriod {
+			WriteError(w, http.StatusConflict, ErrBillingConflict, "subscription is already on this plan and billing period")
+			return
+		}
+		if existing.StripeSubscriptionID == "" {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "subscription has no Stripe ID")
+			return
+		}
+
+		if cfg.StripeSecretKey == "" {
+			WriteError(w, http.StatusServiceUnavailable, ErrBillingConfigError, "billing is not configured")
+			return
+		}
+		stripe.Key = cfg.StripeSecretKey
+
+		newPriceID, _, err := resolvePriceAndMode(cfg, req.PlanID, req.BillingPeriod)
+		if err != nil {
+			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, err.Error())
+			return
+		}
+
+		targetRank := planHierarchy[req.PlanID]
+		currentRank := planHierarchy[existing.PlanID]
+
+		var respData ChangePlanResponse
+		if targetRank >= currentRank {
+			respData, err = changePlanUpgrade(r.Context(), db, existing, req.PlanID, req.BillingPeriod, newPriceID)
+		} else {
+			respData, err = changePlanDowngrade(r.Context(), cfg, db, existing, req.PlanID, req.BillingPeriod, newPriceID)
+		}
+		if err != nil {
+			slog.Error("billing: change-plan failed", "userID", userID, "planID", req.PlanID, "error", err)
+			WriteError(w, http.StatusBadGateway, ErrBillingStripeError, "plan change could not be processed")
+			return
+		}
+
+		slog.Info("billing: plan changed", "userID", userID, "newPlanID", req.PlanID, "billingPeriod", req.BillingPeriod)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(respData)
+	}
+}
+
+// changePlanUpgrade performs an immediate plan upgrade with proration via Stripe.
+func changePlanUpgrade(ctx context.Context, db *SupabaseClient, existing *Subscription, planID, billingPeriod, newPriceID string) (ChangePlanResponse, error) {
+	// Fetch current Stripe subscription to get item ID.
+	getParams := &stripe.SubscriptionParams{}
+	getParams.AddExpand("items")
+	stripeSub, err := stripesubscription.Get(existing.StripeSubscriptionID, getParams)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("fetch stripe subscription: %w", err)
+	}
+
+	var itemID string
+	if stripeSub.Items != nil && len(stripeSub.Items.Data) > 0 {
+		itemID = stripeSub.Items.Data[0].ID
+	}
+
+	// Update subscription with new price and immediate proration.
+	updateParams := &stripe.SubscriptionParams{
+		Items: []*stripe.SubscriptionItemsParams{
+			{
+				ID:    stripe.String(itemID),
+				Price: stripe.String(newPriceID),
+			},
+		},
+		ProrationBehavior: stripe.String("always_invoice"),
+	}
+	updateParams.AddExpand("latest_invoice")
+
+	updatedSub, err := stripesubscription.Update(existing.StripeSubscriptionID, updateParams)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("update stripe subscription: %w", err)
+	}
+
+	// Extract prorated amount from the invoice created by the upgrade.
+	var proratedAmount *int64
+	if updatedSub.LatestInvoice != nil {
+		amount := updatedSub.LatestInvoice.Total
+		proratedAmount = &amount
+	}
+
+	// Extract new period end from subscription items.
+	var periodEnd *time.Time
+	if updatedSub.Items != nil {
+		for _, item := range updatedSub.Items.Data {
+			if item.CurrentPeriodEnd != 0 {
+				t := time.Unix(item.CurrentPeriodEnd, 0)
+				periodEnd = &t
+			}
+			break
+		}
+	}
+
+	if err := db.UpdateSubscriptionPlan(ctx, existing.StripeSubscriptionID, planID, billingPeriod, periodEnd); err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("update subscription in DB: %w", err)
+	}
+
+	var periodEndStr string
+	if periodEnd != nil {
+		periodEndStr = periodEnd.UTC().Format(time.RFC3339)
+	}
+
+	return ChangePlanResponse{
+		PlanID:           planID,
+		BillingPeriod:    billingPeriod,
+		Status:           "active",
+		CurrentPeriodEnd: periodEndStr,
+		ProratedAmount:   proratedAmount,
+	}, nil
+}
+
+// changePlanDowngrade schedules a plan downgrade at the end of the current billing period via a Stripe SubscriptionSchedule.
+func changePlanDowngrade(ctx context.Context, cfg Config, db *SupabaseClient, existing *Subscription, planID, billingPeriod, newPriceID string) (ChangePlanResponse, error) {
+	if existing.CurrentPeriodEnd == nil {
+		return ChangePlanResponse{}, fmt.Errorf("subscription has no current_period_end")
+	}
+
+	// Resolve the existing plan's price ID for phase 1 of the schedule.
+	existingPriceID, _, err := resolvePriceAndMode(cfg, existing.PlanID, existing.BillingPeriod)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("resolve existing price: %w", err)
+	}
+
+	periodEndUnix := existing.CurrentPeriodEnd.Unix()
+	scheduleParams := &stripe.SubscriptionScheduleParams{
+		FromSubscription: stripe.String(existing.StripeSubscriptionID),
+		EndBehavior:      stripe.String("release"),
+		Phases: []*stripe.SubscriptionSchedulePhaseParams{
+			{
+				// Phase 1: retain current plan for remaining billing period.
+				Items: []*stripe.SubscriptionSchedulePhaseItemParams{
+					{Price: stripe.String(existingPriceID), Quantity: stripe.Int64(1)},
+				},
+				EndDate: &periodEndUnix,
+			},
+			{
+				// Phase 2: switch to new plan at period end, no proration.
+				Items: []*stripe.SubscriptionSchedulePhaseItemParams{
+					{Price: stripe.String(newPriceID), Quantity: stripe.Int64(1)},
+				},
+				ProrationBehavior: stripe.String("none"),
+			},
+		},
+	}
+
+	if _, err := stripesubschedule.New(scheduleParams); err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("create stripe subscription schedule: %w", err)
+	}
+
+	// DB update for downgrade is handled by the webhook when the schedule executes.
+	scheduledDate := existing.CurrentPeriodEnd.UTC().Format(time.RFC3339)
+
+	return ChangePlanResponse{
+		PlanID:              planID,
+		BillingPeriod:       billingPeriod,
+		Status:              "active",
+		CurrentPeriodEnd:    scheduledDate,
+		ScheduledChangeDate: &scheduledDate,
+	}, nil
+}
+
+// HandleCancelSubscription handles POST /api/billing/cancel.
+// It sets cancel_at_period_end on the Stripe subscription and marks the DB status as "cancelling".
+func HandleCancelSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		existing, err := db.GetSubscriptionByUserID(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: cancel: failed to get subscription", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve subscription")
+			return
+		}
+
+		if existing == nil || (existing.Status != "active" && existing.Status != "trialing" && existing.Status != "cancelling") {
+			WriteError(w, http.StatusBadRequest, ErrNoActiveSubscription, "no active subscription found")
+			return
+		}
+		if existing.Status == "cancelling" {
+			WriteError(w, http.StatusBadRequest, ErrAlreadyCancelled, "subscription is already scheduled for cancellation")
+			return
+		}
+		if existing.StripeSubscriptionID == "" {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "subscription has no Stripe ID")
+			return
+		}
+
+		if cfg.StripeSecretKey == "" {
+			WriteError(w, http.StatusServiceUnavailable, ErrBillingConfigError, "billing is not configured")
+			return
+		}
+		stripe.Key = cfg.StripeSecretKey
+
+		params := &stripe.SubscriptionParams{
+			CancelAtPeriodEnd: stripe.Bool(true),
+		}
+		updatedSub, err := stripesubscription.Update(existing.StripeSubscriptionID, params)
+		if err != nil {
+			slog.Error("billing: cancel: stripe update failed", "userID", userID, "subID", existing.StripeSubscriptionID, "error", err)
+			WriteError(w, http.StatusBadGateway, ErrBillingStripeError, "cancellation could not be processed")
+			return
+		}
+
+		// Extract current_period_end from updated subscription items.
+		var periodEnd *time.Time
+		if updatedSub.Items != nil {
+			for _, item := range updatedSub.Items.Data {
+				if item.CurrentPeriodEnd != 0 {
+					t := time.Unix(item.CurrentPeriodEnd, 0)
+					periodEnd = &t
+				}
+				break
+			}
+		}
+		if periodEnd == nil {
+			periodEnd = existing.CurrentPeriodEnd
+		}
+
+		if err := db.UpdateSubscription(r.Context(), existing.StripeSubscriptionID, "cancelling", "", nil, nil); err != nil {
+			slog.Error("billing: cancel: failed to update subscription status", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to update subscription status")
+			return
+		}
+
+		var periodEndStr string
+		if periodEnd != nil {
+			periodEndStr = periodEnd.UTC().Format(time.RFC3339)
+		}
+
+		slog.Info("billing: subscription cancelled at period end", "userID", userID, "subID", existing.StripeSubscriptionID)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(CancelResponse{CurrentPeriodEnd: periodEndStr})
 	}
 }
 

@@ -21,8 +21,8 @@ This plan implements the subscription management feature that extends the `/pric
     - For any HTTP response with status ≥ 300: if body is valid JSON with `message` field, throw Error with that message; otherwise throw Error with status text
     - **Validates: Requirements 12.3, 12.4**
 
-- [ ] 2. Implement backend change-plan and cancel endpoints
-  - [ ] 2.1 Add HandleChangePlan handler in billing_handlers.go
+- [x] 2. Implement backend change-plan and cancel endpoints
+  - [x] 2.1 Add HandleChangePlan handler in billing_handlers.go
     - Add `ChangePlanRequest`, `ChangePlanResponse`, `CancelResponse` structs
     - Implement `HandleChangePlan(cfg Config, db *SupabaseClient) http.HandlerFunc`
     - Validate JWT auth, validate request body (plan_id ∈ {pro, proplus}, billing_period ∈ {monthly, yearly})
@@ -32,14 +32,14 @@ This plan implements the subscription management feature that extends the `/pric
     - Downgrade: Stripe SubscriptionSchedule at period end, return `scheduled_change_date`
     - Update DB, return 200 with response
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7_
-  - [ ] 2.2 Add HandleCancelSubscription handler in billing_handlers.go
+  - [x] 2.2 Add HandleCancelSubscription handler in billing_handlers.go
     - Implement `HandleCancelSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc`
     - Validate JWT auth, fetch subscription, check no sub → 400, already cancelled → 400
     - Call Stripe `CancelAtPeriodEnd: true`
     - Update DB status to "cancelling"
     - Return 200 with `current_period_end`
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
-  - [ ] 2.3 Register new routes in router.go
+  - [x] 2.3 Register new routes in router.go
     - Add `POST /api/billing/change-plan` → `rateLimited(HandleChangePlan(cfg, db))`
     - Add `POST /api/billing/cancel` → `rateLimited(HandleCancelSubscription(cfg, db))`
     - _Requirements: 8.1, 9.1_

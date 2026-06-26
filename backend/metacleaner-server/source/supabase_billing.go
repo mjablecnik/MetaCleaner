@@ -122,6 +122,20 @@ func (c *SupabaseClient) CreateSubscription(ctx context.Context, sub *Subscripti
 	return c.doJSON(ctx, http.MethodPost, c.restURL("subscriptions"), rec, &rows)
 }
 
+// UpdateSubscriptionPlan patches the plan_id, billing_period, and optionally current_period_end
+// of an existing subscription by its Stripe subscription ID. Used after a plan change.
+func (c *SupabaseClient) UpdateSubscriptionPlan(ctx context.Context, stripeSubID, planID, billingPeriod string, periodEnd *time.Time) error {
+	patch := map[string]interface{}{
+		"plan_id":        planID,
+		"billing_period": billingPeriod,
+	}
+	if periodEnd != nil {
+		patch["current_period_end"] = periodEnd
+	}
+	url := c.restURL("subscriptions?stripe_subscription_id=eq." + stripeSubID)
+	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
+}
+
 // UpdateSubscription patches an existing subscription by its Stripe subscription ID.
 func (c *SupabaseClient) UpdateSubscription(ctx context.Context, stripeSubID string, status, planID string, periodStart, periodEnd *time.Time) error {
 	patch := map[string]interface{}{

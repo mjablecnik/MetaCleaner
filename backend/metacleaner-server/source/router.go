@@ -58,6 +58,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/billing/webhook", HandleStripeWebhook(cfg, db))
 	mux.Handle("GET /api/billing/subscription", HandleGetSubscription(db))
 	mux.Handle("GET /api/billing/credits", HandleGetCredits(db))
+	mux.Handle("POST /api/billing/change-plan", rateLimited(HandleChangePlan(cfg, db)))
+	mux.Handle("POST /api/billing/cancel", rateLimited(HandleCancelSubscription(cfg, db)))
 
 	// --- API Key routes ---
 	mux.Handle("POST /api/keys", HandleCreateAPIKey(db))
