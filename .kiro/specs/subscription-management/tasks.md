@@ -129,8 +129,8 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 7. Create `CancellingView` wrapper component
-  - [ ] 7.1 Create `CancellingView.svelte` orchestrating all cancelling sections
+- [x] 7. Create `CancellingView` wrapper component
+  - [x] 7.1 Create `CancellingView.svelte` orchestrating all cancelling sections
     - Create `frontend/metacleaner-app/src/lib/shared/sections/CancellingView.svelte`
     - Props: subscription data, billing store values, locale
     - Compose: CancellationBanner, page header with orange crown + badge, two-column grid
