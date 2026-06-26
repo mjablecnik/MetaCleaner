@@ -6,12 +6,12 @@ This plan implements the subscription management feature that extends the `/pric
 
 ## Tasks
 
-- [ ] 1. Add frontend types and billing client methods
-  - [ ] 1.1 Add ChangePlanResponse and CancelResponse types to billing.ts
+- [x] 1. Add frontend types and billing client methods
+  - [x] 1.1 Add ChangePlanResponse and CancelResponse types to billing.ts
     - Add `ChangePlanResponse` interface with `plan_id`, `billing_period`, `status`, `current_period_end`, optional `prorated_amount`, optional `scheduled_change_date`
     - Add `CancelResponse` interface with `current_period_end`
     - _Requirements: 12.1, 12.2_
-  - [ ] 1.2 Extend billingClient.ts with changePlan() and cancelSubscription() methods
+  - [x] 1.2 Extend billingClient.ts with changePlan() and cancelSubscription() methods
     - Add `changePlan(planId: string, billingPeriod: 'monthly' | 'yearly'): Promise<ChangePlanResponse>` method
     - Add `cancelSubscription(): Promise<CancelResponse>` method
     - Both include Bearer token in Authorization header, POST to respective endpoints, parse error responses per design

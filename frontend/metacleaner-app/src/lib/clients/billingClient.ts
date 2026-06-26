@@ -1,6 +1,6 @@
 import { buildApiUrl } from './api-config.js';
 import { authStore } from '$lib/auth/auth.svelte.js';
-import type { CheckoutResponse, SubscriptionStatus } from '$lib/types/billing.js';
+import type { CancelResponse, ChangePlanResponse, CheckoutResponse, SubscriptionStatus } from '$lib/types/billing.js';
 
 export const billingClient = {
 	async createCheckoutSession(
@@ -28,5 +28,36 @@ export const billingClient = {
 		});
 		if (!res.ok) throw new Error(await res.text());
 		return res.json() as Promise<SubscriptionStatus>;
+	},
+
+	async changePlan(planId: string, billingPeriod: 'monthly' | 'yearly'): Promise<ChangePlanResponse> {
+		const res = await fetch(buildApiUrl('/api/billing/change-plan'), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authStore.accessToken}`
+			},
+			body: JSON.stringify({ plan_id: planId, billing_period: billingPeriod })
+		});
+		if (!res.ok) {
+			const body = await res.json().catch(() => ({ message: res.statusText }));
+			throw new Error((body as { message?: string }).message || res.statusText);
+		}
+		return res.json() as Promise<ChangePlanResponse>;
+	},
+
+	async cancelSubscription(): Promise<CancelResponse> {
+		const res = await fetch(buildApiUrl('/api/billing/cancel'), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authStore.accessToken}`
+			}
+		});
+		if (!res.ok) {
+			const body = await res.json().catch(() => ({ message: res.statusText }));
+			throw new Error((body as { message?: string }).message || res.statusText);
+		}
+		return res.json() as Promise<CancelResponse>;
 	}
 };

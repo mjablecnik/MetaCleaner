@@ -12,3 +12,16 @@ export interface CheckoutResponse {
 	url: string;
 	session_id: string;
 }
+
+export interface ChangePlanResponse {
+	plan_id: string;
+	billing_period: 'monthly' | 'yearly';
+	status: string;
+	current_period_end: string;
+	prorated_amount?: number;
+	scheduled_change_date?: string;
+}
+
+export interface CancelResponse {
+	current_period_end: string;
+}
