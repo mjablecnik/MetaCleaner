@@ -61,22 +61,22 @@ This plan implements the subscription management feature that extends the `/pric
 - [x] 3. Checkpoint - Ensure backend compiles and tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Create shared utility functions and plan hierarchy
-  - [ ] 4.1 Create plan hierarchy utility and formatting helpers
+- [x] 4. Create shared utility functions and plan hierarchy
+  - [x] 4.1 Create plan hierarchy utility and formatting helpers
     - Add `PLAN_HIERARCHY` constant (`{ free: 0, pro: 1, proplus: 2 }`) in a shared utils file (e.g. `src/lib/shared/utils/planHierarchy.ts`)
     - Add `isUpgrade(current, target)` and `isDowngrade(current, target)` helper functions
     - Add `formatCurrency(amount: number, locale: 'en' | 'cs'): string` utility
     - Add `formatDate(date: Date | string, locale: 'en' | 'cs'): string` utility
     - _Requirements: 10.2, 10.3_
-  - [ ]* 4.2 Write property tests for credit usage bar computation (Property 2)
+  - [x]* 4.2 Write property tests for credit usage bar computation (Property 2)
     - **Property 2: Credit Usage Bar Percentage Computation**
     - For any non-negative `used` and `allowance`: width = `Math.min(used / allowance, 1) * 100` when `allowance > 0`, 0 when `allowance === 0`, always in [0, 100]
     - **Validates: Requirements 2.2**
-  - [ ]* 4.3 Write property tests for currency formatting (Property 3)
+  - [x]* 4.3 Write property tests for currency formatting (Property 3)
     - **Property 3: Currency Formatting by Locale**
     - For any numeric amount and locale ∈ {en, cs}: English places € before amount with period decimal, Czech places amount before € with comma decimal
     - **Validates: Requirements 10.2**
-  - [ ]* 4.4 Write property tests for date formatting (Property 4)
+  - [x]* 4.4 Write property tests for date formatting (Property 4)
     - **Property 4: Date Formatting by Locale**
     - For any valid Date and locale ∈ {en, cs}: Czech uses DD.MM.YYYY with dots, English uses MM/DD/YYYY with slashes
     - **Validates: Requirements 10.3**
