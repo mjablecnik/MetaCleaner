@@ -38,11 +38,11 @@ Copy `.env.example` to `.env` before running locally:
 cp .env.example .env
 ```
 
-| Variable          | Required | Description                                           |
-| ----------------- | -------- | ----------------------------------------------------- |
-| `PUBLIC_APP_URL`  | Yes      | URL of the MetaCleaner web app (e.g. `https://app.metacleaner.com`) |
-| `VITE_SUPABASE_URL` | For contact form | Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | For contact form | Supabase anonymous key |
+| Variable                 | Required         | Description                                                         |
+| ------------------------ | ---------------- | ------------------------------------------------------------------- |
+| `PUBLIC_APP_URL`         | Yes              | URL of the MetaCleaner web app (e.g. `https://app.metacleaner.com`) |
+| `VITE_SUPABASE_URL`      | For contact form | Supabase project URL                                                |
+| `VITE_SUPABASE_ANON_KEY` | For contact form | Supabase anonymous key                                              |
 
 `PUBLIC_APP_URL` is baked into the static build at compile time — the build will fail without it. The `.env.example` provides a default value (`https://app.metacleaner.com`) suitable for local development.
 
