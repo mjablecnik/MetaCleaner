@@ -269,11 +269,9 @@
 		<p class="text-sm text-text-muted">
 			{tx('subscription.cancel.modal.body', { date: formattedPeriodEnd() })}
 		</p>
-		{#if creditsRemaining > 0}
-			<p class="text-sm text-yellow-400">
-				{tx('subscription.cancel.modal.creditsWarning', { count: String(creditsRemaining) })}
-			</p>
-		{/if}
+		<p class="text-sm text-yellow-400">
+			{tx('subscription.cancel.modal.creditsWarning')}
+		</p>
 	</div>
 {/snippet}
 

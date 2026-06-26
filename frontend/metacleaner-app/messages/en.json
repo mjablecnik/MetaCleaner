@@ -875,8 +875,8 @@
 	"subscription.downgrade.modal.title": "Confirm Downgrade",
 	"subscription.downgrade.modal.effectiveDate": "The downgrade takes effect at the end of your billing period. You retain full access until then.",
 	"subscription.cancel.modal.title": "Cancel Subscription?",
-	"subscription.cancel.modal.body": "You'll be moved to the free plan (3 photos/month, no reports) after your current period ends on {date}.",
-	"subscription.cancel.modal.creditsWarning": "{count} remaining credits will be forfeited.",
+	"subscription.cancel.modal.body": "Your subscription will remain active until {date}. After that, you'll be moved to the free plan (3 photos/month, no reports).",
+	"subscription.cancel.modal.creditsWarning": "Subscription credits will be removed. Only credits you purchased separately will remain.",
 	"subscription.cancel.modal.confirmButton": "Yes, cancel subscription",
 	"subscription.cancel.modal.keepButton": "Keep my plan"
 }

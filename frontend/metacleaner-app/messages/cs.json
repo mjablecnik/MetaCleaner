@@ -875,8 +875,8 @@
 	"subscription.downgrade.modal.title": "Potvrdit downgrade",
 	"subscription.downgrade.modal.effectiveDate": "Downgrade proběhne na konci fakturačního období. Do té doby máte plný přístup.",
 	"subscription.cancel.modal.title": "Zrušit předplatné?",
-	"subscription.cancel.modal.body": "Po skončení aktuálního období dne {date} přejdete na bezplatný plán (3 fotky/měsíc, bez reportů).",
-	"subscription.cancel.modal.creditsWarning": "{count} zbývajících kreditů bude ztraceno.",
+	"subscription.cancel.modal.body": "Vaše předplatné zůstane aktivní do {date}. Po tomto datu přejdete na bezplatný plán (3 fotky/měsíc, bez reportů).",
+	"subscription.cancel.modal.creditsWarning": "Kredity v rámci předplatného budou odstraněny. Zůstanou pouze kredity, které jste si zakoupili samostatně.",
 	"subscription.cancel.modal.confirmButton": "Ano, zrušit předplatné",
 	"subscription.cancel.modal.keepButton": "Ponechat plán"
 }

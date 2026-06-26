@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { tx } from '$lib/shared/utils/i18n';
+	import Button from '$lib/shared/elements/Button.svelte';
 
 	interface Props {
 		title: string;
@@ -26,23 +27,15 @@
 		onCancel
 	}: Props = $props();
 
-	const confirmButtonClass = $derived(() => {
-		const base =
-			'w-full py-3.5 rounded-xl text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50';
-		if (confirmStyle === 'danger') {
-			return `${base} bg-brand-red text-white hover:bg-red-600`;
-		}
-		if (confirmStyle === 'secondary') {
-			return `${base} border border-gray-700 text-white hover:bg-navy-lighter`;
-		}
-		return `${base} bg-brand-orange text-white hover:bg-orange-600`;
+	const confirmVariant = $derived((): 'primary' | 'danger' | 'secondary' => {
+		if (confirmStyle === 'danger') return 'danger';
+		if (confirmStyle === 'secondary') return 'secondary';
+		return 'primary';
 	});
 
-	const cancelButtonClass = $derived(() => {
-		if (confirmStyle === 'danger') {
-			return 'w-full py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-blue-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50';
-		}
-		return 'w-full py-3 rounded-xl text-text-muted text-sm font-medium hover:text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50';
+	const cancelVariant = $derived((): 'secondary' | 'ghost' => {
+		if (confirmStyle === 'danger') return 'secondary';
+		return 'ghost';
 	});
 
 	function handleBackdropClick(e: MouseEvent) {
@@ -90,17 +83,19 @@
 			</div>
 		{/if}
 
-		<button onclick={onConfirm} disabled={isLoading} class={confirmButtonClass()}>
-			{#if isLoading}
-				<i class="fa-solid fa-spinner fa-spin mr-2"></i>
-				{tx('subscription.modal.loading')}
-			{:else}
-				{confirmLabel}
-			{/if}
-		</button>
-		<button onclick={onCancel} disabled={isLoading} class={cancelButtonClass()}>
-			{cancelLabel}
-		</button>
+		<div class="flex flex-col gap-2">
+			<Button variant={confirmVariant()} size="lg" fullWidth disabled={isLoading} onclick={onConfirm}>
+				{#if isLoading}
+					<i class="fa-solid fa-spinner fa-spin"></i>
+					{tx('subscription.modal.loading')}
+				{:else}
+					{confirmLabel}
+				{/if}
+			</Button>
+			<Button variant={cancelVariant()} size="lg" fullWidth disabled={isLoading} onclick={onCancel}>
+				{cancelLabel}
+			</Button>
+		</div>
 	</div>
 </div>
 
@@ -142,16 +137,18 @@
 			</div>
 		{/if}
 
-		<button onclick={onConfirm} disabled={isLoading} class={confirmButtonClass()}>
-			{#if isLoading}
-				<i class="fa-solid fa-spinner fa-spin mr-2"></i>
-				{tx('subscription.modal.loading')}
-			{:else}
-				{confirmLabel}
-			{/if}
-		</button>
-		<button onclick={onCancel} disabled={isLoading} class={cancelButtonClass()}>
-			{cancelLabel}
-		</button>
+		<div class="flex flex-col gap-2">
+			<Button variant={confirmVariant()} size="lg" fullWidth disabled={isLoading} onclick={onConfirm}>
+				{#if isLoading}
+					<i class="fa-solid fa-spinner fa-spin"></i>
+					{tx('subscription.modal.loading')}
+				{:else}
+					{confirmLabel}
+				{/if}
+			</Button>
+			<Button variant={cancelVariant()} size="lg" fullWidth disabled={isLoading} onclick={onCancel}>
+				{cancelLabel}
+			</Button>
+		</div>
 	</div>
 </div>
