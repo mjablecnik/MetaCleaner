@@ -147,8 +147,8 @@ This plan implements the subscription management feature that extends the `/pric
     - For any billing store state: Cancel Section visible iff planStatus ∈ {active, trialing} AND planId ∈ {pro, proplus}. Not visible when status is free/cancelled or planId is free
     - **Validates: Requirements 5.1, 5.9**
 
-- [ ] 8. Add i18n translation keys
-  - [ ] 8.1 Add subscription management i18n keys to messages/en.json and messages/cs.json
+- [x] 8. Add i18n translation keys
+  - [x] 8.1 Add subscription management i18n keys to messages/en.json and messages/cs.json
     - Add keys for: page header, current plan card labels, upgrade card labels, downgrade card labels, cancel section warnings, usage stats labels, modal titles/bodies/buttons, error messages, date/currency formatting hints
     - Ensure plan names (Free, Pro, Pro+) remain untranslated brand identifiers in both locales
     - _Requirements: 10.1, 10.4, 10.5_
