@@ -590,7 +590,7 @@ func HandleCancelSubscription(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			periodEnd = existing.CurrentPeriodEnd
 		}
 
-		if err := db.UpdateSubscription(r.Context(), existing.StripeSubscriptionID, "cancelling", "", nil, nil); err != nil {
+		if err := db.UpdateSubscription(r.Context(), existing.StripeSubscriptionID, "cancelling", "", nil, periodEnd); err != nil {
 			slog.Error("billing: cancel: failed to update subscription status", "userID", userID, "error", err)
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to update subscription status")
 			return

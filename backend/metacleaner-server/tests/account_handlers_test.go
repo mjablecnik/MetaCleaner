@@ -93,6 +93,33 @@ func TestHandleAccount_ActiveSubscription_Returns200WithPlan(t *testing.T) {
 	}
 }
 
+func TestHandleAccount_CancellingSubscription_ReturnsPlan(t *testing.T) {
+	cfg := src.Config{RateLimitRPM: 10}
+	srv := newMockSupabaseAccount(t, "cancelling", "pro", 80, 0, false)
+	defer srv.Close()
+	cfg.SupabaseURL = srv.URL
+	db := src.NewSupabaseClient(cfg)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/account", nil)
+	req = req.WithContext(src.ContextWithUserID(req.Context(), "test-user"))
+	rr := httptest.NewRecorder()
+	src.HandleAccount(cfg, db)(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode error: %v", err)
+	}
+	if resp["plan"] != "pro" {
+		t.Errorf("expected plan 'pro' for cancelling subscription, got %v", resp["plan"])
+	}
+	if resp["credits_remaining"] != float64(80) {
+		t.Errorf("expected credits_remaining 80, got %v", resp["credits_remaining"])
+	}
+}
+
 func TestHandleAccount_NoSubscription_ReturnsFree(t *testing.T) {
 	cfg := src.Config{RateLimitRPM: 5}
 	srv := newMockSupabaseAccount(t, "", "", 0, 0, false)

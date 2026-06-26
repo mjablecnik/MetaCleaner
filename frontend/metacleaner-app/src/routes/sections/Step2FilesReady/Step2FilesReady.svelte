@@ -32,7 +32,7 @@
 		monthlyAllowance={billingStore.monthlyAllowance}
 		planId={billingStore.planId}
 		planStatus={billingStore.planStatus}
-		isPaidPlan={billingStore.isPaidPlan}
+		isPaidPlan={billingStore.isPaidPlan || billingStore.isCancellingPlan}
 	/>
 </div>
 

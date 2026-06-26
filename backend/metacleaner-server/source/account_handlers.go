@@ -194,7 +194,7 @@ func HandleAccount(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve account information")
 			return
 		}
-		if sub != nil && sub.Status == "active" {
+		if sub != nil && (sub.Status == "active" || sub.Status == "trialing" || sub.Status == "cancelling") {
 			plan = sub.PlanID
 		}
 
