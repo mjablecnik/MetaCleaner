@@ -72,7 +72,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - These are required by the design mockups and do not exist in the current theme
     - _Requirements: 4.1, 5.2_
 
-  - [ ] 6.1 Create `CancellationBanner.svelte`
+  - [x] 6.1 Create `CancellationBanner.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/CancellationBanner.svelte`
     - Props: `periodEndDate: string`, `onReactivate: () => void`
     - Orange border, stripe-bg background, clock icon, "Subscription was cancelled" title, access end date
