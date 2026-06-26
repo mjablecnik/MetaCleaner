@@ -44,9 +44,32 @@ const PROPLUS_STYLE: PlanStyle = {
 	label: 'Pro+'
 };
 
+const PRO_CANCELLING_STYLE: PlanStyle = {
+	dotColor: 'bg-orange-400',
+	glowColor: 'shadow-orange-400/30',
+	borderColor: 'border-orange-400/60',
+	bgGradient: 'from-orange-950/40 to-navy-dark',
+	textColor: 'text-orange-300',
+	icon: 'star',
+	label: 'Pro'
+};
+
+const PROPLUS_CANCELLING_STYLE: PlanStyle = {
+	dotColor: 'bg-orange-400',
+	glowColor: 'shadow-orange-400/30',
+	borderColor: 'border-orange-400/60',
+	bgGradient: 'from-orange-950/40 to-navy-dark',
+	textColor: 'text-orange-300',
+	icon: 'star',
+	label: 'Pro+'
+};
+
 export function getPlanStyle(planId: string | null, status: string | null): PlanStyle {
 	if (!planId || planId === 'free' || status === 'cancelled') {
 		return FREE_STYLE;
+	}
+	if (status === 'cancelling') {
+		return planId === 'proplus' ? PROPLUS_CANCELLING_STYLE : PRO_CANCELLING_STYLE;
 	}
 	if (planId === 'pro' && (status === 'active' || status === 'trialing')) {
 		return PRO_STYLE;

@@ -171,7 +171,9 @@
 					</div>
 				</div>
 				<div class="rounded-xl bg-navy-lighter p-3 text-center">
-					<div class="text-sm font-black text-brand-red">{formattedDate()}</div>
+					<div class="flex h-[32px] items-center justify-center">
+						<div class="text-lg font-black text-brand-red">{formattedDate()}</div>
+					</div>
 					<div class="mt-0.5 text-xs text-text-muted">
 						{tx('subscription.cancelling.usageStats.expiry')}
 					</div>
@@ -198,7 +200,9 @@
 					</div>
 				</div>
 				<div class="rounded-xl bg-navy-lighter p-2.5 text-center">
-					<div class="text-xs leading-tight font-black text-brand-red">{formattedDate()}</div>
+					<div class="flex h-[28px] items-center justify-center">
+						<div class="text-sm font-black text-brand-red">{formattedDate()}</div>
+					</div>
 					<div class="mt-0.5 text-xs text-text-muted">
 						{tx('subscription.cancelling.usageStats.expiryMobile')}
 					</div>

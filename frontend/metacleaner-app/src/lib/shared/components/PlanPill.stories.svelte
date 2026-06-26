@@ -34,3 +34,11 @@
 <Story name="Cancelled (shows Free)">
 	<PlanPill planId="pro" planStatus="cancelled" />
 </Story>
+
+<Story name="Pro (cancelling)" exportName="ProCancelling">
+	<PlanPill planId="pro" planStatus="cancelling" />
+</Story>
+
+<Story name="Pro+ (cancelling)" exportName="ProPlusCancelling">
+	<PlanPill planId="proplus" planStatus="cancelling" />
+</Story>
