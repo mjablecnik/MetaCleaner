@@ -128,7 +128,7 @@ This plan implements the subscription management feature that extends the `/pric
 - [x] 6. Checkpoint - Ensure components render correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Integrate subscription management into pricing page
+- [x] 7. Integrate subscription management into pricing page
   - [x] 7.1 Update /pricing +page.svelte with conditional rendering
     - Import billingStore, check `isPaidPlan` to decide which view to render
     - If `isPaidPlan`: render Subscription Management UI with responsive grid (`lg:grid-cols-5`)
@@ -159,7 +159,7 @@ This plan implements the subscription management feature that extends the `/pric
     - If yes, update the Structurizr DSL to reflect new relationships or components (e.g., new Stripe interaction flows from the backend, new component-level views if applicable)
     - Follow the conventions in the `docs-architecture.md` steering file (short descriptions, no overflow, deduplication)
 
-- [ ] 10. Final checkpoint - Ensure all tests pass and both frontend and backend compile
+- [x] 10. Final checkpoint - Ensure all tests pass and both frontend and backend compile
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
