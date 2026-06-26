@@ -115,35 +115,21 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
             backendApi = container "Backend API" "REST/WebSocket server: cleaning pipeline, auth, billing, reports, PDF generation." "Go 1.23, gorilla/websocket" {
                 tags "Server"
 
-                httpRouter = component "HTTP Router" "Request dispatcher with CORS, security headers, request ID." "Go, net/http"
+                requestPipeline = component "Request Pipeline" "Dispatches requests, validates tokens, enforces rate limits." "Go, net/http, x/time/rate"
 
-                authMiddleware = component "Auth Middleware" "Validates JWT and API key tokens on protected routes." "Go"
-
-                rateLimiter = component "Rate Limiter" "Per-IP and per-key token bucket rate limiting." "Go, x/time/rate"
-
-                uploadHandler = component "Upload Handler" "Accepts multipart uploads, saves to temp storage." "Go"
-
-                jobHandler = component "Job Handler" "Manages cleaning jobs, triggers pipeline, serves downloads." "Go"
-
-                authHandler = component "Auth Handler" "Registration, login, OAuth, magic link, password reset." "Go"
-
-                billingHandler = component "Billing Handler" "Stripe checkout sessions, webhook processing." "Go, stripe-go"
-
-                apiKeyHandler = component "API Key Handler" "CRUD for user API keys." "Go"
-
-                accountHandler = component "Account Handler" "Returns combined profile + billing data." "Go"
-
-                wellKnownHandler = component "Well-Known Handler" "Android App Links and iOS Universal Links." "Go"
+                cleaningPipeline = component "Cleaning Pipeline" "Upload, job orchestration, ExifTool/FFmpeg execution, file downloads." "Go, os/exec"
 
                 websocketHub = component "WebSocket Hub" "Per-job real-time progress broadcasting." "Go, gorilla/websocket"
 
-                cleaningPipeline = component "Cleaning Pipeline" "Executes ExifTool/FFmpeg, emits progress events." "Go, os/exec"
+                authService = component "Auth Service" "User lifecycle: login, OAuth, magic link, profile, account." "Go"
+
+                billingService = component "Billing Service" "Stripe checkout, webhooks, subscriptions, credits." "Go, stripe-go"
+
+                apiKeyService = component "API Key Service" "API key CRUD and App Links endpoints." "Go"
 
                 supabaseClient = component "Supabase Client" "HTTP client for PostgREST, Auth, and Storage APIs." "Go, net/http"
 
                 pdfGenerator = component "PDF Generator" "Creates branded PDF reports with QR codes." "Go, gopdf"
-
-                cleanupScheduler = component "Cleanup Scheduler" "Deletes expired temp files on interval." "Go"
             }
         }
 
@@ -189,45 +175,29 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         # RELATIONSHIPS — LEVEL 3: Components — Backend API
         # ==========================================================================
 
-        metacleaner.webApp -> metacleaner.backendApi.httpRouter "All requests" "HTTPS"
-        metacleaner.mobileApp -> metacleaner.backendApi.httpRouter "All requests" "HTTPS"
-        metacleaner.cliTool -> metacleaner.backendApi.httpRouter "All requests" "HTTP"
-        stripe -> metacleaner.backendApi.httpRouter "Webhook POST" "HTTPS"
+        metacleaner.webApp -> metacleaner.backendApi.requestPipeline "All requests" "HTTPS"
+        metacleaner.mobileApp -> metacleaner.backendApi.requestPipeline "All requests" "HTTPS"
+        metacleaner.cliTool -> metacleaner.backendApi.requestPipeline "All requests" "HTTP"
+        stripe -> metacleaner.backendApi.requestPipeline "Webhook POST" "HTTPS"
 
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authMiddleware "Validates tokens" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.rateLimiter "Enforces limits" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.uploadHandler "Routes /api/upload" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.jobHandler "Routes /api/jobs/*" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.authHandler "Routes /api/auth/*" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.billingHandler "Routes /api/billing/*" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.apiKeyHandler "Routes /api/keys/*" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.accountHandler "Routes /api/account" "Function call"
-        metacleaner.backendApi.httpRouter -> metacleaner.backendApi.wellKnownHandler "Routes /.well-known/*" "Function call"
-
-        metacleaner.backendApi.authMiddleware -> metacleaner.backendApi.supabaseClient "Verifies JWT" "Function call"
-
-        metacleaner.backendApi.uploadHandler -> metacleaner.backendApi.supabaseClient "Records file metadata" "Function call"
-
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.cleaningPipeline "Starts pipeline" "Function call"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.websocketHub "Forwards progress" "Function call"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.supabaseClient "CRUD job records" "Function call"
-        metacleaner.backendApi.jobHandler -> metacleaner.backendApi.pdfGenerator "Generates report PDF" "Function call"
+        metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.cleaningPipeline "Upload + job requests" "Function call"
+        metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.authService "Auth requests" "Function call"
+        metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.billingService "Billing requests" "Function call"
+        metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.apiKeyService "API key requests" "Function call"
 
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "Emits progress events" "Function call"
+        metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "CRUD jobs + files" "Function call"
+        metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.pdfGenerator "Generates report PDF" "Function call"
         metacleaner.backendApi.cleaningPipeline -> exiftool "Strips image metadata" "Subprocess"
         metacleaner.backendApi.cleaningPipeline -> ffmpeg "Strips video metadata" "Subprocess"
 
-        metacleaner.backendApi.authHandler -> metacleaner.backendApi.supabaseClient "Manages users" "Function call"
-        metacleaner.backendApi.billingHandler -> metacleaner.backendApi.supabaseClient "Updates billing data" "Function call"
-        metacleaner.backendApi.billingHandler -> stripe "Creates sessions" "HTTPS"
-        metacleaner.backendApi.apiKeyHandler -> metacleaner.backendApi.supabaseClient "CRUD API keys" "Function call"
-        metacleaner.backendApi.accountHandler -> metacleaner.backendApi.supabaseClient "Reads profile + billing" "Function call"
-
+        metacleaner.backendApi.authService -> metacleaner.backendApi.supabaseClient "Manages users" "Function call"
+        metacleaner.backendApi.billingService -> metacleaner.backendApi.supabaseClient "Updates billing data" "Function call"
+        metacleaner.backendApi.billingService -> stripe "Creates sessions" "HTTPS"
+        metacleaner.backendApi.apiKeyService -> metacleaner.backendApi.supabaseClient "CRUD API keys" "Function call"
         metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "Uploads PDF" "Function call"
 
         metacleaner.backendApi.supabaseClient -> supabase "All data operations" "HTTPS"
-
-        metacleaner.backendApi.cleanupScheduler -> metacleaner.backendApi.supabaseClient "Queries expired jobs" "Function call"
 
         # ==========================================================================
         # RELATIONSHIPS — LEVEL 3: Components — Web Application
@@ -348,6 +318,29 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         component metacleaner.backendApi "BackendAPIComponents" {
             include *
             autoLayout tb 300 200
+        }
+
+        # ------------------------------------------------------------------
+        # DYNAMIC — Cleaning Job Flow
+        # ------------------------------------------------------------------
+        dynamic metacleaner.backendApi "CleaningJobFlow" "Lifecycle of a cleaning job from upload to PDF report." {
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "1. POST /api/upload (multipart files)"
+            metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.cleaningPipeline "2. Saves files to temp storage"
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "3. POST /api/jobs (file IDs)"
+            metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.cleaningPipeline "4. Creates job, starts pipeline"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "5. Persists job + file records"
+            metacleaner.webApp -> metacleaner.backendApi.websocketHub "6. WebSocket connect for progress"
+            metacleaner.backendApi.cleaningPipeline -> exiftool "7. Strips image metadata"
+            metacleaner.backendApi.cleaningPipeline -> ffmpeg "8. Strips video metadata"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "9. Broadcasts per-file progress"
+            metacleaner.backendApi.websocketHub -> metacleaner.webApp "10. Streams events to client"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "11. Updates job + file results"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.pdfGenerator "12. Generates PDF report"
+            metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "13. Uploads PDF to Storage"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "14. Broadcasts report_ready"
+            metacleaner.webApp -> metacleaner.backendApi.requestPipeline "15. GET /api/files/{id}/download"
+
+            autoLayout tb 300 150
         }
 
         # ------------------------------------------------------------------
