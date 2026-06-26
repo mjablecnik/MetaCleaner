@@ -69,7 +69,7 @@
 >
 	{#if hasError}
 		<div
-			class="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2.5 py-1 text-xs text-yellow-400"
+			class="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2.5 py-1 text-xs text-yellow-400"
 		>
 			<i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
 			{tx('subscription.currentPlan.staleWarning')}
@@ -78,13 +78,13 @@
 
 	{#if isLoading}
 		<!-- Skeleton state -->
-		<div class="space-y-4 animate-pulse">
+		<div class="animate-pulse space-y-4">
 			<div class="h-6 w-1/3 rounded-lg bg-gray-700/60"></div>
 			<div class="h-4 w-1/2 rounded-lg bg-gray-700/40"></div>
 			<div class="h-3 w-full rounded-full bg-gray-700/40"></div>
 			<div class="h-4 w-2/3 rounded-lg bg-gray-700/40"></div>
 			<div class="space-y-2">
-				{#each [1, 2, 3] as _}
+				{#each [1, 2, 3] as _ (_)}
 					<div class="h-3 w-3/4 rounded-lg bg-gray-700/30"></div>
 				{/each}
 			</div>
@@ -93,7 +93,7 @@
 		<!-- Plan name and price -->
 		<div class="mb-4 flex items-start justify-between">
 			<div>
-				<p class="mb-0.5 text-xs font-medium uppercase tracking-wider text-text-muted">
+				<p class="mb-0.5 text-xs font-medium tracking-wider text-text-muted uppercase">
 					{tx('subscription.currentPlan.title')}
 				</p>
 				<h3 class="text-2xl font-black {style.textColor}">{style.label}</h3>
@@ -129,11 +129,11 @@
 		<!-- Features -->
 		{#if features.length > 0}
 			<div class="mb-4">
-				<p class="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+				<p class="mb-2 text-xs font-medium tracking-wider text-text-muted uppercase">
 					{tx('subscription.currentPlan.features')}
 				</p>
 				<ul class="space-y-1.5">
-					{#each features as feature}
+					{#each features as feature (feature)}
 						<li class="flex items-center gap-2 text-sm text-white">
 							<i class="fa-solid fa-check text-[11px] {style.textColor}"></i>
 							{feature}

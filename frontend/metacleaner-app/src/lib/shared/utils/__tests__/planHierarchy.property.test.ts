@@ -1,7 +1,13 @@
 // Feature: subscription-management
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { PLAN_HIERARCHY, isUpgrade, isDowngrade, formatCurrency, formatDate } from '../planHierarchy';
+import {
+	PLAN_HIERARCHY,
+	isUpgrade,
+	isDowngrade,
+	formatCurrency,
+	formatDate
+} from '../planHierarchy';
 
 // Feature: subscription-management, Property 3: Currency Formatting by Locale
 describe('formatCurrency', () => {
@@ -25,7 +31,7 @@ describe('formatCurrency', () => {
 				const result = formatCurrency(amount, 'cs');
 				expect(result).toMatch(/^\d+,\d{2} €$/);
 				expect(result.endsWith(' €')).toBe(true);
-				expect(result).not.toMatch(/^\€/);
+				expect(result).not.toMatch(/^€/);
 			}),
 			{ numRuns: 200 }
 		);

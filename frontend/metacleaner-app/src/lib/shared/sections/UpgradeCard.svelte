@@ -10,8 +10,13 @@
 		onUpgrade: () => void;
 	}
 
-	const { targetPlanId: _targetPlanId, targetPlanName, targetPrice, differentialFeatures, onUpgrade }: Props =
-		$props();
+	const {
+		targetPlanId: _targetPlanId,
+		targetPlanName,
+		targetPrice,
+		differentialFeatures,
+		onUpgrade
+	}: Props = $props();
 
 	function upgradeTitle() {
 		void locale.current;
@@ -19,10 +24,12 @@
 	}
 </script>
 
-<div class="rounded-2xl border border-blue-600/40 bg-gradient-to-br from-blue-950/60 to-navy-card p-5 shadow-card lg:p-6">
+<div
+	class="rounded-2xl border border-blue-600/40 bg-gradient-to-br from-blue-950/60 to-navy-card p-5 shadow-card lg:p-6"
+>
 	<div class="mb-4 flex items-start justify-between">
 		<div>
-			<p class="mb-0.5 text-xs font-medium uppercase tracking-wider text-blue-400/70">
+			<p class="mb-0.5 text-xs font-medium tracking-wider text-blue-400/70 uppercase">
 				{upgradeTitle()}
 			</p>
 			<h3 class="text-xl font-bold text-white">{targetPlanName}</h3>
@@ -32,11 +39,11 @@
 
 	{#if differentialFeatures.length > 0}
 		<div class="mb-5">
-			<p class="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+			<p class="mb-2 text-xs font-medium tracking-wider text-text-muted uppercase">
 				{tx('subscription.upgrade.featuresGained')}
 			</p>
 			<ul class="space-y-1.5">
-				{#each differentialFeatures as feature}
+				{#each differentialFeatures as feature (feature)}
 					<li class="flex items-center gap-2 text-sm text-white">
 						<i class="fa-solid fa-plus text-[11px] text-blue-400"></i>
 						{feature}

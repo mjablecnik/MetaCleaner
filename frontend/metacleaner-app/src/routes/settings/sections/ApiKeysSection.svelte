@@ -18,6 +18,7 @@
 		addKey?: { key: ApiKey } | null;
 	}
 
+	// eslint-disable-next-line no-useless-assignment
 	let { showCreateModal = $bindable(false), addKey = null }: Props = $props();
 
 	let lastAddedKeyId = $state<string | null>(null);
@@ -179,13 +180,15 @@
 								? tx('apiKeys.status.active')
 								: tx('apiKeys.status.revoked')}
 							dot={key.status === 'active'}
-							class="text-[8px]! px-2! py-0.5!"
+							class="px-2! py-0.5! text-[8px]!"
 						/>
 					</div>
 
 					<!-- Key value row + action icons -->
 					<div class="flex items-center gap-2">
-						<div class="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-gray-700 bg-navy-card px-3 py-2">
+						<div
+							class="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-gray-700 bg-navy-card px-3 py-2"
+						>
 							<span class="truncate font-mono text-xs text-text-muted">
 								{getDisplayValue(key)}
 							</span>
@@ -195,7 +198,7 @@
 								aria-label={tx('apiKeys.action.revoke')}
 								disabled={revokingId === key.id}
 								onclick={() => handleRevoke(key)}
-								class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-brand-orange/25 bg-brand-orange/10 text-brand-orange transition-all hover:bg-brand-orange/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
+								class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-brand-orange/25 bg-brand-orange/10 text-brand-orange transition-all hover:bg-brand-orange/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
 							>
 								{#if revokingId === key.id}
 									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
@@ -208,7 +211,7 @@
 								aria-label={tx('apiKeys.action.activate')}
 								disabled={activatingId === key.id}
 								onclick={() => handleActivate(key)}
-								class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-brand-green/25 bg-brand-green/10 text-brand-green transition-all hover:bg-brand-green/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
+								class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-brand-green/25 bg-brand-green/10 text-brand-green transition-all hover:bg-brand-green/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
 							>
 								{#if activatingId === key.id}
 									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
@@ -221,7 +224,7 @@
 							aria-label={tx('apiKeys.action.delete')}
 							disabled={deletingId === key.id}
 							onclick={() => handleDeleteClick(key)}
-							class="flex h-9 w-9 shrink-0 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-brand-red/25 bg-brand-red/10 text-brand-red transition-all hover:bg-brand-red/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
+							class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-brand-red/25 bg-brand-red/10 text-brand-red transition-all hover:bg-brand-red/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
 						>
 							{#if deletingId === key.id}
 								<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
@@ -233,7 +236,8 @@
 
 					<!-- Dates row -->
 					<p class="text-[10px] text-text-muted">
-						{tx('apiKeys.createdAt')}: {formatDate(key.created_at)}{#if key.last_used_at} · {tx('apiKeys.lastUsedAt')}: {formatDate(key.last_used_at)}{/if}
+						{tx('apiKeys.createdAt')}: {formatDate(key.created_at)}{#if key.last_used_at}
+							· {tx('apiKeys.lastUsedAt')}: {formatDate(key.last_used_at)}{/if}
 					</p>
 				</div>
 			{/each}

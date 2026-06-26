@@ -1,6 +1,11 @@
 import { buildApiUrl } from './api-config.js';
 import { authStore } from '$lib/auth/auth.svelte.js';
-import type { CancelResponse, ChangePlanResponse, CheckoutResponse, SubscriptionStatus } from '$lib/types/billing.js';
+import type {
+	CancelResponse,
+	ChangePlanResponse,
+	CheckoutResponse,
+	SubscriptionStatus
+} from '$lib/types/billing.js';
 
 export const billingClient = {
 	async createCheckoutSession(
@@ -30,7 +35,10 @@ export const billingClient = {
 		return res.json() as Promise<SubscriptionStatus>;
 	},
 
-	async changePlan(planId: string, billingPeriod: 'monthly' | 'yearly'): Promise<ChangePlanResponse> {
+	async changePlan(
+		planId: string,
+		billingPeriod: 'monthly' | 'yearly'
+	): Promise<ChangePlanResponse> {
 		const res = await fetch(buildApiUrl('/api/billing/change-plan'), {
 			method: 'POST',
 			headers: {

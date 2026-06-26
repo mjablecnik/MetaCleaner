@@ -248,11 +248,11 @@
 		<p class="text-sm text-text-muted">{tx('subscription.downgrade.modal.effectiveDate')}</p>
 		{#if downgradeFeatures().length > 0}
 			<div>
-				<p class="mb-2 text-xs font-medium uppercase tracking-wider text-text-muted">
+				<p class="mb-2 text-xs font-medium tracking-wider text-text-muted uppercase">
 					{tx('subscription.downgrade.featuresLost')}
 				</p>
 				<ul class="space-y-1.5">
-					{#each downgradeFeatures() as feature}
+					{#each downgradeFeatures() as feature (feature)}
 						<li class="flex items-center gap-2 text-sm text-text-muted">
 							<i class="fa-solid fa-xmark text-[11px] text-red-400"></i>
 							{feature}

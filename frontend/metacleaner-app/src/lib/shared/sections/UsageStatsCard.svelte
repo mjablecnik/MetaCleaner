@@ -30,7 +30,7 @@
 
 <div class="rounded-2xl border border-gray-700/60 bg-navy-card p-5 shadow-card lg:p-6">
 	<div class="mb-4 flex items-center justify-between">
-		<h3 class="text-sm font-semibold uppercase tracking-wider text-text-muted">
+		<h3 class="text-sm font-semibold tracking-wider text-text-muted uppercase">
 			{tx('subscription.usageStats.title')}
 		</h3>
 		{#if hasError}
@@ -42,8 +42,8 @@
 	</div>
 
 	{#if isLoading}
-		<div class="space-y-3 animate-pulse">
-			{#each [1, 2, 3, 4] as _}
+		<div class="animate-pulse space-y-3">
+			{#each [1, 2, 3, 4] as _ (_)}
 				<div class="flex items-center justify-between">
 					<div class="h-3 w-1/2 rounded-lg bg-gray-700/40"></div>
 					<div class="h-3 w-1/4 rounded-lg bg-gray-700/60"></div>

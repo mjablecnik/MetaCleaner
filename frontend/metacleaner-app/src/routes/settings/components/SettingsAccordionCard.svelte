@@ -52,7 +52,7 @@
 
 <div
 	class="fade-in-up overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card {animationDelay ??
-		''} {disabled ? 'opacity-50 pointer-events-none' : ''}"
+		''} {disabled ? 'pointer-events-none opacity-50' : ''}"
 >
 	<!-- Header: clickable on mobile, static on desktop -->
 	<button

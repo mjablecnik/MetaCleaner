@@ -1,599 +1,606 @@
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404 - Page Not Found</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 24px rgba(34,197,94,0.25)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							'glow-red': '0 0 40px rgba(239,68,68,0.12)',
+							card: '0 4px 24px rgba(0,0,0,0.4)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 24px rgba(34,197,94,0.25)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'glow-red': '0 0 40px rgba(239,68,68,0.12)',
-              'card': '0 4px 24px rgba(0,0,0,0.4)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.grid-bg {
+				background-image:
+					linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+				background-size: 48px 48px;
+			}
 
-      .grid-bg
-      {
-        background-image: linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
-        background-size: 48px 48px;
-      }
+			.float-anim {
+				animation: floating 5s ease-in-out infinite;
+			}
 
-      .float-anim
-      {
-        animation: floating 5s ease-in-out infinite;
-      }
+			@keyframes floating {
+				0%,
+				100% {
+					transform: translateY(0px);
+				}
 
-      @keyframes floating
-      {
+				50% {
+					transform: translateY(-12px);
+				}
+			}
 
-        0%,
-        100%
-        {
-          transform: translateY(0px);
-        }
+			.blink {
+				animation: blink 1.4s step-end infinite;
+			}
 
-        50%
-        {
-          transform: translateY(-12px);
-        }
-      }
+			@keyframes blink {
+				0%,
+				100% {
+					opacity: 1;
+				}
 
-      .blink
-      {
-        animation: blink 1.4s step-end infinite;
-      }
+				50% {
+					opacity: 0;
+				}
+			}
 
-      @keyframes blink
-      {
+			.terminal-line {
+				opacity: 0;
+				animation: fadeInLine 0.4s forwards;
+			}
 
-        0%,
-        100%
-        {
-          opacity: 1;
-        }
+			.terminal-line:nth-child(1) {
+				animation-delay: 0.2s;
+			}
 
-        50%
-        {
-          opacity: 0;
-        }
-      }
+			.terminal-line:nth-child(2) {
+				animation-delay: 0.7s;
+			}
 
-      .terminal-line
-      {
-        opacity: 0;
-        animation: fadeInLine 0.4s forwards;
-      }
+			.terminal-line:nth-child(3) {
+				animation-delay: 1.2s;
+			}
 
-      .terminal-line:nth-child(1)
-      {
-        animation-delay: 0.2s;
-      }
+			.terminal-line:nth-child(4) {
+				animation-delay: 1.7s;
+			}
 
-      .terminal-line:nth-child(2)
-      {
-        animation-delay: 0.7s;
-      }
+			.terminal-line:nth-child(5) {
+				animation-delay: 2.2s;
+			}
 
-      .terminal-line:nth-child(3)
-      {
-        animation-delay: 1.2s;
-      }
+			@keyframes fadeInLine {
+				to {
+					opacity: 1;
+				}
+			}
 
-      .terminal-line:nth-child(4)
-      {
-        animation-delay: 1.7s;
-      }
+			.orbit-ring {
+				position: absolute;
+				border-radius: 50%;
+				border: 1px dashed rgba(59, 130, 246, 0.15);
+				animation: spin-slow 18s linear infinite;
+			}
 
-      .terminal-line:nth-child(5)
-      {
-        animation-delay: 2.2s;
-      }
+			.orbit-ring-2 {
+				animation: spin-slow 28s linear infinite reverse;
+				border-color: rgba(239, 68, 68, 0.1);
+			}
 
-      @keyframes fadeInLine
-      {
-        to
-        {
-          opacity: 1;
-        }
-      }
+			@keyframes spin-slow {
+				from {
+					transform: rotate(0deg);
+				}
 
-      .orbit-ring
-      {
-        position: absolute;
-        border-radius: 50%;
-        border: 1px dashed rgba(59, 130, 246, 0.15);
-        animation: spin-slow 18s linear infinite;
-      }
+				to {
+					transform: rotate(360deg);
+				}
+			}
 
-      .orbit-ring-2
-      {
-        animation: spin-slow 28s linear infinite reverse;
-        border-color: rgba(239, 68, 68, 0.1);
-      }
+			.orbit-dot {
+				position: absolute;
+				width: 6px;
+				height: 6px;
+				background: #3b82f6;
+				border-radius: 50%;
+				top: -3px;
+				left: 50%;
+				margin-left: -3px;
+				box-shadow: 0 0 8px #3b82f6;
+			}
 
-      @keyframes spin-slow
-      {
-        from
-        {
-          transform: rotate(0deg);
-        }
+			.orbit-dot-red {
+				background: #ef4444;
+				box-shadow: 0 0 8px #ef4444;
+				top: auto;
+				bottom: -3px;
+			}
 
-        to
-        {
-          transform: rotate(360deg);
-        }
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 160px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      .orbit-dot
-      {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: #3b82f6;
-        border-radius: 50%;
-        top: -3px;
-        left: 50%;
-        margin-left: -3px;
-        box-shadow: 0 0 8px #3b82f6;
-      }
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-      .orbit-dot-red
-      {
-        background: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-        top: auto;
-        bottom: -3px;
-      }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 160px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background 0.15s, color 0.15s;
-      }
+			.lang-option .lang-check {
+				margin-left: auto;
+				color: #3b82f6;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			.number-404 {
+				font-size: clamp(5rem, 16vw, 11rem);
+				font-weight: 900;
+				line-height: 1;
+				letter-spacing: -0.05em;
+				background: linear-gradient(135deg, #ffffff 0%, #94a3b8 60%, #3b82f6 100%);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			.status-dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: #ef4444;
+				box-shadow: 0 0 8px #ef4444;
+				display: inline-block;
+				animation: pulse-dot 1.5s ease-in-out infinite;
+			}
 
-      .lang-option .lang-check
-      {
-        margin-left: auto;
-        color: #3b82f6;
-      }
+			@keyframes pulse-dot {
+				0%,
+				100% {
+					opacity: 1;
+					transform: scale(1);
+				}
 
-      .number-404
-      {
-        font-size: clamp(5rem, 16vw, 11rem);
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.05em;
-        background: linear-gradient(135deg, #ffffff 0%, #94a3b8 60%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
+				50% {
+					opacity: 0.5;
+					transform: scale(0.7);
+				}
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#izkov5 {
+				width: 260px;
+				height: 260px;
+			}
 
-      .status-dot
-      {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-        display: inline-block;
-        animation: pulse-dot 1.5s ease-in-out infinite;
-      }
+			#icnxwp {
+				width: 240px;
+				height: 240px;
+				top: 10px;
+				left: 10px;
+			}
 
-      @keyframes pulse-dot
-      {
+			#i8t12r {
+				width: 190px;
+				height: 190px;
+				top: 35px;
+				left: 35px;
+			}
 
-        0%,
-        100%
-        {
-          opacity: 1;
-          transform: scale(1);
-        }
+			#ievrey {
+				width: 6px;
+				height: 6px;
+			}
+		</style>
+	</head>
 
-        50%
-        {
-          opacity: 0.5;
-          transform: scale(0.7);
-        }
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #izkov5
-      {
-        width: 260px;
-        height: 260px;
-      }
+	<body class="flex min-h-screen flex-col">
+		<!-- Navigation -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404 - Page Not Found</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<nav
+			id="navbar"
+			class="z-50 mx-auto flex w-full max-w-[1100px] items-center justify-between px-6 py-6"
+		>
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-xl"></i>
+				</div>
+				<span class="text-xl font-bold tracking-tight">MetaCleaner<br /></span>
+			</div>
+			<div class="hidden items-center gap-8 text-sm font-medium text-text-muted md:flex">
+				<a href="#" class="transition-colors hover:text-white">How it Works</a
+				><a href="#" class="transition-colors hover:text-white">Features</a
+				><a href="#" class="transition-colors hover:text-white">Pricing</a
+				><a href="#" class="transition-colors hover:text-white">FAQ</a>
+			</div>
+			<div class="flex items-center gap-3">
+				<div class="relative inline-block">
+					<button
+						onclick="toggleLangDropdown()"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+					>
+						<span id="currentLangFlag">🇬🇧</span><span id="currentLangLabel">EN</span
+						><i
+							id="langDropdownChevron"
+							class="fa-solid fa-chevron-down ml-1 text-xs text-text-muted transition-transform"
+						></i>
+					</button>
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div id="opt-en" onclick="setLang('en')" class="lang-option active">
+							<span>🇬🇧</span> English
+							<span id="check-en" class="lang-check"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div id="opt-cs" onclick="setLang('cs')" class="lang-option">
+							<span>🇨🇿</span> Čeština
+							<span id="check-cs" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div id="opt-de" onclick="setLang('de')" class="lang-option">
+							<span>🇩🇪</span> Deutsch
+							<span id="check-de" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+					</div>
+				</div>
+				<button
+					class="hidden rounded-lg px-5 py-2.5 text-sm font-semibold text-text-main transition-colors hover:bg-navy-lighter md:block"
+				>
+					Log In
+				</button>
+			</div>
+		</nav>
+		<!-- Main -->
+		<main
+			id="error-404"
+			class="relative mx-auto grid w-full max-w-[1100px] flex-1 grid-cols-1 items-center gap-12 px-6 py-10 lg:grid-cols-2"
+		>
+			<!-- Grid BG -->
+			<div class="grid-bg pointer-events-none absolute inset-0 rounded-3xl opacity-60"></div>
+			<!-- Glow -->
+			<div
+				class="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-blue/5 blur-[120px]"
+			></div>
+			<!-- LEFT: Text & Actions -->
+			<div id="left-col" class="relative z-10 flex flex-col items-start">
+				<!-- Badge -->
+				<div
+					class="mb-6 inline-flex items-center gap-2 rounded-full border border-brand-red/25 bg-brand-red/10 px-3 py-1.5 text-xs font-bold tracking-widest text-brand-red uppercase"
+				>
+					<span class="status-dot"></span> Error 404 — Page Not Found
+				</div>
+				<!-- 404 Number -->
+				<div class="number-404 mb-4 select-none">404</div>
+				<h2 class="mb-3 text-2xl leading-snug font-bold text-white md:text-3xl">
+					This page doesn't exist
+				</h2>
+				<p class="mb-8 max-w-md text-base leading-relaxed text-text-muted">
+					The URL you entered doesn't match any page. It may have been moved, deleted, or never
+					existed. Your connection remains private and secure.
+				</p>
+				<!-- Action Buttons -->
+				<div class="mb-10 flex flex-wrap gap-3">
+					<a
+						href="/"
+						class="flex items-center gap-2 rounded-lg bg-brand-green px-6 py-3 text-sm font-semibold text-white shadow-glow-green transition-all hover:bg-green-500"
+						><i class="fa-solid fa-house"></i> Back to Home </a
+					><button
+						onclick="history.back()"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800"
+					>
+						<i class="fa-solid fa-arrow-left"></i> Go Back</button
+					><a
+						href="#"
+						class="flex items-center gap-2 rounded-lg border border-gray-700 bg-navy-lighter px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800"
+						><i class="fa-solid fa-headset"></i> Support
+					</a>
+				</div>
+				<!-- Quick Links -->
+				<div>
+					<p class="mb-3 text-xs font-bold tracking-widest text-text-muted uppercase">
+						You might be looking for
+					</p>
+					<div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+						<a
+							href="#"
+							class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-blue/40"
+							><i
+								class="fa-solid fa-cloud-arrow-up text-base text-brand-blue transition-transform group-hover:scale-110"
+							></i
+							><span class="text-xs font-semibold text-white">Try Free</span></a
+						><a
+							href="#"
+							class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-green/40"
+							><i
+								class="fa-solid fa-star text-base text-brand-green transition-transform group-hover:scale-110"
+							></i
+							><span class="text-xs font-semibold text-white">Features</span></a
+						><a
+							href="#"
+							class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-orange/40"
+							><i
+								class="fa-solid fa-tag text-base text-brand-orange transition-transform group-hover:scale-110"
+							></i
+							><span class="text-xs font-semibold text-white">Pricing</span></a
+						><a
+							href="#"
+							class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-blue/40"
+							><i
+								class="fa-solid fa-circle-question text-base text-brand-blue transition-transform group-hover:scale-110"
+							></i
+							><span class="text-xs font-semibold text-white">FAQ</span></a
+						>
+					</div>
+				</div>
+			</div>
+			<!-- RIGHT: Visual Panel -->
+			<div id="right-col" class="relative z-10 flex flex-col items-center justify-center">
+				<!-- Orbit visual -->
+				<div class="float-anim relative mb-8 flex items-center justify-center" id="izkov5">
+					<!-- Rings -->
+					<div class="orbit-ring" id="icnxwp">
+						<div class="orbit-dot"></div>
+					</div>
+					<div class="orbit-ring orbit-ring-2" id="i8t12r">
+						<div class="orbit-dot orbit-dot-red"></div>
+					</div>
+					<!-- Center icon -->
+					<div
+						class="relative z-10 flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border border-gray-700 bg-navy-card shadow-card"
+					>
+						<div class="absolute inset-0 bg-gradient-to-br from-brand-red/10 to-transparent"></div>
+						<i class="fa-solid fa-triangle-exclamation z-10 text-4xl text-brand-red"></i>
+					</div>
+				</div>
+				<!-- Terminal Card -->
+				<div
+					id="terminal-card"
+					class="w-full max-w-md overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card"
+				>
+					<!-- Terminal Header -->
+					<div class="flex items-center gap-2 border-b border-gray-800 bg-navy-lighter px-4 py-3">
+						<div class="h-3 w-3 rounded-full bg-brand-red/70"></div>
+						<div class="h-3 w-3 rounded-full bg-brand-orange/70"></div>
+						<div class="h-3 w-3 rounded-full bg-brand-green/70"></div>
+						<span class="ml-3 font-mono text-xs text-text-muted">error.log — diagnostics</span
+						><span class="ml-auto flex items-center gap-1.5 font-mono text-xs text-brand-red"
+							><span class="status-dot" id="ievrey"></span> LIVE
+						</span>
+					</div>
+					<!-- Terminal Body -->
+					<div class="space-y-2 px-5 py-5 font-mono text-xs">
+						<div class="terminal-line flex items-start gap-2">
+							<span class="shrink-0 text-brand-blue">$</span
+							><span class="text-text-muted"
+								>fetch <span id="termPath" class="text-white">/unknown-page</span></span
+							>
+						</div>
+						<div class="terminal-line flex items-start gap-2">
+							<span class="shrink-0 text-brand-red">✗</span
+							><span class="text-text-muted"
+								>Status: <span class="font-bold text-brand-red">404 Not Found</span></span
+							>
+						</div>
+						<div class="terminal-line flex items-start gap-2">
+							<span class="shrink-0 text-brand-green">✓</span
+							><span class="text-text-muted"
+								>Privacy: <span class="text-brand-green">Protected</span></span
+							>
+						</div>
+						<div class="terminal-line flex items-start gap-2">
+							<span class="shrink-0 text-brand-blue">i</span
+							><span class="text-text-muted"
+								>Time: <span id="termTimestamp" class="text-white">--</span></span
+							>
+						</div>
+						<div class="terminal-line flex items-start gap-2">
+							<span class="shrink-0 text-brand-orange">!</span
+							><span class="text-text-muted"
+								>Suggested: <span class="text-brand-orange">Navigate to homepage</span></span
+							>
+						</div>
+						<div class="terminal-line flex items-start gap-2 pt-1">
+							<span class="shrink-0 text-brand-green">$</span
+							><span class="text-text-muted">_<span class="blink text-brand-green">|</span></span>
+						</div>
+					</div>
+					<!-- Divider -->
+					<div class="flex items-center justify-between border-t border-gray-800 px-5 py-3">
+						<div class="flex items-center gap-4">
+							<span class="flex items-center gap-1.5 text-xs text-text-muted"
+								><i class="fa-solid fa-shield-halved text-[10px] text-brand-green"></i>
+								Secure </span
+							><span class="flex items-center gap-1.5 text-xs text-text-muted"
+								><i class="fa-solid fa-server text-[10px] text-brand-blue"></i>
+								Server OK
+							</span>
+						</div>
+						<span
+							class="rounded border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+							>404</span
+						>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-- Footer -->
+		<footer id="footer" class="mt-8 w-full border-t border-gray-800 bg-navy-card">
+			<div
+				class="mx-auto flex max-w-[1100px] flex-col items-center justify-between gap-4 px-6 py-7 sm:flex-row"
+			>
+				<div class="flex items-center gap-3">
+					<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-blue text-white">
+						<i class="fa-solid fa-shield-halved text-sm"></i>
+					</div>
+					<span class="text-sm font-bold tracking-tight">MetaCleaner</span>
+				</div>
+				<p class="text-xs text-text-muted">© 2024 Errorcraft. All rights reserved.</p>
+				<div class="flex items-center gap-6">
+					<a href="#" class="text-xs text-text-muted transition-colors hover:text-white"
+						>Privacy Policy</a
+					><a href="#" class="text-xs text-text-muted transition-colors hover:text-white"
+						>Terms of Service</a
+					><a href="#" class="text-xs text-text-muted transition-colors hover:text-white"
+						>Cookies</a
+					>
+				</div>
+			</div>
+		</footer>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const path = window.location.pathname || '/unknown-page';
+				const now = new Date();
+				const ts = now.toISOString().replace('T', ' ').split('.')[0];
+				const el1 = document.getElementById('termPath');
+				const el2 = document.getElementById('termTimestamp');
+				if (el1) el1.textContent = path;
+				if (el2) el2.textContent = ts;
+			});
 
-      #icnxwp
-      {
-        width: 240px;
-        height: 240px;
-        top: 10px;
-        left: 10px;
-      }
+			function toggleLangDropdown() {
+				const menu = document.getElementById('langDropdownMenu');
+				const chevron = document.getElementById('langDropdownChevron');
+				menu.classList.toggle('open');
+				chevron.classList.toggle('rotate-180');
+			}
+			document.addEventListener('click', function (e) {
+				const btn = document.querySelector('[onclick="toggleLangDropdown()"]');
+				const menu = document.getElementById('langDropdownMenu');
+				if (btn && !btn.parentElement.contains(e.target)) {
+					menu.classList.remove('open');
+					document.getElementById('langDropdownChevron').classList.remove('rotate-180');
+				}
+			});
 
-      #i8t12r
-      {
-        width: 190px;
-        height: 190px;
-        top: 35px;
-        left: 35px;
-      }
-
-      #ievrey
-      {
-        width: 6px;
-        height: 6px;
-      }
-    </style>
-  </head>
-
-  <body class="flex flex-col min-h-screen">
-    <!-- Navigation -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <nav id="navbar"
-      class="w-full max-w-[1100px] mx-auto px-6 py-6 flex justify-between items-center z-50">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="fa-solid fa-shield-halved text-xl"></i></div><span
-          class="text-xl font-bold tracking-tight">MetaCleaner<br></span>
-      </div>
-      <div
-        class="hidden md:flex items-center gap-8 text-sm font-medium text-text-muted">
-        <a href="#" class="hover:text-white transition-colors">How it
-          Works</a><a href="#"
-          class="hover:text-white transition-colors">Features</a><a href="#"
-          class="hover:text-white transition-colors">Pricing</a><a href="#"
-          class="hover:text-white transition-colors">FAQ</a></div>
-      <div class="flex items-center gap-3">
-        <div class="relative inline-block"><button
-            onclick="toggleLangDropdown()"
-            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"><span
-              id="currentLangFlag">🇬🇧</span><span
-              id="currentLangLabel">EN</span><i id="langDropdownChevron"
-              class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 transition-transform"></i></button>
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div id="opt-en" onclick="setLang('en')" class="lang-option active">
-              <span>🇬🇧</span> English <span id="check-en"
-                class="lang-check"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div id="opt-cs" onclick="setLang('cs')" class="lang-option">
-              <span>🇨🇿</span> Čeština <span id="check-cs"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div id="opt-de" onclick="setLang('de')" class="lang-option">
-              <span>🇩🇪</span> Deutsch <span id="check-de"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-          </div>
-        </div><button
-          class="hidden md:block px-5 py-2.5 rounded-lg text-sm font-semibold text-text-main hover:bg-navy-lighter transition-colors">Log
-          In</button>
-      </div>
-    </nav><!-- Main -->
-    <main id="error-404"
-      class="flex-1 w-full max-w-[1100px] mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
-      <!-- Grid BG -->
-      <div
-        class="absolute inset-0 grid-bg opacity-60 pointer-events-none rounded-3xl">
-      </div><!-- Glow -->
-      <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-blue/5 blur-[120px] rounded-full pointer-events-none">
-      </div><!-- LEFT: Text & Actions -->
-      <div id="left-col" class="relative z-10 flex flex-col items-start">
-        <!-- Badge -->
-        <div
-          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/25 text-brand-red text-xs font-bold uppercase tracking-widest mb-6">
-          <span class="status-dot"></span> Error 404 — Page Not Found
-        </div><!-- 404 Number -->
-        <div class="number-404 mb-4 select-none">404</div>
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-3 leading-snug">
-          This page doesn't exist</h2>
-        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-md">The
-          URL you entered doesn't match any page. It may have been moved,
-          deleted, or never existed. Your connection remains private and secure.
-        </p><!-- Action Buttons -->
-        <div class="flex flex-wrap gap-3 mb-10"><a href="/"
-            class="px-6 py-3 rounded-lg bg-brand-green text-white text-sm font-semibold shadow-glow-green hover:bg-green-500 transition-all flex items-center gap-2"><i
-              class="fa-solid fa-house"></i> Back to Home
-          </a><button onclick="history.back()"
-            class="px-6 py-3 rounded-lg bg-navy-lighter border border-gray-700 text-white text-sm font-semibold hover:bg-gray-800 transition-all flex items-center gap-2"><i
-              class="fa-solid fa-arrow-left"></i> Go Back
-          </button><a href="#"
-            class="px-6 py-3 rounded-lg bg-navy-lighter border border-gray-700 text-white text-sm font-semibold hover:bg-gray-800 transition-all flex items-center gap-2"><i
-              class="fa-solid fa-headset"></i> Support
-          </a></div><!-- Quick Links -->
-        <div>
-          <p
-            class="text-xs text-text-muted uppercase tracking-widest font-bold mb-3">
-            You might be looking for</p>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2"><a href="#"
-              class="bg-navy-card border border-gray-800 hover:border-brand-blue/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-                class="fa-solid fa-cloud-arrow-up text-brand-blue text-base group-hover:scale-110 transition-transform"></i><span
-                class="text-xs font-semibold text-white">Try Free</span></a><a
-              href="#"
-              class="bg-navy-card border border-gray-800 hover:border-brand-green/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-                class="fa-solid fa-star text-brand-green text-base group-hover:scale-110 transition-transform"></i><span
-                class="text-xs font-semibold text-white">Features</span></a><a
-              href="#"
-              class="bg-navy-card border border-gray-800 hover:border-brand-orange/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-                class="fa-solid fa-tag text-brand-orange text-base group-hover:scale-110 transition-transform"></i><span
-                class="text-xs font-semibold text-white">Pricing</span></a><a
-              href="#"
-              class="bg-navy-card border border-gray-800 hover:border-brand-blue/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-                class="fa-solid fa-circle-question text-brand-blue text-base group-hover:scale-110 transition-transform"></i><span
-                class="text-xs font-semibold text-white">FAQ</span></a></div>
-        </div>
-      </div><!-- RIGHT: Visual Panel -->
-      <div id="right-col"
-        class="relative z-10 flex flex-col items-center justify-center">
-        <!-- Orbit visual -->
-        <div class="relative flex items-center justify-center float-anim mb-8"
-          id="izkov5">
-          <!-- Rings -->
-          <div class="orbit-ring" id="icnxwp">
-            <div class="orbit-dot"></div>
-          </div>
-          <div class="orbit-ring orbit-ring-2" id="i8t12r">
-            <div class="orbit-dot orbit-dot-red"></div>
-          </div><!-- Center icon -->
-          <div
-            class="w-24 h-24 rounded-2xl bg-navy-card border border-gray-700 flex items-center justify-center relative overflow-hidden shadow-card z-10">
-            <div
-              class="absolute inset-0 bg-gradient-to-br from-brand-red/10 to-transparent">
-            </div><i
-              class="fa-solid fa-triangle-exclamation text-brand-red text-4xl z-10"></i>
-          </div>
-        </div><!-- Terminal Card -->
-        <div id="terminal-card"
-          class="w-full max-w-md bg-navy-card rounded-2xl border border-gray-800 overflow-hidden shadow-card">
-          <!-- Terminal Header -->
-          <div
-            class="flex items-center gap-2 px-4 py-3 bg-navy-lighter border-b border-gray-800">
-            <div class="w-3 h-3 rounded-full bg-brand-red/70"></div>
-            <div class="w-3 h-3 rounded-full bg-brand-orange/70"></div>
-            <div class="w-3 h-3 rounded-full bg-brand-green/70"></div><span
-              class="ml-3 text-xs font-mono text-text-muted">error.log —
-              diagnostics</span><span
-              class="ml-auto flex items-center gap-1.5 text-xs font-mono text-brand-red"><span
-                class="status-dot" id="ievrey"></span> LIVE
-            </span>
-          </div><!-- Terminal Body -->
-          <div class="px-5 py-5 font-mono text-xs space-y-2">
-            <div class="terminal-line flex items-start gap-2"><span
-                class="text-brand-blue shrink-0">$</span><span
-                class="text-text-muted">fetch <span id="termPath"
-                  class="text-white">/unknown-page</span></span></div>
-            <div class="terminal-line flex items-start gap-2"><span
-                class="text-brand-red shrink-0">✗</span><span
-                class="text-text-muted">Status: <span
-                  class="text-brand-red font-bold">404 Not Found</span></span>
-            </div>
-            <div class="terminal-line flex items-start gap-2"><span
-                class="text-brand-green shrink-0">✓</span><span
-                class="text-text-muted">Privacy: <span
-                  class="text-brand-green">Protected</span></span></div>
-            <div class="terminal-line flex items-start gap-2"><span
-                class="text-brand-blue shrink-0">i</span><span
-                class="text-text-muted">Time: <span id="termTimestamp"
-                  class="text-white">--</span></span></div>
-            <div class="terminal-line flex items-start gap-2"><span
-                class="text-brand-orange shrink-0">!</span><span
-                class="text-text-muted">Suggested: <span
-                  class="text-brand-orange">Navigate to homepage</span></span>
-            </div>
-            <div class="terminal-line flex items-start gap-2 pt-1"><span
-                class="text-brand-green shrink-0">$</span><span
-                class="text-text-muted">_<span
-                  class="blink text-brand-green">|</span></span></div>
-          </div><!-- Divider -->
-          <div
-            class="border-t border-gray-800 px-5 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-4"><span
-                class="flex items-center gap-1.5 text-xs text-text-muted"><i
-                  class="fa-solid fa-shield-halved text-brand-green text-[10px]"></i>
-                Secure
-              </span><span
-                class="flex items-center gap-1.5 text-xs text-text-muted"><i
-                  class="fa-solid fa-server text-brand-blue text-[10px]"></i>
-                Server OK
-              </span></div><span
-              class="px-2 py-0.5 rounded bg-brand-red/10 border border-brand-red/20 text-brand-red text-[10px] font-bold uppercase tracking-wider">404</span>
-          </div>
-        </div>
-      </div>
-    </main><!-- Footer -->
-    <footer id="footer"
-      class="w-full bg-navy-card border-t border-gray-800 mt-8">
-      <div
-        class="max-w-[1100px] mx-auto px-6 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <div
-            class="w-8 h-8 rounded-lg bg-brand-blue flex items-center justify-center text-white">
-            <i class="fa-solid fa-shield-halved text-sm"></i></div><span
-            class="text-sm font-bold tracking-tight">MetaCleaner</span>
-        </div>
-        <p class="text-xs text-text-muted">© 2024 Errorcraft. All rights
-          reserved.</p>
-        <div class="flex items-center gap-6"><a href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Privacy
-            Policy</a><a href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Terms
-            of Service</a><a href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Cookies</a>
-        </div>
-      </div>
-    </footer>
-    <script>
-      document.addEventListener('DOMContentLoaded', () =>
-      {
-        const path = window.location.pathname || '/unknown-page';
-        const now = new Date();
-        const ts = now.toISOString().replace('T', ' ').split('.')[0];
-        const el1 = document.getElementById('termPath');
-        const el2 = document.getElementById('termTimestamp');
-        if (el1) el1.textContent = path;
-        if (el2) el2.textContent = ts;
-      });
-
-      function toggleLangDropdown()
-      {
-        const menu = document.getElementById('langDropdownMenu');
-        const chevron = document.getElementById('langDropdownChevron');
-        menu.classList.toggle('open');
-        chevron.classList.toggle('rotate-180');
-      }
-      document.addEventListener('click', function(e)
-      {
-        const btn = document.querySelector(
-          '[onclick="toggleLangDropdown()"]');
-        const menu = document.getElementById('langDropdownMenu');
-        if (btn && !btn.parentElement.contains(e.target))
-        {
-          menu.classList.remove('open');
-          document.getElementById('langDropdownChevron').classList.remove(
-            'rotate-180');
-        }
-      });
-
-      function setLang(lang)
-      {
-        const flags = {
-          en: '🇬🇧',
-          cs: '🇨🇿',
-          de: '🇩🇪'
-        };
-        const labels = {
-          en: 'EN',
-          cs: 'CS',
-          de: 'DE'
-        };
-        document.getElementById('currentLangFlag').textContent = flags[lang] ||
-          '🇬🇧';
-        document.getElementById('currentLangLabel').textContent = labels[
-          lang] || 'EN';
-        document.getElementById('langDropdownMenu').classList.remove('open');
-        ['en', 'cs', 'de'].forEach(l =>
-        {
-          const opt = document.getElementById('opt-' + l);
-          const check = document.getElementById('check-' + l);
-          if (opt) opt.classList.toggle('active', l === lang);
-          if (check) check.classList.toggle('hidden', l !== lang);
-        });
-      }
-    </script>
-  </body>
-
+			function setLang(lang) {
+				const flags = {
+					en: '🇬🇧',
+					cs: '🇨🇿',
+					de: '🇩🇪'
+				};
+				const labels = {
+					en: 'EN',
+					cs: 'CS',
+					de: 'DE'
+				};
+				document.getElementById('currentLangFlag').textContent = flags[lang] || '🇬🇧';
+				document.getElementById('currentLangLabel').textContent = labels[lang] || 'EN';
+				document.getElementById('langDropdownMenu').classList.remove('open');
+				['en', 'cs', 'de'].forEach((l) => {
+					const opt = document.getElementById('opt-' + l);
+					const check = document.getElementById('check-' + l);
+					if (opt) opt.classList.toggle('active', l === lang);
+					if (check) check.classList.toggle('hidden', l !== lang);
+				});
+			}
+		</script>
+	</body>
 </html>

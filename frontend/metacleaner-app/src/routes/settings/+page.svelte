@@ -107,10 +107,7 @@
 </main>
 
 {#if showCreateKeyModal}
-	<CreateKeyModal
-		onClose={() => (showCreateKeyModal = false)}
-		onCreated={handleKeyCreated}
-	/>
+	<CreateKeyModal onClose={() => (showCreateKeyModal = false)} onCreated={handleKeyCreated} />
 {/if}
 
 <Toast message={toastMessage} show={showToast} />

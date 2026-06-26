@@ -54,14 +54,14 @@
 >
 	<!-- Backdrop -->
 	<div
-		class="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+		class="animate-fade-in absolute inset-0 bg-black/60 backdrop-blur-sm"
 		onclick={handleBackdropClick}
 		role="presentation"
 	></div>
 
 	<!-- Dialog -->
 	<div
-		class="relative w-full max-w-[480px] rounded-2xl border border-gray-700 bg-navy-card p-6 shadow-2xl animate-fade-in"
+		class="animate-fade-in relative w-full max-w-[480px] rounded-2xl border border-gray-700 bg-navy-card p-6 shadow-2xl"
 	>
 		<h2 id="modal-title" class="mb-4 text-lg font-bold text-white">{title}</h2>
 
@@ -111,7 +111,7 @@
 
 	<!-- Bottom sheet -->
 	<div
-		class="relative w-full max-w-lg rounded-t-2xl border-t border-gray-800 bg-navy-card p-6 pb-10 animate-slide-up"
+		class="animate-slide-up relative w-full max-w-lg rounded-t-2xl border-t border-gray-800 bg-navy-card p-6 pb-10"
 	>
 		<h2 id="modal-title-mobile" class="mb-4 text-lg font-bold text-white">{title}</h2>
 

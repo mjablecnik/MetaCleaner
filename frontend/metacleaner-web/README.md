@@ -21,7 +21,7 @@ cd frontend/metacleaner-web
 # 2. Install dependencies
 bun install
 
-# 3. Copy environment config (no vars required for local dev — see .env.example)
+# 3. Copy environment config (PUBLIC_APP_URL is required for build — see .env.example)
 cp .env.example .env
 
 # 4. Start the dev server
@@ -38,7 +38,13 @@ Copy `.env.example` to `.env` before running locally:
 cp .env.example .env
 ```
 
-This project is a static marketing site and currently requires no environment variables. The `.env.example` file documents any future additions.
+| Variable          | Required | Description                                           |
+| ----------------- | -------- | ----------------------------------------------------- |
+| `PUBLIC_APP_URL`  | Yes      | URL of the MetaCleaner web app (e.g. `https://app.metacleaner.com`) |
+| `VITE_SUPABASE_URL` | For contact form | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | For contact form | Supabase anonymous key |
+
+`PUBLIC_APP_URL` is baked into the static build at compile time — the build will fail without it. The `.env.example` provides a default value (`https://app.metacleaner.com`) suitable for local development.
 
 ## Scripts
 

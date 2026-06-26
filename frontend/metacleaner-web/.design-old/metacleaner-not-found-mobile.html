@@ -1,591 +1,581 @@
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = {
+				autoReplaceSvg: 'nest'
+			};
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							navy: {
+								main: '#0a1628',
+								card: '#111d33',
+								lighter: '#1e293b'
+							},
+							brand: {
+								green: '#22c55e',
+								orange: '#f97316',
+								red: '#ef4444',
+								blue: '#3b82f6'
+							},
+							text: {
+								main: '#ffffff',
+								muted: '#94a3b8'
+							}
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						},
+						boxShadow: {
+							'glow-green': '0 0 24px rgba(34,197,94,0.25)',
+							'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
+							card: '0 4px 24px rgba(0,0,0,0.4)'
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #0a1628;
+				color: #fff;
+				font-family: 'Inter', sans-serif;
+			}
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      window.FontAwesomeConfig = {
-        autoReplaceSvg: 'nest'
-      };
-    </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-      crossorigin="anonymous"></script>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              navy:
-              {
-                main: '#0a1628',
-                card: '#111d33',
-                lighter: '#1e293b'
-              },
-              brand:
-              {
-                green: '#22c55e',
-                orange: '#f97316',
-                red: '#ef4444',
-                blue: '#3b82f6'
-              },
-              text:
-              {
-                main: '#ffffff',
-                muted: '#94a3b8'
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif']
-            },
-            boxShadow:
-            {
-              'glow-green': '0 0 24px rgba(34,197,94,0.25)',
-              'glow-blue': '0 0 20px rgba(59,130,246,0.2)',
-              'card': '0 4px 24px rgba(0,0,0,0.4)'
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      body
-      {
-        margin: 0;
-        padding: 0;
-        background-color: #0a1628;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-      }
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+			.grid-bg {
+				background-image:
+					linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+				background-size: 48px 48px;
+			}
 
-      .grid-bg
-      {
-        background-image: linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
-        background-size: 48px 48px;
-      }
+			.float-anim {
+				animation: floating 5s ease-in-out infinite;
+			}
 
-      .float-anim
-      {
-        animation: floating 5s ease-in-out infinite;
-      }
+			@keyframes floating {
+				0%,
+				100% {
+					transform: translateY(0px);
+				}
 
-      @keyframes floating
-      {
+				50% {
+					transform: translateY(-10px);
+				}
+			}
 
-        0%,
-        100%
-        {
-          transform: translateY(0px);
-        }
+			.blink {
+				animation: blink 1.4s step-end infinite;
+			}
 
-        50%
-        {
-          transform: translateY(-10px);
-        }
-      }
+			@keyframes blink {
+				0%,
+				100% {
+					opacity: 1;
+				}
 
-      .blink
-      {
-        animation: blink 1.4s step-end infinite;
-      }
+				50% {
+					opacity: 0;
+				}
+			}
 
-      @keyframes blink
-      {
+			.terminal-line {
+				opacity: 0;
+				animation: fadeInLine 0.4s forwards;
+			}
 
-        0%,
-        100%
-        {
-          opacity: 1;
-        }
+			.terminal-line:nth-child(1) {
+				animation-delay: 0.2s;
+			}
 
-        50%
-        {
-          opacity: 0;
-        }
-      }
+			.terminal-line:nth-child(2) {
+				animation-delay: 0.7s;
+			}
 
-      .terminal-line
-      {
-        opacity: 0;
-        animation: fadeInLine 0.4s forwards;
-      }
+			.terminal-line:nth-child(3) {
+				animation-delay: 1.2s;
+			}
 
-      .terminal-line:nth-child(1)
-      {
-        animation-delay: 0.2s;
-      }
+			.terminal-line:nth-child(4) {
+				animation-delay: 1.7s;
+			}
 
-      .terminal-line:nth-child(2)
-      {
-        animation-delay: 0.7s;
-      }
+			.terminal-line:nth-child(5) {
+				animation-delay: 2.2s;
+			}
 
-      .terminal-line:nth-child(3)
-      {
-        animation-delay: 1.2s;
-      }
+			@keyframes fadeInLine {
+				to {
+					opacity: 1;
+				}
+			}
 
-      .terminal-line:nth-child(4)
-      {
-        animation-delay: 1.7s;
-      }
+			.orbit-ring {
+				position: absolute;
+				border-radius: 50%;
+				border: 1px dashed rgba(59, 130, 246, 0.15);
+				animation: spin-slow 18s linear infinite;
+			}
 
-      .terminal-line:nth-child(5)
-      {
-        animation-delay: 2.2s;
-      }
+			.orbit-ring-2 {
+				animation: spin-slow 28s linear infinite reverse;
+				border-color: rgba(239, 68, 68, 0.1);
+			}
 
-      @keyframes fadeInLine
-      {
-        to
-        {
-          opacity: 1;
-        }
-      }
+			@keyframes spin-slow {
+				from {
+					transform: rotate(0deg);
+				}
 
-      .orbit-ring
-      {
-        position: absolute;
-        border-radius: 50%;
-        border: 1px dashed rgba(59, 130, 246, 0.15);
-        animation: spin-slow 18s linear infinite;
-      }
+				to {
+					transform: rotate(360deg);
+				}
+			}
 
-      .orbit-ring-2
-      {
-        animation: spin-slow 28s linear infinite reverse;
-        border-color: rgba(239, 68, 68, 0.1);
-      }
+			.orbit-dot {
+				position: absolute;
+				width: 6px;
+				height: 6px;
+				background: #3b82f6;
+				border-radius: 50%;
+				top: -3px;
+				left: 50%;
+				margin-left: -3px;
+				box-shadow: 0 0 8px #3b82f6;
+			}
 
-      @keyframes spin-slow
-      {
-        from
-        {
-          transform: rotate(0deg);
-        }
+			.orbit-dot-red {
+				background: #ef4444;
+				box-shadow: 0 0 8px #ef4444;
+				top: auto;
+				bottom: -3px;
+			}
 
-        to
-        {
-          transform: rotate(360deg);
-        }
-      }
+			.number-404 {
+				font-size: clamp(5.5rem, 28vw, 9rem);
+				font-weight: 900;
+				line-height: 1;
+				letter-spacing: -0.05em;
+				background: linear-gradient(135deg, #ffffff 0%, #94a3b8 60%, #3b82f6 100%);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
 
-      .orbit-dot
-      {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: #3b82f6;
-        border-radius: 50%;
-        top: -3px;
-        left: 50%;
-        margin-left: -3px;
-        box-shadow: 0 0 8px #3b82f6;
-      }
+			.status-dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: #ef4444;
+				box-shadow: 0 0 8px #ef4444;
+				display: inline-block;
+				animation: pulse-dot 1.5s ease-in-out infinite;
+			}
 
-      .orbit-dot-red
-      {
-        background: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-        top: auto;
-        bottom: -3px;
-      }
+			@keyframes pulse-dot {
+				0%,
+				100% {
+					opacity: 1;
+					transform: scale(1);
+				}
 
-      .number-404
-      {
-        font-size: clamp(5.5rem, 28vw, 9rem);
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.05em;
-        background: linear-gradient(135deg, #ffffff 0%, #94a3b8 60%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
+				50% {
+					opacity: 0.5;
+					transform: scale(0.7);
+				}
+			}
 
-      .status-dot
-      {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #ef4444;
-        box-shadow: 0 0 8px #ef4444;
-        display: inline-block;
-        animation: pulse-dot 1.5s ease-in-out infinite;
-      }
+			.lang-dropdown-menu {
+				display: none;
+				position: absolute;
+				right: 0;
+				top: calc(100% + 8px);
+				background: #111d33;
+				border: 1px solid #374151;
+				border-radius: 10px;
+				min-width: 150px;
+				z-index: 200;
+				overflow: hidden;
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+			}
 
-      @keyframes pulse-dot
-      {
+			.lang-dropdown-menu.open {
+				display: block;
+			}
 
-        0%,
-        100%
-        {
-          opacity: 1;
-          transform: scale(1);
-        }
+			.lang-option {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 11px 16px;
+				cursor: pointer;
+				font-size: 13px;
+				font-weight: 500;
+				color: #94a3b8;
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
 
-        50%
-        {
-          opacity: 0.5;
-          transform: scale(0.7);
-        }
-      }
+			.lang-option:hover {
+				background: #1e293b;
+				color: #fff;
+			}
 
-      .lang-dropdown-menu
-      {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: calc(100% + 8px);
-        background: #111d33;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        min-width: 150px;
-        z-index: 200;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      }
+			.lang-option.active {
+				color: #fff;
+				background: #1e293b;
+			}
 
-      .lang-dropdown-menu.open
-      {
-        display: block;
-      }
+			.lang-option .lang-check {
+				margin-left: auto;
+				color: #3b82f6;
+			}
+		</style>
+		<style data-grapesjs-styles="true">
+			#iehbf {
+				width: 200px;
+				height: 200px;
+			}
 
-      .lang-option
-      {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 16px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: #94a3b8;
-        transition: background 0.15s, color 0.15s;
-      }
+			#ik3mb {
+				width: 186px;
+				height: 186px;
+				top: 7px;
+				left: 7px;
+			}
 
-      .lang-option:hover
-      {
-        background: #1e293b;
-        color: #fff;
-      }
+			#icjyg {
+				width: 142px;
+				height: 142px;
+				top: 29px;
+				left: 29px;
+			}
 
-      .lang-option.active
-      {
-        color: #fff;
-        background: #1e293b;
-      }
+			#ibbdaf {
+				width: 6px;
+				height: 6px;
+			}
+		</style>
+	</head>
 
-      .lang-option .lang-check
-      {
-        margin-left: auto;
-        color: #3b82f6;
-      }
-    </style>
-    <style data-grapesjs-styles="true">
-      #iehbf
-      {
-        width: 200px;
-        height: 200px;
-      }
+	<body class="flex min-h-screen flex-col">
+		<!-- Navbar -->
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>404</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<nav
+			id="navbar"
+			class="z-50 flex w-full items-center justify-between border-b border-gray-800/60 px-4 py-4"
+		>
+			<div class="flex items-center gap-2.5">
+				<div
+					class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue"
+				>
+					<i class="fa-solid fa-shield-halved text-base"></i>
+				</div>
+				<span class="text-lg font-bold tracking-tight">MetaCleaner</span>
+			</div>
+			<div class="flex items-center gap-2">
+				<div class="relative inline-block">
+					<div id="langDropdownMenu" class="lang-dropdown-menu">
+						<div id="opt-en" onclick="setLang('en')" class="lang-option active">
+							<span>🇬🇧</span> English
+							<span id="check-en" class="lang-check"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div id="opt-cs" onclick="setLang('cs')" class="lang-option">
+							<span>🇨🇿</span> Čeština
+							<span id="check-cs" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+						<div id="opt-de" onclick="setLang('de')" class="lang-option">
+							<span>🇩🇪</span> Deutsch
+							<span id="check-de" class="lang-check hidden"
+								><i class="fa-solid fa-check text-xs"></i
+							></span>
+						</div>
+					</div>
+				</div>
+				<button
+					class="min-h-[44px] rounded-lg border border-gray-700 bg-navy-lighter px-4 py-2 text-sm font-semibold text-white"
+				>
+					Log In
+				</button>
+			</div>
+		</nav>
+		<!-- Main -->
+		<main
+			id="error-404"
+			class="relative flex w-full flex-1 flex-col items-center overflow-hidden px-4 py-8"
+		>
+			<!-- BG -->
+			<div class="grid-bg pointer-events-none absolute inset-0 opacity-50"></div>
+			<div
+				class="pointer-events-none absolute top-1/3 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-blue/5 blur-[100px]"
+			></div>
+			<!-- Badge -->
+			<div
+				class="relative z-10 mb-5 inline-flex items-center gap-2 rounded-full border border-brand-red/25 bg-brand-red/10 px-3 py-1.5 text-xs font-bold tracking-widest text-brand-red uppercase"
+			>
+				<span class="status-dot"></span> Error 404 — Page Not Found
+			</div>
+			<!-- Orbit Visual -->
+			<div id="iehbf" class="float-anim relative z-10 mb-5 flex items-center justify-center">
+				<div id="ik3mb" class="orbit-ring">
+					<div class="orbit-dot"></div>
+				</div>
+				<div id="icjyg" class="orbit-ring orbit-ring-2">
+					<div class="orbit-dot orbit-dot-red"></div>
+				</div>
+				<div
+					class="relative z-10 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-gray-700 bg-navy-card shadow-card"
+				>
+					<div class="absolute inset-0 bg-gradient-to-br from-brand-red/10 to-transparent"></div>
+					<i class="fa-solid fa-triangle-exclamation z-10 text-3xl text-brand-red"></i>
+				</div>
+			</div>
+			<!-- 404 + Heading -->
+			<div class="relative z-10 mb-2 text-center">
+				<div class="number-404 select-none">404</div>
+			</div>
+			<h2 class="relative z-10 mb-2 text-center text-xl leading-snug font-bold text-white">
+				This page doesn't exist
+			</h2>
+			<p class="relative z-10 mb-7 max-w-xs text-center text-sm leading-relaxed text-text-muted">
+				The URL you entered doesn't match any page. It may have been moved, deleted, or never
+				existed. Your connection remains private and secure.
+			</p>
+			<!-- Action Buttons -->
+			<div id="actions" class="relative z-10 mb-8 flex w-full max-w-sm flex-col gap-3">
+				<a
+					href="/"
+					class="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 text-sm font-semibold text-white shadow-glow-green"
+					><i class="fa-solid fa-house"></i> Back to Home
+				</a>
+				<div class="flex gap-3">
+					<button
+						onclick="history.back()"
+						class="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white"
+					>
+						<i class="fa-solid fa-arrow-left"></i> Go Back</button
+					><a
+						href="#"
+						class="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white"
+						><i class="fa-solid fa-headset"></i> Support
+					</a>
+				</div>
+			</div>
+			<!-- Quick Links -->
+			<div id="quick-links" class="relative z-10 mb-8 w-full max-w-sm">
+				<p class="mb-3 text-center text-xs font-bold tracking-widest text-text-muted uppercase">
+					You might be looking for
+				</p>
+				<div class="grid grid-cols-4 gap-2">
+					<a
+						href="#"
+						class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-blue/40"
+						><i class="fa-solid fa-cloud-arrow-up text-base text-brand-blue"></i
+						><span class="text-xs font-semibold text-white">Try Free</span></a
+					><a
+						href="#"
+						class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-green/40"
+						><i class="fa-solid fa-star text-base text-brand-green"></i
+						><span class="text-xs font-semibold text-white">Features</span></a
+					><a
+						href="#"
+						class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-orange/40"
+						><i class="fa-solid fa-tag text-base text-brand-orange"></i
+						><span class="text-xs font-semibold text-white">Pricing</span></a
+					><a
+						href="#"
+						class="group flex flex-col items-center gap-1.5 rounded-xl border border-gray-800 bg-navy-card p-3 text-center transition-colors hover:border-brand-blue/40"
+						><i class="fa-solid fa-circle-question text-base text-brand-blue"></i
+						><span class="text-xs font-semibold text-white">FAQ</span></a
+					>
+				</div>
+			</div>
+			<!-- Terminal Card -->
+			<div
+				id="terminal-card"
+				class="relative z-10 mb-4 w-full max-w-sm overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card"
+			>
+				<div class="flex items-center gap-2 border-b border-gray-800 bg-navy-lighter px-4 py-3">
+					<div class="h-3 w-3 rounded-full bg-brand-red/70"></div>
+					<div class="h-3 w-3 rounded-full bg-brand-orange/70"></div>
+					<div class="h-3 w-3 rounded-full bg-brand-green/70"></div>
+					<span class="ml-2 font-mono text-xs text-text-muted">error.log — diagnostics</span
+					><span class="ml-auto flex items-center gap-1.5 font-mono text-xs text-brand-red"
+						><span id="ibbdaf" class="status-dot"></span> LIVE
+					</span>
+				</div>
+				<div class="space-y-2 px-4 py-4 font-mono text-xs">
+					<div class="terminal-line flex items-start gap-2">
+						<span class="shrink-0 text-brand-blue">$</span
+						><span class="text-text-muted"
+							>fetch <span id="termPath" class="text-white">/unknown-page</span></span
+						>
+					</div>
+					<div class="terminal-line flex items-start gap-2">
+						<span class="shrink-0 text-brand-red">✗</span
+						><span class="text-text-muted"
+							>Status: <span class="font-bold text-brand-red">404 Not Found</span></span
+						>
+					</div>
+					<div class="terminal-line flex items-start gap-2">
+						<span class="shrink-0 text-brand-green">✓</span
+						><span class="text-text-muted"
+							>Privacy: <span class="text-brand-green">Protected</span></span
+						>
+					</div>
+					<div class="terminal-line flex items-start gap-2">
+						<span class="shrink-0 text-brand-blue">i</span
+						><span class="text-text-muted"
+							>Time: <span id="termTimestamp" class="text-white">--</span></span
+						>
+					</div>
+					<div class="terminal-line flex items-start gap-2">
+						<span class="shrink-0 text-brand-orange">!</span
+						><span class="text-text-muted"
+							>Suggested: <span class="text-brand-orange">Navigate to homepage</span></span
+						>
+					</div>
+					<div class="terminal-line flex items-start gap-2 pt-1">
+						<span class="shrink-0 text-brand-green">$</span
+						><span class="text-text-muted">_<span class="blink text-brand-green">|</span></span>
+					</div>
+				</div>
+				<div class="flex items-center justify-between border-t border-gray-800 px-4 py-3">
+					<div class="flex items-center gap-4">
+						<span class="flex items-center gap-1.5 text-xs text-text-muted"
+							><i class="fa-solid fa-shield-halved text-[10px] text-brand-green"></i> Secure </span
+						><span class="flex items-center gap-1.5 text-xs text-text-muted"
+							><i class="fa-solid fa-server text-[10px] text-brand-blue"></i>
+							Server OK
+						</span>
+					</div>
+					<span
+						class="rounded border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
+						>404</span
+					>
+				</div>
+			</div>
+		</main>
+		<!-- Footer -->
+		<footer id="footer" class="w-full border-t border-gray-800 bg-navy-card">
+			<div class="flex flex-col items-center gap-3 px-4 py-5">
+				<div class="flex items-center gap-2">
+					<div class="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-blue text-white">
+						<i class="fa-solid fa-shield-halved text-xs"></i>
+					</div>
+					<span class="text-sm font-bold tracking-tight">MetaCleaner</span>
+				</div>
+				<div class="flex items-center gap-5">
+					<a href="#" class="text-xs text-text-muted transition-colors hover:text-white">Privacy</a
+					><a href="#" class="text-xs text-text-muted transition-colors hover:text-white">Terms</a
+					><a href="#" class="text-xs text-text-muted transition-colors hover:text-white"
+						>Cookies</a
+					>
+				</div>
+				<p class="text-xs text-text-muted">© 2024 Errorcraft. All rights reserved.</p>
+			</div>
+		</footer>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const path = window.location.pathname || '/unknown-page';
+				const now = new Date();
+				const ts = now.toISOString().replace('T', ' ').split('.')[0];
+				const el1 = document.getElementById('termPath');
+				const el2 = document.getElementById('termTimestamp');
+				if (el1) el1.textContent = path;
+				if (el2) el2.textContent = ts;
+			});
 
-      #ik3mb
-      {
-        width: 186px;
-        height: 186px;
-        top: 7px;
-        left: 7px;
-      }
+			function toggleLangDropdown() {
+				const menu = document.getElementById('langDropdownMenu');
+				const chevron = document.getElementById('langDropdownChevron');
+				menu.classList.toggle('open');
+				chevron.classList.toggle('rotate-180');
+			}
+			document.addEventListener('click', function (e) {
+				const btn = document.querySelector('[onclick="toggleLangDropdown()"]');
+				const menu = document.getElementById('langDropdownMenu');
+				if (btn && !btn.parentElement.contains(e.target)) {
+					menu.classList.remove('open');
+					document.getElementById('langDropdownChevron').classList.remove('rotate-180');
+				}
+			});
 
-      #icjyg
-      {
-        width: 142px;
-        height: 142px;
-        top: 29px;
-        left: 29px;
-      }
-
-      #ibbdaf
-      {
-        width: 6px;
-        height: 6px;
-      }
-    </style>
-  </head>
-
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      crossorigin="anonymous">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
-      rel="stylesheet">
-    <nav id="navbar"
-      class="w-full px-4 py-4 flex justify-between items-center z-50 border-b border-gray-800/60">
-      <div class="flex items-center gap-2.5">
-        <div
-          class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
-          <i class="fa-solid fa-shield-halved text-base"></i></div><span
-          class="text-lg font-bold tracking-tight">MetaCleaner</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <div class="relative inline-block">
-          <div id="langDropdownMenu" class="lang-dropdown-menu">
-            <div id="opt-en" onclick="setLang('en')" class="lang-option active">
-              <span>🇬🇧</span> English <span id="check-en"
-                class="lang-check"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div id="opt-cs" onclick="setLang('cs')" class="lang-option">
-              <span>🇨🇿</span> Čeština <span id="check-cs"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-            <div id="opt-de" onclick="setLang('de')" class="lang-option">
-              <span>🇩🇪</span> Deutsch <span id="check-de"
-                class="lang-check hidden"><i
-                  class="fa-solid fa-check text-xs"></i></span></div>
-          </div>
-        </div><button
-          class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-navy-lighter border border-gray-700 min-h-[44px]">Log
-          In</button>
-      </div>
-    </nav><!-- Main -->
-    <main id="error-404"
-      class="flex-1 w-full px-4 py-8 flex flex-col items-center relative overflow-hidden">
-      <!-- BG -->
-      <div class="absolute inset-0 grid-bg opacity-50 pointer-events-none">
-      </div>
-      <div
-        class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-brand-blue/5 blur-[100px] rounded-full pointer-events-none">
-      </div><!-- Badge -->
-      <div
-        class="relative z-10 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/25 text-brand-red text-xs font-bold uppercase tracking-widest mb-5">
-        <span class="status-dot"></span> Error 404 — Page Not Found
-      </div><!-- Orbit Visual -->
-      <div id="iehbf"
-        class="relative z-10 flex items-center justify-center float-anim mb-5">
-        <div id="ik3mb" class="orbit-ring">
-          <div class="orbit-dot"></div>
-        </div>
-        <div id="icjyg" class="orbit-ring orbit-ring-2">
-          <div class="orbit-dot orbit-dot-red"></div>
-        </div>
-        <div
-          class="w-20 h-20 rounded-2xl bg-navy-card border border-gray-700 flex items-center justify-center relative overflow-hidden shadow-card z-10">
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-brand-red/10 to-transparent">
-          </div><i
-            class="fa-solid fa-triangle-exclamation text-brand-red text-3xl z-10"></i>
-        </div>
-      </div><!-- 404 + Heading -->
-      <div class="relative z-10 text-center mb-2">
-        <div class="number-404 select-none">404</div>
-      </div>
-      <h2
-        class="relative z-10 text-xl font-bold text-white mb-2 text-center leading-snug">
-        This page doesn't exist</h2>
-      <p
-        class="relative z-10 text-text-muted text-sm leading-relaxed mb-7 text-center max-w-xs">
-        The URL you entered doesn't match any page. It may have been moved,
-        deleted, or never existed. Your connection remains private and secure.
-      </p><!-- Action Buttons -->
-      <div id="actions"
-        class="relative z-10 w-full max-w-sm flex flex-col gap-3 mb-8"><a
-          href="/"
-          class="w-full py-3.5 rounded-xl bg-brand-green text-white text-sm font-semibold shadow-glow-green flex items-center justify-center gap-2 min-h-[48px]"><i
-            class="fa-solid fa-house"></i> Back to Home
-        </a>
-        <div class="flex gap-3"><button onclick="history.back()"
-            class="flex-1 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white text-sm font-semibold flex items-center justify-center gap-2 min-h-[48px]"><i
-              class="fa-solid fa-arrow-left"></i> Go Back
-          </button><a href="#"
-            class="flex-1 py-3.5 rounded-xl bg-navy-lighter border border-gray-700 text-white text-sm font-semibold flex items-center justify-center gap-2 min-h-[48px]"><i
-              class="fa-solid fa-headset"></i> Support
-          </a></div>
-      </div><!-- Quick Links -->
-      <div id="quick-links" class="relative z-10 w-full max-w-sm mb-8">
-        <p
-          class="text-xs text-text-muted uppercase tracking-widest font-bold mb-3 text-center">
-          You might be looking for</p>
-        <div class="grid grid-cols-4 gap-2"><a href="#"
-            class="bg-navy-card border border-gray-800 hover:border-brand-blue/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-              class="fa-solid fa-cloud-arrow-up text-brand-blue text-base"></i><span
-              class="text-xs font-semibold text-white">Try Free</span></a><a
-            href="#"
-            class="bg-navy-card border border-gray-800 hover:border-brand-green/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-              class="fa-solid fa-star text-brand-green text-base"></i><span
-              class="text-xs font-semibold text-white">Features</span></a><a
-            href="#"
-            class="bg-navy-card border border-gray-800 hover:border-brand-orange/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-              class="fa-solid fa-tag text-brand-orange text-base"></i><span
-              class="text-xs font-semibold text-white">Pricing</span></a><a
-            href="#"
-            class="bg-navy-card border border-gray-800 hover:border-brand-blue/40 rounded-xl p-3 flex flex-col items-center gap-1.5 text-center transition-colors group"><i
-              class="fa-solid fa-circle-question text-brand-blue text-base"></i><span
-              class="text-xs font-semibold text-white">FAQ</span></a></div>
-      </div><!-- Terminal Card -->
-      <div id="terminal-card"
-        class="relative z-10 w-full max-w-sm bg-navy-card rounded-2xl border border-gray-800 overflow-hidden shadow-card mb-4">
-        <div
-          class="flex items-center gap-2 px-4 py-3 bg-navy-lighter border-b border-gray-800">
-          <div class="w-3 h-3 rounded-full bg-brand-red/70"></div>
-          <div class="w-3 h-3 rounded-full bg-brand-orange/70"></div>
-          <div class="w-3 h-3 rounded-full bg-brand-green/70"></div><span
-            class="ml-2 text-xs font-mono text-text-muted">error.log —
-            diagnostics</span><span
-            class="ml-auto flex items-center gap-1.5 text-xs font-mono text-brand-red"><span
-              id="ibbdaf" class="status-dot"></span> LIVE
-          </span>
-        </div>
-        <div class="px-4 py-4 font-mono text-xs space-y-2">
-          <div class="terminal-line flex items-start gap-2"><span
-              class="text-brand-blue shrink-0">$</span><span
-              class="text-text-muted">fetch <span id="termPath"
-                class="text-white">/unknown-page</span></span></div>
-          <div class="terminal-line flex items-start gap-2"><span
-              class="text-brand-red shrink-0">✗</span><span
-              class="text-text-muted">Status: <span
-                class="text-brand-red font-bold">404 Not Found</span></span>
-          </div>
-          <div class="terminal-line flex items-start gap-2"><span
-              class="text-brand-green shrink-0">✓</span><span
-              class="text-text-muted">Privacy: <span
-                class="text-brand-green">Protected</span></span></div>
-          <div class="terminal-line flex items-start gap-2"><span
-              class="text-brand-blue shrink-0">i</span><span
-              class="text-text-muted">Time: <span id="termTimestamp"
-                class="text-white">--</span></span></div>
-          <div class="terminal-line flex items-start gap-2"><span
-              class="text-brand-orange shrink-0">!</span><span
-              class="text-text-muted">Suggested: <span
-                class="text-brand-orange">Navigate to homepage</span></span>
-          </div>
-          <div class="terminal-line flex items-start gap-2 pt-1"><span
-              class="text-brand-green shrink-0">$</span><span
-              class="text-text-muted">_<span
-                class="blink text-brand-green">|</span></span></div>
-        </div>
-        <div
-          class="border-t border-gray-800 px-4 py-3 flex items-center justify-between">
-          <div class="flex items-center gap-4"><span
-              class="flex items-center gap-1.5 text-xs text-text-muted"><i
-                class="fa-solid fa-shield-halved text-brand-green text-[10px]"></i>
-              Secure
-            </span><span
-              class="flex items-center gap-1.5 text-xs text-text-muted"><i
-                class="fa-solid fa-server text-brand-blue text-[10px]"></i>
-              Server OK
-            </span></div><span
-            class="px-2 py-0.5 rounded bg-brand-red/10 border border-brand-red/20 text-brand-red text-[10px] font-bold uppercase tracking-wider">404</span>
-        </div>
-      </div>
-    </main><!-- Footer -->
-    <footer id="footer" class="w-full bg-navy-card border-t border-gray-800">
-      <div class="px-4 py-5 flex flex-col items-center gap-3">
-        <div class="flex items-center gap-2">
-          <div
-            class="w-7 h-7 rounded-lg bg-brand-blue flex items-center justify-center text-white">
-            <i class="fa-solid fa-shield-halved text-xs"></i></div><span
-            class="text-sm font-bold tracking-tight">MetaCleaner</span>
-        </div>
-        <div class="flex items-center gap-5"><a href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Privacy</a><a
-            href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Terms</a><a
-            href="#"
-            class="text-xs text-text-muted hover:text-white transition-colors">Cookies</a>
-        </div>
-        <p class="text-xs text-text-muted">© 2024 Errorcraft. All rights
-          reserved.</p>
-      </div>
-    </footer>
-    <script>
-      document.addEventListener('DOMContentLoaded', () =>
-      {
-        const path = window.location.pathname || '/unknown-page';
-        const now = new Date();
-        const ts = now.toISOString().replace('T', ' ').split('.')[0];
-        const el1 = document.getElementById('termPath');
-        const el2 = document.getElementById('termTimestamp');
-        if (el1) el1.textContent = path;
-        if (el2) el2.textContent = ts;
-      });
-
-      function toggleLangDropdown()
-      {
-        const menu = document.getElementById('langDropdownMenu');
-        const chevron = document.getElementById('langDropdownChevron');
-        menu.classList.toggle('open');
-        chevron.classList.toggle('rotate-180');
-      }
-      document.addEventListener('click', function(e)
-      {
-        const btn = document.querySelector(
-          '[onclick="toggleLangDropdown()"]');
-        const menu = document.getElementById('langDropdownMenu');
-        if (btn && !btn.parentElement.contains(e.target))
-        {
-          menu.classList.remove('open');
-          document.getElementById('langDropdownChevron').classList.remove(
-            'rotate-180');
-        }
-      });
-
-      function setLang(lang)
-      {
-        const flags = {
-          en: '🇬🇧',
-          cs: '🇨🇿',
-          de: '🇩🇪'
-        };
-        const labels = {
-          en: 'EN',
-          cs: 'CS',
-          de: 'DE'
-        };
-        document.getElementById('currentLangFlag').textContent = flags[lang] ||
-          '🇬🇧';
-        document.getElementById('currentLangLabel').textContent = labels[
-          lang] || 'EN';
-        document.getElementById('langDropdownMenu').classList.remove('open');
-        ['en', 'cs', 'de'].forEach(l =>
-        {
-          const opt = document.getElementById('opt-' + l);
-          const check = document.getElementById('check-' + l);
-          if (opt) opt.classList.toggle('active', l === lang);
-          if (check) check.classList.toggle('hidden', l !== lang);
-        });
-      }
-    </script>
-  </body>
-
+			function setLang(lang) {
+				const flags = {
+					en: '🇬🇧',
+					cs: '🇨🇿',
+					de: '🇩🇪'
+				};
+				const labels = {
+					en: 'EN',
+					cs: 'CS',
+					de: 'DE'
+				};
+				document.getElementById('currentLangFlag').textContent = flags[lang] || '🇬🇧';
+				document.getElementById('currentLangLabel').textContent = labels[lang] || 'EN';
+				document.getElementById('langDropdownMenu').classList.remove('open');
+				['en', 'cs', 'de'].forEach((l) => {
+					const opt = document.getElementById('opt-' + l);
+					const check = document.getElementById('check-' + l);
+					if (opt) opt.classList.toggle('active', l === lang);
+					if (check) check.classList.toggle('hidden', l !== lang);
+				});
+			}
+		</script>
+	</body>
 </html>
