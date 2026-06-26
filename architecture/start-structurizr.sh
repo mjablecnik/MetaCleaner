@@ -46,7 +46,7 @@ echo "🚀 Starting container on port ${PORT}..."
 docker run -d \
     --name "$CONTAINER_NAME" \
     --restart unless-stopped \
-    -p "${PORT}:8080" \
+    -p "${PORT}:8081" \
     -v "${WORKSPACE_DIR}:/usr/local/structurizr" \
     "$IMAGE_NAME"
 

@@ -15,6 +15,6 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 # Create required directories
 RUN mkdir -p /run/nginx /usr/local/structurizr
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
