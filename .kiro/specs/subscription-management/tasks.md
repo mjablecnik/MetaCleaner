@@ -65,7 +65,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - _Requirements: 12.1, 12.2_
 
 - [ ] 6. Implement new UI components
-  - [ ] 6.0 Add missing CSS tokens to `layout.css`
+  - [x] 6.0 Add missing CSS tokens to `layout.css`
     - Add `--shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.15);` to the shadows section in `src/routes/layout.css`
     - Add a `.stripe-bg` utility class (either in `layout.css` or as a component-scoped style): `background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(249, 115, 22, 0.04) 6px, rgba(249, 115, 22, 0.04) 12px);`
     - Add a `.progress-bar-orange` utility class: `background: linear-gradient(90deg, #f97316, #fb923c); border-radius: 999px;`
