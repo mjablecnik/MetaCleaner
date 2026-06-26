@@ -934,5 +934,14 @@
 	"subscription.cancelling.modal.todayPaymentValue": "€0.00",
 	"subscription.cancelling.modal.nextPaymentLabel": "Next payment",
 	"subscription.cancelling.modal.confirmButton": "Confirm reactivation",
-	"subscription.cancelling.modal.error": "Reactivation failed. Please try again."
+	"subscription.cancelling.modal.error": "Reactivation failed. Please try again.",
+	"emailChanged.meta.title": "Email Changed — MetaCleaner",
+	"emailChanged.success.title": "Email changed successfully!",
+	"emailChanged.success.description": "Your email address has been updated. You can now sign in with your new email.",
+	"emailChanged.success.goToSettings": "Go to settings",
+	"emailChanged.success.goHome": "Go to home",
+	"emailChanged.error.title": "Email change failed",
+	"emailChanged.error.expired": "The verification link has expired or is invalid. Please request a new email change from Settings.",
+	"emailChanged.error.generic": "An error occurred while changing your email. Please try again.",
+	"emailChanged.error.tryAgain": "Go to settings"
 }

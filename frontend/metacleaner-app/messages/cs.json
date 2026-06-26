@@ -934,5 +934,14 @@
 	"subscription.cancelling.modal.todayPaymentValue": "€0,00",
 	"subscription.cancelling.modal.nextPaymentLabel": "Příští platba",
 	"subscription.cancelling.modal.confirmButton": "Potvrdit obnovení",
-	"subscription.cancelling.modal.error": "Obnovení se nezdařilo. Zkuste to prosím znovu."
+	"subscription.cancelling.modal.error": "Obnovení se nezdařilo. Zkuste to prosím znovu.",
+	"emailChanged.meta.title": "E-mail změněn — MetaCleaner",
+	"emailChanged.success.title": "E-mail byl úspěšně změněn!",
+	"emailChanged.success.description": "Vaše e-mailová adresa byla aktualizována. Nyní se můžete přihlásit novým e-mailem.",
+	"emailChanged.success.goToSettings": "Přejít do nastavení",
+	"emailChanged.success.goHome": "Přejít na úvodní stránku",
+	"emailChanged.error.title": "Změna e-mailu se nezdařila",
+	"emailChanged.error.expired": "Ověřovací odkaz vypršel nebo je neplatný. Požádejte prosím o novou změnu e-mailu v Nastavení.",
+	"emailChanged.error.generic": "Při změně e-mailu došlo k chybě. Zkuste to prosím znovu.",
+	"emailChanged.error.tryAgain": "Přejít do nastavení"
 }
