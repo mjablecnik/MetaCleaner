@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              navy: { main: '#0a1628', card: '#111d33', lighter: '#1e293b' },
+              brand: { green: '#22c55e', orange: '#f97316', red: '#ef4444', blue: '#3b82f6' },
+              text: { main: '#ffffff', muted: '#94a3b8' }
+            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
+            boxShadow: {
+              'glow-green': '0 0 20px rgba(34,197,94,0.2)',
+              'glow-blue': '0 0 20px rgba(59,130,246,0.3)',
+              'card': '0 4px 6px -1px rgba(0,0,0,0.5)'
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { margin:0; padding:0; background-color:#0a1628; color:#fff; font-family:'Inter',sans-serif; }
+      ::-webkit-scrollbar { display:none; }
+      .progress-bar { background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; }
+    </style>
+</head>
+<body class="bg-navy-main flex flex-col">
+
+<!-- Navbar -->
+<nav id="navbar" class="w-full px-4 py-4 flex justify-between items-center z-50 sticky top-0 bg-navy-main border-b border-gray-800">
+    <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue">
+            <i class="fa-solid fa-shield-halved text-base"></i>
+        </div>
+        <span class="text-lg font-bold tracking-tight">Subpage</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <button onclick="toggleMobileMenu()" class="w-9 h-9 rounded-lg bg-navy-lighter border border-gray-700 flex items-center justify-center text-white">
+            <i id="hamburgerIcon" class="fa-solid fa-bars text-sm"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="w-full flex-col bg-navy-card border-b border-gray-800 px-4 py-4 gap-3 z-40" style="display:none;">
+    <a href="#" class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Jak to funguje <i class="fa-solid fa-chevron-right text-xs"></i></a>
+    <a href="#" class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">Funkce <i class="fa-solid fa-chevron-right text-xs"></i></a>
+    <a href="#" class="text-sm font-medium text-white py-3 border-b border-gray-800 flex items-center justify-between">Předplatné <i class="fa-solid fa-chevron-right text-xs"></i></a>
+    <a href="#" class="text-sm font-medium text-text-muted py-3 border-b border-gray-800 flex items-center justify-between">FAQ <i class="fa-solid fa-chevron-right text-xs"></i></a>
+</div>
+
+<!-- Main -->
+<main id="main" class="w-full px-4 py-8 flex flex-col items-center flex-1 max-w-lg mx-auto">
+
+    <!-- Page Header -->
+    <div id="sub-header" class="w-full text-center mb-6">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-green bg-opacity-20 mb-3">
+            <i class="fa-solid fa-crown text-brand-green text-xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold mb-1">Vaše předplatné</h1>
+        <p class="text-text-muted text-sm">Spravujte svůj plán a kredity</p>
+    </div>
+
+    <!-- Current Plan Card -->
+    <div id="current-plan-card" class="w-full bg-navy-card rounded-2xl border-2 border-brand-blue p-5 mb-4 relative shadow-glow-blue">
+        <div class="absolute -top-3 left-4 bg-brand-blue text-white text-xs font-bold px-3 py-1 rounded-full">Aktivní plán</div>
+        <div class="flex items-start justify-between mt-2 mb-4">
+            <div>
+                <h2 class="text-xl font-black">Pro</h2>
+                <p class="text-text-muted text-xs mt-0.5">100 fotek / měsíc</p>
+            </div>
+            <div class="text-right">
+                <div class="text-2xl font-black">€5,99</div>
+                <div class="text-text-muted text-xs">/ měsíc</div>
+            </div>
+        </div>
+
+        <!-- Credits Usage -->
+        <div class="mb-4">
+            <div class="flex justify-between items-center mb-1.5">
+                <span class="text-xs text-text-muted font-medium">Kredity tento měsíc</span>
+                <span class="text-xs font-bold text-white">67 / 100</span>
+            </div>
+            <div class="w-full h-2 bg-navy-lighter rounded-full overflow-hidden">
+                <div class="progress-bar h-full" style="width:67%"></div>
+            </div>
+            <p class="text-xs text-text-muted mt-1.5">33 fotek zbývá · Obnoví se 1. 2. 2025</p>
+        </div>
+
+        <!-- Plan Features -->
+        <div class="bg-navy-lighter rounded-xl p-3 mb-4">
+            <p class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Součástí plánu</p>
+            <div class="grid grid-cols-2 gap-y-2 gap-x-3">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">EXIF + C2PA</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">Risk Scanner</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">PDF report</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">Hromadné zprac.</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">Historie 30 dní</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-green text-xs"></i><span class="text-xs text-text-muted">Všechny formáty</span></div>
+            </div>
+        </div>
+
+        <!-- Billing Info -->
+        <div class="flex items-center gap-2 bg-navy-lighter rounded-xl px-3 py-2.5">
+            <i class="fa-regular fa-credit-card text-text-muted text-sm"></i>
+            <span class="text-xs text-text-muted">Platba: <span class="text-white font-medium">Visa •••• 4242</span></span>
+            <span class="ml-auto text-xs text-text-muted">Další platba: <span class="text-white font-medium">1. 2. 2025</span></span>
+        </div>
+    </div>
+
+    <!-- Actions Section -->
+    <div id="actions-section" class="w-full flex flex-col gap-3 mb-4">
+
+        <!-- Upgrade Card -->
+        <div id="upgrade-card" class="w-full bg-navy-card rounded-2xl border border-gray-800 p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-orange bg-opacity-20 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-rocket text-brand-orange"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold">Upgradovat na Pro+</h3>
+                    <p class="text-xs text-text-muted">300 fotek / měsíc · API přístup · Prioritní podpora</p>
+                </div>
+                <div class="ml-auto text-right shrink-0">
+                    <div class="text-base font-black">€12,99</div>
+                    <div class="text-text-muted text-xs">/ měs</div>
+                </div>
+            </div>
+            <button onclick="openModal('upgrade')" class="w-full py-3 rounded-xl bg-brand-orange text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors">
+                <i class="fa-solid fa-arrow-up"></i> Upgradovat na Pro+ →
+            </button>
+        </div>
+
+        <!-- Downgrade Card -->
+        <div id="downgrade-card" class="w-full bg-navy-card rounded-2xl border border-gray-800 p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-navy-lighter flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-arrow-down text-text-muted"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold">Přejít na Starter</h3>
+                    <p class="text-xs text-text-muted">50 fotek · Bez PDF reportu · Kredity nevyprší</p>
+                </div>
+                <div class="ml-auto text-right shrink-0">
+                    <div class="text-base font-black">€4</div>
+                    <div class="text-text-muted text-xs">jednorázově</div>
+                </div>
+            </div>
+            <button onclick="openModal('downgrade')" class="w-full py-3 rounded-xl border border-gray-700 text-text-muted font-semibold text-sm flex items-center justify-center gap-2 hover:bg-navy-lighter transition-colors">
+                <i class="fa-solid fa-arrow-down text-xs"></i> Downgradovat plán
+            </button>
+        </div>
+    </div>
+
+    <!-- Cancel Subscription -->
+    <div id="cancel-section" class="w-full bg-navy-card rounded-2xl border border-gray-800 p-5 mb-6">
+        <div class="flex items-start gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-red bg-opacity-10 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-ban text-brand-red text-sm"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold">Zrušit předplatné</h3>
+                <p class="text-xs text-text-muted leading-relaxed mt-0.5">Po zrušení budete moci plán používat do konce zaplaceného období (1. 2. 2025). Kredity se nevrací.</p>
+            </div>
+        </div>
+        <button onclick="openModal('cancel')" class="w-full py-3 rounded-xl border border-brand-red border-opacity-50 text-brand-red font-semibold text-sm hover:bg-red-950 transition-colors">
+            Zrušit předplatné
+        </button>
+    </div>
+
+</main>
+
+<!-- Footer -->
+<footer id="footer" class="w-full bg-navy-card border-t border-gray-800">
+    <div class="px-4 py-6 flex flex-col items-center gap-3">
+        <p class="text-xs text-text-muted text-center">© 2024 Subpage. Všechna práva vyhrazena.</p>
+        <div class="flex items-center gap-5">
+            <a href="#" class="text-xs text-text-muted hover:text-white transition-colors">Zásady ochrany soukromí</a>
+            <a href="#" class="text-xs text-text-muted hover:text-white transition-colors">Podmínky použití</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Modal Overlay -->
+<div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-end justify-center" style="display:none!important;">
+    <div id="modal-box" class="w-full max-w-lg bg-navy-card rounded-t-3xl border-t border-gray-800 p-6 pb-10">
+
+        <!-- Upgrade Modal -->
+        <div id="modal-upgrade" class="hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Upgradovat na Pro+</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-navy-lighter flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="bg-navy-lighter rounded-xl p-4 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-text-muted">Aktuální plán</span>
+                    <span class="text-sm font-semibold">Pro — €5,99/měs</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-text-muted">Nový plán</span>
+                    <span class="text-sm font-bold text-brand-orange">Pro+ — €12,99/měs</span>
+                </div>
+                <div class="border-t border-gray-700 mt-3 pt-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-text-muted">Doplatek za zbytek období</span>
+                        <span class="text-sm font-bold text-white">€7,00</span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-text-muted mb-4 leading-relaxed">Upgrade se projeví okamžitě. Následující platba bude €12,99 dne 1. 2. 2025.</p>
+            <button class="w-full py-3.5 rounded-xl bg-brand-orange text-white font-bold text-sm mb-2">Potvrdit upgrade →</button>
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl text-text-muted text-sm font-medium">Zrušit</button>
+        </div>
+
+        <!-- Downgrade Modal -->
+        <div id="modal-downgrade" class="hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Přejít na Starter</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-navy-lighter flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="bg-navy-lighter rounded-xl p-4 mb-4">
+                <p class="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Přijdete o</p>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-xmark text-brand-red text-xs"></i><span class="text-sm text-text-muted">Risk Scanner</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-xmark text-brand-red text-xs"></i><span class="text-sm text-text-muted">PDF report v ceně</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-xmark text-brand-red text-xs"></i><span class="text-sm text-text-muted">Historie čištění 30 dní</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-xmark text-brand-red text-xs"></i><span class="text-sm text-text-muted">Měsíční obnova kreditů</span></div>
+                </div>
+            </div>
+            <p class="text-xs text-text-muted mb-4 leading-relaxed">Downgrade proběhne po skončení aktuálního období (1. 2. 2025). Do té doby máte plný přístup k Pro.</p>
+            <button class="w-full py-3.5 rounded-xl border border-gray-700 text-white font-bold text-sm mb-2 hover:bg-navy-lighter transition-colors">Potvrdit downgrade</button>
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl text-text-muted text-sm font-medium">Zrušit</button>
+        </div>
+
+        <!-- Cancel Modal -->
+        <div id="modal-cancel" class="hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Zrušit předplatné</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-navy-lighter flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div class="bg-red-950 bg-opacity-50 border border-brand-red border-opacity-30 rounded-xl p-4 mb-4">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-red mt-0.5"></i>
+                    <div>
+                        <p class="text-sm font-semibold text-white mb-1">Opravdu chcete zrušit?</p>
+                        <p class="text-xs text-text-muted leading-relaxed">Po zrušení budete přesunuti na bezplatný plán (3 fotky) po uplynutí platného období. Zbývající kredity <span class="text-white font-semibold">se nevrací</span>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-navy-lighter rounded-xl p-3 mb-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-text-muted">Přístup do</span>
+                    <span class="text-sm font-bold text-white">1. 2. 2025</span>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-xs text-text-muted">Zbývající kredity</span>
+                    <span class="text-sm font-bold text-brand-red">33 (propadnou)</span>
+                </div>
+            </div>
+            <button class="w-full py-3.5 rounded-xl bg-brand-red text-white font-bold text-sm mb-2 hover:bg-red-600 transition-colors">Ano, zrušit předplatné</button>
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-brand-blue text-white text-sm font-semibold">Zachovat Pro plán</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const icon = document.getElementById('hamburgerIcon');
+    const isOpen = menu.style.display === 'flex';
+    menu.style.display = isOpen ? 'none' : 'flex';
+    menu.style.flexDirection = 'column';
+    icon.className = isOpen ? 'fa-solid fa-bars text-sm' : 'fa-solid fa-xmark text-sm';
+}
+
+function openModal(type) {
+    const overlay = document.getElementById('modal-overlay');
+    overlay.style.display = 'flex';
+    ['upgrade','downgrade','cancel'].forEach(t => {
+        document.getElementById('modal-' + t).classList.add('hidden');
+    });
+    document.getElementById('modal-' + type).classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').style.display = 'none';
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
