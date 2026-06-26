@@ -110,7 +110,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 6.5 Create `WhatHappensAfterCard.svelte`
+  - [x] 6.5 Create `WhatHappensAfterCard.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/WhatHappensAfterCard.svelte`
     - Props: `periodEndDate: string`, `creditsRemaining: number`
     - Title "What happens after {date}?" with lost items (red X) and retained items (green check)
