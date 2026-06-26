@@ -102,7 +102,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ] 6.4 Create `ReactivateCard.svelte`
+  - [x] 6.4 Create `ReactivateCard.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/ReactivateCard.svelte`
     - Props: `planId, price, billingPeriod, periodEndDate, onReactivate: () => void`
     - Green border, plan price, benefits list (immediate reactivation, credits preserved, next payment on original date)
