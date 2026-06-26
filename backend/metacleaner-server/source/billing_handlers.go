@@ -465,6 +465,40 @@ func changePlanUpgrade(ctx context.Context, db *SupabaseClient, existing *Subscr
 		return ChangePlanResponse{}, fmt.Errorf("update subscription in DB: %w", err)
 	}
 
+	// Adjust credits: grant the new plan's allowance minus what was already consumed this cycle.
+	oldAllowance := getCreditAllowance(existing.PlanID)
+	newAllowance := getCreditAllowance(planID)
+
+	currentSubCredits, _, err := db.GetCreditBalance(ctx, existing.UserID)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("get credit balance for upgrade: %w", err)
+	}
+
+	// consumed = what was used from the old plan's allowance this period
+	consumed := oldAllowance - currentSubCredits
+	if consumed < 0 {
+		consumed = 0
+	}
+
+	// New credits = new allowance minus already consumed this period
+	newCredits := newAllowance - consumed
+	if newCredits < 0 {
+		newCredits = 0
+	}
+
+	if err := db.SetSubscriptionCredits(ctx, existing.UserID, newCredits); err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("set upgraded credits: %w", err)
+	}
+
+	creditDelta := newCredits - currentSubCredits
+	if creditDelta != 0 {
+		if err := db.RecordCreditTransaction(ctx, existing.UserID, creditDelta, "subscription_renewal", "subscription", existing.StripeSubscriptionID, fmt.Sprintf("Plan upgrade: %s → %s", existing.PlanID, planID)); err != nil {
+			slog.Warn("billing: failed to record upgrade credit transaction", "userID", existing.UserID, "error", err)
+		}
+	}
+
+	slog.Info("billing: credits adjusted after upgrade", "userID", existing.UserID, "oldPlan", existing.PlanID, "newPlan", planID, "consumed", consumed, "newCredits", newCredits)
+
 	var periodEndStr string
 	if periodEnd != nil {
 		periodEndStr = periodEnd.UTC().Format(time.RFC3339)

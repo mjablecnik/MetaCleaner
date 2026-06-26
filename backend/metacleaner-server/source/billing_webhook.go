@@ -16,6 +16,22 @@ import (
 
 const maxWebhookBodyBytes = 65536 // 64 KB — Stripe events are never larger
 
+// planCreditAllowance maps plan IDs to their monthly credit allowance.
+var planCreditAllowance = map[string]int{
+	"free":    3,
+	"pro":     100,
+	"proplus": 300,
+}
+
+// getCreditAllowance returns the monthly credit allowance for the given plan.
+// Defaults to 100 if the plan is unknown (safe fallback for paid plans).
+func getCreditAllowance(planID string) int {
+	if allowance, ok := planCreditAllowance[planID]; ok {
+		return allowance
+	}
+	return 100
+}
+
 // HandleStripeWebhook handles POST /api/billing/webhook.
 // It verifies the Stripe signature and dispatches to the appropriate event handler.
 func HandleStripeWebhook(cfg Config, db *SupabaseClient) http.HandlerFunc {
@@ -201,14 +217,15 @@ func handleCheckoutSessionCompleted(ctx context.Context, db *SupabaseClient, ses
 		return err
 	}
 
-	if err := db.SetSubscriptionCredits(ctx, userID, 100); err != nil {
+	allowance := getCreditAllowance(planID)
+	if err := db.SetSubscriptionCredits(ctx, userID, allowance); err != nil {
 		return fmt.Errorf("subscription activation: set credits: %w", err)
 	}
-	if err := db.RecordCreditTransaction(ctx, userID, 100, "subscription_renewal", "subscription", stripeSubID, "Subscription activated"); err != nil {
+	if err := db.RecordCreditTransaction(ctx, userID, allowance, "subscription_renewal", "subscription", stripeSubID, "Subscription activated"); err != nil {
 		return fmt.Errorf("subscription activation: record transaction: %w", err)
 	}
 
-	slog.Info("webhook: subscription activated", "userID", userID, "planID", planID, "stripeSubID", stripeSubID)
+	slog.Info("webhook: subscription activated", "userID", userID, "planID", planID, "credits", allowance, "stripeSubID", stripeSubID)
 	return nil
 }
 
@@ -294,14 +311,15 @@ func handleInvoicePaid(ctx context.Context, db *SupabaseClient, inv *stripe.Invo
 		return nil
 	}
 
-	if err := db.SetSubscriptionCredits(ctx, sub.UserID, 100); err != nil {
+	allowance := getCreditAllowance(sub.PlanID)
+	if err := db.SetSubscriptionCredits(ctx, sub.UserID, allowance); err != nil {
 		return fmt.Errorf("invoice paid: set subscription credits: %w", err)
 	}
-	if err := db.RecordCreditTransaction(ctx, sub.UserID, 100, "subscription_renewal", "subscription", stripeSubID, "Subscription renewed"); err != nil {
+	if err := db.RecordCreditTransaction(ctx, sub.UserID, allowance, "subscription_renewal", "subscription", stripeSubID, "Subscription renewed"); err != nil {
 		return fmt.Errorf("invoice paid: record transaction: %w", err)
 	}
 
-	slog.Info("webhook: subscription credits renewed", "userID", sub.UserID, "stripeSubID", stripeSubID, "invoiceID", inv.ID)
+	slog.Info("webhook: subscription credits renewed", "userID", sub.UserID, "planID", sub.PlanID, "credits", allowance, "stripeSubID", stripeSubID, "invoiceID", inv.ID)
 	return nil
 }
 
