@@ -129,7 +129,7 @@ This plan implements the subscription management feature that extends the `/pric
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Integrate subscription management into pricing page
-  - [ ] 7.1 Update /pricing +page.svelte with conditional rendering
+  - [x] 7.1 Update /pricing +page.svelte with conditional rendering
     - Import billingStore, check `isPaidPlan` to decide which view to render
     - If `isPaidPlan`: render Subscription Management UI with responsive grid (`lg:grid-cols-5`)
     - If `!isPaidPlan`: render existing PricingHeaderSection + PricingPlansSection
