@@ -11,8 +11,10 @@ function createBillingStore() {
 	let hasError = $state(false);
 	let pendingDeductUntil = 0; // timestamp until which server values higher than local are ignored
 
+	const isCancellingPlan = $derived(planStatus === 'cancelling');
 	const isFreeUser = $derived(
-		planId === 'free' || planStatus === 'cancelled' || planStatus === 'free'
+		!isCancellingPlan &&
+			(planId === 'free' || planStatus === 'cancelled' || planStatus === 'free')
 	);
 	const isPaidPlan = $derived(
 		(planStatus === 'active' || planStatus === 'trialing') &&
@@ -116,6 +118,9 @@ function createBillingStore() {
 		},
 		get hasError() {
 			return hasError;
+		},
+		get isCancellingPlan() {
+			return isCancellingPlan;
 		},
 		get isFreeUser() {
 			return isFreeUser;

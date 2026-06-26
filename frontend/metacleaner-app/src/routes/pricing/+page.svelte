@@ -47,13 +47,7 @@
 
 	const subscription = $derived(authStore.subscription);
 
-	const isCancelledWithFutureAccess = $derived(
-		billingStore.planStatus === 'cancelled' &&
-			!!subscription?.current_period_end &&
-			new Date(subscription.current_period_end) > new Date()
-	);
-
-	const showManagementUI = $derived(billingStore.isPaidPlan || isCancelledWithFutureAccess);
+	const showManagementUI = $derived(billingStore.isPaidPlan);
 	const showSkeleton = $derived(billingStore.isLoading && billingStore.credits === null);
 
 	const currentPlanData = $derived(plans.find((p) => p.id === billingStore.planId));
@@ -345,15 +339,6 @@
 					</span>
 				</div>
 			</div>
-
-			{#if isCancelledWithFutureAccess}
-				<div
-					class="mb-6 flex items-center gap-2 rounded-xl bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400"
-				>
-					<i class="fa-solid fa-circle-info"></i>
-					{tx('subscription.management.cancelledNotice', { date: formattedPeriodEnd() })}
-				</div>
-			{/if}
 
 			<div class="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-6">
 				<!-- Left column: current plan + cancel -->

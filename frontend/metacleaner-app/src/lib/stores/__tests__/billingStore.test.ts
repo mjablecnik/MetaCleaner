@@ -314,6 +314,50 @@ describe('billingStore', () => {
 		expect(billingStore.isPaidPlan).toBe(false);
 	});
 
+	it('isCancellingPlan is true when planStatus is cancelling', async () => {
+		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelling' }));
+		mockGetCredits.mockResolvedValue(makeCredResponse());
+		await billingStore.refresh();
+
+		expect(billingStore.isCancellingPlan).toBe(true);
+	});
+
+	it('isCancellingPlan is false for active plan', async () => {
+		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'active' }));
+		mockGetCredits.mockResolvedValue(makeCredResponse());
+		await billingStore.refresh();
+
+		expect(billingStore.isCancellingPlan).toBe(false);
+	});
+
+	it('isFreeUser is false when planStatus is cancelling', async () => {
+		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelling' }));
+		mockGetCredits.mockResolvedValue(makeCredResponse());
+		await billingStore.refresh();
+
+		expect(billingStore.isFreeUser).toBe(false);
+	});
+
+	it('isPaidPlan is false for cancelling subscription', async () => {
+		mockGetSubscription.mockResolvedValue(
+			makeSubResponse({ plan_id: 'pro', status: 'cancelling' })
+		);
+		mockGetCredits.mockResolvedValue(makeCredResponse());
+		await billingStore.refresh();
+
+		expect(billingStore.isPaidPlan).toBe(false);
+	});
+
+	it('monthlyAllowance is preserved at paid level for cancelling pro plan', async () => {
+		mockGetSubscription.mockResolvedValue(
+			makeSubResponse({ plan_id: 'pro', status: 'cancelling' })
+		);
+		mockGetCredits.mockResolvedValue(makeCredResponse());
+		await billingStore.refresh();
+
+		expect(billingStore.monthlyAllowance).toBe(100);
+	});
+
 	it('isPaidPlan is false for cancelled subscription', async () => {
 		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelled' }));
 		mockGetCredits.mockResolvedValue(makeCredResponse());
