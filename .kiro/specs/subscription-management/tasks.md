@@ -65,10 +65,18 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - _Requirements: 12.1, 12.2_
 
 - [ ] 6. Implement new UI components
+  - [ ] 6.0 Add missing CSS tokens to `layout.css`
+    - Add `--shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.15);` to the shadows section in `src/routes/layout.css`
+    - Add a `.stripe-bg` utility class (either in `layout.css` or as a component-scoped style): `background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(249, 115, 22, 0.04) 6px, rgba(249, 115, 22, 0.04) 12px);`
+    - Add a `.progress-bar-orange` utility class: `background: linear-gradient(90deg, #f97316, #fb923c); border-radius: 999px;`
+    - These are required by the design mockups and do not exist in the current theme
+    - _Requirements: 4.1, 5.2_
+
   - [ ] 6.1 Create `CancellationBanner.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/CancellationBanner.svelte`
     - Props: `periodEndDate: string`, `onReactivate: () => void`
-    - Orange border, clock icon, "Subscription was cancelled" title, access end date
+    - Orange border, stripe-bg background, clock icon, "Subscription was cancelled" title, access end date
+    - Desktop: includes a "Downgrade na Free: {date}" info chip (with calendar-xmark icon) next to the green "Reactivate" button
     - Desktop: inline green "Reactivate" button; Mobile: full-width green button below text
     - Use `tx()` for all text
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
@@ -127,7 +135,8 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Props: subscription data, billing store values, locale
     - Compose: CancellationBanner, page header with orange crown + badge, two-column grid
     - Left column: CancellingPlanCard, WhatHappensAfterCard
-    - Right column: CountdownCard, ReactivateCard, UsageStatsCard (existing, with cancelling variant styling)
+    - Right column: CountdownCard, ReactivateCard, cancelling-specific usage stats (inline, NOT the existing UsageStatsCard — see below)
+    - The usage stats section in the right column uses **cancelling-specific styling**: remaining credits in `text-brand-orange` (not green), expiration date in `text-brand-red` (not muted), "Propadnutí" label instead of "Next renewal". Desktop: 2×2 grid. Mobile: 4-column grid with compact cells. Implement this inline in CancellingView or as a small sub-section — do NOT modify the existing `UsageStatsCard.svelte`.
     - Manage ReactivateModal state (open/close/loading/error)
     - Call `billingClient.reactivateSubscription()` on confirm, then `billingStore.refresh()`
     - On successful reactivation, the view will naturally switch to active management UI via store reactivity
@@ -185,7 +194,7 @@ The `.design` mockups define only the **main content area** (the `<main>` sectio
 {
   "waves": [
     { "id": 0, "tasks": ["1.1", "2.1", "4.1", "5.1", "5.2"] },
-    { "id": 1, "tasks": ["1.2", "2.2", "4.2"] },
+    { "id": 1, "tasks": ["1.2", "2.2", "4.2", "6.0"] },
     { "id": 2, "tasks": ["6.1", "6.2", "6.3", "6.4", "6.5", "6.6"] },
     { "id": 3, "tasks": ["7.1"] },
     { "id": 4, "tasks": ["8.1"] }
