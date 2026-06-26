@@ -936,6 +936,9 @@
 	"subscription.cancelling.modal.confirmButton": "Potvrdit obnovení",
 	"subscription.cancelling.modal.error": "Obnovení se nezdařilo. Zkuste to prosím znovu.",
 	"emailChanged.meta.title": "E-mail změněn — MetaCleaner",
+	"emailChanged.nav.updated": "Změněno",
+	"emailChanged.nav.emailUpdated": "E-mail aktualizován",
+	"emailChanged.nav.failed": "Chyba",
 	"emailChanged.success.title": "E-mail byl úspěšně změněn!",
 	"emailChanged.success.description": "Vaše e-mailová adresa byla aktualizována. Nyní se můžete přihlásit novým e-mailem.",
 	"emailChanged.success.goToSettings": "Přejít do nastavení",
@@ -944,5 +947,16 @@
 	"emailChanged.error.title": "Změna e-mailu se nezdařila",
 	"emailChanged.error.expired": "Ověřovací odkaz vypršel nebo je neplatný. Požádejte prosím o novou změnu e-mailu v Nastavení.",
 	"emailChanged.error.generic": "Při změně e-mailu došlo k chybě. Zkuste to prosím znovu.",
-	"emailChanged.error.tryAgain": "Přejít do nastavení"
+	"emailChanged.error.tryAgain": "Přejít do nastavení",
+	"emailChanged.desktop.headline": "Váš e-mail byl",
+	"emailChanged.desktop.headlineHighlight": "aktualizován!",
+	"emailChanged.desktop.description": "Vaše e-mailová adresa byla úspěšně změněna. Všechna budoucí oznámení a přihlášení budou používat novou adresu.",
+	"emailChanged.desktop.errorHeadline": "Něco se",
+	"emailChanged.desktop.errorHighlight": "nepovedlo",
+	"emailChanged.info.loginTitle": "Přihlášení novým e-mailem",
+	"emailChanged.info.loginDesc": "Pro budoucí přihlášení použijte novou e-mailovou adresu",
+	"emailChanged.info.securityTitle": "Účet zabezpečen",
+	"emailChanged.info.securityDesc": "Bezpečnostní nastavení vašeho účtu zůstává beze změn",
+	"emailChanged.divider.nextSteps": "další kroky",
+	"emailChanged.divider.whatNow": "co teď?"
 }

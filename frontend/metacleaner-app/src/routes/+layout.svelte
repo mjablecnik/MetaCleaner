@@ -111,7 +111,7 @@
 			<i class="fa-solid fa-spinner fa-spin text-2xl text-brand-blue"></i>
 		</div>
 	{:else}
-		{#if !page.route.id?.startsWith('/(auth)')}
+		{#if !page.route.id?.startsWith('/(auth)') && page.route.id !== '/email-changed'}
 			<NavBar {user} {langOptions} {...navProps} onLogout={() => authStore.logout()} />
 		{/if}
 		{@render children()}

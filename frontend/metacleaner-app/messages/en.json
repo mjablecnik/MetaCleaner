@@ -936,6 +936,9 @@
 	"subscription.cancelling.modal.confirmButton": "Confirm reactivation",
 	"subscription.cancelling.modal.error": "Reactivation failed. Please try again.",
 	"emailChanged.meta.title": "Email Changed — MetaCleaner",
+	"emailChanged.nav.updated": "Updated",
+	"emailChanged.nav.emailUpdated": "Email updated",
+	"emailChanged.nav.failed": "Failed",
 	"emailChanged.success.title": "Email changed successfully!",
 	"emailChanged.success.description": "Your email address has been updated. You can now sign in with your new email.",
 	"emailChanged.success.goToSettings": "Go to settings",
@@ -944,5 +947,16 @@
 	"emailChanged.error.title": "Email change failed",
 	"emailChanged.error.expired": "The verification link has expired or is invalid. Please request a new email change from Settings.",
 	"emailChanged.error.generic": "An error occurred while changing your email. Please try again.",
-	"emailChanged.error.tryAgain": "Go to settings"
+	"emailChanged.error.tryAgain": "Go to settings",
+	"emailChanged.desktop.headline": "Your email is",
+	"emailChanged.desktop.headlineHighlight": "updated!",
+	"emailChanged.desktop.description": "Your email address has been successfully changed. All future notifications and login will use the new address.",
+	"emailChanged.desktop.errorHeadline": "Something went",
+	"emailChanged.desktop.errorHighlight": "wrong",
+	"emailChanged.info.loginTitle": "Sign in with new email",
+	"emailChanged.info.loginDesc": "Use your new email address for all future logins",
+	"emailChanged.info.securityTitle": "Account secured",
+	"emailChanged.info.securityDesc": "Your account security settings remain unchanged",
+	"emailChanged.divider.nextSteps": "next steps",
+	"emailChanged.divider.whatNow": "what now?"
 }
