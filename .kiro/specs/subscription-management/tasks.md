@@ -39,7 +39,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Add `mux.Handle("POST /api/billing/reactivate", rateLimited(HandleReactivateSubscription(cfg, db)))` in the billing routes section
     - _Requirements: 10.1_
 
-- [ ] 3. Checkpoint — Ensure backend compiles
+- [x] 3. Checkpoint — Ensure backend compiles
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Extend frontend billing client and types
