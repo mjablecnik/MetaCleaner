@@ -473,6 +473,30 @@ func (c *SupabaseAuthClient) UpdateProfile(ctx context.Context, userID, firstNam
 	return &profiles[0], nil
 }
 
+// UpdateProfileEmail updates only the email field in the profiles table.
+func (c *SupabaseAuthClient) UpdateProfileEmail(ctx context.Context, userID, email string) error {
+	payload := map[string]interface{}{
+		"email": email,
+	}
+	data, _ := json.Marshal(payload)
+	req, err := c.newAdminRequest(ctx, http.MethodPatch, c.restURL("profiles?id=eq."+userID), bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Prefer", "return=minimal")
+
+	resp, err := c.doWithTimeout(req)
+	if err != nil {
+		return fmt.Errorf("update profile email: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("update profile email: status %d: %s", resp.StatusCode, body)
+	}
+	return nil
+}
+
 // AdminUpdateUser updates a user's attributes via the Supabase Admin API.
 // attrs may include "email", "password", or "user_metadata".
 func (c *SupabaseAuthClient) AdminUpdateUser(ctx context.Context, userID string, attrs map[string]interface{}) (*SupabaseAuthUser, error) {

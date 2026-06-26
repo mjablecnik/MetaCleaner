@@ -86,9 +86,14 @@ func HandleChangeEmail(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 
+		// Also update email in the profiles table so profile reads return the new email.
+		if err := authClient.UpdateProfileEmail(r.Context(), userID, newEmail); err != nil {
+			LoggerFromContext(r.Context()).Warn("change-email: failed to update profiles table", "userId", userID, "error", err)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Verification email sent"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Email changed successfully"})
 	}
 }
 
