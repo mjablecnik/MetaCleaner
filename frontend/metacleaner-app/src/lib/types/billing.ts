@@ -6,6 +6,7 @@ export interface SubscriptionStatus {
 	subscription_credits: number;
 	purchased_credits: number;
 	total_credits: number;
+	payment_method?: string | null;
 }
 
 export interface CheckoutResponse {

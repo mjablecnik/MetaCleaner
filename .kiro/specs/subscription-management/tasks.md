@@ -64,7 +64,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use the design mockup text as reference for Czech strings
     - _Requirements: 12.1, 12.2_
 
-- [ ] 6. Implement new UI components
+- [x] 6. Implement new UI components
   - [x] 6.0 Add missing CSS tokens to `layout.css`
     - Add `--shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.15);` to the shadows section in `src/routes/layout.css`
     - Add a `.stripe-bg` utility class (either in `layout.css` or as a component-scoped style): `background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(249, 115, 22, 0.04) 6px, rgba(249, 115, 22, 0.04) 12px);`
@@ -150,7 +150,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Import CancellingView component
     - _Requirements: 2.1, 2.2, 2.3_
 
-- [ ] 9. Final checkpoint — Ensure all tests pass
+- [x] 9. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

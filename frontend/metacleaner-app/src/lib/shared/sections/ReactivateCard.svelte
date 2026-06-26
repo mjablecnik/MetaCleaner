@@ -11,7 +11,7 @@
 		onReactivate: () => void;
 	}
 
-	const { planId, price, billingPeriod, periodEndDate, onReactivate }: Props = $props();
+	const { planId, price, billingPeriod: _billingPeriod, periodEndDate, onReactivate }: Props = $props();
 
 	const PLAN_LABELS: Record<string, string> = { pro: 'Pro', proplus: 'Pro+', free: 'Free' };
 	const planLabel = $derived(PLAN_LABELS[planId] ?? planId);
