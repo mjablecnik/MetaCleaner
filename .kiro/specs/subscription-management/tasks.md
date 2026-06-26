@@ -81,7 +81,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [ ] 6.2 Create `CancellingPlanCard.svelte`
+  - [x] 6.2 Create `CancellingPlanCard.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/CancellingPlanCard.svelte`
     - Props: `planId, price, monthlyAllowance, creditsUsed, creditsRemaining, periodEndDate, features`
     - Orange border with "Expiring plan" badge, plan name with "Cancelled" tag, price crossed out
