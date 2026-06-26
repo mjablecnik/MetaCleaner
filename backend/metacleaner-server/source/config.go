@@ -45,6 +45,8 @@ type Config struct {
 	StripePriceProPlusMonth  string
 	StripePriceProPlusYear   string
 	StripePriceCreditPack    string
+	BrevoAPIKey              string
+	BrevoSenderEmail         string
 }
 
 func LoadConfig() (Config, error) {
@@ -120,6 +122,11 @@ func LoadConfig() (Config, error) {
 	cfg.StripePriceProPlusMonth = os.Getenv("STRIPE_PRICE_PROPLUS_MONTH")
 	cfg.StripePriceProPlusYear = os.Getenv("STRIPE_PRICE_PROPLUS_YEAR")
 	cfg.StripePriceCreditPack = os.Getenv("STRIPE_PRICE_CREDIT_PACK")
+	cfg.BrevoAPIKey = os.Getenv("BREVO_API_KEY")
+	cfg.BrevoSenderEmail = os.Getenv("BREVO_SENDER_EMAIL")
+	if cfg.BrevoSenderEmail == "" {
+		cfg.BrevoSenderEmail = "noreply@metacleaner.app"
+	}
 
 	if cfg.SupabaseURL == "" {
 		return Config{}, &ErrConfig{

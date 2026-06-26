@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
+	import { page } from '$app/state';
+	import { onMount } from 'svelte';
 	import Badge from '$lib/shared/elements/Badge.svelte';
 	import Button from '$lib/shared/elements/Button.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
@@ -25,7 +27,7 @@
 		showCreateKeyModal = false;
 	}
 
-	function triggerToast(msg: string) {
+	function triggerToast(msg: string, _variant: 'success' | 'error' = 'success') {
 		toastMessage = msg;
 		showToast = true;
 		clearTimeout(toastTimer);
@@ -33,6 +35,32 @@
 			showToast = false;
 		}, 3000);
 	}
+
+	onMount(() => {
+		const params = page.url.searchParams;
+
+		if (params.get('email_changed') === 'true') {
+			triggerToast(tx('settings.account.emailChangedSuccess'));
+			// Clean up the URL
+			const clean = new URL(window.location.href);
+			clean.searchParams.delete('email_changed');
+			history.replaceState(null, '', clean.toString());
+		}
+
+		const emailError = params.get('email_change_error');
+		if (emailError) {
+			const errorMessages: Record<string, string> = {
+				missing_token: tx('settings.account.emailChangeErrorExpired'),
+				invalid_or_expired_token: tx('settings.account.emailChangeErrorExpired'),
+				update_failed: tx('settings.error.unknown')
+			};
+			triggerToast(errorMessages[emailError] ?? tx('settings.error.unknown'), 'error');
+			// Clean up the URL
+			const clean = new URL(window.location.href);
+			clean.searchParams.delete('email_change_error');
+			history.replaceState(null, '', clean.toString());
+		}
+	});
 </script>
 
 <svelte:head>

@@ -237,6 +237,22 @@ func HandleMe(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 
+		// Lazy sync: if the user confirmed an email change via Supabase Auth,
+		// the auth email may differ from the profiles table. Sync it here.
+		authHeader := r.Header.Get("Authorization")
+		if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+			accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+			if authUser, err := authClient.GetUser(r.Context(), accessToken); err == nil && authUser != nil {
+				if authUser.Email != "" && authUser.Email != profile.Email {
+					if syncErr := authClient.UpdateProfileEmail(r.Context(), userID, authUser.Email); syncErr == nil {
+						profile.Email = authUser.Email
+					} else {
+						LoggerFromContext(r.Context()).Warn("me: failed to sync email to profiles", "userId", userID, "error", syncErr)
+					}
+				}
+			}
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(profile)

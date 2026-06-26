@@ -2,6 +2,7 @@ package source
 
 import (
 	"net/http"
+	"time"
 )
 
 // NewRouter builds and returns the HTTP mux with all routes registered.
@@ -20,6 +21,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// Job worker pool — limits concurrent pipeline executions.
 	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
+	// Email change verification store (tokens valid for 1 hour).
+	emailChangeStore := newEmailChangeStore(1 * time.Hour)
+
 	// --- Auth routes ---
 	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient, db)))
 	mux.Handle("POST /api/auth/login", authRateLimited(HandleLogin(authClient)))
@@ -27,7 +31,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/auth/refresh", HandleRefresh(authClient))
 	mux.Handle("GET /api/auth/me", HandleMe(authClient))
 	mux.Handle("PATCH /api/auth/profile", HandleUpdateProfile(authClient))
-	mux.Handle("POST /api/auth/change-email", HandleChangeEmail(authClient))
+	mux.Handle("POST /api/auth/change-email", HandleChangeEmail(cfg, authClient, emailChangeStore))
 	mux.Handle("POST /api/auth/change-password", HandleChangePassword(authClient))
 	mux.Handle("DELETE /api/auth/account", HandleDeleteAccount(authClient))
 	mux.Handle("POST /api/auth/forgot-password", authRateLimited(HandleForgotPassword(authClient)))
@@ -52,6 +56,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /api/reports/{id}/pdf", HandleGetReportPDF(db))
 	mux.Handle("GET /api/public/reports/{id}", HandleGetPublicReport(db))
 	mux.Handle("GET /api/public/reports/{id}/pdf", HandleGetPublicReportPDF(db))
+	mux.Handle("GET /api/auth/confirm-email-change", HandleConfirmEmailChange(cfg, authClient, emailChangeStore))
 
 	// --- Billing routes ---
 	mux.Handle("POST /api/billing/checkout", rateLimited(HandleCreateCheckout(cfg, db, authClient)))

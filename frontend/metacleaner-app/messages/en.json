@@ -763,6 +763,8 @@
 	"settings.account.saveButton": "Save changes",
 	"settings.account.emailChangeButton": "Change email",
 	"settings.account.emailChangeInfo": "Verification email sent. Please check your inbox.",
+	"settings.account.emailChangedSuccess": "Email changed successfully!",
+	"settings.account.emailChangeErrorExpired": "Verification link has expired. Please request a new email change.",
 	"settings.account.fetchError": "Failed to load profile. Please try again.",
 	"settings.account.retry": "Retry",
 	"settings.validation.nameRequired": "Name is required",

@@ -763,6 +763,8 @@
 	"settings.account.saveButton": "Uložit změny",
 	"settings.account.emailChangeButton": "Změnit e-mail",
 	"settings.account.emailChangeInfo": "Ověřovací e-mail byl odeslán. Zkontrolujte svou e-mailovou schránku.",
+	"settings.account.emailChangedSuccess": "E-mail byl úspěšně změněn!",
+	"settings.account.emailChangeErrorExpired": "Ověřovací odkaz vypršel. Požádejte prosím o novou změnu e-mailu.",
 	"settings.account.fetchError": "Nepodařilo se načíst profil. Zkuste to znovu.",
 	"settings.account.retry": "Zkusit znovu",
 	"settings.validation.nameRequired": "Jméno je povinné",

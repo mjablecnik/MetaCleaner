@@ -47,56 +47,6 @@ func HandleUpdateProfile(authClient *SupabaseAuthClient) http.HandlerFunc {
 	}
 }
 
-// HandleChangeEmail handles POST /api/auth/change-email.
-// Validates the new email and initiates a Supabase email change (sends verification email).
-func HandleChangeEmail(authClient *SupabaseAuthClient) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		userID := UserIDFromContext(r.Context())
-		if userID == "" {
-			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
-			return
-		}
-
-		var req ChangeEmailRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
-			return
-		}
-
-		newEmail := strings.TrimSpace(req.NewEmail)
-		if newEmail == "" || !emailRegex.MatchString(newEmail) {
-			WriteError(w, http.StatusBadRequest, ErrAuthInvalidEmail, "invalid email format")
-			return
-		}
-
-		if _, err := authClient.AdminUpdateUser(r.Context(), userID, map[string]interface{}{
-			"email": newEmail,
-		}); err != nil {
-			if authErr, ok := err.(*SupabaseAuthError); ok {
-				if isEmailExistsError(authErr) {
-					WriteError(w, http.StatusConflict, ErrAuthEmailExists, "an account with this email already exists")
-					return
-				}
-				if authErr.StatusCode >= 500 {
-					WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
-					return
-				}
-			}
-			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
-			return
-		}
-
-		// Also update email in the profiles table so profile reads return the new email.
-		if err := authClient.UpdateProfileEmail(r.Context(), userID, newEmail); err != nil {
-			LoggerFromContext(r.Context()).Warn("change-email: failed to update profiles table", "userId", userID, "error", err)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Email changed successfully"})
-	}
-}
-
 // HandleChangePassword handles POST /api/auth/change-password.
 // Verifies the current password via Supabase sign-in, then updates to the new password.
 func HandleChangePassword(authClient *SupabaseAuthClient) http.HandlerFunc {
