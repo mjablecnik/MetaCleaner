@@ -17,6 +17,7 @@
 	import CancelSection from '$lib/shared/sections/CancelSection.svelte';
 	import UsageStatsCard from '$lib/shared/sections/UsageStatsCard.svelte';
 	import ConfirmationModal from '$lib/shared/sections/ConfirmationModal.svelte';
+	import CancellingView from '$lib/shared/sections/CancellingView.svelte';
 	import { formatDate } from '$lib/shared/utils/planHierarchy';
 
 	let { data } = $props();
@@ -301,6 +302,18 @@
 					{tx('subscription.management.retry')}
 				</button>
 			</div>
+		{:else if billingStore.isCancellingPlan}
+			<!-- Ending Subscription (Cancelling State) -->
+			<CancellingView
+				planId={billingStore.planId}
+				price={currentPlanPrice()}
+				billingPeriod={subscription?.billing_period ?? 'monthly'}
+				periodEndDate={subscription?.current_period_end ?? ''}
+				monthlyAllowance={billingStore.monthlyAllowance}
+				{creditsUsed}
+				{creditsRemaining}
+				features={currentFeatures()}
+			/>
 		{:else if showManagementUI}
 			<!-- Subscription Management UI -->
 

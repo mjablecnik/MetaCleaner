@@ -142,8 +142,8 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - On successful reactivation, the view will naturally switch to active management UI via store reactivity
     - _Requirements: 2.1, 2.2, 2.3, 7.3, 8.1, 8.2_
 
-- [ ] 8. Integrate CancellingView into pricing page routing
-  - [ ] 8.1 Add the third branch for `isCancellingPlan` in the pricing page
+- [x] 8. Integrate CancellingView into pricing page routing
+  - [x] 8.1 Add the third branch for `isCancellingPlan` in the pricing page
     - In `+page.svelte`, add a new conditional branch after the error state and before `showManagementUI`
     - When `billingStore.isCancellingPlan === true`, render `<CancellingView>`
     - Pass all required props from billingStore and authStore.subscription
