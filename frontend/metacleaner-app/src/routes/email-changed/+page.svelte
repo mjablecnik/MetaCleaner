@@ -47,14 +47,21 @@
 				{tx('emailChanged.success.description')}
 			</p>
 			<div class="flex flex-col gap-3">
-				<Button variant="primary" fullWidth onclick={goToSettings}>
-					<i class="fa-solid fa-gear"></i>
-					{tx('emailChanged.success.goToSettings')}
-				</Button>
-				<Button variant="secondary" fullWidth onclick={goHome}>
-					<i class="fa-solid fa-home"></i>
-					{tx('emailChanged.success.goHome')}
-				</Button>
+				{#if isLoggedIn}
+					<Button variant="primary" fullWidth onclick={goToSettings}>
+						<i class="fa-solid fa-gear"></i>
+						{tx('emailChanged.success.goToSettings')}
+					</Button>
+					<Button variant="secondary" fullWidth onclick={goHome}>
+						<i class="fa-solid fa-home"></i>
+						{tx('emailChanged.success.goHome')}
+					</Button>
+				{:else}
+					<Button variant="primary" fullWidth onclick={goToLogin}>
+						<i class="fa-solid fa-right-to-bracket"></i>
+						{tx('emailChanged.success.goToLogin')}
+					</Button>
+				{/if}
 			</div>
 		{:else}
 			<!-- Error state -->
@@ -74,14 +81,17 @@
 				{/if}
 			</p>
 			<div class="flex flex-col gap-3">
-				<Button variant="primary" fullWidth onclick={goToSettings}>
-					<i class="fa-solid fa-rotate-right"></i>
-					{tx('emailChanged.error.tryAgain')}
-				</Button>
-				<Button variant="secondary" fullWidth onclick={goHome}>
-					<i class="fa-solid fa-home"></i>
-					{tx('emailChanged.success.goHome')}
-				</Button>
+				{#if isLoggedIn}
+					<Button variant="primary" fullWidth onclick={goToSettings}>
+						<i class="fa-solid fa-rotate-right"></i>
+						{tx('emailChanged.error.tryAgain')}
+					</Button>
+				{:else}
+					<Button variant="primary" fullWidth onclick={goToLogin}>
+						<i class="fa-solid fa-right-to-bracket"></i>
+						{tx('emailChanged.success.goToLogin')}
+					</Button>
+				{/if}
 			</div>
 		{/if}
 	</div>

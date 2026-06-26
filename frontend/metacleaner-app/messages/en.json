@@ -940,6 +940,7 @@
 	"emailChanged.success.description": "Your email address has been updated. You can now sign in with your new email.",
 	"emailChanged.success.goToSettings": "Go to settings",
 	"emailChanged.success.goHome": "Go to home",
+	"emailChanged.success.goToLogin": "Sign in",
 	"emailChanged.error.title": "Email change failed",
 	"emailChanged.error.expired": "The verification link has expired or is invalid. Please request a new email change from Settings.",
 	"emailChanged.error.generic": "An error occurred while changing your email. Please try again.",

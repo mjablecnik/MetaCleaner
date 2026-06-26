@@ -940,6 +940,7 @@
 	"emailChanged.success.description": "Vaše e-mailová adresa byla aktualizována. Nyní se můžete přihlásit novým e-mailem.",
 	"emailChanged.success.goToSettings": "Přejít do nastavení",
 	"emailChanged.success.goHome": "Přejít na úvodní stránku",
+	"emailChanged.success.goToLogin": "Přihlásit se",
 	"emailChanged.error.title": "Změna e-mailu se nezdařila",
 	"emailChanged.error.expired": "Ověřovací odkaz vypršel nebo je neplatný. Požádejte prosím o novou změnu e-mailu v Nastavení.",
 	"emailChanged.error.generic": "Při změně e-mailu došlo k chybě. Zkuste to prosím znovu.",
