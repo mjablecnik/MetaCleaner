@@ -118,7 +118,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 9.1, 9.2_
 
-  - [ ] 6.6 Create `ReactivateModal.svelte`
+  - [x] 6.6 Create `ReactivateModal.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/ReactivateModal.svelte`
     - Props: `planId, price, billingPeriod, periodEndDate, onConfirm, onCancel, isLoading, error`
     - Display plan name/price, "€0 charge today", next payment date
