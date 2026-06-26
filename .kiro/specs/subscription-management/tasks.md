@@ -85,8 +85,8 @@ This plan implements the subscription management feature that extends the `/pric
     - For any non-negative `subscriptionCredits`, `purchasedCredits`, `monthlyAllowance`: verify `creditsConsumed = Math.max(0, monthlyAllowance - (subscriptionCredits + purchasedCredits))` and `creditsRemaining = subscriptionCredits + purchasedCredits`
     - **Validates: Requirements 6.1**
 
-- [ ] 5. Implement subscription management components
-  - [ ] 5.1 Create ConfirmationModal.svelte in src/lib/shared/sections/
+- [x] 5. Implement subscription management components
+  - [x] 5.1 Create ConfirmationModal.svelte in src/lib/shared/sections/
     - Accept props: `title`, `content` (Svelte snippet), `confirmLabel`, `cancelLabel`, `confirmStyle`, `isLoading`, `error`, `onConfirm`, `onCancel`
     - Desktop: centered dialog overlay (max-w-[480px], rounded-2xl, fade-in 200ms)
     - Mobile: bottom sheet (rounded-t-2xl, slide-up 300ms)
@@ -95,7 +95,7 @@ This plan implements the subscription management feature that extends the `/pric
     - Loading state: spinner on confirm button, both buttons disabled
     - Error display below action buttons
     - _Requirements: 7.3, 7.4, 11.3_
-  - [ ] 5.2 Create CurrentPlanCard.svelte in src/lib/shared/sections/
+  - [x] 5.2 Create CurrentPlanCard.svelte in src/lib/shared/sections/
     - Display plan name, price (locale-formatted), billing period
     - Credit usage bar with percentage-width fill (clamped [0, 100])
     - Credits used / remaining / renewal date text
@@ -104,22 +104,22 @@ This plan implements the subscription management feature that extends the `/pric
     - Skeleton state when loading
     - Warning indicator on stale data
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9_
-  - [ ] 5.3 Create UpgradeCard.svelte in src/lib/shared/sections/
+  - [x] 5.3 Create UpgradeCard.svelte in src/lib/shared/sections/
     - Display target plan name, price, differential features gained
     - Upgrade button triggers `onUpgrade` callback
     - Not rendered when user is on highest plan (Pro+)
     - _Requirements: 3.1, 3.2, 3.9_
-  - [ ] 5.4 Create DowngradeCard.svelte in src/lib/shared/sections/
+  - [x] 5.4 Create DowngradeCard.svelte in src/lib/shared/sections/
     - Display target plan name, price, features lost
     - Downgrade button triggers `onDowngrade` callback
     - Not rendered when user is on lowest paid plan (Pro)
     - _Requirements: 4.1, 4.2, 4.9_
-  - [ ] 5.5 Create CancelSection.svelte in src/lib/shared/sections/
+  - [x] 5.5 Create CancelSection.svelte in src/lib/shared/sections/
     - Warning message about reverting to free plan (3 photos/month, no reports)
     - Cancel button triggers `onCancel` callback
     - Visible only when planStatus is active/trialing with plan_id pro/proplus
     - _Requirements: 5.1, 5.2, 5.9_
-  - [ ] 5.6 Create UsageStatsCard.svelte in src/lib/shared/sections/
+  - [x] 5.6 Create UsageStatsCard.svelte in src/lib/shared/sections/
     - Display credits consumed, credits remaining, monthly allowance, renewal date (locale-formatted)
     - Reactive to billing store updates
     - Skeleton when first loading, warning on stale data
