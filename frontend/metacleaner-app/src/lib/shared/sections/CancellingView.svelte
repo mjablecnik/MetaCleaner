@@ -143,17 +143,11 @@
 			<CountdownCard {periodEndDate} />
 		</div>
 
-		<ReactivateCard
-			{planId}
-			{price}
-			{billingPeriod}
-			{periodEndDate}
-			onReactivate={openModal}
-		/>
+		<ReactivateCard {planId} {price} {billingPeriod} {periodEndDate} onReactivate={openModal} />
 
 		<!-- Cancelling-specific usage stats (inline, not UsageStatsCard) -->
 		<div class="rounded-2xl border border-gray-800 bg-navy-card p-4 lg:p-5">
-			<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
+			<p class="mb-3 text-xs font-semibold tracking-wider text-text-muted uppercase">
 				{tx('subscription.cancelling.usageStats.title')}
 			</p>
 			<!-- Desktop: 2×2 grid -->
@@ -204,7 +198,7 @@
 					</div>
 				</div>
 				<div class="rounded-xl bg-navy-lighter p-2.5 text-center">
-					<div class="text-xs font-black leading-tight text-brand-red">{formattedDate()}</div>
+					<div class="text-xs leading-tight font-black text-brand-red">{formattedDate()}</div>
 					<div class="mt-0.5 text-xs text-text-muted">
 						{tx('subscription.cancelling.usageStats.expiryMobile')}
 					</div>

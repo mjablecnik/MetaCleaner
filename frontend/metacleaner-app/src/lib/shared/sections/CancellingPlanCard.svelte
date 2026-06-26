@@ -71,7 +71,7 @@
 			</p>
 		</div>
 		<div class="text-right">
-			<div class="text-2xl font-black line-through text-text-muted lg:text-3xl">{price}</div>
+			<div class="text-2xl font-black text-text-muted line-through lg:text-3xl">{price}</div>
 			<div class="text-xs text-text-muted lg:text-sm">
 				{tx('subscription.cancelling.planCard.perMonth')}
 			</div>
@@ -89,7 +89,7 @@
 			</span>
 		</div>
 		<div class="h-2.5 w-full overflow-hidden rounded-full bg-navy-lighter">
-			<div class="h-full progress-bar-orange" style="width: {barWidth()}%"></div>
+			<div class="progress-bar-orange h-full" style="width: {barWidth()}%"></div>
 		</div>
 		<p class="mt-1.5 text-xs text-text-muted lg:mt-2">
 			{tx('subscription.cancelling.planCard.photosRemaining', { count: creditsRemaining })}
@@ -112,7 +112,7 @@
 				>
 					<i class="fa-solid fa-check text-xs text-white"></i>
 				</div>
-				<span class="mt-1 whitespace-nowrap text-xs font-semibold text-brand-green">
+				<span class="mt-1 text-xs font-semibold whitespace-nowrap text-brand-green">
 					{tx('subscription.cancelling.planCard.timeline.today')}
 				</span>
 				<span class="text-xs text-text-muted">
@@ -138,7 +138,7 @@
 				>
 					<i class="fa-solid fa-arrow-down text-xs text-white"></i>
 				</div>
-				<span class="mt-1 whitespace-nowrap text-xs font-semibold text-brand-orange">
+				<span class="mt-1 text-xs font-semibold whitespace-nowrap text-brand-orange">
 					{formattedDate()}
 				</span>
 				<span class="text-xs text-text-muted">
@@ -156,7 +156,7 @@
 				>
 					<i class="fa-solid fa-lock text-xs text-text-muted"></i>
 				</div>
-				<span class="mt-1 whitespace-nowrap text-xs font-semibold text-text-muted">
+				<span class="mt-1 text-xs font-semibold whitespace-nowrap text-text-muted">
 					{formattedDate()}
 				</span>
 				<span class="text-xs text-text-muted">

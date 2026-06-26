@@ -48,11 +48,7 @@
 	aria-labelledby="reactivate-modal-title"
 >
 	<!-- Backdrop -->
-	<div
-		class="absolute inset-0 bg-black/70"
-		onclick={handleBackdropClick}
-		role="presentation"
-	></div>
+	<div class="absolute inset-0 bg-black/70" onclick={handleBackdropClick} role="presentation"></div>
 
 	<!-- Dialog -->
 	<div class="relative mx-4 w-full max-w-md rounded-2xl border border-gray-700 bg-navy-card p-6">
@@ -72,9 +68,7 @@
 		</div>
 
 		<!-- Green info box -->
-		<div
-			class="mb-4 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4"
-		>
+		<div class="mb-4 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4">
 			<div class="flex items-start gap-3">
 				<i class="fa-solid fa-circle-check mt-0.5 text-brand-green"></i>
 				<div>
@@ -92,8 +86,7 @@
 		<div class="mb-4 rounded-xl bg-navy-lighter p-4">
 			<div class="mb-2 flex items-center justify-between">
 				<span class="text-sm text-text-muted">{tx('subscription.cancelling.modal.planLabel')}</span>
-				<span class="text-sm font-bold text-brand-green"
-					>{planLabel} — {price}/{billingPeriod}</span
+				<span class="text-sm font-bold text-brand-green">{planLabel} — {price}/{billingPeriod}</span
 				>
 			</div>
 			<div class="mb-2 flex items-center justify-between">
@@ -145,14 +138,12 @@
 	aria-labelledby="reactivate-modal-title-mobile"
 >
 	<!-- Backdrop -->
-	<div
-		class="absolute inset-0 bg-black/75"
-		onclick={handleBackdropClick}
-		role="presentation"
-	></div>
+	<div class="absolute inset-0 bg-black/75" onclick={handleBackdropClick} role="presentation"></div>
 
 	<!-- Bottom sheet -->
-	<div class="relative w-full max-w-lg rounded-t-3xl border-t border-gray-700 bg-navy-card p-6 pb-10">
+	<div
+		class="relative w-full max-w-lg rounded-t-3xl border-t border-gray-700 bg-navy-card p-6 pb-10"
+	>
 		<!-- Drag handle -->
 		<div class="mx-auto mb-5 h-1 w-10 rounded-full bg-gray-600"></div>
 
@@ -172,9 +163,7 @@
 		</div>
 
 		<!-- Green info box -->
-		<div
-			class="mb-4 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4"
-		>
+		<div class="mb-4 rounded-xl border border-brand-green/30 bg-brand-green/10 p-4">
 			<div class="flex items-start gap-3">
 				<i class="fa-solid fa-circle-check mt-0.5 text-brand-green"></i>
 				<div>
@@ -192,8 +181,7 @@
 		<div class="mb-5 rounded-xl bg-navy-lighter p-4">
 			<div class="mb-2 flex items-center justify-between">
 				<span class="text-sm text-text-muted">{tx('subscription.cancelling.modal.planLabel')}</span>
-				<span class="text-sm font-bold text-brand-green"
-					>{planLabel} — {price}/{billingPeriod}</span
+				<span class="text-sm font-bold text-brand-green">{planLabel} — {price}/{billingPeriod}</span
 				>
 			</div>
 			<div class="mb-2 flex items-center justify-between">

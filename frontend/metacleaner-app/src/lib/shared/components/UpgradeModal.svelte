@@ -24,7 +24,7 @@
 			<i class="fa-solid fa-lock text-2xl text-text-muted"></i>
 		</div>
 		<span
-			class="shadow-glow-orange absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-brand-orange to-orange-500 text-[10px] font-black text-white"
+			class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-brand-orange to-orange-500 text-[10px] font-black text-white shadow-glow-orange"
 		>
 			<i class="fa-solid fa-star text-[8px]"></i>
 		</span>
@@ -58,7 +58,7 @@
 	<div class="flex w-full flex-col gap-3">
 		<button
 			onclick={handleUpgrade}
-			class="shadow-glow-orange w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3.5 text-sm font-bold text-white transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
+			class="w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3.5 text-sm font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
 		>
 			{tx('upgradeModal.cta')}
 		</button>

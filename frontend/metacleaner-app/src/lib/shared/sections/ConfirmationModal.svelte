@@ -53,16 +53,10 @@
 	aria-labelledby="modal-title"
 >
 	<!-- Backdrop -->
-	<div
-		class="absolute inset-0 bg-black/70"
-		onclick={handleBackdropClick}
-		role="presentation"
-	></div>
+	<div class="absolute inset-0 bg-black/70" onclick={handleBackdropClick} role="presentation"></div>
 
 	<!-- Dialog -->
-	<div
-		class="relative mx-4 w-full max-w-md rounded-2xl border border-gray-700 bg-navy-card p-6"
-	>
+	<div class="relative mx-4 w-full max-w-md rounded-2xl border border-gray-700 bg-navy-card p-6">
 		<div class="mb-5 flex items-center justify-between">
 			<h2 id="modal-title" class="text-lg font-bold text-white">{title}</h2>
 			<button
@@ -84,7 +78,13 @@
 		{/if}
 
 		<div class="flex flex-col gap-2">
-			<Button variant={confirmVariant()} size="lg" fullWidth disabled={isLoading} onclick={onConfirm}>
+			<Button
+				variant={confirmVariant()}
+				size="lg"
+				fullWidth
+				disabled={isLoading}
+				onclick={onConfirm}
+			>
 				{#if isLoading}
 					<i class="fa-solid fa-spinner fa-spin"></i>
 					{tx('subscription.modal.loading')}
@@ -107,11 +107,7 @@
 	aria-labelledby="modal-title-mobile"
 >
 	<!-- Backdrop -->
-	<div
-		class="absolute inset-0 bg-black/70"
-		onclick={handleBackdropClick}
-		role="presentation"
-	></div>
+	<div class="absolute inset-0 bg-black/70" onclick={handleBackdropClick} role="presentation"></div>
 
 	<!-- Bottom sheet -->
 	<div
@@ -138,7 +134,13 @@
 		{/if}
 
 		<div class="flex flex-col gap-2">
-			<Button variant={confirmVariant()} size="lg" fullWidth disabled={isLoading} onclick={onConfirm}>
+			<Button
+				variant={confirmVariant()}
+				size="lg"
+				fullWidth
+				disabled={isLoading}
+				onclick={onConfirm}
+			>
 				{#if isLoading}
 					<i class="fa-solid fa-spinner fa-spin"></i>
 					{tx('subscription.modal.loading')}

@@ -125,10 +125,7 @@
 				</span>
 			</div>
 			<div class="h-2 w-full overflow-hidden rounded-full bg-navy-lighter lg:h-2.5">
-				<div
-					class="progress-bar h-full"
-					style="width: {barWidth()}%"
-				></div>
+				<div class="progress-bar h-full" style="width: {barWidth()}%"></div>
 			</div>
 			{#if renewalDate}
 				<p class="mt-1.5 text-xs text-text-muted lg:mt-2">

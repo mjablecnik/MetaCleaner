@@ -68,7 +68,7 @@
 		{#if !isPaidPlan}
 			<button
 				onclick={handleUpgrade}
-				class="shadow-glow-orange flex-shrink-0 rounded-lg bg-gradient-to-r from-brand-orange to-orange-500 px-4 py-2 text-xs font-bold text-white transition-all hover:from-orange-500 hover:to-orange-400"
+				class="flex-shrink-0 rounded-lg bg-gradient-to-r from-brand-orange to-orange-500 px-4 py-2 text-xs font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400"
 			>
 				{tx('credits.banner.upgrade')}
 			</button>

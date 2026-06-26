@@ -67,7 +67,7 @@
 		<!-- CTA button -->
 		<button
 			onclick={handleUpgrade}
-			class="shadow-glow-orange w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3 text-sm font-bold text-white transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
+			class="w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3 text-sm font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
 		>
 			{tx('proOverlay.cta')}
 		</button>

@@ -315,7 +315,9 @@ describe('billingStore', () => {
 	});
 
 	it('isCancellingPlan is true when planStatus is cancelling', async () => {
-		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelling' }));
+		mockGetSubscription.mockResolvedValue(
+			makeSubResponse({ plan_id: 'pro', status: 'cancelling' })
+		);
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 
@@ -331,7 +333,9 @@ describe('billingStore', () => {
 	});
 
 	it('isFreeUser is false when planStatus is cancelling', async () => {
-		mockGetSubscription.mockResolvedValue(makeSubResponse({ plan_id: 'pro', status: 'cancelling' }));
+		mockGetSubscription.mockResolvedValue(
+			makeSubResponse({ plan_id: 'pro', status: 'cancelling' })
+		);
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 

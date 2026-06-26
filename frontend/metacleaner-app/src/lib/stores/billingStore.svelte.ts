@@ -13,8 +13,7 @@ function createBillingStore() {
 
 	const isCancellingPlan = $derived(planStatus === 'cancelling');
 	const isFreeUser = $derived(
-		!isCancellingPlan &&
-			(planId === 'free' || planStatus === 'cancelled' || planStatus === 'free')
+		!isCancellingPlan && (planId === 'free' || planStatus === 'cancelled' || planStatus === 'free')
 	);
 	const isPaidPlan = $derived(
 		(planStatus === 'active' || planStatus === 'trialing') &&

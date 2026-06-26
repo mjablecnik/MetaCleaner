@@ -27,14 +27,12 @@
 <div class="relative overflow-hidden rounded-2xl border border-gray-800 bg-navy-card p-5">
 	<!-- Decorative circle (desktop only) -->
 	<div
-		class="absolute top-0 right-0 hidden h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-brand-orange/5 lg:block"
+		class="absolute top-0 right-0 hidden h-24 w-24 translate-x-8 -translate-y-8 rounded-full bg-brand-orange/5 lg:block"
 	></div>
 
 	<!-- Header row -->
 	<div class="mb-1 flex items-center gap-3 lg:mb-1">
-		<div
-			class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
-		>
+		<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20">
 			<i class="fa-solid fa-rocket text-brand-orange"></i>
 		</div>
 		<div>

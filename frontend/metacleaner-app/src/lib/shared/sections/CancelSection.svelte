@@ -28,9 +28,7 @@
 <div class="rounded-2xl border border-gray-800 bg-navy-card p-5">
 	<!-- Desktop: horizontal layout -->
 	<div class="hidden items-center gap-4 lg:flex">
-		<div
-			class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-red/10"
-		>
+		<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-red/10">
 			<i class="fa-solid fa-ban text-sm text-brand-red"></i>
 		</div>
 		<div class="flex-1">
@@ -50,9 +48,7 @@
 	<!-- Mobile: vertical layout -->
 	<div class="flex flex-col lg:hidden">
 		<div class="mb-3 flex items-start gap-3">
-			<div
-				class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-red/10"
-			>
+			<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-red/10">
 				<i class="fa-solid fa-ban text-sm text-brand-red"></i>
 			</div>
 			<div>

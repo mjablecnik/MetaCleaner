@@ -44,10 +44,12 @@
 	});
 </script>
 
-<div class="relative overflow-hidden rounded-2xl border border-brand-orange/30 bg-navy-card p-4 lg:p-5">
+<div
+	class="relative overflow-hidden rounded-2xl border border-brand-orange/30 bg-navy-card p-4 lg:p-5"
+>
 	<!-- Background decoration -->
 	<div
-		class="absolute top-0 right-0 h-28 w-28 -translate-y-8 translate-x-8 rounded-full bg-brand-orange opacity-5 lg:h-32 lg:w-32 lg:-translate-y-10 lg:translate-x-10"
+		class="absolute top-0 right-0 h-28 w-28 translate-x-8 -translate-y-8 rounded-full bg-brand-orange opacity-5 lg:h-32 lg:w-32 lg:translate-x-10 lg:-translate-y-10"
 	></div>
 
 	<!-- Title -->
@@ -62,7 +64,9 @@
 			class="flex flex-1 flex-col items-center rounded-xl bg-navy-lighter px-4 py-2.5 lg:min-w-[60px] lg:flex-none lg:py-3"
 		>
 			<span class="text-3xl font-black text-brand-orange">{countdown.days}</span>
-			<span class="mt-0.5 text-xs text-text-muted">{tx('subscription.cancelling.countdown.days')}</span>
+			<span class="mt-0.5 text-xs text-text-muted"
+				>{tx('subscription.cancelling.countdown.days')}</span
+			>
 		</div>
 		<span class="text-xl font-black text-gray-700 lg:text-2xl">:</span>
 		<!-- Hours -->

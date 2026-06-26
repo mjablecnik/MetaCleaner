@@ -348,7 +348,8 @@
 				>
 					<i class="fa-solid fa-circle text-xs text-brand-green"></i>
 					<span class="text-sm font-semibold text-brand-blue">
-						{tx('subscription.management.activePlan')}: {currentPlanData?.nameText ?? billingStore.planId}
+						{tx('subscription.management.activePlan')}: {currentPlanData?.nameText ??
+							billingStore.planId}
 					</span>
 				</div>
 			</div>

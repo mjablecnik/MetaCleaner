@@ -11,7 +11,13 @@
 		onReactivate: () => void;
 	}
 
-	const { planId, price, billingPeriod: _billingPeriod, periodEndDate, onReactivate }: Props = $props();
+	const {
+		planId,
+		price,
+		billingPeriod: _billingPeriod,
+		periodEndDate,
+		onReactivate
+	}: Props = $props();
 
 	const PLAN_LABELS: Record<string, string> = { pro: 'Pro', proplus: 'Pro+', free: 'Free' };
 	const planLabel = $derived(PLAN_LABELS[planId] ?? planId);
@@ -27,7 +33,7 @@
 >
 	<!-- Background decoration -->
 	<div
-		class="absolute top-0 right-0 h-20 w-20 -translate-y-6 translate-x-6 rounded-full bg-brand-green opacity-5 lg:h-24 lg:w-24 lg:-translate-y-8 lg:translate-x-8"
+		class="absolute top-0 right-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-brand-green opacity-5 lg:h-24 lg:w-24 lg:translate-x-8 lg:-translate-y-8"
 	></div>
 
 	<!-- Header: icon, title, price -->
