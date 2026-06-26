@@ -2,7 +2,6 @@ package source
 
 import (
 	"net/http"
-	"time"
 )
 
 // NewRouter builds and returns the HTTP mux with all routes registered.
@@ -21,8 +20,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// Job worker pool — limits concurrent pipeline executions.
 	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
-	// Email change verification store (tokens valid for 1 hour).
-	emailChangeStore := newEmailChangeStore(1 * time.Hour)
+	// Email change verification store (tokens stored in Supabase DB).
+	emailChangeStore := newEmailChangeStore(cfg.SupabaseURL, cfg.SupabaseServiceRoleKey, cfg.SupabaseTimeout)
 
 	// --- Auth routes ---
 	mux.Handle("POST /api/auth/register", authRateLimited(HandleRegister(authClient, db)))

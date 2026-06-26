@@ -9,88 +9,129 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 )
 
-// --- In-memory email change token store ---
+// --- Database-backed email change token store (via Supabase PostgREST) ---
 
 type emailChangeRequest struct {
-	UserID    string
-	NewEmail  string
-	CreatedAt time.Time
+	UserID   string
+	NewEmail string
 }
 
 type emailChangeStore struct {
-	mu      sync.Mutex
-	pending map[string]emailChangeRequest // token → request
-	ttl     time.Duration
+	restURL    string
+	serviceKey string
+	timeout    time.Duration
 }
 
-func newEmailChangeStore(ttl time.Duration) *emailChangeStore {
-	s := &emailChangeStore{
-		pending: make(map[string]emailChangeRequest),
-		ttl:     ttl,
+func newEmailChangeStore(supabaseURL, serviceRoleKey string, timeout time.Duration) *emailChangeStore {
+	return &emailChangeStore{
+		restURL:    supabaseURL + "/rest/v1/email_change_tokens",
+		serviceKey: serviceRoleKey,
+		timeout:    timeout,
 	}
-	go s.cleanupLoop()
-	return s
 }
 
+// Create inserts a new token into the database, removing any prior pending request for the user.
 func (s *emailChangeStore) Create(userID, newEmail string) (string, error) {
 	token, err := generateSecureToken(32)
 	if err != nil {
 		return "", err
 	}
 
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	// Delete existing pending tokens for this user
+	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?user_id=eq."+userID, nil)
+	if err != nil {
+		return "", fmt.Errorf("email change store: create delete request: %w", err)
+	}
+	s.setHeaders(delReq)
+	client := &http.Client{Timeout: s.timeout}
+	resp, err := client.Do(delReq)
+	if err != nil {
+		return "", fmt.Errorf("email change store: delete old tokens: %w", err)
+	}
+	resp.Body.Close()
 
-	// Remove any existing pending request for this user
-	for k, v := range s.pending {
-		if v.UserID == userID {
-			delete(s.pending, k)
-		}
+	// Insert new token
+	payload := map[string]string{
+		"user_id":   userID,
+		"token":     token,
+		"new_email": newEmail,
+	}
+	data, _ := json.Marshal(payload)
+	insertReq, err := http.NewRequest(http.MethodPost, s.restURL, bytes.NewReader(data))
+	if err != nil {
+		return "", fmt.Errorf("email change store: create insert request: %w", err)
+	}
+	s.setHeaders(insertReq)
+	insertReq.Header.Set("Prefer", "return=minimal")
+
+	resp, err = client.Do(insertReq)
+	if err != nil {
+		return "", fmt.Errorf("email change store: insert token: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("email change store: insert status %d: %s", resp.StatusCode, body)
 	}
 
-	s.pending[token] = emailChangeRequest{
-		UserID:    userID,
-		NewEmail:  newEmail,
-		CreatedAt: time.Now(),
-	}
 	return token, nil
 }
 
+// Verify retrieves and deletes the token if it exists and hasn't expired.
 func (s *emailChangeStore) Verify(token string) (emailChangeRequest, bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	// Fetch token where token matches and expires_at > now
+	url := s.restURL + "?token=eq." + token + "&expires_at=gt.now()&select=user_id,new_email"
+	getReq, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return emailChangeRequest{}, false
+	}
+	s.setHeaders(getReq)
+	getReq.Header.Set("Accept", "application/json")
 
-	req, found := s.pending[token]
-	if !found {
+	client := &http.Client{Timeout: s.timeout}
+	resp, err := client.Do(getReq)
+	if err != nil {
+		return emailChangeRequest{}, false
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 {
 		return emailChangeRequest{}, false
 	}
 
-	if time.Since(req.CreatedAt) > s.ttl {
-		delete(s.pending, token)
+	var results []struct {
+		UserID   string `json:"user_id"`
+		NewEmail string `json:"new_email"`
+	}
+	if err := json.Unmarshal(body, &results); err != nil || len(results) == 0 {
 		return emailChangeRequest{}, false
 	}
 
-	delete(s.pending, token)
-	return req, true
+	// Delete the token (consumed)
+	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?token=eq."+token, nil)
+	if err == nil {
+		s.setHeaders(delReq)
+		delResp, err := client.Do(delReq)
+		if err == nil {
+			delResp.Body.Close()
+		}
+	}
+
+	return emailChangeRequest{
+		UserID:   results[0].UserID,
+		NewEmail: results[0].NewEmail,
+	}, true
 }
 
-func (s *emailChangeStore) cleanupLoop() {
-	ticker := time.NewTicker(5 * time.Minute)
-	defer ticker.Stop()
-	for range ticker.C {
-		s.mu.Lock()
-		now := time.Now()
-		for k, v := range s.pending {
-			if now.Sub(v.CreatedAt) > s.ttl {
-				delete(s.pending, k)
-			}
-		}
-		s.mu.Unlock()
-	}
+func (s *emailChangeStore) setHeaders(req *http.Request) {
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("apikey", s.serviceKey)
+	req.Header.Set("Authorization", "Bearer "+s.serviceKey)
 }
 
 func generateSecureToken(length int) (string, error) {
@@ -171,7 +212,7 @@ func buildEmailChangeHTML(confirmURL string) string {
 // --- Handlers ---
 
 // HandleChangeEmail handles POST /api/auth/change-email.
-// Generates a verification token, sends a confirmation email via Brevo,
+// Generates a verification token stored in DB, sends a confirmation email via Brevo,
 // and responds with success. The email changes only after the user clicks the link.
 func HandleChangeEmail(cfg Config, authClient *SupabaseAuthClient, store *emailChangeStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -200,19 +241,17 @@ func HandleChangeEmail(cfg Config, authClient *SupabaseAuthClient, store *emailC
 			return
 		}
 
-		// Generate verification token
+		// Generate verification token and store in DB
 		token, err := store.Create(userID, newEmail)
 		if err != nil {
-			LoggerFromContext(r.Context()).Error("change-email: failed to generate token", "error", err)
+			LoggerFromContext(r.Context()).Error("change-email: failed to store token", "error", err)
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to initiate email change")
 			return
 		}
 
 		// Build confirmation URL — points to the backend's public endpoint
-		// Derive backend base URL from OAUTH_CALLBACK_URL (e.g., "https://metacleaner-server.fly.dev/api/auth/oauth/callback")
 		backendBaseURL := cfg.FrontendURL // fallback
 		if cfg.OAuthCallbackURL != "" {
-			// Extract base from "https://host.com/api/auth/oauth/callback" → "https://host.com"
 			if idx := strings.Index(cfg.OAuthCallbackURL, "/api/"); idx > 0 {
 				backendBaseURL = cfg.OAuthCallbackURL[:idx]
 			}
@@ -237,7 +276,7 @@ func HandleChangeEmail(cfg Config, authClient *SupabaseAuthClient, store *emailC
 
 // HandleConfirmEmailChange handles GET /api/auth/confirm-email-change?token=...
 // This is a PUBLIC endpoint (no auth required) — called when the user clicks the link in the email.
-// Verifies the token, updates email in Supabase Auth (Admin API) and profiles table,
+// Verifies the token from DB, updates email in Supabase Auth (Admin API) and profiles table,
 // then redirects the user back to the frontend settings page.
 func HandleConfirmEmailChange(cfg Config, authClient *SupabaseAuthClient, store *emailChangeStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -266,16 +305,15 @@ func HandleConfirmEmailChange(cfg Config, authClient *SupabaseAuthClient, store 
 		// Update email in profiles table
 		if err := authClient.UpdateProfileEmail(r.Context(), req.UserID, req.NewEmail); err != nil {
 			LoggerFromContext(r.Context()).Warn("confirm-email-change: profiles table update failed", "userId", req.UserID, "error", err)
-			// Non-fatal — auth email already changed, profiles will sync via HandleMe lazy sync
 		}
 
-		// Redirect to frontend settings with success indicator
-		redirectURL := fmt.Sprintf("%s/settings?email_changed=true", cfg.FrontendURL)
+		// Redirect to frontend email change confirmation page
+		redirectURL := fmt.Sprintf("%s/email-changed", cfg.FrontendURL)
 		http.Redirect(w, r, redirectURL, http.StatusFound)
 	}
 }
 
 func redirectWithError(w http.ResponseWriter, r *http.Request, frontendURL, errorCode string) {
-	redirectURL := fmt.Sprintf("%s/settings?email_change_error=%s", frontendURL, errorCode)
+	redirectURL := fmt.Sprintf("%s/email-changed?error=%s", frontendURL, errorCode)
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
