@@ -53,13 +53,13 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Return typed `ReactivateResponse` on success
     - _Requirements: 11.1, 11.2, 11.3_
 
-- [ ] 5. Add i18n translation keys
-  - [ ] 5.1 Add English translation keys to `messages/en.json`
+- [x] 5. Add i18n translation keys
+  - [x] 5.1 Add English translation keys to `messages/en.json`
     - Add keys for: cancellation banner, page header badge, countdown labels, cancelling plan card labels, reactivate card text, reactivate modal content, usage stats labels, "what happens after" items
     - Key prefix: `subscription.cancelling.*`
     - _Requirements: 12.1, 12.2_
 
-  - [ ] 5.2 Add Czech translation keys to `messages/cs.json`
+  - [x] 5.2 Add Czech translation keys to `messages/cs.json`
     - Add matching Czech translations for all keys added in 5.1
     - Use the design mockup text as reference for Czech strings
     - _Requirements: 12.1, 12.2_

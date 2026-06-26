@@ -826,28 +826,39 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Settings_Deletion_ConfirmInputs */
 /** @typedef {{}} Subscription_Management_HeaderInputs */
 /** @typedef {{}} Subscription_Management_SubheaderInputs */
+/** @typedef {{}} Subscription_Management_Activeplan1Inputs */
 /** @typedef {{ date: NonNullable<unknown> }} Subscription_Management_Cancellednotice1Inputs */
 /** @typedef {{}} Subscription_Management_Loaderror1Inputs */
 /** @typedef {{}} Subscription_Management_RetryInputs */
 /** @typedef {{}} Subscription_Currentplan_Title1Inputs */
 /** @typedef {{}} Subscription_Currentplan_Permonth2Inputs */
 /** @typedef {{}} Subscription_Currentplan_Peryear2Inputs */
+/** @typedef {{}} Subscription_Currentplan_Photospermonth3Inputs */
+/** @typedef {{}} Subscription_Currentplan_Creditsthismonth3Inputs */
+/** @typedef {{}} Subscription_Currentplan_Photosremaining2Inputs */
 /** @typedef {{}} Subscription_Currentplan_Creditsused2Inputs */
 /** @typedef {{}} Subscription_Currentplan_Creditsremaining2Inputs */
 /** @typedef {{}} Subscription_Currentplan_Renewal1Inputs */
 /** @typedef {{}} Subscription_Currentplan_Paymentmethod2Inputs */
+/** @typedef {{}} Subscription_Currentplan_Paymentlabel2Inputs */
 /** @typedef {{}} Subscription_Currentplan_Nextpayment2Inputs */
+/** @typedef {{}} Subscription_Currentplan_Change1Inputs */
 /** @typedef {{}} Subscription_Currentplan_Features1Inputs */
 /** @typedef {{}} Subscription_Currentplan_Stalewarning2Inputs */
 /** @typedef {{ plan: NonNullable<unknown> }} Subscription_Upgrade_TitleInputs */
+/** @typedef {{}} Subscription_Upgrade_SubtitleInputs */
+/** @typedef {{}} Subscription_Upgrade_Permonth1Inputs */
 /** @typedef {{}} Subscription_Upgrade_ButtonInputs */
 /** @typedef {{}} Subscription_Upgrade_Featuresgained1Inputs */
 /** @typedef {{ plan: NonNullable<unknown> }} Subscription_Downgrade_TitleInputs */
+/** @typedef {{}} Subscription_Downgrade_SubtitleInputs */
+/** @typedef {{}} Subscription_Downgrade_Pricetype1Inputs */
 /** @typedef {{}} Subscription_Downgrade_ButtonInputs */
 /** @typedef {{}} Subscription_Downgrade_Featureslost1Inputs */
 /** @typedef {{}} Subscription_Cancel_TitleInputs */
 /** @typedef {{}} Subscription_Cancel_ButtonInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancel_WarningInputs */
+/** @typedef {{}} Subscription_Cancel_Endofperiod2Inputs */
 /** @typedef {{}} Subscription_Usagestats_Title1Inputs */
 /** @typedef {{}} Subscription_Usagestats_Consumed1Inputs */
 /** @typedef {{}} Subscription_Usagestats_Remaining1Inputs */
@@ -867,9 +878,63 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Subscription_Downgrade_Modal_Effectivedate1Inputs */
 /** @typedef {{}} Subscription_Cancel_Modal_TitleInputs */
 /** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancel_Modal_BodyInputs */
-/** @typedef {{ count: NonNullable<unknown> }} Subscription_Cancel_Modal_Creditswarning1Inputs */
+/** @typedef {{}} Subscription_Cancel_Modal_Creditswarning1Inputs */
 /** @typedef {{}} Subscription_Cancel_Modal_Confirmbutton1Inputs */
 /** @typedef {{}} Subscription_Cancel_Modal_Keepbutton1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Banner_TitleInputs */
+/** @typedef {{ plan: NonNullable<unknown>, date: NonNullable<unknown> }} Subscription_Cancelling_Banner_Accessuntil1Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Banner_Accessuntilmobile2Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Banner_Downgradechip1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Banner_Reactivatebutton1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Header_TitleInputs */
+/** @typedef {{}} Subscription_Cancelling_Header_SubtitleInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Header_BadgeInputs */
+/** @typedef {{}} Subscription_Cancelling_Header_Badgemobile1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Badge1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Cancelledtag2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Permonth2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Creditsthismonth3Inputs */
+/** @typedef {{ count: NonNullable<unknown> }} Subscription_Cancelling_Plancard_Photosremaining2Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Plancard_Creditsexpire2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Timeline_Title1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Timeline_Today1Inputs */
+/** @typedef {{ plan: NonNullable<unknown> }} Subscription_Cancelling_Plancard_Timeline_Todaysubtitle2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Timeline_Downgrade1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Plancard_Timeline_Freeplan2Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Plancard_Features_Title1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Countdown_TitleInputs */
+/** @typedef {{}} Subscription_Cancelling_Countdown_DaysInputs */
+/** @typedef {{}} Subscription_Cancelling_Countdown_HoursInputs */
+/** @typedef {{}} Subscription_Cancelling_Countdown_MinutesInputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Countdown_Accessuntil1Inputs */
+/** @typedef {{ plan: NonNullable<unknown> }} Subscription_Cancelling_Reactivatecard_Title1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Reactivatecard_Subtitle1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Reactivatecard_Permonth2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Reactivatecard_Benefit11Inputs */
+/** @typedef {{}} Subscription_Cancelling_Reactivatecard_Benefit21Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_Reactivatecard_Benefit31Inputs */
+/** @typedef {{}} Subscription_Cancelling_Reactivatecard_Button1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Title1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Processed1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Remaining1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Total1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Totalmobile2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Expiry1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Usagestats_Expirymobile2Inputs */
+/** @typedef {{ date: NonNullable<unknown> }} Subscription_Cancelling_After_TitleInputs */
+/** @typedef {{ count: NonNullable<unknown> }} Subscription_Cancelling_After_Creditslost1Inputs */
+/** @typedef {{}} Subscription_Cancelling_After_Riskscannerlost2Inputs */
+/** @typedef {{}} Subscription_Cancelling_After_Pdflost1Inputs */
+/** @typedef {{}} Subscription_Cancelling_After_Freekept1Inputs */
+/** @typedef {{ plan: NonNullable<unknown> }} Subscription_Cancelling_Modal_TitleInputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Infotitle1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Infobody1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Planlabel1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Todaypaymentlabel2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Todaypaymentvalue2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Nextpaymentlabel2Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_Confirmbutton1Inputs */
+/** @typedef {{}} Subscription_Cancelling_Modal_ErrorInputs */
 import * as __en from "./en.js"
 import * as __cs from "./cs.js"
 /**
@@ -13178,7 +13243,7 @@ export { subscription_management_header as "subscription.management.header" }
 /**
 * | output |
 * | --- |
-* | "View and manage your active subscription" |
+* | "Manage your plan and credits" |
 *
 * @param {Subscription_Management_SubheaderInputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
@@ -13190,6 +13255,21 @@ const subscription_management_subheader = /** @type {((inputs?: Subscription_Man
 	return __cs.subscription_management_subheader(inputs)
 });
 export { subscription_management_subheader as "subscription.management.subheader" }
+/**
+* | output |
+* | --- |
+* | "Active plan" |
+*
+* @param {Subscription_Management_Activeplan1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_management_activeplan1 = /** @type {((inputs?: Subscription_Management_Activeplan1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Management_Activeplan1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_management_activeplan1(inputs)
+	return __cs.subscription_management_activeplan1(inputs)
+});
+export { subscription_management_activeplan1 as "subscription.management.activePlan" }
 /**
 * | output |
 * | --- |
@@ -13283,6 +13363,51 @@ export { subscription_currentplan_peryear2 as "subscription.currentPlan.perYear"
 /**
 * | output |
 * | --- |
+* | "photos / month" |
+*
+* @param {Subscription_Currentplan_Photospermonth3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_currentplan_photospermonth3 = /** @type {((inputs?: Subscription_Currentplan_Photospermonth3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Currentplan_Photospermonth3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_currentplan_photospermonth3(inputs)
+	return __cs.subscription_currentplan_photospermonth3(inputs)
+});
+export { subscription_currentplan_photospermonth3 as "subscription.currentPlan.photosPerMonth" }
+/**
+* | output |
+* | --- |
+* | "Credits this month" |
+*
+* @param {Subscription_Currentplan_Creditsthismonth3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_currentplan_creditsthismonth3 = /** @type {((inputs?: Subscription_Currentplan_Creditsthismonth3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Currentplan_Creditsthismonth3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_currentplan_creditsthismonth3(inputs)
+	return __cs.subscription_currentplan_creditsthismonth3(inputs)
+});
+export { subscription_currentplan_creditsthismonth3 as "subscription.currentPlan.creditsThisMonth" }
+/**
+* | output |
+* | --- |
+* | "photos remaining" |
+*
+* @param {Subscription_Currentplan_Photosremaining2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_currentplan_photosremaining2 = /** @type {((inputs?: Subscription_Currentplan_Photosremaining2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Currentplan_Photosremaining2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_currentplan_photosremaining2(inputs)
+	return __cs.subscription_currentplan_photosremaining2(inputs)
+});
+export { subscription_currentplan_photosremaining2 as "subscription.currentPlan.photosRemaining" }
+/**
+* | output |
+* | --- |
 * | "Credits used" |
 *
 * @param {Subscription_Currentplan_Creditsused2Inputs} inputs
@@ -13343,6 +13468,21 @@ export { subscription_currentplan_paymentmethod2 as "subscription.currentPlan.pa
 /**
 * | output |
 * | --- |
+* | "Payment" |
+*
+* @param {Subscription_Currentplan_Paymentlabel2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_currentplan_paymentlabel2 = /** @type {((inputs?: Subscription_Currentplan_Paymentlabel2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Currentplan_Paymentlabel2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_currentplan_paymentlabel2(inputs)
+	return __cs.subscription_currentplan_paymentlabel2(inputs)
+});
+export { subscription_currentplan_paymentlabel2 as "subscription.currentPlan.paymentLabel" }
+/**
+* | output |
+* | --- |
 * | "Next payment" |
 *
 * @param {Subscription_Currentplan_Nextpayment2Inputs} inputs
@@ -13355,6 +13495,21 @@ const subscription_currentplan_nextpayment2 = /** @type {((inputs?: Subscription
 	return __cs.subscription_currentplan_nextpayment2(inputs)
 });
 export { subscription_currentplan_nextpayment2 as "subscription.currentPlan.nextPayment" }
+/**
+* | output |
+* | --- |
+* | "Change" |
+*
+* @param {Subscription_Currentplan_Change1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_currentplan_change1 = /** @type {((inputs?: Subscription_Currentplan_Change1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Currentplan_Change1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_currentplan_change1(inputs)
+	return __cs.subscription_currentplan_change1(inputs)
+});
+export { subscription_currentplan_change1 as "subscription.currentPlan.change" }
 /**
 * | output |
 * | --- |
@@ -13403,6 +13558,36 @@ export { subscription_upgrade_title as "subscription.upgrade.title" }
 /**
 * | output |
 * | --- |
+* | "Most popular choice" |
+*
+* @param {Subscription_Upgrade_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_upgrade_subtitle = /** @type {((inputs?: Subscription_Upgrade_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Upgrade_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_upgrade_subtitle(inputs)
+	return __cs.subscription_upgrade_subtitle(inputs)
+});
+export { subscription_upgrade_subtitle as "subscription.upgrade.subtitle" }
+/**
+* | output |
+* | --- |
+* | "/ mo" |
+*
+* @param {Subscription_Upgrade_Permonth1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_upgrade_permonth1 = /** @type {((inputs?: Subscription_Upgrade_Permonth1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Upgrade_Permonth1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_upgrade_permonth1(inputs)
+	return __cs.subscription_upgrade_permonth1(inputs)
+});
+export { subscription_upgrade_permonth1 as "subscription.upgrade.perMonth" }
+/**
+* | output |
+* | --- |
 * | "Upgrade" |
 *
 * @param {Subscription_Upgrade_ButtonInputs} inputs
@@ -13448,7 +13633,37 @@ export { subscription_downgrade_title as "subscription.downgrade.title" }
 /**
 * | output |
 * | --- |
-* | "Downgrade" |
+* | "Credits never expire" |
+*
+* @param {Subscription_Downgrade_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_downgrade_subtitle = /** @type {((inputs?: Subscription_Downgrade_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Downgrade_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_downgrade_subtitle(inputs)
+	return __cs.subscription_downgrade_subtitle(inputs)
+});
+export { subscription_downgrade_subtitle as "subscription.downgrade.subtitle" }
+/**
+* | output |
+* | --- |
+* | "one-time" |
+*
+* @param {Subscription_Downgrade_Pricetype1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_downgrade_pricetype1 = /** @type {((inputs?: Subscription_Downgrade_Pricetype1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Downgrade_Pricetype1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_downgrade_pricetype1(inputs)
+	return __cs.subscription_downgrade_pricetype1(inputs)
+});
+export { subscription_downgrade_pricetype1 as "subscription.downgrade.priceType" }
+/**
+* | output |
+* | --- |
+* | "Downgrade plan" |
 *
 * @param {Subscription_Downgrade_ButtonInputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
@@ -13520,6 +13735,21 @@ const subscription_cancel_warning = /** @type {((inputs: Subscription_Cancel_War
 	return __cs.subscription_cancel_warning(inputs)
 });
 export { subscription_cancel_warning as "subscription.cancel.warning" }
+/**
+* | output |
+* | --- |
+* | "the end of the current period" |
+*
+* @param {Subscription_Cancel_Endofperiod2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancel_endofperiod2 = /** @type {((inputs?: Subscription_Cancel_Endofperiod2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancel_Endofperiod2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancel_endofperiod2(inputs)
+	return __cs.subscription_cancel_endofperiod2(inputs)
+});
+export { subscription_cancel_endofperiod2 as "subscription.cancel.endOfPeriod" }
 /**
 * | output |
 * | --- |
@@ -13793,7 +14023,7 @@ export { subscription_cancel_modal_title as "subscription.cancel.modal.title" }
 /**
 * | output |
 * | --- |
-* | "You'll be moved to the free plan (3 photos/month, no reports) after your current period ends on {date}." |
+* | "Your subscription will remain active until {date}. After that, you'll be moved to the free plan (3 photos/month, no reports)." |
 *
 * @param {Subscription_Cancel_Modal_BodyInputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
@@ -13808,13 +14038,13 @@ export { subscription_cancel_modal_body as "subscription.cancel.modal.body" }
 /**
 * | output |
 * | --- |
-* | "{count} remaining credits will be forfeited." |
+* | "Subscription credits will be removed. Only credits you purchased separately will remain." |
 *
 * @param {Subscription_Cancel_Modal_Creditswarning1Inputs} inputs
 * @param {{ locale?: "en" | "cs" }} options
 * @returns {LocalizedString}
 */
-const subscription_cancel_modal_creditswarning1 = /** @type {((inputs: Subscription_Cancel_Modal_Creditswarning1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancel_Modal_Creditswarning1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+const subscription_cancel_modal_creditswarning1 = /** @type {((inputs?: Subscription_Cancel_Modal_Creditswarning1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancel_Modal_Creditswarning1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
 	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
 	if (locale === "en") return __en.subscription_cancel_modal_creditswarning1(inputs)
 	return __cs.subscription_cancel_modal_creditswarning1(inputs)
@@ -13850,3 +14080,813 @@ const subscription_cancel_modal_keepbutton1 = /** @type {((inputs?: Subscription
 	return __cs.subscription_cancel_modal_keepbutton1(inputs)
 });
 export { subscription_cancel_modal_keepbutton1 as "subscription.cancel.modal.keepButton" }
+/**
+* | output |
+* | --- |
+* | "Subscription was cancelled" |
+*
+* @param {Subscription_Cancelling_Banner_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_banner_title = /** @type {((inputs?: Subscription_Cancelling_Banner_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Banner_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_banner_title(inputs)
+	return __cs.subscription_cancelling_banner_title(inputs)
+});
+export { subscription_cancelling_banner_title as "subscription.cancelling.banner.title" }
+/**
+* | output |
+* | --- |
+* | "Access to {plan} plan expires on {date}" |
+*
+* @param {Subscription_Cancelling_Banner_Accessuntil1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_banner_accessuntil1 = /** @type {((inputs: Subscription_Cancelling_Banner_Accessuntil1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Banner_Accessuntil1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_banner_accessuntil1(inputs)
+	return __cs.subscription_cancelling_banner_accessuntil1(inputs)
+});
+export { subscription_cancelling_banner_accessuntil1 as "subscription.cancelling.banner.accessUntil" }
+/**
+* | output |
+* | --- |
+* | "Access expires on {date}" |
+*
+* @param {Subscription_Cancelling_Banner_Accessuntilmobile2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_banner_accessuntilmobile2 = /** @type {((inputs: Subscription_Cancelling_Banner_Accessuntilmobile2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Banner_Accessuntilmobile2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_banner_accessuntilmobile2(inputs)
+	return __cs.subscription_cancelling_banner_accessuntilmobile2(inputs)
+});
+export { subscription_cancelling_banner_accessuntilmobile2 as "subscription.cancelling.banner.accessUntilMobile" }
+/**
+* | output |
+* | --- |
+* | "Downgrade to Free: {date}" |
+*
+* @param {Subscription_Cancelling_Banner_Downgradechip1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_banner_downgradechip1 = /** @type {((inputs: Subscription_Cancelling_Banner_Downgradechip1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Banner_Downgradechip1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_banner_downgradechip1(inputs)
+	return __cs.subscription_cancelling_banner_downgradechip1(inputs)
+});
+export { subscription_cancelling_banner_downgradechip1 as "subscription.cancelling.banner.downgradeChip" }
+/**
+* | output |
+* | --- |
+* | "Reactivate subscription" |
+*
+* @param {Subscription_Cancelling_Banner_Reactivatebutton1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_banner_reactivatebutton1 = /** @type {((inputs?: Subscription_Cancelling_Banner_Reactivatebutton1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Banner_Reactivatebutton1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_banner_reactivatebutton1(inputs)
+	return __cs.subscription_cancelling_banner_reactivatebutton1(inputs)
+});
+export { subscription_cancelling_banner_reactivatebutton1 as "subscription.cancelling.banner.reactivateButton" }
+/**
+* | output |
+* | --- |
+* | "Your Subscription" |
+*
+* @param {Subscription_Cancelling_Header_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_header_title = /** @type {((inputs?: Subscription_Cancelling_Header_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Header_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_header_title(inputs)
+	return __cs.subscription_cancelling_header_title(inputs)
+});
+export { subscription_cancelling_header_title as "subscription.cancelling.header.title" }
+/**
+* | output |
+* | --- |
+* | "Manage your plan and credits" |
+*
+* @param {Subscription_Cancelling_Header_SubtitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_header_subtitle = /** @type {((inputs?: Subscription_Cancelling_Header_SubtitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Header_SubtitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_header_subtitle(inputs)
+	return __cs.subscription_cancelling_header_subtitle(inputs)
+});
+export { subscription_cancelling_header_subtitle as "subscription.cancelling.header.subtitle" }
+/**
+* | output |
+* | --- |
+* | "Cancelled · Active until {date}" |
+*
+* @param {Subscription_Cancelling_Header_BadgeInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_header_badge = /** @type {((inputs: Subscription_Cancelling_Header_BadgeInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Header_BadgeInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_header_badge(inputs)
+	return __cs.subscription_cancelling_header_badge(inputs)
+});
+export { subscription_cancelling_header_badge as "subscription.cancelling.header.badge" }
+/**
+* | output |
+* | --- |
+* | "Cancelled" |
+*
+* @param {Subscription_Cancelling_Header_Badgemobile1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_header_badgemobile1 = /** @type {((inputs?: Subscription_Cancelling_Header_Badgemobile1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Header_Badgemobile1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_header_badgemobile1(inputs)
+	return __cs.subscription_cancelling_header_badgemobile1(inputs)
+});
+export { subscription_cancelling_header_badgemobile1 as "subscription.cancelling.header.badgeMobile" }
+/**
+* | output |
+* | --- |
+* | "Expiring plan" |
+*
+* @param {Subscription_Cancelling_Plancard_Badge1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_badge1 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Badge1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Badge1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_badge1(inputs)
+	return __cs.subscription_cancelling_plancard_badge1(inputs)
+});
+export { subscription_cancelling_plancard_badge1 as "subscription.cancelling.planCard.badge" }
+/**
+* | output |
+* | --- |
+* | "Cancelled" |
+*
+* @param {Subscription_Cancelling_Plancard_Cancelledtag2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_cancelledtag2 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Cancelledtag2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Cancelledtag2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_cancelledtag2(inputs)
+	return __cs.subscription_cancelling_plancard_cancelledtag2(inputs)
+});
+export { subscription_cancelling_plancard_cancelledtag2 as "subscription.cancelling.planCard.cancelledTag" }
+/**
+* | output |
+* | --- |
+* | "/ month" |
+*
+* @param {Subscription_Cancelling_Plancard_Permonth2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_permonth2 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Permonth2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Permonth2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_permonth2(inputs)
+	return __cs.subscription_cancelling_plancard_permonth2(inputs)
+});
+export { subscription_cancelling_plancard_permonth2 as "subscription.cancelling.planCard.perMonth" }
+/**
+* | output |
+* | --- |
+* | "Credits this month" |
+*
+* @param {Subscription_Cancelling_Plancard_Creditsthismonth3Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_creditsthismonth3 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Creditsthismonth3Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Creditsthismonth3Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_creditsthismonth3(inputs)
+	return __cs.subscription_cancelling_plancard_creditsthismonth3(inputs)
+});
+export { subscription_cancelling_plancard_creditsthismonth3 as "subscription.cancelling.planCard.creditsThisMonth" }
+/**
+* | output |
+* | --- |
+* | "{count} photos remaining ·" |
+*
+* @param {Subscription_Cancelling_Plancard_Photosremaining2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_photosremaining2 = /** @type {((inputs: Subscription_Cancelling_Plancard_Photosremaining2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Photosremaining2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_photosremaining2(inputs)
+	return __cs.subscription_cancelling_plancard_photosremaining2(inputs)
+});
+export { subscription_cancelling_plancard_photosremaining2 as "subscription.cancelling.planCard.photosRemaining" }
+/**
+* | output |
+* | --- |
+* | "Credits expire on {date}" |
+*
+* @param {Subscription_Cancelling_Plancard_Creditsexpire2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_creditsexpire2 = /** @type {((inputs: Subscription_Cancelling_Plancard_Creditsexpire2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Creditsexpire2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_creditsexpire2(inputs)
+	return __cs.subscription_cancelling_plancard_creditsexpire2(inputs)
+});
+export { subscription_cancelling_plancard_creditsexpire2 as "subscription.cancelling.planCard.creditsExpire" }
+/**
+* | output |
+* | --- |
+* | "Transition timeline" |
+*
+* @param {Subscription_Cancelling_Plancard_Timeline_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_timeline_title1 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Timeline_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Timeline_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_timeline_title1(inputs)
+	return __cs.subscription_cancelling_plancard_timeline_title1(inputs)
+});
+export { subscription_cancelling_plancard_timeline_title1 as "subscription.cancelling.planCard.timeline.title" }
+/**
+* | output |
+* | --- |
+* | "Today" |
+*
+* @param {Subscription_Cancelling_Plancard_Timeline_Today1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_timeline_today1 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Timeline_Today1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Timeline_Today1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_timeline_today1(inputs)
+	return __cs.subscription_cancelling_plancard_timeline_today1(inputs)
+});
+export { subscription_cancelling_plancard_timeline_today1 as "subscription.cancelling.planCard.timeline.today" }
+/**
+* | output |
+* | --- |
+* | "{plan} active" |
+*
+* @param {Subscription_Cancelling_Plancard_Timeline_Todaysubtitle2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_timeline_todaysubtitle2 = /** @type {((inputs: Subscription_Cancelling_Plancard_Timeline_Todaysubtitle2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Timeline_Todaysubtitle2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_timeline_todaysubtitle2(inputs)
+	return __cs.subscription_cancelling_plancard_timeline_todaysubtitle2(inputs)
+});
+export { subscription_cancelling_plancard_timeline_todaysubtitle2 as "subscription.cancelling.planCard.timeline.todaySubtitle" }
+/**
+* | output |
+* | --- |
+* | "Downgrade" |
+*
+* @param {Subscription_Cancelling_Plancard_Timeline_Downgrade1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_timeline_downgrade1 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Timeline_Downgrade1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Timeline_Downgrade1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_timeline_downgrade1(inputs)
+	return __cs.subscription_cancelling_plancard_timeline_downgrade1(inputs)
+});
+export { subscription_cancelling_plancard_timeline_downgrade1 as "subscription.cancelling.planCard.timeline.downgrade" }
+/**
+* | output |
+* | --- |
+* | "Free plan" |
+*
+* @param {Subscription_Cancelling_Plancard_Timeline_Freeplan2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_timeline_freeplan2 = /** @type {((inputs?: Subscription_Cancelling_Plancard_Timeline_Freeplan2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Timeline_Freeplan2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_timeline_freeplan2(inputs)
+	return __cs.subscription_cancelling_plancard_timeline_freeplan2(inputs)
+});
+export { subscription_cancelling_plancard_timeline_freeplan2 as "subscription.cancelling.planCard.timeline.freePlan" }
+/**
+* | output |
+* | --- |
+* | "Features available until {date}" |
+*
+* @param {Subscription_Cancelling_Plancard_Features_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_plancard_features_title1 = /** @type {((inputs: Subscription_Cancelling_Plancard_Features_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Plancard_Features_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_plancard_features_title1(inputs)
+	return __cs.subscription_cancelling_plancard_features_title1(inputs)
+});
+export { subscription_cancelling_plancard_features_title1 as "subscription.cancelling.planCard.features.title" }
+/**
+* | output |
+* | --- |
+* | "Time remaining until access ends" |
+*
+* @param {Subscription_Cancelling_Countdown_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_countdown_title = /** @type {((inputs?: Subscription_Cancelling_Countdown_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Countdown_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_countdown_title(inputs)
+	return __cs.subscription_cancelling_countdown_title(inputs)
+});
+export { subscription_cancelling_countdown_title as "subscription.cancelling.countdown.title" }
+/**
+* | output |
+* | --- |
+* | "days" |
+*
+* @param {Subscription_Cancelling_Countdown_DaysInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_countdown_days = /** @type {((inputs?: Subscription_Cancelling_Countdown_DaysInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Countdown_DaysInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_countdown_days(inputs)
+	return __cs.subscription_cancelling_countdown_days(inputs)
+});
+export { subscription_cancelling_countdown_days as "subscription.cancelling.countdown.days" }
+/**
+* | output |
+* | --- |
+* | "hours" |
+*
+* @param {Subscription_Cancelling_Countdown_HoursInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_countdown_hours = /** @type {((inputs?: Subscription_Cancelling_Countdown_HoursInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Countdown_HoursInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_countdown_hours(inputs)
+	return __cs.subscription_cancelling_countdown_hours(inputs)
+});
+export { subscription_cancelling_countdown_hours as "subscription.cancelling.countdown.hours" }
+/**
+* | output |
+* | --- |
+* | "minutes" |
+*
+* @param {Subscription_Cancelling_Countdown_MinutesInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_countdown_minutes = /** @type {((inputs?: Subscription_Cancelling_Countdown_MinutesInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Countdown_MinutesInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_countdown_minutes(inputs)
+	return __cs.subscription_cancelling_countdown_minutes(inputs)
+});
+export { subscription_cancelling_countdown_minutes as "subscription.cancelling.countdown.minutes" }
+/**
+* | output |
+* | --- |
+* | "Valid access until {date}" |
+*
+* @param {Subscription_Cancelling_Countdown_Accessuntil1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_countdown_accessuntil1 = /** @type {((inputs: Subscription_Cancelling_Countdown_Accessuntil1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Countdown_Accessuntil1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_countdown_accessuntil1(inputs)
+	return __cs.subscription_cancelling_countdown_accessuntil1(inputs)
+});
+export { subscription_cancelling_countdown_accessuntil1 as "subscription.cancelling.countdown.accessUntil" }
+/**
+* | output |
+* | --- |
+* | "Reactivate {plan} plan" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_title1 = /** @type {((inputs: Subscription_Cancelling_Reactivatecard_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_title1(inputs)
+	return __cs.subscription_cancelling_reactivatecard_title1(inputs)
+});
+export { subscription_cancelling_reactivatecard_title1 as "subscription.cancelling.reactivateCard.title" }
+/**
+* | output |
+* | --- |
+* | "No interruption to access" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Subtitle1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_subtitle1 = /** @type {((inputs?: Subscription_Cancelling_Reactivatecard_Subtitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Subtitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_subtitle1(inputs)
+	return __cs.subscription_cancelling_reactivatecard_subtitle1(inputs)
+});
+export { subscription_cancelling_reactivatecard_subtitle1 as "subscription.cancelling.reactivateCard.subtitle" }
+/**
+* | output |
+* | --- |
+* | "/ month" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Permonth2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_permonth2 = /** @type {((inputs?: Subscription_Cancelling_Reactivatecard_Permonth2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Permonth2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_permonth2(inputs)
+	return __cs.subscription_cancelling_reactivatecard_permonth2(inputs)
+});
+export { subscription_cancelling_reactivatecard_permonth2 as "subscription.cancelling.reactivateCard.perMonth" }
+/**
+* | output |
+* | --- |
+* | "Immediate plan reactivation" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Benefit11Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_benefit11 = /** @type {((inputs?: Subscription_Cancelling_Reactivatecard_Benefit11Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Benefit11Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_benefit11(inputs)
+	return __cs.subscription_cancelling_reactivatecard_benefit11(inputs)
+});
+export { subscription_cancelling_reactivatecard_benefit11 as "subscription.cancelling.reactivateCard.benefit1" }
+/**
+* | output |
+* | --- |
+* | "Credits will not be lost" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Benefit21Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_benefit21 = /** @type {((inputs?: Subscription_Cancelling_Reactivatecard_Benefit21Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Benefit21Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_benefit21(inputs)
+	return __cs.subscription_cancelling_reactivatecard_benefit21(inputs)
+});
+export { subscription_cancelling_reactivatecard_benefit21 as "subscription.cancelling.reactivateCard.benefit2" }
+/**
+* | output |
+* | --- |
+* | "Next payment only on {date}" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Benefit31Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_benefit31 = /** @type {((inputs: Subscription_Cancelling_Reactivatecard_Benefit31Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Benefit31Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_benefit31(inputs)
+	return __cs.subscription_cancelling_reactivatecard_benefit31(inputs)
+});
+export { subscription_cancelling_reactivatecard_benefit31 as "subscription.cancelling.reactivateCard.benefit3" }
+/**
+* | output |
+* | --- |
+* | "Reactivate subscription" |
+*
+* @param {Subscription_Cancelling_Reactivatecard_Button1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_reactivatecard_button1 = /** @type {((inputs?: Subscription_Cancelling_Reactivatecard_Button1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Reactivatecard_Button1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_reactivatecard_button1(inputs)
+	return __cs.subscription_cancelling_reactivatecard_button1(inputs)
+});
+export { subscription_cancelling_reactivatecard_button1 as "subscription.cancelling.reactivateCard.button" }
+/**
+* | output |
+* | --- |
+* | "Usage overview" |
+*
+* @param {Subscription_Cancelling_Usagestats_Title1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_title1 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Title1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Title1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_title1(inputs)
+	return __cs.subscription_cancelling_usagestats_title1(inputs)
+});
+export { subscription_cancelling_usagestats_title1 as "subscription.cancelling.usageStats.title" }
+/**
+* | output |
+* | --- |
+* | "Processed" |
+*
+* @param {Subscription_Cancelling_Usagestats_Processed1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_processed1 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Processed1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Processed1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_processed1(inputs)
+	return __cs.subscription_cancelling_usagestats_processed1(inputs)
+});
+export { subscription_cancelling_usagestats_processed1 as "subscription.cancelling.usageStats.processed" }
+/**
+* | output |
+* | --- |
+* | "Remaining" |
+*
+* @param {Subscription_Cancelling_Usagestats_Remaining1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_remaining1 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Remaining1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Remaining1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_remaining1(inputs)
+	return __cs.subscription_cancelling_usagestats_remaining1(inputs)
+});
+export { subscription_cancelling_usagestats_remaining1 as "subscription.cancelling.usageStats.remaining" }
+/**
+* | output |
+* | --- |
+* | "Total / month" |
+*
+* @param {Subscription_Cancelling_Usagestats_Total1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_total1 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Total1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Total1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_total1(inputs)
+	return __cs.subscription_cancelling_usagestats_total1(inputs)
+});
+export { subscription_cancelling_usagestats_total1 as "subscription.cancelling.usageStats.total" }
+/**
+* | output |
+* | --- |
+* | "Total" |
+*
+* @param {Subscription_Cancelling_Usagestats_Totalmobile2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_totalmobile2 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Totalmobile2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Totalmobile2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_totalmobile2(inputs)
+	return __cs.subscription_cancelling_usagestats_totalmobile2(inputs)
+});
+export { subscription_cancelling_usagestats_totalmobile2 as "subscription.cancelling.usageStats.totalMobile" }
+/**
+* | output |
+* | --- |
+* | "Expiry" |
+*
+* @param {Subscription_Cancelling_Usagestats_Expiry1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_expiry1 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Expiry1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Expiry1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_expiry1(inputs)
+	return __cs.subscription_cancelling_usagestats_expiry1(inputs)
+});
+export { subscription_cancelling_usagestats_expiry1 as "subscription.cancelling.usageStats.expiry" }
+/**
+* | output |
+* | --- |
+* | "Expires" |
+*
+* @param {Subscription_Cancelling_Usagestats_Expirymobile2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_usagestats_expirymobile2 = /** @type {((inputs?: Subscription_Cancelling_Usagestats_Expirymobile2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Usagestats_Expirymobile2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_usagestats_expirymobile2(inputs)
+	return __cs.subscription_cancelling_usagestats_expirymobile2(inputs)
+});
+export { subscription_cancelling_usagestats_expirymobile2 as "subscription.cancelling.usageStats.expiryMobile" }
+/**
+* | output |
+* | --- |
+* | "What happens after {date}?" |
+*
+* @param {Subscription_Cancelling_After_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_after_title = /** @type {((inputs: Subscription_Cancelling_After_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_After_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_after_title(inputs)
+	return __cs.subscription_cancelling_after_title(inputs)
+});
+export { subscription_cancelling_after_title as "subscription.cancelling.after.title" }
+/**
+* | output |
+* | --- |
+* | "Credits expire (remaining: {count})" |
+*
+* @param {Subscription_Cancelling_After_Creditslost1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_after_creditslost1 = /** @type {((inputs: Subscription_Cancelling_After_Creditslost1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_After_Creditslost1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_after_creditslost1(inputs)
+	return __cs.subscription_cancelling_after_creditslost1(inputs)
+});
+export { subscription_cancelling_after_creditslost1 as "subscription.cancelling.after.creditsLost" }
+/**
+* | output |
+* | --- |
+* | "Risk Scanner will not be available" |
+*
+* @param {Subscription_Cancelling_After_Riskscannerlost2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_after_riskscannerlost2 = /** @type {((inputs?: Subscription_Cancelling_After_Riskscannerlost2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_After_Riskscannerlost2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_after_riskscannerlost2(inputs)
+	return __cs.subscription_cancelling_after_riskscannerlost2(inputs)
+});
+export { subscription_cancelling_after_riskscannerlost2 as "subscription.cancelling.after.riskScannerLost" }
+/**
+* | output |
+* | --- |
+* | "Included PDF reports end" |
+*
+* @param {Subscription_Cancelling_After_Pdflost1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_after_pdflost1 = /** @type {((inputs?: Subscription_Cancelling_After_Pdflost1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_After_Pdflost1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_after_pdflost1(inputs)
+	return __cs.subscription_cancelling_after_pdflost1(inputs)
+});
+export { subscription_cancelling_after_pdflost1 as "subscription.cancelling.after.pdfLost" }
+/**
+* | output |
+* | --- |
+* | "3 photos / month free will remain" |
+*
+* @param {Subscription_Cancelling_After_Freekept1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_after_freekept1 = /** @type {((inputs?: Subscription_Cancelling_After_Freekept1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_After_Freekept1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_after_freekept1(inputs)
+	return __cs.subscription_cancelling_after_freekept1(inputs)
+});
+export { subscription_cancelling_after_freekept1 as "subscription.cancelling.after.freeKept" }
+/**
+* | output |
+* | --- |
+* | "Reactivate {plan} subscription" |
+*
+* @param {Subscription_Cancelling_Modal_TitleInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_title = /** @type {((inputs: Subscription_Cancelling_Modal_TitleInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_TitleInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_title(inputs)
+	return __cs.subscription_cancelling_modal_title(inputs)
+});
+export { subscription_cancelling_modal_title as "subscription.cancelling.modal.title" }
+/**
+* | output |
+* | --- |
+* | "Your plan will be immediately reactivated" |
+*
+* @param {Subscription_Cancelling_Modal_Infotitle1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_infotitle1 = /** @type {((inputs?: Subscription_Cancelling_Modal_Infotitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Infotitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_infotitle1(inputs)
+	return __cs.subscription_cancelling_modal_infotitle1(inputs)
+});
+export { subscription_cancelling_modal_infotitle1 as "subscription.cancelling.modal.infoTitle" }
+/**
+* | output |
+* | --- |
+* | "No interruption to access. Your card will be charged on the next billing cycle." |
+*
+* @param {Subscription_Cancelling_Modal_Infobody1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_infobody1 = /** @type {((inputs?: Subscription_Cancelling_Modal_Infobody1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Infobody1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_infobody1(inputs)
+	return __cs.subscription_cancelling_modal_infobody1(inputs)
+});
+export { subscription_cancelling_modal_infobody1 as "subscription.cancelling.modal.infoBody" }
+/**
+* | output |
+* | --- |
+* | "Plan" |
+*
+* @param {Subscription_Cancelling_Modal_Planlabel1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_planlabel1 = /** @type {((inputs?: Subscription_Cancelling_Modal_Planlabel1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Planlabel1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_planlabel1(inputs)
+	return __cs.subscription_cancelling_modal_planlabel1(inputs)
+});
+export { subscription_cancelling_modal_planlabel1 as "subscription.cancelling.modal.planLabel" }
+/**
+* | output |
+* | --- |
+* | "Payment today" |
+*
+* @param {Subscription_Cancelling_Modal_Todaypaymentlabel2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_todaypaymentlabel2 = /** @type {((inputs?: Subscription_Cancelling_Modal_Todaypaymentlabel2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Todaypaymentlabel2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_todaypaymentlabel2(inputs)
+	return __cs.subscription_cancelling_modal_todaypaymentlabel2(inputs)
+});
+export { subscription_cancelling_modal_todaypaymentlabel2 as "subscription.cancelling.modal.todayPaymentLabel" }
+/**
+* | output |
+* | --- |
+* | "€0.00" |
+*
+* @param {Subscription_Cancelling_Modal_Todaypaymentvalue2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_todaypaymentvalue2 = /** @type {((inputs?: Subscription_Cancelling_Modal_Todaypaymentvalue2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Todaypaymentvalue2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_todaypaymentvalue2(inputs)
+	return __cs.subscription_cancelling_modal_todaypaymentvalue2(inputs)
+});
+export { subscription_cancelling_modal_todaypaymentvalue2 as "subscription.cancelling.modal.todayPaymentValue" }
+/**
+* | output |
+* | --- |
+* | "Next payment" |
+*
+* @param {Subscription_Cancelling_Modal_Nextpaymentlabel2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_nextpaymentlabel2 = /** @type {((inputs?: Subscription_Cancelling_Modal_Nextpaymentlabel2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Nextpaymentlabel2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_nextpaymentlabel2(inputs)
+	return __cs.subscription_cancelling_modal_nextpaymentlabel2(inputs)
+});
+export { subscription_cancelling_modal_nextpaymentlabel2 as "subscription.cancelling.modal.nextPaymentLabel" }
+/**
+* | output |
+* | --- |
+* | "Confirm reactivation" |
+*
+* @param {Subscription_Cancelling_Modal_Confirmbutton1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_confirmbutton1 = /** @type {((inputs?: Subscription_Cancelling_Modal_Confirmbutton1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_Confirmbutton1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_confirmbutton1(inputs)
+	return __cs.subscription_cancelling_modal_confirmbutton1(inputs)
+});
+export { subscription_cancelling_modal_confirmbutton1 as "subscription.cancelling.modal.confirmButton" }
+/**
+* | output |
+* | --- |
+* | "Reactivation failed. Please try again." |
+*
+* @param {Subscription_Cancelling_Modal_ErrorInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const subscription_cancelling_modal_error = /** @type {((inputs?: Subscription_Cancelling_Modal_ErrorInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Subscription_Cancelling_Modal_ErrorInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.subscription_cancelling_modal_error(inputs)
+	return __cs.subscription_cancelling_modal_error(inputs)
+});
+export { subscription_cancelling_modal_error as "subscription.cancelling.modal.error" }
