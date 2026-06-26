@@ -91,7 +91,7 @@ This plan implements the "ending subscription" intermediate state for the MetaCl
     - Use `tx()` for all text
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 6.3 Create `CountdownCard.svelte`
+  - [x] 6.3 Create `CountdownCard.svelte`
     - Create `frontend/metacleaner-app/src/lib/shared/sections/CountdownCard.svelte`
     - Props: `periodEndDate: string`
     - Display remaining days, hours, minutes (computed client-side with `setInterval` every 60s)
