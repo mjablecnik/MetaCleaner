@@ -138,6 +138,8 @@ function _restore(): void {
 		_accessToken = token;
 		_refreshToken = storedRefresh;
 		_isAuthReady = true;
+		// Fetch subscription data in background (non-blocking)
+		_fetchSubscription(token);
 	} else if (storedRefresh) {
 		// Access token expired but refresh token exists — attempt silent refresh.
 		// If remember me is OFF and token expired, don't refresh — session is over.
@@ -153,6 +155,7 @@ function _restore(): void {
 		refresh()
 			.then(() => {
 				_isAuthReady = true;
+				if (_accessToken) _fetchSubscription(_accessToken);
 			})
 			.catch(() => {
 				_clear();

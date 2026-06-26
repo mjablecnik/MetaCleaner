@@ -7,6 +7,8 @@ function createBillingStore() {
 	let purchasedCredits = $state(0);
 	let planId = $state('free');
 	let planStatus = $state('free');
+	let billingPeriod = $state<'monthly' | 'yearly' | null>(null);
+	let currentPeriodEnd = $state<string | null>(null);
 	let isLoading = $state(false);
 	let hasError = $state(false);
 	let pendingDeductUntil = 0; // timestamp until which server values higher than local are ignored
@@ -34,6 +36,8 @@ function createBillingStore() {
 
 			planId = sub.plan_id ?? 'free';
 			planStatus = sub.status ?? 'free';
+			billingPeriod = (sub.billing_period as 'monthly' | 'yearly') ?? null;
+			currentPeriodEnd = sub.current_period_end ?? null;
 
 			// If an optimistic deduct is pending, don't let stale server data overwrite our lower local value.
 			if (Date.now() < pendingDeductUntil && credits !== null && cred.total_credits > credits) {
@@ -78,6 +82,8 @@ function createBillingStore() {
 		purchasedCredits = 0;
 		planId = 'free';
 		planStatus = 'free';
+		billingPeriod = null;
+		currentPeriodEnd = null;
 		isLoading = false;
 		hasError = false;
 	}
@@ -111,6 +117,12 @@ function createBillingStore() {
 		},
 		get planStatus() {
 			return planStatus;
+		},
+		get billingPeriod() {
+			return billingPeriod;
+		},
+		get currentPeriodEnd() {
+			return currentPeriodEnd;
 		},
 		get isLoading() {
 			return isLoading;

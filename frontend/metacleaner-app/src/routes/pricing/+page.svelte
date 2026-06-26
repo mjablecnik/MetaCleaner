@@ -41,12 +41,8 @@
 	let modalError = $state<string | null>(null);
 
 	const currentPlanId = $derived(
-		authStore.subscription && authStore.subscription.plan_id !== 'free'
-			? authStore.subscription.plan_id
-			: null
+		billingStore.isPaidPlan || billingStore.isCancellingPlan ? billingStore.planId : null
 	);
-
-	const subscription = $derived(authStore.subscription);
 
 	const showManagementUI = $derived(billingStore.isPaidPlan);
 	const showSkeleton = $derived(billingStore.isLoading && billingStore.credits === null);
@@ -62,7 +58,7 @@
 	const currentPlanPrice = $derived(() => {
 		void locale.current;
 		if (!currentPlanData) return '';
-		return subscription?.billing_period === 'yearly'
+		return billingStore.billingPeriod === 'yearly'
 			? currentPlanData.priceYearly
 			: currentPlanData.priceMonthly;
 	});
@@ -96,7 +92,7 @@
 	const targetUpgradePrice = $derived(() => {
 		void locale.current;
 		if (!targetUpgradePlanData) return '';
-		return subscription?.billing_period === 'yearly'
+		return billingStore.billingPeriod === 'yearly'
 			? targetUpgradePlanData.priceYearly
 			: targetUpgradePlanData.priceMonthly;
 	});
@@ -104,15 +100,15 @@
 	const targetDowngradePrice = $derived(() => {
 		void locale.current;
 		if (!targetDowngradePlanData) return '';
-		return subscription?.billing_period === 'yearly'
+		return billingStore.billingPeriod === 'yearly'
 			? targetDowngradePlanData.priceYearly
 			: targetDowngradePlanData.priceMonthly;
 	});
 
 	const formattedPeriodEnd = $derived(() => {
 		void locale.current;
-		if (!subscription?.current_period_end) return '';
-		return formatDate(subscription.current_period_end, locale.current as 'en' | 'cs');
+		if (!billingStore.currentPeriodEnd) return '';
+		return formatDate(billingStore.currentPeriodEnd, locale.current as 'en' | 'cs');
 	});
 
 	function translate(key: string): string {
@@ -161,7 +157,7 @@
 		try {
 			await billingClient.changePlan(
 				targetUpgradePlanData.id,
-				subscription?.billing_period ?? 'monthly'
+				billingStore.billingPeriod ?? 'monthly'
 			);
 			await billingStore.refresh();
 			activeModal = null;
@@ -179,7 +175,7 @@
 		try {
 			await billingClient.changePlan(
 				targetDowngradePlanData.id,
-				subscription?.billing_period ?? 'monthly'
+				billingStore.billingPeriod ?? 'monthly'
 			);
 			await billingStore.refresh();
 			activeModal = null;
@@ -307,8 +303,8 @@
 			<CancellingView
 				planId={billingStore.planId}
 				price={currentPlanPrice()}
-				billingPeriod={subscription?.billing_period ?? 'monthly'}
-				periodEndDate={subscription?.current_period_end ?? ''}
+				billingPeriod={billingStore.billingPeriod ?? 'monthly'}
+				periodEndDate={billingStore.currentPeriodEnd ?? ''}
 				monthlyAllowance={billingStore.monthlyAllowance}
 				{creditsUsed}
 				{creditsRemaining}
@@ -360,21 +356,21 @@
 					<CurrentPlanCard
 						planId={billingStore.planId}
 						planStatus={billingStore.planStatus}
-						billingPeriod={subscription?.billing_period ?? null}
+						billingPeriod={billingStore.billingPeriod}
 						price={currentPlanPrice()}
 						monthlyAllowance={billingStore.monthlyAllowance}
 						{creditsUsed}
 						{creditsRemaining}
-						renewalDate={subscription?.current_period_end ?? null}
+						renewalDate={billingStore.currentPeriodEnd}
 						features={currentFeatures()}
-						paymentMethod={subscription?.payment_method ?? null}
-						nextPaymentDate={subscription?.current_period_end ?? null}
+						paymentMethod={authStore.subscription?.payment_method ?? null}
+						nextPaymentDate={billingStore.currentPeriodEnd}
 						isLoading={false}
 						hasError={billingStore.hasError}
 					/>
 					{#if billingStore.isPaidPlan}
 						<CancelSection
-							periodEndDate={subscription?.current_period_end ?? ''}
+							periodEndDate={billingStore.currentPeriodEnd ?? ''}
 							onCancel={() => openModal('cancel')}
 						/>
 					{/if}
@@ -404,7 +400,7 @@
 						creditsConsumed={creditsUsed}
 						{creditsRemaining}
 						monthlyAllowance={billingStore.monthlyAllowance}
-						renewalDate={subscription?.current_period_end ?? ''}
+						renewalDate={billingStore.currentPeriodEnd ?? ''}
 						isLoading={false}
 						hasError={billingStore.hasError}
 					/>
