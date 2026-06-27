@@ -5,8 +5,11 @@ export interface DbKpi {
 	valueClass?: string;
 	badgeKey: string;
 	badgeClass: string;
-	subtextKey: string;
-	subtextValue?: string;
+	subtext: string;
+	trend?: string;
+	trendClass?: string;
+	unit?: string;
+	max?: string;
 	barWidth?: string;
 	barClass?: string;
 }
@@ -17,8 +20,7 @@ export interface DbSecondaryKpi {
 	value: string;
 	iconClass: string;
 	icon: string;
-	subtextKey: string;
-	subtextValue?: string;
+	subtext: string;
 }
 
 export interface SlowQuery {
@@ -29,6 +31,7 @@ export interface SlowQuery {
 	calls: string;
 	avgMs: number;
 	avgClass: string;
+	meta: string;
 }
 
 export interface TableSize {
@@ -65,8 +68,9 @@ export function getDbKpis(): DbKpi[] {
 			value: '87',
 			badgeKey: 'common_status_warning',
 			badgeClass: 'bg-secondary/10 text-secondary',
-			subtextKey: 'database_kpi_activeConnectionsSubtext',
-			subtextValue: '87%',
+			subtext: 'Pool utilization: 87%',
+			unit: '',
+			max: '/ 100',
 			barWidth: '87%',
 			barClass: 'bg-secondary'
 		},
@@ -76,27 +80,33 @@ export function getDbKpis(): DbKpi[] {
 			value: '24',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtextKey: 'database_kpi_queryLatencySubtext'
+			subtext: 'P95: 142ms · P99: 380ms',
+			unit: 'ms',
+			trend: '-3ms',
+			trendClass: 'text-success'
 		},
 		{
 			key: 'storageUsed',
-			labelKey: 'database_kpi_storageUsed',
+			labelKey: 'database_kpi_storage',
 			value: '6.2',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtextKey: 'database_kpi_storageSubtext',
-			subtextValue: '77.5%',
+			subtext: '77.5% kapacity využito',
+			unit: '',
+			max: '/ 8 GB',
 			barWidth: '77%',
 			barClass: 'bg-[#3b82f6]'
 		},
 		{
 			key: 'dbErrors',
-			labelKey: 'database_kpi_dbErrors',
+			labelKey: 'database_kpi_errors',
 			value: '12',
 			valueClass: 'text-error',
 			badgeKey: 'common_status_critical',
 			badgeClass: 'bg-error/10 text-error',
-			subtextKey: 'database_kpi_dbErrorsSubtext'
+			subtext: 'Timeout, deadlock, conn reset',
+			trend: '+7',
+			trendClass: 'text-error'
 		}
 	];
 }
@@ -109,7 +119,7 @@ export function getDbSecondaryKpis(): DbSecondaryKpi[] {
 			value: '1,842',
 			icon: 'fa-arrow-right-to-bracket',
 			iconClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			subtextKey: 'database_kpi_queriesPerMinSubtext'
+			subtext: 'Peak: 3,210 qps (10:42)'
 		},
 		{
 			key: 'replicationLag',
@@ -117,7 +127,7 @@ export function getDbSecondaryKpis(): DbSecondaryKpi[] {
 			value: '18 ms',
 			icon: 'fa-copy',
 			iconClass: 'bg-[#3ecf8e]/15 text-[#3ecf8e]',
-			subtextKey: 'database_kpi_replicationLagSubtext'
+			subtext: 'Replika: eu-west-1b · OK'
 		},
 		{
 			key: 'locks',
@@ -125,7 +135,7 @@ export function getDbSecondaryKpis(): DbSecondaryKpi[] {
 			value: '3',
 			icon: 'fa-lock',
 			iconClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			subtextKey: 'database_kpi_locksSubtext'
+			subtext: 'Deadlocks dnes: 1'
 		},
 		{
 			key: 'backups',
@@ -133,7 +143,7 @@ export function getDbSecondaryKpis(): DbSecondaryKpi[] {
 			value: 'Aktuální',
 			icon: 'fa-shield-halved',
 			iconClass: 'bg-success/15 text-success',
-			subtextKey: 'database_kpi_backupsSubtext'
+			subtext: 'Poslední: dnes 03:00 · 4.8 GB'
 		}
 	];
 }
@@ -156,7 +166,8 @@ export function getSlowestQueries(): SlowQuery[] {
 			table: 'orders',
 			calls: '842x',
 			avgMs: 1240,
-			avgClass: 'text-error'
+			avgClass: 'text-error',
+			meta: 'Tabulka: orders · Volání: 842x'
 		},
 		{
 			type: 'UPDATE',
@@ -165,7 +176,8 @@ export function getSlowestQueries(): SlowQuery[] {
 			table: 'products',
 			calls: '1,203x',
 			avgMs: 620,
-			avgClass: 'text-secondary'
+			avgClass: 'text-secondary',
+			meta: 'Tabulka: products · Volání: 1,203x'
 		},
 		{
 			type: 'SELECT',
@@ -174,7 +186,8 @@ export function getSlowestQueries(): SlowQuery[] {
 			table: 'analytics',
 			calls: '312x',
 			avgMs: 390,
-			avgClass: 'text-[#3b82f6]'
+			avgClass: 'text-[#3b82f6]',
+			meta: 'Tabulka: analytics · Volání: 312x'
 		},
 		{
 			type: 'INSERT',
@@ -183,7 +196,8 @@ export function getSlowestQueries(): SlowQuery[] {
 			table: 'events',
 			calls: '5,841x',
 			avgMs: 84,
-			avgClass: 'text-textMain'
+			avgClass: 'text-textMain',
+			meta: 'Tabulka: events · Volání: 5,841x'
 		},
 		{
 			type: 'SELECT',
@@ -192,7 +206,8 @@ export function getSlowestQueries(): SlowQuery[] {
 			table: 'sessions',
 			calls: '22,100x',
 			avgMs: 31,
-			avgClass: 'text-textMain'
+			avgClass: 'text-textMain',
+			meta: 'Tabulka: sessions · Volání: 22,100x'
 		}
 	];
 }
@@ -243,6 +258,42 @@ export function getDbErrorLog(): DbErrorEntry[] {
 			table: 'analytics',
 			duration: '8,200 ms',
 			durationClass: 'text-secondary',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'dberr-4',
+			time: '12:44:17',
+			type: 'Timeout',
+			typeClass: 'bg-error/15 text-error',
+			message: 'Query timeout on full table scan – missing index on user_id',
+			table: 'events',
+			duration: '30,000 ms',
+			durationClass: 'text-error',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'dberr-5',
+			time: '11:05:52',
+			type: 'Lock',
+			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
+			message: 'Row-level lock wait exceeded 10s on UPDATE statement',
+			table: 'orders',
+			duration: '10,140 ms',
+			durationClass: 'text-textSec',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'dberr-6',
+			time: '09:30:08',
+			type: 'Repl',
+			typeClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
+			message: 'Replication lag spike to 480ms detected on standby replica',
+			table: '—',
+			duration: '480 ms lag',
+			durationClass: 'text-textSec',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		}

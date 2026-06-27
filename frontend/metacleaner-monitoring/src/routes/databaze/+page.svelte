@@ -2,6 +2,15 @@
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
+	import { getDbKpis, getDbSecondaryKpis, getQueryTypeDistribution, getSlowestQueries, getTableSizes, getDbErrorLog, getDatabaseStats } from '$lib/repositories/databaseRepository';
+
+	const kpis = getDbKpis();
+	const secondaryKpis = getDbSecondaryKpis();
+	const queryTypes = getQueryTypeDistribution();
+	const slowQueries = getSlowestQueries();
+	const tableSizes = getTableSizes();
+	const errorLog = getDbErrorLog();
+	const dbStats = getDatabaseStats();
 
 	let latencyOpen = $state(true);
 	let connectionsOpen = $state(false);
@@ -228,101 +237,83 @@
 
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+			<!-- activeConnections -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_activeConnections')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
+					<h3 class="text-textSec text-sm font-medium">{t(kpis[0].labelKey)}</h3>
+					<span class="px-2 py-0.5 {kpis[0].badgeClass} text-xs rounded-full font-medium">{t(kpis[0].badgeKey)}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">87</span>
-					<span class="text-sm text-textSec mb-1">/ 100</span>
+					<span class="text-3xl font-bold text-textMain">{kpis[0].value}</span>
+					<span class="text-sm text-textSec mb-1">{kpis[0].max}</span>
 				</div>
 				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-secondary rounded-full" style="width:87%"></div>
+					<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 				</div>
-				<p class="text-xs text-textSec mt-2">Pool utilization: 87%</p>
+				<p class="text-xs text-textSec mt-2">{kpis[0].subtext}</p>
 			</div>
+			<!-- queryLatency -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_queryLatency')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
+					<h3 class="text-textSec text-sm font-medium">{t(kpis[1].labelKey)}</h3>
+					<span class="px-2 py-0.5 {kpis[1].badgeClass} text-xs rounded-full font-medium">{t(kpis[1].badgeKey)}</span>
 				</div>
 				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">24</span>
-					<span class="text-sm text-textSec mb-1">ms</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-down text-xs"></i>-3ms</span>
+					<span class="text-3xl font-bold text-textMain">{kpis[1].value}</span>
+					<span class="text-sm text-textSec mb-1">{kpis[1].unit}</span>
+					<span class="text-sm {kpis[1].trendClass} mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-down text-xs"></i>{kpis[1].trend}</span>
 				</div>
-				<p class="text-xs text-textSec mt-2">P95: 142ms · P99: 380ms</p>
+				<p class="text-xs text-textSec mt-2">{kpis[1].subtext}</p>
 			</div>
+			<!-- storageUsed -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_storage')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
+					<h3 class="text-textSec text-sm font-medium">{t(kpis[2].labelKey)}</h3>
+					<span class="px-2 py-0.5 {kpis[2].badgeClass} text-xs rounded-full font-medium">{t(kpis[2].badgeKey)}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">6.2</span>
-					<span class="text-sm text-textSec mb-1">/ 8 GB</span>
+					<span class="text-3xl font-bold text-textMain">{kpis[2].value}</span>
+					<span class="text-sm text-textSec mb-1">{kpis[2].max}</span>
 				</div>
 				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:77%"></div>
+					<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 				</div>
-				<p class="text-xs text-textSec mt-2">77.5% kapacity využito</p>
+				<p class="text-xs text-textSec mt-2">{kpis[2].subtext}</p>
 			</div>
+			<!-- dbErrors -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_errors')}</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('common_status_critical')}</span>
+					<h3 class="text-textSec text-sm font-medium">{t(kpis[3].labelKey)}</h3>
+					<span class="px-2 py-0.5 {kpis[3].badgeClass} text-xs rounded-full font-medium">{t(kpis[3].badgeKey)}</span>
 				</div>
 				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-error">12</span>
-					<span class="text-sm text-error mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+7</span>
+					<span class="text-3xl font-bold {kpis[3].valueClass}">{kpis[3].value}</span>
+					<span class="text-sm {kpis[3].trendClass} mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>{kpis[3].trend}</span>
 				</div>
-				<p class="text-xs text-textSec mt-2">Timeout, deadlock, conn reset</p>
+				<p class="text-xs text-textSec mt-2">{kpis[3].subtext}</p>
 			</div>
 		</section>
 
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex items-center gap-3 mb-3">
+						<div class="w-8 h-8 rounded-lg {kpi.iconClass} flex items-center justify-center">
+							<i class="fa-solid {kpi.icon} text-xs"></i>
+						</div>
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_queriesPerMin')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">1,842</div>
-				<p class="text-xs text-textSec mt-1">Peak: 3,210 qps (10:42)</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
+					<div class="text-2xl font-bold text-textMain">
+						{#if kpi.key === 'backups'}
+							{t('database_kpi_backupStatus')}
+						{:else}
+							{kpi.value}
+						{/if}
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_replicationLag')}</h3>
+					<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
 				</div>
-				<div class="text-2xl font-bold text-textMain">18 <span class="text-sm font-normal text-textSec">ms</span></div>
-				<p class="text-xs text-textSec mt-1">Replika: eu-west-1b · OK</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_locks')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">3</div>
-				<p class="text-xs text-textSec mt-1">Deadlocks dnes: 1</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
-						<i class="fa-solid fa-shield-halved text-success text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_backups')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">{t('database_kpi_backupStatus')}</div>
-				<p class="text-xs text-textSec mt-1">Poslední: dnes 03:00 · 4.8 GB</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Row -->
@@ -366,22 +357,12 @@
 				<p class="text-xs text-textSec mb-4">{t('database_charts_queryTypesSubtitle')}</p>
 				<div id="chart-query-pie" class="h-[200px] w-full"></div>
 				<div class="mt-4 space-y-2">
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">SELECT</span></div>
-						<span class="text-textMain font-medium">68%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">INSERT</span></div>
-						<span class="text-textMain font-medium">18%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span class="text-textSec">UPDATE</span></div>
-						<span class="text-textMain font-medium">11%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span><span class="text-textSec">DELETE</span></div>
-						<span class="text-textMain font-medium">3%</span>
-					</div>
+					{#each queryTypes as qt}
+						<div class="flex items-center justify-between text-sm">
+							<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full {qt.color} inline-block"></span><span class="text-textSec">{qt.label}</span></div>
+							<span class="text-textMain font-medium">{qt.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 
@@ -394,71 +375,21 @@
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('common_timeRange_last24h')}</span>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex-shrink-0 mt-0.5">
-							<span class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold">SELECT</span>
+					{#each slowQueries as q (q.sql)}
+						<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="flex-shrink-0 mt-0.5">
+								<span class="px-2 py-0.5 {q.typeClass} text-xs font-mono rounded font-semibold">{q.type}</span>
+							</div>
+							<div class="flex-1 min-w-0">
+								<p class="text-textMain text-sm font-medium font-mono truncate">{q.sql}</p>
+								<p class="text-xs text-textSec mt-0.5">{q.meta}</p>
+							</div>
+							<div class="flex-shrink-0 text-right">
+								<div class="{q.avgClass} font-bold text-sm">{q.avgMs.toLocaleString()} ms</div>
+								<div class="text-xs text-textSec">avg</div>
+							</div>
 						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">SELECT * FROM orders JOIN users ON...</p>
-							<p class="text-xs text-textSec mt-0.5">Tabulka: orders · Volání: 842x</p>
-						</div>
-						<div class="flex-shrink-0 text-right">
-							<div class="text-error font-bold text-sm">1,240 ms</div>
-							<div class="text-xs text-textSec">avg</div>
-						</div>
-					</div>
-					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex-shrink-0 mt-0.5">
-							<span class="px-2 py-0.5 bg-secondary/20 text-secondary text-xs font-mono rounded font-semibold">UPDATE</span>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">UPDATE products SET stock = stock - 1 WHERE...</p>
-							<p class="text-xs text-textSec mt-0.5">Tabulka: products · Volání: 1,203x</p>
-						</div>
-						<div class="flex-shrink-0 text-right">
-							<div class="text-secondary font-bold text-sm">620 ms</div>
-							<div class="text-xs text-textSec">avg</div>
-						</div>
-					</div>
-					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex-shrink-0 mt-0.5">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold">SELECT</span>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">SELECT COUNT(*) FROM analytics WHERE date &gt;</p>
-							<p class="text-xs text-textSec mt-0.5">Tabulka: analytics · Volání: 312x</p>
-						</div>
-						<div class="flex-shrink-0 text-right">
-							<div class="text-[#3b82f6] font-bold text-sm">390 ms</div>
-							<div class="text-xs text-textSec">avg</div>
-						</div>
-					</div>
-					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex-shrink-0 mt-0.5">
-							<span class="px-2 py-0.5 bg-[#3ecf8e]/20 text-[#3ecf8e] text-xs font-mono rounded font-semibold">INSERT</span>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">INSERT INTO events (user_id, type, meta) VALUES...</p>
-							<p class="text-xs text-textSec mt-0.5">Tabulka: events · Volání: 5,841x</p>
-						</div>
-						<div class="flex-shrink-0 text-right">
-							<div class="text-textMain font-bold text-sm">84 ms</div>
-							<div class="text-xs text-textSec">avg</div>
-						</div>
-					</div>
-					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex-shrink-0 mt-0.5">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold">SELECT</span>
-						</div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">SELECT * FROM sessions WHERE expires_at &gt; NOW()</p>
-							<p class="text-xs text-textSec mt-0.5">Tabulka: sessions · Volání: 22,100x</p>
-						</div>
-						<div class="flex-shrink-0 text-right">
-							<div class="text-textMain font-bold text-sm">31 ms</div>
-							<div class="text-xs text-textSec">avg</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -473,58 +404,25 @@
 					</div>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">events</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6] rounded-full" style="width:82%"></div>
+					{#each tableSizes as ts (ts.name)}
+						<div class="flex items-center gap-3">
+							<div class="w-24 text-xs text-textSec font-mono truncate">{ts.name}</div>
+							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {ts.barClass} rounded-full" style="width:{ts.barWidth}"></div>
+							</div>
+							<span class="text-xs text-textMain font-medium w-12 text-right">{ts.sizeLabel}</span>
 						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">2.1 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">orders</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3ecf8e] rounded-full" style="width:60%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">1.5 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">analytics</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#8b5cf6] rounded-full" style="width:48%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">1.2 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">users</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-secondary rounded-full" style="width:30%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">780 MB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">sessions</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:18%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">460 MB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-24 text-xs text-textSec font-mono truncate">products</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6]/40 rounded-full" style="width:8%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-12 text-right">210 MB</span>
-					</div>
+					{/each}
 				</div>
 				<div class="mt-5 pt-4 border-t border-[#1e293b]">
 					<div class="flex justify-between text-xs text-textSec mb-2">
 						<span>{t('database_tableSizes_totalStorage')}</span>
-						<span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
+						<span class="text-textMain font-semibold">{dbStats.totalStorage} / {dbStats.maxStorage}</span>
 					</div>
 					<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full rounded-full" style="width:77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
+						<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
 					</div>
-					<p class="text-xs text-textSec mt-2">Odhadované zaplnění při současném tempu: <span class="text-secondary font-medium">~14 dní</span></p>
+					<p class="text-xs text-textSec mt-2">Odhadované zaplnění při současném tempu: <span class="text-secondary font-medium">{dbStats.estimatedFillDays}</span></p>
 				</div>
 			</div>
 
@@ -572,54 +470,16 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:32:11</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Timeout</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection pool exhausted – max 100 connections reached</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
-							<td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:58:04</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Deadlock</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Deadlock detected between transactions T1 and T2</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">products</td>
-							<td class="py-3 pr-4 text-textSec text-xs font-mono">—</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:21:39</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Conn</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection reset by peer during large SELECT query</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">analytics</td>
-							<td class="py-3 pr-4 text-secondary text-xs font-mono">8,200 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:44:17</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Timeout</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Query timeout on full table scan – missing index on user_id</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">events</td>
-							<td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:05:52</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Lock</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Row-level lock wait exceeded 10s on UPDATE statement</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
-							<td class="py-3 pr-4 text-textSec text-xs font-mono">10,140 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">09:30:08</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Repl</span></td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Replication lag spike to 480ms detected on standby replica</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">—</td>
-							<td class="py-3 pr-4 text-textSec text-xs font-mono">480 ms lag</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
+						{#each errorLog as entry (entry.id)}
+							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
+								<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span></td>
+								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{entry.message}</td>
+								<td class="py-3 pr-4 text-textSec font-mono text-xs">{entry.table}</td>
+								<td class="py-3 pr-4 {entry.durationClass} text-xs font-mono">{entry.duration}</td>
+								<td class="py-3"><span class="px-2 py-0.5 {entry.statusClass} text-xs rounded">{t(entry.statusKey)}</span></td>
+							</tr>
+						{/each}
 					</tbody>
 				</table>
 			</div>
@@ -665,57 +525,61 @@
 
 		<!-- KPI Primary Stats 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
+			<!-- activeConnections -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_activeConnections')}</h3>
+					<h3 class="text-textSec text-xs font-medium">{t(kpis[0].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">!</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">87</span>
-					<span class="text-xs text-textSec mb-0.5">/ 100</span>
+					<span class="text-2xl font-bold text-textMain">{kpis[0].value}</span>
+					<span class="text-xs text-textSec mb-0.5">{kpis[0].max}</span>
 				</div>
 				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-					<div class="h-full bg-secondary rounded-full" style="width:87%"></div>
+					<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 				</div>
 				<p class="text-[10px] text-secondary font-medium">Varování · 87%</p>
 			</div>
 
+			<!-- queryLatency -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_queryLatency')}</h3>
+					<h3 class="text-textSec text-xs font-medium">{t(kpis[1].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
 				</div>
 				<div class="flex items-end gap-1 mb-1">
-					<span class="text-2xl font-bold text-textMain">24</span>
-					<span class="text-xs text-textSec mb-0.5">ms</span>
-					<span class="text-xs text-success mb-0.5 flex items-center gap-0.5 ml-1"><i class="fa-solid fa-arrow-down text-[9px]"></i>-3ms</span>
+					<span class="text-2xl font-bold text-textMain">{kpis[1].value}</span>
+					<span class="text-xs text-textSec mb-0.5">{kpis[1].unit}</span>
+					<span class="text-xs {kpis[1].trendClass} mb-0.5 flex items-center gap-0.5 ml-1"><i class="fa-solid fa-arrow-down text-[9px]"></i>{kpis[1].trend}</span>
 				</div>
-				<p class="text-[10px] text-textSec">P95: 142ms · P99: 380ms</p>
+				<p class="text-[10px] text-textSec">{kpis[1].subtext}</p>
 			</div>
 
+			<!-- storageUsed -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_storage')}</h3>
+					<h3 class="text-textSec text-xs font-medium">{t(kpis[2].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">6.2</span>
-					<span class="text-xs text-textSec mb-0.5">/ 8 GB</span>
+					<span class="text-2xl font-bold text-textMain">{kpis[2].value}</span>
+					<span class="text-xs text-textSec mb-0.5">{kpis[2].max}</span>
 				</div>
 				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:77%"></div>
+					<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 				</div>
 				<p class="text-[10px] text-textSec">77.5% využito</p>
 			</div>
 
+			<!-- dbErrors -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_errors')}</h3>
-					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">{t('common_status_critical')}</span>
+					<h3 class="text-textSec text-xs font-medium">{t(kpis[3].labelKey)}</h3>
+					<span class="px-1.5 py-0.5 {kpis[3].badgeClass} text-[10px] rounded-full font-medium">{t(kpis[3].badgeKey)}</span>
 				</div>
 				<div class="flex items-end gap-1 mb-1">
-					<span class="text-2xl font-bold text-error">12</span>
-					<span class="text-xs text-error mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-[9px]"></i>+7</span>
+					<span class="text-2xl font-bold {kpis[3].valueClass}">{kpis[3].value}</span>
+					<span class="text-xs {kpis[3].trendClass} mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-[9px]"></i>{kpis[3].trend}</span>
 				</div>
 				<p class="text-[10px] text-textSec">Timeout, deadlock</p>
 			</div>
@@ -723,38 +587,22 @@
 
 		<!-- Secondary Stats horizontal scroll -->
 		<section class="flex gap-3 overflow-x-auto pb-1">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-				<div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
+					<div class="w-7 h-7 rounded-lg {kpi.iconClass} flex items-center justify-center mb-2">
+						<i class="fa-solid {kpi.icon} text-xs"></i>
+					</div>
+					<div class="text-lg font-bold text-textMain">
+						{#if kpi.key === 'backups'}
+							{t('database_kpi_backupStatus')}
+						{:else}
+							{kpi.value}
+						{/if}
+					</div>
+					<p class="text-[10px] text-textSec mt-0.5">{t(kpi.labelKey)}</p>
+					<p class="text-[10px] text-textSec">{kpi.subtext}</p>
 				</div>
-				<div class="text-lg font-bold text-textMain">1,842</div>
-				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_queriesPerMin')}</p>
-				<p class="text-[10px] text-textSec">Peak: 3,210 qps</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-				<div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
-				</div>
-				<div class="text-lg font-bold text-textMain">18 <span class="text-xs font-normal text-textSec">ms</span></div>
-				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_replicationLag')}</p>
-				<p class="text-[10px] text-textSec">eu-west-1b · OK</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-				<div class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
-				</div>
-				<div class="text-lg font-bold text-textMain">3</div>
-				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_locks')}</p>
-				<p class="text-[10px] text-textSec">Deadlocks: 1</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-				<div class="w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-shield-halved text-success text-xs"></i>
-				</div>
-				<div class="text-base font-bold text-textMain">{t('database_kpi_backupStatus')}</div>
-				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_backups')}</p>
-				<p class="text-[10px] text-textSec">03:00 · 4.8 GB</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Accordions -->
@@ -845,22 +693,12 @@
 				<div class="px-4 pb-5">
 					<div id="chart-query-pie-m" class="w-full" style="height:180px;"></div>
 					<div class="mt-3 grid grid-cols-2 gap-2">
-						<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-							<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec text-xs">SELECT</span></div>
-							<span class="text-textMain text-xs font-semibold">68%</span>
-						</div>
-						<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-							<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec text-xs">INSERT</span></div>
-							<span class="text-textMain text-xs font-semibold">18%</span>
-						</div>
-						<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-							<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span><span class="text-textSec text-xs">UPDATE</span></div>
-							<span class="text-textMain text-xs font-semibold">11%</span>
-						</div>
-						<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-							<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec text-xs">DELETE</span></div>
-							<span class="text-textMain text-xs font-semibold">3%</span>
-						</div>
+						{#each queryTypes as qt}
+							<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
+								<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full {qt.color} inline-block"></span><span class="text-textSec text-xs">{qt.label}</span></div>
+								<span class="text-textMain text-xs font-semibold">{qt.percent}%</span>
+							</div>
+						{/each}
 					</div>
 				</div>
 			{/if}
@@ -880,46 +718,16 @@
 			</button>
 			{#if slowQueriesOpen}
 				<div class="px-4 pb-4 space-y-2">
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-start justify-between gap-2 mb-1.5">
-							<span class="px-2 py-0.5 bg-error/20 text-error text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-							<span class="text-error font-bold text-sm">1,240 ms</span>
+					{#each slowQueries as q (q.sql)}
+						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="flex items-start justify-between gap-2 mb-1.5">
+								<span class="px-2 py-0.5 {q.typeClass} text-[10px] font-mono rounded font-semibold flex-shrink-0">{q.type}</span>
+								<span class="{q.avgClass} font-bold text-sm">{q.avgMs.toLocaleString()} ms</span>
+							</div>
+							<p class="text-textMain text-xs font-mono truncate">{q.sql}</p>
+							<p class="text-[10px] text-textSec mt-1">{q.meta}</p>
 						</div>
-						<p class="text-textMain text-xs font-mono truncate">SELECT * FROM orders JOIN users ON...</p>
-						<p class="text-[10px] text-textSec mt-1">orders · 842 volání</p>
-					</div>
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-start justify-between gap-2 mb-1.5">
-							<span class="px-2 py-0.5 bg-secondary/20 text-secondary text-[10px] font-mono rounded font-semibold flex-shrink-0">UPDATE</span>
-							<span class="text-secondary font-bold text-sm">620 ms</span>
-						</div>
-						<p class="text-textMain text-xs font-mono truncate">UPDATE products SET stock = stock - 1 WHERE...</p>
-						<p class="text-[10px] text-textSec mt-1">products · 1,203 volání</p>
-					</div>
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-start justify-between gap-2 mb-1.5">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-							<span class="text-[#3b82f6] font-bold text-sm">390 ms</span>
-						</div>
-						<p class="text-textMain text-xs font-mono truncate">SELECT COUNT(*) FROM analytics WHERE date &gt;</p>
-						<p class="text-[10px] text-textSec mt-1">analytics · 312 volání</p>
-					</div>
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-start justify-between gap-2 mb-1.5">
-							<span class="px-2 py-0.5 bg-[#3ecf8e]/20 text-[#3ecf8e] text-[10px] font-mono rounded font-semibold flex-shrink-0">INSERT</span>
-							<span class="text-textMain font-bold text-sm">84 ms</span>
-						</div>
-						<p class="text-textMain text-xs font-mono truncate">INSERT INTO events (user_id, type, meta) VALUES...</p>
-						<p class="text-[10px] text-textSec mt-1">events · 5,841 volání</p>
-					</div>
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-start justify-between gap-2 mb-1.5">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-							<span class="text-textMain font-bold text-sm">31 ms</span>
-						</div>
-						<p class="text-textMain text-xs font-mono truncate">SELECT * FROM sessions WHERE expires_at &gt; NOW()</p>
-						<p class="text-[10px] text-textSec mt-1">sessions · 22,100 volání</p>
-					</div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -938,57 +746,24 @@
 			</button>
 			{#if tableSizesOpen}
 				<div class="px-4 pb-5 space-y-3">
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">events</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6] rounded-full" style="width:82%"></div>
+					{#each tableSizes as ts (ts.name)}
+						<div class="flex items-center gap-3">
+							<div class="w-16 text-xs text-textSec font-mono">{ts.name}</div>
+							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {ts.barClass} rounded-full" style="width:{ts.barWidth}"></div>
+							</div>
+							<span class="text-xs text-textMain font-medium w-14 text-right">{ts.sizeLabel}</span>
 						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">2.1 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">orders</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3ecf8e] rounded-full" style="width:60%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">1.5 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">analytics</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#8b5cf6] rounded-full" style="width:48%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">1.2 GB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">users</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-secondary rounded-full" style="width:30%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">780 MB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">sessions</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:18%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">460 MB</span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-16 text-xs text-textSec font-mono">products</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-[#3b82f6]/40 rounded-full" style="width:8%"></div>
-						</div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">210 MB</span>
-					</div>
+					{/each}
 					<div class="mt-2 pt-4 border-t border-[#1e293b]">
 						<div class="flex justify-between text-xs text-textSec mb-2">
 							<span>{t('database_tableSizes_totalStorage')}</span>
-							<span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
+							<span class="text-textMain font-semibold">{dbStats.totalStorage} / {dbStats.maxStorage}</span>
 						</div>
 						<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full rounded-full" style="width:77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
+							<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
 						</div>
-						<p class="text-xs text-textSec mt-2">Odhadované zaplnění: <span class="text-secondary font-medium">~14 dní</span></p>
+						<p class="text-xs text-textSec mt-2">Odhadované zaplnění: <span class="text-secondary font-medium">{dbStats.estimatedFillDays}</span></p>
 					</div>
 				</div>
 			{/if}
@@ -1016,95 +791,22 @@
 			</div>
 
 			<div class="divide-y divide-[#1e293b]/60">
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-							<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded">{t('common_status_active')}</span>
+				{#each errorLog as entry (entry.id)}
+					<div class="px-4 py-3">
+						<div class="flex items-start justify-between gap-2 mb-1">
+							<div class="flex items-center gap-2 flex-wrap">
+								<span class="px-2 py-0.5 {entry.typeClass} text-[10px] rounded font-medium">{entry.type}</span>
+								<span class="px-2 py-0.5 {entry.statusClass} text-[10px] rounded">{t(entry.statusKey)}</span>
+							</div>
+							<span class="text-[10px] text-textSec font-mono flex-shrink-0">{entry.time}</span>
 						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">14:32:11</span>
-					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Connection pool exhausted – max 100 connections reached</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">orders</span>
-						<span class="text-error text-[10px] font-mono font-semibold">30,000 ms</span>
-					</div>
-				</div>
-
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Deadlock</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
+						<p class="text-xs text-textMain mt-1 leading-relaxed">{entry.message}</p>
+						<div class="flex items-center gap-3 mt-1.5">
+							<span class="text-[10px] text-textSec font-mono">{entry.table}</span>
+							<span class="{entry.durationClass} text-[10px] font-mono font-semibold">{entry.duration}</span>
 						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">13:58:04</span>
 					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Deadlock detected between transactions T1 and T2</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">products</span>
-						<span class="text-textSec text-[10px] font-mono">—</span>
-					</div>
-				</div>
-
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-[10px] rounded font-medium">Conn</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
-						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">13:21:39</span>
-					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Connection reset by peer during large SELECT query</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">analytics</span>
-						<span class="text-secondary text-[10px] font-mono font-semibold">8,200 ms</span>
-					</div>
-				</div>
-
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
-						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">12:44:17</span>
-					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Query timeout on full table scan – missing index on user_id</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">events</span>
-						<span class="text-error text-[10px] font-mono font-semibold">30,000 ms</span>
-					</div>
-				</div>
-
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Lock</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
-						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">11:05:52</span>
-					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Row-level lock wait exceeded 10s on UPDATE statement</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">orders</span>
-						<span class="text-textSec text-[10px] font-mono">10,140 ms</span>
-					</div>
-				</div>
-
-				<div class="px-4 py-3">
-					<div class="flex items-start justify-between gap-2 mb-1">
-						<div class="flex items-center gap-2 flex-wrap">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-[10px] rounded font-medium">Repl</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
-						</div>
-						<span class="text-[10px] text-textSec font-mono flex-shrink-0">09:30:08</span>
-					</div>
-					<p class="text-xs text-textMain mt-1 leading-relaxed">Replication lag spike to 480ms detected on standby replica</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="text-[10px] text-textSec font-mono">—</span>
-						<span class="text-textSec text-[10px] font-mono">480 ms lag</span>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</section>
 
