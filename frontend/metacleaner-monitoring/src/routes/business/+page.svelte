@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
+	import { t } from '$lib/i18n';
 
 	type AccKey = 'ltv' | 'arpu' | 'heatmap' | 'waterfall' | 'retention';
 	let accOpen = $state<Record<AccKey, boolean>>({ ltv: false, arpu: false, heatmap: false, waterfall: false, retention: false });
@@ -204,23 +205,23 @@
 				<i class="fa-solid fa-chart-line text-[#22c55e] text-sm"></i>
 			</div>
 			<div>
-				<h1 class="text-2xl font-bold text-textMain">Business Metriky</h1>
-				<p class="text-sm text-textSec mt-0.5">Produkční prostředí • Všechny plány • Červen 2024</p>
+				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_business')}</h1>
+				<p class="text-sm text-textSec mt-0.5">{t('business_header_subtitle')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
 			<div class="flex items-center gap-2 px-3 py-1.5 bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-lg text-[#22c55e] text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse"></div>
-				Live
+				{t('business_status_live')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-				<option>Červen 2024</option>
-				<option>Posledních 30 dní</option>
-				<option>Q2 2024</option>
-				<option>YTD 2024</option>
+				<option>{t('business_timeRange_june2024')}</option>
+				<option>{t('business_timeRange_last30d')}</option>
+				<option>{t('business_timeRange_q22024')}</option>
+				<option>{t('business_timeRange_ytd2024')}</option>
 			</select>
 			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -232,7 +233,7 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 bg-[#22c55e]/5 rounded-full -translate-y-8 translate-x-8"></div>
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">MRR</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_mrr')}</h3>
 					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+12.4%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
@@ -243,17 +244,17 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 bg-[#22c55e]/5 rounded-full -translate-y-8 translate-x-8"></div>
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">ARR</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_arr')}</h3>
 					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+12.4%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">$579,840</span>
 				</div>
-				<p class="text-xs text-textSec">Roční přepočet MRR</p>
+				<p class="text-xs text-textSec">{t('business_kpi_mrrArrSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Aktivní uživatelé</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_activeUsers')}</h3>
 					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+8.1%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
@@ -263,7 +264,7 @@
 			</div>
 			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Churn Rate</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_churnRate')}</h3>
 					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">-0.3% Zlepšení</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
@@ -280,37 +281,37 @@
 					<div class="w-8 h-8 rounded-lg bg-[#22c55e]/15 flex items-center justify-center">
 						<i class="fa-solid fa-bag-shopping text-[#22c55e] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Nové objednávky</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newOrders')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">1,204</div>
-				<p class="text-xs text-textSec mt-1 flex items-center gap-1"><span class="text-[#22c55e] font-medium">+142</span> tento měsíc</p>
+				<p class="text-xs text-textSec mt-1 flex items-center gap-1"><span class="text-[#22c55e] font-medium">+142</span> {t('business_kpi_newOrdersSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-dollar-sign text-[#3b82f6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Průměrná hodnota objednávky</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_avgOrderValue')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">$40.13</div>
-				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+$2.40</span> vs minulý měsíc</p>
+				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+$2.40</span> {t('business_kpi_vsLastMonth')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
 					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-user-plus text-[#8b5cf6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Noví zákazníci</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newCustomers')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">318</div>
-				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+52</span> tento měsíc</p>
+				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+52</span> {t('business_kpi_newOrdersSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
 					<div class="w-8 h-8 rounded-lg bg-[#f97316]/15 flex items-center justify-center">
 						<i class="fa-solid fa-star text-[#f97316] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">NPS Skóre</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_nps')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">72<span class="text-sm text-textSec font-normal">/100</span></div>
 				<p class="text-xs text-textSec mt-1">1,840 odpovědí</p>
@@ -322,8 +323,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Vývoj MRR</h3>
-						<p class="text-xs text-textSec mt-0.5">Měsíční opakující se příjem</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_charts_mrrGrowth')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_charts_mrrSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-mrr" class="h-[240px] w-full"></div>
@@ -331,8 +332,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Růst uživatelů</h3>
-						<p class="text-xs text-textSec mt-0.5">Aktivní a noví uživatelé</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_charts_userGrowth')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_charts_userSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-users" class="h-[240px] w-full"></div>
@@ -344,46 +345,46 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">LTV vs CAC</h3>
-						<p class="text-xs text-textSec mt-0.5">Životní hodnota vs náklady na akvizici</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_ltv_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_ltv_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-ltv-cac" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
 						<div class="text-xl font-bold text-[#22c55e]">4.2x</div>
-						<div class="text-xs text-textSec mt-0.5">LTV/CAC</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_ratio')}</div>
 					</div>
 					<div class="text-center border-x border-[#1e293b]">
 						<div class="text-xl font-bold text-textMain">$1,840</div>
-						<div class="text-xs text-textSec mt-0.5">Avg. LTV</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_avgLtv')}</div>
 					</div>
 					<div class="text-center">
 						<div class="text-xl font-bold text-textMain">$438</div>
-						<div class="text-xs text-textSec mt-0.5">Avg. CAC</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_avgCac')}</div>
 					</div>
 				</div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">ARPU Trend</h3>
-						<p class="text-xs text-textSec mt-0.5">Průměrný příjem na uživatele</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_arpu_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_arpu_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-arpu" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
 						<div class="text-xl font-bold text-[#3b82f6]">$37.62</div>
-						<div class="text-xs text-textSec mt-0.5">Aktuální ARPU</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_current')}</div>
 					</div>
 					<div class="text-center border-x border-[#1e293b]">
 						<div class="text-xl font-bold text-[#22c55e]">+$1.20</div>
-						<div class="text-xs text-textSec mt-0.5">MoM</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_mom')}</div>
 					</div>
 					<div class="text-center">
 						<div class="text-xl font-bold text-textMain">$40.00</div>
-						<div class="text-xs text-textSec mt-0.5">Cíl Q2</div>
+						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_target')}</div>
 					</div>
 				</div>
 			</div>
@@ -394,20 +395,20 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Aktivita uživatelů</h3>
-						<p class="text-xs text-textSec mt-0.5">Vzorce aktivity v čase</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_heatmap_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_heatmap_subtitle')}</p>
 					</div>
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">Heatmapa</span>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">{t('business_heatmap_badge')}</span>
 				</div>
 				<div id="chart-heatmap" class="h-[240px] w-full"></div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">MRR Bridge</h3>
-						<p class="text-xs text-textSec mt-0.5">Složení změn MRR</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_mrrBridge_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_mrrBridge_subtitle')}</p>
 					</div>
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">Vodopád</span>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">{t('business_mrrBridge_badge')}</span>
 				</div>
 				<div id="chart-waterfall" class="h-[240px] w-full"></div>
 			</div>
@@ -418,8 +419,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Upgrade &amp; Downgrade</h3>
-						<p class="text-xs text-textSec mt-0.5">Pohyb zákazníků mezi plány</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_upgradeDowngrade_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_upgradeDowngrade_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-upgrade-funnel" class="h-[200px] w-full"></div>
@@ -431,7 +432,7 @@
 						<span class="text-[#ef4444] font-medium">-38 downgrades</span>
 					</div>
 					<div class="flex justify-between text-xs">
-						<span class="text-textSec">Net expansion</span>
+						<span class="text-textSec">{t('business_upgradeDowngrade_netExpansion')}</span>
 						<span class="text-[#22c55e] font-semibold">+$4,320 MRR</span>
 					</div>
 				</div>
@@ -439,8 +440,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Denní příjem</h3>
-						<p class="text-xs text-textSec mt-0.5">Červen 2024</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_dailyRevenue_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_dailyRevenue_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-daily-revenue" class="h-[200px] w-full"></div>
@@ -450,55 +451,55 @@
 		<!-- Funnel + Plan Revenue -->
 		<section class="grid grid-cols-3 gap-6">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
-				<h3 class="text-lg font-semibold text-textMain mb-1">Konverzní trychtýř</h3>
-				<p class="text-xs text-textSec mb-4">Celá cesta zákazníka</p>
+				<h3 class="text-lg font-semibold text-textMain mb-1">{t('business_funnel_title')}</h3>
+				<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 				<div class="space-y-3">
 					<div>
 						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">Návštěvníci</span>
+							<span class="text-textSec">{t('business_funnel_visitors')}</span>
 							<span class="text-textMain font-medium">84,210 <span class="text-textSec">100%</span></span>
 						</div>
 						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3b82f6] rounded-full" style="width:100%"></div></div>
 					</div>
 					<div>
 						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">Registrace</span>
+							<span class="text-textSec">{t('business_funnel_registrations')}</span>
 							<span class="text-textMain font-medium">12,318 <span class="text-textSec">14.6%</span></span>
 						</div>
 						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:14.6%"></div></div>
 					</div>
 					<div>
 						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">Trial aktivace</span>
+							<span class="text-textSec">{t('business_funnel_trialActivation')}</span>
 							<span class="text-textMain font-medium">6,840 <span class="text-textSec">8.1%</span></span>
 						</div>
 						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#22c55e] rounded-full" style="width:8.1%"></div></div>
 					</div>
 					<div>
 						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">Trial→Placený</span>
+							<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
 							<span class="text-textMain font-medium">2,104 <span class="text-textSec">2.5%</span></span>
 						</div>
 						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#f97316] rounded-full" style="width:2.5%"></div></div>
 					</div>
 					<div>
 						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">Aktivní platiaci</span>
+							<span class="text-textSec">{t('business_funnel_activePaying')}</span>
 							<span class="text-textMain font-medium">1,840 <span class="text-textSec">2.2%</span></span>
 						</div>
 						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:2.2%"></div></div>
 					</div>
 				</div>
 				<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
-					<div><span class="text-textSec">Celková konverze</span><div class="text-textMain font-semibold">2.19%</div></div>
-					<div><span class="text-textSec">Trial→Paid</span><div class="text-textMain font-semibold">30.76%</div></div>
+					<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
+					<div><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><div class="text-textMain font-semibold">30.76%</div></div>
 				</div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Příjem podle plánu</h3>
-						<p class="text-xs text-textSec mt-0.5">Distribuce MRR dle tarifu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByPlan_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_revenueByPlan_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-plan-revenue" class="h-[200px] w-full"></div>
@@ -532,12 +533,12 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Churn vs Nový MRR</h3>
-						<p class="text-xs text-textSec mt-0.5">Přírůstek a odliv příjmů</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_churnNewMrr_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#22c55e] inline-block"></span>Nový</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#ef4444] inline-block"></span>Churn</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#22c55e] inline-block"></span>{t('business_churnNewMrr_new')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#ef4444] inline-block"></span>{t('business_churnNewMrr_churn')}</span>
 					</div>
 				</div>
 				<div id="chart-churn" class="h-[240px] w-full"></div>
@@ -545,15 +546,15 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Retence kohort</h3>
-						<p class="text-xs text-textSec mt-0.5">Udržení zákazníků dle měsíce</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_cohort_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_cohort_subtitle')}</p>
 					</div>
 				</div>
 				<div class="overflow-x-auto">
 					<table class="w-full text-xs">
 						<thead>
 							<tr class="border-b border-[#1e293b]">
-								<th class="text-left text-textSec font-medium pb-2 pr-3">Kohorta</th>
+								<th class="text-left text-textSec font-medium pb-2 pr-3">{t('business_cohort_cohort')}</th>
 								<th class="text-center text-textSec font-medium pb-2 px-2">M0</th>
 								<th class="text-center text-textSec font-medium pb-2 px-2">M1</th>
 								<th class="text-center text-textSec font-medium pb-2 px-2">M2</th>
@@ -619,18 +620,18 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Příjem dle kanálu</h3>
-						<p class="text-xs text-textSec mt-0.5">Zdroj příjmu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByChannel_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_revenueByChannel_subtitle')}</p>
 					</div>
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">Červen 2024</span>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">{t('business_timeRange_june2024')}</span>
 				</div>
 				<div id="chart-channel" class="h-[240px] w-full"></div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Payback Period</h3>
-						<p class="text-xs text-textSec mt-0.5">Doba návratnosti dle plánu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_payback_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_payback_subtitle')}</p>
 					</div>
 					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">&lt;12 měs.</span>
 				</div>
@@ -643,8 +644,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Top zákazníci dle MRR</h3>
-						<p class="text-xs text-textSec mt-0.5">Největší přispěvatelé k příjmu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_topCustomers_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_topCustomers_subtitle')}</p>
 					</div>
 				</div>
 				<div class="space-y-3">
@@ -703,8 +704,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Příjem dle regionu</h3>
-						<p class="text-xs text-textSec mt-0.5">Geografické rozložení MRR</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByRegion_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('business_revenueByRegion_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-geo" class="h-[180px] w-full"></div>
@@ -733,14 +734,14 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
 			<div class="flex justify-between items-center mb-5">
 				<div>
-					<h3 class="text-lg font-semibold text-textMain">Cíle &amp; OKR – Q2 2024</h3>
-					<p class="text-xs text-textSec mt-0.5">Klíčové výsledky čtvrtletí</p>
+					<h3 class="text-lg font-semibold text-textMain">{t('business_okr_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('business_okr_subtitle')}</p>
 				</div>
 			</div>
 			<div class="grid grid-cols-4 gap-4">
 				<div class="bg-[#1e293b]/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
-						<h4 class="text-textSec text-xs font-medium">MRR Cíl</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_mrrGoal')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">96%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">$50,000</div>
@@ -751,7 +752,7 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
-						<h4 class="text-textSec text-xs font-medium">Noví zákazníci</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_newCustomers')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">79%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">400</div>
@@ -762,8 +763,8 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
-						<h4 class="text-textSec text-xs font-medium">Churn Rate</h4>
-						<span class="text-[#f97316] text-xs font-bold">~Cíl</span>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_churnRate')}</h4>
+						<span class="text-[#f97316] text-xs font-bold">{t('business_okr_approxTarget')}</span>
 					</div>
 					<div class="text-2xl font-bold text-[#ef4444] mb-2">&lt;2.0%</div>
 					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
@@ -773,7 +774,7 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
-						<h4 class="text-textSec text-xs font-medium">NPS Cíl</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_npsGoal')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">90%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">80</div>
@@ -798,19 +799,19 @@
 				<i class="fa-solid fa-chart-line text-[#22c55e] text-xs"></i>
 			</div>
 			<div>
-				<h1 class="text-base font-bold text-textMain leading-tight">Business Metriky</h1>
-				<p class="text-xs text-textSec">Červen 2024 · Všechny plány</p>
+				<h1 class="text-base font-bold text-textMain leading-tight">{t('layout_nav_business')}</h1>
+				<p class="text-xs text-textSec">{t('business_header_subtitleMobile')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-2">
 			<div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-lg text-[#22c55e] text-xs font-medium">
 				<div class="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse"></div>
-				Live
+				{t('business_status_live')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
-				<option>Červen 2024</option>
-				<option>30 dní</option>
-				<option>Q2 2024</option>
+				<option>{t('business_timeRange_june2024')}</option>
+				<option>{t('business_timeRange_last30d')}</option>
+				<option>{t('business_timeRange_q22024')}</option>
 			</select>
 		</div>
 	</div>
@@ -821,26 +822,26 @@
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-16 h-16 bg-[#22c55e]/5 rounded-full -translate-y-4 translate-x-4"></div>
-				<h3 class="text-textSec text-xs font-medium mb-2">MRR</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_mrr')}</h3>
 				<div class="text-2xl font-bold text-textMain">$48,320</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">+$5,340 vs min. měsíc</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-16 h-16 bg-[#22c55e]/5 rounded-full -translate-y-4 translate-x-4"></div>
-				<h3 class="text-textSec text-xs font-medium mb-2">ARR</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_arr')}</h3>
 				<div class="text-2xl font-bold text-textMain">$579,840</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
-				<p class="text-xs text-textSec mt-1 leading-tight">Roční přepočet MRR</p>
+				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_mrrArrSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">Aktivní uživatelé</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('business_kpi_activeUsers')}</h3>
 				<div class="text-2xl font-bold text-textMain">12,842</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+8.1%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">DAU: 3,210 · WAU: 8,940</p>
 			</div>
 			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2">Churn Rate</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_churnRate')}</h3>
 				<div class="text-2xl font-bold text-[#ef4444]">2.1%</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">-0.3% Zlepšení</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">Cíl: &lt;2.0% · 48 odešlo</p>
@@ -854,7 +855,7 @@
 					<i class="fa-solid fa-bag-shopping text-[#22c55e] text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">1,204</div>
-				<p class="text-xs text-textSec mt-0.5 leading-tight">Nové objednávky</p>
+				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_newOrders')}</p>
 				<span class="text-xs text-[#22c55e] font-medium">+142</span>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
@@ -862,7 +863,7 @@
 					<i class="fa-solid fa-dollar-sign text-[#3b82f6] text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">$40.13</div>
-				<p class="text-xs text-textSec mt-0.5 leading-tight">Avg. hodnota objednávky</p>
+				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_avgOrderValueMobile')}</p>
 				<span class="text-xs text-[#22c55e] font-medium">+$2.40</span>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
@@ -870,7 +871,7 @@
 					<i class="fa-solid fa-user-plus text-[#8b5cf6] text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">318</div>
-				<p class="text-xs text-textSec mt-0.5 leading-tight">Noví zákazníci</p>
+				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_newCustomers')}</p>
 				<span class="text-xs text-[#22c55e] font-medium">+52</span>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
@@ -878,22 +879,22 @@
 					<i class="fa-solid fa-star text-[#f97316] text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">72<span class="text-xs text-textSec font-normal">/100</span></div>
-				<p class="text-xs text-textSec mt-0.5 leading-tight">NPS Skóre</p>
+				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_nps')}</p>
 				<span class="text-xs text-textSec">1,840 odpovědí</span>
 			</div>
 		</section>
 
 		<!-- MRR Chart -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Vývoj MRR</h3>
-			<p class="text-xs text-textSec mb-3">Měsíční opakující se příjem</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_charts_mrrGrowth')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_charts_mrrSubtitle')}</p>
 			<div id="chart-mrr-m" class="h-[200px] w-full"></div>
 		</section>
 
 		<!-- User Growth Chart -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Růst uživatelů</h3>
-			<p class="text-xs text-textSec mb-3">Aktivní a noví uživatelé</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_charts_userGrowth')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_charts_userSubtitle')}</p>
 			<div id="chart-users-m" class="h-[200px] w-full"></div>
 		</section>
 
@@ -905,8 +906,8 @@
 						<i class="fa-solid fa-scale-balanced text-[#22c55e] text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">LTV vs CAC</p>
-						<p class="text-xs text-textSec">Ratio 4.2x · LTV $1,840</p>
+						<p class="text-sm font-semibold text-textMain">{t('business_ltv_title')}</p>
+						<p class="text-xs text-textSec">{t('business_ltv_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.ltv ? 'rotate-180' : ''}"></i>
@@ -915,9 +916,9 @@
 				<div class="border-t border-[#1e293b] p-4">
 					<div id="chart-ltv-cac-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#22c55e]">4.2x</div><div class="text-xs text-textSec">LTV/CAC</div></div>
-						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-textMain">$1,840</div><div class="text-xs text-textSec">Avg. LTV</div></div>
-						<div><div class="text-lg font-bold text-textMain">$438</div><div class="text-xs text-textSec">Avg. CAC</div></div>
+						<div><div class="text-lg font-bold text-[#22c55e]">4.2x</div><div class="text-xs text-textSec">{t('business_ltv_ratio')}</div></div>
+						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-textMain">$1,840</div><div class="text-xs text-textSec">{t('business_ltv_avgLtv')}</div></div>
+						<div><div class="text-lg font-bold text-textMain">$438</div><div class="text-xs text-textSec">{t('business_ltv_avgCac')}</div></div>
 					</div>
 				</div>
 			{/if}
@@ -931,8 +932,8 @@
 						<i class="fa-solid fa-chart-simple text-[#3b82f6] text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">ARPU Trend</p>
-						<p class="text-xs text-textSec">Aktuální $37.62 · Cíl $40.00</p>
+						<p class="text-sm font-semibold text-textMain">{t('business_arpu_title')}</p>
+						<p class="text-xs text-textSec">{t('business_arpu_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.arpu ? 'rotate-180' : ''}"></i>
@@ -941,9 +942,9 @@
 				<div class="border-t border-[#1e293b] p-4">
 					<div id="chart-arpu-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#3b82f6]">$37.62</div><div class="text-xs text-textSec">Aktuální</div></div>
-						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-[#22c55e]">+$1.20</div><div class="text-xs text-textSec">MoM</div></div>
-						<div><div class="text-lg font-bold text-textMain">$40.00</div><div class="text-xs text-textSec">Cíl Q2</div></div>
+						<div><div class="text-lg font-bold text-[#3b82f6]">$37.62</div><div class="text-xs text-textSec">{t('business_arpu_current')}</div></div>
+						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-[#22c55e]">+$1.20</div><div class="text-xs text-textSec">{t('business_arpu_mom')}</div></div>
+						<div><div class="text-lg font-bold text-textMain">$40.00</div><div class="text-xs text-textSec">{t('business_arpu_target')}</div></div>
 					</div>
 				</div>
 			{/if}
@@ -957,8 +958,8 @@
 						<i class="fa-solid fa-fire text-[#8b5cf6] text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">Aktivita uživatelů</p>
-						<p class="text-xs text-textSec">Heatmapa aktivit</p>
+						<p class="text-sm font-semibold text-textMain">{t('business_heatmap_title')}</p>
+						<p class="text-xs text-textSec">{t('business_heatmap_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.heatmap ? 'rotate-180' : ''}"></i>
@@ -978,8 +979,8 @@
 						<i class="fa-solid fa-water text-[#f97316] text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">MRR Bridge</p>
-						<p class="text-xs text-textSec">Vodopád změn MRR</p>
+						<p class="text-sm font-semibold text-textMain">{t('business_mrrBridge_title')}</p>
+						<p class="text-xs text-textSec">{t('business_mrrBridge_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.waterfall ? 'rotate-180' : ''}"></i>
@@ -993,8 +994,8 @@
 
 		<!-- Upgrade & Downgrade -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Upgrade &amp; Downgrade</h3>
-			<p class="text-xs text-textSec mb-3">Pohyb zákazníků mezi plány</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_upgradeDowngrade_title')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_upgradeDowngrade_subtitle')}</p>
 			<div id="chart-upgrade-funnel-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 flex justify-between text-xs">
 				<span class="text-[#22c55e] font-medium">+124 upgrades</span>
@@ -1005,47 +1006,47 @@
 
 		<!-- Denní příjem -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Denní příjem</h3>
-			<p class="text-xs text-textSec mb-3">Červen 2024</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_dailyRevenue_title')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_dailyRevenue_subtitle')}</p>
 			<div id="chart-daily-revenue-m" class="h-[180px] w-full"></div>
 		</section>
 
 		<!-- Konverzní trychtýř -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Konverzní trychtýř</h3>
-			<p class="text-xs text-textSec mb-4">Celá cesta zákazníka</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_funnel_title')}</h3>
+			<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 			<div class="space-y-3">
 				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">Návštěvníci</span><span class="text-textMain font-medium">84,210 <span class="text-textSec">100%</span></span></div>
+					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_visitors')}</span><span class="text-textMain font-medium">84,210 <span class="text-textSec">100%</span></span></div>
 					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3b82f6] rounded-full" style="width:100%"></div></div>
 				</div>
 				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">Registrace</span><span class="text-textMain font-medium">12,318 <span class="text-textSec">14.6%</span></span></div>
+					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_registrations')}</span><span class="text-textMain font-medium">12,318 <span class="text-textSec">14.6%</span></span></div>
 					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:14.6%"></div></div>
 				</div>
 				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">Trial aktivace</span><span class="text-textMain font-medium">6,840 <span class="text-textSec">8.1%</span></span></div>
+					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_trialActivation')}</span><span class="text-textMain font-medium">6,840 <span class="text-textSec">8.1%</span></span></div>
 					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#22c55e] rounded-full" style="width:8.1%"></div></div>
 				</div>
 				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">Trial→Placený</span><span class="text-textMain font-medium">2,104 <span class="text-textSec">2.5%</span></span></div>
+					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><span class="text-textMain font-medium">2,104 <span class="text-textSec">2.5%</span></span></div>
 					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#f97316] rounded-full" style="width:2.5%"></div></div>
 				</div>
 				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">Aktivní platiaci</span><span class="text-textMain font-medium">1,840 <span class="text-textSec">2.2%</span></span></div>
+					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_activePaying')}</span><span class="text-textMain font-medium">1,840 <span class="text-textSec">2.2%</span></span></div>
 					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:2.2%"></div></div>
 				</div>
 			</div>
 			<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
-				<div><span class="text-textSec">Celková konverze</span><div class="text-textMain font-semibold">2.19%</div></div>
-				<div><span class="text-textSec">Trial→Paid</span><div class="text-textMain font-semibold">30.76%</div></div>
+				<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
+				<div><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><div class="text-textMain font-semibold">30.76%</div></div>
 			</div>
 		</section>
 
 		<!-- Příjem podle plánu -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Příjem podle plánu</h3>
-			<p class="text-xs text-textSec mb-3">Distribuce MRR dle tarifu</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_revenueByPlan_title')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_revenueByPlan_subtitle')}</p>
 			<div id="chart-plan-revenue-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 grid grid-cols-2 gap-2">
 				<div class="text-center p-2 rounded-lg bg-[#3b82f6]/10 border border-[#3b82f6]/20">
@@ -1071,12 +1072,12 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Churn vs Nový MRR</h3>
-					<p class="text-xs text-textSec mt-0.5">Přírůstek a odliv</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('business_churnNewMrr_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitleMobile')}</p>
 				</div>
 				<div class="flex gap-2">
-					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block"></span>Nový</span>
-					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#ef4444] inline-block"></span>Churn</span>
+					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block"></span>{t('business_churnNewMrr_new')}</span>
+					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#ef4444] inline-block"></span>{t('business_churnNewMrr_churn')}</span>
 				</div>
 			</div>
 			<div id="chart-churn-m" class="h-[200px] w-full"></div>
@@ -1090,8 +1091,8 @@
 						<i class="fa-solid fa-table text-[#22c55e] text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">Retence kohort</p>
-						<p class="text-xs text-textSec">M0–M5 · 5 kohort</p>
+						<p class="text-sm font-semibold text-textMain">{t('business_cohort_title')}</p>
+						<p class="text-xs text-textSec">{t('business_cohort_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.retention ? 'rotate-180' : ''}"></i>
@@ -1102,7 +1103,7 @@
 						<table class="w-full text-xs">
 							<thead>
 								<tr class="border-b border-[#1e293b]">
-									<th class="text-left text-textSec font-medium pb-2 pr-2">Kohorta</th>
+									<th class="text-left text-textSec font-medium pb-2 pr-2">{t('business_cohort_cohort')}</th>
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M0</th>
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M1</th>
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M2</th>
@@ -1168,10 +1169,10 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Příjem dle kanálu</h3>
-					<p class="text-xs text-textSec mt-0.5">Zdroj příjmu</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('business_revenueByChannel_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('business_revenueByChannel_subtitle')}</p>
 				</div>
-				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec">Červen 2024</span>
+				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec">{t('business_timeRange_june2024')}</span>
 			</div>
 			<div id="chart-channel-m" class="h-[200px] w-full"></div>
 		</section>
@@ -1180,8 +1181,8 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Payback Period</h3>
-					<p class="text-xs text-textSec mt-0.5">Doba návratnosti dle plánu</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('business_payback_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('business_payback_subtitle')}</p>
 				</div>
 				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec">&lt;12 měs.</span>
 			</div>
@@ -1190,7 +1191,7 @@
 
 		<!-- Top zákazníci -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-3">Top zákazníci dle MRR</h3>
+			<h3 class="text-sm font-semibold text-textMain mb-3">{t('business_topCustomers_title')}</h3>
 			<div class="space-y-2.5">
 				<div class="flex items-center gap-3">
 					<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Acme Corp" class="w-8 h-8 rounded-full object-cover flex-shrink-0" />
@@ -1237,8 +1238,8 @@
 
 		<!-- Příjem dle regionu -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-0.5">Příjem dle regionu</h3>
-			<p class="text-xs text-textSec mb-3">Geografické rozložení MRR</p>
+			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_revenueByRegion_title')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('business_revenueByRegion_subtitle')}</p>
 			<div id="chart-geo-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 space-y-1.5">
 				<div class="flex items-center justify-between text-xs">
@@ -1262,12 +1263,12 @@
 
 		<!-- Goals & OKR -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-1">Cíle &amp; OKR – Q2 2024</h3>
-			<p class="text-xs text-textSec mb-4">Klíčové výsledky čtvrtletí</p>
+			<h3 class="text-sm font-semibold text-textMain mb-1">{t('business_okr_title')}</h3>
+			<p class="text-xs text-textSec mb-4">{t('business_okr_subtitle')}</p>
 			<div class="grid grid-cols-2 gap-3">
 				<div class="bg-[#1e293b]/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
-						<h4 class="text-textSec text-xs font-medium">MRR Cíl</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_mrrGoal')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">96%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">$50,000</div>
@@ -1278,7 +1279,7 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
-						<h4 class="text-textSec text-xs font-medium">Noví zákazníci</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_newCustomers')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">79%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">400</div>
@@ -1289,8 +1290,8 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
-						<h4 class="text-textSec text-xs font-medium">Churn Rate</h4>
-						<span class="text-[#f97316] text-xs font-bold">~Cíl</span>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_churnRate')}</h4>
+						<span class="text-[#f97316] text-xs font-bold">{t('business_okr_approxTarget')}</span>
 					</div>
 					<div class="text-lg font-bold text-[#ef4444] mb-2">&lt;2.0%</div>
 					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
@@ -1300,7 +1301,7 @@
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
-						<h4 class="text-textSec text-xs font-medium">NPS Cíl</h4>
+						<h4 class="text-textSec text-xs font-medium">{t('business_okr_npsGoal')}</h4>
 						<span class="text-[#22c55e] text-xs font-bold">90%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">80</div>
@@ -1319,23 +1320,23 @@
 	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
-			<span class="text-xs">Dashboard</span>
+			<span class="text-xs">{t('layout_nav_dashboard')}</span>
 		</a>
 		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
-			<span class="text-xs">Dostupnost</span>
+			<span class="text-xs">{t('layout_nav_availability')}</span>
 		</a>
 		<a href="{base}/chyby" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-triangle-exclamation text-base"></i>
-			<span class="text-xs">Chyby</span>
+			<span class="text-xs">{t('layout_nav_errors')}</span>
 		</a>
 		<a href="{base}/performance" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-bolt text-base"></i>
-			<span class="text-xs">Performance</span>
+			<span class="text-xs">{t('layout_nav_performance')}</span>
 		</a>
 		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#22c55e] min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
-			<span class="text-xs font-semibold">Business</span>
+			<span class="text-xs font-semibold">{t('layout_nav_business')}</span>
 		</a>
 	</nav>
 </div>
