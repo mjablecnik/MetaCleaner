@@ -33,7 +33,7 @@
 
 	const barWidth = $derived(() => {
 		if (monthlyAllowance === 0) return 0;
-		return Math.min(creditsUsed / monthlyAllowance, 1) * 100;
+		return Math.min(creditsRemaining / monthlyAllowance, 1) * 100;
 	});
 
 	const daysRemaining = $derived(() => {
@@ -85,7 +85,7 @@
 				{tx('subscription.cancelling.planCard.creditsThisMonth')}
 			</span>
 			<span class="text-xs font-bold text-white lg:text-sm">
-				{creditsUsed} / {monthlyAllowance}
+				{creditsRemaining} / {monthlyAllowance}
 			</span>
 		</div>
 		<div class="h-2.5 w-full overflow-hidden rounded-full bg-navy-lighter">
