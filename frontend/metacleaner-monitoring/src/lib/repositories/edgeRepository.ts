@@ -17,7 +17,8 @@ export interface EdgeSecondaryKpi {
 	labelKey: string;
 	value: string;
 	unit?: string;
-	subtextKey: string;
+	subtext: string;
+	subtextIsKey?: boolean;
 	icon: string;
 	iconColor: string;
 	iconBg: string;
@@ -26,9 +27,11 @@ export interface EdgeSecondaryKpi {
 export interface TtfbRegion {
 	id: string;
 	name: string;
+	shortName: string;
 	ttfbMs: number;
 	barWidth: string;
 	barColor: string;
+	barOpacity?: number;
 	dotColor: string;
 	statusKey: string;
 	statusClass: string;
@@ -38,7 +41,7 @@ export interface CacheRule {
 	id: string;
 	pattern: string;
 	ttlLabel: string;
-	descriptionKey: string;
+	description: string;
 	hitRate: string;
 	hitRateColor: string;
 	icon: string;
@@ -84,9 +87,9 @@ export function getEdgeKpiStats(): EdgeKpiStat[] {
 			unit: '%',
 			trend: '+1.4%',
 			trendPositive: true,
-			badgeKey: 'edge_kpi_excellent',
+			badgeKey: 'common_status_excellent',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'edge_kpi_cacheHitRateSubtext',
+			subtext: 'Cíl: ≥ 90% · Splněno',
 			barWidth: '94.2%',
 			barClass: 'bg-success'
 		},
@@ -94,9 +97,9 @@ export function getEdgeKpiStats(): EdgeKpiStat[] {
 			key: 'totalRequests',
 			labelKey: 'edge_kpi_totalRequests',
 			value: '48.3M',
-			badgeKey: 'edge_kpi_24h',
+			badgeKey: '',
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
-			subtext: 'edge_kpi_totalRequestsSubtext'
+			subtext: 'Peak: 2.4M/h v 10:00'
 		},
 		{
 			key: 'savedBandwidth',
@@ -105,7 +108,7 @@ export function getEdgeKpiStats(): EdgeKpiStat[] {
 			unit: 'TB',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'edge_kpi_savedBandwidthSubtext',
+			subtext: '3.9 TB celkem · 72% z cache',
 			barWidth: '72%',
 			barClass: 'bg-[#3b82f6]'
 		},
@@ -115,9 +118,9 @@ export function getEdgeKpiStats(): EdgeKpiStat[] {
 			value: '1,247',
 			trend: '+312',
 			trendPositive: false,
-			badgeKey: 'common_status_warning',
+			badgeKey: 'common_status_caution',
 			badgeClass: 'bg-secondary/10 text-secondary',
-			subtext: 'edge_kpi_blockedThreatsSubtext'
+			subtext: 'DDoS, bots, bad IPs'
 		}
 	];
 }
@@ -128,7 +131,8 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 			key: 'activePop',
 			labelKey: 'edge_kpi_activePop',
 			value: '275',
-			subtextKey: 'edge_kpi_activePopSubtext',
+			subtext: 'edge_kpi_popSubtext',
+			subtextIsKey: true,
 			icon: 'fa-globe',
 			iconColor: 'text-[#f6821f]',
 			iconBg: 'bg-[#f6821f]/15'
@@ -138,7 +142,7 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 			labelKey: 'edge_kpi_avgTtfb',
 			value: '38',
 			unit: 'ms',
-			subtextKey: 'edge_kpi_avgTtfbSubtext',
+			subtext: 'Z edge cache · -12ms vs. origin',
 			icon: 'fa-bolt',
 			iconColor: 'text-[#3ecf8e]',
 			iconBg: 'bg-[#3ecf8e]/15'
@@ -147,7 +151,7 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 			key: 'wafRules',
 			labelKey: 'edge_kpi_wafRules',
 			value: '48',
-			subtextKey: 'edge_kpi_wafRulesSubtext',
+			subtext: 'Aktivních · 3 nová dnes',
 			icon: 'fa-shield-halved',
 			iconColor: 'text-[#8b5cf6]',
 			iconBg: 'bg-[#8b5cf6]/15'
@@ -156,7 +160,7 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 			key: 'sslStatus',
 			labelKey: 'edge_kpi_sslStatus',
 			value: 'TLS 1.3',
-			subtextKey: 'edge_kpi_sslStatusSubtext',
+			subtext: 'Certifikát platný · exp. 89 dní',
 			icon: 'fa-rotate',
 			iconColor: 'text-[#3b82f6]',
 			iconBg: 'bg-[#3b82f6]/15'
@@ -169,6 +173,7 @@ export function getTtfbRegions(): TtfbRegion[] {
 		{
 			id: 'eu-west',
 			name: 'EU West',
+			shortName: 'EU West',
 			ttfbMs: 38,
 			barWidth: '19%',
 			barColor: '#3ecf8e',
@@ -179,6 +184,7 @@ export function getTtfbRegions(): TtfbRegion[] {
 		{
 			id: 'us-east',
 			name: 'US East',
+			shortName: 'US East',
 			ttfbMs: 61,
 			barWidth: '30%',
 			barColor: '#3b82f6',
@@ -189,6 +195,7 @@ export function getTtfbRegions(): TtfbRegion[] {
 		{
 			id: 'us-west',
 			name: 'US West',
+			shortName: 'US West',
 			ttfbMs: 78,
 			barWidth: '38%',
 			barColor: '#f6821f',
@@ -198,7 +205,8 @@ export function getTtfbRegions(): TtfbRegion[] {
 		},
 		{
 			id: 'asia-pac',
-			name: 'Asia Pac.',
+			name: 'Asia Pacific',
+			shortName: 'Asia Pac.',
 			ttfbMs: 114,
 			barWidth: '56%',
 			barColor: '#8b5cf6',
@@ -208,20 +216,23 @@ export function getTtfbRegions(): TtfbRegion[] {
 		},
 		{
 			id: 's-america',
-			name: 'S. America',
+			name: 'South America',
+			shortName: 'S. America',
 			ttfbMs: 152,
 			barWidth: '74%',
 			barColor: '#ef4444',
 			dotColor: 'text-[#ef4444]',
-			statusKey: 'edge_ttfb_slow',
+			statusKey: 'common_status_slow',
 			statusClass: 'bg-error/10 text-error'
 		},
 		{
 			id: 'mid-east',
 			name: 'Middle East',
+			shortName: 'Mid. East',
 			ttfbMs: 98,
 			barWidth: '48%',
 			barColor: '#3b82f6',
+			barOpacity: 0.6,
 			dotColor: 'text-[#3b82f6]',
 			statusKey: 'common_status_ok',
 			statusClass: 'bg-success/10 text-success'
@@ -235,7 +246,7 @@ export function getCacheRules(): CacheRule[] {
 			id: 'images',
 			pattern: '/assets/images/*',
 			ttlLabel: 'TTL: 30 dní',
-			descriptionKey: 'edge_cache_staticFiles',
+			description: 'TTL: 30 dní · Statické soubory',
 			hitRate: '99.1%',
 			hitRateColor: 'text-success',
 			icon: 'fa-image',
@@ -246,7 +257,7 @@ export function getCacheRules(): CacheRule[] {
 			id: 'js-bundles',
 			pattern: '/static/js/*.bundle.js',
 			ttlLabel: 'TTL: 7 dní',
-			descriptionKey: 'edge_cache_jsBundles',
+			description: 'TTL: 7 dní · JS bundly',
 			hitRate: '98.4%',
 			hitRateColor: 'text-[#3b82f6]',
 			icon: 'fa-code',
@@ -257,7 +268,7 @@ export function getCacheRules(): CacheRule[] {
 			id: 'api-products',
 			pattern: '/api/v1/products*',
 			ttlLabel: 'TTL: 5 min',
-			descriptionKey: 'edge_cache_apiCache',
+			description: 'TTL: 5 min · API cache',
 			hitRate: '72.3%',
 			hitRateColor: 'text-[#8b5cf6]',
 			icon: 'fa-database',
@@ -268,7 +279,7 @@ export function getCacheRules(): CacheRule[] {
 			id: 'user-profile',
 			pattern: '/api/v1/user/profile',
 			ttlLabel: 'TTL: Bypass',
-			descriptionKey: 'edge_cache_authRequired',
+			description: 'TTL: Bypass · Auth required',
 			hitRate: '0%',
 			hitRateColor: 'text-secondary',
 			icon: 'fa-file',
@@ -279,7 +290,7 @@ export function getCacheRules(): CacheRule[] {
 			id: 'sitemap',
 			pattern: '/sitemap.xml',
 			ttlLabel: 'TTL: 1 den',
-			descriptionKey: 'edge_cache_seo',
+			description: 'TTL: 1 den · SEO',
 			hitRate: '97.8%',
 			hitRateColor: 'text-success',
 			icon: 'fa-globe',
@@ -318,7 +329,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'RU',
 			countryFlag: '🇷🇺',
 			message: 'L7 HTTP flood – 8,400 req/s z jedné IP',
-			actionKey: 'edge_waf_blocked',
+			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_active',
 			statusClass: 'bg-error/10 text-error'
@@ -332,7 +343,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'CN',
 			countryFlag: '🇨🇳',
 			message: 'SQL Injection pokus – pravidlo CF-WAF-SQLi-001',
-			actionKey: 'edge_waf_blocked',
+			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
@@ -346,7 +357,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'US',
 			countryFlag: '🇺🇸',
 			message: 'Scraping bot – User-Agent: Scrapy/2.11',
-			actionKey: 'edge_waf_challenge',
+			actionKey: 'edge_status_challenge',
 			actionClass: 'bg-secondary/15 text-secondary',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
@@ -360,7 +371,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'IN',
 			countryFlag: '🇮🇳',
 			message: 'XSS pokus – pravidlo CF-WAF-XSS-012',
-			actionKey: 'edge_waf_blocked',
+			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
@@ -374,7 +385,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'DE',
 			countryFlag: '🇩🇪',
 			message: 'SYN flood útok – 12,000 req/s z botnet sítě',
-			actionKey: 'edge_waf_blocked',
+			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
@@ -388,7 +399,7 @@ export function getWafLog(): WafLogEntry[] {
 			country: 'GB',
 			countryFlag: '🇬🇧',
 			message: 'Rate limit překročen – /api/v1/login (200 req/min)',
-			actionKey: 'edge_waf_throttle',
+			actionKey: 'edge_status_throttle',
 			actionClass: 'bg-secondary/15 text-secondary',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'

@@ -2,11 +2,28 @@
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
+	import {
+		getEdgeKpiStats,
+		getEdgeSecondaryKpis,
+		getTtfbRegions,
+		getCacheRules,
+		getThreatTypes,
+		getHttpStatusDistribution,
+		getWafLog
+	} from '$lib/repositories/edgeRepository';
 
 	let activeChart = $state<'requests' | 'bandwidth' | 'http'>('requests');
 	let wafLogOpen = $state(true);
 	let cacheRulesOpen = $state(false);
 	let ttfbOpen = $state(true);
+
+	const edgeKpis = getEdgeKpiStats();
+	const secondaryKpis = getEdgeSecondaryKpis();
+	const ttfbRegions = getTtfbRegions();
+	const cacheRules = getCacheRules();
+	const threatTypes = getThreatTypes();
+	const httpStatus = getHttpStatusDistribution();
+	const wafLog = getWafLog();
 
 	onMount(() => {
 		const Plotly = (window as any).Plotly;
@@ -258,100 +275,53 @@
 
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_cacheHitRate')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_excellent')}</span>
+			{#each edgeKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex justify-between items-start mb-3">
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
+						{#if kpi.key === 'totalRequests'}
+							<span class="px-2 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">24h</span>
+						{:else if kpi.badgeKey}
+							<span class="px-2 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">{t(kpi.badgeKey)}</span>
+						{/if}
+					</div>
+					<div class="flex items-end gap-2 {kpi.barWidth ? 'mb-3' : ''}">
+						<span class="text-3xl font-bold {kpi.key === 'blockedThreats' ? 'text-secondary' : 'text-textMain'}">{kpi.value}</span>
+						{#if kpi.unit}
+							<span class="text-sm text-textSec mb-1">{kpi.unit}</span>
+						{/if}
+						{#if kpi.trend}
+							<span class="text-sm {kpi.trendPositive ? 'text-success' : 'text-secondary'} mb-1 flex items-center gap-1 ml-1">
+								<i class="fa-solid fa-arrow-up text-xs"></i>{kpi.trend}
+							</span>
+						{/if}
+					</div>
+					{#if kpi.barWidth && kpi.barClass}
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
+						</div>
+					{/if}
+					<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
 				</div>
-				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">94.2</span>
-					<span class="text-sm text-textSec mb-1">%</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>+1.4%</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-success rounded-full" style="width:94.2%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">Cíl: ≥ 90% · Splněno</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_totalRequests')}</h3>
-					<span class="px-2 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium">24h</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">48.3M</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">Peak: 2.4M/h v 10:00</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_savedBandwidth')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">2.8</span>
-					<span class="text-sm text-textSec mb-1">TB</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:72%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">3.9 TB celkem · 72% z cache</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_blockedThreats')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_caution')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-secondary">1,247</span>
-					<span class="text-sm text-secondary mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+312</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">DDoS, bots, bad IPs</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#f6821f]/15 flex items-center justify-center">
-						<i class="fa-solid fa-globe text-[#f6821f] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex items-center gap-3 mb-3">
+						<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center">
+							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+						</div>
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_activePop')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">275</div>
-				<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtext')}</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-bolt text-[#3ecf8e] text-xs"></i>
+					<div class="text-2xl font-bold text-textMain">
+						{kpi.value}{#if kpi.unit} <span class="text-sm font-normal text-textSec">{kpi.unit}</span>{/if}
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_avgTtfb')}</h3>
+					<p class="text-xs text-textSec mt-1">{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}</p>
 				</div>
-				<div class="text-2xl font-bold text-textMain">38 <span class="text-sm font-normal text-textSec">ms</span></div>
-				<p class="text-xs text-textSec mt-1">Z edge cache · -12ms vs. origin</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-shield-halved text-[#8b5cf6] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_wafRules')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">48</div>
-				<p class="text-xs text-textSec mt-1">Aktivních · 3 nová dnes</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-rotate text-[#3b82f6] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_sslStatus')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">TLS 1.3</div>
-				<p class="text-xs text-textSec mt-1">Certifikát platný · exp. 89 dní</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Row: Requests + Bandwidth -->
@@ -388,22 +358,15 @@
 				<p class="text-xs text-textSec mb-4">{t('edge_threats_subtitle')}</p>
 				<div id="chart-threat-pie" class="h-[200px] w-full"></div>
 				<div class="mt-4 space-y-2">
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block"></span><span class="text-textSec">DDoS</span></div>
-						<span class="text-textMain font-medium">54%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">Bad Bots</span></div>
-						<span class="text-textMain font-medium">28%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec">WAF Block</span></div>
-						<span class="text-textMain font-medium">13%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">IP Block</span></div>
-						<span class="text-textMain font-medium">5%</span>
-					</div>
+					{#each threatTypes as threat (threat.id)}
+						<div class="flex items-center justify-between text-sm">
+							<div class="flex items-center gap-2">
+								<span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color:{threat.color}"></span>
+								<span class="text-textSec">{threat.label}</span>
+							</div>
+							<span class="text-textMain font-medium">{threat.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 
@@ -416,42 +379,18 @@
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_ttfb_badge')}</span>
 				</div>
 				<div class="space-y-3.5">
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3ecf8e] text-xs"></i>EU West</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:19%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">38 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>US East</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:30%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">61 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#f6821f] text-xs"></i>US West</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#f6821f] rounded-full" style="width:38%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">78 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#8b5cf6] text-xs"></i>Asia Pacific</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:56%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">114 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">{t('common_status_warning')}</span></span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#ef4444] text-xs"></i>South America</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#ef4444] rounded-full" style="width:74%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">152 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_slow')}</span></span>
-					</div>
-					<div class="flex items-center gap-3">
-						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>Middle East</div>
-						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:48%"></div></div>
-						<span class="text-xs text-textMain font-medium w-14 text-right">98 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-					</div>
+					{#each ttfbRegions as region (region.id)}
+						<div class="flex items-center gap-3">
+							<div class="w-28 text-xs text-textSec truncate flex items-center gap-2">
+								<i class="fa-solid fa-location-dot {region.dotColor} text-xs"></i>{region.name}
+							</div>
+							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full rounded-full" style="width:{region.barWidth}; background-color:{region.barColor}; opacity:{region.barOpacity ?? 1}"></div>
+							</div>
+							<span class="text-xs text-textMain font-medium w-14 text-right">{region.ttfbMs} ms</span>
+							<span class="w-14 text-right"><span class="px-1.5 py-0.5 {region.statusClass} text-xs rounded">{t(region.statusKey)}</span></span>
+						</div>
+					{/each}
 				</div>
 				<div id="chart-ttfb-region" class="h-[140px] w-full mt-5"></div>
 			</div>
@@ -468,26 +407,13 @@
 				</div>
 				<div id="chart-http-status" class="h-[220px] w-full"></div>
 				<div class="mt-3 grid grid-cols-2 gap-2">
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_2xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">96.1%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_3xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">2.4%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_4xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">1.1%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_5xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">0.4%</span>
-					</div>
+					{#each httpStatus as item (item.code)}
+						<div class="flex items-center gap-2 text-xs">
+							<span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background-color:{item.color}"></span>
+							<span class="text-textSec">{t(item.labelKey)}</span>
+							<span class="ml-auto text-textMain font-semibold">{item.percent}</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 
@@ -500,61 +426,21 @@
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_cacheRules_badge')}</span>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-image text-[#3ecf8e] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">/assets/images/*</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 30 dní · Static files</p>
+					{#each cacheRules as rule (rule.id)}
+						<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="w-8 h-8 rounded-lg {rule.iconBg} flex items-center justify-center flex-shrink-0">
+								<i class="fa-solid {rule.icon} {rule.iconColor} text-xs"></i>
+							</div>
+							<div class="flex-1 min-w-0">
+								<p class="text-textMain text-sm font-medium font-mono truncate">{rule.pattern}</p>
+								<p class="text-xs text-textSec mt-0.5">{rule.description}</p>
+							</div>
+							<div class="text-right flex-shrink-0">
+								<div class="{rule.hitRateColor} font-bold text-sm">{rule.hitRate}</div>
+								<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
+							</div>
 						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-success font-bold text-sm">99.1%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-code text-[#3b82f6] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">/static/js/*.bundle.js</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 7 dní · JS bundles</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-[#3b82f6] font-bold text-sm">98.4%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-database text-[#8b5cf6] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">/api/v1/products*</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 5 min · API cache</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-[#8b5cf6] font-bold text-sm">72.3%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#f6821f]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-file text-[#f6821f] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">/api/v1/user/profile</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: Bypass · Auth required</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-secondary font-bold text-sm">0%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-globe text-[#3ecf8e] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-medium font-mono truncate">/sitemap.xml</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 1 den · SEO</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-success font-bold text-sm">97.8%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -593,60 +479,17 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:51:22</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">DDoS</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">185.220.101.47</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇷🇺 RU</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">L7 HTTP flood – 8,400 req/s z jedné IP</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:38:04</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">92.118.160.22</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇨🇳 CN</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">SQL Injection pokus – pravidlo CF-WAF-SQLi-001</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:55:18</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#f97316]/15 text-[#f97316] text-xs rounded font-medium">Bot</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">45.33.32.156</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇺🇸 US</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Scraping bot – User-Agent: Scrapy/2.11</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_challenge')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:12:40</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">103.21.244.0</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇮🇳 IN</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">XSS pokus – pravidlo CF-WAF-XSS-012</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:04:09</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">DDoS</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">195.178.110.33</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇩🇪 DE</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">SYN flood útok – 12,000 req/s z botnet sítě</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">10:28:55</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Rate Limit</span></td>
-							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">82.102.17.84</td>
-							<td class="py-3 pr-4 text-textSec text-xs">🇬🇧 GB</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Rate limit překročen – /api/v1/login (200 req/min)</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_throttle')}</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
+						{#each wafLog as entry (entry.id)}
+							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
+								<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span></td>
+								<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">{entry.ip}</td>
+								<td class="py-3 pr-4 text-textSec text-xs">{entry.countryFlag} {entry.country}</td>
+								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{entry.message}</td>
+								<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.actionClass} text-xs rounded font-medium">{t(entry.actionKey)}</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 {entry.statusClass} text-xs rounded">{t(entry.statusKey)}</span></td>
+							</tr>
+						{/each}
 					</tbody>
 				</table>
 			</div>
@@ -692,87 +535,115 @@
 		<!-- KPI Primary Row -->
 		<section class="grid grid-cols-2 gap-3">
 			<!-- Cache Hit Rate - full width -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 col-span-2">
-				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_cacheHitRate')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_excellent')}</span>
-				</div>
-				<div class="flex items-end gap-2 mb-2">
-					<span class="text-4xl font-bold text-textMain">94.2</span>
-					<span class="text-sm text-textSec mb-1">%</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>+1.4%</span>
-				</div>
-				<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-success rounded-full" style="width:94.2%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">Cíl: ≥ 90% · Splněno</p>
-			</div>
-			<!-- Requests -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_totalRequests')}</h3>
-					<span class="px-1.5 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium">24h</span>
-				</div>
-				<div class="text-2xl font-bold text-textMain">48.3M</div>
-				<p class="text-xs text-textSec mt-1">Peak: 2.4M/h v 10:00</p>
-			</div>
-			<!-- Bandwidth -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_savedBandwidthMobile')}</h3>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">2.8</span>
-					<span class="text-xs text-textSec mb-0.5">TB</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:72%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-1">72% z cache</p>
-			</div>
+			{#each edgeKpis as kpi (kpi.key)}
+				{#if kpi.key === 'cacheHitRate'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4 col-span-2">
+						<div class="flex justify-between items-start mb-2">
+							<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
+							{#if kpi.badgeKey}
+								<span class="px-2 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">{t(kpi.badgeKey)}</span>
+							{/if}
+						</div>
+						<div class="flex items-end gap-2 mb-2">
+							<span class="text-4xl font-bold text-textMain">{kpi.value}</span>
+							{#if kpi.unit}<span class="text-sm text-textSec mb-1">{kpi.unit}</span>{/if}
+							{#if kpi.trend}
+								<span class="text-sm {kpi.trendPositive ? 'text-success' : 'text-secondary'} mb-1 flex items-center gap-1 ml-1">
+									<i class="fa-solid fa-arrow-up text-xs"></i>{kpi.trend}
+								</span>
+							{/if}
+						</div>
+						{#if kpi.barWidth && kpi.barClass}
+							<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
+							</div>
+						{/if}
+						<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
+					</div>
+				{:else if kpi.key === 'totalRequests'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex justify-between items-start mb-2">
+							<h3 class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKey)}</h3>
+							<span class="px-1.5 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">24h</span>
+						</div>
+						<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
+						<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
+					</div>
+				{:else if kpi.key === 'savedBandwidth'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex justify-between items-start mb-2">
+							<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_savedBandwidthMobile')}</h3>
+							{#if kpi.badgeKey}
+								<span class="px-1.5 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">{t(kpi.badgeKey)}</span>
+							{/if}
+						</div>
+						<div class="flex items-end gap-1 mb-2">
+							<span class="text-2xl font-bold text-textMain">{kpi.value}</span>
+							{#if kpi.unit}<span class="text-xs text-textSec mb-0.5">{kpi.unit}</span>{/if}
+						</div>
+						{#if kpi.barWidth && kpi.barClass}
+							<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
+							</div>
+						{/if}
+						<p class="text-xs text-textSec mt-1">72% z cache</p>
+					</div>
+				{/if}
+			{/each}
 		</section>
 
 		<!-- Threats + Secondary KPIs -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_blockedThreats')}</h3>
-					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_caution')}</span>
-				</div>
-				<div class="text-2xl font-bold text-secondary">1,247</div>
-				<p class="text-xs text-secondary mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+312 dnes</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-6 h-6 rounded-md bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-bolt text-[#3ecf8e] text-xs"></i>
+			{#each edgeKpis as kpi (kpi.key)}
+				{#if kpi.key === 'blockedThreats'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex justify-between items-start mb-2">
+							<h3 class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKey)}</h3>
+							{#if kpi.badgeKey}
+								<span class="px-1.5 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">{t(kpi.badgeKey)}</span>
+							{/if}
+						</div>
+						<div class="text-2xl font-bold text-secondary">{kpi.value}</div>
+						<p class="text-xs text-secondary mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+312 dnes</p>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_avgTtfb')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">38 <span class="text-xs font-normal text-textSec">ms</span></div>
-				<p class="text-xs text-textSec mt-1">-12ms vs. origin</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-6 h-6 rounded-md bg-[#f6821f]/15 flex items-center justify-center">
-						<i class="fa-solid fa-globe text-[#f6821f] text-xs"></i>
+				{/if}
+			{/each}
+			{#each secondaryKpis as kpi (kpi.key)}
+				{#if kpi.key === 'avgTtfb'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex items-center gap-2 mb-2">
+							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
+								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+							</div>
+							<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">{kpi.value} <span class="text-xs font-normal text-textSec">{kpi.unit}</span></div>
+						<p class="text-xs text-textSec mt-1">-12ms vs. origin</p>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_activePop')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">275</div>
-				<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtextMobile')}</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-6 h-6 rounded-md bg-[#8b5cf6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-shield-halved text-[#8b5cf6] text-xs"></i>
+				{:else if kpi.key === 'activePop'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex items-center gap-2 mb-2">
+							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
+								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+							</div>
+							<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
+						<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtextMobile')}</p>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_wafRules')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">48</div>
-				<p class="text-xs text-textSec mt-1">3 nová dnes</p>
-			</div>
+				{:else if kpi.key === 'wafRules'}
+					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+						<div class="flex items-center gap-2 mb-2">
+							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
+								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+							</div>
+							<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
+						<p class="text-xs text-textSec mt-1">3 nová dnes</p>
+					</div>
+				{/if}
+			{/each}
 		</section>
 
 		<!-- SSL/TLS Banner -->
@@ -835,26 +706,13 @@
 				</div>
 				<div id="chart-http-status-m" class="h-[200px] w-full"></div>
 				<div class="mt-3 grid grid-cols-2 gap-2">
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_2xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">96.1%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_3xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">2.4%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_4xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">1.1%</span>
-					</div>
-					<div class="flex items-center gap-2 text-xs">
-						<span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">{t('edge_http_5xx')}</span>
-						<span class="ml-auto text-textMain font-semibold">0.4%</span>
-					</div>
+					{#each httpStatus as item (item.code)}
+						<div class="flex items-center gap-2 text-xs">
+							<span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background-color:{item.color}"></span>
+							<span class="text-textSec">{t(item.labelKey)}</span>
+							<span class="ml-auto text-textMain font-semibold">{item.percent}</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -866,22 +724,15 @@
 			<div class="flex gap-4">
 				<div id="chart-threat-pie-m" class="h-[160px] flex-shrink-0" style="width:160px;"></div>
 				<div class="flex-1 space-y-2.5 flex flex-col justify-center">
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block"></span><span class="text-textSec">DDoS</span></div>
-						<span class="text-textMain font-semibold">54%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">Bad Bots</span></div>
-						<span class="text-textMain font-semibold">28%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec">WAF Block</span></div>
-						<span class="text-textMain font-semibold">13%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">IP Block</span></div>
-						<span class="text-textMain font-semibold">5%</span>
-					</div>
+					{#each threatTypes as threat (threat.id)}
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-2">
+								<span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color:{threat.color}"></span>
+								<span class="text-textSec">{threat.label}</span>
+							</div>
+							<span class="text-textMain font-semibold">{threat.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -896,42 +747,18 @@
 				<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_ttfb_badgeMobile')}</span>
 			</div>
 			<div class="space-y-3">
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3ecf8e] text-xs"></i>EU West</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:19%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">38 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-				</div>
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>US East</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:30%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">61 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-				</div>
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#f6821f] text-xs"></i>US West</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#f6821f] rounded-full" style="width:38%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">78 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-				</div>
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#8b5cf6] text-xs"></i>Asia Pac.</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:56%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">114 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">{t('common_status_warning')}</span></span>
-				</div>
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#ef4444] text-xs"></i>S. America</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#ef4444] rounded-full" style="width:74%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">152 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_slow')}</span></span>
-				</div>
-				<div class="flex items-center gap-2">
-					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>Mid. East</div>
-					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:48%"></div></div>
-					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">98 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
-				</div>
+				{#each ttfbRegions as region (region.id)}
+					<div class="flex items-center gap-2">
+						<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0">
+							<i class="fa-solid fa-location-dot {region.dotColor} text-xs"></i>{region.shortName}
+						</div>
+						<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full rounded-full" style="width:{region.barWidth}; background-color:{region.barColor}; opacity:{region.barOpacity ?? 1}"></div>
+						</div>
+						<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">{region.ttfbMs} ms</span>
+						<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 {region.statusClass} text-xs rounded">{t(region.statusKey)}</span></span>
+					</div>
+				{/each}
 			</div>
 			<div id="chart-ttfb-region-m" class="h-[130px] w-full mt-4"></div>
 		</section>
@@ -955,61 +782,21 @@
 			</button>
 			{#if cacheRulesOpen}
 				<div class="px-4 pb-4 space-y-2.5">
-					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-image text-[#3ecf8e] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-xs font-medium font-mono truncate">/assets/images/*</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 30 dní · Static files</p>
+					{#each cacheRules as rule (rule.id)}
+						<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="w-8 h-8 rounded-lg {rule.iconBg} flex items-center justify-center flex-shrink-0">
+								<i class="fa-solid {rule.icon} {rule.iconColor} text-xs"></i>
+							</div>
+							<div class="flex-1 min-w-0">
+								<p class="text-textMain text-xs font-medium font-mono truncate">{rule.pattern}</p>
+								<p class="text-xs text-textSec mt-0.5">{rule.description}</p>
+							</div>
+							<div class="text-right flex-shrink-0">
+								<div class="{rule.hitRateColor} font-bold text-sm">{rule.hitRate}</div>
+								<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
+							</div>
 						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-success font-bold text-sm">99.1%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-code text-[#3b82f6] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-xs font-medium font-mono truncate">/static/js/*.bundle.js</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 7 dní · JS bundles</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-[#3b82f6] font-bold text-sm">98.4%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-database text-[#8b5cf6] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-xs font-medium font-mono truncate">/api/v1/products*</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 5 min · API cache</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-[#8b5cf6] font-bold text-sm">72.3%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#f6821f]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-file text-[#f6821f] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-xs font-medium font-mono truncate">/api/v1/user/profile</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: Bypass · Auth required</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-secondary font-bold text-sm">0%</div>
-							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-globe text-[#3ecf8e] text-xs"></i></div>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-xs font-medium font-mono truncate">/sitemap.xml</p>
-							<p class="text-xs text-textSec mt-0.5">TTL: 1 den · SEO</p>
-						</div>
-						<div class="text-right flex-shrink-0">
-							<div class="text-success font-bold text-sm">97.8%</div>
-							<div class="text-xs text-textSec">hit rate</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -1036,113 +823,25 @@
 			</div>
 
 			<div class="space-y-3">
-				<div class="border-l-[3px] border-l-error bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#ef4444">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">DDoS</span>
-							<span class="text-xs text-textSec font-mono">14:51:22</span>
+				{#each wafLog as entry (entry.id)}
+					<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:{entry.typeClass.includes('error') ? '#ef4444' : entry.typeClass.includes('8b5cf6') ? '#8b5cf6' : entry.typeClass.includes('f97316') ? '#f97316' : '#3b82f6'}">
+						<div class="flex justify-between items-start mb-2">
+							<div class="flex items-center gap-2">
+								<span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span>
+								<span class="text-xs text-textSec font-mono">{entry.time}</span>
+							</div>
+							<div class="flex items-center gap-2">
+								<span class="px-2 py-0.5 {entry.actionClass} text-xs rounded font-medium">{t(entry.actionKey)}</span>
+								<span class="px-1.5 py-0.5 {entry.statusClass} text-xs rounded">{t(entry.statusKey)}</span>
+							</div>
 						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
-							<span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span>
+						<div class="flex items-center gap-2 mb-1.5">
+							<span class="text-textMain font-mono text-xs">{entry.ip}</span>
+							<span class="text-textSec text-xs">{entry.countryFlag} {entry.country}</span>
 						</div>
+						<p class="text-xs text-textSec leading-relaxed">{entry.message}</p>
 					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">185.220.101.47</span>
-						<span class="text-textSec text-xs">🇷🇺 RU</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">L7 HTTP flood – 8,400 req/s z jedné IP</p>
-				</div>
-
-				<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#8b5cf6">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span>
-							<span class="text-xs text-textSec font-mono">14:38:04</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-						</div>
-					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">92.118.160.22</span>
-						<span class="text-textSec text-xs">🇨🇳 CN</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">SQL Injection pokus – CF-WAF-SQLi-001</p>
-				</div>
-
-				<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#f97316">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-[#f97316]/15 text-[#f97316] text-xs rounded font-medium">Bot</span>
-							<span class="text-xs text-textSec font-mono">13:55:18</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_challenge')}</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-						</div>
-					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">45.33.32.156</span>
-						<span class="text-textSec text-xs">🇺🇸 US</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">Scraping bot – User-Agent: Scrapy/2.11</p>
-				</div>
-
-				<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#8b5cf6">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span>
-							<span class="text-xs text-textSec font-mono">13:12:40</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-						</div>
-					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">103.21.244.0</span>
-						<span class="text-textSec text-xs">🇮🇳 IN</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">XSS pokus – pravidlo CF-WAF-XSS-012</p>
-				</div>
-
-				<div class="border-l-[3px] border-l-error bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#ef4444">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">DDoS</span>
-							<span class="text-xs text-textSec font-mono">12:04:09</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-						</div>
-					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">195.178.110.33</span>
-						<span class="text-textSec text-xs">🇩🇪 DE</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">SYN flood útok – 12,000 req/s z botnet sítě</p>
-				</div>
-
-				<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:#3b82f6">
-					<div class="flex justify-between items-start mb-2">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Rate Limit</span>
-							<span class="text-xs text-textSec font-mono">10:28:55</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_throttle')}</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-						</div>
-					</div>
-					<div class="flex items-center gap-2 mb-1.5">
-						<span class="text-textMain font-mono text-xs">82.102.17.84</span>
-						<span class="text-textSec text-xs">🇬🇧 GB</span>
-					</div>
-					<p class="text-xs text-textSec leading-relaxed">Rate limit překročen – /api/v1/login (200 req/min)</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 
