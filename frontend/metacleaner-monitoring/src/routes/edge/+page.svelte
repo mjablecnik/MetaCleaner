@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 
 	let activeChart = $state<'requests' | 'bandwidth' | 'http'>('requests');
@@ -233,22 +234,22 @@
 				<i class="fa-solid fa-cloud text-[#f6821f] text-sm"></i>
 			</div>
 			<div>
-				<h1 class="text-2xl font-bold text-textMain">Edge (Cloudflare)</h1>
-				<p class="text-sm text-textSec mt-0.5">CDN &amp; Security • 275+ PoP lokací • Posledních 24 hodin</p>
+				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_edge')}</h1>
+				<p class="text-sm text-textSec mt-0.5">{t('edge_header_subtitle')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
 			<div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				CDN online
+				{t('edge_status_cdnOnline')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -259,8 +260,8 @@
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Cache Hit Rate</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">Výborné</span>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_cacheHitRate')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_excellent')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">94.2</span>
@@ -274,7 +275,7 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Celkové požadavky</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_totalRequests')}</h3>
 					<span class="px-2 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium">24h</span>
 				</div>
 				<div class="flex items-end gap-2">
@@ -284,8 +285,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Ušetřená bandwidth</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_savedBandwidth')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">2.8</span>
@@ -298,8 +299,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Blokované hrozby</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Pozor</span>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_blockedThreats')}</h3>
+					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_caution')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-secondary">1,247</span>
@@ -316,17 +317,17 @@
 					<div class="w-8 h-8 rounded-lg bg-[#f6821f]/15 flex items-center justify-center">
 						<i class="fa-solid fa-globe text-[#f6821f] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Aktivní PoP</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_activePop')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">275</div>
-				<p class="text-xs text-textSec mt-1">Lokace po celém světě</p>
+				<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
 					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
 						<i class="fa-solid fa-bolt text-[#3ecf8e] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Avg. TTFB</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_avgTtfb')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">38 <span class="text-sm font-normal text-textSec">ms</span></div>
 				<p class="text-xs text-textSec mt-1">Z edge cache · -12ms vs. origin</p>
@@ -336,7 +337,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-shield-halved text-[#8b5cf6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">WAF Pravidla</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_wafRules')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">48</div>
 				<p class="text-xs text-textSec mt-1">Aktivních · 3 nová dnes</p>
@@ -346,7 +347,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-rotate text-[#3b82f6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">SSL/TLS Status</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('edge_kpi_sslStatus')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">TLS 1.3</div>
 				<p class="text-xs text-textSec mt-1">Certifikát platný · exp. 89 dní</p>
@@ -358,12 +359,12 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Požadavky v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Cache hit vs. miss</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_requestsOverTime')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_charts_requestsSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>Cache HIT</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f6821f] inline-block"></span>Cache MISS</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>{t('edge_charts_cacheHit')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f6821f] inline-block"></span>{t('edge_charts_cacheMiss')}</span>
 					</div>
 				</div>
 				<div id="chart-requests" class="h-[220px] w-full"></div>
@@ -371,8 +372,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Přenesená data (GB/h)</h3>
-						<p class="text-xs text-textSec mt-0.5">Objem dat přes edge síť</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_bandwidth')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_charts_bandwidthSubtitle')}</p>
 					</div>
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Celkem: 3.9 TB</span>
 				</div>
@@ -383,8 +384,8 @@
 		<!-- Threat Types + TTFB by Region -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<h3 class="text-lg font-semibold text-textMain mb-1">Typy hrozeb</h3>
-				<p class="text-xs text-textSec mb-4">Distribuce blokovaných požadavků</p>
+				<h3 class="text-lg font-semibold text-textMain mb-1">{t('edge_threats_title')}</h3>
+				<p class="text-xs text-textSec mb-4">{t('edge_threats_subtitle')}</p>
 				<div id="chart-threat-pie" class="h-[200px] w-full"></div>
 				<div class="mt-4 space-y-2">
 					<div class="flex items-center justify-between text-sm">
@@ -409,47 +410,47 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">TTFB dle regionu</h3>
-						<p class="text-xs text-textSec mt-0.5">Průměrná latence z edge uzlů</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('edge_ttfb_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_ttfb_subtitle')}</p>
 					</div>
-					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Top 6 regionů</span>
+					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_ttfb_badge')}</span>
 				</div>
 				<div class="space-y-3.5">
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3ecf8e] text-xs"></i>EU West</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:19%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">38 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>US East</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:30%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">61 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#f6821f] text-xs"></i>US West</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#f6821f] rounded-full" style="width:38%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">78 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#8b5cf6] text-xs"></i>Asia Pacific</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:56%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">114 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">Varování</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">{t('common_status_warning')}</span></span>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#ef4444] text-xs"></i>South America</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#ef4444] rounded-full" style="width:74%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">152 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">Pomalé</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_slow')}</span></span>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="w-28 text-xs text-textSec truncate flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>Middle East</div>
 						<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:48%"></div></div>
 						<span class="text-xs text-textMain font-medium w-14 text-right">98 ms</span>
-						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+						<span class="w-14 text-right"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 					</div>
 				</div>
 				<div id="chart-ttfb-region" class="h-[140px] w-full mt-5"></div>
@@ -461,30 +462,30 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">HTTP Status kódy</h3>
-						<p class="text-xs text-textSec mt-0.5">Distribuce odpovědí z edge</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_httpStatus')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_charts_httpStatusSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-http-status" class="h-[220px] w-full"></div>
 				<div class="mt-3 grid grid-cols-2 gap-2">
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">2xx Úspěch</span>
+						<span class="text-textSec">{t('edge_http_2xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">96.1%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">3xx Redirect</span>
+						<span class="text-textSec">{t('edge_http_3xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">2.4%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">4xx Klient</span>
+						<span class="text-textSec">{t('edge_http_4xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">1.1%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">5xx Server</span>
+						<span class="text-textSec">{t('edge_http_5xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">0.4%</span>
 					</div>
 				</div>
@@ -493,10 +494,10 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Cache pravidla</h3>
-						<p class="text-xs text-textSec mt-0.5">Výkon dle URL vzorů</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('edge_cacheRules_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_cacheRules_subtitle')}</p>
 					</div>
-					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Top 5 pravidel</span>
+					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_cacheRules_badge')}</span>
 				</div>
 				<div class="space-y-3">
 					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -507,7 +508,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-success font-bold text-sm">99.1%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -518,7 +519,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-[#3b82f6] font-bold text-sm">98.4%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -529,7 +530,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-[#8b5cf6] font-bold text-sm">72.3%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -540,7 +541,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-secondary font-bold text-sm">0%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -551,7 +552,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-success font-bold text-sm">97.8%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 				</div>
@@ -562,19 +563,19 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
-					<h3 class="text-lg font-semibold text-textMain">WAF &amp; Security logy</h3>
-					<p class="text-xs text-textSec mt-0.5">Posledních 24 hodin · 1,247 záznamů</p>
+					<h3 class="text-lg font-semibold text-textMain">{t('edge_wafLog_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('edge_wafLog_subtitle')}</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
-						<button class="px-3 py-1.5 bg-secondary/20 text-secondary text-xs font-medium">Všechny</button>
+						<button class="px-3 py-1.5 bg-secondary/20 text-secondary text-xs font-medium">{t('common_status_all')}</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">DDoS</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">WAF</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Bot</button>
 					</div>
 					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-						<input type="text" placeholder="Hledat IP / pravidlo..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-36" />
+						<input type="text" placeholder={t('edge_wafLog_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-36" />
 					</div>
 				</div>
 			</div>
@@ -582,13 +583,13 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-[#1e293b]">
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Čas</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Typ</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">IP adresa</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Země</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Pravidlo / Zpráva</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Akce</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">Status</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('edge_table_ipAddress')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('edge_table_country')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('edge_table_ruleMessage')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_action')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
@@ -598,8 +599,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">185.220.101.47</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇷🇺 RU</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">L7 HTTP flood – 8,400 req/s z jedné IP</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:38:04</td>
@@ -607,8 +608,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">92.118.160.22</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇨🇳 CN</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">SQL Injection pokus – pravidlo CF-WAF-SQLi-001</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:55:18</td>
@@ -616,8 +617,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">45.33.32.156</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇺🇸 US</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Scraping bot – User-Agent: Scrapy/2.11</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Challenge</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_challenge')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:12:40</td>
@@ -625,8 +626,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">103.21.244.0</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇮🇳 IN</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">XSS pokus – pravidlo CF-WAF-XSS-012</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:04:09</td>
@@ -634,8 +635,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">195.178.110.33</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇩🇪 DE</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">SYN flood útok – 12,000 req/s z botnet sítě</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">10:28:55</td>
@@ -643,8 +644,8 @@
 							<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">82.102.17.84</td>
 							<td class="py-3 pr-4 text-textSec text-xs">🇬🇧 GB</td>
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Rate limit překročen – /api/v1/login (200 req/min)</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Throttle</span></td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_throttle')}</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -664,8 +665,8 @@
 				<i class="fa-solid fa-cloud text-[#f6821f] text-xs"></i>
 			</div>
 			<div>
-				<h1 class="text-sm font-bold text-textMain leading-tight">Edge (Cloudflare)</h1>
-				<p class="text-xs text-textSec">CDN &amp; Security · 275+ PoP</p>
+				<h1 class="text-sm font-bold text-textMain leading-tight">{t('layout_nav_edge')}</h1>
+				<p class="text-xs text-textSec">{t('edge_header_subtitleMobile')}</p>
 			</div>
 		</div>
 	</div>
@@ -674,15 +675,15 @@
 	<div class="px-4 pb-3 flex items-center gap-2">
 		<div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
 			<div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-			CDN Online
+			{t('edge_status_cdnOnline')}
 		</div>
 	</div>
 
 	<div class="px-4 pb-4">
 		<select class="w-full bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
-			<option>Posledních 24 hodin</option>
-			<option>Posledních 7 dní</option>
-			<option>Posledních 30 dní</option>
+			<option>{t('common_timeRange_last24h')}</option>
+			<option>{t('common_timeRange_last7d')}</option>
+			<option>{t('common_timeRange_last30d')}</option>
 		</select>
 	</div>
 
@@ -693,8 +694,8 @@
 			<!-- Cache Hit Rate - full width -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 col-span-2">
 				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium">Cache Hit Rate</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">Výborné</span>
+					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_cacheHitRate')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_excellent')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-2">
 					<span class="text-4xl font-bold text-textMain">94.2</span>
@@ -709,7 +710,7 @@
 			<!-- Requests -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">Celkové požadavky</h3>
+					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_totalRequests')}</h3>
 					<span class="px-1.5 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium">24h</span>
 				</div>
 				<div class="text-2xl font-bold text-textMain">48.3M</div>
@@ -718,8 +719,8 @@
 			<!-- Bandwidth -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">Ušetřená BW</h3>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_savedBandwidthMobile')}</h3>
+					<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
 					<span class="text-2xl font-bold text-textMain">2.8</span>
@@ -736,8 +737,8 @@
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex justify-between items-start mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">Blokované hrozby</h3>
-					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Pozor</span>
+					<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_blockedThreats')}</h3>
+					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_caution')}</span>
 				</div>
 				<div class="text-2xl font-bold text-secondary">1,247</div>
 				<p class="text-xs text-secondary mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+312 dnes</p>
@@ -747,7 +748,7 @@
 					<div class="w-6 h-6 rounded-md bg-[#3ecf8e]/15 flex items-center justify-center">
 						<i class="fa-solid fa-bolt text-[#3ecf8e] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">Avg. TTFB</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_avgTtfb')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">38 <span class="text-xs font-normal text-textSec">ms</span></div>
 				<p class="text-xs text-textSec mt-1">-12ms vs. origin</p>
@@ -757,17 +758,17 @@
 					<div class="w-6 h-6 rounded-md bg-[#f6821f]/15 flex items-center justify-center">
 						<i class="fa-solid fa-globe text-[#f6821f] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">Aktivní PoP</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_activePop')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">275</div>
-				<p class="text-xs text-textSec mt-1">Světové lokace</p>
+				<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtextMobile')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center gap-2 mb-2">
 					<div class="w-6 h-6 rounded-md bg-[#8b5cf6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-shield-halved text-[#8b5cf6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-xs font-medium">WAF Pravidla</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('edge_kpi_wafRules')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">48</div>
 				<p class="text-xs text-textSec mt-1">3 nová dnes</p>
@@ -783,7 +784,7 @@
 				<div class="text-textMain font-bold text-base">TLS 1.3</div>
 				<p class="text-xs text-textSec">Certifikát platný · exp. za 89 dní</p>
 			</div>
-			<span class="px-2 py-1 bg-success/10 text-success text-xs rounded-lg font-medium flex-shrink-0">Platný</span>
+			<span class="px-2 py-1 bg-success/10 text-success text-xs rounded-lg font-medium flex-shrink-0">{t('common_status_valid')}</span>
 		</div>
 
 		<!-- Charts Tabs -->
@@ -792,26 +793,26 @@
 				<button
 					onclick={() => switchChart('requests')}
 					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'requests' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
-				>Požadavky</button>
+				>{t('edge_tabs_requests')}</button>
 				<button
 					onclick={() => switchChart('bandwidth')}
 					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'bandwidth' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
-				>Bandwidth</button>
+				>{t('edge_tabs_bandwidth')}</button>
 				<button
 					onclick={() => switchChart('http')}
 					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'http' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
-				>HTTP Status</button>
+				>{t('edge_tabs_httpStatus')}</button>
 			</div>
 
 			<div class="{activeChart === 'requests' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">Požadavky v čase</p>
-						<p class="text-xs text-textSec">Cache hit vs. miss</p>
+						<p class="text-sm font-semibold text-textMain">{t('edge_charts_requestsOverTime')}</p>
+						<p class="text-xs text-textSec">{t('edge_charts_requestsSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>HIT</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f6821f] inline-block"></span>MISS</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>{t('edge_charts_cacheHit')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f6821f] inline-block"></span>{t('edge_charts_cacheMiss')}</span>
 					</div>
 				</div>
 				<div id="chart-requests-m" class="h-[200px] w-full"></div>
@@ -819,8 +820,8 @@
 			<div class="{activeChart === 'bandwidth' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">Přenesená data (GB/h)</p>
-						<p class="text-xs text-textSec">Objem dat přes edge síť · 3.9 TB</p>
+						<p class="text-sm font-semibold text-textMain">{t('edge_charts_bandwidth')}</p>
+						<p class="text-xs text-textSec">{t('edge_charts_bandwidthSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-bandwidth-m" class="h-[200px] w-full"></div>
@@ -828,30 +829,30 @@
 			<div class="{activeChart === 'http' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">HTTP Status kódy</p>
-						<p class="text-xs text-textSec">Distribuce odpovědí z edge</p>
+						<p class="text-sm font-semibold text-textMain">{t('edge_charts_httpStatus')}</p>
+						<p class="text-xs text-textSec">{t('edge_charts_httpStatusSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-http-status-m" class="h-[200px] w-full"></div>
 				<div class="mt-3 grid grid-cols-2 gap-2">
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">2xx Úspěch</span>
+						<span class="text-textSec">{t('edge_http_2xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">96.1%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">3xx Redirect</span>
+						<span class="text-textSec">{t('edge_http_3xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">2.4%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">4xx Klient</span>
+						<span class="text-textSec">{t('edge_http_4xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">1.1%</span>
 					</div>
 					<div class="flex items-center gap-2 text-xs">
 						<span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block flex-shrink-0"></span>
-						<span class="text-textSec">5xx Server</span>
+						<span class="text-textSec">{t('edge_http_5xx')}</span>
 						<span class="ml-auto text-textMain font-semibold">0.4%</span>
 					</div>
 				</div>
@@ -860,8 +861,8 @@
 
 		<!-- Typy hrozeb -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
-			<h3 class="text-sm font-semibold text-textMain mb-1">Typy hrozeb</h3>
-			<p class="text-xs text-textSec mb-3">Distribuce blokovaných požadavků</p>
+			<h3 class="text-sm font-semibold text-textMain mb-1">{t('edge_threats_title')}</h3>
+			<p class="text-xs text-textSec mb-3">{t('edge_threats_subtitle')}</p>
 			<div class="flex gap-4">
 				<div id="chart-threat-pie-m" class="h-[160px] flex-shrink-0" style="width:160px;"></div>
 				<div class="flex-1 space-y-2.5 flex flex-col justify-center">
@@ -889,47 +890,47 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex justify-between items-center mb-3">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">TTFB dle regionu</h3>
-					<p class="text-xs text-textSec mt-0.5">Průměrná latence z edge uzlů</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('edge_ttfb_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('edge_ttfb_subtitle')}</p>
 				</div>
-				<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Top 6</span>
+				<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_ttfb_badgeMobile')}</span>
 			</div>
 			<div class="space-y-3">
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3ecf8e] text-xs"></i>EU West</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:19%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">38 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 				</div>
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>US East</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:30%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">61 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 				</div>
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#f6821f] text-xs"></i>US West</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#f6821f] rounded-full" style="width:38%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">78 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 				</div>
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#8b5cf6] text-xs"></i>Asia Pac.</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:56%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">114 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">Pozor</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded">{t('common_status_warning')}</span></span>
 				</div>
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#ef4444] text-xs"></i>S. America</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#ef4444] rounded-full" style="width:74%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">152 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">Pomalé</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_slow')}</span></span>
 				</div>
 				<div class="flex items-center gap-2">
 					<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0"><i class="fa-solid fa-location-dot text-[#3b82f6] text-xs"></i>Mid. East</div>
 					<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:48%"></div></div>
 					<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">98 ms</span>
-					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">OK</span></span>
+					<span class="w-14 text-right flex-shrink-0"><span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_ok')}</span></span>
 				</div>
 			</div>
 			<div id="chart-ttfb-region-m" class="h-[130px] w-full mt-4"></div>
@@ -946,8 +947,8 @@
 						<i class="fa-solid fa-image text-[#3ecf8e] text-xs"></i>
 					</div>
 					<div>
-						<p class="text-sm font-semibold text-textMain">Cache pravidla</p>
-						<p class="text-[10px] text-textSec">Výkon dle URL vzorů · Top 5</p>
+						<p class="text-sm font-semibold text-textMain">{t('edge_cacheRules_title')}</p>
+						<p class="text-[10px] text-textSec">{t('edge_cacheRules_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {cacheRulesOpen ? 'rotate-180' : ''}"></i>
@@ -962,7 +963,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-success font-bold text-sm">99.1%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -973,7 +974,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-[#3b82f6] font-bold text-sm">98.4%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -984,7 +985,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-[#8b5cf6] font-bold text-sm">72.3%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -995,7 +996,7 @@
 						</div>
 						<div class="text-right flex-shrink-0">
 							<div class="text-secondary font-bold text-sm">0%</div>
-							<div class="text-xs text-textSec">hit rate</div>
+							<div class="text-xs text-textSec">{t('edge_cacheRules_hitRate')}</div>
 						</div>
 					</div>
 					<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -1018,19 +1019,19 @@
 			<div class="mb-4">
 				<div class="flex justify-between items-start mb-3">
 					<div>
-						<h3 class="text-sm font-semibold text-textMain">WAF &amp; Security logy</h3>
-						<p class="text-xs text-textSec mt-0.5">Posledních 24 h · 1,247 záznamů</p>
+						<h3 class="text-sm font-semibold text-textMain">{t('edge_wafLog_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('edge_wafLog_subtitle')}</p>
 					</div>
 				</div>
 				<div class="flex rounded-lg overflow-hidden border border-[#334155] mb-3">
-					<button class="flex-1 px-2 py-2 bg-secondary/20 text-secondary text-xs font-medium">Všechny</button>
+					<button class="flex-1 px-2 py-2 bg-secondary/20 text-secondary text-xs font-medium">{t('common_status_all')}</button>
 					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">DDoS</button>
 					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">WAF</button>
 					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Bot</button>
 				</div>
 				<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5">
 					<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-					<input type="text" placeholder="Hledat IP / pravidlo..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
+					<input type="text" placeholder={t('edge_wafLog_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 				</div>
 			</div>
 
@@ -1042,8 +1043,8 @@
 							<span class="text-xs text-textSec font-mono">14:51:22</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span>
-							<span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
+							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
+							<span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1060,8 +1061,8 @@
 							<span class="text-xs text-textSec font-mono">14:38:04</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
+							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1078,8 +1079,8 @@
 							<span class="text-xs text-textSec font-mono">13:55:18</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Challenge</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_challenge')}</span>
+							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1096,8 +1097,8 @@
 							<span class="text-xs text-textSec font-mono">13:12:40</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
+							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1114,8 +1115,8 @@
 							<span class="text-xs text-textSec font-mono">12:04:09</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Blokováno</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('common_status_blocked')}</span>
+							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1132,8 +1133,8 @@
 							<span class="text-xs text-textSec font-mono">10:28:55</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Throttle</span>
-							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('edge_status_throttle')}</span>
+							<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-2 mb-1.5">
@@ -1153,23 +1154,23 @@
 	<div class="flex justify-around items-center max-w-2xl mx-auto">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
-			<span class="text-xs">Dashboard</span>
+			<span class="text-xs">{t('layout_nav_dashboard')}</span>
 		</a>
 		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
-			<span class="text-xs">Dostupnost</span>
+			<span class="text-xs">{t('layout_nav_availability')}</span>
 		</a>
 		<a href="{base}/edge" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#f6821f] min-w-[44px]">
 			<i class="fa-solid fa-cloud text-base"></i>
-			<span class="text-xs font-medium">Edge</span>
+			<span class="text-xs font-medium">{t('layout_nav_edge')}</span>
 		</a>
 		<a href="{base}/security" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-shield-halved text-base"></i>
-			<span class="text-xs">Security</span>
+			<span class="text-xs">{t('layout_nav_security')}</span>
 		</a>
 		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
-			<span class="text-xs">Analytika</span>
+			<span class="text-xs">{t('layout_nav_business')}</span>
 		</a>
 	</div>
 </nav>
