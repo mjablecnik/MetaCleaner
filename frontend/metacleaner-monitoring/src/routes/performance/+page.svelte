@@ -2,9 +2,24 @@
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
+	import {
+		getPerformanceKpiStats,
+		getPerformanceSecondaryKpis,
+		getSlowEndpoints,
+		getCoreWebVitals,
+		getErrorCodeDistribution,
+		getPerformanceEvents
+	} from '$lib/repositories/performanceRepository';
 
 	type AccordionKey = 'response' | 'throughput' | 'cpu' | 'errors';
 	type EventFilter = 'all' | 'critical' | 'warning' | 'info';
+
+	const kpiStats = getPerformanceKpiStats();
+	const secondaryKpis = getPerformanceSecondaryKpis();
+	const slowEndpoints = getSlowEndpoints();
+	const coreWebVitals = getCoreWebVitals();
+	const errorDistribution = getErrorCodeDistribution();
+	const performanceEvents = getPerformanceEvents();
 
 	let accordionOpen = $state<Record<AccordionKey, boolean>>({
 		response: true,
@@ -278,111 +293,59 @@
 
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_apdex')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('performance_kpi_apdexBadge')}</span>
+			{#each kpiStats as stat (stat.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex justify-between items-start mb-3">
+						<h3 class="text-textSec text-sm font-medium">{t(stat.labelKey)}</h3>
+						<span class="px-2 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium">{t(stat.badgeKey)}</span>
+					</div>
+					<div class="flex items-end gap-2 mb-3">
+						<span class="text-3xl font-bold {stat.valueClass ?? 'text-textMain'}">{stat.value}</span>
+						{#if stat.unit}
+							<span class="text-sm text-textSec mb-1">{stat.unit}</span>
+						{/if}
+						{#if stat.trend}
+							<span class="text-sm {stat.trendPositive ? 'text-success' : 'text-error'} mb-1 flex items-center gap-1">
+								<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i>{stat.trend}
+							</span>
+						{/if}
+					</div>
+					{#if stat.barWidth}
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
+						</div>
+					{/if}
+					<p class="text-xs text-textSec mt-2">{stat.subtext}</p>
 				</div>
-				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">0.94</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+0.02</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-success rounded-full" style="width:94%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">Cíl: ≥ 0.90 · Threshold: 500ms</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_avgResponseTime')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">187</span>
-					<span class="text-sm text-textSec mb-1">ms</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-down text-xs"></i>-14ms</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">P95: 480ms · P99: 1,240ms</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_throughput')}</h3>
-					<span class="px-2 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium">{t('performance_kpi_throughputBadge')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">3,841</span>
-					<span class="text-sm text-textSec mb-1">req/min</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">Peak: 6,210 rpm (10:42)</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_errorRate')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-secondary">1.8</span>
-					<span class="text-sm text-textSec mb-1">%</span>
-					<span class="text-sm text-error mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+0.4%</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">Cíl: &lt; 1% · 5xx: 68 za 24h</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#f59e0b]/15 flex items-center justify-center">
-						<i class="fa-solid fa-memory text-[#f59e0b] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex items-center gap-3 mb-3">
+						<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center">
+							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+						</div>
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_ramUtilization')}</h3>
+					{#if kpi.barWidth}
+						<div class="flex items-end gap-2 mb-2">
+							<span class="text-2xl font-bold text-textMain">{kpi.value}</span>
+							{#if kpi.unit}
+								<span class="text-sm text-textSec mb-0.5">{kpi.unit}</span>
+							{/if}
+						</div>
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {kpi.barColor} rounded-full" style="width:{kpi.barWidth}"></div>
+						</div>
+					{:else}
+						<div class="text-2xl font-bold text-textMain">{kpi.value} <span class="text-sm font-normal text-textSec">{kpi.unit}</span></div>
+					{/if}
+					<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
 				</div>
-				<div class="flex items-end gap-2 mb-2">
-					<span class="text-2xl font-bold text-textMain">72</span>
-					<span class="text-sm text-textSec mb-0.5">%</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#f59e0b] rounded-full" style="width:72%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">5.8 GB / 8 GB</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-microchip text-[#3ecf8e] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_cpuUtilization')}</h3>
-				</div>
-				<div class="flex items-end gap-2 mb-2">
-					<span class="text-2xl font-bold text-textMain">38</span>
-					<span class="text-sm text-textSec mb-0.5">%</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#3ecf8e] rounded-full" style="width:38%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">Peak: 84% (10:38)</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-network-wired text-[#3b82f6] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_networkLatency')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">12 <span class="text-sm font-normal text-textSec">ms</span></div>
-				<p class="text-xs text-textSec mt-1">CDN cache hit: 91.4%</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
-						<i class="fa-solid fa-arrow-up-right-dots text-success text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('performance_kpi_uptime')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">99.97 <span class="text-sm font-normal text-textSec">%</span></div>
-				<p class="text-xs text-textSec mt-1">Výpadky: 2 × 4 min celkem</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Row 1 -->
@@ -435,22 +398,15 @@
 				<p class="text-xs text-textSec mb-4">{t('performance_charts_errorTypesSubtitle')}</p>
 				<div id="chart-error-donut" class="h-[180px] w-full"></div>
 				<div class="mt-4 space-y-2">
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block"></span><span class="text-textSec">500 Internal</span></div>
-						<span class="text-textMain font-medium">42%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">503 Timeout</span></div>
-						<span class="text-textMain font-medium">31%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] inline-block"></span><span class="text-textSec">502 Bad GW</span></div>
-						<span class="text-textMain font-medium">18%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec">{t('performance_other')}</span></div>
-						<span class="text-textMain font-medium">9%</span>
-					</div>
+					{#each errorDistribution as dist (dist.code)}
+						<div class="flex items-center justify-between text-sm">
+							<div class="flex items-center gap-2">
+								<span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color:{dist.color}"></span>
+								<span class="text-textSec">{dist.label}</span>
+							</div>
+							<span class="text-textMain font-medium">{dist.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -466,96 +422,23 @@
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('performance_endpoints_badge')}</span>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">POST</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/orders/checkout</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 2,841x · Chyby: 4.2%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-error font-bold text-sm">1,840 ms</span>
+					{#each slowEndpoints as ep (ep.id)}
+						<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<span class="px-2 py-0.5 {ep.methodClass} text-xs font-mono rounded font-semibold flex-shrink-0">{ep.method}</span>
+							<div class="flex-1 min-w-0">
+								<p class="text-textMain text-sm font-mono truncate">{ep.path}</p>
+								<p class="text-xs text-textSec mt-0.5">Calls: {ep.callCount} · Errors: {ep.errorRate}</p>
 							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-error rounded-full" style="width:100%"></div>
-							</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/analytics/report</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 184x · Chyby: 1.1%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-secondary font-bold text-sm">940 ms</span>
-							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-secondary rounded-full" style="width:51%"></div>
+							<div class="flex-shrink-0 w-28">
+								<div class="flex items-center justify-between mb-1">
+									<span class="{ep.timeColor} font-bold text-sm">{ep.avgMs.toLocaleString()} ms</span>
+								</div>
+								<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
+									<div class="h-full {ep.barColor} rounded-full" style="width:{ep.barWidth}"></div>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/users/search</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 5,200x · Chyby: 0.8%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-[#f59e0b] font-bold text-sm">620 ms</span>
-							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#f59e0b] rounded-full" style="width:34%"></div>
-							</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">PUT</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/products/:id</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 1,024x · Chyby: 2.1%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-[#3b82f6] font-bold text-sm">480 ms</span>
-							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3b82f6] rounded-full" style="width:26%"></div>
-							</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/events/stream</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 18,400x · Chyby: 0.2%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-textMain font-bold text-sm">210 ms</span>
-							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3ecf8e] rounded-full" style="width:11%"></div>
-							</div>
-						</div>
-					</div>
-					<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-						<span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<div class="flex-1 min-w-0">
-							<p class="text-textMain text-sm font-mono truncate">/api/v1/auth/session</p>
-							<p class="text-xs text-textSec mt-0.5">Volání: 42,100x · Chyby: 0.1%</p>
-						</div>
-						<div class="flex-shrink-0 w-28">
-							<div class="flex items-center justify-between mb-1">
-								<span class="text-textMain font-bold text-sm">48 ms</span>
-							</div>
-							<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3ecf8e] rounded-full" style="width:3%"></div>
-							</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 
@@ -563,86 +446,24 @@
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('performance_cwv_title')}</h3>
 				<p class="text-xs text-textSec mb-5">{t('performance_cwv_subtitle')}</p>
 				<div class="space-y-5">
-					<div>
-						<div class="flex justify-between items-center mb-1.5">
-							<div>
-								<span class="text-sm text-textMain font-medium">LCP</span>
-								<span class="text-xs text-textSec ml-1">Largest Contentful Paint</span>
+					{#each coreWebVitals as vital (vital.key)}
+						<div>
+							<div class="flex justify-between items-center mb-1.5">
+								<div>
+									<span class="text-sm text-textMain font-medium">{vital.label}</span>
+									<span class="text-xs text-textSec ml-1">{vital.description}</span>
+								</div>
+								<span class="{vital.statusClass} font-bold text-sm">{vital.value}{vital.unit}</span>
 							</div>
-							<span class="text-success font-bold text-sm">1.8s</span>
-						</div>
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-success rounded-full" style="width:60%"></div>
-						</div>
-						<div class="flex justify-between text-xs text-textSec mt-1">
-							<span>Dobrý (&lt;2.5s)</span>
-							<span class="text-success font-medium">✓ OK</span>
-						</div>
-					</div>
-					<div>
-						<div class="flex justify-between items-center mb-1.5">
-							<div>
-								<span class="text-sm text-textMain font-medium">FID</span>
-								<span class="text-xs text-textSec ml-1">First Input Delay</span>
+							<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {vital.barClass} rounded-full" style="width:{vital.barWidth}"></div>
 							</div>
-							<span class="text-success font-bold text-sm">48ms</span>
-						</div>
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-success rounded-full" style="width:32%"></div>
-						</div>
-						<div class="flex justify-between text-xs text-textSec mt-1">
-							<span>Dobrý (&lt;100ms)</span>
-							<span class="text-success font-medium">✓ OK</span>
-						</div>
-					</div>
-					<div>
-						<div class="flex justify-between items-center mb-1.5">
-							<div>
-								<span class="text-sm text-textMain font-medium">CLS</span>
-								<span class="text-xs text-textSec ml-1">Cumulative Layout Shift</span>
+							<div class="flex justify-between text-xs text-textSec mt-1">
+								<span>{vital.threshold}</span>
+								<span class="{vital.statusClass} font-medium">{vital.statusSymbol}</span>
 							</div>
-							<span class="text-secondary font-bold text-sm">0.18</span>
 						</div>
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-secondary rounded-full" style="width:72%"></div>
-						</div>
-						<div class="flex justify-between text-xs text-textSec mt-1">
-							<span>Zlepšit (&lt;0.1)</span>
-							<span class="text-secondary font-medium">⚠ Varování</span>
-						</div>
-					</div>
-					<div>
-						<div class="flex justify-between items-center mb-1.5">
-							<div>
-								<span class="text-sm text-textMain font-medium">TTFB</span>
-								<span class="text-xs text-textSec ml-1">Time To First Byte</span>
-							</div>
-							<span class="text-success font-bold text-sm">210ms</span>
-						</div>
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-success rounded-full" style="width:42%"></div>
-						</div>
-						<div class="flex justify-between text-xs text-textSec mt-1">
-							<span>Dobrý (&lt;800ms)</span>
-							<span class="text-success font-medium">✓ OK</span>
-						</div>
-					</div>
-					<div>
-						<div class="flex justify-between items-center mb-1.5">
-							<div>
-								<span class="text-sm text-textMain font-medium">INP</span>
-								<span class="text-xs text-textSec ml-1">Interaction to Next Paint</span>
-							</div>
-							<span class="text-success font-bold text-sm">84ms</span>
-						</div>
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full bg-success rounded-full" style="width:28%"></div>
-						</div>
-						<div class="flex justify-between text-xs text-textSec mt-1">
-							<span>Dobrý (&lt;200ms)</span>
-							<span class="text-success font-medium">✓ OK</span>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -680,54 +501,16 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:32:11</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('performance_filters_critical')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">Response Spike</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">P99 latence překročila 5,000ms – možná DB blokáda</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/orders/checkout</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('performance_status_active')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:48:22</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">CPU Spike</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">CPU vytížení přesáhlo 80% po dobu 4 minut</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">fly.io · fra · instance-02</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:15:08</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">Error Rate</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Chybovost překročila 3% po dobu 8 minut (503 timeout)</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/analytics/report</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">10:42:55</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('performance_filters_info')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">Traffic Spike</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Throughput dosáhl peak 6,210 req/min – auto-scale spuštěn</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">Celá infrastruktura</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">09:12:34</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">Memory Pressure</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">RAM využití přesáhlo 85% – možný memory leak v worker</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">fly.io · fra · instance-01</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">06:30:01</td>
-							<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('performance_filters_info')}</span></td>
-							<td class="py-3 pr-4 text-textSec text-xs">Deploy</td>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Nasazení verze v2.14.1 – rolling restart dokončen za 42s</td>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">Celá infrastruktura</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('performance_status_completed')}</span></td>
-						</tr>
+						{#each performanceEvents as evt (evt.id)}
+							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{evt.time}</td>
+								<td class="py-3 pr-4"><span class="px-2 py-0.5 {evt.levelClass} text-xs rounded font-medium">{t(evt.levelKey)}</span></td>
+								<td class="py-3 pr-4 text-textSec text-xs">{evt.type}</td>
+								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{evt.message}</td>
+								<td class="py-3 pr-4 text-textSec font-mono text-xs">{evt.endpoint ?? ''}</td>
+								<td class="py-3"><span class="px-2 py-0.5 {evt.statusClass} text-xs rounded">{t(evt.statusKey)}</span></td>
+							</tr>
+						{/each}
 					</tbody>
 				</table>
 			</div>
@@ -758,121 +541,74 @@
 
 		<!-- KPI Primary Stats - 2x2 grid -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('performance_kpi_apdex')}</h3>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium flex-shrink-0 ml-1">✓</span>
+			{#each kpiStats as stat (stat.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="flex items-start justify-between mb-2">
+						<h3 class="text-textSec text-xs font-medium leading-tight">
+							{#if stat.key === 'avgResponseTime'}
+								{t('performance_kpi_avgResponseTimeMobile')}
+							{:else}
+								{t(stat.labelKey)}
+							{/if}
+						</h3>
+						<span class="px-1.5 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium flex-shrink-0 ml-1">
+							{#if stat.key === 'apdex'}✓{:else if stat.key === 'errorRate'}⚠{:else if stat.key === 'throughput'}N{:else}{t(stat.badgeKey)}{/if}
+						</span>
+					</div>
+					<div class="flex items-end gap-1 mb-2">
+						<span class="text-2xl font-bold {stat.valueClass ?? 'text-textMain'}">{stat.value}</span>
+						{#if stat.unit}
+							<span class="text-xs text-textSec mb-0.5">{stat.unit}</span>
+						{/if}
+						{#if stat.trend}
+							<span class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'} mb-0.5 flex items-center gap-0.5">
+								<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i>{stat.trend}
+							</span>
+						{/if}
+					</div>
+					{#if stat.barWidth}
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
+						</div>
+					{/if}
+					<p class="text-xs text-textSec mt-1.5">{stat.subtext}</p>
 				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">0.94</span>
-					<span class="text-xs text-success mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+0.02</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-success rounded-full" style="width:94%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-1.5">Cíl: ≥ 0.90</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('performance_kpi_avgResponseTimeMobile')}</h3>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium flex-shrink-0 ml-1">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">187</span>
-					<span class="text-xs text-textSec mb-0.5">ms</span>
-					<span class="text-xs text-success mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-down text-xs"></i>-14</span>
-				</div>
-				<p class="text-xs text-textSec">P95: 480ms</p>
-				<p class="text-xs text-textSec">P99: 1,240ms</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('performance_kpi_throughput')}</h3>
-					<span class="px-1.5 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium flex-shrink-0 ml-1">N</span>
-				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">3,841</span>
-				</div>
-				<p class="text-xs text-textSec">req/min</p>
-				<p class="text-xs text-textSec mt-0.5">Peak: 6,210</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium leading-tight">{t('performance_kpi_errorRate')}</h3>
-					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium flex-shrink-0 ml-1">⚠</span>
-				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-secondary">1.8</span>
-					<span class="text-xs text-textSec mb-0.5">%</span>
-					<span class="text-xs text-error mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+0.4%</span>
-				</div>
-				<p class="text-xs text-textSec">Cíl: &lt; 1%</p>
-				<p class="text-xs text-textSec mt-0.5">5xx: 68 / 24h</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- System Resources -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-3">{t('performance_resources_title')}</h3>
 			<div class="grid grid-cols-2 gap-4">
-				<div>
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md bg-[#f59e0b]/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-memory text-[#f59e0b] text-xs"></i>
+				{#each secondaryKpis as kpi (kpi.key)}
+					<div>
+						<div class="flex items-center gap-2 mb-2">
+							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center flex-shrink-0">
+								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
+							</div>
+							<span class="text-textSec text-xs">{kpi.shortLabel}</span>
 						</div>
-						<span class="text-textSec text-xs">RAM</span>
+						{#if kpi.barWidth}
+							<div class="flex items-end gap-1 mb-1.5">
+								<span class="text-xl font-bold text-textMain">{kpi.value}</span>
+								{#if kpi.unit}
+									<span class="text-xs text-textSec mb-0.5">{kpi.unit}</span>
+								{/if}
+							</div>
+							<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-full {kpi.barColor} rounded-full" style="width:{kpi.barWidth}"></div>
+							</div>
+						{:else}
+							<div class="flex items-end gap-1">
+								<span class="text-xl font-bold text-textMain">{kpi.value}</span>
+								{#if kpi.unit}
+									<span class="text-xs text-textSec mb-0.5">{kpi.unit}</span>
+								{/if}
+							</div>
+						{/if}
+						<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
 					</div>
-					<div class="flex items-end gap-1 mb-1.5">
-						<span class="text-xl font-bold text-textMain">72</span>
-						<span class="text-xs text-textSec mb-0.5">%</span>
-					</div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-[#f59e0b] rounded-full" style="width:72%"></div>
-					</div>
-					<p class="text-xs text-textSec mt-1">5.8 GB / 8 GB</p>
-				</div>
-				<div>
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-microchip text-[#3ecf8e] text-xs"></i>
-						</div>
-						<span class="text-textSec text-xs">CPU</span>
-					</div>
-					<div class="flex items-end gap-1 mb-1.5">
-						<span class="text-xl font-bold text-textMain">38</span>
-						<span class="text-xs text-textSec mb-0.5">%</span>
-					</div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-[#3ecf8e] rounded-full" style="width:38%"></div>
-					</div>
-					<p class="text-xs text-textSec mt-1">Peak: 84%</p>
-				</div>
-				<div>
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-network-wired text-[#3b82f6] text-xs"></i>
-						</div>
-						<span class="text-textSec text-xs">Latence</span>
-					</div>
-					<div class="flex items-end gap-1">
-						<span class="text-xl font-bold text-textMain">12</span>
-						<span class="text-xs text-textSec mb-0.5">ms</span>
-					</div>
-					<p class="text-xs text-textSec mt-1">CDN hit: 91.4%</p>
-				</div>
-				<div>
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-arrow-up-right-dots text-success text-xs"></i>
-						</div>
-						<span class="text-textSec text-xs">Uptime</span>
-					</div>
-					<div class="flex items-end gap-1">
-						<span class="text-xl font-bold text-textMain">99.97</span>
-						<span class="text-xs text-textSec mb-0.5">%</span>
-					</div>
-					<p class="text-xs text-textSec mt-1">2 × 4 min výpadky</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 
@@ -983,22 +719,15 @@
 					<div class="px-4 pb-4">
 						<div id="chart-error-donut-m" class="h-[180px] w-full"></div>
 						<div class="mt-3 space-y-2.5">
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block"></span><span class="text-textSec text-xs">500 Internal</span></div>
-								<span class="text-textMain font-semibold text-xs">42%</span>
-							</div>
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec text-xs">503 Timeout</span></div>
-								<span class="text-textMain font-semibold text-xs">31%</span>
-							</div>
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] inline-block"></span><span class="text-textSec text-xs">502 Bad GW</span></div>
-								<span class="text-textMain font-semibold text-xs">18%</span>
-							</div>
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec text-xs">{t('performance_other')}</span></div>
-								<span class="text-textMain font-semibold text-xs">9%</span>
-							</div>
+							{#each errorDistribution as dist (dist.code)}
+								<div class="flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color:{dist.color}"></span>
+										<span class="text-textSec text-xs">{dist.label}</span>
+									</div>
+									<span class="text-textMain font-semibold text-xs">{dist.percent}%</span>
+								</div>
+							{/each}
 						</div>
 					</div>
 				{/if}
@@ -1015,72 +744,19 @@
 				<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('performance_endpoints_badgeMobile')}</span>
 			</div>
 			<div class="divide-y divide-[#1e293b]/60">
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">POST</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/orders/checkout</p>
-						<span class="text-error font-bold text-sm flex-shrink-0">1,840 ms</span>
+				{#each slowEndpoints as ep (ep.id)}
+					<div class="p-4">
+						<div class="flex items-center gap-2 mb-2">
+							<span class="px-1.5 py-0.5 {ep.methodClass} text-xs font-mono rounded font-semibold flex-shrink-0">{ep.method}</span>
+							<p class="text-textMain text-xs font-mono truncate flex-1">{ep.path}</p>
+							<span class="{ep.timeColor} font-bold text-sm flex-shrink-0">{ep.avgMs.toLocaleString()} ms</span>
+						</div>
+						<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+							<div class="h-full {ep.barColor} rounded-full" style="width:{ep.barWidth}"></div>
+						</div>
+						<p class="text-xs text-textSec">Calls: {ep.callCount} · Errors: {ep.errorRate}</p>
 					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-error rounded-full" style="width:100%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 2,841x · Chyby: 4.2%</p>
-				</div>
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/analytics/report</p>
-						<span class="text-secondary font-bold text-sm flex-shrink-0">940 ms</span>
-					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-secondary rounded-full" style="width:51%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 184x · Chyby: 1.1%</p>
-				</div>
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/users/search</p>
-						<span class="text-[#f59e0b] font-bold text-sm flex-shrink-0">620 ms</span>
-					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-[#f59e0b] rounded-full" style="width:34%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 5,200x · Chyby: 0.8%</p>
-				</div>
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">PUT</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/products/:id</p>
-						<span class="text-[#3b82f6] font-bold text-sm flex-shrink-0">480 ms</span>
-					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-[#3b82f6] rounded-full" style="width:26%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 1,024x · Chyby: 2.1%</p>
-				</div>
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/events/stream</p>
-						<span class="text-textMain font-bold text-sm flex-shrink-0">210 ms</span>
-					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-[#3ecf8e] rounded-full" style="width:11%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 18,400x · Chyby: 0.2%</p>
-				</div>
-				<div class="p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
-						<p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/auth/session</p>
-						<span class="text-textMain font-bold text-sm flex-shrink-0">48 ms</span>
-					</div>
-					<div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
-						<div class="h-full bg-[#3ecf8e] rounded-full" style="width:3%"></div>
-					</div>
-					<p class="text-xs text-textSec">Volání: 42,100x · Chyby: 0.1%</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 
@@ -1089,86 +765,24 @@
 			<h3 class="text-sm font-semibold text-textMain mb-1">{t('performance_cwv_title')}</h3>
 			<p class="text-xs text-textSec mb-4">{t('performance_cwv_subtitle')}</p>
 			<div class="space-y-4">
-				<div>
-					<div class="flex items-center justify-between mb-1.5">
-						<div class="flex items-center gap-2">
-							<span class="text-sm font-semibold text-textMain">LCP</span>
-							<span class="text-xs text-textSec">Largest Contentful Paint</span>
+				{#each coreWebVitals as vital (vital.key)}
+					<div>
+						<div class="flex items-center justify-between mb-1.5">
+							<div class="flex items-center gap-2">
+								<span class="text-sm font-semibold text-textMain">{vital.label}</span>
+								<span class="text-xs text-textSec">{vital.description}</span>
+							</div>
+							<span class="{vital.statusClass} font-bold text-sm">{vital.value}{vital.unit}</span>
 						</div>
-						<span class="text-success font-bold text-sm">1.8s</span>
-					</div>
-					<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-success rounded-full" style="width:60%"></div>
-					</div>
-					<div class="flex justify-between text-xs text-textSec mt-1">
-						<span>Dobrý (&lt;2.5s)</span>
-						<span class="text-success font-medium">✓ OK</span>
-					</div>
-				</div>
-				<div>
-					<div class="flex items-center justify-between mb-1.5">
-						<div class="flex items-center gap-2">
-							<span class="text-sm font-semibold text-textMain">FID</span>
-							<span class="text-xs text-textSec">First Input Delay</span>
+						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {vital.barClass} rounded-full" style="width:{vital.barWidth}"></div>
 						</div>
-						<span class="text-success font-bold text-sm">48ms</span>
-					</div>
-					<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-success rounded-full" style="width:32%"></div>
-					</div>
-					<div class="flex justify-between text-xs text-textSec mt-1">
-						<span>Dobrý (&lt;100ms)</span>
-						<span class="text-success font-medium">✓ OK</span>
-					</div>
-				</div>
-				<div>
-					<div class="flex items-center justify-between mb-1.5">
-						<div class="flex items-center gap-2">
-							<span class="text-sm font-semibold text-textMain">CLS</span>
-							<span class="text-xs text-textSec">Cumulative Layout Shift</span>
+						<div class="flex justify-between text-xs text-textSec mt-1">
+							<span>{vital.threshold}</span>
+							<span class="{vital.statusClass} font-medium">{vital.statusSymbol}</span>
 						</div>
-						<span class="text-secondary font-bold text-sm">0.18</span>
 					</div>
-					<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-secondary rounded-full" style="width:72%"></div>
-					</div>
-					<div class="flex justify-between text-xs text-textSec mt-1">
-						<span>Zlepšit (&lt;0.1)</span>
-						<span class="text-secondary font-medium">⚠ Varování</span>
-					</div>
-				</div>
-				<div>
-					<div class="flex items-center justify-between mb-1.5">
-						<div class="flex items-center gap-2">
-							<span class="text-sm font-semibold text-textMain">TTFB</span>
-							<span class="text-xs text-textSec">Time To First Byte</span>
-						</div>
-						<span class="text-success font-bold text-sm">210ms</span>
-					</div>
-					<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-success rounded-full" style="width:42%"></div>
-					</div>
-					<div class="flex justify-between text-xs text-textSec mt-1">
-						<span>Dobrý (&lt;800ms)</span>
-						<span class="text-success font-medium">✓ OK</span>
-					</div>
-				</div>
-				<div>
-					<div class="flex items-center justify-between mb-1.5">
-						<div class="flex items-center gap-2">
-							<span class="text-sm font-semibold text-textMain">INP</span>
-							<span class="text-xs text-textSec">Interaction to Next Paint</span>
-						</div>
-						<span class="text-success font-bold text-sm">84ms</span>
-					</div>
-					<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full bg-success rounded-full" style="width:28%"></div>
-					</div>
-					<div class="flex justify-between text-xs text-textSec mt-1">
-						<span>Dobrý (&lt;200ms)</span>
-						<span class="text-success font-medium">✓ OK</span>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</section>
 
@@ -1197,96 +811,24 @@
 				</div>
 			</div>
 			<div class="divide-y divide-[#1e293b]/60">
-				{#if activeEventFilter === 'all' || activeEventFilter === 'critical'}
+				{#each performanceEvents.filter(e => activeEventFilter === 'all' || e.level === activeEventFilter) as evt (evt.id)}
 					<div class="p-4">
 						<div class="flex items-start justify-between gap-2 mb-2">
 							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('performance_filters_critical')}</span>
-								<span class="text-textSec text-xs">Response Spike</span>
+								<span class="px-2 py-0.5 {evt.levelClass} text-xs rounded font-medium">{t(evt.levelKey)}</span>
+								<span class="text-textSec text-xs">{evt.type}</span>
 							</div>
 							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('performance_status_active')}</span>
-								<span class="text-textSec font-mono text-xs">14:32</span>
+								<span class="px-2 py-0.5 {evt.statusClass} text-xs rounded">{t(evt.statusKey)}</span>
+								<span class="text-textSec font-mono text-xs">{evt.time.substring(0, 5)}</span>
 							</div>
 						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">P99 latence překročila 5,000ms – možná DB blokáda</p>
-						<p class="text-textSec font-mono text-xs">/api/v1/orders/checkout</p>
+						<p class="text-textMain text-xs leading-relaxed mb-1.5">{evt.message}</p>
+						{#if evt.endpoint}
+							<p class="text-textSec font-mono text-xs">{evt.endpoint}</p>
+						{/if}
 					</div>
-				{/if}
-				{#if activeEventFilter === 'all' || activeEventFilter === 'warning'}
-					<div class="p-4">
-						<div class="flex items-start justify-between gap-2 mb-2">
-							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span>
-								<span class="text-textSec text-xs">CPU Spike</span>
-							</div>
-							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-								<span class="text-textSec font-mono text-xs">13:48</span>
-							</div>
-						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">CPU vytížení přesáhlo 80% po dobu 4 minut</p>
-						<p class="text-textSec font-mono text-xs">fly.io · fra · instance-02</p>
-					</div>
-					<div class="p-4">
-						<div class="flex items-start justify-between gap-2 mb-2">
-							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span>
-								<span class="text-textSec text-xs">Error Rate</span>
-							</div>
-							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-								<span class="text-textSec font-mono text-xs">12:15</span>
-							</div>
-						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">Chybovost překročila 3% po dobu 8 minut (503 timeout)</p>
-						<p class="text-textSec font-mono text-xs">/api/v1/analytics/report</p>
-					</div>
-					<div class="p-4">
-						<div class="flex items-start justify-between gap-2 mb-2">
-							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('performance_filters_warning')}</span>
-								<span class="text-textSec text-xs">Memory Pressure</span>
-							</div>
-							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-								<span class="text-textSec font-mono text-xs">09:12</span>
-							</div>
-						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">RAM využití přesáhlo 85% – možný memory leak v worker</p>
-						<p class="text-textSec font-mono text-xs">fly.io · fra · instance-01</p>
-					</div>
-				{/if}
-				{#if activeEventFilter === 'all' || activeEventFilter === 'info'}
-					<div class="p-4">
-						<div class="flex items-start justify-between gap-2 mb-2">
-							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('performance_filters_info')}</span>
-								<span class="text-textSec text-xs">Traffic Spike</span>
-							</div>
-							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-								<span class="text-textSec font-mono text-xs">10:42</span>
-							</div>
-						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">Throughput dosáhl peak 6,210 req/min – auto-scale spuštěn</p>
-						<p class="text-textSec font-mono text-xs">Celá infrastruktura</p>
-					</div>
-					<div class="p-4">
-						<div class="flex items-start justify-between gap-2 mb-2">
-							<div class="flex items-center gap-2 flex-wrap">
-								<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('performance_filters_info')}</span>
-								<span class="text-textSec text-xs">Deploy</span>
-							</div>
-							<div class="flex items-center gap-2 flex-shrink-0">
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('performance_status_completed')}</span>
-								<span class="text-textSec font-mono text-xs">06:30</span>
-							</div>
-						</div>
-						<p class="text-textMain text-xs leading-relaxed mb-1.5">Nasazení verze v2.14.1 – rolling restart dokončen za 42s</p>
-						<p class="text-textSec font-mono text-xs">Celá infrastruktura</p>
-					</div>
-				{/if}
+				{/each}
 			</div>
 		</section>
 

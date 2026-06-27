@@ -5,6 +5,7 @@ export interface PerformanceKpiStat {
 	unit?: string;
 	trend?: string;
 	trendPositive?: boolean;
+	trendUp?: boolean;
 	badgeKey: string;
 	badgeClass: string;
 	subtext: string;
@@ -16,6 +17,7 @@ export interface PerformanceKpiStat {
 export interface PerformanceSecondaryKpi {
 	key: string;
 	labelKey: string;
+	shortLabel: string;
 	value: string;
 	unit?: string;
 	subtext: string;
@@ -47,7 +49,11 @@ export interface CoreWebVital {
 	statusKey: string;
 	statusClass: string;
 	badgeClass: string;
+	barClass: string;
 	description: string;
+	barWidth: string;
+	threshold: string;
+	statusSymbol: string;
 }
 
 export interface ErrorCodeDistribution {
@@ -60,8 +66,10 @@ export interface ErrorCodeDistribution {
 export interface PerformanceEvent {
 	id: string;
 	time: string;
+	level: 'critical' | 'warning' | 'info';
 	levelKey: string;
 	levelClass: string;
+	type: string;
 	message: string;
 	endpoint?: string;
 	statusKey: string;
@@ -72,46 +80,49 @@ export function getPerformanceKpiStats(): PerformanceKpiStat[] {
 	return [
 		{
 			key: 'apdex',
-			labelKey: 'perf_kpi_apdex',
+			labelKey: 'performance_kpi_apdex',
 			value: '0.94',
 			trend: '+0.02',
 			trendPositive: true,
-			badgeKey: 'perf_kpi_excellent',
+			trendUp: true,
+			badgeKey: 'performance_kpi_apdexBadge',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'perf_kpi_apdexSubtext',
+			subtext: 'Goal: ≥ 0.90 · Threshold: 500ms',
 			barWidth: '94%',
 			barClass: 'bg-success'
 		},
 		{
 			key: 'avgResponseTime',
-			labelKey: 'perf_kpi_avgResponseTime',
+			labelKey: 'performance_kpi_avgResponseTime',
 			value: '187',
 			unit: 'ms',
 			trend: '-14ms',
 			trendPositive: true,
+			trendUp: false,
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'perf_kpi_avgResponseTimeSubtext'
+			subtext: 'P95: 480ms · P99: 1,240ms'
 		},
 		{
 			key: 'throughput',
-			labelKey: 'perf_kpi_throughput',
+			labelKey: 'performance_kpi_throughput',
 			value: '3,841',
 			unit: 'req/min',
-			badgeKey: 'perf_kpi_normal',
+			badgeKey: 'performance_kpi_throughputBadge',
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
-			subtext: 'perf_kpi_throughputSubtext'
+			subtext: 'Peak: 6,210 rpm (10:42)'
 		},
 		{
 			key: 'errorRate',
-			labelKey: 'perf_kpi_errorRate',
+			labelKey: 'performance_kpi_errorRate',
 			value: '1.8',
 			unit: '%',
 			trend: '+0.4%',
 			trendPositive: false,
+			trendUp: true,
 			badgeKey: 'common_status_warning',
 			badgeClass: 'bg-secondary/10 text-secondary',
-			subtext: 'perf_kpi_errorRateSubtext',
+			subtext: 'Goal: < 1% · 5xx: 68 per 24h',
 			valueClass: 'text-secondary'
 		}
 	];
@@ -121,10 +132,11 @@ export function getPerformanceSecondaryKpis(): PerformanceSecondaryKpi[] {
 	return [
 		{
 			key: 'ramUtilization',
-			labelKey: 'perf_kpi_ramUtilization',
+			labelKey: 'performance_kpi_ramUtilization',
+			shortLabel: 'RAM',
 			value: '72',
 			unit: '%',
-			subtext: 'perf_kpi_ramUtilizationSubtext',
+			subtext: '5.8 GB / 8 GB',
 			icon: 'fa-memory',
 			iconColor: 'text-[#f59e0b]',
 			iconBg: 'bg-[#f59e0b]/15',
@@ -133,10 +145,11 @@ export function getPerformanceSecondaryKpis(): PerformanceSecondaryKpi[] {
 		},
 		{
 			key: 'cpuUtilization',
-			labelKey: 'perf_kpi_cpuUtilization',
+			labelKey: 'performance_kpi_cpuUtilization',
+			shortLabel: 'CPU',
 			value: '38',
 			unit: '%',
-			subtext: 'perf_kpi_cpuUtilizationSubtext',
+			subtext: 'Peak: 84% (10:38)',
 			icon: 'fa-microchip',
 			iconColor: 'text-[#3ecf8e]',
 			iconBg: 'bg-[#3ecf8e]/15',
@@ -145,20 +158,22 @@ export function getPerformanceSecondaryKpis(): PerformanceSecondaryKpi[] {
 		},
 		{
 			key: 'networkLatency',
-			labelKey: 'perf_kpi_networkLatency',
+			labelKey: 'performance_kpi_networkLatency',
+			shortLabel: 'Latency',
 			value: '12',
 			unit: 'ms',
-			subtext: 'perf_kpi_networkLatencySubtext',
+			subtext: 'CDN cache hit: 91.4%',
 			icon: 'fa-network-wired',
 			iconColor: 'text-[#3b82f6]',
 			iconBg: 'bg-[#3b82f6]/15'
 		},
 		{
 			key: 'uptime30d',
-			labelKey: 'perf_kpi_uptime30d',
+			labelKey: 'performance_kpi_uptime',
+			shortLabel: 'Uptime',
 			value: '99.97',
 			unit: '%',
-			subtext: 'perf_kpi_uptime30dSubtext',
+			subtext: 'Outages: 2 × 4 min total',
 			icon: 'fa-arrow-up-right-dots',
 			iconColor: 'text-success',
 			iconBg: 'bg-success/15'
@@ -250,30 +265,70 @@ export function getCoreWebVitals(): CoreWebVital[] {
 			label: 'LCP',
 			value: '1.8',
 			unit: 's',
-			statusKey: 'perf_cwv_good',
+			statusKey: 'common_status_ok',
 			statusClass: 'text-success',
 			badgeClass: 'bg-success/10 text-success',
-			description: 'Largest Contentful Paint'
+			barClass: 'bg-success',
+			description: 'Largest Contentful Paint',
+			barWidth: '60%',
+			threshold: 'Good (<2.5s)',
+			statusSymbol: '✓ OK'
 		},
 		{
 			key: 'fid',
 			label: 'FID',
-			value: '12',
+			value: '48',
 			unit: 'ms',
-			statusKey: 'perf_cwv_good',
+			statusKey: 'common_status_ok',
 			statusClass: 'text-success',
 			badgeClass: 'bg-success/10 text-success',
-			description: 'First Input Delay'
+			barClass: 'bg-success',
+			description: 'First Input Delay',
+			barWidth: '32%',
+			threshold: 'Good (<100ms)',
+			statusSymbol: '✓ OK'
 		},
 		{
 			key: 'cls',
 			label: 'CLS',
-			value: '0.05',
+			value: '0.18',
 			unit: '',
-			statusKey: 'perf_cwv_good',
+			statusKey: 'common_status_warning',
+			statusClass: 'text-secondary',
+			badgeClass: 'bg-secondary/10 text-secondary',
+			barClass: 'bg-secondary',
+			description: 'Cumulative Layout Shift',
+			barWidth: '72%',
+			threshold: 'Needs improvement (<0.1)',
+			statusSymbol: '⚠ Warning'
+		},
+		{
+			key: 'ttfb',
+			label: 'TTFB',
+			value: '210',
+			unit: 'ms',
+			statusKey: 'common_status_ok',
 			statusClass: 'text-success',
 			badgeClass: 'bg-success/10 text-success',
-			description: 'Cumulative Layout Shift'
+			barClass: 'bg-success',
+			description: 'Time To First Byte',
+			barWidth: '42%',
+			threshold: 'Good (<800ms)',
+			statusSymbol: '✓ OK'
+		},
+		{
+			key: 'inp',
+			label: 'INP',
+			value: '84',
+			unit: 'ms',
+			statusKey: 'common_status_ok',
+			statusClass: 'text-success',
+			badgeClass: 'bg-success/10 text-success',
+			barClass: 'bg-success',
+			description: 'Interaction to Next Paint',
+			barWidth: '28%',
+			threshold: 'Good (<200ms)',
+			statusSymbol: '✓ OK'
 		}
 	];
 }
@@ -283,7 +338,7 @@ export function getErrorCodeDistribution(): ErrorCodeDistribution[] {
 		{ code: '500', label: '500 Internal', percent: 42, color: '#ef4444' },
 		{ code: '503', label: '503 Timeout', percent: 31, color: '#f97316' },
 		{ code: '502', label: '502 Bad GW', percent: 18, color: '#f59e0b' },
-		{ code: 'other', label: 'Ostatní', percent: 9, color: '#8b5cf6' }
+		{ code: 'other', label: 'Other', percent: 9, color: '#8b5cf6' }
 	];
 }
 
@@ -291,48 +346,74 @@ export function getPerformanceEvents(): PerformanceEvent[] {
 	return [
 		{
 			id: 'evt-1',
-			time: '14:32',
-			levelKey: 'common_level_critical',
+			time: '14:32:11',
+			level: 'critical',
+			levelKey: 'performance_filters_critical',
 			levelClass: 'bg-error/15 text-error',
-			message: 'Response time spike – /api/v1/orders/checkout hit 3.2s p99',
+			type: 'Response Spike',
+			message: 'P99 latency exceeded 5,000ms – possible DB lock',
 			endpoint: '/api/v1/orders/checkout',
-			statusKey: 'common_status_active',
+			statusKey: 'performance_status_active',
 			statusClass: 'bg-error/10 text-error'
 		},
 		{
 			id: 'evt-2',
-			time: '12:18',
-			levelKey: 'common_level_warning',
+			time: '13:48:22',
+			level: 'warning',
+			levelKey: 'performance_filters_warning',
 			levelClass: 'bg-secondary/15 text-secondary',
-			message: 'CPU spike 84% on api-1 during flash sale traffic burst',
+			type: 'CPU Spike',
+			message: 'CPU utilization exceeded 80% for 4 minutes',
+			endpoint: 'fly.io · fra · instance-02',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'evt-3',
-			time: '10:45',
-			levelKey: 'common_level_warning',
+			time: '12:15:08',
+			level: 'warning',
+			levelKey: 'performance_filters_warning',
 			levelClass: 'bg-secondary/15 text-secondary',
-			message: 'Throughput 6,210 rpm – above 80% of capacity limit',
+			type: 'Error Rate',
+			message: 'Error rate exceeded 3% for 8 minutes (503 timeout)',
+			endpoint: '/api/v1/analytics/report',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'evt-4',
-			time: '09:22',
-			levelKey: 'common_level_info',
+			time: '10:42:55',
+			level: 'info',
+			levelKey: 'performance_filters_info',
 			levelClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			message: 'Deploy v2.14.1 completed – no performance regression detected',
+			type: 'Traffic Spike',
+			message: 'Throughput reached peak 6,210 req/min – auto-scale triggered',
+			endpoint: 'Entire infrastructure',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'evt-5',
-			time: '07:14',
-			levelKey: 'common_level_info',
-			levelClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			message: 'Auto-scaling triggered: added 1 instance (api-3)',
+			time: '09:12:34',
+			level: 'warning',
+			levelKey: 'performance_filters_warning',
+			levelClass: 'bg-secondary/15 text-secondary',
+			type: 'Memory Pressure',
+			message: 'RAM utilization exceeded 85% – possible memory leak in worker',
+			endpoint: 'fly.io · fra · instance-01',
 			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'evt-6',
+			time: '06:30:01',
+			level: 'info',
+			levelKey: 'performance_filters_info',
+			levelClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
+			type: 'Deploy',
+			message: 'Version v2.14.1 deployed – rolling restart completed in 42s',
+			endpoint: 'Entire infrastructure',
+			statusKey: 'performance_status_completed',
 			statusClass: 'bg-success/10 text-success'
 		}
 	];
