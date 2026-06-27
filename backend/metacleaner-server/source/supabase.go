@@ -107,6 +107,8 @@ type dbReport struct {
 	ChartData           json.RawMessage `json:"chart_data"`
 	PDFPath             string          `json:"pdf_path,omitempty"`
 	PDFStatus           string          `json:"pdf_status"`
+	CreatedByName       string          `json:"created_by_name,omitempty"`
+	CreatedByEmail      string          `json:"created_by_email,omitempty"`
 	CreatedAt           *time.Time      `json:"created_at,omitempty"`
 }
 
@@ -562,6 +564,8 @@ func (c *SupabaseClient) CreateReport(ctx context.Context, report *Report) error
 		Tags:                report.Tags,
 		ChartData:           json.RawMessage(chartJSON),
 		PDFStatus:           report.PDFStatus,
+		CreatedByName:       report.CreatedByName,
+		CreatedByEmail:      report.CreatedByEmail,
 	}
 	var rows []dbReport
 	if err := c.doJSON(ctx, http.MethodPost, c.restURL("cleaning_reports"), rec, &rows); err != nil {

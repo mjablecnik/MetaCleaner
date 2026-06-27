@@ -145,13 +145,16 @@ func HandleCreateCheckout(cfg Config, db *SupabaseClient, authClient *SupabaseAu
 
 // SubscriptionStatusResponse is the response body for GET /api/billing/subscription.
 type SubscriptionStatusResponse struct {
-	PlanID              string     `json:"plan_id"`
-	Status              string     `json:"status"`
-	BillingPeriod       string     `json:"billing_period,omitempty"`
-	CurrentPeriodEnd    *time.Time `json:"current_period_end,omitempty"`
-	SubscriptionCredits int        `json:"subscription_credits"`
-	PurchasedCredits    int        `json:"purchased_credits"`
-	TotalCredits        int        `json:"total_credits"`
+	PlanID                 string     `json:"plan_id"`
+	Status                 string     `json:"status"`
+	BillingPeriod          string     `json:"billing_period,omitempty"`
+	CurrentPeriodEnd       *time.Time `json:"current_period_end,omitempty"`
+	SubscriptionCredits    int        `json:"subscription_credits"`
+	PurchasedCredits       int        `json:"purchased_credits"`
+	TotalCredits           int        `json:"total_credits"`
+	ScheduledPlanID        *string    `json:"scheduled_plan_id,omitempty"`
+	ScheduledBillingPeriod *string    `json:"scheduled_billing_period,omitempty"`
+	ScheduledChangeDate    *time.Time `json:"scheduled_change_date,omitempty"`
 }
 
 // HandleGetSubscription handles GET /api/billing/subscription.
@@ -192,6 +195,9 @@ func HandleGetSubscription(db *SupabaseClient) http.HandlerFunc {
 			resp.Status = sub.Status
 			resp.BillingPeriod = sub.BillingPeriod
 			resp.CurrentPeriodEnd = sub.CurrentPeriodEnd
+			resp.ScheduledPlanID = sub.ScheduledPlanID
+			resp.ScheduledBillingPeriod = sub.ScheduledBillingPeriod
+			resp.ScheduledChangeDate = sub.ScheduledChangeDate
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -465,6 +471,13 @@ func changePlanUpgrade(ctx context.Context, db *SupabaseClient, existing *Subscr
 		return ChangePlanResponse{}, fmt.Errorf("update subscription in DB: %w", err)
 	}
 
+	// If there was a pending downgrade schedule, clear it since we're upgrading now.
+	if existing.ScheduledPlanID != nil {
+		if err := db.ClearScheduledDowngrade(ctx, existing.StripeSubscriptionID); err != nil {
+			slog.Warn("billing: failed to clear scheduled downgrade on upgrade", "error", err)
+		}
+	}
+
 	// Adjust credits: grant the new plan's allowance minus what was already consumed this cycle.
 	oldAllowance := getCreditAllowance(existing.PlanID)
 	newAllowance := getCreditAllowance(planID)
@@ -525,17 +538,48 @@ func changePlanDowngrade(ctx context.Context, cfg Config, db *SupabaseClient, ex
 		return ChangePlanResponse{}, fmt.Errorf("resolve existing price: %w", err)
 	}
 
-	periodEndUnix := existing.CurrentPeriodEnd.Unix()
-	scheduleParams := &stripe.SubscriptionScheduleParams{
+	// Step 1: If subscription already has an attached schedule, release it first.
+	getParams := &stripe.SubscriptionParams{}
+	getParams.AddExpand("schedule")
+	stripeSub, err := stripesubscription.Get(existing.StripeSubscriptionID, getParams)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("fetch stripe subscription for schedule check: %w", err)
+	}
+	if stripeSub.Schedule != nil && stripeSub.Schedule.ID != "" {
+		releaseParams := &stripe.SubscriptionScheduleReleaseParams{}
+		if _, err := stripesubschedule.Release(stripeSub.Schedule.ID, releaseParams); err != nil {
+			slog.Warn("billing: failed to release existing schedule, attempting to proceed", "scheduleID", stripeSub.Schedule.ID, "error", err)
+		}
+	}
+
+	// Step 2: Create schedule from existing subscription (cannot set phases in the same call).
+	createParams := &stripe.SubscriptionScheduleParams{
 		FromSubscription: stripe.String(existing.StripeSubscriptionID),
-		EndBehavior:      stripe.String("release"),
+	}
+	schedule, err := stripesubschedule.New(createParams)
+	if err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("create stripe subscription schedule: %w", err)
+	}
+
+	// Step 2: Update the schedule with desired phases (current plan until period end, then new plan).
+	periodEndUnix := existing.CurrentPeriodEnd.Unix()
+
+	// Phase 1 start date comes from the schedule's current phase.
+	var phase1Start *int64
+	if len(schedule.Phases) > 0 {
+		phase1Start = &schedule.Phases[0].StartDate
+	}
+
+	updateParams := &stripe.SubscriptionScheduleParams{
+		EndBehavior: stripe.String("release"),
 		Phases: []*stripe.SubscriptionSchedulePhaseParams{
 			{
 				// Phase 1: retain current plan for remaining billing period.
 				Items: []*stripe.SubscriptionSchedulePhaseItemParams{
 					{Price: stripe.String(existingPriceID), Quantity: stripe.Int64(1)},
 				},
-				EndDate: &periodEndUnix,
+				StartDate: phase1Start,
+				EndDate:   &periodEndUnix,
 			},
 			{
 				// Phase 2: switch to new plan at period end, no proration.
@@ -547,19 +591,26 @@ func changePlanDowngrade(ctx context.Context, cfg Config, db *SupabaseClient, ex
 		},
 	}
 
-	if _, err := stripesubschedule.New(scheduleParams); err != nil {
-		return ChangePlanResponse{}, fmt.Errorf("create stripe subscription schedule: %w", err)
+	if _, err := stripesubschedule.Update(schedule.ID, updateParams); err != nil {
+		return ChangePlanResponse{}, fmt.Errorf("update stripe subscription schedule phases: %w", err)
+	}
+
+	// Persist the scheduled downgrade in DB so the UI can display it.
+	scheduledDate := existing.CurrentPeriodEnd.UTC()
+	if err := db.SetScheduledDowngrade(ctx, existing.StripeSubscriptionID, planID, billingPeriod, &scheduledDate); err != nil {
+		slog.Error("billing: failed to persist scheduled downgrade", "error", err)
+		// Non-fatal — the Stripe schedule was created successfully, so we return success.
 	}
 
 	// DB update for downgrade is handled by the webhook when the schedule executes.
-	scheduledDate := existing.CurrentPeriodEnd.UTC().Format(time.RFC3339)
+	scheduledDateStr := scheduledDate.Format(time.RFC3339)
 
 	return ChangePlanResponse{
 		PlanID:              planID,
 		BillingPeriod:       billingPeriod,
 		Status:              "active",
-		CurrentPeriodEnd:    scheduledDate,
-		ScheduledChangeDate: &scheduledDate,
+		CurrentPeriodEnd:    scheduledDateStr,
+		ScheduledChangeDate: &scheduledDateStr,
 	}, nil
 }
 

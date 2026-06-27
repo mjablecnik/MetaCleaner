@@ -185,6 +185,9 @@ export interface SubscriptionResponse {
 	subscription_credits: number;
 	purchased_credits: number;
 	total_credits: number;
+	scheduled_plan_id?: string;
+	scheduled_billing_period?: string;
+	scheduled_change_date?: string;
 }
 
 export interface CreditTransaction {

@@ -20,32 +20,38 @@ type dbStripeCustomer struct {
 }
 
 type dbSubscription struct {
-	ID                   string     `json:"id,omitempty"`
-	UserID               string     `json:"user_id"`
-	StripeSubscriptionID string     `json:"stripe_subscription_id,omitempty"`
-	StripeCustomerID     string     `json:"stripe_customer_id"`
-	PlanID               string     `json:"plan_id"`
-	Status               string     `json:"status"`
-	BillingPeriod        string     `json:"billing_period,omitempty"`
-	CurrentPeriodStart   *time.Time `json:"current_period_start,omitempty"`
-	CurrentPeriodEnd     *time.Time `json:"current_period_end,omitempty"`
-	CreatedAt            *time.Time `json:"created_at,omitempty"`
-	UpdatedAt            *time.Time `json:"updated_at,omitempty"`
+	ID                     string     `json:"id,omitempty"`
+	UserID                 string     `json:"user_id"`
+	StripeSubscriptionID   string     `json:"stripe_subscription_id,omitempty"`
+	StripeCustomerID       string     `json:"stripe_customer_id"`
+	PlanID                 string     `json:"plan_id"`
+	Status                 string     `json:"status"`
+	BillingPeriod          string     `json:"billing_period,omitempty"`
+	CurrentPeriodStart     *time.Time `json:"current_period_start,omitempty"`
+	CurrentPeriodEnd       *time.Time `json:"current_period_end,omitempty"`
+	ScheduledPlanID        *string    `json:"scheduled_plan_id,omitempty"`
+	ScheduledBillingPeriod *string    `json:"scheduled_billing_period,omitempty"`
+	ScheduledChangeDate    *time.Time `json:"scheduled_change_date,omitempty"`
+	CreatedAt              *time.Time `json:"created_at,omitempty"`
+	UpdatedAt              *time.Time `json:"updated_at,omitempty"`
 }
 
 // Subscription is the application-level representation of a user subscription.
 type Subscription struct {
-	ID                   string
-	UserID               string
-	StripeSubscriptionID string
-	StripeCustomerID     string
-	PlanID               string
-	Status               string
-	BillingPeriod        string
-	CurrentPeriodStart   *time.Time
-	CurrentPeriodEnd     *time.Time
-	CreatedAt            time.Time
-	UpdatedAt            time.Time
+	ID                     string
+	UserID                 string
+	StripeSubscriptionID   string
+	StripeCustomerID       string
+	PlanID                 string
+	Status                 string
+	BillingPeriod          string
+	CurrentPeriodStart     *time.Time
+	CurrentPeriodEnd       *time.Time
+	ScheduledPlanID        *string
+	ScheduledBillingPeriod *string
+	ScheduledChangeDate    *time.Time
+	CreatedAt              time.Time
+	UpdatedAt              time.Time
 }
 
 // --- Stripe customer operations ---
@@ -87,15 +93,18 @@ func (c *SupabaseClient) GetSubscriptionByUserID(ctx context.Context, userID str
 	}
 	r := rows[0]
 	sub := &Subscription{
-		ID:                   r.ID,
-		UserID:               r.UserID,
-		StripeSubscriptionID: r.StripeSubscriptionID,
-		StripeCustomerID:     r.StripeCustomerID,
-		PlanID:               r.PlanID,
-		Status:               r.Status,
-		BillingPeriod:        r.BillingPeriod,
-		CurrentPeriodStart:   r.CurrentPeriodStart,
-		CurrentPeriodEnd:     r.CurrentPeriodEnd,
+		ID:                     r.ID,
+		UserID:                 r.UserID,
+		StripeSubscriptionID:   r.StripeSubscriptionID,
+		StripeCustomerID:       r.StripeCustomerID,
+		PlanID:                 r.PlanID,
+		Status:                 r.Status,
+		BillingPeriod:          r.BillingPeriod,
+		CurrentPeriodStart:     r.CurrentPeriodStart,
+		CurrentPeriodEnd:       r.CurrentPeriodEnd,
+		ScheduledPlanID:        r.ScheduledPlanID,
+		ScheduledBillingPeriod: r.ScheduledBillingPeriod,
+		ScheduledChangeDate:    r.ScheduledChangeDate,
 	}
 	if r.CreatedAt != nil {
 		sub.CreatedAt = *r.CreatedAt
@@ -149,6 +158,28 @@ func (c *SupabaseClient) UpdateSubscription(ctx context.Context, stripeSubID str
 	}
 	if periodEnd != nil {
 		patch["current_period_end"] = periodEnd
+	}
+	url := c.restURL("subscriptions?stripe_subscription_id=eq." + stripeSubID)
+	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
+}
+
+// SetScheduledDowngrade stores the pending plan downgrade info on the subscription.
+func (c *SupabaseClient) SetScheduledDowngrade(ctx context.Context, stripeSubID, planID, billingPeriod string, changeDate *time.Time) error {
+	patch := map[string]interface{}{
+		"scheduled_plan_id":        planID,
+		"scheduled_billing_period": billingPeriod,
+		"scheduled_change_date":    changeDate,
+	}
+	url := c.restURL("subscriptions?stripe_subscription_id=eq." + stripeSubID)
+	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
+}
+
+// ClearScheduledDowngrade removes any pending scheduled plan change from the subscription.
+func (c *SupabaseClient) ClearScheduledDowngrade(ctx context.Context, stripeSubID string) error {
+	patch := map[string]interface{}{
+		"scheduled_plan_id":        nil,
+		"scheduled_billing_period": nil,
+		"scheduled_change_date":    nil,
 	}
 	url := c.restURL("subscriptions?stripe_subscription_id=eq." + stripeSubID)
 	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
@@ -367,15 +398,18 @@ func (c *SupabaseClient) GetSubscriptionByStripeID(ctx context.Context, stripeSu
 	}
 	r := rows[0]
 	sub := &Subscription{
-		ID:                   r.ID,
-		UserID:               r.UserID,
-		StripeSubscriptionID: r.StripeSubscriptionID,
-		StripeCustomerID:     r.StripeCustomerID,
-		PlanID:               r.PlanID,
-		Status:               r.Status,
-		BillingPeriod:        r.BillingPeriod,
-		CurrentPeriodStart:   r.CurrentPeriodStart,
-		CurrentPeriodEnd:     r.CurrentPeriodEnd,
+		ID:                     r.ID,
+		UserID:                 r.UserID,
+		StripeSubscriptionID:   r.StripeSubscriptionID,
+		StripeCustomerID:       r.StripeCustomerID,
+		PlanID:                 r.PlanID,
+		Status:                 r.Status,
+		BillingPeriod:          r.BillingPeriod,
+		CurrentPeriodStart:     r.CurrentPeriodStart,
+		CurrentPeriodEnd:       r.CurrentPeriodEnd,
+		ScheduledPlanID:        r.ScheduledPlanID,
+		ScheduledBillingPeriod: r.ScheduledBillingPeriod,
+		ScheduledChangeDate:    r.ScheduledChangeDate,
 	}
 	if r.CreatedAt != nil {
 		sub.CreatedAt = *r.CreatedAt

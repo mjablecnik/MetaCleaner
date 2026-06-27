@@ -73,7 +73,7 @@ func (p *JobWorkerPool) RunningCount() int {
 
 // ProcessJobWithPool wraps the pipeline execution with all the post-processing
 // (DB updates, report creation) in a single unit of work submitted to the pool.
-func ProcessJobWithPool(pool *JobWorkerPool, ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, job *Job, files []FileRecord) {
+func ProcessJobWithPool(pool *JobWorkerPool, ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, job *Job, files []FileRecord, authClient *SupabaseAuthClient) {
 	pool.Submit(job.ID, func() {
 		progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 		if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
@@ -111,6 +111,6 @@ func ProcessJobWithPool(pool *JobWorkerPool, ctx context.Context, cfg Config, db
 			}
 		}
 
-		createJobReport(ctx, cfg, db, hub, job, files)
+		createJobReport(ctx, cfg, db, hub, job, files, authClient)
 	})
 }

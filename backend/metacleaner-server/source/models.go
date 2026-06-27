@@ -181,6 +181,8 @@ type Report struct {
 	ChartData           []ChartDataPoint `json:"chartData"`
 	PDFPath             string           `json:"pdfPath,omitempty"`
 	PDFStatus           string           `json:"pdfStatus"`
+	CreatedByName       string           `json:"createdByName,omitempty"`
+	CreatedByEmail      string           `json:"createdByEmail,omitempty"`
 	CreatedAt           time.Time        `json:"createdAt"`
 }
 

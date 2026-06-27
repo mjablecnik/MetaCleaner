@@ -101,8 +101,22 @@ func BuildReport(job *Job, files []FileRecord) *Report {
 
 // createJobReport builds a report record, persists it, notifies clients, and asynchronously
 // generates and uploads the PDF.
-func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord) {
+func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, job *Job, files []FileRecord, authClient *SupabaseAuthClient) {
 	report := BuildReport(job, files)
+
+	// Denormalize creator identity into the report for persistence after account deletion.
+	if job.UserID != "" && authClient != nil {
+		if profile, err := authClient.GetProfile(ctx, job.UserID); err == nil && profile != nil {
+			name := strings.TrimSpace(profile.FirstName + " " + profile.LastName)
+			if name != "" {
+				report.CreatedByName = name
+			}
+			if profile.Email != "" {
+				report.CreatedByEmail = profile.Email
+			}
+		}
+	}
+
 	if err := db.CreateReport(ctx, report); err != nil {
 		slog.Error("job: CreateReport failed", "jobId", job.ID, "userID", job.UserID, "error", err)
 		return

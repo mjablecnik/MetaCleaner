@@ -855,6 +855,8 @@
 	"subscription.downgrade.priceType": "one-time",
 	"subscription.downgrade.button": "Downgrade plan",
 	"subscription.downgrade.featuresLost": "What you'll lose",
+	"subscription.downgrade.scheduled.title": "Downgrade scheduled",
+	"subscription.downgrade.scheduled.subtitle": "Switching to {plan} on {date}",
 	"subscription.cancel.title": "Cancel Subscription",
 	"subscription.cancel.button": "Cancel subscription",
 	"subscription.cancel.warning": "After cancellation you retain access until {date}, then revert to the free plan (3 photos/month, no reports).",

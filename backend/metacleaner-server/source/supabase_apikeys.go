@@ -209,3 +209,15 @@ func (c *SupabaseClient) UpdateAPIKeyLastUsed(ctx context.Context, keyID string)
 	url := c.restURL("api_keys?id=eq." + keyID)
 	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
 }
+
+// RevokeAllAPIKeys revokes all active API keys for a user.
+// Used during account deactivation/deletion.
+func (c *SupabaseClient) RevokeAllAPIKeys(ctx context.Context, userID string) error {
+	now := time.Now().UTC()
+	patch := map[string]interface{}{
+		"status":     "revoked",
+		"revoked_at": now,
+	}
+	url := c.restURL("api_keys?user_id=eq." + userID + "&status=eq.active")
+	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
+}

@@ -855,6 +855,8 @@
 	"subscription.downgrade.priceType": "jednorázově",
 	"subscription.downgrade.button": "Downgradovat plán",
 	"subscription.downgrade.featuresLost": "Co ztratíte",
+	"subscription.downgrade.scheduled.title": "Downgrade naplánován",
+	"subscription.downgrade.scheduled.subtitle": "Přechod na {plan} proběhne dne {date}",
 	"subscription.cancel.title": "Zrušit předplatné",
 	"subscription.cancel.button": "Zrušit předplatné",
 	"subscription.cancel.warning": "Po zrušení si zachováte přístup do {date}, poté přejdete na bezplatný plán (3 fotky/měsíc, bez reportů).",

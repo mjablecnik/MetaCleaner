@@ -9,11 +9,15 @@ function createBillingStore() {
 	let planStatus = $state('free');
 	let billingPeriod = $state<'monthly' | 'yearly' | null>(null);
 	let currentPeriodEnd = $state<string | null>(null);
+	let scheduledPlanId = $state<string | null>(null);
+	let scheduledBillingPeriod = $state<string | null>(null);
+	let scheduledChangeDate = $state<string | null>(null);
 	let isLoading = $state(false);
 	let hasError = $state(false);
 	let pendingDeductUntil = 0; // timestamp until which server values higher than local are ignored
 
 	const isCancellingPlan = $derived(planStatus === 'cancelling');
+	const isDowngradeScheduled = $derived(scheduledPlanId !== null);
 	const isFreeUser = $derived(
 		!isCancellingPlan && (planId === 'free' || planStatus === 'cancelled' || planStatus === 'free')
 	);
@@ -38,6 +42,9 @@ function createBillingStore() {
 			planStatus = sub.status ?? 'free';
 			billingPeriod = (sub.billing_period as 'monthly' | 'yearly') ?? null;
 			currentPeriodEnd = sub.current_period_end ?? null;
+			scheduledPlanId = sub.scheduled_plan_id ?? null;
+			scheduledBillingPeriod = sub.scheduled_billing_period ?? null;
+			scheduledChangeDate = sub.scheduled_change_date ?? null;
 
 			// If an optimistic deduct is pending, don't let stale server data overwrite our lower local value.
 			if (Date.now() < pendingDeductUntil && credits !== null && cred.total_credits > credits) {
@@ -84,6 +91,9 @@ function createBillingStore() {
 		planStatus = 'free';
 		billingPeriod = null;
 		currentPeriodEnd = null;
+		scheduledPlanId = null;
+		scheduledBillingPeriod = null;
+		scheduledChangeDate = null;
 		isLoading = false;
 		hasError = false;
 	}
@@ -124,6 +134,15 @@ function createBillingStore() {
 		get currentPeriodEnd() {
 			return currentPeriodEnd;
 		},
+		get scheduledPlanId() {
+			return scheduledPlanId;
+		},
+		get scheduledBillingPeriod() {
+			return scheduledBillingPeriod;
+		},
+		get scheduledChangeDate() {
+			return scheduledChangeDate;
+		},
 		get isLoading() {
 			return isLoading;
 		},
@@ -132,6 +151,9 @@ function createBillingStore() {
 		},
 		get isCancellingPlan() {
 			return isCancellingPlan;
+		},
+		get isDowngradeScheduled() {
+			return isDowngradeScheduled;
 		},
 		get isFreeUser() {
 			return isFreeUser;

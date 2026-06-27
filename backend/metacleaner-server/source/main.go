@@ -77,6 +77,11 @@ func Run() {
 	// Initialize Supabase Auth client.
 	authClient := NewSupabaseAuthClient(cfg)
 
+	// Start account cleanup scheduler (hard-deletes accounts deactivated for 30+ days).
+	accountCleanup := NewAccountCleanupScheduler(30*24*time.Hour, authClient, db)
+	accountCleanup.Start(schedulerCtx)
+	slog.Info("startup: account cleanup scheduler started")
+
 	// Build router.
 	router := NewRouter(cfg, db, hub, pl, authClient)
 

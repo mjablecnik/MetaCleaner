@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -99,6 +100,7 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 
 // HandleLogin handles POST /api/auth/login.
 // Validates email and password, authenticates via Supabase, and returns a session.
+// If the account was deactivated (pending deletion), login automatically reactivates it.
 func HandleLogin(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req LoginRequest
@@ -130,6 +132,15 @@ func HandleLogin(authClient *SupabaseAuthClient) http.HandlerFunc {
 			}
 			WriteError(w, http.StatusUnauthorized, ErrAuthInvalidCredentials, "invalid email or password")
 			return
+		}
+
+		// Auto-reactivate if the account was deactivated (pending deletion).
+		if profile, err := authClient.GetProfile(r.Context(), session.User.ID); err == nil && profile != nil && profile.DeactivatedAt != nil {
+			if err := authClient.ReactivateProfile(r.Context(), session.User.ID); err != nil {
+				slog.Warn("login: failed to reactivate profile", "userId", session.User.ID, "error", err)
+			} else {
+				slog.Info("login: account reactivated", "userId", session.User.ID)
+			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")

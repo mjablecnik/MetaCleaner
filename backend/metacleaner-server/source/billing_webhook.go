@@ -128,6 +128,19 @@ func HandleStripeWebhook(cfg Config, db *SupabaseClient) http.HandlerFunc {
 				return
 			}
 
+		case "subscription_schedule.completed":
+			var sched stripe.SubscriptionSchedule
+			if err := json.Unmarshal(event.Data.Raw, &sched); err != nil {
+				slog.Error("webhook: failed to parse subscription_schedule.completed", "error", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			if err := handleSubscriptionScheduleCompleted(ctx, db, &sched); err != nil {
+				slog.Error("webhook: subscription_schedule.completed handler error", "scheduleID", sched.ID, "error", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
 		default:
 			slog.Info("webhook: unhandled event type", "type", event.Type)
 		}
@@ -339,5 +352,58 @@ func handleInvoicePaymentFailed(ctx context.Context, db *SupabaseClient, inv *st
 	}
 
 	slog.Info("webhook: subscription marked past_due", "stripeSubID", stripeSubID, "invoiceID", inv.ID)
+	return nil
+}
+
+func handleSubscriptionScheduleCompleted(ctx context.Context, db *SupabaseClient, sched *stripe.SubscriptionSchedule) error {
+	// When a subscription schedule completes, the downgrade has been applied by Stripe.
+	// We need to apply the scheduled plan change in our DB and clear the scheduled fields.
+	if sched.Subscription == nil {
+		slog.Warn("webhook: subscription_schedule.completed has no subscription", "scheduleID", sched.ID)
+		return nil
+	}
+
+	stripeSubID := sched.Subscription.ID
+	dbSub, err := db.GetSubscriptionByStripeID(ctx, stripeSubID)
+	if err != nil {
+		return fmt.Errorf("schedule completed: lookup subscription: %w", err)
+	}
+	if dbSub == nil {
+		slog.Warn("webhook: subscription_schedule.completed subscription not found in DB", "stripeSubID", stripeSubID)
+		return nil
+	}
+
+	// Only apply if there's a scheduled plan change pending.
+	if dbSub.ScheduledPlanID == nil {
+		slog.Info("webhook: subscription_schedule.completed but no scheduled downgrade in DB, skipping", "stripeSubID", stripeSubID)
+		return nil
+	}
+
+	newPlanID := *dbSub.ScheduledPlanID
+	newBillingPeriod := dbSub.BillingPeriod
+	if dbSub.ScheduledBillingPeriod != nil {
+		newBillingPeriod = *dbSub.ScheduledBillingPeriod
+	}
+
+	// Update plan in DB.
+	if err := db.UpdateSubscriptionPlan(ctx, stripeSubID, newPlanID, newBillingPeriod, nil); err != nil {
+		return fmt.Errorf("schedule completed: update plan: %w", err)
+	}
+
+	// Clear the scheduled downgrade fields.
+	if err := db.ClearScheduledDowngrade(ctx, stripeSubID); err != nil {
+		return fmt.Errorf("schedule completed: clear scheduled downgrade: %w", err)
+	}
+
+	// Adjust credits to the new plan's allowance.
+	newAllowance := getCreditAllowance(newPlanID)
+	if err := db.SetSubscriptionCredits(ctx, dbSub.UserID, newAllowance); err != nil {
+		return fmt.Errorf("schedule completed: set credits: %w", err)
+	}
+	if err := db.RecordCreditTransaction(ctx, dbSub.UserID, newAllowance, "subscription_renewal", "subscription", stripeSubID, fmt.Sprintf("Plan downgrade: %s → %s", dbSub.PlanID, newPlanID)); err != nil {
+		slog.Warn("webhook: failed to record downgrade credit transaction", "error", err)
+	}
+
+	slog.Info("webhook: subscription schedule completed, plan downgraded", "stripeSubID", stripeSubID, "userID", dbSub.UserID, "oldPlan", dbSub.PlanID, "newPlan", newPlanID)
 	return nil
 }

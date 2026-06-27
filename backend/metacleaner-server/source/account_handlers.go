@@ -2,9 +2,13 @@ package source
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"strings"
 	"unicode/utf8"
+
+	stripe "github.com/stripe/stripe-go/v82"
+	stripesubscription "github.com/stripe/stripe-go/v82/subscription"
 )
 
 // HandleUpdateProfile handles PATCH /api/auth/profile.
@@ -103,8 +107,10 @@ func HandleChangePassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 }
 
 // HandleDeleteAccount handles DELETE /api/auth/account.
-// Permanently removes the authenticated user via the Supabase Admin API.
-func HandleDeleteAccount(authClient *SupabaseAuthClient) http.HandlerFunc {
+// Deactivates the account (soft delete with 30-day grace period).
+// The user can reactivate by logging in within 30 days.
+// After 30 days, a background cleanup job permanently deletes the account.
+func HandleDeleteAccount(cfg Config, authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 		if userID == "" {
@@ -112,18 +118,41 @@ func HandleDeleteAccount(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 
-		if err := authClient.AdminDeleteUser(r.Context(), userID); err != nil {
-			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
-				WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
-				return
+		ctx := r.Context()
+
+		// 1. Cancel Stripe subscription immediately (if any).
+		sub, _ := db.GetSubscriptionByUserID(ctx, userID)
+		if sub != nil && sub.StripeSubscriptionID != "" && cfg.StripeSecretKey != "" {
+			stripe.Key = cfg.StripeSecretKey
+			_, err := stripesubscription.Cancel(sub.StripeSubscriptionID, nil)
+			if err != nil {
+				slog.Warn("delete-account: failed to cancel Stripe subscription", "userID", userID, "error", err)
+			} else {
+				_ = db.UpdateSubscription(ctx, sub.StripeSubscriptionID, "cancelled", "", nil, nil)
 			}
-			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+		}
+
+		// 2. Revoke all API keys.
+		if err := db.RevokeAllAPIKeys(ctx, userID); err != nil {
+			slog.Warn("delete-account: failed to revoke API keys", "userID", userID, "error", err)
+		}
+
+		// 3. Zero out credits.
+		_ = db.UpsertCreditBalance(ctx, userID, 0, 0)
+
+		// 4. Deactivate profile (set deactivated_at).
+		if err := authClient.DeactivateProfile(ctx, userID); err != nil {
+			slog.Error("delete-account: failed to deactivate profile", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to deactivate account")
 			return
 		}
 
+		slog.Info("delete-account: account deactivated", "userID", userID)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Account deleted successfully"})
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Account deactivated. It will be permanently deleted after 30 days. Log in again to cancel deletion.",
+		})
 	}
 }
 

@@ -32,7 +32,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("PATCH /api/auth/profile", HandleUpdateProfile(authClient))
 	mux.Handle("POST /api/auth/change-email", HandleChangeEmail(cfg, authClient, emailChangeStore))
 	mux.Handle("POST /api/auth/change-password", HandleChangePassword(authClient))
-	mux.Handle("DELETE /api/auth/account", HandleDeleteAccount(authClient))
+	mux.Handle("DELETE /api/auth/account", HandleDeleteAccount(cfg, authClient, db))
 	mux.Handle("POST /api/auth/forgot-password", authRateLimited(HandleForgotPassword(authClient)))
 	mux.Handle("POST /api/auth/verify-reset-code", authRateLimited(HandleVerifyResetCode(authClient)))
 	mux.Handle("POST /api/auth/reset-password", HandleResetPassword(authClient))
@@ -43,7 +43,7 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 
 	// --- File & Job routes ---
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
-	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool))
+	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool, authClient))
 	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))
 	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub, authMW, cfg.FrontendOrigin))
 	mux.Handle("GET /api/jobs/{id}/download", rateLimited(HandleJobDownload(cfg, db)))

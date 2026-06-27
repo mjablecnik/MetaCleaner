@@ -60,12 +60,13 @@ type supabaseAuthErrBody struct {
 
 // UserProfile is the profile record stored in the profiles table.
 type UserProfile struct {
-	ID        string     `json:"id"`
-	FirstName string     `json:"first_name"`
-	LastName  string     `json:"last_name"`
-	Email     string     `json:"email"`
-	CreatedAt *time.Time `json:"created_at,omitempty"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	ID            string     `json:"id"`
+	FirstName     string     `json:"first_name"`
+	LastName      string     `json:"last_name"`
+	Email         string     `json:"email"`
+	DeactivatedAt *time.Time `json:"deactivated_at,omitempty"`
+	CreatedAt     *time.Time `json:"created_at,omitempty"`
+	UpdatedAt     *time.Time `json:"updated_at,omitempty"`
 }
 
 // SupabaseAuthClient handles all Supabase Auth API interactions.
@@ -520,4 +521,52 @@ func (c *SupabaseAuthClient) AdminDeleteUser(ctx context.Context, userID string)
 	}
 	req.Header.Del("Content-Type")
 	return c.doRequest(req, nil)
+}
+
+// DeactivateProfile sets deactivated_at to the current time on the profile.
+func (c *SupabaseAuthClient) DeactivateProfile(ctx context.Context, userID string) error {
+	payload := map[string]interface{}{
+		"deactivated_at": time.Now().UTC().Format(time.RFC3339),
+	}
+	data, _ := json.Marshal(payload)
+	req, err := c.newAdminRequest(ctx, http.MethodPatch, c.restURL("profiles?id=eq."+userID), bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Prefer", "return=minimal")
+
+	resp, err := c.doWithTimeout(req)
+	if err != nil {
+		return fmt.Errorf("deactivate profile: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("deactivate profile: status %d: %s", resp.StatusCode, body)
+	}
+	return nil
+}
+
+// ReactivateProfile clears the deactivated_at timestamp on the profile.
+func (c *SupabaseAuthClient) ReactivateProfile(ctx context.Context, userID string) error {
+	payload := map[string]interface{}{
+		"deactivated_at": nil,
+	}
+	data, _ := json.Marshal(payload)
+	req, err := c.newAdminRequest(ctx, http.MethodPatch, c.restURL("profiles?id=eq."+userID), bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Prefer", "return=minimal")
+
+	resp, err := c.doWithTimeout(req)
+	if err != nil {
+		return fmt.Errorf("reactivate profile: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("reactivate profile: status %d: %s", resp.StatusCode, body)
+	}
+	return nil
 }

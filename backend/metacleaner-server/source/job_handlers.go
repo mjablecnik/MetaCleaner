@@ -28,7 +28,7 @@ type CreateJobResponse struct {
 }
 
 // HandleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
-func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, pool *JobWorkerPool) http.HandlerFunc {
+func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, pool *JobWorkerPool, authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 
@@ -118,7 +118,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			<-wsReady
 
 			ctx := context.Background()
-			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files)
+			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files, authClient)
 		}()
 
 		w.Header().Set("Content-Type", "application/json")

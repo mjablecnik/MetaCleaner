@@ -388,13 +388,43 @@
 						/>
 					{/if}
 					{#if targetDowngradePlanData && billingStore.isPaidPlan}
-						<DowngradeCard
-							targetPlanId={targetDowngradePlanData.id}
-							targetPlanName={targetDowngradePlanData.nameText ?? targetDowngradePlanData.id}
-							targetPrice={targetDowngradePrice()}
-							featuresLost={downgradeFeatures()}
-							onDowngrade={() => openModal('downgrade')}
-						/>
+						{#if billingStore.isDowngradeScheduled}
+							<div class="rounded-2xl border border-brand-orange/30 bg-brand-orange/5 p-5">
+								<div class="mb-2 flex items-center gap-3">
+									<div
+										class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
+									>
+										<i class="fa-solid fa-clock text-brand-orange"></i>
+									</div>
+									<div>
+										<h3 class="text-sm font-bold text-white">
+											{tx('subscription.downgrade.scheduled.title')}
+										</h3>
+										<p class="text-xs text-text-muted">
+											{tx('subscription.downgrade.scheduled.subtitle', {
+												plan:
+													plans.find((p) => p.id === billingStore.scheduledPlanId)
+														?.nameText ?? billingStore.scheduledPlanId ?? '',
+												date: billingStore.scheduledChangeDate
+													? formatDate(
+															billingStore.scheduledChangeDate,
+															locale.current as 'en' | 'cs'
+														)
+													: ''
+											})}
+										</p>
+									</div>
+								</div>
+							</div>
+						{:else}
+							<DowngradeCard
+								targetPlanId={targetDowngradePlanData.id}
+								targetPlanName={targetDowngradePlanData.nameText ?? targetDowngradePlanData.id}
+								targetPrice={targetDowngradePrice()}
+								featuresLost={downgradeFeatures()}
+								onDowngrade={() => openModal('downgrade')}
+							/>
+						{/if}
 					{/if}
 					<UsageStatsCard
 						creditsConsumed={creditsUsed}
