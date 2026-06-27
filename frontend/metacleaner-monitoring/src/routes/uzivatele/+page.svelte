@@ -2,62 +2,27 @@
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
+	import {
+		getUsers,
+		getUserTabs,
+		userStatusConfig,
+		userRoleColors,
+		type User,
+		type UserTab
+	} from '$lib/repositories/usersRepository';
 
 	type TabKey = 'all' | 'online' | 'new' | 'inactive';
 
-	interface User {
-		id: number;
-		name: string;
-		email: string;
-		avatar: string;
-		status: 'online' | 'idle' | 'offline';
-		registered: string;
-		lastLogin: string;
-		sessions: number;
-		location: string;
-		role: 'Admin' | 'Editor' | 'Developer' | 'Viewer';
-	}
-
-	const users: User[] = [
-		{ id: 1, name: 'Karolína Novotná', email: 'karolina.novotna@email.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg', status: 'online', registered: '2. 1. 2024', lastLogin: 'Právě teď', sessions: 148, location: 'Praha, CZ', role: 'Admin' },
-		{ id: 2, name: 'Tomáš Kovář', email: 'tomas.kovar@firma.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg', status: 'online', registered: '15. 3. 2024', lastLogin: 'Před 5 min', sessions: 87, location: 'Brno, CZ', role: 'Editor' },
-		{ id: 3, name: 'Martin Blaha', email: 'martin.blaha@dev.io', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg', status: 'online', registered: '8. 7. 2023', lastLogin: 'Před 12 min', sessions: 312, location: 'Ostrava, CZ', role: 'Developer' },
-		{ id: 4, name: 'Lucie Horáčková', email: 'lucie.h@gmail.com', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg', status: 'idle', registered: '20. 6. 2024', lastLogin: 'Před 1 hod', sessions: 22, location: 'Plzeň, CZ', role: 'Viewer' },
-		{ id: 5, name: 'Jakub Procházka', email: 'j.prochazka@corp.eu', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg', status: 'offline', registered: '3. 11. 2023', lastLogin: 'Před 2 dny', sessions: 55, location: 'Liberec, CZ', role: 'Editor' },
-		{ id: 6, name: 'Tereza Málková', email: 'tereza.m@startup.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg', status: 'online', registered: '1. 5. 2024', lastLogin: 'Před 8 min', sessions: 63, location: 'Praha, CZ', role: 'Viewer' },
-		{ id: 7, name: 'Ondřej Šimánek', email: 'ondrej.simanek@tech.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg', status: 'offline', registered: '14. 2. 2024', lastLogin: 'Před 5 dny', sessions: 19, location: 'Olomouc, CZ', role: 'Viewer' },
-		{ id: 8, name: 'Petra Veselá', email: 'petra.vesela@media.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg', status: 'online', registered: '29. 9. 2024', lastLogin: 'Před 3 min', sessions: 11, location: 'Hradec Králové, CZ', role: 'Editor' },
-		{ id: 9, name: 'Radek Horák', email: 'radek.horak@business.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg', status: 'idle', registered: '7. 4. 2023', lastLogin: 'Před 45 min', sessions: 204, location: 'Zlín, CZ', role: 'Admin' },
-		{ id: 10, name: 'Simona Křížková', email: 'simona.k@freelance.eu', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg', status: 'offline', registered: '18. 8. 2024', lastLogin: 'Před 1 týdnem', sessions: 7, location: 'České Budějovice, CZ', role: 'Viewer' }
-	];
-
-	const roleColors: Record<string, string> = {
-		Admin: 'bg-primary/10 text-primary border border-primary/20',
-		Editor: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-		Developer: 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
-		Viewer: 'bg-badge text-textSec border border-[#334155]'
-	};
-
-	const statusConfig: Record<string, { dot: string; label: string; text: string; bg: string }> = {
-		online: { dot: 'bg-success', label: 'Online', text: 'text-success', bg: 'bg-success/10' },
-		idle: { dot: 'bg-secondary', label: 'Idle', text: 'text-secondary', bg: 'bg-secondary/10' },
-		offline: { dot: 'bg-[#475569]', label: 'Offline', text: 'text-textSec', bg: 'bg-badge' }
-	};
+	const users = getUsers();
+	const tabs = getUserTabs();
 
 	let activeTab = $state<TabKey>('all');
 	let searchOpen = $state(false);
 
-	const tabs: Array<[TabKey, string, string]> = [
-		['all', 'users_tabs_all', '12 847'],
-		['online', 'users_tabs_online', '342'],
-		['new', 'users_tabs_new', '1 024'],
-		['inactive', 'users_tabs_inactive', '874']
-	];
-
 	const filteredUsers = $derived(() => {
-		if (activeTab === 'online') return users.filter((u) => u.status === 'online');
+		if (activeTab === 'online') return users.filter((u: User) => u.status === 'online');
 		if (activeTab === 'new') return users.slice(0, 4);
-		if (activeTab === 'inactive') return users.filter((u) => u.status === 'offline');
+		if (activeTab === 'inactive') return users.filter((u: User) => u.status === 'offline');
 		return users;
 	});
 
@@ -280,13 +245,13 @@
 			<!-- Tab bar -->
 			<div class="flex items-center justify-between px-5 pt-5 pb-0 border-b border-[#1e293b]">
 				<div class="flex gap-1">
-					{#each tabs as item (item[0])}
+					{#each tabs as tab (tab.key)}
 						<button
-							onclick={() => switchTab(item[0])}
-							class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors {activeTab === item[0] ? 'text-textMain border-primary' : 'text-textSec border-transparent hover:text-textMain'}"
+							onclick={() => switchTab(tab.key)}
+							class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors {activeTab === tab.key ? 'text-textMain border-primary' : 'text-textSec border-transparent hover:text-textMain'}"
 						>
-							{t(item[1])}
-							<span class="ml-2 px-2 py-0.5 text-xs rounded-full {activeTab === item[0] ? 'bg-primary/10 text-primary' : 'bg-badge text-textSec'}">{item[2]}</span>
+							{t(tab.labelKey)}
+							<span class="ml-2 px-2 py-0.5 text-xs rounded-full {activeTab === tab.key ? 'bg-primary/10 text-primary' : 'bg-badge text-textSec'}">{tab.count}</span>
 						</button>
 					{/each}
 				</div>
@@ -317,8 +282,8 @@
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/50">
 						{#each filteredUsers() as u (u.id)}
-							{@const s = statusConfig[u.status]}
-							{@const r = roleColors[u.role] ?? roleColors['Viewer']}
+							{@const s = userStatusConfig[u.status]}
+							{@const r = userRoleColors[u.role] ?? userRoleColors['Viewer']}
 							<tr class="hover:bg-[#1e293b]/30 transition-colors group">
 								<td class="px-5 py-3.5">
 									<div class="flex items-center gap-3">
@@ -335,7 +300,7 @@
 								<td class="px-5 py-3.5">
 									<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {s.bg} {s.text}">
 										<span class="w-1.5 h-1.5 rounded-full {s.dot}"></span>
-										{s.label}
+										{t(s.labelKey)}
 									</span>
 								</td>
 								<td class="px-5 py-3.5 text-textSec text-xs hidden md:table-cell">{u.registered}</td>
@@ -518,13 +483,13 @@
 			<!-- Tabs — horizontally scrollable -->
 			<div class="border-b border-[#1e293b]">
 				<div class="flex overflow-x-auto px-3 pt-3 gap-1" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
-					{#each tabs as item (item[0])}
+					{#each tabs as tab (tab.key)}
 						<button
-							onclick={() => switchTab(item[0])}
-							class="flex-shrink-0 px-3 py-2.5 text-xs font-medium border-b-2 -mb-px transition-colors whitespace-nowrap {activeTab === item[0] ? 'text-textMain border-primary' : 'text-textSec border-transparent hover:text-textMain'}"
+							onclick={() => switchTab(tab.key)}
+							class="flex-shrink-0 px-3 py-2.5 text-xs font-medium border-b-2 -mb-px transition-colors whitespace-nowrap {activeTab === tab.key ? 'text-textMain border-primary' : 'text-textSec border-transparent hover:text-textMain'}"
 						>
-							{t(item[1])}
-							<span class="ml-1.5 px-1.5 py-0.5 text-xs rounded-full {activeTab === item[0] ? 'bg-primary/10 text-primary' : 'bg-badge text-textSec'}">{item[2]}</span>
+							{t(tab.labelKey)}
+							<span class="ml-1.5 px-1.5 py-0.5 text-xs rounded-full {activeTab === tab.key ? 'bg-primary/10 text-primary' : 'bg-badge text-textSec'}">{tab.count}</span>
 						</button>
 					{/each}
 				</div>
@@ -546,8 +511,8 @@
 			<!-- User Cards -->
 			<div class="divide-y divide-[#1e293b]/50">
 				{#each filteredUsers() as u (u.id)}
-					{@const s = statusConfig[u.status]}
-					{@const r = roleColors[u.role] ?? roleColors['Viewer']}
+					{@const s = userStatusConfig[u.status]}
+					{@const r = userRoleColors[u.role] ?? userRoleColors['Viewer']}
 					<div class="flex items-center gap-3 px-4 py-3.5 hover:bg-[#1e293b]/30 active:bg-[#1e293b]/50 transition-colors min-h-[72px]">
 						<div class="relative flex-shrink-0">
 							<img src={u.avatar} alt={u.name} class="w-11 h-11 rounded-full object-cover border border-[#334155]" />
@@ -562,7 +527,7 @@
 							<div class="flex items-center gap-2">
 								<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium {s.bg} {s.text}">
 									<span class="w-1.5 h-1.5 rounded-full {s.dot}"></span>
-									{s.label}
+									{t(s.labelKey)}
 								</span>
 								<span class="text-textSec text-xs">{u.lastLogin}</span>
 								<span class="text-textSec text-xs ml-auto">

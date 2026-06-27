@@ -47,14 +47,14 @@
 - [x] 34. [MEDIUM] Replace hardcoded data in `edge/+page.svelte` with `edgeRepository` calls — cache stats, TTFB regions, cache rules, WAF log
 - [x] 35. [MEDIUM] Replace hardcoded data in `performance/+page.svelte` with `performanceRepository` calls — stats, endpoints, CWV, event log
 - [x] 36. [MEDIUM] Replace hardcoded data in `security/+page.svelte` with `securityRepository` calls — stats, threats, blocked IPs, event log
-- [ ] 37. [MEDIUM] Replace hardcoded data in `business/+page.svelte` with `businessRepository` calls — KPIs, chart data, funnel, OKR goals
-- [ ] 38. [MEDIUM] Replace hardcoded data in `uzivatele/+page.svelte` with `usersRepository` calls — user stats, user list, chart data
+- [x] 37. [MEDIUM] Replace hardcoded data in `business/+page.svelte` with `businessRepository` calls — KPIs, chart data, funnel, OKR goals
+- [x] 38. [MEDIUM] Replace hardcoded data in `uzivatele/+page.svelte` with `usersRepository` calls — user stats, user list, chart data
 
 ## Phase 5 — Language switching
 
-- [ ] 39. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` component (EN/CS toggle with flag icons)
-- [ ] 40. [MEDIUM] Add LanguageSwitcher to desktop sidebar and mobile drawer in `+layout.svelte`
+- [x] 39. [MEDIUM] Create `src/lib/components/LanguageSwitcher.svelte` component (EN/CS toggle with flag icons)
+- [x] 40. [MEDIUM] Add LanguageSwitcher to desktop sidebar and mobile drawer in `+layout.svelte`
 
 ## Final
 
-- [ ] 41. [LOW] Verify all strings are translated, no hardcoded user-facing text remains, language switching works, and build passes cleanly
+- [x] 41. [LOW] Verify all strings are translated, no hardcoded user-facing text remains, language switching works, and build passes cleanly

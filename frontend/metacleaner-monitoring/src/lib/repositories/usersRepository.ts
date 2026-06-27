@@ -42,6 +42,11 @@ export const userStatusConfig: Record<UserStatus, UserStatusConfig> = {
 	offline: { dot: 'bg-[#475569]', labelKey: 'users_status_offline', text: 'text-textSec', bg: 'bg-badge' }
 };
 
+export interface UserChartData {
+	registrationValues: number[];
+	sessionValues: number[];
+}
+
 export const userRoleColors: Record<UserRole, string> = {
 	Admin: 'bg-primary/10 text-primary border border-primary/20',
 	Editor: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
@@ -53,9 +58,9 @@ export function getUserStats(): UserStat[] {
 	return [
 		{
 			key: 'totalUsers',
-			labelKey: 'users_stat_totalUsers',
+			labelKey: 'users_stats_totalUsers',
 			value: '12 847',
-			trendKey: 'users_stat_trend_vsLastMonth',
+			trendKey: 'users_stats_vsLastMonth',
 			trendValue: '+8.4%',
 			trendPositive: true,
 			icon: 'fa-users',
@@ -64,9 +69,9 @@ export function getUserStats(): UserStat[] {
 		},
 		{
 			key: 'loggedIn',
-			labelKey: 'users_stat_loggedIn',
+			labelKey: 'users_stats_currentlyLoggedIn',
 			value: '342',
-			trendKey: 'users_stat_activeSessionsNow',
+			trendKey: 'users_stats_activeSessionsNow',
 			trendValue: '',
 			trendPositive: true,
 			icon: 'fa-circle-dot',
@@ -77,9 +82,9 @@ export function getUserStats(): UserStat[] {
 		},
 		{
 			key: 'newRegistrations',
-			labelKey: 'users_stat_newRegistrations',
+			labelKey: 'users_stats_newRegistrations',
 			value: '1 024',
-			trendKey: 'users_stat_trend_vsPrevPeriod',
+			trendKey: 'users_stats_vsPreviousPeriod',
 			trendValue: '+12.1%',
 			trendPositive: true,
 			icon: 'fa-user-plus',
@@ -88,9 +93,9 @@ export function getUserStats(): UserStat[] {
 		},
 		{
 			key: 'avgSessionDuration',
-			labelKey: 'users_stat_avgSessionDuration',
+			labelKey: 'users_stats_avgSessionDuration',
 			value: '8m 24s',
-			trendKey: 'users_stat_trend_vsLastMonth',
+			trendKey: 'users_stats_vsLastMonth',
 			trendValue: '-1.2%',
 			trendPositive: false,
 			icon: 'fa-clock',
@@ -108,10 +113,10 @@ export interface UserTab {
 
 export function getUserTabs(): UserTab[] {
 	return [
-		{ key: 'all', labelKey: 'users_tab_all', count: '12 847' },
-		{ key: 'online', labelKey: 'users_tab_online', count: '342' },
-		{ key: 'new', labelKey: 'users_tab_new', count: '1 024' },
-		{ key: 'inactive', labelKey: 'users_tab_inactive', count: '874' }
+		{ key: 'all', labelKey: 'users_tabs_all', count: '12 847' },
+		{ key: 'online', labelKey: 'users_tabs_online', count: '342' },
+		{ key: 'new', labelKey: 'users_tabs_new', count: '1 024' },
+		{ key: 'inactive', labelKey: 'users_tabs_inactive', count: '874' }
 	];
 }
 

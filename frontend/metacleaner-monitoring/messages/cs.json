@@ -563,5 +563,32 @@
 	"errors_kpi_timeoutsSubtextMobile": "Avg. limit: 30s",
 	"errors_mobile_logTitle": "Chybový log",
 	"errors_mobile_jsVsBackend": "JS vs Backend",
-	"common_labels_entries": "záznamy"
+	"common_labels_entries": "záznamy",
+
+	"business_geo_europe": "Evropa",
+	"business_geo_northAmerica": "Sev. Amerika",
+	"business_geo_asia": "Asie",
+	"business_geo_other": "Ostatní",
+	"business_kpi_mrrSubtext": "+$5,340 vs minulý měsíc",
+	"business_kpi_activeUsersSubtext": "DAU: 3,210 · WAU: 8,940",
+	"business_kpi_churnRateSubtext": "Cíl: <2.0% · Odešlo: 48 zákazníků",
+	"business_kpi_npsSubtext": "1,840 odpovědí",
+	"business_kpi_churnBadge": "-0.3% Zlepšení",
+	"business_okr_currently": "Aktuálně: {value}",
+	"business_payback_badge": "<12 měs.",
+	"business_cohort_month_feb24": "Únor '24",
+	"business_cohort_month_mar24": "Březen '24",
+	"business_cohort_month_apr24": "Duben '24",
+	"business_cohort_month_may24": "Květen '24",
+	"business_cohort_month_jun24": "Červen '24",
+	"business_revenueByPlan_customers": "{n} zák.",
+	"business_upgrade_upgrades": "+{n} zákazníků upgrades",
+	"business_upgrade_downgrades": "-{n} downgrades",
+	"business_upgrade_netMrr": "Net +${value} MRR",
+
+	"users_status_online": "Online",
+	"users_status_idle": "Idle",
+	"users_status_offline": "Offline",
+
+	"language_switcher_label": "Jazyk"
 }

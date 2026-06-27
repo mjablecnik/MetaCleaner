@@ -2,6 +2,17 @@
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
+	import {
+		getGeoRevenue,
+		getConversionFunnel,
+		getLtvCacMetrics,
+		getPlanRevenue
+	} from '$lib/repositories/businessRepository';
+
+	const geoRevenue = getGeoRevenue();
+	const conversionFunnel = getConversionFunnel();
+	const ltvCac = getLtvCacMetrics();
+	const planRevenue = getPlanRevenue();
 
 	type AccKey = 'ltv' | 'arpu' | 'heatmap' | 'waterfall' | 'retention';
 	let accOpen = $state<Record<AccKey, boolean>>({ ltv: false, arpu: false, heatmap: false, waterfall: false, retention: false });
@@ -239,7 +250,7 @@
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">$48,320</span>
 				</div>
-				<p class="text-xs text-textSec">+$5,340 vs minulý měsíc</p>
+				<p class="text-xs text-textSec">{t('business_kpi_mrrSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 bg-[#22c55e]/5 rounded-full -translate-y-8 translate-x-8"></div>
@@ -260,17 +271,17 @@
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">12,842</span>
 				</div>
-				<p class="text-xs text-textSec">DAU: 3,210 · WAU: 8,940</p>
+				<p class="text-xs text-textSec">{t('business_kpi_activeUsersSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_churnRate')}</h3>
-					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">-0.3% Zlepšení</span>
+					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">{t('business_kpi_churnBadge')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-[#ef4444]">2.1%</span>
 				</div>
-				<p class="text-xs text-textSec">Cíl: &lt;2.0% · Odešlo: 48 zákazníků</p>
+				<p class="text-xs text-textSec">{t('business_kpi_churnRateSubtext')}</p>
 			</div>
 		</section>
 
@@ -314,7 +325,7 @@
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_nps')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">72<span class="text-sm text-textSec font-normal">/100</span></div>
-				<p class="text-xs text-textSec mt-1">1,840 odpovědí</p>
+				<p class="text-xs text-textSec mt-1">{t('business_kpi_npsSubtext')}</p>
 			</div>
 		</section>
 
@@ -352,15 +363,15 @@
 				<div id="chart-ltv-cac" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
-						<div class="text-xl font-bold text-[#22c55e]">4.2x</div>
+						<div class="text-xl font-bold text-[#22c55e]">{ltvCac.ltvCacRatio}x</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_ratio')}</div>
 					</div>
 					<div class="text-center border-x border-[#1e293b]">
-						<div class="text-xl font-bold text-textMain">$1,840</div>
+						<div class="text-xl font-bold text-textMain">${ltvCac.ltv.toLocaleString()}</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_avgLtv')}</div>
 					</div>
 					<div class="text-center">
-						<div class="text-xl font-bold text-textMain">$438</div>
+						<div class="text-xl font-bold text-textMain">${ltvCac.cac}</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_avgCac')}</div>
 					</div>
 				</div>
@@ -375,7 +386,7 @@
 				<div id="chart-arpu" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
-						<div class="text-xl font-bold text-[#3b82f6]">$37.62</div>
+						<div class="text-xl font-bold text-[#3b82f6]">${ltvCac.arpu}</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_current')}</div>
 					</div>
 					<div class="text-center border-x border-[#1e293b]">
@@ -426,14 +437,14 @@
 				<div id="chart-upgrade-funnel" class="h-[200px] w-full"></div>
 				<div class="mt-3 space-y-1.5">
 					<div class="flex justify-between text-xs">
-						<span class="text-[#22c55e] font-medium">+124 zákazníků upgrades</span>
+						<span class="text-[#22c55e] font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
 					</div>
 					<div class="flex justify-between text-xs">
-						<span class="text-[#ef4444] font-medium">-38 downgrades</span>
+						<span class="text-[#ef4444] font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
 					</div>
 					<div class="flex justify-between text-xs">
 						<span class="text-textSec">{t('business_upgradeDowngrade_netExpansion')}</span>
-						<span class="text-[#22c55e] font-semibold">+$4,320 MRR</span>
+						<span class="text-[#22c55e] font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
 					</div>
 				</div>
 			</div>
@@ -454,41 +465,15 @@
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('business_funnel_title')}</h3>
 				<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 				<div class="space-y-3">
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">{t('business_funnel_visitors')}</span>
-							<span class="text-textMain font-medium">84,210 <span class="text-textSec">100%</span></span>
+					{#each conversionFunnel as step}
+						<div>
+							<div class="flex justify-between text-xs mb-1">
+								<span class="text-textSec">{t(step.labelKey)}</span>
+								<span class="text-textMain font-medium">{step.value.toLocaleString()} {#if step.conversionPercent}<span class="text-textSec">{step.conversionPercent}</span>{:else}<span class="text-textSec">100%</span>{/if}</span>
+							</div>
+							<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
 						</div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3b82f6] rounded-full" style="width:100%"></div></div>
-					</div>
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">{t('business_funnel_registrations')}</span>
-							<span class="text-textMain font-medium">12,318 <span class="text-textSec">14.6%</span></span>
-						</div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:14.6%"></div></div>
-					</div>
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">{t('business_funnel_trialActivation')}</span>
-							<span class="text-textMain font-medium">6,840 <span class="text-textSec">8.1%</span></span>
-						</div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#22c55e] rounded-full" style="width:8.1%"></div></div>
-					</div>
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
-							<span class="text-textMain font-medium">2,104 <span class="text-textSec">2.5%</span></span>
-						</div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#f97316] rounded-full" style="width:2.5%"></div></div>
-					</div>
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="text-textSec">{t('business_funnel_activePaying')}</span>
-							<span class="text-textMain font-medium">1,840 <span class="text-textSec">2.2%</span></span>
-						</div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:2.2%"></div></div>
-					</div>
+					{/each}
 				</div>
 				<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
 					<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
@@ -504,26 +489,13 @@
 				</div>
 				<div id="chart-plan-revenue" class="h-[200px] w-full"></div>
 				<div class="mt-3 grid grid-cols-4 gap-2">
-					<div class="text-center p-2 rounded-lg bg-[#3b82f6]/10 border border-[#3b82f6]/20">
-						<div class="text-sm font-bold text-[#3b82f6]">$6,840</div>
-						<div class="text-xs text-textSec">Starter</div>
-						<div class="text-xs text-textSec">412 zák.</div>
-					</div>
-					<div class="text-center p-2 rounded-lg bg-[#22c55e]/10 border border-[#22c55e]/20">
-						<div class="text-sm font-bold text-[#22c55e]">$18,200</div>
-						<div class="text-xs text-textSec">Pro</div>
-						<div class="text-xs text-textSec">728 zák.</div>
-					</div>
-					<div class="text-center p-2 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20">
-						<div class="text-sm font-bold text-[#8b5cf6]">$14,880</div>
-						<div class="text-xs text-textSec">Business</div>
-						<div class="text-xs text-textSec">248 zák.</div>
-					</div>
-					<div class="text-center p-2 rounded-lg bg-[#f97316]/10 border border-[#f97316]/20">
-						<div class="text-sm font-bold text-[#f97316]">$8,400</div>
-						<div class="text-xs text-textSec">Enterprise</div>
-						<div class="text-xs text-textSec">42 zák.</div>
-					</div>
+					{#each planRevenue as plan}
+						<div class="text-center p-2 rounded-lg" style="background:{plan.color}1a;border:1px solid {plan.color}33">
+							<div class="text-sm font-bold" style="color:{plan.color}">${plan.value.toLocaleString()}</div>
+							<div class="text-xs text-textSec">{plan.label}</div>
+							<div class="text-xs text-textSec">{plan.percent}</div>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -565,7 +537,7 @@
 						</thead>
 						<tbody class="divide-y divide-[#1e293b]/40">
 							<tr>
-								<td class="py-2 pr-3 text-textSec whitespace-nowrap">Únor '24</td>
+								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_feb24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.24);color:#22c55e">84%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.18);color:#22c55e">71%</span></td>
@@ -574,7 +546,7 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.09);color:#94a3b8">52%</span></td>
 							</tr>
 							<tr>
-								<td class="py-2 pr-3 text-textSec whitespace-nowrap">Březen '24</td>
+								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_mar24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">81%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">68%</span></td>
@@ -583,7 +555,7 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
 							</tr>
 							<tr>
-								<td class="py-2 pr-3 text-textSec whitespace-nowrap">Duben '24</td>
+								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_apr24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.21);color:#22c55e">79%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.15);color:#94a3b8">65%</span></td>
@@ -592,7 +564,7 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
 							</tr>
 							<tr>
-								<td class="py-2 pr-3 text-textSec whitespace-nowrap">Květen '24</td>
+								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_may24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">82%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">70%</span></td>
@@ -601,7 +573,7 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
 							</tr>
 							<tr>
-								<td class="py-2 pr-3 text-textSec whitespace-nowrap">Červen '24</td>
+								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_jun24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.25);color:#22c55e">86%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
@@ -633,7 +605,7 @@
 						<h3 class="text-lg font-semibold text-textMain">{t('business_payback_title')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('business_payback_subtitle')}</p>
 					</div>
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">&lt;12 měs.</span>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">{t('business_payback_badge')}</span>
 				</div>
 				<div id="chart-payback" class="h-[240px] w-full"></div>
 			</div>
@@ -710,22 +682,12 @@
 				</div>
 				<div id="chart-geo" class="h-[180px] w-full"></div>
 				<div class="mt-3 space-y-2">
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">Evropa</span></div>
-						<span class="text-textMain font-medium">48% · $23,194</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">Sev. Amerika</span></div>
-						<span class="text-textMain font-medium">32% · $15,462</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec">Asie</span></div>
-						<span class="text-textMain font-medium">13% · $6,282</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">Ostatní</span></div>
-						<span class="text-textMain font-medium">7% · $3,382</span>
-					</div>
+					{#each geoRevenue as geo}
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:{geo.color}"></span><span class="text-textSec">{t(geo.labelKey)}</span></div>
+							<span class="text-textMain font-medium">{geo.percent} · ${geo.value.toLocaleString()}</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 		</section>
@@ -770,7 +732,7 @@
 					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
 						<div class="h-full bg-[#f97316] rounded-full transition-all" style="width:55%"></div>
 					</div>
-					<p class="text-xs text-textSec mt-2">Aktuálně: 2.1%</p>
+					<p class="text-xs text-textSec mt-2">{t('business_okr_currently', { value: '2.1%' })}</p>
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
@@ -825,7 +787,7 @@
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_mrr')}</h3>
 				<div class="text-2xl font-bold text-textMain">$48,320</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
-				<p class="text-xs text-textSec mt-1 leading-tight">+$5,340 vs min. měsíc</p>
+				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_mrrSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-16 h-16 bg-[#22c55e]/5 rounded-full -translate-y-4 translate-x-4"></div>
@@ -833,18 +795,19 @@
 				<div class="text-2xl font-bold text-textMain">$579,840</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_mrrArrSubtext')}</p>
+
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('business_kpi_activeUsers')}</h3>
 				<div class="text-2xl font-bold text-textMain">12,842</div>
 				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+8.1%</span>
-				<p class="text-xs text-textSec mt-1 leading-tight">DAU: 3,210 · WAU: 8,940</p>
+				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_activeUsersSubtext')}</p>
 			</div>
 			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_churnRate')}</h3>
 				<div class="text-2xl font-bold text-[#ef4444]">2.1%</div>
-				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">-0.3% Zlepšení</span>
-				<p class="text-xs text-textSec mt-1 leading-tight">Cíl: &lt;2.0% · 48 odešlo</p>
+				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">{t('business_kpi_churnBadge')}</span>
+				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_churnRateSubtext')}</p>
 			</div>
 		</section>
 
@@ -880,7 +843,7 @@
 				</div>
 				<div class="text-xl font-bold text-textMain">72<span class="text-xs text-textSec font-normal">/100</span></div>
 				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_nps')}</p>
-				<span class="text-xs text-textSec">1,840 odpovědí</span>
+				<span class="text-xs text-textSec">{t('business_kpi_npsSubtext')}</span>
 			</div>
 		</section>
 
@@ -916,9 +879,9 @@
 				<div class="border-t border-[#1e293b] p-4">
 					<div id="chart-ltv-cac-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#22c55e]">4.2x</div><div class="text-xs text-textSec">{t('business_ltv_ratio')}</div></div>
-						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-textMain">$1,840</div><div class="text-xs text-textSec">{t('business_ltv_avgLtv')}</div></div>
-						<div><div class="text-lg font-bold text-textMain">$438</div><div class="text-xs text-textSec">{t('business_ltv_avgCac')}</div></div>
+						<div><div class="text-lg font-bold text-[#22c55e]">{ltvCac.ltvCacRatio}x</div><div class="text-xs text-textSec">{t('business_ltv_ratio')}</div></div>
+						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-textMain">${ltvCac.ltv.toLocaleString()}</div><div class="text-xs text-textSec">{t('business_ltv_avgLtv')}</div></div>
+						<div><div class="text-lg font-bold text-textMain">${ltvCac.cac}</div><div class="text-xs text-textSec">{t('business_ltv_avgCac')}</div></div>
 					</div>
 				</div>
 			{/if}
@@ -942,7 +905,7 @@
 				<div class="border-t border-[#1e293b] p-4">
 					<div id="chart-arpu-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#3b82f6]">$37.62</div><div class="text-xs text-textSec">{t('business_arpu_current')}</div></div>
+						<div><div class="text-lg font-bold text-[#3b82f6]">${ltvCac.arpu}</div><div class="text-xs text-textSec">{t('business_arpu_current')}</div></div>
 						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-[#22c55e]">+$1.20</div><div class="text-xs text-textSec">{t('business_arpu_mom')}</div></div>
 						<div><div class="text-lg font-bold text-textMain">$40.00</div><div class="text-xs text-textSec">{t('business_arpu_target')}</div></div>
 					</div>
@@ -998,9 +961,9 @@
 			<p class="text-xs text-textSec mb-3">{t('business_upgradeDowngrade_subtitle')}</p>
 			<div id="chart-upgrade-funnel-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 flex justify-between text-xs">
-				<span class="text-[#22c55e] font-medium">+124 upgrades</span>
-				<span class="text-[#ef4444] font-medium">-38 downgrades</span>
-				<span class="text-[#22c55e] font-semibold">Net +$4,320 MRR</span>
+				<span class="text-[#22c55e] font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
+				<span class="text-[#ef4444] font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
+				<span class="text-[#22c55e] font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
 			</div>
 		</section>
 
@@ -1016,26 +979,12 @@
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_funnel_title')}</h3>
 			<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 			<div class="space-y-3">
-				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_visitors')}</span><span class="text-textMain font-medium">84,210 <span class="text-textSec">100%</span></span></div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3b82f6] rounded-full" style="width:100%"></div></div>
-				</div>
-				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_registrations')}</span><span class="text-textMain font-medium">12,318 <span class="text-textSec">14.6%</span></span></div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:14.6%"></div></div>
-				</div>
-				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_trialActivation')}</span><span class="text-textMain font-medium">6,840 <span class="text-textSec">8.1%</span></span></div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#22c55e] rounded-full" style="width:8.1%"></div></div>
-				</div>
-				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><span class="text-textMain font-medium">2,104 <span class="text-textSec">2.5%</span></span></div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#f97316] rounded-full" style="width:2.5%"></div></div>
-				</div>
-				<div>
-					<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t('business_funnel_activePaying')}</span><span class="text-textMain font-medium">1,840 <span class="text-textSec">2.2%</span></span></div>
-					<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:2.2%"></div></div>
-				</div>
+				{#each conversionFunnel as step}
+					<div>
+						<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t(step.labelKey)}</span><span class="text-textMain font-medium">{step.value.toLocaleString()} {#if step.conversionPercent}<span class="text-textSec">{step.conversionPercent}</span>{:else}<span class="text-textSec">100%</span>{/if}</span></div>
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
+					</div>
+				{/each}
 			</div>
 			<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
 				<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
@@ -1049,22 +998,12 @@
 			<p class="text-xs text-textSec mb-3">{t('business_revenueByPlan_subtitle')}</p>
 			<div id="chart-plan-revenue-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 grid grid-cols-2 gap-2">
-				<div class="text-center p-2 rounded-lg bg-[#3b82f6]/10 border border-[#3b82f6]/20">
-					<div class="text-sm font-bold text-[#3b82f6]">$6,840</div>
-					<div class="text-xs text-textSec">Starter · 412 zák.</div>
-				</div>
-				<div class="text-center p-2 rounded-lg bg-[#22c55e]/10 border border-[#22c55e]/20">
-					<div class="text-sm font-bold text-[#22c55e]">$18,200</div>
-					<div class="text-xs text-textSec">Pro · 728 zák.</div>
-				</div>
-				<div class="text-center p-2 rounded-lg bg-[#8b5cf6]/10 border border-[#8b5cf6]/20">
-					<div class="text-sm font-bold text-[#8b5cf6]">$14,880</div>
-					<div class="text-xs text-textSec">Business · 248 zák.</div>
-				</div>
-				<div class="text-center p-2 rounded-lg bg-[#f97316]/10 border border-[#f97316]/20">
-					<div class="text-sm font-bold text-[#f97316]">$8,400</div>
-					<div class="text-xs text-textSec">Enterprise · 42 zák.</div>
-				</div>
+				{#each planRevenue as plan}
+					<div class="text-center p-2 rounded-lg" style="background:{plan.color}1a;border:1px solid {plan.color}33">
+						<div class="text-sm font-bold" style="color:{plan.color}">${plan.value.toLocaleString()}</div>
+						<div class="text-xs text-textSec">{plan.label} · {plan.percent}</div>
+					</div>
+				{/each}
 			</div>
 		</section>
 
@@ -1114,7 +1053,7 @@
 							</thead>
 							<tbody class="divide-y divide-[#1e293b]/40">
 								<tr>
-									<td class="py-2 pr-2 text-textSec whitespace-nowrap">Únor '24</td>
+									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_feb24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.24);color:#22c55e">84%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.18);color:#22c55e">71%</span></td>
@@ -1123,7 +1062,7 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.09);color:#94a3b8">52%</span></td>
 								</tr>
 								<tr>
-									<td class="py-2 pr-2 text-textSec whitespace-nowrap">Bře '24</td>
+									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_mar24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">81%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">68%</span></td>
@@ -1132,7 +1071,7 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
 								</tr>
 								<tr>
-									<td class="py-2 pr-2 text-textSec whitespace-nowrap">Dub '24</td>
+									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_apr24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.21);color:#22c55e">79%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.15);color:#94a3b8">65%</span></td>
@@ -1141,7 +1080,7 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
 								</tr>
 								<tr>
-									<td class="py-2 pr-2 text-textSec whitespace-nowrap">Kvě '24</td>
+									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_may24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">82%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">70%</span></td>
@@ -1150,7 +1089,7 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
 								</tr>
 								<tr>
-									<td class="py-2 pr-2 text-textSec whitespace-nowrap">Čvn '24</td>
+									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_jun24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.25);color:#22c55e">86%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
@@ -1184,7 +1123,7 @@
 					<h3 class="text-sm font-semibold text-textMain">{t('business_payback_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('business_payback_subtitle')}</p>
 				</div>
-				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec">&lt;12 měs.</span>
+				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec">{t('business_payback_badge')}</span>
 			</div>
 			<div id="chart-payback-m" class="h-[180px] w-full"></div>
 		</section>
@@ -1242,22 +1181,12 @@
 			<p class="text-xs text-textSec mb-3">{t('business_revenueByRegion_subtitle')}</p>
 			<div id="chart-geo-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 space-y-1.5">
-				<div class="flex items-center justify-between text-xs">
-					<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">Evropa</span></div>
-					<span class="text-textMain font-medium">48% · $23,194</span>
-				</div>
-				<div class="flex items-center justify-between text-xs">
-					<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">Sev. Amerika</span></div>
-					<span class="text-textMain font-medium">32% · $15,462</span>
-				</div>
-				<div class="flex items-center justify-between text-xs">
-					<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec">Asie</span></div>
-					<span class="text-textMain font-medium">13% · $6,282</span>
-				</div>
-				<div class="flex items-center justify-between text-xs">
-					<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">Ostatní</span></div>
-					<span class="text-textMain font-medium">7% · $3,382</span>
-				</div>
+				{#each geoRevenue as geo}
+					<div class="flex items-center justify-between text-xs">
+						<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full inline-block" style="background:{geo.color}"></span><span class="text-textSec">{t(geo.labelKey)}</span></div>
+						<span class="text-textMain font-medium">{geo.percent} · ${geo.value.toLocaleString()}</span>
+					</div>
+				{/each}
 			</div>
 		</section>
 
@@ -1297,7 +1226,7 @@
 					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
 						<div class="h-full bg-[#f97316] rounded-full" style="width:55%"></div>
 					</div>
-					<p class="text-xs text-textSec mt-1.5">Aktuálně: 2.1%</p>
+					<p class="text-xs text-textSec mt-1.5">{t('business_okr_currently', { value: '2.1%' })}</p>
 				</div>
 				<div class="bg-[#1e293b]/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">

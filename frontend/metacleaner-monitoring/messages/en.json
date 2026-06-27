@@ -563,5 +563,32 @@
 	"errors_kpi_timeoutsSubtextMobile": "Avg. limit: 30s",
 	"errors_mobile_logTitle": "Error Log",
 	"errors_mobile_jsVsBackend": "JS vs Backend",
-	"common_labels_entries": "entries"
+	"common_labels_entries": "entries",
+
+	"business_geo_europe": "Europe",
+	"business_geo_northAmerica": "N. America",
+	"business_geo_asia": "Asia",
+	"business_geo_other": "Other",
+	"business_kpi_mrrSubtext": "+$5,340 vs last month",
+	"business_kpi_activeUsersSubtext": "DAU: 3,210 · WAU: 8,940",
+	"business_kpi_churnRateSubtext": "Target: <2.0% · Left: 48 customers",
+	"business_kpi_npsSubtext": "1,840 responses",
+	"business_kpi_churnBadge": "-0.3% improvement",
+	"business_okr_currently": "Currently: {value}",
+	"business_payback_badge": "<12 months",
+	"business_cohort_month_feb24": "Feb '24",
+	"business_cohort_month_mar24": "Mar '24",
+	"business_cohort_month_apr24": "Apr '24",
+	"business_cohort_month_may24": "May '24",
+	"business_cohort_month_jun24": "Jun '24",
+	"business_revenueByPlan_customers": "{n} cust.",
+	"business_upgrade_upgrades": "+{n} upgrades",
+	"business_upgrade_downgrades": "-{n} downgrades",
+	"business_upgrade_netMrr": "Net +${value} MRR",
+
+	"users_status_online": "Online",
+	"users_status_idle": "Idle",
+	"users_status_offline": "Offline",
+
+	"language_switcher_label": "Language"
 }
