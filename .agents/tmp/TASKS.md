@@ -42,11 +42,11 @@
 - [x] 29. [MEDIUM] Replace hardcoded data in `+page.svelte` (Dashboard) with `dashboardRepository` calls — stat values, alert items
 - [x] 30. [MEDIUM] Replace hardcoded data in `dostupnost/+page.svelte` with `availabilityRepository` calls — service cards, health checks, incidents, SLA
 - [x] 31. [MEDIUM] Replace hardcoded data in `chyby/+page.svelte` with `errorsRepository` calls — KPI values, breakdown items, top endpoints, error log
-- [ ] 32. [MEDIUM] Replace hardcoded data in `databaze/+page.svelte` with `databaseRepository` calls — connection stats, queries, table sizes, error log
-- [ ] 33. [MEDIUM] Replace hardcoded data in `runtime/+page.svelte` with `runtimeRepository` calls — stats, instances, deploy history, errors
-- [ ] 34. [MEDIUM] Replace hardcoded data in `edge/+page.svelte` with `edgeRepository` calls — cache stats, TTFB regions, cache rules, WAF log
-- [ ] 35. [MEDIUM] Replace hardcoded data in `performance/+page.svelte` with `performanceRepository` calls — stats, endpoints, CWV, event log
-- [ ] 36. [MEDIUM] Replace hardcoded data in `security/+page.svelte` with `securityRepository` calls — stats, threats, blocked IPs, event log
+- [x] 32. [MEDIUM] Replace hardcoded data in `databaze/+page.svelte` with `databaseRepository` calls — connection stats, queries, table sizes, error log
+- [x] 33. [MEDIUM] Replace hardcoded data in `runtime/+page.svelte` with `runtimeRepository` calls — stats, instances, deploy history, errors
+- [x] 34. [MEDIUM] Replace hardcoded data in `edge/+page.svelte` with `edgeRepository` calls — cache stats, TTFB regions, cache rules, WAF log
+- [x] 35. [MEDIUM] Replace hardcoded data in `performance/+page.svelte` with `performanceRepository` calls — stats, endpoints, CWV, event log
+- [x] 36. [MEDIUM] Replace hardcoded data in `security/+page.svelte` with `securityRepository` calls — stats, threats, blocked IPs, event log
 - [ ] 37. [MEDIUM] Replace hardcoded data in `business/+page.svelte` with `businessRepository` calls — KPIs, chart data, funnel, OKR goals
 - [ ] 38. [MEDIUM] Replace hardcoded data in `uzivatele/+page.svelte` with `usersRepository` calls — user stats, user list, chart data
 
