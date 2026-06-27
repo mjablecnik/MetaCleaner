@@ -6,7 +6,7 @@
 
 - [x] 3. Create the Chyby & Pády (Errors & Crashes) page — Error tracking with KPI cards (5xx errors, JS errors, backend exceptions, timeouts), 5xx timeline chart, JS vs Backend bar chart, error type donut chart, top error endpoints list with progress bars, and filterable error log table with type/search/status filtering. Design files: `monitoring-errors-desktop.html`, `monitoring-errors-mobile.html`
 
-- [ ] 4. Create the Databáze / Supabase page — Database monitoring with connection pool stats (87/100), query latency (24ms), storage utilization (6.2/8 GB), DB errors count, queries/min, replication lag, locks, backup status, query latency chart, active connections chart, query types pie chart, slowest queries list, table sizes, and database error log. Design files: `monitoring-database-desktop.html`, `monitoring-database-mobile.html`
+- [x] 4. Create the Databáze / Supabase page — Database monitoring with connection pool stats (87/100), query latency (24ms), storage utilization (6.2/8 GB), DB errors count, queries/min, replication lag, locks, backup status, query latency chart, active connections chart, query types pie chart, slowest queries list, table sizes, and database error log. Design files: `monitoring-database-desktop.html`, `monitoring-database-mobile.html`
 
 - [ ] 5. Create the Runtime / Fly.io page — Application runtime monitoring with CPU (74%), RAM (1.8/4 GB), uptime (99.97%), restarts (5), active instances (3/5), network traffic, response time, deploy version, CPU/RAM time charts, instance status panel, response time chart, network chart, deploy history, runtime error log, HTTP status distribution, and requests/min chart. Design files: `monitoring-runtime-desktop.html`, `monitoring-runtime-mobile.html`
 
