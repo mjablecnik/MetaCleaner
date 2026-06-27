@@ -1,3 +1,31 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+	--color-background: #0a1628;
+	--color-card: #111d33;
+	--color-primary: #22c55e;
+	--color-secondary: #f97316;
+	--color-textMain: #ffffff;
+	--color-textSec: #94a3b8;
+	--color-error: #ef4444;
+	--color-success: #22c55e;
+	--color-badge: #1e293b;
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+	background-color: #0a1628;
+	color: #ffffff;
+	font-family: 'Inter', sans-serif;
+}
+
+::-webkit-scrollbar {
+	display: none;
+}
+
+.touch-target {
+	min-height: 44px;
+	min-width: 44px;
+}
