@@ -1,0 +1,23 @@
+# MetaCleaner Monitoring — Implementation Tasks
+
+- [x] 1. Create the Dashboard page — Main system overview with uptime stats (Frontend 99.99%, Backend API 99.95%, Error Rate 0.12%, DB Health), API response time chart, errors bar chart, server resources chart (CPU/RAM), and active alerts/incidents list. Design files: `monitoring-dashboard-desktop.html`, `monitoring-dashboard-mobile.html`
+
+- [x] 2. Create the Dostupnost (Availability) page — Service availability monitoring with 4 service uptime cards (Frontend/Backend/DB/Edge with status badges), response time chart (dual-line), health check endpoints panel (5 checks), 90-day uptime timeline bars (color-coded blocks per service), incidents log with filter tabs, SLA goals with progress bars, and quick stats (MTTR/MTBF/outages). Design files: `monitoring-availability-desktop.html`, `monitoring-availability-mobile.html`
+
+- [ ] 3. Create the Chyby & Pády (Errors & Crashes) page — Error tracking with KPI cards (5xx errors, JS errors, backend exceptions, timeouts), 5xx timeline chart, JS vs Backend bar chart, error type donut chart, top error endpoints list with progress bars, and filterable error log table with type/search/status filtering. Design files: `monitoring-errors-desktop.html`, `monitoring-errors-mobile.html`
+
+- [ ] 4. Create the Databáze / Supabase page — Database monitoring with connection pool stats (87/100), query latency (24ms), storage utilization (6.2/8 GB), DB errors count, queries/min, replication lag, locks, backup status, query latency chart, active connections chart, query types pie chart, slowest queries list, table sizes, and database error log. Design files: `monitoring-database-desktop.html`, `monitoring-database-mobile.html`
+
+- [ ] 5. Create the Runtime / Fly.io page — Application runtime monitoring with CPU (74%), RAM (1.8/4 GB), uptime (99.97%), restarts (5), active instances (3/5), network traffic, response time, deploy version, CPU/RAM time charts, instance status panel, response time chart, network chart, deploy history, runtime error log, HTTP status distribution, and requests/min chart. Design files: `monitoring-runtime-desktop.html`, `monitoring-runtime-mobile.html`
+
+- [ ] 6. Create the Edge / Cloudflare page — CDN monitoring with cache hit rate (94.2%), total requests (48.3M), saved bandwidth (2.8 TB), blocked threats (1,247), PoP count (275), TTFB (38ms), WAF rules (48), SSL status, requests chart (cache hit/miss), bandwidth chart, threat types pie, TTFB by region, HTTP status codes, cache rules performance, and WAF security log. Design files: `monitoring-edge-desktop.html`, `monitoring-edge-mobile.html`
+
+- [ ] 7. Create the Performance page — Performance analytics with Apdex score (0.94), avg response time (187ms), throughput (3,841 req/min), error rate (1.8%), RAM/CPU utilization, response time chart, throughput chart, CPU/RAM chart, error types donut, slowest endpoints (top 6), Core Web Vitals (LCP/FID/CLS), and performance event log. Design files: `monitoring-performance-desktop.html`, `monitoring-performance-mobile.html`
+
+- [ ] 8. Create the Security Signály page — Security monitoring with threat score (74/100), failed logins (1,284), blocked IPs (38), anomalies (7), port scanning stats, SQL injection attempts, security events timeline chart, geographic threat origins, attack types pie chart, active threats panel, blocked IP list, failed login chart, and security event log (47 records). Design files: `monitoring-security-desktop.html`, `monitoring-security-mobile.html`
+
+- [ ] 9. Create the Business Metriky page — Business analytics with MRR ($48,320), ARR ($579,840), active users (12,842), churn rate (2.1%), new orders, avg order value, new customers, NPS score, MRR development chart, user growth chart, LTV vs CAC, ARPU trend, user activity heatmap, MRR bridge, upgrade/downgrade funnel, daily revenue, conversion funnel, revenue by plan, churn vs new MRR, cohort retention, revenue by channel, payback period, top customers, revenue by region, and OKR goals. Design files: `monitoring-bussiness-desktop.html`, `monitoring-bussiness-mobile.html`
+
+- [ ] 10. Create the Uživatelé (Users) page — User management with total users (12,847), online users (342), new registrations (1,024), inactive users (874), registration chart, active sessions chart, tabbed user table (All/Online/New/Inactive) with avatar, name, email, status, registration date, last login, session count, location, role, and pagination. Design files: `monitoring-users-desktop.html`, `monitoring-users-mobile.html`
+
+- [ ] 11. Wire up navigation — Ensure all pages link to each other correctly via the sidebar (desktop) and drawer/bottom nav (mobile), with proper active states for the current page
