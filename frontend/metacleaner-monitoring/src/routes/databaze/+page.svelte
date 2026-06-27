@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 
 	let latencyOpen = $state(true);
@@ -203,22 +204,22 @@
 				<i class="fa-solid fa-database text-[#3ecf8e] text-sm"></i>
 			</div>
 			<div>
-				<h1 class="text-2xl font-bold text-textMain">Databáze (Supabase)</h1>
-				<p class="text-sm text-textSec mt-0.5">Produkční prostředí • Region: eu-west-1 • Posledních 24 hodin</p>
+				<h1 class="text-2xl font-bold text-textMain">{t('database_header_title')}</h1>
+				<p class="text-sm text-textSec mt-0.5">{t('database_header_subtitle')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
 			<div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				Databáze online
+				{t('database_status_online')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -229,8 +230,8 @@
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Aktivní spojení</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_activeConnections')}</h3>
+					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">87</span>
@@ -243,8 +244,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Avg. Query Latency</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_queryLatency')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-textMain">24</span>
@@ -255,8 +256,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Využití úložiště</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_storage')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">6.2</span>
@@ -269,8 +270,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">DB Chyby (24h)</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_errors')}</h3>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('common_status_critical')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-error">12</span>
@@ -287,7 +288,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Queries / min</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_queriesPerMin')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">1,842</div>
 				<p class="text-xs text-textSec mt-1">Peak: 3,210 qps (10:42)</p>
@@ -297,7 +298,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
 						<i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Replikace lag</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_replicationLag')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">18 <span class="text-sm font-normal text-textSec">ms</span></div>
 				<p class="text-xs text-textSec mt-1">Replika: eu-west-1b · OK</p>
@@ -307,7 +308,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Zámky (locks)</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_locks')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">3</div>
 				<p class="text-xs text-textSec mt-1">Deadlocks dnes: 1</p>
@@ -317,9 +318,9 @@
 					<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
 						<i class="fa-solid fa-shield-halved text-success text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Zálohy</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('database_kpi_backups')}</h3>
 				</div>
-				<div class="text-2xl font-bold text-textMain">Aktuální</div>
+				<div class="text-2xl font-bold text-textMain">{t('database_kpi_backupStatus')}</div>
 				<p class="text-xs text-textSec mt-1">Poslední: dnes 03:00 · 4.8 GB</p>
 			</div>
 		</section>
@@ -329,8 +330,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Query latency v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Průměrná latence databázových dotazů</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_queryLatency')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('database_charts_queryLatencySubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5">
@@ -346,8 +347,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Aktivní spojení v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Connection pool utilization</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_connections')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('database_charts_connectionsSubtitle')}</p>
 					</div>
 					<div class="flex items-center gap-1.5 px-2 py-1 bg-secondary/10 border border-secondary/20 rounded text-xs text-secondary">
 						<i class="fa-solid fa-triangle-exclamation text-xs"></i>
@@ -361,8 +362,8 @@
 		<!-- Query Distribution + Slow Queries -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<h3 class="text-lg font-semibold text-textMain mb-1">Typy dotazů</h3>
-				<p class="text-xs text-textSec mb-4">Distribuce SQL operací</p>
+				<h3 class="text-lg font-semibold text-textMain mb-1">{t('database_charts_queryTypes')}</h3>
+				<p class="text-xs text-textSec mb-4">{t('database_charts_queryTypesSubtitle')}</p>
 				<div id="chart-query-pie" class="h-[200px] w-full"></div>
 				<div class="mt-4 space-y-2">
 					<div class="flex items-center justify-between text-sm">
@@ -387,10 +388,10 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Nejpomalejší dotazy</h3>
-						<p class="text-xs text-textSec mt-0.5">Top 5 podle průměrné doby trvání</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('database_slowQueries_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('database_slowQueries_subtitle')}</p>
 					</div>
-					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Posledních 24h</span>
+					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('common_timeRange_last24h')}</span>
 				</div>
 				<div class="space-y-3">
 					<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
@@ -467,8 +468,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Velikost tabulek</h3>
-						<p class="text-xs text-textSec mt-0.5">Top tabulky dle velikosti</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('database_tableSizes_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('database_tableSizes_subtitle')}</p>
 					</div>
 				</div>
 				<div class="space-y-3">
@@ -517,7 +518,7 @@
 				</div>
 				<div class="mt-5 pt-4 border-t border-[#1e293b]">
 					<div class="flex justify-between text-xs text-textSec mb-2">
-						<span>Celkové úložiště</span>
+						<span>{t('database_tableSizes_totalStorage')}</span>
 						<span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
 					</div>
 					<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
@@ -530,8 +531,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Queries za minutu</h3>
-						<p class="text-xs text-textSec mt-0.5">Objem SQL dotazů v průběhu dne</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_queriesPerMin')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('database_charts_queriesPerMinSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-qps" class="h-[220px] w-full"></div>
@@ -542,19 +543,19 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
-					<h3 class="text-lg font-semibold text-textMain">Databázový error log</h3>
-					<p class="text-xs text-textSec mt-0.5">Posledních 24 hodin · 12 záznamů</p>
+					<h3 class="text-lg font-semibold text-textMain">{t('database_errorLog_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('common_timeRange_last24h')} · 12 záznamů</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
-						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">Všechny</button>
+						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Timeout</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Deadlock</button>
 						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Conn</button>
 					</div>
 					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-						<input type="text" placeholder="Hledat..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
+						<input type="text" placeholder={t('common_actions_search')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
 				</div>
 			</div>
@@ -562,12 +563,12 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-[#1e293b]">
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Čas</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Typ</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Zpráva</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Tabulka</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Trvání</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">Status</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_message')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('database_table_columnTable')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_duration')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
@@ -577,7 +578,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection pool exhausted – max 100 connections reached</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
 							<td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:58:04</td>
@@ -585,7 +586,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Deadlock detected between transactions T1 and T2</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">products</td>
 							<td class="py-3 pr-4 text-textSec text-xs font-mono">—</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:21:39</td>
@@ -593,7 +594,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection reset by peer during large SELECT query</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">analytics</td>
 							<td class="py-3 pr-4 text-secondary text-xs font-mono">8,200 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:44:17</td>
@@ -601,7 +602,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Query timeout on full table scan – missing index on user_id</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">events</td>
 							<td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:05:52</td>
@@ -609,7 +610,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Row-level lock wait exceeded 10s on UPDATE statement</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
 							<td class="py-3 pr-4 text-textSec text-xs font-mono">10,140 ms</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">09:30:08</td>
@@ -617,7 +618,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Replication lag spike to 480ms detected on standby replica</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">—</td>
 							<td class="py-3 pr-4 text-textSec text-xs font-mono">480 ms lag</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -637,7 +638,7 @@
 				<i class="fa-solid fa-database text-[#3ecf8e] text-xs"></i>
 			</div>
 			<div>
-				<h1 class="text-sm font-bold text-textMain leading-tight">Databáze (Supabase)</h1>
+				<h1 class="text-sm font-bold text-textMain leading-tight">{t('database_header_title')}</h1>
 				<p class="text-xs text-textSec">eu-west-1 · Prod</p>
 			</div>
 		</div>
@@ -647,16 +648,16 @@
 	<div class="px-4 pb-3">
 		<div class="flex items-center gap-2 px-3 py-2 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium w-fit">
 			<div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-			Databáze online
+			{t('database_status_online')}
 		</div>
 	</div>
 
 	<!-- Time range selector -->
 	<div class="px-4 pb-4">
 		<select class="w-full bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
-			<option>Posledních 24 hodin</option>
-			<option>Posledních 7 dní</option>
-			<option>Posledních 30 dní</option>
+			<option>{t('common_timeRange_last24h')}</option>
+			<option>{t('common_timeRange_last7d')}</option>
+			<option>{t('common_timeRange_last30d')}</option>
 		</select>
 	</div>
 
@@ -666,7 +667,7 @@
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">Aktivní spojení</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_activeConnections')}</h3>
 					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">!</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
@@ -681,7 +682,7 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">Avg Latency</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_queryLatency')}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
 				</div>
 				<div class="flex items-end gap-1 mb-1">
@@ -694,7 +695,7 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">Úložiště</h3>
+					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_storage')}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
@@ -709,8 +710,8 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">DB Chyby (24h)</h3>
-					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">Krit.</span>
+					<h3 class="text-textSec text-xs font-medium">{t('database_kpi_errors')}</h3>
+					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">{t('common_status_critical')}</span>
 				</div>
 				<div class="flex items-end gap-1 mb-1">
 					<span class="text-2xl font-bold text-error">12</span>
@@ -727,7 +728,7 @@
 					<i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
 				</div>
 				<div class="text-lg font-bold text-textMain">1,842</div>
-				<p class="text-[10px] text-textSec mt-0.5">Queries / min</p>
+				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_queriesPerMin')}</p>
 				<p class="text-[10px] text-textSec">Peak: 3,210 qps</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
@@ -735,7 +736,7 @@
 					<i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
 				</div>
 				<div class="text-lg font-bold text-textMain">18 <span class="text-xs font-normal text-textSec">ms</span></div>
-				<p class="text-[10px] text-textSec mt-0.5">Replikace lag</p>
+				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_replicationLag')}</p>
 				<p class="text-[10px] text-textSec">eu-west-1b · OK</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
@@ -743,15 +744,15 @@
 					<i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
 				</div>
 				<div class="text-lg font-bold text-textMain">3</div>
-				<p class="text-[10px] text-textSec mt-0.5">Zámky (locks)</p>
+				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_locks')}</p>
 				<p class="text-[10px] text-textSec">Deadlocks: 1</p>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
 				<div class="w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center mb-2">
 					<i class="fa-solid fa-shield-halved text-success text-xs"></i>
 				</div>
-				<div class="text-base font-bold text-textMain">Aktuální</div>
-				<p class="text-[10px] text-textSec mt-0.5">Zálohy</p>
+				<div class="text-base font-bold text-textMain">{t('database_kpi_backupStatus')}</div>
+				<p class="text-[10px] text-textSec mt-0.5">{t('database_kpi_backups')}</p>
 				<p class="text-[10px] text-textSec">03:00 · 4.8 GB</p>
 			</div>
 		</section>
@@ -766,8 +767,8 @@
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
 				>
 					<div>
-						<h3 class="text-sm font-semibold text-textMain">Query latency v čase</h3>
-						<p class="text-[10px] text-textSec mt-0.5">Průměrná latence databázových dotazů</p>
+						<h3 class="text-sm font-semibold text-textMain">{t('database_charts_queryLatency')}</h3>
+						<p class="text-[10px] text-textSec mt-0.5">{t('database_charts_queryLatencySubtitle')}</p>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="flex gap-1.5">
@@ -791,8 +792,8 @@
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
 				>
 					<div>
-						<h3 class="text-sm font-semibold text-textMain">Aktivní spojení v čase</h3>
-						<p class="text-[10px] text-textSec mt-0.5">Connection pool utilization</p>
+						<h3 class="text-sm font-semibold text-textMain">{t('database_charts_connections')}</h3>
+						<p class="text-[10px] text-textSec mt-0.5">{t('database_charts_connectionsSubtitle')}</p>
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="flex items-center gap-1 px-2 py-1 bg-secondary/10 border border-secondary/20 rounded text-[10px] text-secondary">
@@ -815,8 +816,8 @@
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
 				>
 					<div>
-						<h3 class="text-sm font-semibold text-textMain">Queries za minutu</h3>
-						<p class="text-[10px] text-textSec mt-0.5">Objem SQL dotazů v průběhu dne</p>
+						<h3 class="text-sm font-semibold text-textMain">{t('database_charts_queriesPerMin')}</h3>
+						<p class="text-[10px] text-textSec mt-0.5">{t('database_charts_queriesPerMinSubtitle')}</p>
 					</div>
 					<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {qpsOpen ? 'rotate-180' : ''}"></i>
 				</button>
@@ -835,8 +836,8 @@
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
 			>
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Typy dotazů</h3>
-					<p class="text-[10px] text-textSec mt-0.5">Distribuce SQL operací</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('database_charts_queryTypes')}</h3>
+					<p class="text-[10px] text-textSec mt-0.5">{t('database_charts_queryTypesSubtitle')}</p>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {queryTypesOpen ? 'rotate-180' : ''}"></i>
 			</button>
@@ -872,8 +873,8 @@
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
 			>
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Nejpomalejší dotazy</h3>
-					<p class="text-[10px] text-textSec mt-0.5">Top 5 · Posledních 24h</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('database_slowQueries_title')}</h3>
+					<p class="text-[10px] text-textSec mt-0.5">Top 5 · {t('common_timeRange_last24h')}</p>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {slowQueriesOpen ? 'rotate-180' : ''}"></i>
 			</button>
@@ -930,8 +931,8 @@
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
 			>
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Velikost tabulek</h3>
-					<p class="text-[10px] text-textSec mt-0.5">Top tabulky dle velikosti</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('database_tableSizes_title')}</h3>
+					<p class="text-[10px] text-textSec mt-0.5">{t('database_tableSizes_subtitle')}</p>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {tableSizesOpen ? 'rotate-180' : ''}"></i>
 			</button>
@@ -981,7 +982,7 @@
 					</div>
 					<div class="mt-2 pt-4 border-t border-[#1e293b]">
 						<div class="flex justify-between text-xs text-textSec mb-2">
-							<span>Celkové úložiště</span>
+							<span>{t('database_tableSizes_totalStorage')}</span>
 							<span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
 						</div>
 						<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
@@ -998,19 +999,19 @@
 			<div class="px-4 pt-4 pb-3 border-b border-[#1e293b]">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<h3 class="text-sm font-semibold text-textMain">Databázový error log</h3>
-						<p class="text-[10px] text-textSec mt-0.5">Posledních 24 hodin · 12 záznamů</p>
+						<h3 class="text-sm font-semibold text-textMain">{t('database_errorLog_title')}</h3>
+						<p class="text-[10px] text-textSec mt-0.5">{t('common_timeRange_last24h')} · 12 záznamů</p>
 					</div>
 				</div>
 				<div class="flex gap-2 mb-3 overflow-x-auto pb-1">
-					<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0">Všechny</button>
+					<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0">{t('common_status_all')}</button>
 					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Timeout</button>
 					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Deadlock</button>
 					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Conn</button>
 				</div>
 				<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2.5">
 					<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-					<input type="text" placeholder="Hledat v logu..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
+					<input type="text" placeholder={t('common_actions_search')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 				</div>
 			</div>
 
@@ -1019,7 +1020,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-							<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded">Aktivní</span>
+							<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded">{t('common_status_active')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">14:32:11</span>
 					</div>
@@ -1034,7 +1035,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Deadlock</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">13:58:04</span>
 					</div>
@@ -1049,7 +1050,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-[10px] rounded font-medium">Conn</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">13:21:39</span>
 					</div>
@@ -1064,7 +1065,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">12:44:17</span>
 					</div>
@@ -1079,7 +1080,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Lock</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">11:05:52</span>
 					</div>
@@ -1094,7 +1095,7 @@
 					<div class="flex items-start justify-between gap-2 mb-1">
 						<div class="flex items-center gap-2 flex-wrap">
 							<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-[10px] rounded font-medium">Repl</span>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
+							<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">{t('common_status_resolved')}</span>
 						</div>
 						<span class="text-[10px] text-textSec font-mono flex-shrink-0">09:30:08</span>
 					</div>
@@ -1113,23 +1114,23 @@
 	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
-			<span class="text-[9px] font-medium">Dashboard</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_dashboard')}</span>
 		</a>
 		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
-			<span class="text-[9px] font-medium">Dostupnost</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_availability')}</span>
 		</a>
 		<a href="{base}/databaze" class="flex flex-col items-center gap-1 px-3 py-2 text-[#3ecf8e] min-w-[44px]">
 			<i class="fa-solid fa-database text-base"></i>
-			<span class="text-[9px] font-semibold">Databáze</span>
+			<span class="text-[9px] font-semibold">{t('layout_nav_database')}</span>
 		</a>
 		<a href="{base}/performance" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-bolt text-base"></i>
-			<span class="text-[9px] font-medium">Perf.</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_performance')}</span>
 		</a>
 		<a href="{base}/nastaveni" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gear text-base"></i>
-			<span class="text-[9px] font-medium">Nastavení</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_settings')}</span>
 		</a>
 	</nav>
 

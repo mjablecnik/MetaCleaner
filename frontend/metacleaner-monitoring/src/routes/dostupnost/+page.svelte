@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
+	import { t } from '$lib/i18n';
 
 	let hcOpen = $state(false);
 	let utOpen = $state(true);
@@ -158,27 +159,27 @@
 		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex items-center justify-between gap-4"
 	>
 		<div>
-			<h1 class="text-2xl font-bold text-textMain">Dostupnost služeb</h1>
-			<p class="text-sm text-textSec mt-1">Produkční prostředí • Monitoring v reálném čase</p>
+			<h1 class="text-2xl font-bold text-textMain">{t('availability_header_title')}</h1>
+			<p class="text-sm text-textSec mt-1">{t('availability_header_subtitle')}</p>
 		</div>
 		<div class="flex items-center gap-3">
 			<div
 				class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium"
 			>
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				Všechny systémy operativní
+				{t('common_status_allSystemsOperational')}
 			</div>
 			<select
 				class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-1.5 focus:outline-none"
 			>
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button
 				class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
 			>
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -201,7 +202,7 @@
 				</div>
 				<div class="pl-1">
 					<span class="text-4xl font-bold text-textMain">99.99<span class="text-2xl">%</span></span>
-					<p class="text-xs text-textSec mt-2">Posledních 30 dní</p>
+					<p class="text-xs text-textSec mt-2">{t('common_timeRange_last30d')}</p>
 					<div class="mt-3 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
 						<div class="h-full bg-success rounded-full" style="width:99.99%"></div>
 					</div>
@@ -227,7 +228,7 @@
 				</div>
 				<div class="pl-1">
 					<span class="text-4xl font-bold text-textMain">99.95<span class="text-2xl">%</span></span>
-					<p class="text-xs text-textSec mt-2">Posledních 30 dní</p>
+					<p class="text-xs text-textSec mt-2">{t('common_timeRange_last30d')}</p>
 					<div class="mt-3 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
 						<div class="h-full bg-success rounded-full" style="width:99.95%"></div>
 					</div>
@@ -253,7 +254,7 @@
 				</div>
 				<div class="pl-1">
 					<span class="text-4xl font-bold text-textMain">99.97<span class="text-2xl">%</span></span>
-					<p class="text-xs text-textSec mt-2">Posledních 30 dní</p>
+					<p class="text-xs text-textSec mt-2">{t('common_timeRange_last30d')}</p>
 					<div class="mt-3 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
 						<div class="h-full bg-success rounded-full" style="width:99.97%"></div>
 					</div>
@@ -279,7 +280,7 @@
 				</div>
 				<div class="pl-1">
 					<span class="text-4xl font-bold text-textMain">99.82<span class="text-2xl">%</span></span>
-					<p class="text-xs text-textSec mt-2">Posledních 30 dní</p>
+					<p class="text-xs text-textSec mt-2">{t('common_timeRange_last30d')}</p>
 					<div class="mt-3 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
 						<div class="h-full bg-secondary rounded-full" style="width:99.82%"></div>
 					</div>
@@ -297,8 +298,8 @@
 			<div class="col-span-2 bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center justify-between gap-3 mb-5">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Response Time (p95)</h3>
-						<p class="text-xs text-textSec mt-1">Průměrná odezva posledních 24 hodin</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('availability_charts_responseTime')}</h3>
+						<p class="text-xs text-textSec mt-1">{t('availability_charts_responseTimeSubtitle')}</p>
 					</div>
 					<div class="flex gap-4 text-sm">
 						<div class="flex items-center gap-2">
@@ -317,8 +318,8 @@
 			<!-- Health Checks -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center justify-between mb-5">
-					<h3 class="text-lg font-semibold text-textMain">Health Checks</h3>
-					<span class="text-xs text-textSec">Každých 60s</span>
+					<h3 class="text-lg font-semibold text-textMain">{t('availability_health_title')}</h3>
+					<span class="text-xs text-textSec">{t('availability_health_interval')}</span>
 				</div>
 				<div class="space-y-3">
 					<div
@@ -397,9 +398,9 @@
 						</div>
 					</div>
 					<div class="mt-4 pt-3 border-t border-[#1e293b] flex items-center justify-between">
-						<span class="text-xs text-textSec">Posl. kontrola: před 12s</span>
+						<span class="text-xs text-textSec">{t('availability_health_lastCheck')}</span>
 						<button class="text-xs text-primary hover:underline font-medium">
-							<i class="fa-solid fa-rotate-right mr-1"></i>Obnovit
+							<i class="fa-solid fa-rotate-right mr-1"></i>{t('common_actions_refresh')}
 						</button>
 					</div>
 				</div>
@@ -411,23 +412,23 @@
 			<div class="flex items-center justify-between gap-3 mb-6">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">
-						Historie dostupnosti — Posledních 90 dní
+						{t('availability_timeline_title')}
 					</h3>
-					<p class="text-xs text-textSec mt-1">Každý blok = 1 den. Najeďte myší pro detaily.</p>
+					<p class="text-xs text-textSec mt-1">{t('availability_timeline_subtitle')}</p>
 				</div>
 				<div class="flex items-center gap-4 text-xs text-textSec">
 					<div class="flex items-center gap-1.5">
-						<span class="w-3 h-3 rounded-sm bg-success inline-block"></span>Provoz
+						<span class="w-3 h-3 rounded-sm bg-success inline-block"></span>{t('availability_timeline_up')}
 					</div>
 					<div class="flex items-center gap-1.5">
-						<span class="w-3 h-3 rounded-sm bg-secondary inline-block"></span>Degradace
+						<span class="w-3 h-3 rounded-sm bg-secondary inline-block"></span>{t('availability_timeline_degraded')}
 					</div>
 					<div class="flex items-center gap-1.5">
-						<span class="w-3 h-3 rounded-sm bg-error inline-block"></span>Výpadek
+						<span class="w-3 h-3 rounded-sm bg-error inline-block"></span>{t('availability_timeline_down')}
 					</div>
 					<div class="flex items-center gap-1.5">
 						<span class="w-3 h-3 rounded-sm bg-[#1e293b] border border-[#334155] inline-block"
-						></span>Bez dat
+						></span>{t('availability_timeline_noData')}
 					</div>
 				</div>
 			</div>
@@ -440,12 +441,12 @@
 							<i class="fa-solid fa-desktop text-textSec text-xs"></i>
 							<span class="text-sm font-medium text-textMain">Frontend (Vercel)</span>
 						</div>
-						<span class="text-sm font-semibold text-success">99.99% uptime</span>
+						<span class="text-sm font-semibold text-success">99.99% {t('common_labels_uptime')}</span>
 					</div>
 					<div class="flex gap-0.5 items-end" id="bar-frontend"></div>
 					<div class="flex justify-between mt-1">
-						<span class="text-xs text-textSec">před 90 dny</span>
-						<span class="text-xs text-textSec">dnes</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_daysAgo')}</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_today')}</span>
 					</div>
 				</div>
 
@@ -456,12 +457,12 @@
 							<i class="fa-solid fa-server text-textSec text-xs"></i>
 							<span class="text-sm font-medium text-textMain">Backend API (Fly.io)</span>
 						</div>
-						<span class="text-sm font-semibold text-success">99.95% uptime</span>
+						<span class="text-sm font-semibold text-success">99.95% {t('common_labels_uptime')}</span>
 					</div>
 					<div class="flex gap-0.5 items-end" id="bar-backend"></div>
 					<div class="flex justify-between mt-1">
-						<span class="text-xs text-textSec">před 90 dny</span>
-						<span class="text-xs text-textSec">dnes</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_daysAgo')}</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_today')}</span>
 					</div>
 				</div>
 
@@ -472,12 +473,12 @@
 							<i class="fa-solid fa-database text-textSec text-xs"></i>
 							<span class="text-sm font-medium text-textMain">Databáze (Supabase)</span>
 						</div>
-						<span class="text-sm font-semibold text-success">99.97% uptime</span>
+						<span class="text-sm font-semibold text-success">99.97% {t('common_labels_uptime')}</span>
 					</div>
 					<div class="flex gap-0.5 items-end" id="bar-db"></div>
 					<div class="flex justify-between mt-1">
-						<span class="text-xs text-textSec">před 90 dny</span>
-						<span class="text-xs text-textSec">dnes</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_daysAgo')}</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_today')}</span>
 					</div>
 				</div>
 
@@ -488,12 +489,12 @@
 							<i class="fa-solid fa-cloud text-textSec text-xs"></i>
 							<span class="text-sm font-medium text-textMain">Edge CDN (Cloudflare)</span>
 						</div>
-						<span class="text-sm font-semibold text-secondary">99.82% uptime</span>
+						<span class="text-sm font-semibold text-secondary">99.82% {t('common_labels_uptime')}</span>
 					</div>
 					<div class="flex gap-0.5 items-end" id="bar-cf"></div>
 					<div class="flex justify-between mt-1">
-						<span class="text-xs text-textSec">před 90 dny</span>
-						<span class="text-xs text-textSec">dnes</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_daysAgo')}</span>
+						<span class="text-xs text-textSec">{t('availability_timeline_today')}</span>
 					</div>
 				</div>
 			</div>
@@ -504,19 +505,19 @@
 			<!-- Incident Log -->
 			<div class="col-span-2 bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex items-center justify-between mb-5">
-					<h3 class="text-lg font-semibold text-textMain">Výpadky & Incidenty</h3>
+					<h3 class="text-lg font-semibold text-textMain">{t('availability_incidents_title')}</h3>
 					<div class="flex gap-2">
 						<button
 							class="px-3 py-1 text-xs bg-[#1e293b] text-textMain rounded-lg border border-[#334155] font-medium"
-							>Všechny</button
+							>{t('common_status_all')}</button
 						>
 						<button
 							class="px-3 py-1 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors"
-							>Aktivní</button
+							>{t('common_status_active')}</button
 						>
 						<button
 							class="px-3 py-1 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors"
-							>Vyřešené</button
+							>{t('common_status_resolved')}</button
 						>
 					</div>
 				</div>
@@ -678,7 +679,7 @@
 			<div class="space-y-4">
 				<!-- SLA Card -->
 				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-					<h3 class="text-base font-semibold text-textMain mb-4">SLA Cíle (tento měsíc)</h3>
+					<h3 class="text-base font-semibold text-textMain mb-4">{t('availability_sla_title')}</h3>
 					<div class="space-y-4">
 						<div>
 							<div class="flex justify-between items-center mb-1.5">
@@ -725,31 +726,31 @@
 
 				<!-- Quick Stats -->
 				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-					<h3 class="text-base font-semibold text-textMain mb-4">Rychlé statistiky</h3>
+					<h3 class="text-base font-semibold text-textMain mb-4">{t('availability_quickStats_title')}</h3>
 					<div class="space-y-3">
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">Celkové výpadky (30d)</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_totalOutages')}</span>
 							<span class="text-sm font-semibold text-textMain">8</span>
 						</div>
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">MTTR (průměr)</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_mttr')}</span>
 							<span class="text-sm font-semibold text-textMain">6m 34s</span>
 						</div>
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">MTBF (průměr)</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_mtbf')}</span>
 							<span class="text-sm font-semibold text-textMain">8.4 dní</span>
 						</div>
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">Nejdelší výpadek</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_longestOutage')}</span>
 							<span class="text-sm font-semibold text-error">18m 5s</span>
 						</div>
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">Check interval</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_checkInterval')}</span>
 							<span class="text-sm font-semibold text-textMain">60s</span>
 						</div>
 						<div class="h-px bg-[#1e293b] my-1"></div>
 						<div class="flex justify-between items-center">
-							<span class="text-sm text-textSec">Alerty odesláno</span>
+							<span class="text-sm text-textSec">{t('availability_quickStats_alertsSent')}</span>
 							<span class="text-sm font-semibold text-textMain">12</span>
 						</div>
 					</div>
@@ -764,8 +765,8 @@
 	<!-- Mobile page title in top bar is handled by layout; add page title below top bar -->
 	<div class="px-4 pt-4 space-y-4">
 		<div>
-			<h1 class="text-xl font-bold text-textMain">Dostupnost služeb</h1>
-			<p class="text-sm text-textSec mt-0.5">Produkční prostředí • Reálný čas</p>
+			<h1 class="text-xl font-bold text-textMain">{t('availability_header_title')}</h1>
+			<p class="text-sm text-textSec mt-0.5">{t('availability_header_subtitleMobile')}</p>
 		</div>
 
 		<!-- Status Banner -->
@@ -776,7 +777,7 @@
 				<i class="fa-solid fa-triangle-exclamation text-secondary text-sm"></i>
 			</div>
 			<div class="flex-1 min-w-0">
-				<p class="text-sm font-semibold text-textMain">Aktivní incident</p>
+				<p class="text-sm font-semibold text-textMain">{t('availability_status_activeIncident')}</p>
 				<p class="text-xs text-textSec truncate">Zvýšená latence Edge CDN · Trvá 2h 18m</p>
 			</div>
 			<i class="fa-solid fa-chevron-right text-textSec text-xs flex-shrink-0"></i>
@@ -787,15 +788,15 @@
 			class="w-full bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none"
 			style="min-height:44px"
 		>
-			<option>Posledních 24 hodin</option>
-			<option>Posledních 7 dní</option>
-			<option>Posledních 30 dní</option>
+			<option>{t('common_timeRange_last24h')}</option>
+			<option>{t('common_timeRange_last7d')}</option>
+			<option>{t('common_timeRange_last30d')}</option>
 		</select>
 
 		<!-- Summary Cards 2x2 -->
 		<section>
 			<h2 class="text-xs font-semibold text-textSec uppercase tracking-wider mb-3">
-				Přehled dostupnosti
+				{t('availability_overview_title')}
 			</h2>
 			<div class="grid grid-cols-2 gap-3">
 				<!-- Frontend -->
@@ -900,8 +901,8 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-1">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Response Time (p95)</h3>
-					<p class="text-xs text-textSec mt-0.5">Posledních 24 hodin</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('availability_charts_responseTime')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('common_timeRange_last24h')}</p>
 				</div>
 				<div class="flex gap-3 text-xs">
 					<div class="flex items-center gap-1.5">
@@ -925,11 +926,11 @@
 				onclick={() => (hcOpen = !hcOpen)}
 			>
 				<div class="flex items-center gap-2">
-					<h3 class="text-sm font-semibold text-textMain">Health Checks</h3>
-					<span class="text-xs text-textSec bg-[#1e293b] px-2 py-0.5 rounded-full">5 endpointů</span>
+					<h3 class="text-sm font-semibold text-textMain">{t('availability_health_title')}</h3>
+					<span class="text-xs text-textSec bg-[#1e293b] px-2 py-0.5 rounded-full">{t('availability_health_endpoints', { count: 5 })}</span>
 				</div>
 				<div class="flex items-center gap-2">
-					<span class="text-xs text-textSec">Každých 60s</span>
+					<span class="text-xs text-textSec">{t('availability_health_interval')}</span>
 					<i
 						class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {hcOpen
 							? 'rotate-180'

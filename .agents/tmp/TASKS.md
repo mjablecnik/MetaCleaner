@@ -24,11 +24,11 @@
 
 ## Phase 3 — Extract static UI strings to i18n
 
-- [ ] 17. [MEDIUM] Extract hardcoded strings from `src/routes/+layout.svelte` to translation keys — 14 strings (nav labels, settings, aria-labels)
-- [ ] 18. [MEDIUM] Extract hardcoded strings from `src/routes/+page.svelte` (Dashboard) to translation keys — ~40 strings (header, stats, chart titles, alerts section, select options)
-- [ ] 19. [MEDIUM] Extract hardcoded strings from `src/routes/dostupnost/+page.svelte` (Availability) to translation keys — ~107 strings (header, service cards, health checks, timeline, incidents, SLA)
-- [ ] 20. [MEDIUM] Extract hardcoded strings from `src/routes/chyby/+page.svelte` (Errors) to translation keys — ~44 strings (header, KPI cards, chart titles, breakdown, log section)
-- [ ] 21. [MEDIUM] Extract hardcoded strings from `src/routes/databaze/+page.svelte` (Database) to translation keys — ~82 strings (header, stats, charts, queries, table sizes, error log)
+- [x] 17. [MEDIUM] Extract hardcoded strings from `src/routes/+layout.svelte` to translation keys — 14 strings (nav labels, settings, aria-labels)
+- [x] 18. [MEDIUM] Extract hardcoded strings from `src/routes/+page.svelte` (Dashboard) to translation keys — ~40 strings (header, stats, chart titles, alerts section, select options)
+- [x] 19. [MEDIUM] Extract hardcoded strings from `src/routes/dostupnost/+page.svelte` (Availability) to translation keys — ~107 strings (header, service cards, health checks, timeline, incidents, SLA)
+- [x] 20. [MEDIUM] Extract hardcoded strings from `src/routes/chyby/+page.svelte` (Errors) to translation keys — ~44 strings (header, KPI cards, chart titles, breakdown, log section)
+- [x] 21. [MEDIUM] Extract hardcoded strings from `src/routes/databaze/+page.svelte` (Database) to translation keys — ~82 strings (header, stats, charts, queries, table sizes, error log)
 - [ ] 22. [MEDIUM] Extract hardcoded strings from `src/routes/runtime/+page.svelte` (Runtime) to translation keys — ~80 strings (header, stats, charts, instances, deploys, errors)
 - [ ] 23. [MEDIUM] Extract hardcoded strings from `src/routes/edge/+page.svelte` (Edge) to translation keys — ~86 strings (header, stats, charts, TTFB, cache rules, WAF log)
 - [ ] 24. [MEDIUM] Extract hardcoded strings from `src/routes/performance/+page.svelte` (Performance) to translation keys — ~115 strings (header, stats, charts, endpoints, CWV, event log)

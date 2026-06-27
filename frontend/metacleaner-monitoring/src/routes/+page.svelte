@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 
 	onMount(() => {
 		const Plotly = (window as any).Plotly;
@@ -137,20 +138,20 @@
 	class="hidden lg:flex sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 items-center justify-between gap-4"
 >
 	<div>
-		<h1 class="text-2xl font-bold text-textMain">Přehled systému (MVP)</h1>
-		<p class="text-sm text-textSec mt-1">Produkční prostředí • Posledních 24 hodin</p>
+		<h1 class="text-2xl font-bold text-textMain">{t('dashboard_header_title')}</h1>
+		<p class="text-sm text-textSec mt-1">{t('dashboard_header_subtitle')}</p>
 	</div>
 	<div class="flex items-center gap-3">
 		<div
 			class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium"
 		>
 			<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-			Všechny systémy operativní
+			{t('common_status_allSystemsOperational')}
 		</div>
 		<button
 			class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
 		>
-			<i class="fa-solid fa-download mr-2"></i>Export
+			<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 		</button>
 	</div>
 </header>
@@ -158,14 +159,14 @@
 <!-- Mobile page title area -->
 <div class="lg:hidden p-4 space-y-3">
 	<div>
-		<h1 class="text-2xl font-bold text-textMain">Přehled systému</h1>
-		<p class="text-sm text-textSec mt-1">Produkce • Posledních 24h</p>
+		<h1 class="text-2xl font-bold text-textMain">{t('dashboard_header_titleMobile')}</h1>
+		<p class="text-sm text-textSec mt-1">{t('dashboard_header_subtitleMobile')}</p>
 	</div>
 	<div
 		class="flex items-center gap-2 px-3 py-2.5 bg-success/10 border border-success/20 rounded-xl text-success text-sm font-medium w-full"
 	>
 		<div class="w-2.5 h-2.5 rounded-full bg-success animate-pulse shrink-0"></div>
-		Všechny systémy operativní
+		{t('common_status_allSystemsOperational')}
 	</div>
 </div>
 
@@ -177,7 +178,7 @@
 		<!-- Uptime Frontend -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">Uptime (Frontend)</h3>
+				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_uptimeFrontend')}</h3>
 				<i class="fa-solid fa-desktop text-textSec lg:text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
@@ -191,7 +192,7 @@
 		<!-- Uptime Backend -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">Uptime (Backend API)</h3>
+				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_uptimeBackend')}</h3>
 				<i class="fa-solid fa-server text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
@@ -205,7 +206,7 @@
 		<!-- Error Rate -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">Error Rate (5xx)</h3>
+				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_errorRate')}</h3>
 				<i class="fa-solid fa-bug text-error bg-error/10 p-2 rounded-lg"></i>
 			</div>
 			<div class="flex items-end gap-2">
@@ -214,21 +215,21 @@
 					class="text-sm font-medium text-success mb-1 flex items-center bg-success/10 px-1.5 py-0.5 rounded lg:bg-transparent lg:px-0 lg:py-0"
 				>-0.05%</span>
 			</div>
-			<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">Dnes zaznamenáno 42 chyb</p>
+			<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">{t('dashboard_stats_errorRateSubtextMobile')}</p>
 		</div>
 
 		<!-- DB Health -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">DB Health</h3>
+				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_dbHealth')}</h3>
 				<i class="fa-solid fa-database text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
-				<span class="text-3xl font-bold text-success tracking-tight lg:text-textMain">Healthy</span>
+				<span class="text-3xl font-bold text-success tracking-tight lg:text-textMain">{t('common_status_healthy')}</span>
 			</div>
 			<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">
-				<span class="lg:hidden">Průměrná latence: ~45ms</span>
-				<span class="hidden lg:inline">Latence: ~45ms</span>
+				<span class="lg:hidden">{t('dashboard_stats_dbHealthSubtextMobile')}</span>
+				<span class="hidden lg:inline">{t('dashboard_stats_dbHealthSubtextDesktop')}</span>
 			</p>
 		</div>
 	</section>
@@ -239,7 +240,7 @@
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex justify-between items-start lg:items-center mb-4 lg:mb-6">
 				<div>
-					<h3 class="text-base lg:text-lg font-semibold text-textMain">API Response Time</h3>
+					<h3 class="text-base lg:text-lg font-semibold text-textMain">{t('dashboard_charts_responseTime')}</h3>
 					<div class="flex items-baseline gap-1 mt-1 lg:hidden">
 						<span class="text-2xl font-bold text-textMain">285</span>
 						<span class="text-sm text-textSec">ms (p95)</span>
@@ -256,16 +257,16 @@
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 mb-4 lg:mb-6">
 				<h3 class="text-base lg:text-lg font-semibold text-textMain">
-					Chyby & Pády
-					<span class="hidden lg:inline">(Frontend + Backend)</span>
+					{t('dashboard_charts_errors')}
+					<span class="hidden lg:inline">{t('dashboard_charts_errorsSuffix')}</span>
 				</h3>
 				<div class="relative lg:static">
 					<select
 						class="w-full lg:w-auto appearance-none bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-xl lg:rounded-md px-4 lg:px-3 py-3 lg:py-1.5 pr-10 lg:pr-3 focus:outline-none touch-target lg:min-h-0"
 					>
-						<option>Všechny</option>
+						<option>{t('common_status_all')}</option>
 						<option>5xx</option>
-						<option>JS Errors</option>
+						<option>{t('dashboard_filters_jsErrors')}</option>
 					</select>
 					<div
 						class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-textSec lg:hidden"
@@ -283,7 +284,7 @@
 		<!-- Server Resources -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex justify-between items-center mb-4 lg:mb-6">
-				<h3 class="text-base lg:text-lg font-semibold text-textMain">Server Zdroje (Fly.io)</h3>
+				<h3 class="text-base lg:text-lg font-semibold text-textMain">{t('dashboard_charts_serverResources')}</h3>
 				<div
 					class="flex gap-4 text-sm bg-[#1e293b]/50 lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"
 				>
@@ -303,7 +304,7 @@
 		<!-- DB Latency (desktop only) -->
 		<div class="hidden lg:block bg-card border border-[#1e293b] rounded-xl p-5">
 			<div class="flex justify-between items-center mb-6">
-				<h3 class="text-lg font-semibold text-textMain">DB Latence & Připojení</h3>
+				<h3 class="text-lg font-semibold text-textMain">{t('dashboard_charts_dbLatency')}</h3>
 				<span class="px-2 py-1 bg-badge rounded text-xs text-textMain">Supabase</span>
 			</div>
 			<div id="chart-db" class="h-[250px] w-full"></div>
@@ -314,12 +315,12 @@
 	<section class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 		<div class="flex justify-between items-center mb-4 lg:mb-6">
 			<h3 class="text-base lg:text-lg font-semibold text-textMain">
-				Aktivní Alerty
-				<span class="hidden lg:inline">& Nedávné Incidenty</span>
+				{t('dashboard_alerts_title')}
+				<span class="hidden lg:inline">{t('dashboard_alerts_titleSuffix')}</span>
 			</h3>
 			<button class="text-sm font-medium text-textSec hover:text-textMain transition-colors">
-				<span class="lg:hidden">Vše</span>
-				<span class="hidden lg:inline">Zobrazit vše</span>
+				<span class="lg:hidden">{t('common_status_all')}</span>
+				<span class="hidden lg:inline">{t('common_actions_showAll')}</span>
 			</button>
 		</div>
 

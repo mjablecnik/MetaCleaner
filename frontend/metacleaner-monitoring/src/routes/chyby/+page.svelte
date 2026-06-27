@@ -1,10 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
+	import { t } from '$lib/i18n';
 
 	let breakdownOpen = $state(true);
 	let endpointsOpen = $state(true);
-	let activeFilter = $state('Všechny');
+	let activeFilter = $state('all');
+
+	const errorFilters = [
+		{ value: 'all', labelKey: 'errors_filters_all' },
+		{ value: '5xx', labelKey: 'errors_filters_5xx' },
+		{ value: 'js', labelKey: 'errors_filters_js' },
+		{ value: 'backend', labelKey: 'errors_filters_backend' },
+		{ value: 'timeout', labelKey: 'errors_filters_timeout' }
+	];
 
 	onMount(() => {
 		const Plotly = (window as any).Plotly;
@@ -208,27 +217,27 @@
 		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
 	>
 		<div>
-			<h1 class="text-2xl font-bold text-textMain">Chyby &amp; Pády</h1>
-			<p class="text-sm text-textSec mt-1">Produkční prostředí • Posledních 24 hodin</p>
+			<h1 class="text-2xl font-bold text-textMain">{t('errors_header_title')}</h1>
+			<p class="text-sm text-textSec mt-1">{t('errors_header_subtitle')}</p>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
 			<div
 				class="flex items-center gap-2 px-3 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-sm font-medium"
 			>
 				<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-				2 aktivní incidenty
+				2 {t('errors_status_activeIncidents')}
 			</div>
 			<select
 				class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none"
 			>
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button
 				class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
 			>
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -238,9 +247,9 @@
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">5xx Chyby (24h)</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_5xx')}</h3>
 					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium"
-						>Kritické</span
+						>{t('common_status_critical')}</span
 					>
 				</div>
 				<div class="flex items-end gap-2">
@@ -253,9 +262,9 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">JS Errors (Frontend)</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_jsErrors')}</h3>
 					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium"
-						>Varování</span
+						>{t('common_status_warning')}</span
 					>
 				</div>
 				<div class="flex items-end gap-2">
@@ -268,9 +277,9 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Backend Exceptions</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_backendExceptions')}</h3>
 					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium"
-						>Kritické</span
+						>{t('common_status_critical')}</span
 					>
 				</div>
 				<div class="flex items-end gap-2">
@@ -283,9 +292,9 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Timeouty</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_timeouts')}</h3>
 					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium"
-						>Varování</span
+						>{t('common_status_warning')}</span
 					>
 				</div>
 				<div class="flex items-end gap-2">
@@ -302,14 +311,14 @@
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
-					<h3 class="text-lg font-semibold text-textMain">5xx Chyby v čase</h3>
+					<h3 class="text-lg font-semibold text-textMain">{t('errors_charts_5xxTimeline')}</h3>
 					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">Backend API</span>
 				</div>
 				<div id="chart-5xx" class="h-[220px] w-full"></div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
-					<h3 class="text-lg font-semibold text-textMain">JS Errors vs Backend Exceptions</h3>
+					<h3 class="text-lg font-semibold text-textMain">{t('errors_charts_jsVsBackend')}</h3>
 					<div class="flex gap-3 text-xs">
 						<div class="flex items-center gap-1.5">
 							<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span
@@ -329,34 +338,34 @@
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Donut Chart -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<h3 class="text-lg font-semibold text-textMain mb-4">Typy chyb</h3>
+				<h3 class="text-lg font-semibold text-textMain mb-4">{t('errors_charts_errorTypes')}</h3>
 				<div id="chart-pie" class="h-[220px] w-full"></div>
 				<div class="mt-3 space-y-2">
 					<div class="flex items-center justify-between text-sm">
 						<div class="flex items-center gap-2">
 							<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span
-							><span class="text-textSec">5xx Errors</span>
+							><span class="text-textSec">{t('errors_legend_5xx')}</span>
 						</div>
 						<span class="text-textMain font-medium">42</span>
 					</div>
 					<div class="flex items-center justify-between text-sm">
 						<div class="flex items-center gap-2">
 							<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span
-							><span class="text-textSec">JS Errors</span>
+							><span class="text-textSec">{t('errors_legend_jsErrors')}</span>
 						</div>
 						<span class="text-textMain font-medium">127</span>
 					</div>
 					<div class="flex items-center justify-between text-sm">
 						<div class="flex items-center gap-2">
 							<span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span
-							><span class="text-textSec">Exceptions</span>
+							><span class="text-textSec">{t('errors_legend_exceptions')}</span>
 						</div>
 						<span class="text-textMain font-medium">19</span>
 					</div>
 					<div class="flex items-center justify-between text-sm">
 						<div class="flex items-center gap-2">
 							<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span
-							><span class="text-textSec">Timeouty</span>
+							><span class="text-textSec">{t('errors_legend_timeouts')}</span>
 						</div>
 						<span class="text-textMain font-medium">8</span>
 					</div>
@@ -366,8 +375,8 @@
 			<!-- Top Endpoints -->
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
-					<h3 class="text-lg font-semibold text-textMain">Top endpointy s chybami</h3>
-					<span class="text-xs text-textSec">Seřazeno dle počtu chyb</span>
+					<h3 class="text-lg font-semibold text-textMain">{t('errors_endpoints_title')}</h3>
+					<span class="text-xs text-textSec">{t('errors_endpoints_subtitle')}</span>
 				</div>
 				<div class="space-y-3">
 					<div
@@ -458,15 +467,15 @@
 			<div
 				class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5"
 			>
-				<h3 class="text-lg font-semibold text-textMain">Detail chybového logu</h3>
+				<h3 class="text-lg font-semibold text-textMain">{t('errors_log_title')}</h3>
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
-						{#each ['Všechny', '5xx', 'JS', 'Backend', 'Timeout'] as filter}
+						{#each errorFilters as filter}
 							<button
-								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter
+								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value
 									? 'bg-error/20 text-error'
 									: 'bg-transparent text-textSec hover:bg-[#1e293b]'}"
-								onclick={() => (activeFilter = filter)}>{filter}</button
+								onclick={() => (activeFilter = filter.value)}>{t(filter.labelKey)}</button
 							>
 						{/each}
 					</div>
@@ -476,7 +485,7 @@
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input
 							type="text"
-							placeholder="Hledat..."
+							placeholder={t('errors_log_searchPlaceholder')}
 							class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32"
 						/>
 					</div>
@@ -488,23 +497,23 @@
 						<tr class="border-b border-[#1e293b]">
 							<th
 								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>Čas</th
+								>{t('common_table_time')}</th
 							>
 							<th
 								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>Typ</th
+								>{t('common_table_type')}</th
 							>
 							<th
 								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>Zpráva</th
+								>{t('common_table_message')}</th
 							>
 							<th
 								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>Endpoint / Zdroj</th
+								>{t('common_table_endpoint')} / {t('common_table_source')}</th
 							>
 							<th
 								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3"
-								>Status</th
+								>{t('common_table_status')}</th
 							>
 						</tr>
 					</thead>
@@ -521,7 +530,7 @@
 							>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/checkout</td>
 							<td class="py-3"
-								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td
+								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td
 							>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
@@ -538,7 +547,7 @@
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">cart.component.js:142</td>
 							<td class="py-3"
 								><span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded"
-									>Varování</span
+									>{t('common_status_warning')}</span
 								></td
 							>
 						</tr>
@@ -554,7 +563,7 @@
 							>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/users/profile</td>
 							<td class="py-3"
-								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td
+								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td
 							>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
@@ -571,7 +580,7 @@
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">OrderService.java:87</td>
 							<td class="py-3"
 								><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded"
-									>Vyřešeno</span
+									>{t('common_status_resolved')}</span
 								></td
 							>
 						</tr>
@@ -589,7 +598,7 @@
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/products</td>
 							<td class="py-3"
 								><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded"
-									>Vyřešeno</span
+									>{t('common_status_resolved')}</span
 								></td
 							>
 						</tr>
@@ -622,16 +631,16 @@
 		<!-- Page Title + Time Selector -->
 		<div class="flex items-start justify-between gap-3">
 			<div>
-				<h1 class="text-xl font-bold text-textMain">Chyby &amp; Pády</h1>
-				<p class="text-xs text-textSec mt-0.5">Produkční prostředí</p>
+				<h1 class="text-xl font-bold text-textMain">{t('errors_header_title')}</h1>
+				<p class="text-xs text-textSec mt-0.5">{t('errors_header_subtitleMobile')}</p>
 			</div>
 			<select
 				class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-3 py-2 focus:outline-none"
 				style="min-height:44px"
 			>
-				<option>24 hodin</option>
-				<option>7 dní</option>
-				<option>30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 		</div>
 
@@ -643,7 +652,7 @@
 				<i class="fa-solid fa-triangle-exclamation text-error text-sm"></i>
 			</div>
 			<div class="flex-1 min-w-0">
-				<p class="text-sm font-semibold text-textMain">2 aktivní incidenty</p>
+				<p class="text-sm font-semibold text-textMain">2 {t('errors_status_activeIncidents')}</p>
 				<p class="text-xs text-textSec truncate">
 					Zvýšený počet 500 chyb na API · 5xx Chyby aktivní
 				</p>
@@ -655,9 +664,9 @@
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">5xx Chyby</span>
+					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_5xxMobile')}</span>
 					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium"
-						>Kritické</span
+						>{t('common_status_critical')}</span
 					>
 				</div>
 				<div class="flex items-end gap-1.5">
@@ -670,10 +679,10 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">JS Errors</span>
+					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_legend_jsErrors')}</span>
 					<span
 						class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
-						>Varování</span
+						>{t('common_status_warning')}</span
 					>
 				</div>
 				<div class="flex items-end gap-1.5">
@@ -686,9 +695,9 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">Exceptions</span>
+					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_backendExceptionsMobile')}</span>
 					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium"
-						>Kritické</span
+						>{t('common_status_critical')}</span
 					>
 				</div>
 				<div class="flex items-end gap-1.5">
@@ -701,10 +710,10 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">Timeouty</span>
+					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_timeouts')}</span>
 					<span
 						class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
-						>Varování</span
+						>{t('common_status_warning')}</span
 					>
 				</div>
 				<div class="flex items-end gap-1.5">
@@ -720,7 +729,7 @@
 		<!-- 5xx Chart -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
-				<h3 class="text-sm font-semibold text-textMain">5xx Chyby v čase</h3>
+				<h3 class="text-sm font-semibold text-textMain">{t('errors_charts_5xxTimeline')}</h3>
 				<span class="px-2 py-1 bg-badge rounded text-[10px] text-textSec">Backend API</span>
 			</div>
 			<div id="chart-5xx-m" class="h-[180px] w-full"></div>

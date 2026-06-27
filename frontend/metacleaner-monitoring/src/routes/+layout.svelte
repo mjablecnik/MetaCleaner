@@ -3,41 +3,22 @@
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
+	import { onMount } from 'svelte';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { t } from '$lib/i18n';
+	import { initLocale } from '$lib/locale.svelte';
+	import { getNavSections } from '$lib/repositories/navigationRepository';
 
 	let { children } = $props();
 	let drawerOpen = $state(false);
 
 	const pathname = $derived(page.url.pathname);
+	const navSections = getNavSections(base);
 
-	const navSections = [
-		{
-			label: 'Přehledy',
-			items: [
-				{ href: `${base}/`, label: 'Dashboard', icon: 'fa-gauge-high' },
-				{ href: `${base}/dostupnost`, label: 'Dostupnost', icon: 'fa-server' },
-				{ href: `${base}/chyby`, label: 'Chyby & Pády', icon: 'fa-triangle-exclamation' }
-			]
-		},
-		{
-			label: 'Infrastruktura',
-			items: [
-				{ href: `${base}/databaze`, label: 'Databáze (Supabase)', icon: 'fa-database' },
-				{ href: `${base}/runtime`, label: 'Runtime (Fly.io)', icon: 'fa-microchip' },
-				{ href: `${base}/edge`, label: 'Edge (Cloudflare)', icon: 'fa-cloud' }
-			]
-		},
-		{
-			label: 'Analytika',
-			items: [
-				{ href: `${base}/performance`, label: 'Performance', icon: 'fa-bolt' },
-				{ href: `${base}/security`, label: 'Security Signály', icon: 'fa-shield-halved' },
-				{ href: `${base}/business`, label: 'Business Metriky', icon: 'fa-chart-line' },
-				{ href: `${base}/uzivatele`, label: 'Uživatelé', icon: 'fa-users' }
-			]
-		}
-	];
+	onMount(() => {
+		initLocale();
+	});
 
 	function isActive(href: string): boolean {
 		const root = `${base}/`;
@@ -71,7 +52,7 @@
 		<nav class="p-4 flex-1 overflow-y-auto space-y-1">
 			{#each navSections as section}
 				<p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3 mt-6 first:mt-0">
-					{section.label}
+					{t(section.labelKey)}
 				</p>
 				{#each section.items as item}
 					<a
@@ -83,7 +64,7 @@
 						<i
 							class="fa-solid {item.icon} w-5 text-center {isActive(item.href) ? 'text-primary' : ''}"
 						></i>
-						{item.label}
+						{t(item.labelKey)}
 					</a>
 				{/each}
 			{/each}
@@ -95,7 +76,7 @@
 				class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"
 			>
 				<i class="fa-solid fa-gear w-5 text-center"></i>
-				Nastavení
+				{t('layout_nav_settings')}
 			</a>
 		</div>
 	</aside>
@@ -110,7 +91,7 @@
 				<button
 					onclick={toggleDrawer}
 					class="touch-target flex items-center justify-center text-textSec hover:text-textMain rounded-lg border border-[#1e293b] bg-card transition-colors"
-					aria-label="Menu"
+					aria-label={t('common_actions_menu')}
 				>
 					<i class="fa-solid fa-bars text-lg"></i>
 				</button>
@@ -125,7 +106,7 @@
 			</div>
 			<button
 				class="touch-target flex items-center justify-center bg-[#1e293b] text-white rounded-lg border border-[#334155] transition-colors"
-				aria-label="Export"
+				aria-label={t('common_actions_export')}
 			>
 				<i class="fa-solid fa-download"></i>
 			</button>
@@ -165,7 +146,7 @@
 		<button
 			onclick={closeDrawer}
 			class="touch-target flex items-center justify-center text-textSec hover:text-textMain rounded-lg"
-			aria-label="Close Menu"
+			aria-label={t('common_actions_closeMenu')}
 		>
 			<i class="fa-solid fa-xmark text-xl"></i>
 		</button>
@@ -174,7 +155,7 @@
 	<nav class="p-3 flex-1 overflow-y-auto space-y-1">
 		{#each navSections as section}
 			<p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3 pt-4 first:pt-2">
-				{section.label}
+				{t(section.labelKey)}
 			</p>
 			{#each section.items as item}
 				<a
@@ -187,7 +168,7 @@
 					<i
 						class="fa-solid {item.icon} w-6 text-center text-lg {isActive(item.href) ? 'text-primary' : ''}"
 					></i>
-					{item.label}
+					{t(item.labelKey)}
 				</a>
 			{/each}
 		{/each}
@@ -200,7 +181,7 @@
 			class="touch-target flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-xl transition-colors"
 		>
 			<i class="fa-solid fa-gear w-6 text-center text-lg"></i>
-			Nastavení
+			{t('layout_nav_settings')}
 		</a>
 	</div>
 </aside>
