@@ -4,7 +4,7 @@
 
 - [x] 2. Create the Dostupnost (Availability) page — Service availability monitoring with 4 service uptime cards (Frontend/Backend/DB/Edge with status badges), response time chart (dual-line), health check endpoints panel (5 checks), 90-day uptime timeline bars (color-coded blocks per service), incidents log with filter tabs, SLA goals with progress bars, and quick stats (MTTR/MTBF/outages). Design files: `monitoring-availability-desktop.html`, `monitoring-availability-mobile.html`
 
-- [ ] 3. Create the Chyby & Pády (Errors & Crashes) page — Error tracking with KPI cards (5xx errors, JS errors, backend exceptions, timeouts), 5xx timeline chart, JS vs Backend bar chart, error type donut chart, top error endpoints list with progress bars, and filterable error log table with type/search/status filtering. Design files: `monitoring-errors-desktop.html`, `monitoring-errors-mobile.html`
+- [x] 3. Create the Chyby & Pády (Errors & Crashes) page — Error tracking with KPI cards (5xx errors, JS errors, backend exceptions, timeouts), 5xx timeline chart, JS vs Backend bar chart, error type donut chart, top error endpoints list with progress bars, and filterable error log table with type/search/status filtering. Design files: `monitoring-errors-desktop.html`, `monitoring-errors-mobile.html`
 
 - [ ] 4. Create the Databáze / Supabase page — Database monitoring with connection pool stats (87/100), query latency (24ms), storage utilization (6.2/8 GB), DB errors count, queries/min, replication lag, locks, backup status, query latency chart, active connections chart, query types pie chart, slowest queries list, table sizes, and database error log. Design files: `monitoring-database-desktop.html`, `monitoring-database-mobile.html`
 
