@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
+	import { t } from '$lib/i18n';
 
 	type AccordionKey = 'ips' | 'log';
 	type ChartTab = 'threats' | 'geo' | 'attacks';
@@ -231,22 +232,22 @@
 				<i class="fa-solid fa-shield-halved text-error text-sm"></i>
 			</div>
 			<div>
-				<h1 class="text-2xl font-bold text-textMain">Security Signály</h1>
-				<p class="text-sm text-textSec mt-0.5">Produkční prostředí • Všechny regiony • Posledních 24 hodin</p>
+				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_security')}</h1>
+				<p class="text-sm text-textSec mt-0.5">{t('security_header_subtitle')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
 			<div class="flex items-center gap-2 px-3 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-				3 aktivní hrozby
+				3 {t('security_status_activeThreats')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -258,8 +259,8 @@
 			<div class="bg-card border border-error/30 rounded-xl p-5 relative overflow-hidden">
 				<div class="absolute top-0 right-0 w-24 h-24 bg-error/5 rounded-full -translate-y-8 translate-x-8"></div>
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Threat Score</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_threatScore')}</h3>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('security_severity_critical')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-error">74</span>
@@ -273,8 +274,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Neúspěšná přihlášení</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_failedLogins')}</h3>
+					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-textMain">1,284</span>
@@ -284,8 +285,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Blokované IP adresy</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">Aktivní</span>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_blockedIps')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_active')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-textMain">38</span>
@@ -295,8 +296,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Anomálie (24h)</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_anomalies')}</h3>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('security_severity_critical')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-error">7</span>
@@ -313,7 +314,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-eye text-[#3b82f6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Skenování portů</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_portScans')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">12</div>
 				<p class="text-xs text-textSec mt-1">Unikátní útočníci dnes</p>
@@ -323,7 +324,7 @@
 					<div class="w-8 h-8 rounded-lg bg-error/15 flex items-center justify-center">
 						<i class="fa-solid fa-bug text-error text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">SQL Injection pokusy</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_sqlInjection')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">23</div>
 				<p class="text-xs text-textSec mt-1">Všechny blokovány · WAF</p>
@@ -333,7 +334,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-key text-[#8b5cf6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">API klíče – podezřelé</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_apiKeys')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">2</div>
 				<p class="text-xs text-textSec mt-1">Revokováno: 1 · Šetření: 1</p>
@@ -343,9 +344,9 @@
 					<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
 						<i class="fa-solid fa-certificate text-success text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">SSL Certifikáty</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('security_kpi_sslCerts')}</h3>
 				</div>
-				<div class="text-2xl font-bold text-success">Platné</div>
+				<div class="text-2xl font-bold text-success">{t('common_status_valid')}</div>
 				<p class="text-xs text-textSec mt-1">Vyprší za: <span class="text-secondary font-medium">18 dní</span></p>
 			</div>
 		</section>
@@ -355,12 +356,12 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Bezpečnostní události v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Počet detekovaných hrozeb za hodinu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('security_charts_eventsOverTime')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('security_charts_eventsSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>Kritické</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Varování</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>{t('security_severity_critical')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>{t('common_status_warning')}</span>
 					</div>
 				</div>
 				<div id="chart-threats" class="h-[220px] w-full"></div>
@@ -368,8 +369,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Geografický původ hrozeb</h3>
-						<p class="text-xs text-textSec mt-0.5">Top 5 zdrojových zemí útočníků</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('security_charts_geoOrigins')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('security_charts_geoSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-geo" class="h-[220px] w-full"></div>
@@ -379,8 +380,8 @@
 		<!-- Attack Types + Active Threats -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<h3 class="text-lg font-semibold text-textMain mb-1">Typy útoků</h3>
-				<p class="text-xs text-textSec mb-4">Distribuce detekovaných hrozeb</p>
+				<h3 class="text-lg font-semibold text-textMain mb-1">{t('security_attackTypes_title')}</h3>
+				<p class="text-xs text-textSec mb-4">{t('security_attackTypes_subtitle')}</p>
 				<div id="chart-attack-pie" class="h-[200px] w-full"></div>
 				<div class="mt-4 space-y-2">
 					<div class="flex items-center justify-between text-sm">
@@ -405,10 +406,10 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Aktivní hrozby</h3>
-						<p class="text-xs text-textSec mt-0.5">Vyžadují okamžitou pozornost</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('security_threats_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('security_threats_subtitle')}</p>
 					</div>
-					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">3 aktivní</span>
+					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('security_threats_badge')}</span>
 				</div>
 				<div class="space-y-3">
 					<div class="flex items-start gap-4 p-4 rounded-xl bg-error/5 border border-error/20">
@@ -420,14 +421,14 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 mb-1">
 								<p class="text-textMain text-sm font-semibold">Brute Force útok – Admin panel</p>
-								<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs rounded font-medium">Kritické</span>
+								<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs rounded font-medium">{t('security_severity_critical')}</span>
 							</div>
 							<p class="text-xs text-textSec">IP: 185.234.219.14 · Původ: RU · Pokusy: 1,084x za 2h</p>
 							<p class="text-xs text-textSec mt-0.5">Endpoint: /api/auth/login · Agent: python-requests/2.28</p>
 						</div>
 						<div class="flex-shrink-0 flex flex-col gap-2 items-end">
 							<div class="text-error font-bold text-xs whitespace-nowrap">14:32 – aktivní</div>
-							<button class="px-3 py-1 bg-error text-white text-xs font-medium rounded-lg hover:bg-error/90 transition-colors">Blokovat IP</button>
+							<button class="px-3 py-1 bg-error text-white text-xs font-medium rounded-lg hover:bg-error/90 transition-colors">{t('security_threats_blockIp')}</button>
 						</div>
 					</div>
 					<div class="flex items-start gap-4 p-4 rounded-xl bg-[#8b5cf6]/5 border border-[#8b5cf6]/20">
@@ -439,14 +440,14 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 mb-1">
 								<p class="text-textMain text-sm font-semibold">SQL Injection pokus</p>
-								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs rounded font-medium">Vysoké</span>
+								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs rounded font-medium">{t('security_severity_high')}</span>
 							</div>
 							<p class="text-xs text-textSec">IP: 92.118.160.47 · Původ: CN · Payload: <code class="text-[#8b5cf6] bg-[#1e293b] px-1 rounded text-xs">1' OR '1'='1</code></p>
 							<p class="text-xs text-textSec mt-0.5">Endpoint: /api/products/search · Zablokováno WAF</p>
 						</div>
 						<div class="flex-shrink-0 flex flex-col gap-2 items-end">
 							<div class="text-[#8b5cf6] font-bold text-xs whitespace-nowrap">13:58 – aktivní</div>
-							<button class="px-3 py-1 bg-[#8b5cf6] text-white text-xs font-medium rounded-lg hover:bg-[#7c3aed] transition-colors">Blokovat IP</button>
+							<button class="px-3 py-1 bg-[#8b5cf6] text-white text-xs font-medium rounded-lg hover:bg-[#7c3aed] transition-colors">{t('security_threats_blockIp')}</button>
 						</div>
 					</div>
 					<div class="flex items-start gap-4 p-4 rounded-xl bg-secondary/5 border border-secondary/20">
@@ -458,14 +459,14 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 mb-1">
 								<p class="text-textMain text-sm font-semibold">Podezřelý API klíč – neobvyklý region</p>
-								<span class="px-1.5 py-0.5 bg-secondary/20 text-secondary text-xs rounded font-medium">Střední</span>
+								<span class="px-1.5 py-0.5 bg-secondary/20 text-secondary text-xs rounded font-medium">{t('security_severity_medium')}</span>
 							</div>
 							<p class="text-xs text-textSec">API Key: sk_live_***8f2a · Původ: NG · User ID: u_4821</p>
 							<p class="text-xs text-textSec mt-0.5">Požadavky: 3,200/h (limit: 500) · Endpoint: /api/export</p>
 						</div>
 						<div class="flex-shrink-0 flex flex-col gap-2 items-end">
 							<div class="text-secondary font-bold text-xs whitespace-nowrap">12:15 – aktivní</div>
-							<button class="px-3 py-1 bg-secondary text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors">Revokovat klíč</button>
+							<button class="px-3 py-1 bg-secondary text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors">{t('security_threats_revokeKey')}</button>
 						</div>
 					</div>
 				</div>
@@ -477,11 +478,11 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Blokované IP adresy</h3>
-						<p class="text-xs text-textSec mt-0.5">Automaticky + manuálně blokované</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('security_blockedIps_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('security_blockedIps_subtitle')}</p>
 					</div>
 					<button class="px-3 py-1.5 bg-[#1e293b] hover:bg-[#2d3748] text-textSec hover:text-textMain text-xs rounded-lg border border-[#334155] transition-colors">
-						<i class="fa-solid fa-plus mr-1.5"></i>Přidat IP
+						<i class="fa-solid fa-plus mr-1.5"></i>{t('security_blockedIps_addIp')}
 					</button>
 				</div>
 				<div class="space-y-2">
@@ -494,7 +495,7 @@
 							<p class="text-xs text-textSec">RU · Brute force · 1,084 pokusů</p>
 						</div>
 						<div class="flex items-center gap-2 flex-shrink-0">
-							<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
+							<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 							<span class="text-xs text-textSec">dnes 14:32</span>
 						</div>
 					</div>
@@ -507,7 +508,7 @@
 							<p class="text-xs text-textSec">CN · SQL Injection · WAF blok</p>
 						</div>
 						<div class="flex items-center gap-2 flex-shrink-0">
-							<span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span>
+							<span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">{t('security_blockType_waf')}</span>
 							<span class="text-xs text-textSec">dnes 13:58</span>
 						</div>
 					</div>
@@ -520,7 +521,7 @@
 							<p class="text-xs text-textSec">UA · Rate abuse · 8,200 req/h</p>
 						</div>
 						<div class="flex items-center gap-2 flex-shrink-0">
-							<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Auto</span>
+							<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 							<span class="text-xs text-textSec">dnes 11:14</span>
 						</div>
 					</div>
@@ -533,7 +534,7 @@
 							<p class="text-xs text-textSec">IR · Manuální blok · CIDR rozsah</p>
 						</div>
 						<div class="flex items-center gap-2 flex-shrink-0">
-							<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Manual</span>
+							<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('security_blockType_manual')}</span>
 							<span class="text-xs text-textSec">včera 09:20</span>
 						</div>
 					</div>
@@ -546,22 +547,22 @@
 							<p class="text-xs text-textSec">KZ · Brute force · 521 pokusů</p>
 						</div>
 						<div class="flex items-center gap-2 flex-shrink-0">
-							<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
+							<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 							<span class="text-xs text-textSec">včera 22:41</span>
 						</div>
 					</div>
 				</div>
 				<div class="mt-4 pt-3 border-t border-[#1e293b] flex items-center justify-between text-xs text-textSec">
-					<span>Zobrazeno 5 z 38 blokovaných IP</span>
-					<button class="text-[#3b82f6] hover:text-[#60a5fa] transition-colors">Zobrazit vše →</button>
+					<span>{t('security_blockedIps_footer')}</span>
+					<button class="text-[#3b82f6] hover:text-[#60a5fa] transition-colors">{t('security_blockedIps_showAll')}</button>
 				</div>
 			</div>
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Neúspěšná přihlášení v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Počet pokusů za hodinu</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('security_failedLogins_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('security_failedLogins_subtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-logins" class="h-[220px] w-full"></div>
@@ -572,19 +573,19 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
-					<h3 class="text-lg font-semibold text-textMain">Security Event Log</h3>
-					<p class="text-xs text-textSec mt-0.5">Posledních 24 hodin · 47 záznamů</p>
+					<h3 class="text-lg font-semibold text-textMain">{t('security_eventLog_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('security_eventLog_subtitle')}</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
-						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">Všechny</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Kritické</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Varování</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Info</button>
+						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('security_severity_critical')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('common_status_warning')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('common_labels_info')}</button>
 					</div>
 					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-						<input type="text" placeholder="Hledat..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
+						<input type="text" placeholder="{t('security_eventLog_searchPlaceholder')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
 				</div>
 			</div>
@@ -592,12 +593,12 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-[#1e293b]">
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Čas</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Typ</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Popis</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">IP / Zdroj</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Endpoint</th>
-							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">Status</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_description')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('security_table_ipSource')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_endpoint')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
@@ -607,7 +608,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">1,084 neúspěšných přihlášení za 2 hodiny</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">185.234.219.14 · RU</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/auth/login</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:58:04</td>
@@ -615,7 +616,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Pokus o SQL injection v parametru query</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">92.118.160.47 · CN</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/products/search</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-[#8b5cf6]/10 text-[#8b5cf6] text-xs rounded">Blokováno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-[#8b5cf6]/10 text-[#8b5cf6] text-xs rounded">{t('common_status_blocked')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:21:39</td>
@@ -623,7 +624,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Překročení rate limitu 8,200 req/h (limit 500)</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">45.142.212.100 · UA</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/export</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:15:22</td>
@@ -631,7 +632,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Podezřelý API klíč z neobvyklého regionu (NG)</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">sk_live_***8f2a · NG</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/export</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:44:08</td>
@@ -639,7 +640,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">XSS payload detekován v komentáři produktu</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">78.141.212.55 · DE</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/reviews</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">09:30:18</td>
@@ -647,7 +648,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">Skenování 240 portů za 30 sekund detekováno</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">91.108.4.200 · NL</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">—</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span></td>
 						</tr>
 						<tr class="hover:bg-[#1e293b]/30 transition-colors">
 							<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">07:12:55</td>
@@ -655,7 +656,7 @@
 							<td class="py-3 pr-4 text-textMain max-w-xs truncate">521 neúspěšných přihlášení – různé user ID</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">194.165.16.75 · KZ</td>
 							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/auth/login</td>
-							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span></td>
+							<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -675,19 +676,19 @@
 				<i class="fa-solid fa-shield-halved text-error text-xs"></i>
 			</div>
 			<div>
-				<h1 class="text-base font-bold text-textMain leading-tight">Security Signály</h1>
-				<p class="text-xs text-textSec">Produkce · Všechny regiony</p>
+				<h1 class="text-base font-bold text-textMain leading-tight">{t('layout_nav_security')}</h1>
+				<p class="text-xs text-textSec">{t('security_header_subtitleMobile')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-2">
 			<div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-xs font-medium">
 				<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
-				3 hrozby
+				3 {t('security_status_threats')}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
-				<option>24 hodin</option>
-				<option>7 dní</option>
-				<option>30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 		</div>
 	</div>
@@ -699,8 +700,8 @@
 			<div class="bg-card border border-error/30 rounded-xl p-4 relative overflow-hidden col-span-2">
 				<div class="absolute top-0 right-0 w-20 h-20 bg-error/5 rounded-full -translate-y-6 translate-x-6"></div>
 				<div class="flex items-center justify-between mb-2">
-					<h3 class="text-textSec text-xs font-medium">Threat Score</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+					<h3 class="text-textSec text-xs font-medium">{t('security_kpi_threatScore')}</h3>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('security_severity_critical')}</span>
 				</div>
 				<div class="flex items-center gap-3 mb-3">
 					<span class="text-4xl font-bold text-error">74</span>
@@ -718,32 +719,32 @@
 			</div>
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">Neúspěšná přihlášení</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('security_kpi_failedLogins')}</h3>
 				<div class="text-2xl font-bold text-textMain">1,284</div>
 				<span class="text-xs text-secondary flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+340</span>
 				<p class="text-xs text-textSec mt-1.5 leading-tight">Brute-force: 4 IP</p>
-				<span class="mt-2 inline-block px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
+				<span class="mt-2 inline-block px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
 			</div>
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">Blokované IP</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('security_kpi_blockedIpsMobile')}</h3>
 				<div class="text-2xl font-bold text-textMain">38</div>
 				<span class="text-xs text-success flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+6</span>
 				<p class="text-xs text-textSec mt-1.5 leading-tight">Auto: 28 · Manual: 10</p>
-				<span class="mt-2 inline-block px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">Aktivní</span>
+				<span class="mt-2 inline-block px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_active')}</span>
 			</div>
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2">Anomálie (24h)</h3>
+				<h3 class="text-textSec text-xs font-medium mb-2">{t('security_kpi_anomalies')}</h3>
 				<div class="text-2xl font-bold text-error">7</div>
 				<span class="text-xs text-error flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+3</span>
 				<p class="text-xs text-textSec mt-1.5 leading-tight">SQL, XSS, Rate</p>
-				<span class="mt-2 inline-block px-1.5 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+				<span class="mt-2 inline-block px-1.5 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('security_severity_critical')}</span>
 			</div>
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<h3 class="text-textSec text-xs font-medium mb-2">SSL Certifikáty</h3>
-				<div class="text-2xl font-bold text-success">Platné</div>
+				<h3 class="text-textSec text-xs font-medium mb-2">{t('security_kpi_sslCerts')}</h3>
+				<div class="text-2xl font-bold text-success">{t('common_status_valid')}</div>
 				<p class="text-xs text-textSec mt-1.5">Vyprší za: <span class="text-secondary font-medium">18 dní</span></p>
 				<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center mt-2">
 					<i class="fa-solid fa-certificate text-success text-xs"></i>
@@ -759,21 +760,21 @@
 						<i class="fa-solid fa-eye text-[#3b82f6] text-xs"></i>
 					</div>
 					<div class="text-xl font-bold text-textMain">12</div>
-					<p class="text-xs text-textSec mt-0.5 leading-tight">Skenování portů</p>
+					<p class="text-xs text-textSec mt-0.5 leading-tight">{t('security_kpi_portScans')}</p>
 				</div>
 				<div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
 					<div class="w-8 h-8 rounded-lg bg-error/15 flex items-center justify-center mb-2">
 						<i class="fa-solid fa-bug text-error text-xs"></i>
 					</div>
 					<div class="text-xl font-bold text-textMain">23</div>
-					<p class="text-xs text-textSec mt-0.5 leading-tight">SQL Injection</p>
+					<p class="text-xs text-textSec mt-0.5 leading-tight">{t('security_kpi_sqlInjectionMobile')}</p>
 				</div>
 				<div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
 					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
 						<i class="fa-solid fa-key text-[#8b5cf6] text-xs"></i>
 					</div>
 					<div class="text-xl font-bold text-textMain">2</div>
-					<p class="text-xs text-textSec mt-0.5 leading-tight">API klíče – podezřelé</p>
+					<p class="text-xs text-textSec mt-0.5 leading-tight">{t('security_kpi_apiKeys')}</p>
 				</div>
 				<div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
@@ -789,12 +790,12 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
 			<div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#1e293b]">
 				<div>
-					<h3 class="text-base font-semibold text-textMain">Aktivní hrozby</h3>
-					<p class="text-xs text-textSec mt-0.5">Vyžadují okamžitou pozornost</p>
+					<h3 class="text-base font-semibold text-textMain">{t('security_threats_title')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('security_threats_subtitle')}</p>
 				</div>
 				<span class="flex items-center gap-1.5 text-xs text-error bg-error/10 border border-error/20 px-2.5 py-1 rounded-lg font-medium">
 					<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
-					3 aktivní
+					{t('security_threats_badge')}
 				</span>
 			</div>
 			<div class="divide-y divide-[#1e293b]/60">
@@ -806,13 +807,13 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 flex-wrap mb-1">
 								<p class="text-textMain text-sm font-semibold leading-tight">Brute Force – Admin panel</p>
-								<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs rounded font-medium">Kritické</span>
+								<span class="px-1.5 py-0.5 bg-error/20 text-error text-xs rounded font-medium">{t('security_severity_critical')}</span>
 							</div>
 							<p class="text-xs text-textSec">IP: 185.234.219.14 · RU · 1,084 pokusů za 2h</p>
 							<p class="text-xs text-textSec mt-0.5 font-mono">/api/auth/login</p>
 							<div class="flex items-center justify-between mt-3">
 								<span class="text-error font-bold text-xs">14:32 – aktivní</span>
-								<button class="px-4 py-2 bg-error text-white text-xs font-medium rounded-lg hover:bg-error/90 transition-colors min-h-[36px]">Blokovat IP</button>
+								<button class="px-4 py-2 bg-error text-white text-xs font-medium rounded-lg hover:bg-error/90 transition-colors min-h-[36px]">{t('security_threats_blockIp')}</button>
 							</div>
 						</div>
 					</div>
@@ -825,13 +826,13 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 flex-wrap mb-1">
 								<p class="text-textMain text-sm font-semibold leading-tight">SQL Injection pokus</p>
-								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs rounded font-medium">Vysoké</span>
+								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs rounded font-medium">{t('security_severity_high')}</span>
 							</div>
 							<p class="text-xs text-textSec">IP: 92.118.160.47 · CN · WAF blok</p>
 							<p class="text-xs text-textSec mt-0.5">Payload: <code class="text-[#8b5cf6] bg-[#1e293b] px-1 rounded text-xs">1' OR '1'='1</code></p>
 							<div class="flex items-center justify-between mt-3">
 								<span class="text-[#8b5cf6] font-bold text-xs">13:58 – aktivní</span>
-								<button class="px-4 py-2 bg-[#8b5cf6] text-white text-xs font-medium rounded-lg hover:bg-[#7c3aed] transition-colors min-h-[36px]">Blokovat IP</button>
+								<button class="px-4 py-2 bg-[#8b5cf6] text-white text-xs font-medium rounded-lg hover:bg-[#7c3aed] transition-colors min-h-[36px]">{t('security_threats_blockIp')}</button>
 							</div>
 						</div>
 					</div>
@@ -844,13 +845,13 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 flex-wrap mb-1">
 								<p class="text-textMain text-sm font-semibold leading-tight">Podezřelý API klíč</p>
-								<span class="px-1.5 py-0.5 bg-secondary/20 text-secondary text-xs rounded font-medium">Střední</span>
+								<span class="px-1.5 py-0.5 bg-secondary/20 text-secondary text-xs rounded font-medium">{t('security_severity_medium')}</span>
 							</div>
 							<p class="text-xs text-textSec">Key: sk_live_***8f2a · NG · u_4821</p>
 							<p class="text-xs text-textSec mt-0.5">3,200 req/h (limit: 500)</p>
 							<div class="flex items-center justify-between mt-3">
 								<span class="text-secondary font-bold text-xs">12:15 – aktivní</span>
-								<button class="px-4 py-2 bg-secondary text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors min-h-[36px]">Revokovat klíč</button>
+								<button class="px-4 py-2 bg-secondary text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors min-h-[36px]">{t('security_threats_revokeKey')}</button>
 							</div>
 						</div>
 					</div>
@@ -866,41 +867,41 @@
 						onclick={() => switchTab('threats')}
 						class="flex-1 py-3 text-xs font-semibold transition-colors border-b-2 {activeTab === 'threats' ? 'text-textMain border-error' : 'text-textSec border-transparent hover:text-textMain'}"
 					>
-						Události v čase
+						{t('security_tabs_events')}
 					</button>
 					<button
 						onclick={() => switchTab('geo')}
 						class="flex-1 py-3 text-xs font-semibold transition-colors border-b-2 {activeTab === 'geo' ? 'text-textMain border-error' : 'text-textSec border-transparent hover:text-textMain'}"
 					>
-						Geografie
+						{t('security_tabs_geography')}
 					</button>
 					<button
 						onclick={() => switchTab('attacks')}
 						class="flex-1 py-3 text-xs font-semibold transition-colors border-b-2 {activeTab === 'attacks' ? 'text-textMain border-error' : 'text-textSec border-transparent hover:text-textMain'}"
 					>
-						Typy útoků
+						{t('security_tabs_attackTypes')}
 					</button>
 				</div>
 			</div>
 			{#if activeTab === 'threats'}
 				<div class="p-4">
 					<div class="flex items-center justify-between mb-3">
-						<p class="text-xs text-textSec">Hrozby za hodinu</p>
+						<p class="text-xs text-textSec">{t('security_tabs_threatsPerHour')}</p>
 						<div class="flex gap-2">
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>Kritické</span>
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Varování</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>{t('security_severity_critical')}</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>{t('common_status_warning')}</span>
 						</div>
 					</div>
 					<div id="chart-threats-m" class="h-[200px] w-full"></div>
 				</div>
 			{:else if activeTab === 'geo'}
 				<div class="p-4">
-					<p class="text-xs text-textSec mb-3">Top 5 zdrojových zemí</p>
+					<p class="text-xs text-textSec mb-3">{t('security_charts_geoSubtitleMobile')}</p>
 					<div id="chart-geo-m" class="h-[200px] w-full"></div>
 				</div>
 			{:else if activeTab === 'attacks'}
 				<div class="p-4">
-					<p class="text-xs text-textSec mb-3">Distribuce detekovaných hrozeb</p>
+					<p class="text-xs text-textSec mb-3">{t('security_attackTypes_subtitle')}</p>
 					<div id="chart-attack-pie-m" class="h-[180px] w-full"></div>
 					<div class="mt-3 grid grid-cols-2 gap-2">
 						<div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-error flex-shrink-0"></span><span class="text-textSec">Brute Force</span><span class="text-textMain font-semibold ml-auto">42%</span></div>
@@ -916,8 +917,8 @@
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
-					<h3 class="text-sm font-semibold text-textMain">Neúspěšná přihlášení</h3>
-					<p class="text-xs text-textSec mt-0.5">Pokusy za hodinu</p>
+					<h3 class="text-sm font-semibold text-textMain">{t('security_failedLogins_titleMobile')}</h3>
+					<p class="text-xs text-textSec mt-0.5">{t('security_failedLogins_subtitleMobile')}</p>
 				</div>
 			</div>
 			<div id="chart-logins-m" class="h-[180px] w-full"></div>
@@ -934,13 +935,13 @@
 						<i class="fa-solid fa-ban text-error text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">Blokované IP adresy</p>
-						<p class="text-xs text-textSec">38 blokovaných · 5 zobrazeno</p>
+						<p class="text-sm font-semibold text-textMain">{t('security_blockedIps_title')}</p>
+						<p class="text-xs text-textSec">{t('security_blockedIps_footerMobile')}</p>
 					</div>
 				</button>
 				<div class="flex items-center gap-2 flex-shrink-0">
 					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs rounded-lg border border-[#334155] min-h-[36px]">
-						<i class="fa-solid fa-plus mr-1"></i>Přidat
+						<i class="fa-solid fa-plus mr-1"></i>{t('security_blockedIps_addIpMobile')}
 					</button>
 					<button onclick={() => toggleAccordion('ips')} class="p-1" aria-label="Toggle">
 						<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accordionOpen.ips ? 'rotate-180' : ''}"></i>
@@ -957,7 +958,7 @@
 								<p class="text-xs text-textSec">RU · Brute force · 1,084x</p>
 							</div>
 							<div class="flex flex-col items-end gap-1">
-								<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
+								<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 								<span class="text-xs text-textSec">14:32</span>
 							</div>
 						</div>
@@ -968,7 +969,7 @@
 								<p class="text-xs text-textSec">CN · SQL Injection · WAF</p>
 							</div>
 							<div class="flex flex-col items-end gap-1">
-								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span>
+								<span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">{t('security_blockType_waf')}</span>
 								<span class="text-xs text-textSec">13:58</span>
 							</div>
 						</div>
@@ -979,7 +980,7 @@
 								<p class="text-xs text-textSec">UA · Rate abuse · 8,200/h</p>
 							</div>
 							<div class="flex flex-col items-end gap-1">
-								<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Auto</span>
+								<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 								<span class="text-xs text-textSec">11:14</span>
 							</div>
 						</div>
@@ -990,7 +991,7 @@
 								<p class="text-xs text-textSec">IR · Manuální · CIDR</p>
 							</div>
 							<div class="flex flex-col items-end gap-1">
-								<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Manual</span>
+								<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">{t('security_blockType_manual')}</span>
 								<span class="text-xs text-textSec">09:20</span>
 							</div>
 						</div>
@@ -1001,14 +1002,14 @@
 								<p class="text-xs text-textSec">KZ · Brute force · 521x</p>
 							</div>
 							<div class="flex flex-col items-end gap-1">
-								<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
+								<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">{t('security_blockType_auto')}</span>
 								<span class="text-xs text-textSec">22:41</span>
 							</div>
 						</div>
 					</div>
 					<div class="px-4 py-3 border-t border-[#1e293b] flex items-center justify-between text-xs text-textSec">
-						<span>5 z 38 blokovaných IP</span>
-						<button class="text-[#3b82f6] font-medium min-h-[36px] px-2">Zobrazit vše →</button>
+						<span>{t('security_blockedIps_footerMobile')}</span>
+						<button class="text-[#3b82f6] font-medium min-h-[36px] px-2">{t('security_blockedIps_showAll')}</button>
 					</div>
 				</div>
 			{/if}
@@ -1025,8 +1026,8 @@
 						<i class="fa-solid fa-list text-textSec text-xs"></i>
 					</div>
 					<div class="text-left">
-						<p class="text-sm font-semibold text-textMain">Security Event Log</p>
-						<p class="text-xs text-textSec">47 záznamů · 24 hodin</p>
+						<p class="text-sm font-semibold text-textMain">{t('security_eventLog_title')}</p>
+						<p class="text-xs text-textSec">{t('security_eventLog_subtitleMobile')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accordionOpen.log ? 'rotate-180' : ''}"></i>
@@ -1034,15 +1035,15 @@
 			{#if accordionOpen.log}
 				<div class="border-t border-[#1e293b]">
 					<div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-[#1e293b]">
-						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px]">Všechny</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Kritické</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Varování</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Info</button>
+						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px]">{t('common_status_all')}</button>
+						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('security_severity_critical')}</button>
+						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_status_warning')}</button>
+						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_labels_info')}</button>
 					</div>
 					<div class="px-4 py-3 border-b border-[#1e293b]">
 						<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5">
 							<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-							<input type="text" placeholder="Hledat v logu..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
+							<input type="text" placeholder="{t('security_eventLog_searchPlaceholderMobile')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 						</div>
 					</div>
 					<div class="divide-y divide-[#1e293b]/60">
@@ -1052,7 +1053,7 @@
 									<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Brute Force</span>
 									<span class="font-mono text-xs text-textSec">14:32:11</span>
 								</div>
-								<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
+								<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">1,084 neúspěšných přihlášení za 2 hodiny</p>
 							<p class="text-xs text-textSec font-mono">185.234.219.14 · RU · /api/auth/login</p>
@@ -1063,7 +1064,7 @@
 									<span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">SQL Inject.</span>
 									<span class="font-mono text-xs text-textSec">13:58:04</span>
 								</div>
-								<span class="px-2 py-0.5 bg-[#8b5cf6]/10 text-[#8b5cf6] text-xs rounded">Blokováno</span>
+								<span class="px-2 py-0.5 bg-[#8b5cf6]/10 text-[#8b5cf6] text-xs rounded">{t('common_status_blocked')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">Pokus o SQL injection v parametru query</p>
 							<p class="text-xs text-textSec font-mono">92.118.160.47 · CN · /api/products/search</p>
@@ -1074,7 +1075,7 @@
 									<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Rate Abuse</span>
 									<span class="font-mono text-xs text-textSec">13:21:39</span>
 								</div>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">Překročení rate limitu 8,200 req/h</p>
 							<p class="text-xs text-textSec font-mono">45.142.212.100 · UA · /api/export</p>
@@ -1085,7 +1086,7 @@
 									<span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">API Abuse</span>
 									<span class="font-mono text-xs text-textSec">12:15:22</span>
 								</div>
-								<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
+								<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">Podezřelý API klíč z regionu NG</p>
 							<p class="text-xs text-textSec font-mono">sk_live_***8f2a · NG · /api/export</p>
@@ -1096,7 +1097,7 @@
 									<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">XSS</span>
 									<span class="font-mono text-xs text-textSec">11:44:08</span>
 								</div>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
+								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">XSS payload detekován v komentáři</p>
 							<p class="text-xs text-textSec font-mono">78.141.212.55 · DE · /api/reviews</p>
@@ -1107,7 +1108,7 @@
 									<span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Port Scan</span>
 									<span class="font-mono text-xs text-textSec">09:30:18</span>
 								</div>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
+								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">Skenování 240 portů za 30 sekund</p>
 							<p class="text-xs text-textSec font-mono">91.108.4.200 · NL · —</p>
@@ -1118,14 +1119,14 @@
 									<span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Brute Force</span>
 									<span class="font-mono text-xs text-textSec">07:12:55</span>
 								</div>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
+								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_blocked')}</span>
 							</div>
 							<p class="text-sm text-textMain mb-1">521 neúspěšných přihlášení – různé ID</p>
 							<p class="text-xs text-textSec font-mono">194.165.16.75 · KZ · /api/auth/login</p>
 						</div>
 					</div>
 					<div class="px-4 py-3 border-t border-[#1e293b]">
-						<button class="w-full py-2.5 text-xs text-[#3b82f6] font-medium text-center min-h-[44px]">Načíst více záznamů →</button>
+						<button class="w-full py-2.5 text-xs text-[#3b82f6] font-medium text-center min-h-[44px]">{t('security_eventLog_loadMore')}</button>
 					</div>
 				</div>
 			{/if}
@@ -1138,26 +1139,26 @@
 	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
-			<span class="text-xs">Dashboard</span>
+			<span class="text-xs">{t('layout_nav_dashboard')}</span>
 		</a>
 		<a href="{base}/runtime" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
-			<span class="text-xs">Infra</span>
+			<span class="text-xs">{t('layout_nav_runtime')}</span>
 		</a>
 		<a href="{base}/security" class="flex flex-col items-center gap-1 px-3 py-1.5 text-error relative min-w-[44px]">
 			<div class="absolute -top-1 right-1/4 w-4 h-4 bg-error rounded-full flex items-center justify-center">
 				<span class="text-white font-bold" style="font-size:9px">3</span>
 			</div>
 			<i class="fa-solid fa-shield-halved text-base"></i>
-			<span class="text-xs font-semibold">Security</span>
+			<span class="text-xs font-semibold">{t('layout_nav_security')}</span>
 		</a>
 		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
-			<span class="text-xs">Analytika</span>
+			<span class="text-xs">{t('layout_nav_business')}</span>
 		</a>
 		<a href="{base}/nastaveni" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gear text-base"></i>
-			<span class="text-xs">Nastavení</span>
+			<span class="text-xs">{t('layout_nav_settings')}</span>
 		</a>
 	</nav>
 </div>
