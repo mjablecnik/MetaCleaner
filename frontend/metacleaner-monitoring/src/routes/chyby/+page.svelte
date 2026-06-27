@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
 	import {
@@ -32,12 +33,12 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#8b5cf6';
-		const blueColor = '#3b82f6';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purple;
+		const blueColor = chartColors.blue;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -144,13 +145,13 @@
 			showlegend: false,
 			annotations: [
 				{
-					text: `<b style="font-size:20px;color:#fff">${total}</b><br><span style="font-size:11px;color:#94a3b8">celkem</span>`,
+					text: `<b style="font-size:20px;color:${chartColors.textMain}">${total}</b><br><span style="font-size:11px;color:${chartColors.textSec}">celkem</span>`,
 					x: 0.5,
 					y: 0.5,
 					xanchor: 'center',
 					yanchor: 'middle',
 					showarrow: false,
-					font: { size: 14, color: '#ffffff' }
+					font: { size: 14, color: chartColors.textMain }
 				}
 			]
 		};
@@ -162,7 +163,7 @@
 			annotations: [
 				{
 					...pieLayout.annotations[0],
-					text: `<b style="font-size:18px;color:#fff">${total}</b><br><span style="font-size:10px;color:#94a3b8">celkem</span>`
+					text: `<b style="font-size:18px;color:${chartColors.textMain}">${total}</b><br><span style="font-size:10px;color:${chartColors.textSec}">celkem</span>`
 				}
 			]
 		};
@@ -204,7 +205,7 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div>
 			<h1 class="text-2xl font-bold text-textMain">{t('errors_header_title')}</h1>
 			<p class="text-sm text-textSec mt-1">{t('errors_header_subtitle')}</p>
@@ -214,12 +215,12 @@
 				<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
 				{errStats.activeIncidents} {t('errors_status_activeIncidents')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -229,7 +230,7 @@
 		<!-- KPI Stats -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each kpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-start mb-3">
 						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 						<span class="px-2 py-0.5 text-xs rounded-full font-medium {kpi.severityClass}">{t(kpi.severityKey)}</span>
@@ -247,14 +248,14 @@
 
 		<!-- Charts Row -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<h3 class="text-lg font-semibold text-textMain">{t('errors_charts_5xxTimeline')}</h3>
 					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec">Backend API</span>
 				</div>
 				<div id="chart-5xx" class="h-[220px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<h3 class="text-lg font-semibold text-textMain">{t('errors_charts_jsVsBackend')}</h3>
 					<div class="flex gap-3 text-xs">
@@ -273,7 +274,7 @@
 		<!-- Error Type Breakdown + Top Endpoints -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Donut Chart -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<h3 class="text-lg font-semibold text-textMain mb-4">{t('errors_charts_errorTypes')}</h3>
 				<div id="chart-pie" class="h-[220px] w-full"></div>
 				<div class="mt-3 space-y-2">
@@ -290,18 +291,18 @@
 			</div>
 
 			<!-- Top Endpoints -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<h3 class="text-lg font-semibold text-textMain">{t('errors_endpoints_title')}</h3>
 					<span class="text-xs text-textSec">{t('errors_endpoints_subtitle')}</span>
 				</div>
 				<div class="space-y-3">
 					{#each endpoints as ep (ep.path)}
-						<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="flex items-center gap-4 p-3 rounded-lg bg-surface/40 border border-border/40">
 							<span class="px-2 py-0.5 text-xs font-mono rounded font-semibold {ep.methodClass}">{ep.method}</span>
 							<span class="text-textMain text-sm font-medium flex-1 truncate">{ep.path}</span>
 							<div class="flex items-center gap-3">
-								<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="w-24 h-1.5 bg-surface rounded-full overflow-hidden">
 									<div class="h-full {ep.barClass} rounded-full" style="width:{ep.barWidth}"></div>
 								</div>
 								<span class="{ep.countClass} font-semibold text-sm w-8 text-right">{ep.errorCount}</span>
@@ -313,19 +314,19 @@
 		</section>
 
 		<!-- Error Log Table -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<h3 class="text-lg font-semibold text-textMain">{t('errors_log_title')}</h3>
 				<div class="flex gap-3 flex-wrap">
-					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
+					<div class="flex rounded-lg overflow-hidden border border-border">
 						{#each errorFilters as filter}
 							<button
-								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value ? 'bg-error/20 text-error' : 'bg-transparent text-textSec hover:bg-[#1e293b]'}"
+								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value ? 'bg-error/20 text-error' : 'bg-transparent text-textSec hover:bg-surface'}"
 								onclick={() => (activeFilter = filter.value)}>{t(filter.labelKey)}</button
 							>
 						{/each}
 					</div>
-					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
+					<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input type="text" placeholder={t('errors_log_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
@@ -334,7 +335,7 @@
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
-						<tr class="border-b border-[#1e293b]">
+						<tr class="border-b border-surface">
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_message')}</th>
@@ -342,9 +343,9 @@
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-[#1e293b]/60">
+					<tbody class="divide-y divide-surface/60">
 						{#each logEntries as entry (entry.id)}
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+							<tr class="hover:bg-surface/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap">{entry.time}</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 text-xs rounded font-medium {entry.typeClass}">{entry.type}</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{entry.message}</td>
@@ -368,7 +369,7 @@
 				<h1 class="text-xl font-bold text-textMain">{t('errors_header_title')}</h1>
 				<p class="text-xs text-textSec mt-0.5">{t('errors_header_subtitleMobile')}</p>
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-3 py-2 focus:outline-none" style="min-height:44px">
+			<select class="bg-surface border border-border text-xs text-textMain rounded-lg px-3 py-2 focus:outline-none" style="min-height:44px">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
@@ -390,7 +391,7 @@
 		<!-- KPI Stats 2x2 -->
 		<section class="grid grid-cols-2 gap-3">
 			{#each kpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+				<div class="bg-card border border-surface rounded-xl p-4">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKeyMobile)}</span>
 						<span class="px-1.5 py-0.5 text-[10px] rounded-full font-medium {kpi.severityClass}">{t(kpi.severityKey)}</span>
@@ -407,7 +408,7 @@
 		</section>
 
 		<!-- 5xx Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<h3 class="text-sm font-semibold text-textMain">{t('errors_charts_5xxTimeline')}</h3>
 				<span class="px-2 py-1 bg-badge rounded text-[10px] text-textSec">Backend API</span>
@@ -416,7 +417,7 @@
 		</section>
 
 		<!-- JS vs Backend Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<h3 class="text-sm font-semibold text-textMain">{t('errors_mobile_jsVsBackend')}</h3>
 				<div class="flex gap-3 text-[10px]">
@@ -432,7 +433,7 @@
 		</section>
 
 		<!-- Error Type Breakdown Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				class="w-full flex items-center justify-between p-4"
 				style="min-height:52px"
@@ -460,7 +461,7 @@
 		</section>
 
 		<!-- Top Endpoints Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				class="w-full flex items-center justify-between p-4"
 				style="min-height:52px"
@@ -472,11 +473,11 @@
 			{#if endpointsOpen}
 				<div class="px-4 pb-4 space-y-2.5">
 					{#each endpoints as ep (ep.path)}
-						<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="flex items-center gap-3 p-3 rounded-lg bg-surface/40 border border-border/40">
 							<span class="px-2 py-0.5 text-[10px] font-mono rounded font-semibold shrink-0 {ep.methodClass}">{ep.method}</span>
 							<span class="text-textMain text-xs font-medium flex-1 truncate">{ep.path}</span>
 							<div class="flex items-center gap-2 shrink-0">
-								<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="w-16 h-1.5 bg-surface rounded-full overflow-hidden">
 									<div class="h-full {ep.barClass} rounded-full" style="width:{ep.barWidth}"></div>
 								</div>
 								<span class="{ep.countClass} font-bold text-xs w-5 text-right">{ep.errorCount}</span>
@@ -488,14 +489,14 @@
 		</section>
 
 		<!-- Error Log Card-based -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4 mb-24">
+		<section class="bg-card border border-surface rounded-xl p-4 mb-24">
 			<div class="flex items-center justify-between mb-3">
 				<h3 class="text-sm font-semibold text-textMain">{t('errors_mobile_logTitle')}</h3>
 				<span class="text-[10px] text-textSec">{logEntries.length} {t('common_labels_entries')}</span>
 			</div>
 
 			<!-- Search -->
-			<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5 mb-3">
+			<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-2.5 mb-3">
 				<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 				<input type="text" placeholder={t('errors_log_searchPlaceholder')} class="bg-transparent text-xs text-textMain placeholder-textSec outline-none flex-1" />
 			</div>
@@ -507,8 +508,8 @@
 						class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors"
 						style="min-height:36px"
 						onclick={() => (activeFilter = filter.value)}
-						style:background-color={activeFilter === filter.value ? 'rgba(239,68,68,0.2)' : '#1e293b'}
-						style:color={activeFilter === filter.value ? '#ef4444' : '#94a3b8'}
+						style:background-color={activeFilter === filter.value ? 'rgba(239,68,68,0.2)' : chartColors.surface}
+						style:color={activeFilter === filter.value ? chartColors.error : chartColors.textSec}
 					>
 						{t(filter.labelKey)}
 					</button>
@@ -518,7 +519,7 @@
 			<!-- Log Cards -->
 			<div class="space-y-3">
 				{#each logEntries as entry (entry.id)}
-					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 space-y-2">
+					<div class="p-3 rounded-xl bg-surface/40 border border-border/40 space-y-2">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-2">
 								<span class="px-2 py-0.5 text-[10px] rounded font-bold {entry.typeClass}">{entry.type}</span>
@@ -535,7 +536,7 @@
 	</div>
 
 	<!-- Mobile Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-gauge-high text-lg"></i>
 			<span class="text-xs">{t('layout_nav_dashboard')}</span>
@@ -544,7 +545,7 @@
 			<i class="fa-solid fa-server text-lg"></i>
 			<span class="text-xs">{t('layout_nav_availability')}</span>
 		</a>
-		<a href="{base}/chyby" class="flex flex-col items-center gap-1 px-3 py-2" style="min-width:52px;min-height:52px;justify-content:center;color:#ef4444">
+		<a href="{base}/chyby" class="flex flex-col items-center gap-1 px-3 py-2 text-error" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-triangle-exclamation text-lg"></i>
 			<span class="text-xs font-semibold">{t('layout_nav_errors')}</span>
 		</a>

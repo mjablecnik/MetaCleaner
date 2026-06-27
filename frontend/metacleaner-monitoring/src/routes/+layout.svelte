@@ -40,8 +40,8 @@
 
 <div class="flex min-h-screen">
 	<!-- Desktop Sidebar -->
-	<aside class="hidden lg:flex w-64 flex-col flex-shrink-0 bg-card border-r border-[#1e293b]">
-		<div class="p-6 border-b border-[#1e293b] flex items-center gap-3">
+	<aside class="hidden lg:flex w-64 flex-col flex-shrink-0 bg-card border-r border-surface">
+		<div class="p-6 border-b border-surface flex items-center gap-3">
 			<div
 				class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold"
 			>
@@ -59,8 +59,8 @@
 					<a
 						href={item.href}
 						class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {isActive(item.href)
-							? 'bg-[#1e293b]/50 text-textMain font-medium'
-							: 'text-textSec hover:text-textMain hover:bg-[#1e293b]/50'}"
+							? 'bg-surface/50 text-textMain font-medium'
+							: 'text-textSec hover:text-textMain hover:bg-surface/50'}"
 					>
 						<i
 							class="fa-solid {item.icon} w-5 text-center {isActive(item.href) ? 'text-primary' : ''}"
@@ -71,11 +71,11 @@
 			{/each}
 		</nav>
 
-		<div class="p-4 border-t border-[#1e293b] space-y-1">
+		<div class="p-4 border-t border-surface space-y-1">
 			<LanguageSwitcher />
 			<a
 				href={`${base}/nastaveni`}
-				class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"
+				class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-surface/50 rounded-lg transition-colors"
 			>
 				<i class="fa-solid fa-gear w-5 text-center"></i>
 				{t('layout_nav_settings')}
@@ -87,12 +87,12 @@
 	<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 		<!-- Mobile Top Bar -->
 		<header
-			class="lg:hidden sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between"
+			class="lg:hidden sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-surface px-4 py-3 flex items-center justify-between"
 		>
 			<div class="flex items-center gap-3">
 				<button
 					onclick={toggleDrawer}
-					class="touch-target flex items-center justify-center text-textSec hover:text-textMain rounded-lg border border-[#1e293b] bg-card transition-colors"
+					class="touch-target flex items-center justify-center text-textSec hover:text-textMain rounded-lg border border-surface bg-card transition-colors"
 					aria-label={t('common_actions_menu')}
 				>
 					<i class="fa-solid fa-bars text-lg"></i>
@@ -107,7 +107,7 @@
 				</div>
 			</div>
 			<button
-				class="touch-target flex items-center justify-center bg-[#1e293b] text-white rounded-lg border border-[#334155] transition-colors"
+				class="touch-target flex items-center justify-center bg-surface text-white rounded-lg border border-border transition-colors"
 				aria-label={t('common_actions_export')}
 			>
 				<i class="fa-solid fa-download"></i>
@@ -132,11 +132,11 @@
 
 <!-- Mobile Drawer -->
 <aside
-	class="fixed inset-y-0 left-0 w-[280px] bg-card z-50 flex flex-col border-r border-[#1e293b] shadow-2xl transition-transform duration-300 ease-in-out lg:hidden {drawerOpen
+	class="fixed inset-y-0 left-0 w-[280px] bg-card z-50 flex flex-col border-r border-surface shadow-2xl transition-transform duration-300 ease-in-out lg:hidden {drawerOpen
 		? 'translate-x-0'
 		: '-translate-x-full'}"
 >
-	<div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
+	<div class="p-4 border-b border-surface flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			<div
 				class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold"
@@ -164,8 +164,8 @@
 					href={item.href}
 					onclick={closeDrawer}
 					class="touch-target flex items-center gap-3 px-3 py-3 rounded-xl transition-colors {isActive(item.href)
-						? 'bg-[#1e293b]/50 text-textMain font-medium'
-						: 'text-textSec hover:text-textMain hover:bg-[#1e293b]/50'}"
+						? 'bg-surface/50 text-textMain font-medium'
+						: 'text-textSec hover:text-textMain hover:bg-surface/50'}"
 				>
 					<i
 						class="fa-solid {item.icon} w-6 text-center text-lg {isActive(item.href) ? 'text-primary' : ''}"
@@ -176,12 +176,12 @@
 		{/each}
 	</nav>
 
-	<div class="p-3 border-t border-[#1e293b] space-y-1">
+	<div class="p-3 border-t border-surface space-y-1">
 		<LanguageSwitcher />
 		<a
 			href={`${base}/nastaveni`}
 			onclick={closeDrawer}
-			class="touch-target flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-xl transition-colors"
+			class="touch-target flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-surface/50 rounded-xl transition-colors"
 		>
 			<i class="fa-solid fa-gear w-6 text-center text-lg"></i>
 			{t('layout_nav_settings')}

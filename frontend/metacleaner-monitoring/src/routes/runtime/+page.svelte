@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 	import {
@@ -29,13 +30,13 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#a78bfa';
-		const blueColor = '#3b82f6';
-		const greenColor = '#3ecf8e';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purpleLight;
+		const blueColor = chartColors.blue;
+		const greenColor = chartColors.greenMuted;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -204,11 +205,11 @@
 			margin: { t: 5, r: 5, b: 5, l: 5 },
 			showlegend: false,
 			annotations: [{
-				text: '<b style="font-size:18px;color:#fff">94.2%</b><br><span style="font-size:10px;color:#94a3b8">2xx OK</span>',
+				text: `<b style="font-size:18px;color:${chartColors.textMain}">94.2%</b><br><span style="font-size:10px;color:${chartColors.textSec}">2xx OK</span>`,
 				x: 0.5, y: 0.5,
 				xanchor: 'center', yanchor: 'middle',
 				showarrow: false,
-				font: { size: 13, color: '#ffffff' }
+				font: { size: 13, color: chartColors.textMain }
 			}]
 		};
 
@@ -254,9 +255,9 @@
 			...pieLayout,
 			margin: { t: 4, r: 4, b: 4, l: 4 },
 			annotations: [{
-				text: '<b style="font-size:14px;color:#fff">94.2%</b>',
+				text: `<b style="font-size:14px;color:${chartColors.textMain}">94.2%</b>`,
 				x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle',
-				showarrow: false, font: { size: 11, color: '#ffffff' }
+				showarrow: false, font: { size: 11, color: chartColors.textMain }
 			}]
 		}, chartConfig);
 
@@ -291,10 +292,10 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div class="flex items-center gap-4">
-			<div class="w-9 h-9 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 flex items-center justify-center">
-				<i class="fa-solid fa-microchip text-[#a78bfa] text-sm"></i>
+			<div class="w-9 h-9 rounded-lg bg-purple-light/15 border border-purple-light/30 flex items-center justify-center">
+				<i class="fa-solid fa-microchip text-purple-light text-sm"></i>
 			</div>
 			<div>
 				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_runtime')}</h1>
@@ -306,12 +307,12 @@
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
 				{summary.statusBadge}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -322,7 +323,7 @@
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each runtimeStats as stat (stat.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-start mb-3">
 						<h3 class="text-textSec text-sm font-medium">{t(stat.labelKey)}</h3>
 						{#if stat.badgeKey}
@@ -341,7 +342,7 @@
 						{/if}
 					</div>
 					{#if stat.barWidth}
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+						<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 						</div>
 					{/if}
@@ -353,7 +354,7 @@
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex items-center gap-3 mb-3">
 						<div class="w-8 h-8 rounded-lg {kpi.iconClass} flex items-center justify-center">
 							<i class="fa-solid {kpi.icon} text-xs"></i>
@@ -368,26 +369,26 @@
 
 		<!-- Charts Row: CPU + RAM -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_cpuOverTime')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_cpuSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#a78bfa] inline-block"></span>CPU %</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f97316] inline-block"></span>Peak</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-light inline-block"></span>CPU %</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Peak</span>
 					</div>
 				</div>
 				<div id="chart-cpu" class="h-[220px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_ramOverTime')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_ramSubtitle')}</p>
 					</div>
-					<div class="flex items-center gap-1.5 px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded text-xs text-[#3b82f6]">
+					<div class="flex items-center gap-1.5 px-2 py-1 bg-blue/10 border border-blue/20 rounded text-xs text-blue">
 						<i class="fa-solid fa-memory text-xs"></i>
 						{t('runtime_charts_ramLimit')}
 					</div>
@@ -399,19 +400,19 @@
 		<!-- Instances + Response Time / Network -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Instances -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-5">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_instances_title')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('runtime_instances_flyioInfo')}</p>
 					</div>
-					<button class="flex items-center gap-2 px-3 py-1.5 bg-[#a78bfa]/10 border border-[#a78bfa]/20 rounded-lg text-[#a78bfa] text-xs font-medium hover:bg-[#a78bfa]/20 transition-colors">
+					<button class="flex items-center gap-2 px-3 py-1.5 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium hover:bg-purple-light/20 transition-colors">
 						<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 					</button>
 				</div>
 				<div class="space-y-3">
 					{#each machines as m (m.id)}
-						<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="p-4 rounded-xl bg-surface/40 border border-border/40">
 							<div class="flex items-center justify-between mb-3">
 								<div class="flex items-center gap-3">
 									<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
@@ -431,7 +432,7 @@
 								<div>
 									<div class="text-xs text-textSec mb-1">RAM</div>
 									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-										<div class="h-full bg-[#3b82f6] rounded-full" style="width:{m.ramBarWidth}"></div>
+										<div class="h-full bg-blue rounded-full" style="width:{m.ramBarWidth}"></div>
 									</div>
 									<div class="text-xs text-textMain mt-1">{m.ramDisplay}</div>
 								</div>
@@ -447,28 +448,28 @@
 
 			<!-- Response Time + Network stacked -->
 			<div class="flex flex-col gap-6">
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-center mb-4">
 						<div>
 							<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_responseTime')}</h3>
 							<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_responseSubtitle')}</p>
 						</div>
 						<div class="flex gap-2">
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>P50</span>
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f97316] inline-block"></span>P99</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span>P50</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>P99</span>
 						</div>
 					</div>
 					<div id="chart-response" class="h-[160px] w-full"></div>
 				</div>
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-center mb-4">
 						<div>
 							<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_networkTraffic')}</h3>
 							<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_networkSubtitle')}</p>
 						</div>
 						<div class="flex gap-2">
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>IN</span>
-							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>OUT</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue inline-block"></span>IN</span>
+							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span>OUT</span>
 						</div>
 					</div>
 					<div id="chart-network" class="h-[160px] w-full"></div>
@@ -479,7 +480,7 @@
 		<!-- Deploy History + Error Log -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Deploy History -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_deploys_title')}</h3>
@@ -507,20 +508,20 @@
 			</div>
 
 			<!-- Runtime Error Log -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 lg:col-span-2">
 				<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_errorLog_title')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('runtime_errorLog_subtitle')}</p>
 					</div>
 					<div class="flex gap-3 flex-wrap">
-						<div class="flex rounded-lg overflow-hidden border border-[#334155]">
+						<div class="flex rounded-lg overflow-hidden border border-border">
 							<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('runtime_filters_all')}</button>
-							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">OOM</button>
-							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Crash</button>
-							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Health</button>
+							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">OOM</button>
+							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Crash</button>
+							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Health</button>
 						</div>
-						<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
+						<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
 							<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 							<input type="text" placeholder="{t('runtime_errorLog_searchPlaceholder')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-28" />
 						</div>
@@ -529,7 +530,7 @@
 				<div class="overflow-x-auto">
 					<table class="w-full text-sm">
 						<thead>
-							<tr class="border-b border-[#1e293b]">
+							<tr class="border-b border-surface">
 								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
 								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('runtime_table_instance')}</th>
 								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
@@ -537,9 +538,9 @@
 								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 							</tr>
 						</thead>
-						<tbody class="divide-y divide-[#1e293b]/60">
+						<tbody class="divide-y divide-surface/60">
 							{#each errorLog as entry (entry.id)}
-								<tr class="hover:bg-[#1e293b]/30 transition-colors">
+								<tr class="hover:bg-surface/30 transition-colors">
 									<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
 									<td class="py-3 pr-4 text-textSec font-mono text-xs">{entry.machine}</td>
 									<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.levelClass} text-xs rounded font-medium">{entry.level}</span></td>
@@ -555,7 +556,7 @@
 
 		<!-- HTTP Status + RPM -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_httpStatus')}</h3>
@@ -572,14 +573,14 @@
 					{/each}
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_rpm')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_rpmSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#a78bfa] inline-block"></span>rpm</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-light inline-block"></span>rpm</span>
 					</div>
 				</div>
 				<div id="chart-rpm" class="h-[240px] w-full"></div>
@@ -595,8 +596,8 @@
 	<!-- Title row -->
 	<div class="px-4 pt-3 pb-2">
 		<div class="flex items-center gap-2.5">
-			<div class="w-7 h-7 rounded-md bg-[#a78bfa]/15 border border-[#a78bfa]/30 flex items-center justify-center">
-				<i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
+			<div class="w-7 h-7 rounded-md bg-purple-light/15 border border-purple-light/30 flex items-center justify-center">
+				<i class="fa-solid fa-microchip text-purple-light text-xs"></i>
 			</div>
 			<div>
 				<h1 class="text-sm font-bold text-textMain leading-tight">{t('layout_nav_runtime')}</h1>
@@ -616,12 +617,12 @@
 	<!-- Time range + region selector -->
 	<div class="px-4 pb-4">
 		<div class="flex items-center gap-2">
-			<select class="flex-1 bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
+			<select class="flex-1 bg-card border border-border text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<div class="flex items-center gap-1.5 px-3 py-3 bg-card border border-[#1e293b] rounded-xl text-textSec text-xs">
+			<div class="flex items-center gap-1.5 px-3 py-3 bg-card border border-surface rounded-xl text-textSec text-xs">
 				<i class="fa-solid fa-server text-xs"></i>
 				<span>fra</span>
 			</div>
@@ -633,7 +634,7 @@
 		<!-- KPI Primary Stats 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
 			{#each runtimeStats as stat (stat.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+				<div class="bg-card border border-surface rounded-xl p-4">
 					<div class="flex items-start justify-between mb-2">
 						<p class="text-textSec text-xs font-medium">{t(stat.labelKey)}</p>
 						{#if stat.badgeKey}
@@ -654,7 +655,7 @@
 						{/if}
 					</div>
 					{#if stat.barWidth}
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
+						<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
 							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 						</div>
 					{/if}
@@ -666,7 +667,7 @@
 		<!-- KPI Secondary 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+				<div class="bg-card border border-surface rounded-xl p-4">
 					<div class="flex items-center gap-2 mb-2">
 						<div class="w-7 h-7 rounded-lg {kpi.iconClass} flex items-center justify-center flex-shrink-0">
 							<i class="fa-solid {kpi.icon} text-xs"></i>
@@ -680,23 +681,23 @@
 		</section>
 
 		<!-- Charts Tabs -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center gap-1 mb-4 bg-[#0a1628] rounded-lg p-1">
 				<button
 					onclick={() => switchChart('cpu')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'cpu' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'cpu' ? 'bg-surface text-white' : 'text-textSec'}"
 				>CPU</button>
 				<button
 					onclick={() => switchChart('ram')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'ram' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'ram' ? 'bg-surface text-white' : 'text-textSec'}"
 				>RAM</button>
 				<button
 					onclick={() => switchChart('response')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'response' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'response' ? 'bg-surface text-white' : 'text-textSec'}"
 				>Response</button>
 				<button
 					onclick={() => switchChart('network')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'network' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'network' ? 'bg-surface text-white' : 'text-textSec'}"
 				>Network</button>
 			</div>
 
@@ -708,8 +709,8 @@
 						<p class="text-xs text-textSec">{t('runtime_charts_cpuSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa] inline-block"></span>CPU</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f97316] inline-block"></span>Peak</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-purple-light inline-block"></span>CPU</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>Peak</span>
 					</div>
 				</div>
 				<div id="chart-cpu-m" class="h-[200px] w-full"></div>
@@ -721,7 +722,7 @@
 						<p class="text-sm font-semibold text-textMain">{t('runtime_charts_ramOverTime')}</p>
 						<p class="text-xs text-textSec">{t('runtime_charts_ramSubtitle')}</p>
 					</div>
-					<div class="flex items-center gap-1 px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded text-xs text-[#3b82f6]">
+					<div class="flex items-center gap-1 px-2 py-1 bg-blue/10 border border-blue/20 rounded text-xs text-blue">
 						<i class="fa-solid fa-memory text-xs"></i>{t('runtime_charts_ramLimit')}
 					</div>
 				</div>
@@ -735,8 +736,8 @@
 						<p class="text-xs text-textSec">{t('runtime_charts_responseSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>P50</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f97316] inline-block"></span>P99</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span>P50</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>P99</span>
 					</div>
 				</div>
 				<div id="chart-response-m" class="h-[200px] w-full"></div>
@@ -749,8 +750,8 @@
 						<p class="text-xs text-textSec">{t('runtime_charts_networkSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>IN</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>OUT</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue inline-block"></span>IN</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span>OUT</span>
 					</div>
 				</div>
 				<div id="chart-network-m" class="h-[200px] w-full"></div>
@@ -759,7 +760,7 @@
 
 		<!-- HTTP Status + RPM side by side -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<p class="text-sm font-semibold text-textMain mb-1">{t('runtime_charts_httpStatusMobile')}</p>
 				<p class="text-xs text-textSec mb-3">{t('runtime_charts_httpStatusSubtitleMobile')}</p>
 				<div id="chart-http-status-m" class="h-[150px] w-full"></div>
@@ -772,27 +773,27 @@
 					{/each}
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<p class="text-sm font-semibold text-textMain mb-1">{t('runtime_charts_rpmMobile')}</p>
 				<p class="text-xs text-textSec mb-3">{t('runtime_charts_rpmSubtitleMobile')}</p>
 				<div id="chart-rpm-m" class="h-[150px] w-full"></div>
-				<div class="mt-3 p-2 bg-[#1e293b]/50 rounded-lg text-center">
+				<div class="mt-3 p-2 bg-surface/50 rounded-lg text-center">
 					<p class="text-xs text-textSec">{t('runtime_charts_rpmPeak')}</p>
-					<p class="text-base font-bold text-[#a78bfa]">1,640</p>
+					<p class="text-base font-bold text-purple-light">1,640</p>
 					<p class="text-xs text-textSec">req/min</p>
 				</div>
 			</div>
 		</section>
 
 		<!-- Instances Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (instancesOpen = !instancesOpen)}
 				class="w-full flex items-center justify-between p-4 text-left"
 			>
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center">
-						<i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-purple-light/15 flex items-center justify-center">
+						<i class="fa-solid fa-microchip text-purple-light text-xs"></i>
 					</div>
 					<div>
 						<p class="text-sm font-semibold text-textMain">{t('runtime_instances_titleMobile')}</p>
@@ -807,12 +808,12 @@
 			{#if instancesOpen}
 				<div class="px-4 pb-4 space-y-3">
 					<div class="flex justify-end">
-						<button class="flex items-center gap-2 px-3 py-2 bg-[#a78bfa]/10 border border-[#a78bfa]/20 rounded-lg text-[#a78bfa] text-xs font-medium">
+						<button class="flex items-center gap-2 px-3 py-2 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium">
 							<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 						</button>
 					</div>
 					{#each machines as m (m.id)}
-						<div class="p-4 rounded-xl bg-[#1e293b]/40 border {m.cpuWarning ? 'border-secondary/20' : 'border-[#334155]/40'}">
+						<div class="p-4 rounded-xl bg-surface/40 border {m.cpuWarning ? 'border-secondary/20' : 'border-border/40'}">
 							<div class="flex items-center justify-between mb-3">
 								<div class="flex items-center gap-2">
 									<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
@@ -832,7 +833,7 @@
 								<div>
 									<div class="text-xs text-textSec mb-1">RAM</div>
 									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-										<div class="h-full bg-[#3b82f6] rounded-full" style="width:{m.ramBarWidth}"></div>
+										<div class="h-full bg-blue rounded-full" style="width:{m.ramBarWidth}"></div>
 									</div>
 									<div class="text-xs text-textMain mt-1">{m.ramDisplay}</div>
 								</div>
@@ -848,7 +849,7 @@
 		</section>
 
 		<!-- Deploy History Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (deploysOpen = !deploysOpen)}
 				class="w-full flex items-center justify-between p-4 text-left"
@@ -867,7 +868,7 @@
 			{#if deploysOpen}
 				<div class="px-4 pb-4 space-y-3">
 					{#each deploys as d, i (d.id)}
-						<div class="flex items-start gap-3 py-2 {i < deploys.length - 1 ? 'border-b border-[#1e293b]/60' : ''}">
+						<div class="flex items-start gap-3 py-2 {i < deploys.length - 1 ? 'border-b border-surface/60' : ''}">
 							<div class="mt-0.5 w-7 h-7 rounded-lg {d.iconClass} flex items-center justify-center flex-shrink-0">
 								<i class="fa-solid {d.icon} {d.status === 'failed' ? 'text-error' : d.status === 'success' ? 'text-success' : 'text-secondary'} text-xs"></i>
 							</div>
@@ -886,7 +887,7 @@
 		</section>
 
 		<!-- Error Log Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (errorsOpen = !errorsOpen)}
 				class="w-full flex items-center justify-between p-4 text-left"
@@ -908,16 +909,16 @@
 			{#if errorsOpen}
 				<div class="px-4 pb-4">
 					<div class="flex gap-2 mb-4">
-						<div class="flex rounded-lg overflow-hidden border border-[#334155] flex-1">
+						<div class="flex rounded-lg overflow-hidden border border-border flex-1">
 							<button class="flex-1 py-2 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
-							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">OOM</button>
-							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Crash</button>
-							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Health</button>
+							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">OOM</button>
+							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Crash</button>
+							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Health</button>
 						</div>
 					</div>
 					<div class="space-y-2">
 						{#each errorLog as entry (entry.id)}
-							<div class="p-3 rounded-xl bg-[#1e293b]/40 border {entry.borderClass}">
+							<div class="p-3 rounded-xl bg-surface/40 border {entry.borderClass}">
 								<div class="flex items-center justify-between mb-1.5">
 									<div class="flex items-center gap-2">
 										<span class="px-1.5 py-0.5 {entry.levelClass} text-xs rounded font-medium">{entry.level}</span>
@@ -939,7 +940,7 @@
 	</div>
 
 	<!-- Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-[9px] font-medium">{t('layout_nav_dashboard')}</span>
@@ -948,7 +949,7 @@
 			<i class="fa-solid fa-server text-base"></i>
 			<span class="text-[9px] font-medium">{t('layout_nav_availability')}</span>
 		</a>
-		<a href="{base}/runtime" class="flex flex-col items-center gap-1 px-3 py-2 text-[#a78bfa] min-w-[44px]">
+		<a href="{base}/runtime" class="flex flex-col items-center gap-1 px-3 py-2 text-purple-light min-w-[44px]">
 			<i class="fa-solid fa-microchip text-base"></i>
 			<span class="text-[9px] font-semibold">Runtime</span>
 		</a>

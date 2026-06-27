@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 	import {
@@ -29,14 +30,14 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#8b5cf6';
-		const blueColor = '#3b82f6';
-		const greenColor = '#3ecf8e';
-		const cfOrange = '#f6821f';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purple;
+		const blueColor = chartColors.blue;
+		const greenColor = chartColors.greenMuted;
+		const cfOrange = chartColors.cfOrange;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -125,11 +126,11 @@
 		];
 
 		const pieCenterAnnotation = {
-			text: '<b style="font-size:18px;color:#fff">1,247</b><br><span style="font-size:10px;color:#94a3b8">Hrozeb</span>',
+			text: `<b style="font-size:18px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:10px;color:${chartColors.textSec}">Hrozeb</span>`,
 			x: 0.5, y: 0.5,
 			xanchor: 'center', yanchor: 'middle',
 			showarrow: false,
-			font: { size: 13, color: '#ffffff' }
+			font: { size: 13, color: chartColors.textMain }
 		};
 
 		const regions = ['EU West','US East','US West','Middle East','Asia Pac.','S. America'];
@@ -208,7 +209,7 @@
 		if (elThreatPieM) Plotly.newPlot('chart-threat-pie-m', dataThreatPie, {
 			...pieLayout,
 			margin: { t: 4, r: 4, b: 4, l: 4 },
-			annotations: [{ text: '<b style="font-size:14px;color:#fff">1,247</b><br><span style="font-size:9px;color:#94a3b8">Hrozeb</span>', x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false, font: { size: 11, color: '#ffffff' } }]
+			annotations: [{ text: `<b style="font-size:14px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:9px;color:${chartColors.textSec}">Hrozeb</span>`, x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false, font: { size: 11, color: chartColors.textMain } }]
 		}, chartConfig);
 
 		const elTtfbM = document.getElementById('chart-ttfb-region-m');
@@ -245,10 +246,10 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div class="flex items-center gap-4">
-			<div class="w-9 h-9 rounded-lg bg-[#f6821f]/15 border border-[#f6821f]/30 flex items-center justify-center">
-				<i class="fa-solid fa-cloud text-[#f6821f] text-sm"></i>
+			<div class="w-9 h-9 rounded-lg bg-cf-orange/15 border border-cf-orange/30 flex items-center justify-center">
+				<i class="fa-solid fa-cloud text-cf-orange text-sm"></i>
 			</div>
 			<div>
 				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_edge')}</h1>
@@ -260,12 +261,12 @@
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
 				{t('edge_status_cdnOnline')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -276,7 +277,7 @@
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each edgeKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-start mb-3">
 						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 						{#if kpi.key === 'totalRequests'}
@@ -297,7 +298,7 @@
 						{/if}
 					</div>
 					{#if kpi.barWidth && kpi.barClass}
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+						<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 							<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 						</div>
 					{/if}
@@ -309,7 +310,7 @@
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex items-center gap-3 mb-3">
 						<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center">
 							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
@@ -326,20 +327,20 @@
 
 		<!-- Charts Row: Requests + Bandwidth -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_requestsOverTime')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('edge_charts_requestsSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>{t('edge_charts_cacheHit')}</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f6821f] inline-block"></span>{t('edge_charts_cacheMiss')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span>{t('edge_charts_cacheHit')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-cf-orange inline-block"></span>{t('edge_charts_cacheMiss')}</span>
 					</div>
 				</div>
 				<div id="chart-requests" class="h-[220px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_bandwidth')}</h3>
@@ -353,7 +354,7 @@
 
 		<!-- Threat Types + TTFB by Region -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('edge_threats_title')}</h3>
 				<p class="text-xs text-textSec mb-4">{t('edge_threats_subtitle')}</p>
 				<div id="chart-threat-pie" class="h-[200px] w-full"></div>
@@ -370,7 +371,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('edge_ttfb_title')}</h3>
@@ -384,7 +385,7 @@
 							<div class="w-28 text-xs text-textSec truncate flex items-center gap-2">
 								<i class="fa-solid fa-location-dot {region.dotColor} text-xs"></i>{region.name}
 							</div>
-							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
 								<div class="h-full rounded-full" style="width:{region.barWidth}; background-color:{region.barColor}; opacity:{region.barOpacity ?? 1}"></div>
 							</div>
 							<span class="text-xs text-textMain font-medium w-14 text-right">{region.ttfbMs} ms</span>
@@ -398,7 +399,7 @@
 
 		<!-- HTTP Status + Cache Rules -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_httpStatus')}</h3>
@@ -417,7 +418,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('edge_cacheRules_title')}</h3>
@@ -427,7 +428,7 @@
 				</div>
 				<div class="space-y-3">
 					{#each cacheRules as rule (rule.id)}
-						<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="flex items-center gap-4 p-3 rounded-lg bg-surface/40 border border-border/40">
 							<div class="w-8 h-8 rounded-lg {rule.iconBg} flex items-center justify-center flex-shrink-0">
 								<i class="fa-solid {rule.icon} {rule.iconColor} text-xs"></i>
 							</div>
@@ -446,20 +447,20 @@
 		</section>
 
 		<!-- WAF & Security Log -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">{t('edge_wafLog_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('edge_wafLog_subtitle')}</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
-					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
+					<div class="flex rounded-lg overflow-hidden border border-border">
 						<button class="px-3 py-1.5 bg-secondary/20 text-secondary text-xs font-medium">{t('common_status_all')}</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">DDoS</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">WAF</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Bot</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">DDoS</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">WAF</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Bot</button>
 					</div>
-					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
+					<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input type="text" placeholder={t('edge_wafLog_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-36" />
 					</div>
@@ -468,7 +469,7 @@
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
-						<tr class="border-b border-[#1e293b]">
+						<tr class="border-b border-surface">
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('edge_table_ipAddress')}</th>
@@ -478,9 +479,9 @@
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-[#1e293b]/60">
+					<tbody class="divide-y divide-surface/60">
 						{#each wafLog as entry (entry.id)}
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+							<tr class="hover:bg-surface/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span></td>
 								<td class="py-3 pr-4 text-textMain font-mono text-xs whitespace-nowrap">{entry.ip}</td>
@@ -504,8 +505,8 @@
 	<!-- Title row -->
 	<div class="px-4 pt-3 pb-2">
 		<div class="flex items-center gap-2.5">
-			<div class="w-7 h-7 rounded-md bg-[#f6821f]/15 border border-[#f6821f]/30 flex items-center justify-center">
-				<i class="fa-solid fa-cloud text-[#f6821f] text-xs"></i>
+			<div class="w-7 h-7 rounded-md bg-cf-orange/15 border border-cf-orange/30 flex items-center justify-center">
+				<i class="fa-solid fa-cloud text-cf-orange text-xs"></i>
 			</div>
 			<div>
 				<h1 class="text-sm font-bold text-textMain leading-tight">{t('layout_nav_edge')}</h1>
@@ -523,7 +524,7 @@
 	</div>
 
 	<div class="px-4 pb-4">
-		<select class="w-full bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
+		<select class="w-full bg-card border border-border text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
 			<option>{t('common_timeRange_last24h')}</option>
 			<option>{t('common_timeRange_last7d')}</option>
 			<option>{t('common_timeRange_last30d')}</option>
@@ -537,7 +538,7 @@
 			<!-- Cache Hit Rate - full width -->
 			{#each edgeKpis as kpi (kpi.key)}
 				{#if kpi.key === 'cacheHitRate'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4 col-span-2">
+					<div class="bg-card border border-surface rounded-xl p-4 col-span-2">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
 							{#if kpi.badgeKey}
@@ -554,14 +555,14 @@
 							{/if}
 						</div>
 						{#if kpi.barWidth && kpi.barClass}
-							<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="w-full h-2 bg-surface rounded-full overflow-hidden">
 								<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 							</div>
 						{/if}
 						<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
 					</div>
 				{:else if kpi.key === 'totalRequests'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKey)}</h3>
 							<span class="px-1.5 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">24h</span>
@@ -570,7 +571,7 @@
 						<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
 					</div>
 				{:else if kpi.key === 'savedBandwidth'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-textSec text-xs font-medium leading-tight">{t('edge_kpi_savedBandwidthMobile')}</h3>
 							{#if kpi.badgeKey}
@@ -582,7 +583,7 @@
 							{#if kpi.unit}<span class="text-xs text-textSec mb-0.5">{kpi.unit}</span>{/if}
 						</div>
 						{#if kpi.barWidth && kpi.barClass}
-							<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 								<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 							</div>
 						{/if}
@@ -596,7 +597,7 @@
 		<section class="grid grid-cols-2 gap-3">
 			{#each edgeKpis as kpi (kpi.key)}
 				{#if kpi.key === 'blockedThreats'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex justify-between items-start mb-2">
 							<h3 class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKey)}</h3>
 							{#if kpi.badgeKey}
@@ -610,7 +611,7 @@
 			{/each}
 			{#each secondaryKpis as kpi (kpi.key)}
 				{#if kpi.key === 'avgTtfb'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex items-center gap-2 mb-2">
 							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
 								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
@@ -621,7 +622,7 @@
 						<p class="text-xs text-textSec mt-1">-12ms vs. origin</p>
 					</div>
 				{:else if kpi.key === 'activePop'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex items-center gap-2 mb-2">
 							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
 								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
@@ -632,7 +633,7 @@
 						<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtextMobile')}</p>
 					</div>
 				{:else if kpi.key === 'wafRules'}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="bg-card border border-surface rounded-xl p-4">
 						<div class="flex items-center gap-2 mb-2">
 							<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
 								<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
@@ -647,9 +648,9 @@
 		</section>
 
 		<!-- SSL/TLS Banner -->
-		<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex items-center gap-3">
-			<div class="w-10 h-10 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
-				<i class="fa-solid fa-rotate text-[#3b82f6]"></i>
+		<div class="bg-card border border-surface rounded-xl p-4 flex items-center gap-3">
+			<div class="w-10 h-10 rounded-lg bg-blue/15 flex items-center justify-center flex-shrink-0">
+				<i class="fa-solid fa-rotate text-blue"></i>
 			</div>
 			<div class="flex-1 min-w-0">
 				<div class="text-textMain font-bold text-base">TLS 1.3</div>
@@ -659,19 +660,19 @@
 		</div>
 
 		<!-- Charts Tabs -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center gap-1 mb-4 bg-[#0a1628] rounded-lg p-1">
 				<button
 					onclick={() => switchChart('requests')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'requests' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'requests' ? 'bg-surface text-white' : 'text-textSec'}"
 				>{t('edge_tabs_requests')}</button>
 				<button
 					onclick={() => switchChart('bandwidth')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'bandwidth' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'bandwidth' ? 'bg-surface text-white' : 'text-textSec'}"
 				>{t('edge_tabs_bandwidth')}</button>
 				<button
 					onclick={() => switchChart('http')}
-					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'http' ? 'bg-[#1e293b] text-white' : 'text-textSec'}"
+					class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'http' ? 'bg-surface text-white' : 'text-textSec'}"
 				>{t('edge_tabs_httpStatus')}</button>
 			</div>
 
@@ -682,8 +683,8 @@
 						<p class="text-xs text-textSec">{t('edge_charts_requestsSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>{t('edge_charts_cacheHit')}</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f6821f] inline-block"></span>{t('edge_charts_cacheMiss')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span>{t('edge_charts_cacheHit')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cf-orange inline-block"></span>{t('edge_charts_cacheMiss')}</span>
 					</div>
 				</div>
 				<div id="chart-requests-m" class="h-[200px] w-full"></div>
@@ -718,7 +719,7 @@
 		</section>
 
 		<!-- Typy hrozeb -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-1">{t('edge_threats_title')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('edge_threats_subtitle')}</p>
 			<div class="flex gap-4">
@@ -738,7 +739,7 @@
 		</section>
 
 		<!-- TTFB by Region -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex justify-between items-center mb-3">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('edge_ttfb_title')}</h3>
@@ -752,7 +753,7 @@
 						<div class="w-20 text-xs text-textSec flex items-center gap-1.5 flex-shrink-0">
 							<i class="fa-solid fa-location-dot {region.dotColor} text-xs"></i>{region.shortName}
 						</div>
-						<div class="flex-1 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+						<div class="flex-1 h-1.5 bg-surface rounded-full overflow-hidden">
 							<div class="h-full rounded-full" style="width:{region.barWidth}; background-color:{region.barColor}; opacity:{region.barOpacity ?? 1}"></div>
 						</div>
 						<span class="text-xs text-textMain font-medium w-12 text-right flex-shrink-0">{region.ttfbMs} ms</span>
@@ -764,14 +765,14 @@
 		</section>
 
 		<!-- Cache Rules -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (cacheRulesOpen = !cacheRulesOpen)}
 				class="w-full flex items-center justify-between p-4 text-left"
 			>
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-image text-[#3ecf8e] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-green-muted/15 flex items-center justify-center">
+						<i class="fa-solid fa-image text-green-muted text-xs"></i>
 					</div>
 					<div>
 						<p class="text-sm font-semibold text-textMain">{t('edge_cacheRules_title')}</p>
@@ -783,7 +784,7 @@
 			{#if cacheRulesOpen}
 				<div class="px-4 pb-4 space-y-2.5">
 					{#each cacheRules as rule (rule.id)}
-						<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="flex items-center gap-3 p-3 rounded-lg bg-surface/40 border border-border/40">
 							<div class="w-8 h-8 rounded-lg {rule.iconBg} flex items-center justify-center flex-shrink-0">
 								<i class="fa-solid {rule.icon} {rule.iconColor} text-xs"></i>
 							</div>
@@ -802,7 +803,7 @@
 		</section>
 
 		<!-- WAF & Security Logs -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="mb-4">
 				<div class="flex justify-between items-start mb-3">
 					<div>
@@ -810,13 +811,13 @@
 						<p class="text-xs text-textSec mt-0.5">{t('edge_wafLog_subtitle')}</p>
 					</div>
 				</div>
-				<div class="flex rounded-lg overflow-hidden border border-[#334155] mb-3">
+				<div class="flex rounded-lg overflow-hidden border border-border mb-3">
 					<button class="flex-1 px-2 py-2 bg-secondary/20 text-secondary text-xs font-medium">{t('common_status_all')}</button>
-					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">DDoS</button>
-					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">WAF</button>
-					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Bot</button>
+					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">DDoS</button>
+					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">WAF</button>
+					<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Bot</button>
 				</div>
-				<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5">
+				<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-2.5">
 					<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 					<input type="text" placeholder={t('edge_wafLog_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 				</div>
@@ -824,7 +825,7 @@
 
 			<div class="space-y-3">
 				{#each wafLog as entry (entry.id)}
-					<div class="border-l-[3px] bg-[#1e293b]/40 border border-[#334155]/40 rounded-lg p-3" style="border-left-color:{entry.typeClass.includes('error') ? '#ef4444' : entry.typeClass.includes('8b5cf6') ? '#8b5cf6' : entry.typeClass.includes('f97316') ? '#f97316' : '#3b82f6'}">
+					<div class="border-l-[3px] bg-surface/40 border border-border/40 rounded-lg p-3" style="border-left-color:{entry.typeClass.includes('error') ? chartColors.error : entry.typeClass.includes('8b5cf6') ? chartColors.purple : entry.typeClass.includes('f97316') ? chartColors.secondary : chartColors.blue}">
 						<div class="flex justify-between items-start mb-2">
 							<div class="flex items-center gap-2">
 								<span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span>
@@ -849,7 +850,7 @@
 </div>
 
 <!-- Mobile Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] px-2 py-2 lg:hidden">
+<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface px-2 py-2 lg:hidden">
 	<div class="flex justify-around items-center max-w-2xl mx-auto">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
@@ -859,7 +860,7 @@
 			<i class="fa-solid fa-server text-base"></i>
 			<span class="text-xs">{t('layout_nav_availability')}</span>
 		</a>
-		<a href="{base}/edge" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#f6821f] min-w-[44px]">
+		<a href="{base}/edge" class="flex flex-col items-center gap-1 px-3 py-1.5 text-cf-orange min-w-[44px]">
 			<i class="fa-solid fa-cloud text-base"></i>
 			<span class="text-xs font-medium">{t('layout_nav_edge')}</span>
 		</a>

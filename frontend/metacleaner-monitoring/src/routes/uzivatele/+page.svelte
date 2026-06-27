@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
 	import {
@@ -38,8 +39,8 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -93,7 +94,7 @@
 				y: sessionValues,
 				type: 'scatter',
 				mode: 'lines',
-				line: { color: '#3b82f6', width: 2.5, shape: 'spline', smoothing: 0.8 },
+				line: { color: chartColors.blue, width: 2.5, shape: 'spline', smoothing: 0.8 },
 				fill: 'tozeroy',
 				fillcolor: 'rgba(59,130,246,0.1)',
 				hovertemplate: '<b>%{x}</b><br>%{y} uživatelů<extra></extra>'
@@ -119,7 +120,7 @@
 				y: sessionValues,
 				type: 'scatter',
 				mode: 'lines',
-				line: { color: '#3b82f6', width: 2.5, shape: 'spline', smoothing: 0.8 },
+				line: { color: chartColors.blue, width: 2.5, shape: 'spline', smoothing: 0.8 },
 				fill: 'tozeroy',
 				fillcolor: 'rgba(59,130,246,0.1)',
 				hovertemplate: '<b>%{x}</b><br>%{y} uživatelů<extra></extra>'
@@ -132,7 +133,7 @@
 <div class="hidden lg:flex flex-col min-h-screen">
 
 	<!-- Desktop Header -->
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div>
 			<h1 class="text-2xl font-bold text-textMain">{t('users_header_title')}</h1>
 			<p class="text-sm text-textSec mt-1">{t('users_header_subtitle')}</p>
@@ -140,9 +141,9 @@
 		<div class="flex items-center gap-3">
 			<div class="relative">
 				<i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"></i>
-				<input type="text" placeholder={t('users_search_placeholder')} class="pl-9 pr-4 py-2 bg-[#1e293b] border border-[#334155] text-white text-sm rounded-lg focus:outline-none focus:border-primary w-64 placeholder-textSec" />
+				<input type="text" placeholder={t('users_search_placeholder')} class="pl-9 pr-4 py-2 bg-surface border border-border text-white text-sm rounded-lg focus:outline-none focus:border-primary w-64 placeholder-textSec" />
 			</div>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -152,7 +153,7 @@
 
 		<!-- Stats Cards -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-4">
 					<h3 class="text-textSec text-sm font-medium">{t('users_stats_totalUsers')}</h3>
 					<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -167,7 +168,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-4">
 					<h3 class="text-textSec text-sm font-medium">{t('users_stats_currentlyLoggedIn')}</h3>
 					<div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -181,7 +182,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-4">
 					<h3 class="text-textSec text-sm font-medium">{t('users_stats_newRegistrations')}</h3>
 					<div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
@@ -196,7 +197,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-4">
 					<h3 class="text-textSec text-sm font-medium">{t('users_stats_avgSessionDuration')}</h3>
 					<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
@@ -214,18 +215,18 @@
 
 		<!-- Charts Row -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-6">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('users_charts_registrations')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('users_charts_registrationsSubtitle')}</p>
 					</div>
-					<span class="px-2.5 py-1 bg-badge rounded-md text-xs text-textSec border border-[#334155]">{t('common_timeRange_last30d')}</span>
+					<span class="px-2.5 py-1 bg-badge rounded-md text-xs text-textSec border border-border">{t('common_timeRange_last30d')}</span>
 				</div>
 				<div id="chart-registrations-d" class="h-[220px] w-full"></div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-6">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('users_charts_activeSessions')}</h3>
@@ -241,9 +242,9 @@
 		</section>
 
 		<!-- Tabs + Table -->
-		<section class="bg-card border border-[#1e293b] rounded-xl">
+		<section class="bg-card border border-surface rounded-xl">
 			<!-- Tab bar -->
-			<div class="flex items-center justify-between px-5 pt-5 pb-0 border-b border-[#1e293b]">
+			<div class="flex items-center justify-between px-5 pt-5 pb-0 border-b border-surface">
 				<div class="flex gap-1">
 					{#each tabs as tab (tab.key)}
 						<button
@@ -256,10 +257,10 @@
 					{/each}
 				</div>
 				<div class="flex items-center gap-2 pb-3">
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors flex items-center gap-2">
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors flex items-center gap-2">
 						<i class="fa-solid fa-filter text-xs"></i> {t('common_actions_filter')}
 					</button>
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors flex items-center gap-2">
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors flex items-center gap-2">
 						<i class="fa-solid fa-sort text-xs"></i> {t('users_actions_sort')}
 					</button>
 				</div>
@@ -269,7 +270,7 @@
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
-						<tr class="text-left border-b border-[#1e293b]">
+						<tr class="text-left border-b border-surface">
 							<th class="px-5 py-3 text-xs font-semibold text-textSec uppercase tracking-wider">{t('users_table_user')}</th>
 							<th class="px-5 py-3 text-xs font-semibold text-textSec uppercase tracking-wider">{t('common_table_status')}</th>
 							<th class="px-5 py-3 text-xs font-semibold text-textSec uppercase tracking-wider hidden md:table-cell">{t('users_table_registered')}</th>
@@ -280,15 +281,15 @@
 							<th class="px-5 py-3"></th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-[#1e293b]/50">
+					<tbody class="divide-y divide-surface/50">
 						{#each filteredUsers() as u (u.id)}
 							{@const s = userStatusConfig[u.status]}
 							{@const r = userRoleColors[u.role] ?? userRoleColors['Viewer']}
-							<tr class="hover:bg-[#1e293b]/30 transition-colors group">
+							<tr class="hover:bg-surface/30 transition-colors group">
 								<td class="px-5 py-3.5">
 									<div class="flex items-center gap-3">
 										<div class="relative flex-shrink-0">
-											<img src={u.avatar} alt={u.name} class="w-9 h-9 rounded-full object-cover border border-[#334155]" />
+											<img src={u.avatar} alt={u.name} class="w-9 h-9 rounded-full object-cover border border-border" />
 											<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full {s.dot} border-2 border-card"></span>
 										</div>
 										<div>
@@ -316,7 +317,7 @@
 									<span class="px-2.5 py-1 rounded-md text-xs font-medium {r}">{u.role}</span>
 								</td>
 								<td class="px-5 py-3.5 text-right">
-									<button class="opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 bg-badge border border-[#334155] text-textSec text-xs rounded-md hover:text-textMain">
+									<button class="opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 bg-badge border border-border text-textSec text-xs rounded-md hover:text-textMain">
 										<i class="fa-solid fa-ellipsis-h"></i>
 									</button>
 								</td>
@@ -327,18 +328,18 @@
 			</div>
 
 			<!-- Pagination -->
-			<div class="flex flex-col sm:flex-row items-center justify-between px-5 py-4 border-t border-[#1e293b] gap-3">
+			<div class="flex flex-col sm:flex-row items-center justify-between px-5 py-4 border-t border-surface gap-3">
 				<p class="text-sm text-textSec">{t('common_pagination_showing', { from: '1', to: '10', total: '12 847' })}</p>
 				<div class="flex items-center gap-1">
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">
 						<i class="fa-solid fa-chevron-left text-xs"></i>
 					</button>
 					<button class="px-3 py-1.5 bg-primary text-white text-sm rounded-lg font-medium">1</button>
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">2</button>
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">3</button>
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">2</button>
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">3</button>
 					<span class="text-textSec px-1">…</span>
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">1285</button>
-					<button class="px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">1285</button>
+					<button class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">
 						<i class="fa-solid fa-chevron-right text-xs"></i>
 					</button>
 				</div>
@@ -352,7 +353,7 @@
 <div class="flex flex-col lg:hidden min-h-screen pb-20">
 
 	<!-- Mobile Top Header -->
-	<header class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
+	<header class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-surface px-4 py-3 flex items-center justify-between gap-3">
 		<div class="flex items-center gap-3">
 			<div class="flex items-center gap-2">
 				<div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white font-bold text-xs">M</div>
@@ -360,10 +361,10 @@
 			</div>
 		</div>
 		<div class="flex items-center gap-2">
-			<button onclick={toggleSearch} class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-[#334155] text-textSec hover:text-textMain transition-colors">
+			<button onclick={toggleSearch} class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-textMain transition-colors">
 				<i class="fa-solid fa-search text-sm"></i>
 			</button>
-			<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-[#334155] text-textSec hover:text-textMain transition-colors">
+			<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-textMain transition-colors">
 				<i class="fa-solid fa-download text-sm"></i>
 			</button>
 		</div>
@@ -371,10 +372,10 @@
 
 	<!-- Expandable Search Bar -->
 	{#if searchOpen}
-		<div class="bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3">
+		<div class="bg-background/95 backdrop-blur-md border-b border-surface px-4 py-3">
 			<div class="relative">
 				<i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"></i>
-				<input type="text" placeholder={t('users_search_placeholder')} class="w-full pl-9 pr-10 py-3 bg-[#1e293b] border border-[#334155] text-white text-sm rounded-xl focus:outline-none focus:border-primary placeholder-textSec" />
+				<input type="text" placeholder={t('users_search_placeholder')} class="w-full pl-9 pr-10 py-3 bg-surface border border-border text-white text-sm rounded-xl focus:outline-none focus:border-primary placeholder-textSec" />
 				<button onclick={toggleSearch} class="absolute right-3 top-1/2 -translate-y-1/2 text-textSec hover:text-textMain">
 					<i class="fa-solid fa-xmark text-sm"></i>
 				</button>
@@ -393,7 +394,7 @@
 
 		<!-- Stats Cards — 2x2 Grid -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-xs font-medium leading-tight">{t('users_stats_totalUsers')}</h3>
 					<div class="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -407,7 +408,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-xs font-medium leading-tight">{t('users_stats_currentlyLoggedIn')}</h3>
 					<div class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
@@ -421,7 +422,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-xs font-medium leading-tight">{t('users_stats_newRegistrationsShort')}</h3>
 					<div class="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
@@ -435,7 +436,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-xs font-medium leading-tight">{t('users_stats_sessionDurationShort')}</h3>
 					<div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
@@ -451,19 +452,19 @@
 		</section>
 
 		<!-- Registrations Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex justify-between items-center mb-4">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('users_charts_registrations')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('common_timeRange_last30d')}</p>
 				</div>
-				<span class="px-2.5 py-1 bg-badge rounded-md text-xs text-textSec border border-[#334155]">{t('common_timeRange_last30d')}</span>
+				<span class="px-2.5 py-1 bg-badge rounded-md text-xs text-textSec border border-border">{t('common_timeRange_last30d')}</span>
 			</div>
 			<div id="chart-registrations-m" class="h-[180px] w-full"></div>
 		</section>
 
 		<!-- Sessions Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex justify-between items-center mb-4">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('users_charts_activeSessions')}</h3>
@@ -478,10 +479,10 @@
 		</section>
 
 		<!-- User Card List -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 
 			<!-- Tabs — horizontally scrollable -->
-			<div class="border-b border-[#1e293b]">
+			<div class="border-b border-surface">
 				<div class="flex overflow-x-auto px-3 pt-3 gap-1" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
 					{#each tabs as tab (tab.key)}
 						<button
@@ -496,26 +497,26 @@
 			</div>
 
 			<!-- Filter / Sort row -->
-			<div class="flex items-center justify-between px-4 py-2.5 border-b border-[#1e293b]/60">
+			<div class="flex items-center justify-between px-4 py-2.5 border-b border-surface/60">
 				<p class="text-xs text-textSec">{t('common_pagination_showing', { from: '1', to: '10', total: '12 847' })}</p>
 				<div class="flex items-center gap-2">
-					<button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
+					<button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-border text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
 						<i class="fa-solid fa-filter text-xs"></i> {t('common_actions_filter')}
 					</button>
-					<button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
+					<button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-border text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
 						<i class="fa-solid fa-sort text-xs"></i> {t('users_actions_sort')}
 					</button>
 				</div>
 			</div>
 
 			<!-- User Cards -->
-			<div class="divide-y divide-[#1e293b]/50">
+			<div class="divide-y divide-surface/50">
 				{#each filteredUsers() as u (u.id)}
 					{@const s = userStatusConfig[u.status]}
 					{@const r = userRoleColors[u.role] ?? userRoleColors['Viewer']}
-					<div class="flex items-center gap-3 px-4 py-3.5 hover:bg-[#1e293b]/30 active:bg-[#1e293b]/50 transition-colors min-h-[72px]">
+					<div class="flex items-center gap-3 px-4 py-3.5 hover:bg-surface/30 active:bg-surface/50 transition-colors min-h-[72px]">
 						<div class="relative flex-shrink-0">
-							<img src={u.avatar} alt={u.name} class="w-11 h-11 rounded-full object-cover border border-[#334155]" />
+							<img src={u.avatar} alt={u.name} class="w-11 h-11 rounded-full object-cover border border-border" />
 							<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full {s.dot} border-2 border-card"></span>
 						</div>
 						<div class="flex-1 min-w-0">
@@ -535,7 +536,7 @@
 								</span>
 							</div>
 						</div>
-						<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-badge border border-[#334155] text-textSec hover:text-white transition-colors flex-shrink-0 ml-1">
+						<button class="w-9 h-9 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-white transition-colors flex-shrink-0 ml-1">
 							<i class="fa-solid fa-ellipsis-vertical text-xs"></i>
 						</button>
 					</div>
@@ -543,18 +544,18 @@
 			</div>
 
 			<!-- Pagination -->
-			<div class="flex items-center justify-between px-4 py-3 border-t border-[#1e293b]">
-				<button class="flex items-center gap-2 px-4 py-2 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
+			<div class="flex items-center justify-between px-4 py-3 border-t border-surface">
+				<button class="flex items-center gap-2 px-4 py-2 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
 					<i class="fa-solid fa-chevron-left text-xs"></i>
 					<span>{t('common_pagination_previous')}</span>
 				</button>
 				<div class="flex items-center gap-1">
 					<button class="w-9 h-9 bg-primary text-white text-sm rounded-lg font-medium">1</button>
-					<button class="w-9 h-9 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">2</button>
-					<button class="w-9 h-9 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">3</button>
+					<button class="w-9 h-9 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">2</button>
+					<button class="w-9 h-9 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors">3</button>
 					<span class="text-textSec px-1 text-sm">…</span>
 				</div>
-				<button class="flex items-center gap-2 px-4 py-2 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
+				<button class="flex items-center gap-2 px-4 py-2 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
 					<span>{t('common_pagination_next')}</span>
 					<i class="fa-solid fa-chevron-right text-xs"></i>
 				</button>
@@ -565,7 +566,7 @@
 	</div>
 
 	<!-- Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
+	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-surface px-2 py-2 flex items-center justify-around lg:hidden">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-xs">{t('layout_nav_dashboard')}</span>

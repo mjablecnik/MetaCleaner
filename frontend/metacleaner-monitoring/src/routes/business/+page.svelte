@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
 	import {
@@ -34,14 +35,14 @@
 		const P = (window as any).Plotly;
 		if (!P) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const primary = '#22c55e';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#8b5cf6';
-		const blueColor = '#3b82f6';
-		const greenColor = '#3ecf8e';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const primary = chartColors.primary;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purple;
+		const blueColor = chartColors.blue;
+		const greenColor = chartColors.greenMuted;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -142,7 +143,7 @@
 
 		// Plan revenue pie
 		const dataPlanRevenue = [{ type: 'pie', labels: ['Starter','Pro','Business','Enterprise'], values: [6840,18200,14880,8400], hole: 0.58, marker: { colors: [blueColor, primary, purpleColor, secondaryColor], line: { color: bgCard, width: 2 } }, textinfo: 'none', hovertemplate: '<b>%{label}</b><br>$%{value}<extra></extra>' }];
-		const planPieLayout = { ...pieLayout, annotations: [{ text: '<b style="font-size:14px;color:#ffffff">$48,320</b><br><span style="font-size:9px;color:#94a3b8">MRR celkem</span>', x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
+		const planPieLayout = { ...pieLayout, annotations: [{ text: `<b style="font-size:14px;color:${chartColors.textMain}">$48,320</b><br><span style="font-size:9px;color:${chartColors.textSec}">MRR celkem</span>`, x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
 
 		// Churn chart
 		const dataChurn = [
@@ -154,11 +155,11 @@
 
 		// Geo pie
 		const dataGeo = [{ type: 'pie', labels: ['Evropa','Sev. Amerika','Asie','Ostatní'], values: [23194,15462,6282,3382], hole: 0.55, marker: { colors: [blueColor, greenColor, purpleColor, secondaryColor], line: { color: bgCard, width: 2 } }, textinfo: 'none', hovertemplate: '<b>%{label}</b><br>$%{value}<extra></extra>' }];
-		const geoPieLayout = { ...pieLayout, annotations: [{ text: '<b style="font-size:14px;color:#ffffff">48%</b><br><span style="font-size:9px;color:#94a3b8">MRR celkem</span>', x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
+		const geoPieLayout = { ...pieLayout, annotations: [{ text: `<b style="font-size:14px;color:${chartColors.textMain}">48%</b><br><span style="font-size:9px;color:${chartColors.textSec}">MRR celkem</span>`, x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
 
 		// Channel pie
 		const dataChannel = [{ type: 'pie', labels: ['Google Ads','LinkedIn','Facebook','YouTube','Other'], values: [23194,15462,6282,3382,1111], hole: 0.55, marker: { colors: [blueColor, purpleColor, greenColor, errorColor, secondaryColor], line: { color: bgCard, width: 2 } }, textinfo: 'none', hovertemplate: '<b>%{label}</b><br>$%{value}<extra></extra>' }];
-		const channelPieLayout = { ...pieLayout, annotations: [{ text: '<b style="font-size:14px;color:#ffffff">48%</b><br><span style="font-size:9px;color:#94a3b8">MRR celkem</span>', x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
+		const channelPieLayout = { ...pieLayout, annotations: [{ text: `<b style="font-size:14px;color:${chartColors.textMain}">48%</b><br><span style="font-size:9px;color:${chartColors.textSec}">MRR celkem</span>`, x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false }] };
 
 		// Payback period
 		const dataPayback = [{ type: 'scatter', mode: 'lines+markers', x: planLabels, y: [12,12,12,12], line: { color: primary, width: 2 }, marker: { color: primary, size: 8 } }];
@@ -210,10 +211,10 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div class="flex items-center gap-4">
-			<div class="w-9 h-9 rounded-lg bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center">
-				<i class="fa-solid fa-chart-line text-[#22c55e] text-sm"></i>
+			<div class="w-9 h-9 rounded-lg bg-success/15 border border-success/30 flex items-center justify-center">
+				<i class="fa-solid fa-chart-line text-success text-sm"></i>
 			</div>
 			<div>
 				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_business')}</h1>
@@ -221,17 +222,17 @@
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
-			<div class="flex items-center gap-2 px-3 py-1.5 bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-lg text-[#22c55e] text-sm font-medium">
-				<div class="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse"></div>
+			<div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
+				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
 				{t('business_status_live')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('business_timeRange_june2024')}</option>
 				<option>{t('business_timeRange_last30d')}</option>
 				<option>{t('business_timeRange_q22024')}</option>
 				<option>{t('business_timeRange_ytd2024')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -241,45 +242,45 @@
 
 		<!-- KPI Row 1 -->
 		<section class="grid grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
-				<div class="absolute top-0 right-0 w-24 h-24 bg-[#22c55e]/5 rounded-full -translate-y-8 translate-x-8"></div>
+			<div class="bg-card border border-surface rounded-xl p-5 relative overflow-hidden">
+				<div class="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8"></div>
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_mrr')}</h3>
-					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+12.4%</span>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">$48,320</span>
 				</div>
 				<p class="text-xs text-textSec">{t('business_kpi_mrrSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
-				<div class="absolute top-0 right-0 w-24 h-24 bg-[#22c55e]/5 rounded-full -translate-y-8 translate-x-8"></div>
+			<div class="bg-card border border-surface rounded-xl p-5 relative overflow-hidden">
+				<div class="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8"></div>
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_arr')}</h3>
-					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+12.4%</span>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">$579,840</span>
 				</div>
 				<p class="text-xs text-textSec">{t('business_kpi_mrrArrSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_activeUsers')}</h3>
-					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">+8.1%</span>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+8.1%</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold text-textMain">12,842</span>
 				</div>
 				<p class="text-xs text-textSec">{t('business_kpi_activeUsersSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-5">
+			<div class="bg-card border border-error/20 rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_churnRate')}</h3>
-					<span class="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-xs rounded-full font-medium">{t('business_kpi_churnBadge')}</span>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('business_kpi_churnBadge')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
-					<span class="text-3xl font-bold text-[#ef4444]">2.1%</span>
+					<span class="text-3xl font-bold text-error">2.1%</span>
 				</div>
 				<p class="text-xs text-textSec">{t('business_kpi_churnRateSubtext')}</p>
 			</div>
@@ -287,40 +288,40 @@
 
 		<!-- KPI Row 2 -->
 		<section class="grid grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#22c55e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-bag-shopping text-[#22c55e] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
+						<i class="fa-solid fa-bag-shopping text-success text-xs"></i>
 					</div>
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newOrders')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">1,204</div>
-				<p class="text-xs text-textSec mt-1 flex items-center gap-1"><span class="text-[#22c55e] font-medium">+142</span> {t('business_kpi_newOrdersSubtext')}</p>
+				<p class="text-xs text-textSec mt-1 flex items-center gap-1"><span class="text-success font-medium">+142</span> {t('business_kpi_newOrdersSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-dollar-sign text-[#3b82f6] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-blue/15 flex items-center justify-center">
+						<i class="fa-solid fa-dollar-sign text-blue text-xs"></i>
 					</div>
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_avgOrderValue')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">$40.13</div>
-				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+$2.40</span> {t('business_kpi_vsLastMonth')}</p>
+				<p class="text-xs text-textSec mt-1"><span class="text-success font-medium">+$2.40</span> {t('business_kpi_vsLastMonth')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-user-plus text-[#8b5cf6] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-purple/15 flex items-center justify-center">
+						<i class="fa-solid fa-user-plus text-purple text-xs"></i>
 					</div>
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newCustomers')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">318</div>
-				<p class="text-xs text-textSec mt-1"><span class="text-[#22c55e] font-medium">+52</span> {t('business_kpi_newOrdersSubtext')}</p>
+				<p class="text-xs text-textSec mt-1"><span class="text-success font-medium">+52</span> {t('business_kpi_newOrdersSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#f97316]/15 flex items-center justify-center">
-						<i class="fa-solid fa-star text-[#f97316] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
+						<i class="fa-solid fa-star text-secondary text-xs"></i>
 					</div>
 					<h3 class="text-textSec text-sm font-medium">{t('business_kpi_nps')}</h3>
 				</div>
@@ -331,7 +332,7 @@
 
 		<!-- Charts grid-cols-2: MRR + Users -->
 		<section class="grid grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_charts_mrrGrowth')}</h3>
@@ -340,7 +341,7 @@
 				</div>
 				<div id="chart-mrr" class="h-[240px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_charts_userGrowth')}</h3>
@@ -353,7 +354,7 @@
 
 		<!-- Unit economics: LTV vs CAC + ARPU -->
 		<section class="grid grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_ltv_title')}</h3>
@@ -363,10 +364,10 @@
 				<div id="chart-ltv-cac" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
-						<div class="text-xl font-bold text-[#22c55e]">{ltvCac.ltvCacRatio}x</div>
+						<div class="text-xl font-bold text-success">{ltvCac.ltvCacRatio}x</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_ratio')}</div>
 					</div>
-					<div class="text-center border-x border-[#1e293b]">
+					<div class="text-center border-x border-surface">
 						<div class="text-xl font-bold text-textMain">${ltvCac.ltv.toLocaleString()}</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_ltv_avgLtv')}</div>
 					</div>
@@ -376,7 +377,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_arpu_title')}</h3>
@@ -386,11 +387,11 @@
 				<div id="chart-arpu" class="h-[240px] w-full"></div>
 				<div class="mt-4 grid grid-cols-3 gap-3">
 					<div class="text-center">
-						<div class="text-xl font-bold text-[#3b82f6]">${ltvCac.arpu}</div>
+						<div class="text-xl font-bold text-blue">${ltvCac.arpu}</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_current')}</div>
 					</div>
-					<div class="text-center border-x border-[#1e293b]">
-						<div class="text-xl font-bold text-[#22c55e]">+$1.20</div>
+					<div class="text-center border-x border-surface">
+						<div class="text-xl font-bold text-success">+$1.20</div>
 						<div class="text-xs text-textSec mt-0.5">{t('business_arpu_mom')}</div>
 					</div>
 					<div class="text-center">
@@ -403,7 +404,7 @@
 
 		<!-- Heatmap + Waterfall -->
 		<section class="grid grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_heatmap_title')}</h3>
@@ -413,7 +414,7 @@
 				</div>
 				<div id="chart-heatmap" class="h-[240px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_mrrBridge_title')}</h3>
@@ -427,7 +428,7 @@
 
 		<!-- Upgrade + Daily Revenue -->
 		<section class="grid grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-1">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_upgradeDowngrade_title')}</h3>
@@ -437,18 +438,18 @@
 				<div id="chart-upgrade-funnel" class="h-[200px] w-full"></div>
 				<div class="mt-3 space-y-1.5">
 					<div class="flex justify-between text-xs">
-						<span class="text-[#22c55e] font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
+						<span class="text-success font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
 					</div>
 					<div class="flex justify-between text-xs">
-						<span class="text-[#ef4444] font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
+						<span class="text-error font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
 					</div>
 					<div class="flex justify-between text-xs">
 						<span class="text-textSec">{t('business_upgradeDowngrade_netExpansion')}</span>
-						<span class="text-[#22c55e] font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
+						<span class="text-success font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
 					</div>
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_dailyRevenue_title')}</h3>
@@ -461,7 +462,7 @@
 
 		<!-- Funnel + Plan Revenue -->
 		<section class="grid grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-1">
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('business_funnel_title')}</h3>
 				<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 				<div class="space-y-3">
@@ -471,16 +472,16 @@
 								<span class="text-textSec">{t(step.labelKey)}</span>
 								<span class="text-textMain font-medium">{step.value.toLocaleString()} {#if step.conversionPercent}<span class="text-textSec">{step.conversionPercent}</span>{:else}<span class="text-textSec">100%</span>{/if}</span>
 							</div>
-							<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
+							<div class="w-full h-1.5 bg-surface rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
 						</div>
 					{/each}
 				</div>
-				<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
+				<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
 					<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
 					<div><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><div class="text-textMain font-semibold">30.76%</div></div>
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByPlan_title')}</h3>
@@ -502,20 +503,20 @@
 
 		<!-- Churn + Retention cohorts -->
 		<section class="grid grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_churnNewMrr_title')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitle')}</p>
 					</div>
 					<div class="flex gap-2">
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#22c55e] inline-block"></span>{t('business_churnNewMrr_new')}</span>
-						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#ef4444] inline-block"></span>{t('business_churnNewMrr_churn')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-success inline-block"></span>{t('business_churnNewMrr_new')}</span>
+						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>{t('business_churnNewMrr_churn')}</span>
 					</div>
 				</div>
 				<div id="chart-churn" class="h-[240px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_cohort_title')}</h3>
@@ -525,7 +526,7 @@
 				<div class="overflow-x-auto">
 					<table class="w-full text-xs">
 						<thead>
-							<tr class="border-b border-[#1e293b]">
+							<tr class="border-b border-surface">
 								<th class="text-left text-textSec font-medium pb-2 pr-3">{t('business_cohort_cohort')}</th>
 								<th class="text-center text-textSec font-medium pb-2 px-2">M0</th>
 								<th class="text-center text-textSec font-medium pb-2 px-2">M1</th>
@@ -535,7 +536,7 @@
 								<th class="text-center text-textSec font-medium pb-2 px-2">M5</th>
 							</tr>
 						</thead>
-						<tbody class="divide-y divide-[#1e293b]/40">
+						<tbody class="divide-y divide-surface/40">
 							<tr>
 								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_feb24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
@@ -552,7 +553,7 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">68%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.13);color:#94a3b8">59%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.10);color:#94a3b8">54%</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
 							</tr>
 							<tr>
 								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_apr24')}</td>
@@ -560,26 +561,26 @@
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.21);color:#22c55e">79%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.15);color:#94a3b8">65%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.12);color:#94a3b8">58%</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
 							</tr>
 							<tr>
 								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_may24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">82%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">70%</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
 							</tr>
 							<tr>
 								<td class="py-2 pr-3 text-textSec whitespace-nowrap">{t('business_cohort_month_jun24')}</td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.25);color:#22c55e">86%</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
-								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-[#334155]">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
+								<td class="py-2 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-xs text-border">—</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -589,7 +590,7 @@
 
 		<!-- Channel + Payback -->
 		<section class="grid grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByChannel_title')}</h3>
@@ -599,7 +600,7 @@
 				</div>
 				<div id="chart-channel" class="h-[240px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_payback_title')}</h3>
@@ -613,7 +614,7 @@
 
 		<!-- Top Customers + Geo -->
 		<section class="grid grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_topCustomers_title')}</h3>
@@ -621,7 +622,7 @@
 					</div>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-center gap-4 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
+					<div class="flex items-center gap-4 p-3 rounded-xl bg-surface/40 border border-border/40 hover:border-border transition-colors">
 						<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Acme Corp" class="w-9 h-9 rounded-full object-cover flex-shrink-0" />
 						<div class="flex-1 min-w-0">
 							<p class="text-textMain text-sm font-semibold">Acme Corp</p>
@@ -631,7 +632,7 @@
 							<p class="text-textMain text-sm font-bold">$2,800<span class="text-textSec font-normal text-xs">/mo</span></p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
+					<div class="flex items-center gap-4 p-3 rounded-xl bg-surface/40 border border-border/40 hover:border-border transition-colors">
 						<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg" alt="TechVision" class="w-9 h-9 rounded-full object-cover flex-shrink-0" />
 						<div class="flex-1 min-w-0">
 							<p class="text-textMain text-sm font-semibold">TechVision</p>
@@ -641,7 +642,7 @@
 							<p class="text-textMain text-sm font-bold">$1,960<span class="text-textSec font-normal text-xs">/mo</span></p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
+					<div class="flex items-center gap-4 p-3 rounded-xl bg-surface/40 border border-border/40 hover:border-border transition-colors">
 						<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="DataFlow GmbH" class="w-9 h-9 rounded-full object-cover flex-shrink-0" />
 						<div class="flex-1 min-w-0">
 							<p class="text-textMain text-sm font-semibold">DataFlow GmbH</p>
@@ -651,7 +652,7 @@
 							<p class="text-textMain text-sm font-bold">$1,200<span class="text-textSec font-normal text-xs">/mo</span></p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
+					<div class="flex items-center gap-4 p-3 rounded-xl bg-surface/40 border border-border/40 hover:border-border transition-colors">
 						<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="Nexo Solutions" class="w-9 h-9 rounded-full object-cover flex-shrink-0" />
 						<div class="flex-1 min-w-0">
 							<p class="text-textMain text-sm font-semibold">Nexo Solutions</p>
@@ -661,7 +662,7 @@
 							<p class="text-textMain text-sm font-bold">$960<span class="text-textSec font-normal text-xs">/mo</span></p>
 						</div>
 					</div>
-					<div class="flex items-center gap-4 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
+					<div class="flex items-center gap-4 p-3 rounded-xl bg-surface/40 border border-border/40 hover:border-border transition-colors">
 						<img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Sparkly Media" class="w-9 h-9 rounded-full object-cover flex-shrink-0" />
 						<div class="flex-1 min-w-0">
 							<p class="text-textMain text-sm font-semibold">Sparkly Media</p>
@@ -673,7 +674,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 col-span-1">
+			<div class="bg-card border border-surface rounded-xl p-5 col-span-1">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('business_revenueByRegion_title')}</h3>
@@ -693,7 +694,7 @@
 		</section>
 
 		<!-- Goals & OKR -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex justify-between items-center mb-5">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">{t('business_okr_title')}</h3>
@@ -701,47 +702,47 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-4 gap-4">
-				<div class="bg-[#1e293b]/50 rounded-xl p-4">
+				<div class="bg-surface/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_mrrGoal')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">96%</span>
+						<span class="text-success text-xs font-bold">96%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">$50,000</div>
-					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#22c55e] rounded-full transition-all" style="width:96%"></div>
+					<div class="w-full h-2 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-success rounded-full transition-all" style="width:96%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-2">$48,320 / $50,000</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-4">
+				<div class="bg-surface/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_newCustomers')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">79%</span>
+						<span class="text-success text-xs font-bold">79%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">400</div>
-					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#3b82f6] rounded-full transition-all" style="width:79%"></div>
+					<div class="w-full h-2 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-blue rounded-full transition-all" style="width:79%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-2">318 / 400</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-4">
+				<div class="bg-surface/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_churnRate')}</h4>
-						<span class="text-[#f97316] text-xs font-bold">{t('business_okr_approxTarget')}</span>
+						<span class="text-secondary text-xs font-bold">{t('business_okr_approxTarget')}</span>
 					</div>
-					<div class="text-2xl font-bold text-[#ef4444] mb-2">&lt;2.0%</div>
-					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#f97316] rounded-full transition-all" style="width:55%"></div>
+					<div class="text-2xl font-bold text-error mb-2">&lt;2.0%</div>
+					<div class="w-full h-2 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-secondary rounded-full transition-all" style="width:55%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-2">{t('business_okr_currently', { value: '2.1%' })}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-4">
+				<div class="bg-surface/50 rounded-xl p-4">
 					<div class="flex justify-between items-start mb-2">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_npsGoal')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">90%</span>
+						<span class="text-success text-xs font-bold">90%</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain mb-2">80</div>
-					<div class="w-full h-2 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#8b5cf6] rounded-full transition-all" style="width:90%"></div>
+					<div class="w-full h-2 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-purple rounded-full transition-all" style="width:90%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-2">72 / 80</p>
 				</div>
@@ -755,10 +756,10 @@
 <div class="lg:hidden block pb-24">
 
 	<!-- Page Title Bar -->
-	<div class="px-4 pt-3 pb-3 bg-card border-b border-[#1e293b] flex items-center justify-between gap-3">
+	<div class="px-4 pt-3 pb-3 bg-card border-b border-surface flex items-center justify-between gap-3">
 		<div class="flex items-center gap-2.5">
-			<div class="w-8 h-8 rounded-lg bg-[#22c55e]/15 border border-[#22c55e]/30 flex items-center justify-center">
-				<i class="fa-solid fa-chart-line text-[#22c55e] text-xs"></i>
+			<div class="w-8 h-8 rounded-lg bg-success/15 border border-success/30 flex items-center justify-center">
+				<i class="fa-solid fa-chart-line text-success text-xs"></i>
 			</div>
 			<div>
 				<h1 class="text-base font-bold text-textMain leading-tight">{t('layout_nav_business')}</h1>
@@ -766,11 +767,11 @@
 			</div>
 		</div>
 		<div class="flex items-center gap-2">
-			<div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-lg text-[#22c55e] text-xs font-medium">
-				<div class="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse"></div>
+			<div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
+				<div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
 				{t('business_status_live')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
+			<select class="bg-surface border border-border text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
 				<option>{t('business_timeRange_june2024')}</option>
 				<option>{t('business_timeRange_last30d')}</option>
 				<option>{t('business_timeRange_q22024')}</option>
@@ -782,64 +783,64 @@
 
 		<!-- KPI Row 1 grid-cols-2 -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-				<div class="absolute top-0 right-0 w-16 h-16 bg-[#22c55e]/5 rounded-full -translate-y-4 translate-x-4"></div>
+			<div class="bg-card border border-surface rounded-xl p-4 relative overflow-hidden">
+				<div class="absolute top-0 right-0 w-16 h-16 bg-success/5 rounded-full -translate-y-4 translate-x-4"></div>
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_mrr')}</h3>
 				<div class="text-2xl font-bold text-textMain">$48,320</div>
-				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
+				<span class="text-xs text-success font-medium mt-0.5 block">+12.4%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_mrrSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-				<div class="absolute top-0 right-0 w-16 h-16 bg-[#22c55e]/5 rounded-full -translate-y-4 translate-x-4"></div>
+			<div class="bg-card border border-surface rounded-xl p-4 relative overflow-hidden">
+				<div class="absolute top-0 right-0 w-16 h-16 bg-success/5 rounded-full -translate-y-4 translate-x-4"></div>
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_arr')}</h3>
 				<div class="text-2xl font-bold text-textMain">$579,840</div>
-				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+12.4%</span>
+				<span class="text-xs text-success font-medium mt-0.5 block">+12.4%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_mrrArrSubtext')}</p>
 
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('business_kpi_activeUsers')}</h3>
 				<div class="text-2xl font-bold text-textMain">12,842</div>
-				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">+8.1%</span>
+				<span class="text-xs text-success font-medium mt-0.5 block">+8.1%</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_activeUsersSubtext')}</p>
 			</div>
-			<div class="bg-card border border-[#ef4444]/20 rounded-xl p-4">
+			<div class="bg-card border border-error/20 rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_churnRate')}</h3>
-				<div class="text-2xl font-bold text-[#ef4444]">2.1%</div>
-				<span class="text-xs text-[#22c55e] font-medium mt-0.5 block">{t('business_kpi_churnBadge')}</span>
+				<div class="text-2xl font-bold text-error">2.1%</div>
+				<span class="text-xs text-success font-medium mt-0.5 block">{t('business_kpi_churnBadge')}</span>
 				<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_churnRateSubtext')}</p>
 			</div>
 		</section>
 
 		<!-- KPI Row 2 grid-cols-2 -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="w-7 h-7 rounded-lg bg-[#22c55e]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-bag-shopping text-[#22c55e] text-xs"></i>
+			<div class="bg-card border border-surface rounded-xl p-4">
+				<div class="w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center mb-2">
+					<i class="fa-solid fa-bag-shopping text-success text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">1,204</div>
 				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_newOrders')}</p>
-				<span class="text-xs text-[#22c55e] font-medium">+142</span>
+				<span class="text-xs text-success font-medium">+142</span>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-dollar-sign text-[#3b82f6] text-xs"></i>
+			<div class="bg-card border border-surface rounded-xl p-4">
+				<div class="w-7 h-7 rounded-lg bg-blue/15 flex items-center justify-center mb-2">
+					<i class="fa-solid fa-dollar-sign text-blue text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">$40.13</div>
 				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_avgOrderValueMobile')}</p>
-				<span class="text-xs text-[#22c55e] font-medium">+$2.40</span>
+				<span class="text-xs text-success font-medium">+$2.40</span>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-user-plus text-[#8b5cf6] text-xs"></i>
+			<div class="bg-card border border-surface rounded-xl p-4">
+				<div class="w-7 h-7 rounded-lg bg-purple/15 flex items-center justify-center mb-2">
+					<i class="fa-solid fa-user-plus text-purple text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">318</div>
 				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_newCustomers')}</p>
-				<span class="text-xs text-[#22c55e] font-medium">+52</span>
+				<span class="text-xs text-success font-medium">+52</span>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="w-7 h-7 rounded-lg bg-[#f97316]/15 flex items-center justify-center mb-2">
-					<i class="fa-solid fa-star text-[#f97316] text-xs"></i>
+			<div class="bg-card border border-surface rounded-xl p-4">
+				<div class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center mb-2">
+					<i class="fa-solid fa-star text-secondary text-xs"></i>
 				</div>
 				<div class="text-xl font-bold text-textMain">72<span class="text-xs text-textSec font-normal">/100</span></div>
 				<p class="text-xs text-textSec mt-0.5 leading-tight">{t('business_kpi_nps')}</p>
@@ -848,25 +849,25 @@
 		</section>
 
 		<!-- MRR Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_charts_mrrGrowth')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_charts_mrrSubtitle')}</p>
 			<div id="chart-mrr-m" class="h-[200px] w-full"></div>
 		</section>
 
 		<!-- User Growth Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_charts_userGrowth')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_charts_userSubtitle')}</p>
 			<div id="chart-users-m" class="h-[200px] w-full"></div>
 		</section>
 
 		<!-- LTV vs CAC Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button onclick={() => toggleAcc('ltv')} class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#22c55e]/10 flex items-center justify-center">
-						<i class="fa-solid fa-scale-balanced text-[#22c55e] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+						<i class="fa-solid fa-scale-balanced text-success text-xs"></i>
 					</div>
 					<div class="text-left">
 						<p class="text-sm font-semibold text-textMain">{t('business_ltv_title')}</p>
@@ -876,11 +877,11 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.ltv ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accOpen.ltv}
-				<div class="border-t border-[#1e293b] p-4">
+				<div class="border-t border-surface p-4">
 					<div id="chart-ltv-cac-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#22c55e]">{ltvCac.ltvCacRatio}x</div><div class="text-xs text-textSec">{t('business_ltv_ratio')}</div></div>
-						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-textMain">${ltvCac.ltv.toLocaleString()}</div><div class="text-xs text-textSec">{t('business_ltv_avgLtv')}</div></div>
+						<div><div class="text-lg font-bold text-success">{ltvCac.ltvCacRatio}x</div><div class="text-xs text-textSec">{t('business_ltv_ratio')}</div></div>
+						<div class="border-x border-surface"><div class="text-lg font-bold text-textMain">${ltvCac.ltv.toLocaleString()}</div><div class="text-xs text-textSec">{t('business_ltv_avgLtv')}</div></div>
 						<div><div class="text-lg font-bold text-textMain">${ltvCac.cac}</div><div class="text-xs text-textSec">{t('business_ltv_avgCac')}</div></div>
 					</div>
 				</div>
@@ -888,11 +889,11 @@
 		</section>
 
 		<!-- ARPU Trend Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button onclick={() => toggleAcc('arpu')} class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/10 flex items-center justify-center">
-						<i class="fa-solid fa-chart-simple text-[#3b82f6] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-blue/10 flex items-center justify-center">
+						<i class="fa-solid fa-chart-simple text-blue text-xs"></i>
 					</div>
 					<div class="text-left">
 						<p class="text-sm font-semibold text-textMain">{t('business_arpu_title')}</p>
@@ -902,11 +903,11 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.arpu ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accOpen.arpu}
-				<div class="border-t border-[#1e293b] p-4">
+				<div class="border-t border-surface p-4">
 					<div id="chart-arpu-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 grid grid-cols-3 gap-2 text-center">
-						<div><div class="text-lg font-bold text-[#3b82f6]">${ltvCac.arpu}</div><div class="text-xs text-textSec">{t('business_arpu_current')}</div></div>
-						<div class="border-x border-[#1e293b]"><div class="text-lg font-bold text-[#22c55e]">+$1.20</div><div class="text-xs text-textSec">{t('business_arpu_mom')}</div></div>
+						<div><div class="text-lg font-bold text-blue">${ltvCac.arpu}</div><div class="text-xs text-textSec">{t('business_arpu_current')}</div></div>
+						<div class="border-x border-surface"><div class="text-lg font-bold text-success">+$1.20</div><div class="text-xs text-textSec">{t('business_arpu_mom')}</div></div>
 						<div><div class="text-lg font-bold text-textMain">$40.00</div><div class="text-xs text-textSec">{t('business_arpu_target')}</div></div>
 					</div>
 				</div>
@@ -914,11 +915,11 @@
 		</section>
 
 		<!-- Aktivita uživatelů Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button onclick={() => toggleAcc('heatmap')} class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/10 flex items-center justify-center">
-						<i class="fa-solid fa-fire text-[#8b5cf6] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-purple/10 flex items-center justify-center">
+						<i class="fa-solid fa-fire text-purple text-xs"></i>
 					</div>
 					<div class="text-left">
 						<p class="text-sm font-semibold text-textMain">{t('business_heatmap_title')}</p>
@@ -928,18 +929,18 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.heatmap ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accOpen.heatmap}
-				<div class="border-t border-[#1e293b] p-4">
+				<div class="border-t border-surface p-4">
 					<div id="chart-heatmap-m" class="h-[200px] w-full"></div>
 				</div>
 			{/if}
 		</section>
 
 		<!-- MRR Bridge Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button onclick={() => toggleAcc('waterfall')} class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#f97316]/10 flex items-center justify-center">
-						<i class="fa-solid fa-water text-[#f97316] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+						<i class="fa-solid fa-water text-secondary text-xs"></i>
 					</div>
 					<div class="text-left">
 						<p class="text-sm font-semibold text-textMain">{t('business_mrrBridge_title')}</p>
@@ -949,51 +950,51 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.waterfall ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accOpen.waterfall}
-				<div class="border-t border-[#1e293b] p-4">
+				<div class="border-t border-surface p-4">
 					<div id="chart-waterfall-m" class="h-[200px] w-full"></div>
 				</div>
 			{/if}
 		</section>
 
 		<!-- Upgrade & Downgrade -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_upgradeDowngrade_title')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_upgradeDowngrade_subtitle')}</p>
 			<div id="chart-upgrade-funnel-m" class="h-[180px] w-full"></div>
 			<div class="mt-3 flex justify-between text-xs">
-				<span class="text-[#22c55e] font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
-				<span class="text-[#ef4444] font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
-				<span class="text-[#22c55e] font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
+				<span class="text-success font-medium">{t('business_upgrade_upgrades', { n: '124' })}</span>
+				<span class="text-error font-medium">{t('business_upgrade_downgrades', { n: '38' })}</span>
+				<span class="text-success font-semibold">{t('business_upgrade_netMrr', { value: '4,320' })}</span>
 			</div>
 		</section>
 
 		<!-- Denní příjem -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_dailyRevenue_title')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_dailyRevenue_subtitle')}</p>
 			<div id="chart-daily-revenue-m" class="h-[180px] w-full"></div>
 		</section>
 
 		<!-- Konverzní trychtýř -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_funnel_title')}</h3>
 			<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
 			<div class="space-y-3">
 				{#each conversionFunnel as step}
 					<div>
 						<div class="flex justify-between text-xs mb-1"><span class="text-textSec">{t(step.labelKey)}</span><span class="text-textMain font-medium">{step.value.toLocaleString()} {#if step.conversionPercent}<span class="text-textSec">{step.conversionPercent}</span>{:else}<span class="text-textSec">100%</span>{/if}</span></div>
-						<div class="w-full h-1.5 bg-[#1e293b] rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
+						<div class="w-full h-1.5 bg-surface rounded-full"><div class="h-full rounded-full" style="background:{step.color};width:{step.conversionPercent ?? '100%'}"></div></div>
 					</div>
 				{/each}
 			</div>
-			<div class="mt-4 pt-3 border-t border-[#1e293b] grid grid-cols-2 gap-2 text-xs">
+			<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
 				<div><span class="text-textSec">{t('business_funnel_totalConversion')}</span><div class="text-textMain font-semibold">2.19%</div></div>
 				<div><span class="text-textSec">{t('business_funnel_trialToPaid')}</span><div class="text-textMain font-semibold">30.76%</div></div>
 			</div>
 		</section>
 
 		<!-- Příjem podle plánu -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_revenueByPlan_title')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_revenueByPlan_subtitle')}</p>
 			<div id="chart-plan-revenue-m" class="h-[180px] w-full"></div>
@@ -1008,26 +1009,26 @@
 		</section>
 
 		<!-- Churn vs MRR -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('business_churnNewMrr_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitleMobile')}</p>
 				</div>
 				<div class="flex gap-2">
-					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#22c55e] inline-block"></span>{t('business_churnNewMrr_new')}</span>
-					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#ef4444] inline-block"></span>{t('business_churnNewMrr_churn')}</span>
+					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>{t('business_churnNewMrr_new')}</span>
+					<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>{t('business_churnNewMrr_churn')}</span>
 				</div>
 			</div>
 			<div id="chart-churn-m" class="h-[200px] w-full"></div>
 		</section>
 
 		<!-- Retence kohort Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button onclick={() => toggleAcc('retention')} class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#22c55e]/10 flex items-center justify-center">
-						<i class="fa-solid fa-table text-[#22c55e] text-xs"></i>
+					<div class="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+						<i class="fa-solid fa-table text-success text-xs"></i>
 					</div>
 					<div class="text-left">
 						<p class="text-sm font-semibold text-textMain">{t('business_cohort_title')}</p>
@@ -1037,11 +1038,11 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accOpen.retention ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accOpen.retention}
-				<div class="border-t border-[#1e293b] p-4 overflow-x-auto">
+				<div class="border-t border-surface p-4 overflow-x-auto">
 					<div class="min-w-[340px]">
 						<table class="w-full text-xs">
 							<thead>
-								<tr class="border-b border-[#1e293b]">
+								<tr class="border-b border-surface">
 									<th class="text-left text-textSec font-medium pb-2 pr-2">{t('business_cohort_cohort')}</th>
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M0</th>
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M1</th>
@@ -1051,7 +1052,7 @@
 									<th class="text-center text-textSec font-medium pb-2 px-1.5">M5</th>
 								</tr>
 							</thead>
-							<tbody class="divide-y divide-[#1e293b]/40">
+							<tbody class="divide-y divide-surface/40">
 								<tr>
 									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_feb24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
@@ -1068,7 +1069,7 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">68%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.13);color:#94a3b8">59%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.10);color:#94a3b8">54%</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
 								</tr>
 								<tr>
 									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_apr24')}</td>
@@ -1076,26 +1077,26 @@
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.21);color:#22c55e">79%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.15);color:#94a3b8">65%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.12);color:#94a3b8">58%</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
 								</tr>
 								<tr>
 									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_may24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.22);color:#22c55e">82%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.17);color:#94a3b8">70%</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
 								</tr>
 								<tr>
 									<td class="py-2 pr-2 text-textSec whitespace-nowrap">{t('business_cohort_month_jun24')}</td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.3);color:#22c55e">100%</span></td>
 									<td class="py-1.5 px-1.5 text-center"><span class="px-1 py-0.5 rounded text-xs font-medium" style="background:rgba(34,197,94,0.25);color:#22c55e">86%</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
-									<td class="py-1.5 px-1.5 text-center"><span class="text-[#334155]">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
+									<td class="py-1.5 px-1.5 text-center"><span class="text-border">—</span></td>
 								</tr>
 							</tbody>
 						</table>
@@ -1105,7 +1106,7 @@
 		</section>
 
 		<!-- Příjem dle kanálu -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('business_revenueByChannel_title')}</h3>
@@ -1117,7 +1118,7 @@
 		</section>
 
 		<!-- Payback Period -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('business_payback_title')}</h3>
@@ -1129,7 +1130,7 @@
 		</section>
 
 		<!-- Top zákazníci -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-3">{t('business_topCustomers_title')}</h3>
 			<div class="space-y-2.5">
 				<div class="flex items-center gap-3">
@@ -1176,7 +1177,7 @@
 		</section>
 
 		<!-- Příjem dle regionu -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_revenueByRegion_title')}</h3>
 			<p class="text-xs text-textSec mb-3">{t('business_revenueByRegion_subtitle')}</p>
 			<div id="chart-geo-m" class="h-[180px] w-full"></div>
@@ -1191,51 +1192,51 @@
 		</section>
 
 		<!-- Goals & OKR -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<h3 class="text-sm font-semibold text-textMain mb-1">{t('business_okr_title')}</h3>
 			<p class="text-xs text-textSec mb-4">{t('business_okr_subtitle')}</p>
 			<div class="grid grid-cols-2 gap-3">
-				<div class="bg-[#1e293b]/50 rounded-xl p-3">
+				<div class="bg-surface/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_mrrGoal')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">96%</span>
+						<span class="text-success text-xs font-bold">96%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">$50,000</div>
-					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#22c55e] rounded-full" style="width:96%"></div>
+					<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-success rounded-full" style="width:96%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-1.5">$48,320 / $50,000</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3">
+				<div class="bg-surface/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_newCustomers')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">79%</span>
+						<span class="text-success text-xs font-bold">79%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">400</div>
-					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#3b82f6] rounded-full" style="width:79%"></div>
+					<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-blue rounded-full" style="width:79%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-1.5">318 / 400</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3">
+				<div class="bg-surface/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_churnRate')}</h4>
-						<span class="text-[#f97316] text-xs font-bold">{t('business_okr_approxTarget')}</span>
+						<span class="text-secondary text-xs font-bold">{t('business_okr_approxTarget')}</span>
 					</div>
-					<div class="text-lg font-bold text-[#ef4444] mb-2">&lt;2.0%</div>
-					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#f97316] rounded-full" style="width:55%"></div>
+					<div class="text-lg font-bold text-error mb-2">&lt;2.0%</div>
+					<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-secondary rounded-full" style="width:55%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-1.5">{t('business_okr_currently', { value: '2.1%' })}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3">
+				<div class="bg-surface/50 rounded-xl p-3">
 					<div class="flex justify-between items-start mb-1.5">
 						<h4 class="text-textSec text-xs font-medium">{t('business_okr_npsGoal')}</h4>
-						<span class="text-[#22c55e] text-xs font-bold">90%</span>
+						<span class="text-success text-xs font-bold">90%</span>
 					</div>
 					<div class="text-lg font-bold text-textMain mb-2">80</div>
-					<div class="w-full h-1.5 bg-[#0f172a] rounded-full overflow-hidden">
-						<div class="h-full bg-[#8b5cf6] rounded-full" style="width:90%"></div>
+					<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
+						<div class="h-full bg-purple rounded-full" style="width:90%"></div>
 					</div>
 					<p class="text-xs text-textSec mt-1.5">72 / 80</p>
 				</div>
@@ -1246,7 +1247,7 @@
 	</div>
 
 	<!-- Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
+	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-surface px-2 py-2 flex items-center justify-around lg:hidden">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-xs">{t('layout_nav_dashboard')}</span>
@@ -1263,7 +1264,7 @@
 			<i class="fa-solid fa-bolt text-base"></i>
 			<span class="text-xs">{t('layout_nav_performance')}</span>
 		</a>
-		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#22c55e] min-w-[44px]">
+		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-success min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
 			<span class="text-xs font-semibold">{t('layout_nav_business')}</span>
 		</a>

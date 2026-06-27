@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
+	import { chartColors } from '$lib/theme/chartColors';
 	import {
 		getDashboardStats,
 		getDashboardAlerts,
@@ -21,19 +22,19 @@
 		{ border: string; strip: string; dot: string; opacity: string }
 	> = {
 		error: {
-			border: 'border-error/20 lg:border-[#334155]/50',
+			border: 'border-error/20 lg:border-border/50',
 			strip: 'bg-error',
 			dot: 'bg-error',
 			opacity: ''
 		},
 		warning: {
-			border: 'border-secondary/20 lg:border-[#334155]/50',
+			border: 'border-secondary/20 lg:border-border/50',
 			strip: 'bg-secondary',
 			dot: 'bg-secondary',
 			opacity: ''
 		},
 		resolved: {
-			border: 'border-[#334155]/30',
+			border: 'border-border/30',
 			strip: 'bg-success',
 			dot: 'bg-success',
 			opacity: 'opacity-75'
@@ -54,16 +55,16 @@
 			margin: { t: 10, r: 10, b: 30, l: 40 },
 			plot_bgcolor: 'transparent',
 			paper_bgcolor: 'transparent',
-			font: { color: '#94a3b8', family: 'Inter, sans-serif' },
+			font: { color: chartColors.textSec, family: 'Inter, sans-serif' },
 			xaxis: {
 				showgrid: true,
-				gridcolor: '#1e293b',
+				gridcolor: chartColors.surface,
 				zeroline: false,
 				tickfont: { size: 10 }
 			},
 			yaxis: {
 				showgrid: true,
-				gridcolor: '#1e293b',
+				gridcolor: chartColors.surface,
 				zeroline: false,
 				tickfont: { size: 10 }
 			},
@@ -85,7 +86,7 @@
 					y: yResponse,
 					type: 'scatter',
 					mode: 'lines',
-					line: { color: '#22c55e', width: 2, shape: 'spline', smoothing: 0.8 },
+					line: { color: chartColors.primary, width: 2, shape: 'spline', smoothing: 0.8 },
 					fill: 'tozeroy',
 					fillcolor: 'rgba(34, 197, 94, 0.1)'
 				}
@@ -105,7 +106,7 @@
 					x: xTime,
 					y: yErrors,
 					type: 'bar',
-					marker: { color: '#ef4444', cornerradius: 2 }
+					marker: { color: chartColors.error, cornerradius: 2 }
 				}
 			],
 			chartLayout,
@@ -124,7 +125,7 @@
 					name: 'CPU',
 					type: 'scatter',
 					mode: 'lines',
-					line: { color: '#3b82f6', width: 2, shape: 'spline' },
+					line: { color: chartColors.blue, width: 2, shape: 'spline' },
 					fill: 'tozeroy',
 					fillcolor: 'rgba(59, 130, 246, 0.1)'
 				},
@@ -134,7 +135,7 @@
 					name: 'RAM',
 					type: 'scatter',
 					mode: 'lines',
-					line: { color: '#8b5cf6', width: 2, shape: 'spline' },
+					line: { color: chartColors.purple, width: 2, shape: 'spline' },
 					fill: 'tozeroy',
 					fillcolor: 'rgba(139, 92, 246, 0.1)'
 				}
@@ -153,7 +154,7 @@
 					y: yDbLat,
 					type: 'scatter',
 					mode: 'lines',
-					line: { color: '#f97316', width: 2, shape: 'spline' }
+					line: { color: chartColors.secondary, width: 2, shape: 'spline' }
 				}
 			],
 			chartLayout,
@@ -173,7 +174,7 @@
 
 <!-- Desktop sticky page header -->
 <header
-	class="hidden lg:flex sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 items-center justify-between gap-4"
+	class="hidden lg:flex sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 items-center justify-between gap-4"
 >
 	<div>
 		<h1 class="text-2xl font-bold text-textMain">{t('dashboard_header_title')}</h1>
@@ -187,7 +188,7 @@
 			{t('common_status_allSystemsOperational')}
 		</div>
 		<button
-			class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
+			class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border"
 		>
 			<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 		</button>
@@ -214,35 +215,35 @@
 	<!-- Quick Stats -->
 	<section class="grid grid-cols-1 lg:grid-cols-4 gap-4">
 		<!-- Uptime Frontend -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
 				<h3 class="text-textSec text-sm font-medium">{t(uf.labelKey)}</h3>
-				<i class="fa-solid {uf.icon} {uf.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<i class="fa-solid {uf.icon} {uf.iconClass} bg-surface lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
 				<span class="text-3xl font-bold text-textMain tracking-tight">{uf.value}</span>
 			</div>
-			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
+			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-surface rounded-full overflow-hidden">
 				<div class="h-full {uf.barClass} {uf.barWidth} rounded-full"></div>
 			</div>
 		</div>
 
 		<!-- Uptime Backend -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
 				<h3 class="text-textSec text-sm font-medium">{t(ub.labelKey)}</h3>
-				<i class="fa-solid {ub.icon} {ub.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<i class="fa-solid {ub.icon} {ub.iconClass} bg-surface lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
 				<span class="text-3xl font-bold text-textMain tracking-tight">{ub.value}</span>
 			</div>
-			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
+			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-surface rounded-full overflow-hidden">
 				<div class="h-full {ub.barClass} {ub.barWidth} rounded-full"></div>
 			</div>
 		</div>
 
 		<!-- Error Rate -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
 				<h3 class="text-textSec text-sm font-medium">{t(er.labelKey)}</h3>
 				<i class="fa-solid {er.icon} {er.iconClass}"></i>
@@ -259,10 +260,10 @@
 		</div>
 
 		<!-- DB Health -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
 				<h3 class="text-textSec text-sm font-medium">{t(db.labelKey)}</h3>
-				<i class="fa-solid {db.icon} {db.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<i class="fa-solid {db.icon} {db.iconClass} bg-surface lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
 				<span class="text-3xl font-bold text-success tracking-tight lg:text-textMain">{t('common_status_healthy')}</span>
@@ -277,7 +278,7 @@
 	<!-- Charts Row 1: Response Time + Errors -->
 	<section class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
 		<!-- Response Time -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex justify-between items-start lg:items-center mb-4 lg:mb-6">
 				<div>
 					<h3 class="text-base lg:text-lg font-semibold text-textMain">{t('dashboard_charts_responseTime')}</h3>
@@ -294,7 +295,7 @@
 		</div>
 
 		<!-- Errors -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-3 mb-4 lg:mb-6">
 				<h3 class="text-base lg:text-lg font-semibold text-textMain">
 					{t('dashboard_charts_errors')}
@@ -302,7 +303,7 @@
 				</h3>
 				<div class="relative lg:static">
 					<select
-						class="w-full lg:w-auto appearance-none bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-xl lg:rounded-md px-4 lg:px-3 py-3 lg:py-1.5 pr-10 lg:pr-3 focus:outline-none touch-target lg:min-h-0"
+						class="w-full lg:w-auto appearance-none bg-surface border border-border text-sm text-textMain rounded-xl lg:rounded-md px-4 lg:px-3 py-3 lg:py-1.5 pr-10 lg:pr-3 focus:outline-none touch-target lg:min-h-0"
 					>
 						<option>{t('common_status_all')}</option>
 						<option>5xx</option>
@@ -322,18 +323,18 @@
 	<!-- Charts Row 2: Server Resources + DB -->
 	<section class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
 		<!-- Server Resources -->
-		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
+		<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 			<div class="flex justify-between items-center mb-4 lg:mb-6">
 				<h3 class="text-base lg:text-lg font-semibold text-textMain">{t('dashboard_charts_serverResources')}</h3>
 				<div
-					class="flex gap-4 text-sm bg-[#1e293b]/50 lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"
+					class="flex gap-4 text-sm bg-surface/50 lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"
 				>
 					<div class="flex items-center gap-2">
-						<span class="w-2.5 lg:w-3 h-2.5 lg:h-3 rounded-full lg:rounded bg-[#3b82f6]"></span>
+						<span class="w-2.5 lg:w-3 h-2.5 lg:h-3 rounded-full lg:rounded bg-blue"></span>
 						<span class="text-textMain lg:text-textSec font-medium lg:font-normal">CPU</span>
 					</div>
 					<div class="flex items-center gap-2">
-						<span class="w-2.5 lg:w-3 h-2.5 lg:h-3 rounded-full lg:rounded bg-[#8b5cf6]"></span>
+						<span class="w-2.5 lg:w-3 h-2.5 lg:h-3 rounded-full lg:rounded bg-purple"></span>
 						<span class="text-textMain lg:text-textSec font-medium lg:font-normal">RAM</span>
 					</div>
 				</div>
@@ -342,7 +343,7 @@
 		</div>
 
 		<!-- DB Latency (desktop only) -->
-		<div class="hidden lg:block bg-card border border-[#1e293b] rounded-xl p-5">
+		<div class="hidden lg:block bg-card border border-surface rounded-xl p-5">
 			<div class="flex justify-between items-center mb-6">
 				<h3 class="text-lg font-semibold text-textMain">{t('dashboard_charts_dbLatency')}</h3>
 				<span class="px-2 py-1 bg-badge rounded text-xs text-textMain">Supabase</span>
@@ -352,7 +353,7 @@
 	</section>
 
 	<!-- Alerts / Incidents -->
-	<section class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
+	<section class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">
 		<div class="flex justify-between items-center mb-4 lg:mb-6">
 			<h3 class="text-base lg:text-lg font-semibold text-textMain">
 				{t('dashboard_alerts_title')}
@@ -385,7 +386,7 @@
 						</div>
 					</div>
 				{:else}
-					<div class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-[#1e293b]/60 lg:bg-[#1e293b]/50 border {sc.border} relative overflow-hidden">
+					<div class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-surface/60 lg:bg-surface/50 border {sc.border} relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 {sc.strip} lg:hidden"></div>
 						<div class="hidden lg:block w-2 h-2 rounded-full {sc.dot} mt-2 shrink-0"></div>
 						<div class="flex-1 min-w-0">

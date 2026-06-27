@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 	import { getDbKpis, getDbSecondaryKpis, getQueryTypeDistribution, getSlowestQueries, getTableSizes, getDbErrorLog, getDatabaseStats } from '$lib/repositories/databaseRepository';
@@ -23,13 +24,13 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#8b5cf6';
-		const blueColor = '#3b82f6';
-		const greenColor = '#3ecf8e';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purple;
+		const blueColor = chartColors.blue;
+		const greenColor = chartColors.greenMuted;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -124,11 +125,11 @@
 			showlegend: false,
 			annotations: [
 				{
-					text: '<b style="font-size:18px;color:#fff">68%</b><br><span style="font-size:10px;color:#94a3b8">SELECT</span>',
+					text: `<b style="font-size:18px;color:${chartColors.textMain}">68%</b><br><span style="font-size:10px;color:${chartColors.textSec}">SELECT</span>`,
 					x: 0.5, y: 0.5,
 					xanchor: 'center', yanchor: 'middle',
 					showarrow: false,
-					font: { size: 13, color: '#ffffff' }
+					font: { size: 13, color: chartColors.textMain }
 				}
 			]
 		};
@@ -181,9 +182,9 @@
 				font: { ...pieLayout.font, size: 10 },
 				margin: { t: 5, r: 5, b: 5, l: 5 },
 				annotations: [{
-					text: '<b style="font-size:16px;color:#fff">68%</b><br><span style="font-size:9px;color:#94a3b8">SELECT</span>',
+					text: `<b style="font-size:16px;color:${chartColors.textMain}">68%</b><br><span style="font-size:9px;color:${chartColors.textSec}">SELECT</span>`,
 					x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle',
-					showarrow: false, font: { size: 12, color: '#ffffff' }
+					showarrow: false, font: { size: 12, color: chartColors.textMain }
 				}]
 			}, chartConfig);
 
@@ -206,11 +207,11 @@
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
 	<header
-		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
 	>
 		<div class="flex items-center gap-4">
-			<div class="w-9 h-9 rounded-lg bg-[#3ecf8e]/15 border border-[#3ecf8e]/30 flex items-center justify-center">
-				<i class="fa-solid fa-database text-[#3ecf8e] text-sm"></i>
+			<div class="w-9 h-9 rounded-lg bg-green-muted/15 border border-green-muted/30 flex items-center justify-center">
+				<i class="fa-solid fa-database text-green-muted text-sm"></i>
 			</div>
 			<div>
 				<h1 class="text-2xl font-bold text-textMain">{t('database_header_title')}</h1>
@@ -222,12 +223,12 @@
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
 				{t('database_status_online')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -238,7 +239,7 @@
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			<!-- activeConnections -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t(kpis[0].labelKey)}</h3>
 					<span class="px-2 py-0.5 {kpis[0].badgeClass} text-xs rounded-full font-medium">{t(kpis[0].badgeKey)}</span>
@@ -247,13 +248,13 @@
 					<span class="text-3xl font-bold text-textMain">{kpis[0].value}</span>
 					<span class="text-sm text-textSec mb-1">{kpis[0].max}</span>
 				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 					<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 				</div>
 				<p class="text-xs text-textSec mt-2">{kpis[0].subtext}</p>
 			</div>
 			<!-- queryLatency -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t(kpis[1].labelKey)}</h3>
 					<span class="px-2 py-0.5 {kpis[1].badgeClass} text-xs rounded-full font-medium">{t(kpis[1].badgeKey)}</span>
@@ -266,7 +267,7 @@
 				<p class="text-xs text-textSec mt-2">{kpis[1].subtext}</p>
 			</div>
 			<!-- storageUsed -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t(kpis[2].labelKey)}</h3>
 					<span class="px-2 py-0.5 {kpis[2].badgeClass} text-xs rounded-full font-medium">{t(kpis[2].badgeKey)}</span>
@@ -275,13 +276,13 @@
 					<span class="text-3xl font-bold text-textMain">{kpis[2].value}</span>
 					<span class="text-sm text-textSec mb-1">{kpis[2].max}</span>
 				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 					<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 				</div>
 				<p class="text-xs text-textSec mt-2">{kpis[2].subtext}</p>
 			</div>
 			<!-- dbErrors -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t(kpis[3].labelKey)}</h3>
 					<span class="px-2 py-0.5 {kpis[3].badgeClass} text-xs rounded-full font-medium">{t(kpis[3].badgeKey)}</span>
@@ -297,7 +298,7 @@
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex items-center gap-3 mb-3">
 						<div class="w-8 h-8 rounded-lg {kpi.iconClass} flex items-center justify-center">
 							<i class="fa-solid {kpi.icon} text-xs"></i>
@@ -318,7 +319,7 @@
 
 		<!-- Charts Row -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_queryLatency')}</h3>
@@ -326,16 +327,16 @@
 					</div>
 					<div class="flex gap-2">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5">
-							<span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>Avg
+							<span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span>Avg
 						</span>
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5">
-							<span class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span>P95
+							<span class="w-2 h-2 rounded-full bg-purple inline-block"></span>P95
 						</span>
 					</div>
 				</div>
 				<div id="chart-latency" class="h-[220px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_connections')}</h3>
@@ -352,7 +353,7 @@
 
 		<!-- Query Distribution + Slow Queries -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('database_charts_queryTypes')}</h3>
 				<p class="text-xs text-textSec mb-4">{t('database_charts_queryTypesSubtitle')}</p>
 				<div id="chart-query-pie" class="h-[200px] w-full"></div>
@@ -366,7 +367,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('database_slowQueries_title')}</h3>
@@ -376,7 +377,7 @@
 				</div>
 				<div class="space-y-3">
 					{#each slowQueries as q (q.sql)}
-						<div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="flex items-start gap-4 p-3 rounded-lg bg-surface/40 border border-border/40">
 							<div class="flex-shrink-0 mt-0.5">
 								<span class="px-2 py-0.5 {q.typeClass} text-xs font-mono rounded font-semibold">{q.type}</span>
 							</div>
@@ -396,7 +397,7 @@
 
 		<!-- Table Sizes + QPS Chart -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('database_tableSizes_title')}</h3>
@@ -407,26 +408,26 @@
 					{#each tableSizes as ts (ts.name)}
 						<div class="flex items-center gap-3">
 							<div class="w-24 text-xs text-textSec font-mono truncate">{ts.name}</div>
-							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
 								<div class="h-full {ts.barClass} rounded-full" style="width:{ts.barWidth}"></div>
 							</div>
 							<span class="text-xs text-textMain font-medium w-12 text-right">{ts.sizeLabel}</span>
 						</div>
 					{/each}
 				</div>
-				<div class="mt-5 pt-4 border-t border-[#1e293b]">
+				<div class="mt-5 pt-4 border-t border-surface">
 					<div class="flex justify-between text-xs text-textSec mb-2">
 						<span>{t('database_tableSizes_totalStorage')}</span>
 						<span class="text-textMain font-semibold">{dbStats.totalStorage} / {dbStats.maxStorage}</span>
 					</div>
-					<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-						<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
+					<div class="w-full h-2.5 bg-surface rounded-full overflow-hidden">
+						<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, {chartColors.blue} 0%, {chartColors.purple} 100%)"></div>
 					</div>
 					<p class="text-xs text-textSec mt-2">Odhadované zaplnění při současném tempu: <span class="text-secondary font-medium">{dbStats.estimatedFillDays}</span></p>
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('database_charts_queriesPerMin')}</h3>
@@ -438,20 +439,20 @@
 		</section>
 
 		<!-- DB Error Log -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">{t('database_errorLog_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('common_timeRange_last24h')} · 12 záznamů</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
-					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
+					<div class="flex rounded-lg overflow-hidden border border-border">
 						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Timeout</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Deadlock</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Conn</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Timeout</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Deadlock</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">Conn</button>
 					</div>
-					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
+					<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input type="text" placeholder={t('common_actions_search')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
@@ -460,7 +461,7 @@
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
-						<tr class="border-b border-[#1e293b]">
+						<tr class="border-b border-surface">
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_message')}</th>
@@ -469,9 +470,9 @@
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-[#1e293b]/60">
+					<tbody class="divide-y divide-surface/60">
 						{#each errorLog as entry (entry.id)}
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+							<tr class="hover:bg-surface/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.typeClass} text-xs rounded font-medium">{entry.type}</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{entry.message}</td>
@@ -494,8 +495,8 @@
 	<!-- Mobile header is rendered by +layout.svelte; just show title row here -->
 	<div class="px-4 pt-3 pb-2">
 		<div class="flex items-center gap-2.5">
-			<div class="w-7 h-7 rounded-md bg-[#3ecf8e]/15 border border-[#3ecf8e]/30 flex items-center justify-center">
-				<i class="fa-solid fa-database text-[#3ecf8e] text-xs"></i>
+			<div class="w-7 h-7 rounded-md bg-green-muted/15 border border-green-muted/30 flex items-center justify-center">
+				<i class="fa-solid fa-database text-green-muted text-xs"></i>
 			</div>
 			<div>
 				<h1 class="text-sm font-bold text-textMain leading-tight">{t('database_header_title')}</h1>
@@ -514,7 +515,7 @@
 
 	<!-- Time range selector -->
 	<div class="px-4 pb-4">
-		<select class="w-full bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
+		<select class="w-full bg-card border border-border text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
 			<option>{t('common_timeRange_last24h')}</option>
 			<option>{t('common_timeRange_last7d')}</option>
 			<option>{t('common_timeRange_last30d')}</option>
@@ -526,7 +527,7 @@
 		<!-- KPI Primary Stats 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
 			<!-- activeConnections -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
 					<h3 class="text-textSec text-xs font-medium">{t(kpis[0].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">!</span>
@@ -535,14 +536,14 @@
 					<span class="text-2xl font-bold text-textMain">{kpis[0].value}</span>
 					<span class="text-xs text-textSec mb-0.5">{kpis[0].max}</span>
 				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
 					<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 				</div>
 				<p class="text-[10px] text-secondary font-medium">Varování · 87%</p>
 			</div>
 
 			<!-- queryLatency -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
 					<h3 class="text-textSec text-xs font-medium">{t(kpis[1].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
@@ -556,7 +557,7 @@
 			</div>
 
 			<!-- storageUsed -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
 					<h3 class="text-textSec text-xs font-medium">{t(kpis[2].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
@@ -565,14 +566,14 @@
 					<span class="text-2xl font-bold text-textMain">{kpis[2].value}</span>
 					<span class="text-xs text-textSec mb-0.5">{kpis[2].max}</span>
 				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
 					<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 				</div>
 				<p class="text-[10px] text-textSec">77.5% využito</p>
 			</div>
 
 			<!-- dbErrors -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<div class="flex items-center justify-between mb-2">
 					<h3 class="text-textSec text-xs font-medium">{t(kpis[3].labelKey)}</h3>
 					<span class="px-1.5 py-0.5 {kpis[3].badgeClass} text-[10px] rounded-full font-medium">{t(kpis[3].badgeKey)}</span>
@@ -588,7 +589,7 @@
 		<!-- Secondary Stats horizontal scroll -->
 		<section class="flex gap-3 overflow-x-auto pb-1">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
+				<div class="bg-card border border-surface rounded-xl p-4 flex-shrink-0 w-36">
 					<div class="w-7 h-7 rounded-lg {kpi.iconClass} flex items-center justify-center mb-2">
 						<i class="fa-solid {kpi.icon} text-xs"></i>
 					</div>
@@ -609,7 +610,7 @@
 		<section class="space-y-3">
 
 			<!-- Query Latency -->
-			<div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+			<div class="bg-card border border-surface rounded-xl overflow-hidden">
 				<button
 					onclick={() => (latencyOpen = !latencyOpen)}
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -620,8 +621,8 @@
 					</div>
 					<div class="flex items-center gap-3">
 						<div class="flex gap-1.5">
-							<span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>Avg</span>
-							<span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] inline-block"></span>P95</span>
+							<span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span>Avg</span>
+							<span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-purple inline-block"></span>P95</span>
 						</div>
 						<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {latencyOpen ? 'rotate-180' : ''}"></i>
 					</div>
@@ -634,7 +635,7 @@
 			</div>
 
 			<!-- Active Connections -->
-			<div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+			<div class="bg-card border border-surface rounded-xl overflow-hidden">
 				<button
 					onclick={() => (connectionsOpen = !connectionsOpen)}
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -658,7 +659,7 @@
 			</div>
 
 			<!-- QPS -->
-			<div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+			<div class="bg-card border border-surface rounded-xl overflow-hidden">
 				<button
 					onclick={() => (qpsOpen = !qpsOpen)}
 					class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -678,7 +679,7 @@
 		</section>
 
 		<!-- Query Types Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (queryTypesOpen = !queryTypesOpen)}
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -694,7 +695,7 @@
 					<div id="chart-query-pie-m" class="w-full" style="height:180px;"></div>
 					<div class="mt-3 grid grid-cols-2 gap-2">
 						{#each queryTypes as qt}
-							<div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
+							<div class="flex items-center justify-between bg-surface/40 rounded-lg px-3 py-2">
 								<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full {qt.color} inline-block"></span><span class="text-textSec text-xs">{qt.label}</span></div>
 								<span class="text-textMain text-xs font-semibold">{qt.percent}%</span>
 							</div>
@@ -705,7 +706,7 @@
 		</section>
 
 		<!-- Slow Queries Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (slowQueriesOpen = !slowQueriesOpen)}
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -719,7 +720,7 @@
 			{#if slowQueriesOpen}
 				<div class="px-4 pb-4 space-y-2">
 					{#each slowQueries as q (q.sql)}
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="p-3 rounded-xl bg-surface/40 border border-border/40">
 							<div class="flex items-start justify-between gap-2 mb-1.5">
 								<span class="px-2 py-0.5 {q.typeClass} text-[10px] font-mono rounded font-semibold flex-shrink-0">{q.type}</span>
 								<span class="{q.avgClass} font-bold text-sm">{q.avgMs.toLocaleString()} ms</span>
@@ -733,7 +734,7 @@
 		</section>
 
 		<!-- Table Sizes Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => (tableSizesOpen = !tableSizesOpen)}
 				class="w-full flex items-center justify-between px-4 py-4 text-left"
@@ -749,19 +750,19 @@
 					{#each tableSizes as ts (ts.name)}
 						<div class="flex items-center gap-3">
 							<div class="w-16 text-xs text-textSec font-mono">{ts.name}</div>
-							<div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
 								<div class="h-full {ts.barClass} rounded-full" style="width:{ts.barWidth}"></div>
 							</div>
 							<span class="text-xs text-textMain font-medium w-14 text-right">{ts.sizeLabel}</span>
 						</div>
 					{/each}
-					<div class="mt-2 pt-4 border-t border-[#1e293b]">
+					<div class="mt-2 pt-4 border-t border-surface">
 						<div class="flex justify-between text-xs text-textSec mb-2">
 							<span>{t('database_tableSizes_totalStorage')}</span>
 							<span class="text-textMain font-semibold">{dbStats.totalStorage} / {dbStats.maxStorage}</span>
 						</div>
-						<div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-							<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
+						<div class="w-full h-2.5 bg-surface rounded-full overflow-hidden">
+							<div class="h-full rounded-full" style="width:{dbStats.storagePercent}%; background: linear-gradient(90deg, {chartColors.blue} 0%, {chartColors.purple} 100%)"></div>
 						</div>
 						<p class="text-xs text-textSec mt-2">Odhadované zaplnění: <span class="text-secondary font-medium">{dbStats.estimatedFillDays}</span></p>
 					</div>
@@ -770,8 +771,8 @@
 		</section>
 
 		<!-- Error Log -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-			<div class="px-4 pt-4 pb-3 border-b border-[#1e293b]">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
+			<div class="px-4 pt-4 pb-3 border-b border-surface">
 				<div class="flex items-center justify-between mb-3">
 					<div>
 						<h3 class="text-sm font-semibold text-textMain">{t('database_errorLog_title')}</h3>
@@ -780,17 +781,17 @@
 				</div>
 				<div class="flex gap-2 mb-3 overflow-x-auto pb-1">
 					<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0">{t('common_status_all')}</button>
-					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Timeout</button>
-					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Deadlock</button>
-					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Conn</button>
+					<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Timeout</button>
+					<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Deadlock</button>
+					<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Conn</button>
 				</div>
-				<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2.5">
+				<div class="flex items-center gap-2 bg-surface border border-border rounded-xl px-3 py-2.5">
 					<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 					<input type="text" placeholder={t('common_actions_search')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 				</div>
 			</div>
 
-			<div class="divide-y divide-[#1e293b]/60">
+			<div class="divide-y divide-surface/60">
 				{#each errorLog as entry (entry.id)}
 					<div class="px-4 py-3">
 						<div class="flex items-start justify-between gap-2 mb-1">
@@ -813,7 +814,7 @@
 	</div>
 
 	<!-- Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-[9px] font-medium">{t('layout_nav_dashboard')}</span>
@@ -822,7 +823,7 @@
 			<i class="fa-solid fa-server text-base"></i>
 			<span class="text-[9px] font-medium">{t('layout_nav_availability')}</span>
 		</a>
-		<a href="{base}/databaze" class="flex flex-col items-center gap-1 px-3 py-2 text-[#3ecf8e] min-w-[44px]">
+		<a href="{base}/databaze" class="flex flex-col items-center gap-1 px-3 py-2 text-green-muted min-w-[44px]">
 			<i class="fa-solid fa-database text-base"></i>
 			<span class="text-[9px] font-semibold">{t('layout_nav_database')}</span>
 		</a>

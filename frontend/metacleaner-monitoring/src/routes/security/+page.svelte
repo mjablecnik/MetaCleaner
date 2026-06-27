@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
 	import {
@@ -71,12 +72,12 @@
 		const Plotly = (window as any).Plotly;
 		if (!Plotly) return;
 
-		const bgCard = '#111d33';
-		const textSec = '#94a3b8';
-		const errorColor = '#ef4444';
-		const secondaryColor = '#f97316';
-		const purpleColor = '#8b5cf6';
-		const blueColor = '#3b82f6';
+		const bgCard = chartColors.card;
+		const textSec = chartColors.textSec;
+		const errorColor = chartColors.error;
+		const secondaryColor = chartColors.secondary;
+		const purpleColor = chartColors.purple;
+		const blueColor = chartColors.blue;
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
@@ -177,22 +178,22 @@
 			margin: { t: 5, r: 5, b: 5, l: 5 },
 			showlegend: false,
 			annotations: [{
-				text: '<b style="font-size:18px;color:#ef4444">42%</b><br><span style="font-size:10px;color:#94a3b8">Brute Force</span>',
+				text: `<b style="font-size:18px;color:${chartColors.error}">42%</b><br><span style="font-size:10px;color:${chartColors.textSec}">Brute Force</span>`,
 				x: 0.5, y: 0.5,
 				xanchor: 'center', yanchor: 'middle',
 				showarrow: false,
-				font: { size: 13, color: '#ffffff' }
+				font: { size: 13, color: chartColors.textMain }
 			}]
 		};
 
 		const mobilePieLayout = {
 			...pieLayout,
 			annotations: [{
-				text: '<b style="font-size:16px;color:#ef4444">42%</b><br><span style="font-size:9px;color:#94a3b8">Brute Force</span>',
+				text: `<b style="font-size:16px;color:${chartColors.error}">42%</b><br><span style="font-size:9px;color:${chartColors.textSec}">Brute Force</span>`,
 				x: 0.5, y: 0.5,
 				xanchor: 'center', yanchor: 'middle',
 				showarrow: false,
-				font: { size: 12, color: '#ffffff' }
+				font: { size: 12, color: chartColors.textMain }
 			}]
 		};
 
@@ -247,7 +248,7 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div class="flex items-center gap-4">
 			<div class="w-9 h-9 rounded-lg bg-error/15 border border-error/30 flex items-center justify-center">
 				<i class="fa-solid fa-shield-halved text-error text-sm"></i>
@@ -262,12 +263,12 @@
 				<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
 				{summary.activeThreats} {t('security_status_activeThreats')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+			<select class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+			<button class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -289,14 +290,14 @@
 					<span class="text-sm text-textSec mb-1">{threatScoreKpi.unit}</span>
 					<span class="text-sm {threatScoreKpi.valueClass} mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>{threatScoreKpi.trend}</span>
 				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 					<div class="h-full {threatScoreKpi.barClass} rounded-full" style="width:{threatScoreKpi.barWidth}"></div>
 				</div>
 				<p class="text-xs text-textSec mt-2">{threatScoreKpi.subtext}</p>
 			</div>
 			<!-- Standard KPI cards -->
 			{#each standardKpiStats as stat (stat.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex justify-between items-start mb-3">
 						<h3 class="text-textSec text-sm font-medium">{t(stat.labelKey)}</h3>
 						<span class="px-2 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium">{t(stat.badgeKey)}</span>
@@ -315,7 +316,7 @@
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			{#each secondaryKpis as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<div class="flex items-center gap-3 mb-3">
 						<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center">
 							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
@@ -335,7 +336,7 @@
 
 		<!-- Charts Row -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('security_charts_eventsOverTime')}</h3>
@@ -348,7 +349,7 @@
 				</div>
 				<div id="chart-threats" class="h-[220px] w-full"></div>
 			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('security_charts_geoOrigins')}</h3>
@@ -361,7 +362,7 @@
 
 		<!-- Attack Types + Active Threats -->
 		<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<h3 class="text-lg font-semibold text-textMain mb-1">{t('security_attackTypes_title')}</h3>
 				<p class="text-xs text-textSec mb-4">{t('security_attackTypes_subtitle')}</p>
 				<div id="chart-attack-pie" class="h-[200px] w-full"></div>
@@ -378,7 +379,7 @@
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+			<div class="bg-card border border-surface rounded-xl p-5 lg:col-span-2">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('security_threats_title')}</h3>
@@ -414,20 +415,20 @@
 
 		<!-- Blocked IPs + Failed Logins -->
 		<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('security_blockedIps_title')}</h3>
 						<p class="text-xs text-textSec mt-0.5">{t('security_blockedIps_subtitle')}</p>
 					</div>
-					<button class="px-3 py-1.5 bg-[#1e293b] hover:bg-[#2d3748] text-textSec hover:text-textMain text-xs rounded-lg border border-[#334155] transition-colors">
+					<button class="px-3 py-1.5 bg-surface hover:bg-surface-hover text-textSec hover:text-textMain text-xs rounded-lg border border-border transition-colors">
 						<i class="fa-solid fa-plus mr-1.5"></i>{t('security_blockedIps_addIp')}
 					</button>
 				</div>
 				<div class="space-y-2">
 					{#each blockedIps as ip (ip.id)}
-						<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40 hover:border-[#334155] transition-colors">
-							<div class="w-7 h-7 rounded-lg bg-[#1e293b] flex items-center justify-center flex-shrink-0">
+						<div class="flex items-center gap-3 p-3 rounded-lg bg-surface/40 border border-border/40 hover:border-border transition-colors">
+							<div class="w-7 h-7 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
 								<i class="fa-solid fa-ban {ip.iconClass} text-xs"></i>
 							</div>
 							<div class="flex-1 min-w-0">
@@ -441,13 +442,13 @@
 						</div>
 					{/each}
 				</div>
-				<div class="mt-4 pt-3 border-t border-[#1e293b] flex items-center justify-between text-xs text-textSec">
+				<div class="mt-4 pt-3 border-t border-surface flex items-center justify-between text-xs text-textSec">
 					<span>{t('security_blockedIps_footer')}</span>
-					<button class="text-[#3b82f6] hover:text-[#60a5fa] transition-colors">{t('security_blockedIps_showAll')}</button>
+					<button class="text-blue hover:text-blue-light transition-colors">{t('security_blockedIps_showAll')}</button>
 				</div>
 			</div>
 
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('security_failedLogins_title')}</h3>
@@ -459,20 +460,20 @@
 		</section>
 
 		<!-- Security Event Log -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">{t('security_eventLog_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('security_eventLog_subtitle')}</p>
 				</div>
 				<div class="flex gap-3 flex-wrap">
-					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
+					<div class="flex rounded-lg overflow-hidden border border-border">
 						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('security_severity_critical')}</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('common_status_warning')}</button>
-						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">{t('common_labels_info')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">{t('security_severity_critical')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">{t('common_status_warning')}</button>
+						<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface">{t('common_labels_info')}</button>
 					</div>
-					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
+					<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input type="text" placeholder="{t('security_eventLog_searchPlaceholder')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
@@ -481,7 +482,7 @@
 			<div class="overflow-x-auto">
 				<table class="w-full text-sm">
 					<thead>
-						<tr class="border-b border-[#1e293b]">
+						<tr class="border-b border-surface">
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_description')}</th>
@@ -490,9 +491,9 @@
 							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-[#1e293b]/60">
+					<tbody class="divide-y divide-surface/60">
 						{#each securityEvents as event (event.id)}
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+							<tr class="hover:bg-surface/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{event.time}</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 {event.typeLabelClass} text-xs rounded font-medium">{event.typeLabel}</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{event.description}</td>
@@ -513,7 +514,7 @@
 <div class="lg:hidden pb-20">
 
 	<!-- Page Title Bar -->
-	<div class="px-4 pt-3 pb-3 bg-card border-b border-[#1e293b] flex items-center justify-between gap-3">
+	<div class="px-4 pt-3 pb-3 bg-card border-b border-surface flex items-center justify-between gap-3">
 		<div class="flex items-center gap-2.5">
 			<div class="w-8 h-8 rounded-lg bg-error/15 border border-error/30 flex items-center justify-center">
 				<i class="fa-solid fa-shield-halved text-error text-xs"></i>
@@ -528,7 +529,7 @@
 				<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
 				{summary.activeThreats} {t('security_status_threats')}
 			</div>
-			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
+			<select class="bg-surface border border-border text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
@@ -554,7 +555,7 @@
 						<span class="text-xs {threatScoreKpi.valueClass} flex items-center gap-1 font-medium"><i class="fa-solid fa-arrow-up text-xs"></i>{threatScoreKpi.trend} dnes</span>
 					</div>
 					<div class="flex-1 ml-2">
-						<div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+						<div class="w-full h-2 bg-surface rounded-full overflow-hidden">
 							<div class="h-full bg-gradient-to-r from-error/60 to-error rounded-full" style="width:{threatScoreKpi.barWidth}"></div>
 						</div>
 						<p class="text-xs text-textSec mt-1">{threatScoreKpi.subtext}</p>
@@ -563,7 +564,7 @@
 			</div>
 
 			<!-- Failed Logins -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('security_kpi_failedLogins')}</h3>
 				<div class="text-2xl font-bold text-textMain">{standardKpiStats[0].value}</div>
 				<span class="text-xs text-secondary flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>{standardKpiStats[0].trend}</span>
@@ -572,7 +573,7 @@
 			</div>
 
 			<!-- Blocked IPs -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('security_kpi_blockedIpsMobile')}</h3>
 				<div class="text-2xl font-bold text-textMain">{standardKpiStats[1].value}</div>
 				<span class="text-xs text-success flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>{standardKpiStats[1].trend}</span>
@@ -581,7 +582,7 @@
 			</div>
 
 			<!-- Anomalies -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+			<div class="bg-card border border-surface rounded-xl p-4">
 				<h3 class="text-textSec text-xs font-medium mb-2">{t('security_kpi_anomalies')}</h3>
 				<div class="text-2xl font-bold {standardKpiStats[2].valueClass ?? 'text-textMain'}">{standardKpiStats[2].value}</div>
 				<span class="text-xs {standardKpiStats[2].valueClass} flex items-center gap-0.5 font-medium mt-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>{standardKpiStats[2].trend}</span>
@@ -591,7 +592,7 @@
 
 			<!-- SSL Certs -->
 			{#each secondaryKpis.filter(k => k.key === 'sslCerts') as kpi (kpi.key)}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+				<div class="bg-card border border-surface rounded-xl p-4">
 					<h3 class="text-textSec text-xs font-medium mb-2">{t(kpi.labelKey)}</h3>
 					<div class="text-2xl font-bold {kpi.valueClass}">{t(kpi.value)}</div>
 					<p class="text-xs text-textSec mt-1.5">{kpi.subtext} <span class="{kpi.subtextExtraClass}">{kpi.subtextExtra}</span></p>
@@ -606,7 +607,7 @@
 		<section class="overflow-x-auto -mx-4 px-4">
 			<div class="flex gap-3 w-max">
 				{#each secondaryKpis.filter(k => k.key !== 'sslCerts') as kpi (kpi.key)}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
+					<div class="bg-card border border-surface rounded-xl p-4 w-36 flex-shrink-0">
 						<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center mb-2">
 							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
 						</div>
@@ -614,9 +615,9 @@
 						<p class="text-xs text-textSec mt-0.5 leading-tight">{t(kpi.labelKey)}</p>
 					</div>
 				{/each}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-						<i class="fa-solid fa-eye text-[#3b82f6] text-xs"></i>
+				<div class="bg-card border border-surface rounded-xl p-4 w-36 flex-shrink-0">
+					<div class="w-8 h-8 rounded-lg bg-blue/15 flex items-center justify-center mb-2">
+						<i class="fa-solid fa-eye text-blue text-xs"></i>
 					</div>
 					<div class="text-xl font-bold text-textMain">12</div>
 					<p class="text-xs text-textSec mt-0.5 leading-tight">Unikátní útočníci</p>
@@ -625,8 +626,8 @@
 		</section>
 
 		<!-- Active Threats -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-			<div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#1e293b]">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
+			<div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-surface">
 				<div>
 					<h3 class="text-base font-semibold text-textMain">{t('security_threats_title')}</h3>
 					<p class="text-xs text-textSec mt-0.5">{t('security_threats_subtitle')}</p>
@@ -636,7 +637,7 @@
 					{t('security_threats_badge')}
 				</span>
 			</div>
-			<div class="divide-y divide-[#1e293b]/60">
+			<div class="divide-y divide-surface/60">
 				{#each activeThreats as threat (threat.id)}
 					<div class="p-4 {threat.bgClass}">
 						<div class="flex items-start gap-3">
@@ -662,8 +663,8 @@
 		</section>
 
 		<!-- Charts — tabbed -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-			<div class="border-b border-[#1e293b]">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
+			<div class="border-b border-surface">
 				<div class="flex">
 					<button
 						onclick={() => switchTab('threats')}
@@ -719,7 +720,7 @@
 		</section>
 
 		<!-- Failed Logins Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('security_failedLogins_titleMobile')}</h3>
@@ -730,7 +731,7 @@
 		</section>
 
 		<!-- Blocked IPs Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<div class="flex items-center justify-between px-4 py-4 min-h-[56px]">
 				<button
 					onclick={() => toggleAccordion('ips')}
@@ -745,7 +746,7 @@
 					</div>
 				</button>
 				<div class="flex items-center gap-2 flex-shrink-0">
-					<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs rounded-lg border border-[#334155] min-h-[36px]">
+					<button class="px-3 py-1.5 bg-surface text-textSec text-xs rounded-lg border border-border min-h-[36px]">
 						<i class="fa-solid fa-plus mr-1"></i>{t('security_blockedIps_addIpMobile')}
 					</button>
 					<button onclick={() => toggleAccordion('ips')} class="p-1" aria-label="Toggle">
@@ -754,11 +755,11 @@
 				</div>
 			</div>
 			{#if accordionOpen.ips}
-				<div class="border-t border-[#1e293b]">
-					<div class="divide-y divide-[#1e293b]/60">
+				<div class="border-t border-surface">
+					<div class="divide-y divide-surface/60">
 						{#each blockedIps as ip (ip.id)}
 							<div class="flex items-center gap-3 p-4">
-								<div class="w-7 h-7 rounded-lg bg-[#1e293b] flex items-center justify-center flex-shrink-0">
+								<div class="w-7 h-7 rounded-lg bg-surface flex items-center justify-center flex-shrink-0">
 									<i class="fa-solid fa-ban {ip.iconClass} text-xs"></i>
 								</div>
 								<div class="flex-1 min-w-0">
@@ -772,22 +773,22 @@
 							</div>
 						{/each}
 					</div>
-					<div class="px-4 py-3 border-t border-[#1e293b] flex items-center justify-between text-xs text-textSec">
+					<div class="px-4 py-3 border-t border-surface flex items-center justify-between text-xs text-textSec">
 						<span>{t('security_blockedIps_footerMobile')}</span>
-						<button class="text-[#3b82f6] font-medium min-h-[36px] px-2">{t('security_blockedIps_showAll')}</button>
+						<button class="text-blue font-medium min-h-[36px] px-2">{t('security_blockedIps_showAll')}</button>
 					</div>
 				</div>
 			{/if}
 		</section>
 
 		<!-- Security Event Log Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				onclick={() => toggleAccordion('log')}
 				class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]"
 			>
 				<div class="flex items-center gap-3">
-					<div class="w-8 h-8 rounded-lg bg-[#1e293b] flex items-center justify-center">
+					<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center">
 						<i class="fa-solid fa-list text-textSec text-xs"></i>
 					</div>
 					<div class="text-left">
@@ -798,20 +799,20 @@
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {accordionOpen.log ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if accordionOpen.log}
-				<div class="border-t border-[#1e293b]">
-					<div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-[#1e293b]">
+				<div class="border-t border-surface">
+					<div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-surface">
 						<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px]">{t('common_status_all')}</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('security_severity_critical')}</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_status_warning')}</button>
-						<button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_labels_info')}</button>
+						<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('security_severity_critical')}</button>
+						<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_status_warning')}</button>
+						<button class="px-3 py-1.5 bg-surface text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">{t('common_labels_info')}</button>
 					</div>
-					<div class="px-4 py-3 border-b border-[#1e293b]">
-						<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5">
+					<div class="px-4 py-3 border-b border-surface">
+						<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-2.5">
 							<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 							<input type="text" placeholder="{t('security_eventLog_searchPlaceholderMobile')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1" />
 						</div>
 					</div>
-					<div class="divide-y divide-[#1e293b]/60">
+					<div class="divide-y divide-surface/60">
 						{#each securityEvents as event (event.id)}
 							<div class="p-4">
 								<div class="flex items-center justify-between mb-2">
@@ -826,8 +827,8 @@
 							</div>
 						{/each}
 					</div>
-					<div class="px-4 py-3 border-t border-[#1e293b]">
-						<button class="w-full py-2.5 text-xs text-[#3b82f6] font-medium text-center min-h-[44px]">{t('security_eventLog_loadMore')}</button>
+					<div class="px-4 py-3 border-t border-surface">
+						<button class="w-full py-2.5 text-xs text-blue font-medium text-center min-h-[44px]">{t('security_eventLog_loadMore')}</button>
 					</div>
 				</div>
 			{/if}
@@ -837,7 +838,7 @@
 	</div>
 
 	<!-- Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
+	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-surface px-2 py-2 flex items-center justify-around lg:hidden">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-xs">{t('layout_nav_dashboard')}</span>

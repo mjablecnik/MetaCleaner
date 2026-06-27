@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { chartColors } from '$lib/theme/chartColors';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
 	import {
@@ -62,13 +63,13 @@
 				block.style.flexShrink = '0';
 			}
 			block.style.cursor = 'pointer';
-			let color = '#22c55e';
+			let color: string = chartColors.primary;
 			let title = `Dne ${days - i}: Provoz`;
 			if (config.downDays && config.downDays.includes(i)) {
-				color = '#ef4444';
+				color = chartColors.error;
 				title = `Dne ${days - i}: Výpadek`;
 			} else if (config.degradedDays && config.degradedDays.includes(i)) {
-				color = '#f97316';
+				color = chartColors.secondary;
 				title = `Dne ${days - i}: Degradace`;
 			}
 			block.style.backgroundColor = color;
@@ -94,11 +95,11 @@
 			margin: { t: 10, r: 10, b: 30, l: 40 },
 			plot_bgcolor: 'transparent',
 			paper_bgcolor: 'transparent',
-			font: { color: '#94a3b8', family: 'Inter, sans-serif', size: 11 },
-			xaxis: { showgrid: true, gridcolor: '#1e293b', zeroline: false, tickfont: { size: 10 } },
+			font: { color: chartColors.textSec, family: 'Inter, sans-serif', size: 11 },
+			xaxis: { showgrid: true, gridcolor: chartColors.surface, zeroline: false, tickfont: { size: 10 } },
 			yaxis: {
 				showgrid: true,
-				gridcolor: '#1e293b',
+				gridcolor: chartColors.surface,
 				zeroline: false,
 				tickfont: { size: 10 },
 				title: 'ms'
@@ -126,7 +127,7 @@
 				type: 'scatter',
 				mode: 'lines',
 				name: 'Frontend',
-				line: { color: '#22c55e', width: 2, shape: 'spline', smoothing: 0.8 },
+				line: { color: chartColors.primary, width: 2, shape: 'spline', smoothing: 0.8 },
 				fill: 'tozeroy',
 				fillcolor: 'rgba(34,197,94,0.07)'
 			},
@@ -136,7 +137,7 @@
 				type: 'scatter',
 				mode: 'lines',
 				name: 'Backend API',
-				line: { color: '#3b82f6', width: 2, shape: 'spline', smoothing: 0.8 },
+				line: { color: chartColors.blue, width: 2, shape: 'spline', smoothing: 0.8 },
 				fill: 'tozeroy',
 				fillcolor: 'rgba(59,130,246,0.07)'
 			}
@@ -176,7 +177,7 @@
 <div class="hidden lg:block">
 	<!-- Desktop Page Header -->
 	<header
-		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex items-center justify-between gap-4"
+		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-surface px-6 py-4 flex items-center justify-between gap-4"
 	>
 		<div>
 			<h1 class="text-2xl font-bold text-textMain">{t('availability_header_title')}</h1>
@@ -190,14 +191,14 @@
 				{t('common_status_allSystemsOperational')}
 			</div>
 			<select
-				class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-1.5 focus:outline-none"
+				class="bg-surface border border-border text-sm text-textMain rounded-lg px-3 py-1.5 focus:outline-none"
 			>
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button
-				class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
+				class="px-4 py-2 bg-surface hover:bg-surface-hover text-white rounded-lg text-sm font-medium transition-colors border border-border"
 			>
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
@@ -210,7 +211,7 @@
 			{#each serviceCards as card (card.key)}
 				{@const badge = statusBadge[card.status]}
 				{@const bar = statusBar[card.status]}
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5 relative overflow-hidden">
+				<div class="bg-card border border-surface rounded-xl p-5 relative overflow-hidden">
 					<div class="absolute top-0 left-0 w-1 h-full {bar.barClass} rounded-l-xl"></div>
 					<div class="flex justify-between items-start mb-3 pl-1">
 						<div>
@@ -222,7 +223,7 @@
 					<div class="pl-1">
 						<span class="text-4xl font-bold text-textMain">{card.uptimeDisplay}<span class="text-2xl">%</span></span>
 						<p class="text-xs text-textSec mt-2">{t('common_timeRange_last30d')}</p>
-						<div class="mt-3 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
+						<div class="mt-3 h-1.5 w-full bg-surface rounded-full overflow-hidden">
 							<div class="h-full {bar.barClass} rounded-full" style="width:{card.uptimeDisplay}%"></div>
 						</div>
 						<div class="flex justify-between mt-1">
@@ -241,7 +242,7 @@
 		<!-- Response Time & Health Checks -->
 		<section class="grid grid-cols-3 gap-6">
 			<!-- Response Time Chart -->
-			<div class="col-span-2 bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="col-span-2 bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center justify-between gap-3 mb-5">
 					<div>
 						<h3 class="text-lg font-semibold text-textMain">{t('availability_charts_responseTime')}</h3>
@@ -253,7 +254,7 @@
 							<span class="text-textSec">Frontend</span>
 						</div>
 						<div class="flex items-center gap-2">
-							<span class="w-3 h-0.5 bg-[#3b82f6] inline-block"></span>
+							<span class="w-3 h-0.5 bg-blue inline-block"></span>
 							<span class="text-textSec">Backend API</span>
 						</div>
 					</div>
@@ -262,7 +263,7 @@
 			</div>
 
 			<!-- Health Checks -->
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center justify-between mb-5">
 					<h3 class="text-lg font-semibold text-textMain">{t('availability_health_title')}</h3>
 					<span class="text-xs text-textSec">{t('availability_health_interval')}</span>
@@ -270,7 +271,7 @@
 				<div class="space-y-3">
 					{#each healthChecks as hc (hc.endpoint)}
 						{@const dot = statusDot[hc.status]}
-						<div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-[#334155]/40">
+						<div class="flex items-center justify-between p-3 rounded-lg bg-surface/50 border border-border/40">
 							<div class="flex items-center gap-3">
 								<div class="w-2.5 h-2.5 rounded-full {dot.dot} {dot.pulse ? 'animate-pulse' : ''} flex-shrink-0"></div>
 								<div>
@@ -284,7 +285,7 @@
 							</div>
 						</div>
 					{/each}
-					<div class="mt-4 pt-3 border-t border-[#1e293b] flex items-center justify-between">
+					<div class="mt-4 pt-3 border-t border-surface flex items-center justify-between">
 						<span class="text-xs text-textSec">{t('availability_health_lastCheck')}</span>
 						<button class="text-xs text-primary hover:underline font-medium">
 							<i class="fa-solid fa-rotate-right mr-1"></i>{t('common_actions_refresh')}
@@ -295,7 +296,7 @@
 		</section>
 
 		<!-- Uptime Timeline -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
+		<section class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex items-center justify-between gap-3 mb-6">
 				<div>
 					<h3 class="text-lg font-semibold text-textMain">{t('availability_timeline_title')}</h3>
@@ -312,7 +313,7 @@
 						<span class="w-3 h-3 rounded-sm bg-error inline-block"></span>{t('availability_timeline_down')}
 					</div>
 					<div class="flex items-center gap-1.5">
-						<span class="w-3 h-3 rounded-sm bg-[#1e293b] border border-[#334155] inline-block"></span>{t('availability_timeline_noData')}
+						<span class="w-3 h-3 rounded-sm bg-surface border border-border inline-block"></span>{t('availability_timeline_noData')}
 					</div>
 				</div>
 			</div>
@@ -341,19 +342,19 @@
 		<!-- Incidents + SLA -->
 		<section class="grid grid-cols-3 gap-6">
 			<!-- Incident Log -->
-			<div class="col-span-2 bg-card border border-[#1e293b] rounded-xl p-5">
+			<div class="col-span-2 bg-card border border-surface rounded-xl p-5">
 				<div class="flex items-center justify-between mb-5">
 					<h3 class="text-lg font-semibold text-textMain">{t('availability_incidents_title')}</h3>
 					<div class="flex gap-2">
-						<button class="px-3 py-1 text-xs bg-[#1e293b] text-textMain rounded-lg border border-[#334155] font-medium">{t('common_status_all')}</button>
-						<button class="px-3 py-1 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors">{t('common_status_active')}</button>
-						<button class="px-3 py-1 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors">{t('common_status_resolved')}</button>
+						<button class="px-3 py-1 text-xs bg-surface text-textMain rounded-lg border border-border font-medium">{t('common_status_all')}</button>
+						<button class="px-3 py-1 text-xs text-textSec hover:bg-surface rounded-lg transition-colors">{t('common_status_active')}</button>
+						<button class="px-3 py-1 text-xs text-textSec hover:bg-surface rounded-lg transition-colors">{t('common_status_resolved')}</button>
 					</div>
 				</div>
 				<div class="space-y-3">
 					{#each incidents as inc (inc.id)}
 						{#if inc.status === 'active'}
-							<div class="p-4 rounded-xl bg-[#1e293b]/60 border border-secondary/30">
+							<div class="p-4 rounded-xl bg-surface/60 border border-secondary/30">
 								<div class="flex items-start gap-3">
 									<div class="mt-1 flex-shrink-0">
 										<span class="w-6 h-6 rounded-full bg-secondary/20 border border-secondary/40 flex items-center justify-center">
@@ -377,7 +378,7 @@
 								</div>
 							</div>
 						{:else}
-							<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="p-4 rounded-xl bg-surface/40 border border-border/40">
 								<div class="flex items-start gap-3">
 									<div class="mt-1 flex-shrink-0">
 										<span class="w-6 h-6 rounded-full bg-success/10 border border-success/30 flex items-center justify-center">
@@ -408,7 +409,7 @@
 			<!-- SLA + Quick Stats -->
 			<div class="space-y-4">
 				<!-- SLA Card -->
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<h3 class="text-base font-semibold text-textMain mb-4">{t('availability_sla_title')}</h3>
 					<div class="space-y-4">
 						{#each slaGoals as goal (goal.service)}
@@ -417,7 +418,7 @@
 									<span class="text-sm text-textSec">{goal.service}</span>
 									<span class="text-sm font-semibold {goal.met ? 'text-success' : 'text-secondary'}">{goal.actual}%</span>
 								</div>
-								<div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
+								<div class="h-2 w-full bg-surface rounded-full overflow-hidden">
 									<div class="h-full {goal.barClass} rounded-full" style="width:{goal.actual}%"></div>
 								</div>
 								{#if goal.met}
@@ -431,7 +432,7 @@
 				</div>
 
 				<!-- Quick Stats -->
-				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+				<div class="bg-card border border-surface rounded-xl p-5">
 					<h3 class="text-base font-semibold text-textMain mb-4">{t('availability_quickStats_title')}</h3>
 					<div class="space-y-3">
 						<div class="flex justify-between items-center">
@@ -454,7 +455,7 @@
 							<span class="text-sm text-textSec">{t('availability_quickStats_checkInterval')}</span>
 							<span class="text-sm font-semibold text-textMain">{qs.checkInterval}</span>
 						</div>
-						<div class="h-px bg-[#1e293b] my-1"></div>
+						<div class="h-px bg-surface my-1"></div>
 						<div class="flex justify-between items-center">
 							<span class="text-sm text-textSec">{t('availability_quickStats_alertsSent')}</span>
 							<span class="text-sm font-semibold text-textMain">{qs.alertsSent}</span>
@@ -490,7 +491,7 @@
 
 		<!-- Time Range -->
 		<select
-			class="w-full bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none"
+			class="w-full bg-surface border border-border text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none"
 			style="min-height:44px"
 		>
 			<option>{t('common_timeRange_last24h')}</option>
@@ -507,7 +508,7 @@
 				{#each serviceCards as card (card.key)}
 					{@const bar = statusBar[card.status]}
 					{@const dot = statusDot[card.status]}
-					<div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
+					<div class="bg-card border border-surface rounded-xl p-4 relative overflow-hidden">
 						<div class="absolute top-0 left-0 w-1 h-full {bar.barClass} rounded-l-xl"></div>
 						<div class="pl-1">
 							<div class="flex items-start justify-between mb-2">
@@ -518,7 +519,7 @@
 								<span class="w-2 h-2 rounded-full {dot.dot} {dot.pulse ? 'animate-pulse' : ''} mt-1 flex-shrink-0"></span>
 							</div>
 							<span class="text-2xl font-bold text-textMain">{card.uptimeDisplay}<span class="text-base">%</span></span>
-							<div class="mt-2 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="mt-2 h-1.5 w-full bg-surface rounded-full overflow-hidden">
 								<div class="h-full {bar.barClass} rounded-full" style="width:{card.uptimeDisplay}%"></div>
 							</div>
 							<div class="flex justify-between mt-1.5">
@@ -536,7 +537,7 @@
 		</section>
 
 		<!-- Response Time Chart -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
+		<section class="bg-card border border-surface rounded-xl p-4">
 			<div class="flex items-center justify-between mb-1">
 				<div>
 					<h3 class="text-sm font-semibold text-textMain">{t('availability_charts_responseTime')}</h3>
@@ -547,7 +548,7 @@
 						<span class="w-2.5 h-0.5 bg-success inline-block rounded"></span><span class="text-textSec">FE</span>
 					</div>
 					<div class="flex items-center gap-1.5">
-						<span class="w-2.5 h-0.5 bg-[#3b82f6] inline-block rounded"></span><span class="text-textSec">API</span>
+						<span class="w-2.5 h-0.5 bg-blue inline-block rounded"></span><span class="text-textSec">API</span>
 					</div>
 				</div>
 			</div>
@@ -555,7 +556,7 @@
 		</section>
 
 		<!-- Health Checks Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				class="w-full flex items-center justify-between p-4"
 				style="min-height:52px"
@@ -563,7 +564,7 @@
 			>
 				<div class="flex items-center gap-2">
 					<h3 class="text-sm font-semibold text-textMain">{t('availability_health_title')}</h3>
-					<span class="text-xs text-textSec bg-[#1e293b] px-2 py-0.5 rounded-full">{t('availability_health_endpoints', { count: String(healthChecks.length) })}</span>
+					<span class="text-xs text-textSec bg-surface px-2 py-0.5 rounded-full">{t('availability_health_endpoints', { count: String(healthChecks.length) })}</span>
 				</div>
 				<div class="flex items-center gap-2">
 					<span class="text-xs text-textSec">{t('availability_health_interval')}</span>
@@ -575,7 +576,7 @@
 					{#each healthChecks as hc (hc.endpoint)}
 						{@const dot = statusDot[hc.status]}
 						<div
-							class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border {hc.status === 'degraded' ? 'border-secondary/20' : 'border-[#334155]/40'}"
+							class="flex items-center justify-between p-3 rounded-lg bg-surface/50 border {hc.status === 'degraded' ? 'border-secondary/20' : 'border-border/40'}"
 							style="min-height:52px"
 						>
 							<div class="flex items-center gap-3">
@@ -591,7 +592,7 @@
 							</div>
 						</div>
 					{/each}
-					<div class="pt-2 border-t border-[#1e293b] flex items-center justify-between">
+					<div class="pt-2 border-t border-surface flex items-center justify-between">
 						<span class="text-xs text-textSec">{t('availability_health_lastCheck')}</span>
 						<button
 							class="text-xs text-primary font-medium flex items-center gap-1 py-2 px-3"
@@ -605,7 +606,7 @@
 		</section>
 
 		<!-- Uptime Timeline Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				class="w-full flex items-center justify-between p-4"
 				style="min-height:52px"
@@ -654,19 +655,19 @@
 		</section>
 
 		<!-- Incidents -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-			<div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
+			<div class="p-4 border-b border-surface flex items-center justify-between">
 				<h3 class="text-sm font-semibold text-textMain">{t('availability_incidents_title')}</h3>
 				<div class="flex gap-1.5">
-					<button class="px-2.5 py-1.5 text-xs bg-[#1e293b] text-textMain rounded-lg border border-[#334155] font-medium" style="min-height:36px">{t('common_status_all')}</button>
-					<button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors" style="min-height:36px">{t('common_status_active')}</button>
-					<button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors" style="min-height:36px">{t('common_status_resolved')}</button>
+					<button class="px-2.5 py-1.5 text-xs bg-surface text-textMain rounded-lg border border-border font-medium" style="min-height:36px">{t('common_status_all')}</button>
+					<button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-surface rounded-lg transition-colors" style="min-height:36px">{t('common_status_active')}</button>
+					<button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-surface rounded-lg transition-colors" style="min-height:36px">{t('common_status_resolved')}</button>
 				</div>
 			</div>
 			<div class="p-4 space-y-3">
 				{#each incidents as inc (inc.id)}
 					{#if inc.status === 'active'}
-						<div class="p-4 rounded-xl bg-[#1e293b]/60 border border-secondary/30">
+						<div class="p-4 rounded-xl bg-surface/60 border border-secondary/30">
 							<div class="flex items-start gap-3">
 								<div class="w-7 h-7 rounded-full bg-secondary/20 border border-secondary/40 flex items-center justify-center flex-shrink-0 mt-0.5">
 									<i class="fa-solid fa-triangle-exclamation text-secondary text-xs"></i>
@@ -686,7 +687,7 @@
 							</div>
 						</div>
 					{:else}
-						<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+						<div class="p-4 rounded-xl bg-surface/40 border border-border/40">
 							<div class="flex items-start gap-3">
 								<div class="w-7 h-7 rounded-full bg-success/10 border border-success/30 flex items-center justify-center flex-shrink-0 mt-0.5">
 									<i class="fa-solid fa-check text-success text-xs"></i>
@@ -711,7 +712,7 @@
 		</section>
 
 		<!-- SLA Goals Accordion -->
-		<section class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+		<section class="bg-card border border-surface rounded-xl overflow-hidden">
 			<button
 				class="w-full flex items-center justify-between p-4"
 				style="min-height:52px"
@@ -728,7 +729,7 @@
 								<span class="text-sm text-textSec">{goal.service}</span>
 								<span class="text-sm font-semibold {goal.met ? 'text-success' : 'text-secondary'}">{goal.actual}%</span>
 							</div>
-							<div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-2 w-full bg-surface rounded-full overflow-hidden">
 								<div class="h-full {goal.barClass} rounded-full" style="width:{goal.actual}%"></div>
 							</div>
 							{#if goal.met}
@@ -743,30 +744,30 @@
 		</section>
 
 		<!-- Quick Stats -->
-		<section class="bg-card border border-[#1e293b] rounded-xl p-4 mb-24">
+		<section class="bg-card border border-surface rounded-xl p-4 mb-24">
 			<h3 class="text-sm font-semibold text-textMain mb-4">{t('availability_quickStats_title')}</h3>
 			<div class="grid grid-cols-2 gap-3">
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-textMain">{qs.totalOutages30d}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_totalOutages')}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-textMain">{qs.mttr}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_mttr')}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-textMain">{qs.mtbf}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_mtbf')}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-error">{qs.longestOutage}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_longestOutage')}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-textMain">{qs.checkInterval}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_checkInterval')}</p>
 				</div>
-				<div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
+				<div class="bg-surface/50 rounded-xl p-3 text-center">
 					<p class="text-2xl font-bold text-textMain">{qs.alertsSent}</p>
 					<p class="text-xs text-textSec mt-1">{t('availability_quickStats_alertsSent')}</p>
 				</div>
@@ -775,7 +776,7 @@
 	</div>
 
 	<!-- Mobile Bottom Navigation -->
-	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-gauge-high text-lg"></i>
 			<span class="text-xs">{t('layout_nav_dashboard')}</span>
