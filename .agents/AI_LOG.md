@@ -1,5 +1,20 @@
 # AI Log
 
+## 2026-06-27 17:41 — manual
+- Project: frontend (metacleaner-monitoring)
+- Built the **Monitorly monitoring app** from scratch (`.agents/tmp/TASKS.md` / `PAGES.md`, all 11 tasks done), implementing 10 dashboard pages from the `.design/monitoring-*-desktop.html` / `-mobile.html` mockups plus shared layout and navigation
+- Scaffolded the shared shell (`5ae1feb`): `app.html`, `+layout.svelte` (sidebar + mobile drawer/bottom nav), and `layout.css`, then built the **Dashboard** (`+page.svelte`) with uptime stats (Frontend 99.99%, Backend 99.95%, Error Rate 0.12%, DB Health), API response-time chart, errors bar chart, server-resource (CPU/RAM) chart, and active alerts list
+- Created the **Dostupnost / Availability** page (`98ed79c`): 4 service uptime cards, dual-line response chart, 5 health-check endpoints, 90-day uptime timeline, incidents log with filter tabs, SLA progress bars, and MTTR/MTBF/outage quick stats
+- Created **Chyby & Pády / Errors** (`4feaa89`): KPI cards (5xx, JS, backend exceptions, timeouts), 5xx timeline, JS-vs-Backend bar chart, error-type donut, top error endpoints, and a filterable error-log table
+- Created **Databáze / Supabase** (`fa054c9`): connection-pool (87/100), query-latency (24ms), storage (6.2/8 GB) and error stats, latency/connections charts, query-type pie, slowest queries, table sizes, and DB error log
+- Created **Runtime / Fly.io** (`3da59b1`): CPU/RAM/uptime/restart/instance stats, CPU/RAM/response/network charts, instance-status panel, deploy history, runtime error log, HTTP-status distribution, and requests/min chart
+- Created **Edge / Cloudflare** (`dcf04af`): cache hit rate (94.2%), total requests (48.3M), saved bandwidth, blocked threats, PoP/TTFB/WAF/SSL stats, request & bandwidth charts, threat-type pie, TTFB-by-region, cache-rule performance, and WAF security log
+- Created **Performance** (`3be5f0b`): Apdex (0.94), avg response (187ms), throughput, error rate, response/throughput/CPU-RAM charts, error-type donut, slowest endpoints, Core Web Vitals (LCP/FID/CLS), and event log
+- Created **Security Signály** (`ef6c909`): threat score (74/100), failed-logins/blocked-IPs/anomalies stats, events timeline, geographic origins, attack-type pie, active-threats panel, blocked-IP list, and a 47-record security event log
+- Added agent notes `PAGES.md` and `package-lock.json` (`31cc14e`), then created **Business Metriky** (`1977d4d`): MRR/ARR/active-users/churn KPIs plus MRR development, user growth, LTV-vs-CAC, ARPU, cohort retention, conversion funnel, OKR goals, and other revenue/customer analytics
+- Created **Uživatelé / Users** (`9286cfd`): total/online/new/inactive user stats, registration & active-session charts, and a tabbed (All/Online/New/Inactive), paginated user table
+- **Wired up navigation** (`55363f4`): linked all pages via desktop sidebar and mobile drawer/bottom nav with correct active states (final fixes to `business` and `edge` pages)
+
 ## 2026-06-25 08:23 — manual
 - Project: frontend (metacleaner-app)
 - Completed the **UI decomposition refactor of the Settings page** (`.agents/tmp/REFACTORING.md` / `TASKS.md`, all 19 tasks done), breaking the 656-line `settings/+page.svelte` monolith into a Page → Sections → Components hierarchy with no visual change
