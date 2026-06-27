@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-06-27 23:36 — manual
+- Project: frontend (metacleaner-monitoring)
+- Completed the **i18n + repository refactor** of the Monitorly monitoring app (`.agents/tmp/TASKS.md` / `DATA_SPEC.md`, all 41 tasks done), extracting ~1,500 hardcoded Czech/English strings into Paraglide translation keys and moving all mock data out of components into a typed repository layer
+- **i18n infrastructure** (`da62a4e`): added `src/lib/i18n.ts` (`t()` helper wrapping Paraglide messages), `src/lib/locale.svelte.ts` (reactive locale `$state` with localStorage persistence under `monitorly-locale`), and populated `messages/en.json` / `cs.json` with the `common.*` and `layout.*` key namespaces
+- **Repository layer** (`d07bdb3`, `7dec6ef`): created 11 typed repositories under `src/lib/repositories/` — `navigation`, `dashboard`, `availability`, `errors`, `database`, `runtime`, `edge`, `performance`, `security`, `business`, `users` — plus an `index.ts` barrel export; each returns typed mock data ready to swap for real API calls
+- **String extraction** (`ee4c597`, `35d7359`, `d365207`, `88ee311`, `255c6a9`, `9ae2fc3`, `d960314`): replaced hardcoded UI text across `+layout.svelte` and all 10 page routes (Dashboard, Availability, Errors, Database, Runtime, Edge, Performance, Security, Business, Users) with `t()` translation keys, growing `en.json` / `cs.json` to ~500+ keys each
+- **Data wiring** (`be94371`, `40ae4e6`, `819eab6`, `0678476`, `89daa3a`, `4fb0692`): replaced inline mock data in every page with repository calls — stats, charts, tables, logs, funnels, and OKR goals now sourced from their repositories, removing hundreds of lines of duplicated data from the components
+- **Language switching** (`4fb0692`): added `src/lib/components/LanguageSwitcher.svelte` (EN/CS toggle) and wired it into the desktop sidebar and mobile drawer in `+layout.svelte`
+
 ## 2026-06-27 17:41 — manual
 - Project: frontend (metacleaner-monitoring)
 - Built the **Monitorly monitoring app** from scratch (`.agents/tmp/TASKS.md` / `PAGES.md`, all 11 tasks done), implementing 10 dashboard pages from the `.design/monitoring-*-desktop.html` / `-mobile.html` mockups plus shared layout and navigation
