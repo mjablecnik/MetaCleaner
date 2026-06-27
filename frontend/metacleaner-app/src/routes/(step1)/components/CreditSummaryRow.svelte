@@ -53,7 +53,7 @@
 		<i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
 		<span>{tx('credits.summary.insufficientCredits')}</span>
 		<a
-			href={resolve('/pricing' as Pathname)}
+			href={resolve('/subscription' as Pathname)}
 			class="font-semibold text-orange-300 underline underline-offset-2 hover:text-orange-200"
 		>
 			{tx('credits.summary.upgradePlan')}

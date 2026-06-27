@@ -14,7 +14,7 @@
 	const style = $derived(getPlanStyle(planId, planStatus));
 
 	function handleClick() {
-		goto(resolve('/pricing' as Pathname));
+		goto(resolve('/subscription' as Pathname));
 	}
 </script>
 

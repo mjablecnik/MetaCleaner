@@ -75,10 +75,10 @@ describe('PlanPill', () => {
 		expect(button).not.toBeNull();
 	});
 
-	it('clicking the pill calls goto with /pricing', async () => {
+	it('clicking the pill calls goto with /subscription', async () => {
 		render(PlanPill, { planId: 'free', planStatus: 'free' });
 		const button = page.getByRole('button', { name: /free/i });
 		await button.click();
-		expect(mockGoto).toHaveBeenCalledWith('/pricing');
+		expect(mockGoto).toHaveBeenCalledWith('/subscription');
 	});
 });

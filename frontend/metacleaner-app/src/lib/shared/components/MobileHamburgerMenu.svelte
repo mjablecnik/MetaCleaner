@@ -202,7 +202,7 @@
 
 			<!-- Pricing -->
 			<a
-				href={resolve('/pricing' as Pathname)}
+				href={resolve('/subscription' as Pathname)}
 				onclick={handleClose}
 				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
 			>
@@ -235,7 +235,7 @@
 			<!-- Upgrade CTA (Free users only) -->
 			{#if billingStore.isFreeUser}
 				<a
-					href={resolve('/pricing' as Pathname)}
+					href={resolve('/subscription' as Pathname)}
 					onclick={handleClose}
 					class="mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
 				>

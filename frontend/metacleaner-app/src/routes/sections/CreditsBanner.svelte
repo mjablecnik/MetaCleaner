@@ -30,7 +30,7 @@
 	const progressPercent = $derived(Math.round(progressRatio * 100));
 
 	function handleUpgrade() {
-		goto(resolve('/pricing' as Pathname));
+		goto(resolve('/subscription' as Pathname));
 	}
 </script>
 

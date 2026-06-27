@@ -5,8 +5,8 @@ export async function load({ url }) {
 	const billing = url.searchParams.get('billing') ?? 'monthly';
 
 	const returnTo = plan
-		? `/pricing?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing)}`
-		: '/pricing';
+		? `/subscription?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing)}`
+		: '/subscription';
 
 	await guardProtectedRoute(returnTo);
 

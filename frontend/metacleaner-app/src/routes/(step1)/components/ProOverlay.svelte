@@ -5,7 +5,7 @@
 	import type { Pathname } from '$app/types';
 
 	function handleUpgrade() {
-		goto(resolve('/pricing' as Pathname));
+		goto(resolve('/subscription' as Pathname));
 	}
 </script>
 

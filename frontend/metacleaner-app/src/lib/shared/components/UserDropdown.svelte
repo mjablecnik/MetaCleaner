@@ -68,7 +68,7 @@
 				>{tx('docs.nav.docs')}</span
 			>
 		</a>
-		<a class="lang-option" href={resolve('/pricing' as Pathname)}>
+		<a class="lang-option" href={resolve('/subscription' as Pathname)}>
 			<i class="fa-solid fa-tag text-sm text-text-muted"></i>
 			<span>{tx('common.nav.pricing')}</span>
 		</a>
