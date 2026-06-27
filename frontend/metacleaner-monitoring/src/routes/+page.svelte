@@ -1,6 +1,44 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
+	import {
+		getDashboardStats,
+		getDashboardAlerts,
+		getResponseTimeStat
+	} from '$lib/repositories/dashboardRepository';
+
+	const stats = getDashboardStats();
+	const alerts = getDashboardAlerts();
+	const rt = getResponseTimeStat();
+
+	const uf = stats.find((s) => s.key === 'uptimeFrontend')!;
+	const ub = stats.find((s) => s.key === 'uptimeBackend')!;
+	const er = stats.find((s) => s.key === 'errorRate')!;
+	const db = stats.find((s) => s.key === 'dbHealth')!;
+
+	const severityConfig: Record<
+		string,
+		{ border: string; strip: string; dot: string; opacity: string }
+	> = {
+		error: {
+			border: 'border-error/20 lg:border-[#334155]/50',
+			strip: 'bg-error',
+			dot: 'bg-error',
+			opacity: ''
+		},
+		warning: {
+			border: 'border-secondary/20 lg:border-[#334155]/50',
+			strip: 'bg-secondary',
+			dot: 'bg-secondary',
+			opacity: ''
+		},
+		resolved: {
+			border: 'border-[#334155]/30',
+			strip: 'bg-success',
+			dot: 'bg-success',
+			opacity: 'opacity-75'
+		}
+	};
 
 	onMount(() => {
 		const Plotly = (window as any).Plotly;
@@ -178,58 +216,60 @@
 		<!-- Uptime Frontend -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_uptimeFrontend')}</h3>
-				<i class="fa-solid fa-desktop text-textSec lg:text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<h3 class="text-textSec text-sm font-medium">{t(uf.labelKey)}</h3>
+				<i class="fa-solid {uf.icon} {uf.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
-				<span class="text-3xl font-bold text-textMain tracking-tight">99.99%</span>
+				<span class="text-3xl font-bold text-textMain tracking-tight">{uf.value}</span>
 			</div>
 			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
-				<div class="h-full bg-success w-full rounded-full"></div>
+				<div class="h-full {uf.barClass} {uf.barWidth} rounded-full"></div>
 			</div>
 		</div>
 
 		<!-- Uptime Backend -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_uptimeBackend')}</h3>
-				<i class="fa-solid fa-server text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<h3 class="text-textSec text-sm font-medium">{t(ub.labelKey)}</h3>
+				<i class="fa-solid {ub.icon} {ub.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
-				<span class="text-3xl font-bold text-textMain tracking-tight">99.95%</span>
+				<span class="text-3xl font-bold text-textMain tracking-tight">{ub.value}</span>
 			</div>
 			<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
-				<div class="h-full bg-success w-[99.95%] rounded-full"></div>
+				<div class="h-full {ub.barClass} {ub.barWidth} rounded-full"></div>
 			</div>
 		</div>
 
 		<!-- Error Rate -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_errorRate')}</h3>
-				<i class="fa-solid fa-bug text-error bg-error/10 p-2 rounded-lg"></i>
+				<h3 class="text-textSec text-sm font-medium">{t(er.labelKey)}</h3>
+				<i class="fa-solid {er.icon} {er.iconClass}"></i>
 			</div>
 			<div class="flex items-end gap-2">
-				<span class="text-3xl font-bold text-textMain tracking-tight">0.12%</span>
-				<span
-					class="text-sm font-medium text-success mb-1 flex items-center bg-success/10 px-1.5 py-0.5 rounded lg:bg-transparent lg:px-0 lg:py-0"
-				>-0.05%</span>
+				<span class="text-3xl font-bold text-textMain tracking-tight">{er.value}</span>
+				{#if er.trend}
+					<span class="text-sm font-medium text-success mb-1 flex items-center bg-success/10 px-1.5 py-0.5 rounded lg:bg-transparent lg:px-0 lg:py-0">{er.trend}</span>
+				{/if}
 			</div>
-			<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">{t('dashboard_stats_errorRateSubtextMobile')}</p>
+			{#if er.subtextMobile}
+				<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">{t(er.subtextMobile)}</p>
+			{/if}
 		</div>
 
 		<!-- DB Health -->
 		<div class="bg-card border border-[#1e293b] rounded-2xl lg:rounded-xl p-5 shadow-sm">
 			<div class="flex justify-between items-start mb-3 lg:mb-4">
-				<h3 class="text-textSec text-sm font-medium">{t('dashboard_stats_dbHealth')}</h3>
-				<i class="fa-solid fa-database text-textSec bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
+				<h3 class="text-textSec text-sm font-medium">{t(db.labelKey)}</h3>
+				<i class="fa-solid {db.icon} {db.iconClass} bg-[#1e293b] lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none"></i>
 			</div>
 			<div class="flex items-end gap-2">
 				<span class="text-3xl font-bold text-success tracking-tight lg:text-textMain">{t('common_status_healthy')}</span>
 			</div>
 			<p class="text-xs lg:text-sm text-textSec mt-2 lg:mt-2">
-				<span class="lg:hidden">{t('dashboard_stats_dbHealthSubtextMobile')}</span>
-				<span class="hidden lg:inline">{t('dashboard_stats_dbHealthSubtextDesktop')}</span>
+				<span class="lg:hidden">{t(db.subtextMobile!)}</span>
+				<span class="hidden lg:inline">{t(db.subtextDesktop!)}</span>
 			</p>
 		</div>
 	</section>
@@ -242,12 +282,12 @@
 				<div>
 					<h3 class="text-base lg:text-lg font-semibold text-textMain">{t('dashboard_charts_responseTime')}</h3>
 					<div class="flex items-baseline gap-1 mt-1 lg:hidden">
-						<span class="text-2xl font-bold text-textMain">285</span>
-						<span class="text-sm text-textSec">ms (p95)</span>
+						<span class="text-2xl font-bold text-textMain">{rt.value}</span>
+						<span class="text-sm text-textSec">{rt.unit} ({rt.percentile})</span>
 					</div>
 				</div>
 				<span class="hidden lg:block text-2xl font-bold text-textMain"
-					>285 <span class="text-sm text-textSec font-normal">ms</span></span
+					>{rt.value} <span class="text-sm text-textSec font-normal">{rt.unit}</span></span
 				>
 			</div>
 			<div id="chart-response-time" class="h-[200px] lg:h-[250px] w-full"></div>
@@ -325,75 +365,45 @@
 		</div>
 
 		<div class="space-y-3">
-			<!-- Incident 1 - Error -->
-			<div
-				class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-[#1e293b]/60 lg:bg-[#1e293b]/50 border border-error/20 lg:border-[#334155]/50 relative overflow-hidden"
-			>
-				<div class="absolute left-0 top-0 bottom-0 w-1 bg-error lg:hidden"></div>
-				<div class="hidden lg:block w-2 h-2 rounded-full bg-error mt-2 shrink-0"></div>
-				<div class="flex-1 min-w-0">
-					<div class="flex justify-between items-start gap-2 mb-1">
-						<h4 class="text-textMain font-medium text-sm leading-tight truncate">
-							Zvýšený počet 500 chyb na API
-						</h4>
-						<span
-							class="text-xs text-textSec whitespace-nowrap bg-background lg:bg-transparent px-2 lg:px-0 py-0.5 lg:py-0 rounded-md lg:rounded-none"
-						>
-							<span class="lg:hidden">15 min</span>
-							<span class="hidden lg:inline">Před 15 min</span>
-						</span>
+			{#each alerts as alert (alert.id)}
+				{@const sc = severityConfig[alert.severity]}
+				{#if alert.severity === 'resolved'}
+					<div class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-background border {sc.border} {sc.opacity}">
+						<div class="w-1.5 h-1.5 rounded-full {sc.dot} mt-1.5 shrink-0"></div>
+						<div class="flex-1 min-w-0">
+							<div class="flex justify-between items-start gap-2 mb-1">
+								<h4 class="text-textSec font-medium text-sm leading-tight truncate line-through">{alert.title}</h4>
+								<span class="text-xs text-textSec whitespace-nowrap">
+									<span class="lg:hidden">{alert.timeMobile}</span>
+									<span class="hidden lg:inline">{alert.timeDesktop}</span>
+								</span>
+							</div>
+							<p class="text-sm text-textSec line-clamp-1">
+								<span class="lg:hidden">{alert.descriptionMobile}</span>
+								<span class="hidden lg:inline">{alert.descriptionDesktop}</span>
+							</p>
+						</div>
 					</div>
-					<p class="text-sm text-textSec line-clamp-2">
-						Detekován spike chyb na endpointu /api/v1/checkout. Restartováno 1x.
-					</p>
-				</div>
-			</div>
-
-			<!-- Incident 2 - Warning -->
-			<div
-				class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-[#1e293b]/60 lg:bg-[#1e293b]/50 border border-secondary/20 lg:border-[#334155]/50 relative overflow-hidden"
-			>
-				<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary lg:hidden"></div>
-				<div class="hidden lg:block w-2 h-2 rounded-full bg-secondary mt-2 shrink-0"></div>
-				<div class="flex-1 min-w-0">
-					<div class="flex justify-between items-start gap-2 mb-1">
-						<h4 class="text-textMain font-medium text-sm leading-tight truncate">
-							Zpomalené dotazy v DB
-						</h4>
-						<span
-							class="text-xs text-textSec whitespace-nowrap bg-background lg:bg-transparent px-2 lg:px-0 py-0.5 lg:py-0 rounded-md lg:rounded-none"
-						>
-							<span class="lg:hidden">2 hod</span>
-							<span class="hidden lg:inline">Před 2 hod</span>
-						</span>
+				{:else}
+					<div class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-[#1e293b]/60 lg:bg-[#1e293b]/50 border {sc.border} relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 {sc.strip} lg:hidden"></div>
+						<div class="hidden lg:block w-2 h-2 rounded-full {sc.dot} mt-2 shrink-0"></div>
+						<div class="flex-1 min-w-0">
+							<div class="flex justify-between items-start gap-2 mb-1">
+								<h4 class="text-textMain font-medium text-sm leading-tight truncate">{alert.title}</h4>
+								<span class="text-xs text-textSec whitespace-nowrap bg-background lg:bg-transparent px-2 lg:px-0 py-0.5 lg:py-0 rounded-md lg:rounded-none">
+									<span class="lg:hidden">{alert.timeMobile}</span>
+									<span class="hidden lg:inline">{alert.timeDesktop}</span>
+								</span>
+							</div>
+							<p class="text-sm text-textSec line-clamp-2">
+								<span class="lg:hidden">{alert.descriptionMobile}</span>
+								<span class="hidden lg:inline">{alert.descriptionDesktop}</span>
+							</p>
+						</div>
 					</div>
-					<p class="text-sm text-textSec line-clamp-2">
-						Uživatelé hlásí pomalé načítání. Průměrná latence stoupla nad 500ms.
-					</p>
-				</div>
-			</div>
-
-			<!-- Incident 3 - Resolved -->
-			<div
-				class="flex gap-3 lg:gap-4 p-3.5 lg:p-4 rounded-xl lg:rounded-lg bg-background border border-[#334155]/30 opacity-75"
-			>
-				<div class="w-1.5 h-1.5 rounded-full bg-success mt-1.5 shrink-0"></div>
-				<div class="flex-1 min-w-0">
-					<div class="flex justify-between items-start gap-2 mb-1">
-						<h4 class="text-textSec font-medium text-sm leading-tight truncate line-through">
-							Frontend Deployment Timeout
-						</h4>
-						<span class="text-xs text-textSec whitespace-nowrap">
-							<span class="lg:hidden">Včera</span>
-							<span class="hidden lg:inline">Včera, 14:30</span>
-						</span>
-					</div>
-					<p class="text-sm text-textSec line-clamp-1">
-						<span class="lg:hidden">Vyřešeno po restartu pipeliny.</span>
-						<span class="hidden lg:inline">Vyřešeno automaticky po restartu CI/CD pipeliny.</span>
-					</p>
-				</div>
-			</div>
+				{/if}
+			{/each}
 		</div>
 	</section>
 </div>

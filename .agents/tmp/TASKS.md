@@ -30,18 +30,18 @@
 - [x] 20. [MEDIUM] Extract hardcoded strings from `src/routes/chyby/+page.svelte` (Errors) to translation keys — ~44 strings (header, KPI cards, chart titles, breakdown, log section)
 - [x] 21. [MEDIUM] Extract hardcoded strings from `src/routes/databaze/+page.svelte` (Database) to translation keys — ~82 strings (header, stats, charts, queries, table sizes, error log)
 - [x] 22. [MEDIUM] Extract hardcoded strings from `src/routes/runtime/+page.svelte` (Runtime) to translation keys — ~80 strings (header, stats, charts, instances, deploys, errors)
-- [ ] 23. [MEDIUM] Extract hardcoded strings from `src/routes/edge/+page.svelte` (Edge) to translation keys — ~86 strings (header, stats, charts, TTFB, cache rules, WAF log)
-- [ ] 24. [MEDIUM] Extract hardcoded strings from `src/routes/performance/+page.svelte` (Performance) to translation keys — ~115 strings (header, stats, charts, endpoints, CWV, event log)
-- [ ] 25. [MEDIUM] Extract hardcoded strings from `src/routes/security/+page.svelte` (Security) to translation keys — ~148 strings (header, stats, charts, threats, blocked IPs, event log)
-- [ ] 26. [MEDIUM] Extract hardcoded strings from `src/routes/business/+page.svelte` (Business) to translation keys — ~143 strings (header, KPIs, charts, stats, funnel, OKR goals)
-- [ ] 27. [MEDIUM] Extract hardcoded strings from `src/routes/uzivatele/+page.svelte` (Users) to translation keys — ~57 strings (header, stats, tabs, table headers, pagination)
+- [x] 23. [MEDIUM] Extract hardcoded strings from `src/routes/edge/+page.svelte` (Edge) to translation keys — ~86 strings (header, stats, charts, TTFB, cache rules, WAF log)
+- [x] 24. [MEDIUM] Extract hardcoded strings from `src/routes/performance/+page.svelte` (Performance) to translation keys — ~115 strings (header, stats, charts, endpoints, CWV, event log)
+- [x] 25. [MEDIUM] Extract hardcoded strings from `src/routes/security/+page.svelte` (Security) to translation keys — ~148 strings (header, stats, charts, threats, blocked IPs, event log)
+- [x] 26. [MEDIUM] Extract hardcoded strings from `src/routes/business/+page.svelte` (Business) to translation keys — ~143 strings (header, KPIs, charts, stats, funnel, OKR goals)
+- [x] 27. [MEDIUM] Extract hardcoded strings from `src/routes/uzivatele/+page.svelte` (Users) to translation keys — ~57 strings (header, stats, tabs, table headers, pagination)
 
 ## Phase 4 — Replace API data with repository calls
 
-- [ ] 28. [MEDIUM] Replace hardcoded nav data in `+layout.svelte` with `navigationRepository` calls
-- [ ] 29. [MEDIUM] Replace hardcoded data in `+page.svelte` (Dashboard) with `dashboardRepository` calls — stat values, alert items
-- [ ] 30. [MEDIUM] Replace hardcoded data in `dostupnost/+page.svelte` with `availabilityRepository` calls — service cards, health checks, incidents, SLA
-- [ ] 31. [MEDIUM] Replace hardcoded data in `chyby/+page.svelte` with `errorsRepository` calls — KPI values, breakdown items, top endpoints, error log
+- [x] 28. [MEDIUM] Replace hardcoded nav data in `+layout.svelte` with `navigationRepository` calls
+- [x] 29. [MEDIUM] Replace hardcoded data in `+page.svelte` (Dashboard) with `dashboardRepository` calls — stat values, alert items
+- [x] 30. [MEDIUM] Replace hardcoded data in `dostupnost/+page.svelte` with `availabilityRepository` calls — service cards, health checks, incidents, SLA
+- [x] 31. [MEDIUM] Replace hardcoded data in `chyby/+page.svelte` with `errorsRepository` calls — KPI values, breakdown items, top endpoints, error log
 - [ ] 32. [MEDIUM] Replace hardcoded data in `databaze/+page.svelte` with `databaseRepository` calls — connection stats, queries, table sizes, error log
 - [ ] 33. [MEDIUM] Replace hardcoded data in `runtime/+page.svelte` with `runtimeRepository` calls — stats, instances, deploy history, errors
 - [ ] 34. [MEDIUM] Replace hardcoded data in `edge/+page.svelte` with `edgeRepository` calls — cache stats, TTFB regions, cache rules, WAF log

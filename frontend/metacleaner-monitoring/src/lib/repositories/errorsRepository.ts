@@ -1,20 +1,25 @@
 export interface ErrorKpi {
 	key: string;
 	labelKey: string;
+	labelKeyMobile: string;
 	value: number;
 	trend: number;
 	trendUp: boolean;
+	valueClass: string;
+	trendClass: string;
 	severityKey: string;
 	severityClass: string;
 	subtextKey: string;
+	subtextKeyMobile: string;
 	subtextValue?: string;
 }
 
 export interface ErrorTypeBreakdown {
-	label: string;
+	labelKey: string;
 	color: string;
 	count: number;
 }
+
 
 export interface TopEndpoint {
 	method: string;
@@ -41,54 +46,69 @@ export function getErrorKpis(): ErrorKpi[] {
 	return [
 		{
 			key: 'errors5xx',
-			labelKey: 'errors_kpi_errors5xx',
+			labelKey: 'errors_kpi_5xx',
+			labelKeyMobile: 'errors_kpi_5xxMobile',
 			value: 43,
 			trend: 18,
 			trendUp: true,
+			valueClass: 'text-error',
+			trendClass: 'text-error',
 			severityKey: 'common_status_critical',
 			severityClass: 'bg-error/10 text-error',
 			subtextKey: 'errors_kpi_errors5xxSubtext',
-			subtextValue: '0.12%'
+			subtextKeyMobile: 'errors_kpi_errors5xxSubtextMobile'
 		},
 		{
 			key: 'jsErrors',
 			labelKey: 'errors_kpi_jsErrors',
+			labelKeyMobile: 'errors_legend_jsErrors',
 			value: 127,
 			trend: 34,
 			trendUp: true,
+			valueClass: 'text-textMain',
+			trendClass: 'text-secondary',
 			severityKey: 'common_status_warning',
 			severityClass: 'bg-secondary/10 text-secondary',
-			subtextKey: 'errors_kpi_jsErrorsSubtext'
+			subtextKey: 'errors_kpi_jsErrorsSubtext',
+			subtextKeyMobile: 'errors_kpi_jsErrorsSubtextMobile'
 		},
 		{
 			key: 'backendExceptions',
 			labelKey: 'errors_kpi_backendExceptions',
+			labelKeyMobile: 'errors_kpi_backendExceptionsMobile',
 			value: 19,
 			trend: -5,
 			trendUp: false,
+			valueClass: 'text-textMain',
+			trendClass: 'text-success',
 			severityKey: 'common_status_critical',
 			severityClass: 'bg-error/10 text-error',
-			subtextKey: 'errors_kpi_backendExceptionsSubtext'
+			subtextKey: 'errors_kpi_backendExceptionsSubtext',
+			subtextKeyMobile: 'errors_kpi_backendExceptionsSubtextMobile'
 		},
 		{
 			key: 'timeouts',
 			labelKey: 'errors_kpi_timeouts',
+			labelKeyMobile: 'errors_kpi_timeouts',
 			value: 8,
 			trend: -2,
 			trendUp: false,
+			valueClass: 'text-textMain',
+			trendClass: 'text-success',
 			severityKey: 'common_status_warning',
 			severityClass: 'bg-secondary/10 text-secondary',
-			subtextKey: 'errors_kpi_timeoutsSubtext'
+			subtextKey: 'errors_kpi_timeoutsSubtext',
+			subtextKeyMobile: 'errors_kpi_timeoutsSubtextMobile'
 		}
 	];
 }
 
 export function getErrorTypeBreakdown(): ErrorTypeBreakdown[] {
 	return [
-		{ label: '5xx Errors', color: 'bg-error', count: 42 },
-		{ label: 'JS Errors', color: 'bg-secondary', count: 127 },
-		{ label: 'Exceptions', color: 'bg-[#8b5cf6]', count: 19 },
-		{ label: 'Timeouty', color: 'bg-[#3b82f6]', count: 8 }
+		{ labelKey: 'errors_legend_5xx', color: 'bg-error', count: 42 },
+		{ labelKey: 'errors_legend_jsErrors', color: 'bg-secondary', count: 127 },
+		{ labelKey: 'errors_legend_exceptions', color: 'bg-[#8b5cf6]', count: 19 },
+		{ labelKey: 'errors_legend_timeouts', color: 'bg-[#3b82f6]', count: 8 }
 	];
 }
 
@@ -193,14 +213,28 @@ export function getErrorLog(): ErrorLogEntry[] {
 			source: '/api/v1/products',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'err-6',
+			time: '12:48:55',
+			type: 'JS',
+			typeClass: 'bg-secondary/15 text-secondary',
+			message: 'ReferenceError: analytics is not defined',
+			source: 'analytics.js:23',
+			statusKey: 'common_labels_info',
+			statusClass: 'bg-badge text-textSec'
 		}
 	];
 }
 
 export interface ErrorsStats {
 	activeIncidents: number;
+	bannerDescription: string;
 }
 
 export function getErrorsStats(): ErrorsStats {
-	return { activeIncidents: 2 };
+	return {
+		activeIncidents: 2,
+		bannerDescription: 'Zvýšený počet 500 chyb na API · 5xx Chyby aktivní'
+	};
 }

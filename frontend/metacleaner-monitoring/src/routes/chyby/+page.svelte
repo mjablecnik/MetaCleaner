@@ -2,6 +2,19 @@
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { t } from '$lib/i18n';
+	import {
+		getErrorKpis,
+		getErrorTypeBreakdown,
+		getTopEndpoints,
+		getErrorLog,
+		getErrorsStats
+	} from '$lib/repositories/errorsRepository';
+
+	const kpis = getErrorKpis();
+	const breakdown = getErrorTypeBreakdown();
+	const endpoints = getTopEndpoints();
+	const logEntries = getErrorLog();
+	const errStats = getErrorsStats();
 
 	let breakdownOpen = $state(true);
 	let endpointsOpen = $state(true);
@@ -103,14 +116,17 @@
 			}
 		];
 
+		// Use breakdown counts from repository for pie chart
+		const breakdownData = getErrorTypeBreakdown();
+		const pieColors = [errorColor, secondaryColor, purpleColor, blueColor];
 		const dataPie = [
 			{
 				type: 'pie',
-				labels: ['5xx Errors', 'JS Errors', 'Exceptions', 'Timeouty'],
-				values: [42, 127, 19, 8],
+				labels: breakdownData.map((b) => t(b.labelKey)),
+				values: breakdownData.map((b) => b.count),
 				hole: 0.62,
 				marker: {
-					colors: [errorColor, secondaryColor, purpleColor, blueColor],
+					colors: pieColors,
 					line: { color: bgCard, width: 2 }
 				},
 				textinfo: 'none',
@@ -119,6 +135,7 @@
 			}
 		];
 
+		const total = breakdownData.reduce((s, b) => s + b.count, 0);
 		const pieLayout = {
 			paper_bgcolor: bgCard,
 			plot_bgcolor: bgCard,
@@ -127,7 +144,7 @@
 			showlegend: false,
 			annotations: [
 				{
-					text: '<b style="font-size:20px;color:#fff">196</b><br><span style="font-size:11px;color:#94a3b8">celkem</span>',
+					text: `<b style="font-size:20px;color:#fff">${total}</b><br><span style="font-size:11px;color:#94a3b8">celkem</span>`,
 					x: 0.5,
 					y: 0.5,
 					xanchor: 'center',
@@ -145,7 +162,7 @@
 			annotations: [
 				{
 					...pieLayout.annotations[0],
-					text: '<b style="font-size:18px;color:#fff">196</b><br><span style="font-size:10px;color:#94a3b8">celkem</span>'
+					text: `<b style="font-size:18px;color:#fff">${total}</b><br><span style="font-size:10px;color:#94a3b8">celkem</span>`
 				}
 			]
 		};
@@ -153,24 +170,11 @@
 		// Desktop charts
 		const d5xx = document.getElementById('chart-5xx');
 		if (d5xx)
-			Plotly.newPlot(
-				'chart-5xx',
-				data5xx,
-				{
-					...commonLayout,
-					xaxis: { ...commonLayout.xaxis, tickvals: hours.filter((_, i) => i % 2 === 0) }
-				},
-				chartConfig
-			);
+			Plotly.newPlot('chart-5xx', data5xx, { ...commonLayout, xaxis: { ...commonLayout.xaxis, tickvals: hours.filter((_, i) => i % 2 === 0) } }, chartConfig);
 
 		const dJsBackend = document.getElementById('chart-js-backend');
 		if (dJsBackend)
-			Plotly.newPlot(
-				'chart-js-backend',
-				dataJsBackend,
-				{ ...commonLayout, barmode: 'group', bargap: 0.3, bargroupgap: 0.1 },
-				chartConfig
-			);
+			Plotly.newPlot('chart-js-backend', dataJsBackend, { ...commonLayout, barmode: 'group', bargap: 0.3, bargroupgap: 0.1 }, chartConfig);
 
 		const dPie = document.getElementById('chart-pie');
 		if (dPie) Plotly.newPlot('chart-pie', dataPie, pieLayout, chartConfig);
@@ -178,24 +182,11 @@
 		// Mobile charts
 		const m5xx = document.getElementById('chart-5xx-m');
 		if (m5xx)
-			Plotly.newPlot(
-				'chart-5xx-m',
-				data5xx,
-				{
-					...mobileLayout,
-					xaxis: { ...mobileLayout.xaxis, tickvals: hours.filter((_, i) => i % 3 === 0) }
-				},
-				chartConfig
-			);
+			Plotly.newPlot('chart-5xx-m', data5xx, { ...mobileLayout, xaxis: { ...mobileLayout.xaxis, tickvals: hours.filter((_, i) => i % 3 === 0) } }, chartConfig);
 
 		const mJsBackend = document.getElementById('chart-js-backend-m');
 		if (mJsBackend)
-			Plotly.newPlot(
-				'chart-js-backend-m',
-				dataJsBackend,
-				{ ...mobileLayout, barmode: 'group', bargap: 0.3, bargroupgap: 0.1 },
-				chartConfig
-			);
+			Plotly.newPlot('chart-js-backend-m', dataJsBackend, { ...mobileLayout, barmode: 'group', bargap: 0.3, bargroupgap: 0.1 }, chartConfig);
 
 		const mPie = document.getElementById('chart-pie-m');
 		if (mPie) Plotly.newPlot('chart-pie-m', dataPie, pieMobileLayout, chartConfig);
@@ -213,30 +204,22 @@
 
 <!-- ===== DESKTOP LAYOUT ===== -->
 <div class="hidden lg:block">
-	<header
-		class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-	>
+	<header class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 		<div>
 			<h1 class="text-2xl font-bold text-textMain">{t('errors_header_title')}</h1>
 			<p class="text-sm text-textSec mt-1">{t('errors_header_subtitle')}</p>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
-			<div
-				class="flex items-center gap-2 px-3 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-sm font-medium"
-			>
+			<div class="flex items-center gap-2 px-3 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-				2 {t('errors_status_activeIncidents')}
+				{errStats.activeIncidents} {t('errors_status_activeIncidents')}
 			</div>
-			<select
-				class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none"
-			>
+			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
-			<button
-				class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"
-			>
+			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
 				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
@@ -245,66 +228,21 @@
 	<div class="p-6 max-w-7xl mx-auto space-y-6">
 		<!-- KPI Stats -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_5xx')}</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium"
-						>{t('common_status_critical')}</span
-					>
+			{#each kpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex justify-between items-start mb-3">
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
+						<span class="px-2 py-0.5 text-xs rounded-full font-medium {kpi.severityClass}">{t(kpi.severityKey)}</span>
+					</div>
+					<div class="flex items-end gap-2">
+						<span class="text-3xl font-bold {kpi.valueClass}">{kpi.value}</span>
+						<span class="text-sm {kpi.trendClass} mb-1 flex items-center gap-1">
+							<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
+						</span>
+					</div>
+					<p class="text-xs text-textSec mt-2">{t(kpi.subtextKey)}</p>
 				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-error">43</span>
-					<span class="text-sm text-error mb-1 flex items-center gap-1"
-						><i class="fa-solid fa-arrow-up text-xs"></i>+18</span
-					>
-				</div>
-				<p class="text-xs text-textSec mt-2">Rate: 0.12% z celk. requestů</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_jsErrors')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium"
-						>{t('common_status_warning')}</span
-					>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">127</span>
-					<span class="text-sm text-secondary mb-1 flex items-center gap-1"
-						><i class="fa-solid fa-arrow-up text-xs"></i>+34</span
-					>
-				</div>
-				<p class="text-xs text-textSec mt-2">Typ: TypeError, ReferenceError</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_backendExceptions')}</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium"
-						>{t('common_status_critical')}</span
-					>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">19</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1"
-						><i class="fa-solid fa-arrow-down text-xs"></i>-5</span
-					>
-				</div>
-				<p class="text-xs text-textSec mt-2">NullPointerException, DB timeout</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('errors_kpi_timeouts')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium"
-						>{t('common_status_warning')}</span
-					>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-textMain">8</span>
-					<span class="text-sm text-success mb-1 flex items-center gap-1"
-						><i class="fa-solid fa-arrow-down text-xs"></i>-2</span
-					>
-				</div>
-				<p class="text-xs text-textSec mt-2">Avg. timeout: 30s limit</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Row -->
@@ -321,12 +259,10 @@
 					<h3 class="text-lg font-semibold text-textMain">{t('errors_charts_jsVsBackend')}</h3>
 					<div class="flex gap-3 text-xs">
 						<div class="flex items-center gap-1.5">
-							<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span
-							><span class="text-textSec">JS</span>
+							<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span class="text-textSec">JS</span>
 						</div>
 						<div class="flex items-center gap-1.5">
-							<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span
-							><span class="text-textSec">Backend</span>
+							<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span><span class="text-textSec">Backend</span>
 						</div>
 					</div>
 				</div>
@@ -341,34 +277,15 @@
 				<h3 class="text-lg font-semibold text-textMain mb-4">{t('errors_charts_errorTypes')}</h3>
 				<div id="chart-pie" class="h-[220px] w-full"></div>
 				<div class="mt-3 space-y-2">
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2">
-							<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span
-							><span class="text-textSec">{t('errors_legend_5xx')}</span>
+					{#each breakdown as item (item.labelKey)}
+						<div class="flex items-center justify-between text-sm">
+							<div class="flex items-center gap-2">
+								<span class="w-2.5 h-2.5 rounded-full {item.color} inline-block"></span>
+								<span class="text-textSec">{t(item.labelKey)}</span>
+							</div>
+							<span class="text-textMain font-medium">{item.count}</span>
 						</div>
-						<span class="text-textMain font-medium">42</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2">
-							<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span
-							><span class="text-textSec">{t('errors_legend_jsErrors')}</span>
-						</div>
-						<span class="text-textMain font-medium">127</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2">
-							<span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span
-							><span class="text-textSec">{t('errors_legend_exceptions')}</span>
-						</div>
-						<span class="text-textMain font-medium">19</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2">
-							<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span
-							><span class="text-textSec">{t('errors_legend_timeouts')}</span>
-						</div>
-						<span class="text-textMain font-medium">8</span>
-					</div>
+					{/each}
 				</div>
 			</div>
 
@@ -379,115 +296,38 @@
 					<span class="text-xs text-textSec">{t('errors_endpoints_subtitle')}</span>
 				</div>
 				<div class="space-y-3">
-					<div
-						class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold"
-							>POST</span
-						>
-						<span class="text-textMain text-sm font-medium flex-1 truncate">/api/v1/checkout</span>
-						<div class="flex items-center gap-3">
-							<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-error rounded-full" style="width:85%"></div>
+					{#each endpoints as ep (ep.path)}
+						<div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<span class="px-2 py-0.5 text-xs font-mono rounded font-semibold {ep.methodClass}">{ep.method}</span>
+							<span class="text-textMain text-sm font-medium flex-1 truncate">{ep.path}</span>
+							<div class="flex items-center gap-3">
+								<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+									<div class="h-full {ep.barClass} rounded-full" style="width:{ep.barWidth}"></div>
+								</div>
+								<span class="{ep.countClass} font-semibold text-sm w-8 text-right">{ep.errorCount}</span>
 							</div>
-							<span class="text-error font-semibold text-sm w-8 text-right">24</span>
 						</div>
-					</div>
-					<div
-						class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold"
-							>GET</span
-						>
-						<span class="text-textMain text-sm font-medium flex-1 truncate"
-							>/api/v1/users/profile</span
-						>
-						<div class="flex items-center gap-3">
-							<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-secondary rounded-full" style="width:45%"></div>
-							</div>
-							<span class="text-secondary font-semibold text-sm w-8 text-right">11</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold"
-							>GET</span
-						>
-						<span class="text-textMain text-sm font-medium flex-1 truncate">/api/v1/products</span>
-						<div class="flex items-center gap-3">
-							<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-secondary rounded-full" style="width:28%"></div>
-							</div>
-							<span class="text-secondary font-semibold text-sm w-8 text-right">7</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-success/20 text-success text-xs font-mono rounded font-semibold"
-							>PUT</span
-						>
-						<span class="text-textMain text-sm font-medium flex-1 truncate"
-							>/api/v1/orders/update</span
-						>
-						<div class="flex items-center gap-3">
-							<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3b82f6] rounded-full" style="width:15%"></div>
-							</div>
-							<span class="text-textSec font-semibold text-sm w-8 text-right">4</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold"
-							>DEL</span
-						>
-						<span class="text-textMain text-sm font-medium flex-1 truncate">/api/v1/sessions</span>
-						<div class="flex items-center gap-3">
-							<div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3b82f6] rounded-full" style="width:8%"></div>
-							</div>
-							<span class="text-textSec font-semibold text-sm w-8 text-right">2</span>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 		</section>
 
 		<!-- Error Log Table -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-5">
-			<div
-				class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5"
-			>
+			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 				<h3 class="text-lg font-semibold text-textMain">{t('errors_log_title')}</h3>
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-[#334155]">
 						{#each errorFilters as filter}
 							<button
-								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value
-									? 'bg-error/20 text-error'
-									: 'bg-transparent text-textSec hover:bg-[#1e293b]'}"
+								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value ? 'bg-error/20 text-error' : 'bg-transparent text-textSec hover:bg-[#1e293b]'}"
 								onclick={() => (activeFilter = filter.value)}>{t(filter.labelKey)}</button
 							>
 						{/each}
 					</div>
-					<div
-						class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5"
-					>
+					<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-						<input
-							type="text"
-							placeholder={t('errors_log_searchPlaceholder')}
-							class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32"
-						/>
+						<input type="text" placeholder={t('errors_log_searchPlaceholder')} class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32" />
 					</div>
 				</div>
 			</div>
@@ -495,129 +335,23 @@
 				<table class="w-full text-sm">
 					<thead>
 						<tr class="border-b border-[#1e293b]">
-							<th
-								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>{t('common_table_time')}</th
-							>
-							<th
-								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>{t('common_table_type')}</th
-							>
-							<th
-								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>{t('common_table_message')}</th
-							>
-							<th
-								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
-								>{t('common_table_endpoint')} / {t('common_table_source')}</th
-							>
-							<th
-								class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3"
-								>{t('common_table_status')}</th
-							>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_message')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_endpoint')} / {t('common_table_source')}</th>
+							<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-[#1e293b]/60">
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">14:32:11</td>
-							<td class="py-3 pr-4"
-								><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium"
-									>500</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>Internal Server Error – DB connection pool exhausted</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/checkout</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td
-							>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">14:28:45</td>
-							<td class="py-3 pr-4"
-								><span
-									class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium"
-									>JS</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>TypeError: Cannot read property 'id' of undefined</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">cart.component.js:142</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded"
-									>{t('common_status_warning')}</span
-								></td
-							>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">14:15:02</td>
-							<td class="py-3 pr-4"
-								><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium"
-									>503</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>Service Unavailable – upstream timeout from Fly.io</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/users/profile</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">{t('common_status_active')}</span></td
-							>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">13:50:33</td>
-							<td class="py-3 pr-4"
-								><span
-									class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium"
-									>EXC</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>NullPointerException in OrderService.processPayment()</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">OrderService.java:87</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded"
-									>{t('common_status_resolved')}</span
-								></td
-							>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">13:22:09</td>
-							<td class="py-3 pr-4"
-								><span
-									class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium"
-									>TMT</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>Request timeout after 30000ms on products endpoint</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">/api/v1/products</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded"
-									>{t('common_status_resolved')}</span
-								></td
-							>
-						</tr>
-						<tr class="hover:bg-[#1e293b]/30 transition-colors">
-							<td class="py-3 pr-4 text-textSec whitespace-nowrap">12:48:55</td>
-							<td class="py-3 pr-4"
-								><span
-									class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium"
-									>JS</span
-								></td
-							>
-							<td class="py-3 pr-4 text-textMain max-w-xs truncate"
-								>ReferenceError: analytics is not defined</td
-							>
-							<td class="py-3 pr-4 text-textSec font-mono text-xs">analytics.js:23</td>
-							<td class="py-3"
-								><span class="px-2 py-0.5 bg-[#1e293b] text-textSec text-xs rounded">Info</span></td
-							>
-						</tr>
+						{#each logEntries as entry (entry.id)}
+							<tr class="hover:bg-[#1e293b]/30 transition-colors">
+								<td class="py-3 pr-4 text-textSec whitespace-nowrap">{entry.time}</td>
+								<td class="py-3 pr-4"><span class="px-2 py-0.5 text-xs rounded font-medium {entry.typeClass}">{entry.type}</span></td>
+								<td class="py-3 pr-4 text-textMain max-w-xs truncate">{entry.message}</td>
+								<td class="py-3 pr-4 text-textSec font-mono text-xs">{entry.source}</td>
+								<td class="py-3"><span class="px-2 py-0.5 text-xs rounded {entry.statusClass}">{t(entry.statusKey)}</span></td>
+							</tr>
+						{/each}
 					</tbody>
 				</table>
 			</div>
@@ -634,10 +368,7 @@
 				<h1 class="text-xl font-bold text-textMain">{t('errors_header_title')}</h1>
 				<p class="text-xs text-textSec mt-0.5">{t('errors_header_subtitleMobile')}</p>
 			</div>
-			<select
-				class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-3 py-2 focus:outline-none"
-				style="min-height:44px"
-			>
+			<select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-3 py-2 focus:outline-none" style="min-height:44px">
 				<option>{t('common_timeRange_last24h')}</option>
 				<option>{t('common_timeRange_last7d')}</option>
 				<option>{t('common_timeRange_last30d')}</option>
@@ -646,84 +377,33 @@
 
 		<!-- Active Incidents Banner -->
 		<div class="p-3 rounded-xl bg-error/10 border border-error/30 flex items-center gap-3">
-			<div
-				class="w-8 h-8 rounded-full bg-error/20 border border-error/40 flex items-center justify-center flex-shrink-0"
-			>
+			<div class="w-8 h-8 rounded-full bg-error/20 border border-error/40 flex items-center justify-center flex-shrink-0">
 				<i class="fa-solid fa-triangle-exclamation text-error text-sm"></i>
 			</div>
 			<div class="flex-1 min-w-0">
-				<p class="text-sm font-semibold text-textMain">2 {t('errors_status_activeIncidents')}</p>
-				<p class="text-xs text-textSec truncate">
-					Zvýšený počet 500 chyb na API · 5xx Chyby aktivní
-				</p>
+				<p class="text-sm font-semibold text-textMain">{errStats.activeIncidents} {t('errors_status_activeIncidents')}</p>
+				<p class="text-xs text-textSec truncate">{errStats.bannerDescription}</p>
 			</div>
 			<i class="fa-solid fa-chevron-right text-textSec text-xs flex-shrink-0"></i>
 		</div>
 
 		<!-- KPI Stats 2x2 -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_5xxMobile')}</span>
-					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium"
-						>{t('common_status_critical')}</span
-					>
+			{#each kpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-textSec text-xs font-medium leading-tight">{t(kpi.labelKeyMobile)}</span>
+						<span class="px-1.5 py-0.5 text-[10px] rounded-full font-medium {kpi.severityClass}">{t(kpi.severityKey)}</span>
+					</div>
+					<div class="flex items-end gap-1.5">
+						<span class="text-2xl font-bold {kpi.valueClass}">{kpi.value}</span>
+						<span class="text-xs {kpi.trendClass} mb-0.5 flex items-center gap-0.5">
+							<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-[10px]"></i>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
+						</span>
+					</div>
+					<p class="text-[10px] text-textSec mt-1.5">{t(kpi.subtextKeyMobile)}</p>
 				</div>
-				<div class="flex items-end gap-1.5">
-					<span class="text-2xl font-bold text-error">43</span>
-					<span class="text-xs text-error mb-0.5 flex items-center gap-0.5"
-						><i class="fa-solid fa-arrow-up text-[10px]"></i>+18</span
-					>
-				</div>
-				<p class="text-[10px] text-textSec mt-1.5">Rate: 0.12%</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_legend_jsErrors')}</span>
-					<span
-						class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
-						>{t('common_status_warning')}</span
-					>
-				</div>
-				<div class="flex items-end gap-1.5">
-					<span class="text-2xl font-bold text-textMain">127</span>
-					<span class="text-xs text-secondary mb-0.5 flex items-center gap-0.5"
-						><i class="fa-solid fa-arrow-up text-[10px]"></i>+34</span
-					>
-				</div>
-				<p class="text-[10px] text-textSec mt-1.5">TypeError, RefError</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_backendExceptionsMobile')}</span>
-					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium"
-						>{t('common_status_critical')}</span
-					>
-				</div>
-				<div class="flex items-end gap-1.5">
-					<span class="text-2xl font-bold text-textMain">19</span>
-					<span class="text-xs text-success mb-0.5 flex items-center gap-0.5"
-						><i class="fa-solid fa-arrow-down text-[10px]"></i>-5</span
-					>
-				</div>
-				<p class="text-[10px] text-textSec mt-1.5">NullPtr, DB timeout</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center justify-between mb-2">
-					<span class="text-textSec text-xs font-medium leading-tight">{t('errors_kpi_timeouts')}</span>
-					<span
-						class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
-						>{t('common_status_warning')}</span
-					>
-				</div>
-				<div class="flex items-end gap-1.5">
-					<span class="text-2xl font-bold text-textMain">8</span>
-					<span class="text-xs text-success mb-0.5 flex items-center gap-0.5"
-						><i class="fa-solid fa-arrow-down text-[10px]"></i>-2</span
-					>
-				</div>
-				<p class="text-[10px] text-textSec mt-1.5">Avg. limit: 30s</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- 5xx Chart -->
@@ -738,15 +418,13 @@
 		<!-- JS vs Backend Chart -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4">
 			<div class="flex items-center justify-between mb-3">
-				<h3 class="text-sm font-semibold text-textMain">JS vs Backend</h3>
+				<h3 class="text-sm font-semibold text-textMain">{t('errors_mobile_jsVsBackend')}</h3>
 				<div class="flex gap-3 text-[10px]">
 					<div class="flex items-center gap-1">
-						<span class="w-2 h-2 rounded-full bg-secondary inline-block"></span
-						><span class="text-textSec">JS</span>
+						<span class="w-2 h-2 rounded-full bg-secondary inline-block"></span><span class="text-textSec">JS</span>
 					</div>
 					<div class="flex items-center gap-1">
-						<span class="w-2 h-2 rounded-full bg-error inline-block"></span
-						><span class="text-textSec">Backend</span>
+						<span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec">Backend</span>
 					</div>
 				</div>
 			</div>
@@ -760,45 +438,22 @@
 				style="min-height:52px"
 				onclick={() => (breakdownOpen = !breakdownOpen)}
 			>
-				<h3 class="text-sm font-semibold text-textMain">Typy chyb</h3>
-				<i
-					class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {breakdownOpen
-						? 'rotate-180'
-						: ''}"
-				></i>
+				<h3 class="text-sm font-semibold text-textMain">{t('errors_charts_errorTypes')}</h3>
+				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {breakdownOpen ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if breakdownOpen}
 				<div class="px-4 pb-4">
 					<div id="chart-pie-m" class="h-[200px] w-full"></div>
 					<div class="mt-3 space-y-2.5">
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-2">
-								<span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span
-								><span class="text-textSec text-xs">5xx Errors</span>
+						{#each breakdown as item (item.labelKey)}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span class="w-2.5 h-2.5 rounded-full {item.color} inline-block"></span>
+									<span class="text-textSec text-xs">{t(item.labelKey)}</span>
+								</div>
+								<span class="text-textMain font-semibold text-sm">{item.count}</span>
 							</div>
-							<span class="text-textMain font-semibold text-sm">42</span>
-						</div>
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-2">
-								<span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span
-								><span class="text-textSec text-xs">JS Errors</span>
-							</div>
-							<span class="text-textMain font-semibold text-sm">127</span>
-						</div>
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-2">
-								<span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span
-								><span class="text-textSec text-xs">Exceptions</span>
-							</div>
-							<span class="text-textMain font-semibold text-sm">19</span>
-						</div>
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-2">
-								<span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span
-								><span class="text-textSec text-xs">Timeouty</span>
-							</div>
-							<span class="text-textMain font-semibold text-sm">8</span>
-						</div>
+						{/each}
 					</div>
 				</div>
 			{/if}
@@ -811,94 +466,23 @@
 				style="min-height:52px"
 				onclick={() => (endpointsOpen = !endpointsOpen)}
 			>
-				<h3 class="text-sm font-semibold text-textMain">Top endpointy s chybami</h3>
-				<i
-					class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {endpointsOpen
-						? 'rotate-180'
-						: ''}"
-				></i>
+				<h3 class="text-sm font-semibold text-textMain">{t('errors_endpoints_title')}</h3>
+				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300 {endpointsOpen ? 'rotate-180' : ''}"></i>
 			</button>
 			{#if endpointsOpen}
 				<div class="px-4 pb-4 space-y-2.5">
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-error/20 text-error text-[10px] font-mono rounded font-semibold shrink-0"
-							>POST</span
-						>
-						<span class="text-textMain text-xs font-medium flex-1 truncate">/api/v1/checkout</span>
-						<div class="flex items-center gap-2 shrink-0">
-							<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-error rounded-full" style="width:85%"></div>
+					{#each endpoints as ep (ep.path)}
+						<div class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+							<span class="px-2 py-0.5 text-[10px] font-mono rounded font-semibold shrink-0 {ep.methodClass}">{ep.method}</span>
+							<span class="text-textMain text-xs font-medium flex-1 truncate">{ep.path}</span>
+							<div class="flex items-center gap-2 shrink-0">
+								<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+									<div class="h-full {ep.barClass} rounded-full" style="width:{ep.barWidth}"></div>
+								</div>
+								<span class="{ep.countClass} font-bold text-xs w-5 text-right">{ep.errorCount}</span>
 							</div>
-							<span class="text-error font-bold text-xs w-5 text-right">24</span>
 						</div>
-					</div>
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold shrink-0"
-							>GET</span
-						>
-						<span class="text-textMain text-xs font-medium flex-1 truncate"
-							>/api/v1/users/profile</span
-						>
-						<div class="flex items-center gap-2 shrink-0">
-							<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-secondary rounded-full" style="width:45%"></div>
-							</div>
-							<span class="text-secondary font-bold text-xs w-5 text-right">11</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold shrink-0"
-							>GET</span
-						>
-						<span class="text-textMain text-xs font-medium flex-1 truncate">/api/v1/products</span>
-						<div class="flex items-center gap-2 shrink-0">
-							<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-secondary rounded-full" style="width:28%"></div>
-							</div>
-							<span class="text-secondary font-bold text-xs w-5 text-right">7</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-success/20 text-success text-[10px] font-mono rounded font-semibold shrink-0"
-							>PUT</span
-						>
-						<span class="text-textMain text-xs font-medium flex-1 truncate"
-							>/api/v1/orders/update</span
-						>
-						<div class="flex items-center gap-2 shrink-0">
-							<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3b82f6] rounded-full" style="width:15%"></div>
-							</div>
-							<span class="text-textSec font-bold text-xs w-5 text-right">4</span>
-						</div>
-					</div>
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40"
-					>
-						<span
-							class="px-2 py-0.5 bg-error/20 text-error text-[10px] font-mono rounded font-semibold shrink-0"
-							>DEL</span
-						>
-						<span class="text-textMain text-xs font-medium flex-1 truncate">/api/v1/sessions</span>
-						<div class="flex items-center gap-2 shrink-0">
-							<div class="w-16 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-								<div class="h-full bg-[#3b82f6] rounded-full" style="width:8%"></div>
-							</div>
-							<span class="text-textSec font-bold text-xs w-5 text-right">2</span>
-						</div>
-					</div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -906,200 +490,71 @@
 		<!-- Error Log Card-based -->
 		<section class="bg-card border border-[#1e293b] rounded-xl p-4 mb-24">
 			<div class="flex items-center justify-between mb-3">
-				<h3 class="text-sm font-semibold text-textMain">Chybový log</h3>
-				<span class="text-[10px] text-textSec">6 záznamy</span>
+				<h3 class="text-sm font-semibold text-textMain">{t('errors_mobile_logTitle')}</h3>
+				<span class="text-[10px] text-textSec">{logEntries.length} {t('common_labels_entries')}</span>
 			</div>
 
 			<!-- Search -->
-			<div
-				class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5 mb-3"
-			>
+			<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5 mb-3">
 				<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-				<input
-					type="text"
-					placeholder="Hledat v logu..."
-					class="bg-transparent text-xs text-textMain placeholder-textSec outline-none flex-1"
-				/>
+				<input type="text" placeholder={t('errors_log_searchPlaceholder')} class="bg-transparent text-xs text-textMain placeholder-textSec outline-none flex-1" />
 			</div>
 
-			<!-- Filter Pills -->
+			<!-- Filter Pills (using errorFilters with labelKeys) -->
 			<div class="flex gap-1.5 mb-4 overflow-x-auto pb-1">
-				{#each ['Všechny', '5xx', 'JS', 'Backend', 'Timeout'] as filter}
+				{#each errorFilters as filter}
 					<button
 						class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors"
 						style="min-height:36px"
-						class:bg-error-soft={activeFilter === filter}
-						onclick={() => (activeFilter = filter)}
-						style:background-color={activeFilter === filter
-							? 'rgba(239,68,68,0.2)'
-							: '#1e293b'}
-						style:color={activeFilter === filter ? '#ef4444' : '#94a3b8'}
+						onclick={() => (activeFilter = filter.value)}
+						style:background-color={activeFilter === filter.value ? 'rgba(239,68,68,0.2)' : '#1e293b'}
+						style:color={activeFilter === filter.value ? '#ef4444' : '#94a3b8'}
 					>
-						{filter}
+						{t(filter.labelKey)}
 					</button>
 				{/each}
 			</div>
 
 			<!-- Log Cards -->
 			<div class="space-y-3">
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-bold"
-								>500</span
-							>
-							<span class="text-textSec text-[10px]">14:32:11</span>
+				{#each logEntries as entry (entry.id)}
+					<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 space-y-2">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-2">
+								<span class="px-2 py-0.5 text-[10px] rounded font-bold {entry.typeClass}">{entry.type}</span>
+								<span class="text-textSec text-[10px]">{entry.time}</span>
+							</div>
+							<span class="px-2 py-0.5 text-[10px] rounded font-medium {entry.statusClass}">{t(entry.statusKey)}</span>
 						</div>
-						<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded font-medium"
-							>Aktivní</span
-						>
+						<p class="text-xs text-textMain font-medium leading-snug">{entry.message}</p>
+						<p class="text-[10px] text-textSec font-mono">{entry.source}</p>
 					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						Internal Server Error – DB connection pool exhausted
-					</p>
-					<p class="text-[10px] text-textSec font-mono">/api/v1/checkout</p>
-				</div>
-
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span
-								class="px-2 py-0.5 bg-secondary/15 text-secondary text-[10px] rounded font-bold"
-								>JS</span
-							>
-							<span class="text-textSec text-[10px]">14:28:45</span>
-						</div>
-						<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded font-medium"
-							>Varování</span
-						>
-					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						TypeError: Cannot read property 'id' of undefined
-					</p>
-					<p class="text-[10px] text-textSec font-mono">cart.component.js:142</p>
-				</div>
-
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-bold"
-								>503</span
-							>
-							<span class="text-textSec text-[10px]">14:15:02</span>
-						</div>
-						<span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded font-medium"
-							>Aktivní</span
-						>
-					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						Service Unavailable – upstream timeout from Fly.io
-					</p>
-					<p class="text-[10px] text-textSec font-mono">/api/v1/users/profile</p>
-				</div>
-
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span
-								class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-bold"
-								>EXC</span
-							>
-							<span class="text-textSec text-[10px]">13:50:33</span>
-						</div>
-						<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded font-medium"
-							>Vyřešeno</span
-						>
-					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						NullPointerException in OrderService.processPayment()
-					</p>
-					<p class="text-[10px] text-textSec font-mono">OrderService.java:87</p>
-				</div>
-
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span
-								class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-[10px] rounded font-bold"
-								>TMT</span
-							>
-							<span class="text-textSec text-[10px]">13:22:09</span>
-						</div>
-						<span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded font-medium"
-							>Vyřešeno</span
-						>
-					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						Request timeout after 30000ms on products endpoint
-					</p>
-					<p class="text-[10px] text-textSec font-mono">/api/v1/products</p>
-				</div>
-
-				<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40 space-y-2">
-					<div class="flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<span
-								class="px-2 py-0.5 bg-secondary/15 text-secondary text-[10px] rounded font-bold"
-								>JS</span
-							>
-							<span class="text-textSec text-[10px]">12:48:55</span>
-						</div>
-						<span class="px-2 py-0.5 bg-badge text-textSec text-[10px] rounded font-medium"
-							>Info</span
-						>
-					</div>
-					<p class="text-xs text-textMain font-medium leading-snug">
-						ReferenceError: analytics is not defined
-					</p>
-					<p class="text-[10px] text-textSec font-mono">analytics.js:23</p>
-				</div>
+				{/each}
 			</div>
 		</section>
 	</div>
 
 	<!-- Mobile Bottom Navigation -->
-	<nav
-		class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2"
-	>
-		<a
-			href="{base}/"
-			class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors"
-			style="min-width:52px;min-height:52px;justify-content:center"
-		>
+	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-gauge-high text-lg"></i>
-			<span class="text-xs">Dashboard</span>
+			<span class="text-xs">{t('layout_nav_dashboard')}</span>
 		</a>
-		<a
-			href="{base}/dostupnost"
-			class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors"
-			style="min-width:52px;min-height:52px;justify-content:center"
-		>
+		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-server text-lg"></i>
-			<span class="text-xs">Dostupnost</span>
+			<span class="text-xs">{t('layout_nav_availability')}</span>
 		</a>
-		<a
-			href="{base}/chyby"
-			class="flex flex-col items-center gap-1 px-3 py-2"
-			style="min-width:52px;min-height:52px;justify-content:center;color:#ef4444"
-		>
+		<a href="{base}/chyby" class="flex flex-col items-center gap-1 px-3 py-2" style="min-width:52px;min-height:52px;justify-content:center;color:#ef4444">
 			<i class="fa-solid fa-triangle-exclamation text-lg"></i>
-			<span class="text-xs font-semibold">Chyby</span>
+			<span class="text-xs font-semibold">{t('layout_nav_errors')}</span>
 		</a>
-		<a
-			href="{base}/performance"
-			class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors"
-			style="min-width:52px;min-height:52px;justify-content:center"
-		>
+		<a href="{base}/performance" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-bolt text-lg"></i>
-			<span class="text-xs">Výkon</span>
+			<span class="text-xs">{t('layout_nav_performance')}</span>
 		</a>
-		<a
-			href="{base}/nastaveni"
-			class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors"
-			style="min-width:52px;min-height:52px;justify-content:center"
-		>
+		<a href="{base}/nastaveni" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors" style="min-width:52px;min-height:52px;justify-content:center">
 			<i class="fa-solid fa-gear text-lg"></i>
-			<span class="text-xs">Nastavení</span>
+			<span class="text-xs">{t('layout_nav_settings')}</span>
 		</a>
 	</nav>
 </div>

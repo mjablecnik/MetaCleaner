@@ -3,11 +3,13 @@ export type ServiceStatus = 'online' | 'degraded' | 'offline';
 export interface ServiceCard {
 	key: string;
 	name: string;
+	icon: string;
 	provider: string;
 	status: ServiceStatus;
 	uptimePercent: number;
 	uptimeDisplay: string;
 	outageCount: number;
+	outageLabel: string;
 	trend: string;
 	trendPositive: boolean;
 	barClass: string;
@@ -54,11 +56,13 @@ export function getServiceCards(): ServiceCard[] {
 		{
 			key: 'frontend',
 			name: 'Frontend',
+			icon: 'fa-desktop',
 			provider: 'Vercel / CDN',
 			status: 'online',
 			uptimePercent: 99.99,
 			uptimeDisplay: '99.99',
 			outageCount: 0,
+			outageLabel: '0 výpadků',
 			trend: '+0.01%',
 			trendPositive: true,
 			barClass: 'bg-success',
@@ -68,11 +72,13 @@ export function getServiceCards(): ServiceCard[] {
 		{
 			key: 'backend',
 			name: 'Backend API',
+			icon: 'fa-server',
 			provider: 'Fly.io',
 			status: 'online',
 			uptimePercent: 99.95,
 			uptimeDisplay: '99.95',
 			outageCount: 2,
+			outageLabel: '2 výpadky',
 			trend: '-0.03%',
 			trendPositive: false,
 			barClass: 'bg-success',
@@ -82,11 +88,13 @@ export function getServiceCards(): ServiceCard[] {
 		{
 			key: 'database',
 			name: 'Databáze',
+			icon: 'fa-database',
 			provider: 'Supabase',
 			status: 'online',
 			uptimePercent: 99.97,
 			uptimeDisplay: '99.97',
 			outageCount: 1,
+			outageLabel: '1 výpadek',
 			trend: '+0.02%',
 			trendPositive: true,
 			barClass: 'bg-success',
@@ -96,11 +104,13 @@ export function getServiceCards(): ServiceCard[] {
 		{
 			key: 'edge',
 			name: 'Edge / CDN',
+			icon: 'fa-cloud',
 			provider: 'Cloudflare',
 			status: 'degraded',
 			uptimePercent: 99.82,
 			uptimeDisplay: '99.82',
 			outageCount: 5,
+			outageLabel: '5 výpadků',
 			trend: '-0.08%',
 			trendPositive: false,
 			barClass: 'bg-secondary',
