@@ -20,4 +20,4 @@
 
 - [x] 10. Create the Uživatelé (Users) page — User management with total users (12,847), online users (342), new registrations (1,024), inactive users (874), registration chart, active sessions chart, tabbed user table (All/Online/New/Inactive) with avatar, name, email, status, registration date, last login, session count, location, role, and pagination. Design files: `monitoring-users-desktop.html`, `monitoring-users-mobile.html`
 
-- [ ] 11. Wire up navigation — Ensure all pages link to each other correctly via the sidebar (desktop) and drawer/bottom nav (mobile), with proper active states for the current page
+- [x] 11. Wire up navigation — Ensure all pages link to each other correctly via the sidebar (desktop) and drawer/bottom nav (mobile), with proper active states for the current page

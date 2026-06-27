@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 
 	let activeChart = $state<'requests' | 'bandwidth' | 'http'>('requests');
 	let wafLogOpen = $state(true);
@@ -1150,23 +1151,23 @@
 <!-- Mobile Bottom Navigation -->
 <nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] px-2 py-2 lg:hidden">
 	<div class="flex justify-around items-center max-w-2xl mx-auto">
-		<a href="/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-xs">Dashboard</span>
 		</a>
-		<a href="/dostupnost" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
 			<span class="text-xs">Dostupnost</span>
 		</a>
-		<a href="/edge" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#f6821f] min-w-[44px]">
+		<a href="{base}/edge" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#f6821f] min-w-[44px]">
 			<i class="fa-solid fa-cloud text-base"></i>
 			<span class="text-xs font-medium">Edge</span>
 		</a>
-		<a href="/security" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/security" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-shield-halved text-base"></i>
 			<span class="text-xs">Security</span>
 		</a>
-		<a href="/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
 			<span class="text-xs">Analytika</span>
 		</a>

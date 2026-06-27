@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 
 	type AccKey = 'ltv' | 'arpu' | 'heatmap' | 'waterfall' | 'retention';
 	let accOpen = $state<Record<AccKey, boolean>>({ ltv: false, arpu: false, heatmap: false, waterfall: false, retention: false });
@@ -1316,23 +1317,23 @@
 
 	<!-- Bottom Navigation -->
 	<nav class="fixed bottom-0 left-0 right-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around lg:hidden">
-		<a href="/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
 			<span class="text-xs">Dashboard</span>
 		</a>
-		<a href="/runtime" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
 			<span class="text-xs">Dostupnost</span>
 		</a>
-		<a href="/errors" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/chyby" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-triangle-exclamation text-base"></i>
 			<span class="text-xs">Chyby</span>
 		</a>
-		<a href="/performance" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+		<a href="{base}/performance" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
 			<i class="fa-solid fa-bolt text-base"></i>
 			<span class="text-xs">Performance</span>
 		</a>
-		<a href="/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#22c55e] min-w-[44px]">
+		<a href="{base}/business" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#22c55e] min-w-[44px]">
 			<i class="fa-solid fa-chart-line text-base"></i>
 			<span class="text-xs font-semibold">Business</span>
 		</a>
