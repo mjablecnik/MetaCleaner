@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0a1628',
+                        card: '#111d33',
+                        primary: '#22c55e',
+                        secondary: '#f97316',
+                        textMain: '#ffffff',
+                        textSec: '#94a3b8',
+                        error: '#ef4444',
+                        success: '#22c55e',
+                        badge: '#1e293b',
+                        border: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { display: none; }
+        .drawer-overlay { transition: opacity 0.3s ease; }
+        .drawer-panel { transition: transform 0.3s ease; }
+        .tab-active { background-color: rgba(245,158,11,0.2); color: #f59e0b; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .accordion-content.open { max-height: 2000px; }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-icon.open { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col">
+
+<!-- Slide-over Drawer Overlay -->
+<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none" onclick="closeDrawer()"></div>
+
+<!-- Slide-over Drawer -->
+<div id="drawer-panel" class="drawer-panel fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col transform -translate-x-full">
+    <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
+            <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
+        </div>
+        <button onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center text-textSec hover:text-textMain">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <nav class="p-4 flex-1 overflow-y-auto space-y-1">
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-server w-5 text-center"></i>Dostupnost
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp; Pády
+        </a>
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)
+        </a>
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60">
+            <i class="fa-solid fa-bolt w-5 text-center text-[#f59e0b]"></i>Performance
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky
+        </a>
+    </nav>
+    <div class="p-4 border-t border-[#1e293b]">
+        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+            <i class="fa-solid fa-gear w-5 text-center"></i>Nastavení
+        </a>
+    </div>
+</div>
+
+<!-- Top Navigation Bar -->
+<header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center text-textSec hover:text-textMain rounded-lg hover:bg-[#1e293b] transition-colors">
+            <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-[#f59e0b]/15 border border-[#f59e0b]/30 flex items-center justify-center">
+                <i class="fa-solid fa-bolt text-[#f59e0b] text-xs"></i>
+            </div>
+            <span class="text-base font-bold text-textMain">Performance</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
+            <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+            OK
+        </div>
+        <button class="w-10 h-10 flex items-center justify-center text-textSec hover:text-textMain rounded-lg hover:bg-[#1e293b] transition-colors">
+            <i class="fa-solid fa-download text-sm"></i>
+        </button>
+    </div>
+</header>
+
+<!-- Page Subtitle Bar -->
+<div class="px-4 py-2.5 bg-card border-b border-[#1e293b] flex items-center justify-between gap-3">
+    <p class="text-xs text-textSec truncate">Celá infrastruktura · Všechny regiony</p>
+    <select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-1.5 focus:outline-none flex-shrink-0">
+        <option>Posledních 24 hodin</option>
+        <option>Posledních 7 dní</option>
+        <option>Posledních 30 dní</option>
+    </select>
+</div>
+
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-lg mx-auto px-4 py-4 space-y-4">
+
+    <!-- KPI Primary Stats - 2x2 grid -->
+    <section id="perf-stats">
+        <div class="grid grid-cols-2 gap-3">
+            <!-- Apdex Score -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="text-textSec text-xs font-medium leading-tight">Apdex Score</h3>
+                    <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium flex-shrink-0 ml-1">✓</span>
+                </div>
+                <div class="flex items-end gap-1 mb-2">
+                    <span class="text-2xl font-bold text-textMain">0.94</span>
+                    <span class="text-xs text-success mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+0.02</span>
+                </div>
+                <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-success rounded-full" style="width:94%"></div>
+                </div>
+                <p class="text-xs text-textSec mt-1.5">Cíl: ≥ 0.90</p>
+            </div>
+            <!-- Response Time -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="text-textSec text-xs font-medium leading-tight">Avg. Response</h3>
+                    <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium flex-shrink-0 ml-1">OK</span>
+                </div>
+                <div class="flex items-end gap-1 mb-2">
+                    <span class="text-2xl font-bold text-textMain">187</span>
+                    <span class="text-xs text-textSec mb-0.5">ms</span>
+                    <span class="text-xs text-success mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-down text-xs"></i>-14</span>
+                </div>
+                <p class="text-xs text-textSec">P95: 480ms</p>
+                <p class="text-xs text-textSec">P99: 1,240ms</p>
+            </div>
+            <!-- Throughput -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="text-textSec text-xs font-medium leading-tight">Throughput</h3>
+                    <span class="px-1.5 py-0.5 bg-[#3b82f6]/10 text-[#3b82f6] text-xs rounded-full font-medium flex-shrink-0 ml-1">N</span>
+                </div>
+                <div class="flex items-end gap-1 mb-2">
+                    <span class="text-2xl font-bold text-textMain">3,841</span>
+                </div>
+                <p class="text-xs text-textSec">req/min</p>
+                <p class="text-xs text-textSec mt-0.5">Peak: 6,210</p>
+            </div>
+            <!-- Error Rate -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="text-textSec text-xs font-medium leading-tight">Chybovost</h3>
+                    <span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium flex-shrink-0 ml-1">⚠</span>
+                </div>
+                <div class="flex items-end gap-1 mb-2">
+                    <span class="text-2xl font-bold text-secondary">1.8</span>
+                    <span class="text-xs text-textSec mb-0.5">%</span>
+                    <span class="text-xs text-error mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+0.4%</span>
+                </div>
+                <p class="text-xs text-textSec">Cíl: &lt; 1%</p>
+                <p class="text-xs text-textSec mt-0.5">5xx: 68 / 24h</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Resources Strip -->
+    <section id="perf-stats-2" class="bg-card border border-[#1e293b] rounded-xl p-4">
+        <h3 class="text-sm font-semibold text-textMain mb-3">Systémové zdroje</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-6 h-6 rounded-md bg-[#f59e0b]/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-memory text-[#f59e0b] text-xs"></i>
+                    </div>
+                    <span class="text-textSec text-xs">RAM</span>
+                </div>
+                <div class="flex items-end gap-1 mb-1.5">
+                    <span class="text-xl font-bold text-textMain">72</span>
+                    <span class="text-xs text-textSec mb-0.5">%</span>
+                </div>
+                <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-[#f59e0b] rounded-full" style="width:72%"></div>
+                </div>
+                <p class="text-xs text-textSec mt-1">5.8 GB / 8 GB</p>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-6 h-6 rounded-md bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-microchip text-[#3ecf8e] text-xs"></i>
+                    </div>
+                    <span class="text-textSec text-xs">CPU</span>
+                </div>
+                <div class="flex items-end gap-1 mb-1.5">
+                    <span class="text-xl font-bold text-textMain">38</span>
+                    <span class="text-xs text-textSec mb-0.5">%</span>
+                </div>
+                <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-[#3ecf8e] rounded-full" style="width:38%"></div>
+                </div>
+                <p class="text-xs text-textSec mt-1">Peak: 84%</p>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-6 h-6 rounded-md bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-network-wired text-[#3b82f6] text-xs"></i>
+                    </div>
+                    <span class="text-textSec text-xs">Latence</span>
+                </div>
+                <div class="flex items-end gap-1">
+                    <span class="text-xl font-bold text-textMain">12</span>
+                    <span class="text-xs text-textSec mb-0.5">ms</span>
+                </div>
+                <p class="text-xs text-textSec mt-1">CDN hit: 91.4%</p>
+            </div>
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-6 h-6 rounded-md bg-success/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-arrow-up-right-dots text-success text-xs"></i>
+                    </div>
+                    <span class="text-textSec text-xs">Uptime</span>
+                </div>
+                <div class="flex items-end gap-1">
+                    <span class="text-xl font-bold text-textMain">99.97</span>
+                    <span class="text-xs text-textSec mb-0.5">%</span>
+                </div>
+                <p class="text-xs text-textSec mt-1">2 × 4 min výpadky</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section (Accordion) -->
+    <section id="perf-charts" class="space-y-3">
+
+        <!-- Response Time Chart -->
+        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('acc-response')" class="w-full flex items-center justify-between p-4 text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
+                        <i class="fa-solid fa-wave-square text-[#3ecf8e] text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-textMain">Response Time</p>
+                        <p class="text-xs text-textSec">Avg &amp; P95 v čase</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-textSec hidden">187ms avg</span>
+                    <i id="icon-acc-response" class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon open"></i>
+                </div>
+            </button>
+            <div id="acc-response" class="accordion-content open">
+                <div class="px-4 pb-4">
+                    <div class="flex gap-2 mb-3">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>Avg</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span>P95</span>
+                    </div>
+                    <div id="chart-response-time" class="h-[180px] w-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Throughput Chart -->
+        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('acc-throughput')" class="w-full flex items-center justify-between p-4 text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
+                        <i class="fa-solid fa-chart-bar text-[#3b82f6] text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-textMain">Throughput</p>
+                        <p class="text-xs text-textSec">Požadavky za minutu</p>
+                    </div>
+                </div>
+                <i id="icon-acc-throughput" class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon"></i>
+            </button>
+            <div id="acc-throughput" class="accordion-content">
+                <div class="px-4 pb-4">
+                    <div class="flex gap-2 mb-3">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>req/min</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#ef4444] inline-block"></span>Chyby</span>
+                    </div>
+                    <div id="chart-throughput" class="h-[180px] w-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CPU & RAM Chart -->
+        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('acc-cpu')" class="w-full flex items-center justify-between p-4 text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-[#f59e0b]/15 flex items-center justify-center">
+                        <i class="fa-solid fa-server text-[#f59e0b] text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-textMain">CPU &amp; RAM</p>
+                        <p class="text-xs text-textSec">Využití zdrojů</p>
+                    </div>
+                </div>
+                <i id="icon-acc-cpu" class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon"></i>
+            </button>
+            <div id="acc-cpu" class="accordion-content">
+                <div class="px-4 pb-4">
+                    <div class="flex gap-2 mb-3">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>CPU</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f59e0b] inline-block"></span>RAM</span>
+                    </div>
+                    <div id="chart-cpu-ram" class="h-[180px] w-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Distribution -->
+        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+            <button onclick="toggleAccordion('acc-errors')" class="w-full flex items-center justify-between p-4 text-left">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center">
+                        <i class="fa-solid fa-circle-exclamation text-error text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-textMain">Typy chyb</p>
+                        <p class="text-xs text-textSec">Distribuce HTTP kódů</p>
+                    </div>
+                </div>
+                <i id="icon-acc-errors" class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon"></i>
+            </button>
+            <div id="acc-errors" class="accordion-content">
+                <div class="px-4 pb-4">
+                    <div id="chart-error-donut" class="h-[180px] w-full"></div>
+                    <div class="mt-3 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block"></span><span class="text-textSec text-xs">500 Internal</span></div>
+                            <span class="text-textMain font-semibold text-xs">42%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec text-xs">503 Timeout</span></div>
+                            <span class="text-textMain font-semibold text-xs">31%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] inline-block"></span><span class="text-textSec text-xs">502 Bad GW</span></div>
+                            <span class="text-textMain font-semibold text-xs">18%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-textSec text-xs">Ostatní</span></div>
+                            <span class="text-textMain font-semibold text-xs">9%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slowest Endpoints -->
+    <section id="perf-endpoints" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+        <div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
+            <div>
+                <h3 class="text-sm font-semibold text-textMain">Nejpomalejší endpointy</h3>
+                <p class="text-xs text-textSec mt-0.5">Top 6 · posledních 24h</p>
+            </div>
+            <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">24h</span>
+        </div>
+        <div class="divide-y divide-[#1e293b]/60">
+            <!-- Endpoint 1 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">POST</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/orders/checkout</p>
+                    <span class="text-error font-bold text-sm flex-shrink-0">1,840 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-error rounded-full" style="width:100%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 2,841x · Chyby: 4.2%</p>
+            </div>
+            <!-- Endpoint 2 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/analytics/report</p>
+                    <span class="text-secondary font-bold text-sm flex-shrink-0">940 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-secondary rounded-full" style="width:51%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 184x · Chyby: 1.1%</p>
+            </div>
+            <!-- Endpoint 3 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/users/search</p>
+                    <span class="text-[#f59e0b] font-bold text-sm flex-shrink-0">620 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-[#f59e0b] rounded-full" style="width:34%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 5,200x · Chyby: 0.8%</p>
+            </div>
+            <!-- Endpoint 4 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold flex-shrink-0">PUT</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/products/:id</p>
+                    <span class="text-[#3b82f6] font-bold text-sm flex-shrink-0">480 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-[#3b82f6] rounded-full" style="width:26%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 1,024x · Chyby: 2.1%</p>
+            </div>
+            <!-- Endpoint 5 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/events/stream</p>
+                    <span class="text-textMain font-bold text-sm flex-shrink-0">210 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-[#3ecf8e] rounded-full" style="width:11%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 18,400x · Chyby: 0.2%</p>
+            </div>
+            <!-- Endpoint 6 -->
+            <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="px-1.5 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold flex-shrink-0">GET</span>
+                    <p class="text-textMain text-xs font-mono truncate flex-1">/api/v1/auth/session</p>
+                    <span class="text-textMain font-bold text-sm flex-shrink-0">48 ms</span>
+                </div>
+                <div class="w-full h-1 bg-[#1e293b] rounded-full overflow-hidden mb-1.5">
+                    <div class="h-full bg-[#3ecf8e] rounded-full" style="width:3%"></div>
+                </div>
+                <p class="text-xs text-textSec">Volání: 42,100x · Chyby: 0.1%</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Web Vitals -->
+    <section id="perf-vitals" class="bg-card border border-[#1e293b] rounded-xl p-4">
+        <h3 class="text-sm font-semibold text-textMain mb-1">Core Web Vitals</h3>
+        <p class="text-xs text-textSec mb-4">Frontend výkonnostní metriky</p>
+        <div class="space-y-4">
+            <!-- LCP -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-textMain">LCP</span>
+                        <span class="text-xs text-textSec">Largest Contentful Paint</span>
+                    </div>
+                    <span class="text-success font-bold text-sm">1.8s</span>
+                </div>
+                <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-success rounded-full" style="width:60%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-textSec mt-1">
+                    <span>Dobrý (&lt;2.5s)</span>
+                    <span class="text-success font-medium">✓ OK</span>
+                </div>
+            </div>
+            <!-- FID -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-textMain">FID</span>
+                        <span class="text-xs text-textSec">First Input Delay</span>
+                    </div>
+                    <span class="text-success font-bold text-sm">48ms</span>
+                </div>
+                <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-success rounded-full" style="width:32%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-textSec mt-1">
+                    <span>Dobrý (&lt;100ms)</span>
+                    <span class="text-success font-medium">✓ OK</span>
+                </div>
+            </div>
+            <!-- CLS -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-textMain">CLS</span>
+                        <span class="text-xs text-textSec">Cumulative Layout Shift</span>
+                    </div>
+                    <span class="text-secondary font-bold text-sm">0.18</span>
+                </div>
+                <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-secondary rounded-full" style="width:72%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-textSec mt-1">
+                    <span>Zlepšit (&lt;0.1)</span>
+                    <span class="text-secondary font-medium">⚠ Varování</span>
+                </div>
+            </div>
+            <!-- TTFB -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-textMain">TTFB</span>
+                        <span class="text-xs text-textSec">Time To First Byte</span>
+                    </div>
+                    <span class="text-success font-bold text-sm">210ms</span>
+                </div>
+                <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-success rounded-full" style="width:42%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-textSec mt-1">
+                    <span>Dobrý (&lt;800ms)</span>
+                    <span class="text-success font-medium">✓ OK</span>
+                </div>
+            </div>
+            <!-- INP -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-textMain">INP</span>
+                        <span class="text-xs text-textSec">Interaction to Next Paint</span>
+                    </div>
+                    <span class="text-success font-bold text-sm">84ms</span>
+                </div>
+                <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                    <div class="h-full bg-success rounded-full" style="width:28%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-textSec mt-1">
+                    <span>Dobrý (&lt;200ms)</span>
+                    <span class="text-success font-medium">✓ OK</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Event Log -->
+    <section id="perf-event-log" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+        <div class="p-4 border-b border-[#1e293b]">
+            <h3 class="text-sm font-semibold text-textMain">Performance události</h3>
+            <p class="text-xs text-textSec mt-0.5">Anomálie za posledních 24 hodin</p>
+            <div class="flex gap-0 mt-3 rounded-lg overflow-hidden border border-[#334155]">
+                <button onclick="filterEvents('all', this)" class="flex-1 px-2 py-2 bg-[#f59e0b]/20 text-[#f59e0b] text-xs font-medium transition-colors">Všechny</button>
+                <button onclick="filterEvents('critical', this)" class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b] transition-colors">Kritické</button>
+                <button onclick="filterEvents('warning', this)" class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b] transition-colors">Varování</button>
+                <button onclick="filterEvents('info', this)" class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b] transition-colors">Info</button>
+            </div>
+        </div>
+        <div id="events-list" class="divide-y divide-[#1e293b]/60">
+            <!-- Event 1 -->
+            <div class="p-4 event-item" data-type="critical">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Kritické</span>
+                        <span class="text-textSec text-xs">Response Spike</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
+                        <span class="text-textSec font-mono text-xs">14:32</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">P99 latence překročila 5,000ms – možná DB blokáda</p>
+                <p class="text-textSec font-mono text-xs">/api/v1/orders/checkout</p>
+            </div>
+            <!-- Event 2 -->
+            <div class="p-4 event-item" data-type="warning">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Varování</span>
+                        <span class="text-textSec text-xs">CPU Spike</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+                        <span class="text-textSec font-mono text-xs">13:48</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">CPU vytížení přesáhlo 80% po dobu 4 minut</p>
+                <p class="text-textSec font-mono text-xs">fly.io · fra · instance-02</p>
+            </div>
+            <!-- Event 3 -->
+            <div class="p-4 event-item" data-type="warning">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Varování</span>
+                        <span class="text-textSec text-xs">Error Rate</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+                        <span class="text-textSec font-mono text-xs">12:15</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">Chybovost překročila 3% po dobu 8 minut (503 timeout)</p>
+                <p class="text-textSec font-mono text-xs">/api/v1/analytics/report</p>
+            </div>
+            <!-- Event 4 -->
+            <div class="p-4 event-item" data-type="info">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Info</span>
+                        <span class="text-textSec text-xs">Traffic Spike</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+                        <span class="text-textSec font-mono text-xs">10:42</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">Throughput dosáhl peak 6,210 req/min – auto-scale spuštěn</p>
+                <p class="text-textSec font-mono text-xs">Celá infrastruktura</p>
+            </div>
+            <!-- Event 5 -->
+            <div class="p-4 event-item" data-type="warning">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Varování</span>
+                        <span class="text-textSec text-xs">Memory Pressure</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+                        <span class="text-textSec font-mono text-xs">09:12</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">RAM využití přesáhlo 85% – možný memory leak v worker</p>
+                <p class="text-textSec font-mono text-xs">fly.io · fra · instance-01</p>
+            </div>
+            <!-- Event 6 -->
+            <div class="p-4 event-item" data-type="info">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Info</span>
+                        <span class="text-textSec text-xs">Deploy</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Dokončeno</span>
+                        <span class="text-textSec font-mono text-xs">06:30</span>
+                    </div>
+                </div>
+                <p class="text-textMain text-xs leading-relaxed mb-1.5">Nasazení verze v2.14.1 – rolling restart dokončen za 42s</p>
+                <p class="text-textSec font-mono text-xs">Celá infrastruktura</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom padding for nav -->
+    <div class="h-4"></div>
+
+</main>
+
+<!-- Bottom Navigation Bar -->
+<nav id="bottom-nav" class="sticky bottom-0 z-20 bg-card border-t border-[#1e293b] px-2 py-2 flex items-center justify-around">
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+        <i class="fa-solid fa-gauge-high text-base"></i>
+        <span class="text-xs">Přehled</span>
+    </a>
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+        <i class="fa-solid fa-server text-base"></i>
+        <span class="text-xs">Systém</span>
+    </a>
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#f59e0b] min-w-[44px]">
+        <i class="fa-solid fa-bolt text-base"></i>
+        <span class="text-xs font-semibold">Perf</span>
+    </a>
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span class="text-xs">Chyby</span>
+    </a>
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
+        <i class="fa-solid fa-gear text-base"></i>
+        <span class="text-xs">Více</span>
+    </a>
+</nav>
+
+<script>
+    // Drawer
+    function openDrawer() {
+        document.getElementById('drawer-overlay').classList.remove('opacity-0', 'pointer-events-none');
+        document.getElementById('drawer-overlay').classList.add('opacity-100');
+        document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+    }
+    function closeDrawer() {
+        document.getElementById('drawer-overlay').classList.add('opacity-0', 'pointer-events-none');
+        document.getElementById('drawer-overlay').classList.remove('opacity-100');
+        document.getElementById('drawer-panel').classList.add('-translate-x-full');
+    }
+
+    // Accordion
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if (content.classList.contains('open')) {
+            content.classList.remove('open');
+            icon.classList.remove('open');
+        } else {
+            content.classList.add('open');
+            icon.classList.add('open');
+        }
+    }
+
+    // Event Filter
+    function filterEvents(type, btn) {
+        const buttons = btn.parentElement.querySelectorAll('button');
+        buttons.forEach(b => {
+            b.classList.remove('bg-[#f59e0b]/20', 'text-[#f59e0b]');
+            b.classList.add('bg-transparent', 'text-textSec');
+        });
+        btn.classList.remove('bg-transparent', 'text-textSec');
+        btn.classList.add('bg-[#f59e0b]/20', 'text-[#f59e0b]');
+
+        const items = document.querySelectorAll('.event-item');
+        items.forEach(item => {
+            if (type === 'all' || item.dataset.type === type) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Charts
+    window.addEventListener('load', function () {
+        const bgCard = '#111d33';
+        const textSec = '#94a3b8';
+        const errorColor = '#ef4444';
+        const secondaryColor = '#f97316';
+        const purpleColor = '#8b5cf6';
+        const blueColor = '#3b82f6';
+        const greenColor = '#3ecf8e';
+        const amberColor = '#f59e0b';
+        const gridColor = 'rgba(30,41,59,0.8)';
+
+        const commonLayout = {
+            paper_bgcolor: bgCard,
+            plot_bgcolor: bgCard,
+            font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+            margin: { t: 8, r: 8, b: 36, l: 44 },
+            showlegend: false,
+            xaxis: {
+                gridcolor: gridColor,
+                linecolor: gridColor,
+                tickcolor: 'transparent',
+                tickfont: { color: textSec, size: 9 },
+                zeroline: false
+            },
+            yaxis: {
+                gridcolor: gridColor,
+                linecolor: gridColor,
+                tickcolor: 'transparent',
+                tickfont: { color: textSec, size: 9 },
+                zeroline: false
+            }
+        };
+
+        const config = { responsive: true, displayModeBar: false, displaylogo: false };
+        const hours = ['00','02','04','06','08','10','12','14','16','18','20','22'];
+
+        // Chart 1: Response Time
+        try {
+            const avgResp = [120, 105, 130, 150, 180, 220, 310, 460, 280, 210, 185, 165];
+            const p95Resp = [310, 280, 350, 420, 520, 780, 1100, 1840, 920, 680, 520, 440];
+            Plotly.newPlot('chart-response-time', [
+                {
+                    type: 'scatter', mode: 'lines', fill: 'tozeroy',
+                    name: 'P95', x: hours, y: p95Resp,
+                    line: { color: purpleColor, width: 2, shape: 'spline' },
+                    fillcolor: 'rgba(139,92,246,0.07)',
+                    hovertemplate: '<b>%{x}h</b><br>P95: %{y}ms<extra></extra>'
+                },
+                {
+                    type: 'scatter', mode: 'lines', fill: 'tozeroy',
+                    name: 'Avg', x: hours, y: avgResp,
+                    line: { color: greenColor, width: 2.5, shape: 'spline' },
+                    fillcolor: 'rgba(62,207,142,0.10)',
+                    hovertemplate: '<b>%{x}h</b><br>Avg: %{y}ms<extra></extra>'
+                }
+            ], {
+                ...commonLayout,
+                yaxis: { ...commonLayout.yaxis, title: { text: 'ms', font: { size: 9, color: textSec } } }
+            }, config);
+        } catch(e) {
+            document.getElementById('chart-response-time').innerHTML = '<div class="text-center text-xs text-gray-500 py-8">Graf není dostupný</div>';
+        }
+
+        // Chart 2: Throughput
+        try {
+            const rpm = [820, 710, 950, 1240, 2100, 4800, 5840, 6210, 4980, 3840, 2910, 1920];
+            const errs = [12, 8, 14, 18, 42, 180, 220, 310, 160, 90, 54, 30];
+            Plotly.newPlot('chart-throughput', [
+                {
+                    type: 'bar', name: 'req/min',
+                    x: hours, y: rpm,
+                    marker: { color: blueColor, opacity: 0.75 },
+                    hovertemplate: '<b>%{x}h</b><br>%{y} req/min<extra></extra>'
+                },
+                {
+                    type: 'scatter', mode: 'lines',
+                    name: 'Chyby', x: hours, y: errs,
+                    yaxis: 'y2',
+                    line: { color: errorColor, width: 2, shape: 'spline' },
+                    hovertemplate: '<b>%{x}h</b><br>Chyby: %{y}<extra></extra>'
+                }
+            ], {
+                ...commonLayout,
+                bargap: 0.3,
+                yaxis: { ...commonLayout.yaxis, title: { text: 'rpm', font: { size: 9, color: textSec } } },
+                yaxis2: {
+                    overlaying: 'y', side: 'right',
+                    gridcolor: 'transparent',
+                    tickfont: { color: errorColor, size: 8 },
+                    zeroline: false, showgrid: false
+                }
+            }, config);
+        } catch(e) {
+            document.getElementById('chart-throughput').innerHTML = '<div class="text-center text-xs text-gray-500 py-8">Graf není dostupný</div>';
+        }
+
+        // Chart 3: CPU + RAM
+        try {
+            const cpu = [18, 14, 22, 28, 42, 68, 78, 84, 62, 48, 38, 30];
+            const ram = [55, 52, 58, 62, 68, 78, 82, 85, 80, 76, 72, 68];
+            Plotly.newPlot('chart-cpu-ram', [
+                {
+                    type: 'scatter', mode: 'lines', fill: 'tozeroy',
+                    name: 'CPU', x: hours, y: cpu,
+                    line: { color: greenColor, width: 2.5, shape: 'spline' },
+                    fillcolor: 'rgba(62,207,142,0.08)',
+                    hovertemplate: '<b>%{x}h</b><br>CPU: %{y}%<extra></extra>'
+                },
+                {
+                    type: 'scatter', mode: 'lines', fill: 'tozeroy',
+                    name: 'RAM', x: hours, y: ram,
+                    line: { color: amberColor, width: 2.5, shape: 'spline' },
+                    fillcolor: 'rgba(245,158,11,0.07)',
+                    hovertemplate: '<b>%{x}h</b><br>RAM: %{y}%<extra></extra>'
+                }
+            ], {
+                ...commonLayout,
+                yaxis: { ...commonLayout.yaxis, range: [0, 100], title: { text: '%', font: { size: 9, color: textSec } } }
+            }, config);
+        } catch(e) {
+            document.getElementById('chart-cpu-ram').innerHTML = '<div class="text-center text-xs text-gray-500 py-8">Graf není dostupný</div>';
+        }
+
+        // Chart 4: Error Donut
+        try {
+            Plotly.newPlot('chart-error-donut', [
+                {
+                    type: 'pie',
+                    labels: ['500 Internal', '503 Timeout', '502 Bad GW', 'Ostatní'],
+                    values: [42, 31, 18, 9],
+                    hole: 0.60,
+                    marker: {
+                        colors: [errorColor, secondaryColor, amberColor, purpleColor],
+                        line: { color: bgCard, width: 2 }
+                    },
+                    textinfo: 'none',
+                    hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
+                    direction: 'clockwise'
+                }
+            ], {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+                margin: { t: 5, r: 5, b: 5, l: 5 },
+                showlegend: false,
+                annotations: [{
+                    text: '<b>68</b><br><span style="font-size:9px;color:#94a3b8">chyb/24h</span>',
+                    x: 0.5, y: 0.5,
+                    xanchor: 'center', yanchor: 'middle',
+                    showarrow: false,
+                    font: { size: 14, color: '#ffffff' }
+                }]
+            }, config);
+        } catch(e) {
+            document.getElementById('chart-error-donut').innerHTML = '<div class="text-center text-xs text-gray-500 py-8">Graf není dostupný</div>';
+        }
+    });
+</script>
+</body>
+</html>

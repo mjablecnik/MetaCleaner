@@ -1,0 +1,1239 @@
+<html lang="cs">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+      window.FontAwesomeConfig = {
+        autoReplaceSvg: 'nest'
+      };
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme:
+        {
+          extend:
+          {
+            colors:
+            {
+              background: '#0a1628',
+              card: '#111d33',
+              primary: '#22c55e',
+              secondary: '#f97316',
+              textMain: '#ffffff',
+              textSec: '#94a3b8',
+              error: '#ef4444',
+              success: '#22c55e',
+              badge: '#1e293b',
+              border: '#1e293b'
+            },
+            fontFamily:
+            {
+              sans: ['Inter', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body
+      {
+        font-family: 'Inter', sans-serif;
+        background-color: #0a1628;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+      }
+
+      ::-webkit-scrollbar
+      {
+        display: none;
+      }
+
+      /* Slide-over drawer */
+      #drawer-overlay
+      {
+        display: none;
+      }
+
+      #drawer-overlay.open
+      {
+        display: block;
+      }
+
+      #nav-drawer
+      {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      #nav-drawer.open
+      {
+        transform: translateX(0);
+      }
+
+      /* Tab active state */
+      .section-tab.active
+      {
+        background-color: #1e293b;
+        color: #ffffff;
+        border-color: #334155;
+      }
+
+      .section-tab
+      {
+        color: #94a3b8;
+        border-color: transparent;
+      }
+
+      /* Accordion */
+      .accordion-body
+      {
+        display: none;
+      }
+
+      .accordion-body.open
+      {
+        display: block;
+      }
+
+      .accordion-arrow
+      {
+        transition: transform 0.2s;
+      }
+
+      .accordion-arrow.rotated
+      {
+        transform: rotate(180deg);
+      }
+    </style>
+    <style data-grapesjs-styles="true">
+      #drawer-overlay
+      {
+        display: none;
+      }
+
+      #nav-drawer
+      {
+        transform: translateX(-100%);
+        transition-behavior: normal;
+        transition-duration: 0.3s;
+        transition-timing-function: ease;
+        transition-delay: 0s;
+        transition-property: transform;
+      }
+
+      #ifkehn
+      {
+        width: 14.6%;
+      }
+
+      #i9q9tc
+      {
+        width: 8.1%;
+      }
+
+      #ill7sk
+      {
+        width: 2.5%;
+      }
+
+      #i6j83v
+      {
+        width: 2.2%;
+      }
+
+      #ia639g
+      {
+        background: rgba(34, 197, 94, 0.8);
+      }
+
+      #i8t37g
+      {
+        background: rgba(34, 197, 94, 0.65);
+      }
+
+      #ibqslh
+      {
+        background: rgba(34, 197, 94, 0.50);
+      }
+
+      #ib0zb2
+      {
+        background: rgba(34, 197, 94, 0.38);
+      }
+
+      #i7324g
+      {
+        background: rgba(34, 197, 94, 0.28);
+      }
+
+      #iopjsv
+      {
+        background: rgba(34, 197, 94, 0.22);
+      }
+
+      #iygtbh
+      {
+        background: rgba(34, 197, 94, 0.8);
+      }
+
+      #ipthi1
+      {
+        background: rgba(34, 197, 94, 0.65);
+      }
+
+      #ipvrh4
+      {
+        background: rgba(34, 197, 94, 0.50);
+      }
+
+      #i7ic3v
+      {
+        background: rgba(34, 197, 94, 0.38);
+      }
+
+      #i4zkc7
+      {
+        background: rgba(34, 197, 94, 0.28);
+      }
+
+      #io2cht
+      {
+        background: rgba(34, 197, 94, 0.8);
+      }
+
+      #imx4os
+      {
+        background: rgba(34, 197, 94, 0.65);
+      }
+
+      #i9w6mi
+      {
+        background: rgba(34, 197, 94, 0.50);
+      }
+
+      #ie124r
+      {
+        background: rgba(34, 197, 94, 0.38);
+      }
+
+      #i7s4hu
+      {
+        background: rgba(34, 197, 94, 0.8);
+      }
+
+      #idjib9
+      {
+        background: rgba(34, 197, 94, 0.65);
+      }
+
+      #iuup46
+      {
+        background: rgba(34, 197, 94, 0.50);
+      }
+
+      #i1r5tf
+      {
+        background: rgba(34, 197, 94, 0.8);
+      }
+
+      #inwuxl
+      {
+        background: rgba(34, 197, 94, 0.65);
+      }
+
+      #ip4mqp
+      {
+        width: 48%;
+      }
+
+      #i8x0ob
+      {
+        width: 32%;
+      }
+
+      #iyubm6
+      {
+        width: 13%;
+      }
+
+      #isak1k
+      {
+        width: 7%;
+      }
+
+      #iak4ys
+      {
+        width: 96%;
+      }
+
+      #ibsggz
+      {
+        width: 79%;
+      }
+
+      #iwhw4d
+      {
+        width: 55%;
+      }
+
+      #ilkirh
+      {
+        width: 90%;
+      }
+    </style>
+  </head>
+
+  <body class="flex flex-col bg-background min-h-screen">
+    <!-- Drawer Overlay -->
+    <div id="drawer-overlay" onclick="closeDrawer()"
+      class="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>
+    <!-- Slide-over Nav Drawer -->
+    <div id="nav-drawer"
+      class="fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col overflow-y-auto">
+      <div
+        class="p-5 border-b border-[#1e293b] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">
+            M</div><span
+            class="text-lg font-bold text-textMain tracking-tight">Monitorly</span>
+        </div><button onclick="closeDrawer()"
+          class="w-9 h-9 flex items-center justify-center rounded-lg text-textSec hover:text-textMain hover:bg-[#1e293b] transition-colors"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="p-4 flex-1 space-y-1">
+        <p
+          class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">
+          Přehledy</p><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a><a
+          href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a><a
+          href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby
+          &amp; Pády</a>
+        <p
+          class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">
+          Infrastruktura</p><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze
+          (Supabase)</a><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-microchip w-5 text-center"></i>Runtime
+          (Fly.io)</a><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a>
+        <p
+          class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">
+          Analytika</p><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-bolt w-5 text-center"></i>Performance</a><a
+          href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-shield-halved w-5 text-center"></i>Security
+          Signály</a><a href="#"
+          class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60"><i
+            class="fa-solid fa-chart-line w-5 text-center text-primary"></i>Business
+          Metriky</a>
+      </nav>
+      <div class="p-4 border-t border-[#1e293b]"><a href="#"
+          class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i
+            class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a></div>
+    </div><!-- Top Header -->
+    <header id="header"
+      class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3"><button onclick="openDrawer()"
+          class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#1e293b] text-textSec hover:text-textMain transition-colors flex-shrink-0"><i
+            class="fa-solid fa-bars text-sm"></i></button>
+        <div class="flex items-center gap-2">
+          <div
+            class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+            M</div><span
+            class="text-base font-bold text-textMain tracking-tight">Monitorly</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div
+          class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
+          <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+          Live
+        </div><button
+          class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#1e293b] text-textSec hover:text-textMain transition-colors border border-[#334155]"><i
+            class="fa-solid fa-download text-sm"></i></button>
+      </div>
+    </header><!-- Page Title Bar -->
+    <div class="px-4 pt-4 pb-2 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-chart-line text-primary text-sm"></i></div>
+        <div>
+          <h1 class="text-lg font-bold text-textMain leading-tight">Business
+            Metriky</h1>
+          <p class="text-xs text-textSec">Produkční · Všechny regiony</p>
+        </div>
+      </div><select
+        class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2 py-2 focus:outline-none flex-shrink-0">
+        <option>30 dní</option>
+        <option>7 dní</option>
+        <option>90 dní</option>
+        <option>Rok</option>
+      </select>
+    </div><!-- Main Scrollable Content -->
+    <main class="flex-1 overflow-y-auto pb-24">
+      <div class="px-4 space-y-4 pb-4">
+        <!-- KPI Primary Row -->
+        <section id="biz-kpi" class="grid grid-cols-2 gap-3">
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                <i class="fa-solid fa-dollar-sign text-primary text-xs"></i>
+              </div><span
+                class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
+            </div>
+            <p class="text-textSec text-xs font-medium mt-2">MRR</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">$48,320</p>
+            <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i
+                class="fa-solid fa-arrow-up text-success text-xs"></i><span
+                class="text-success">+$5,340</span></p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
+                <i class="fa-solid fa-chart-bar text-[#3b82f6] text-xs"></i>
+              </div><span
+                class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
+            </div>
+            <p class="text-textSec text-xs font-medium mt-2">ARR</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">$579K</p>
+            <p class="text-xs text-textSec mt-1">Roční příjem</p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
+                <i class="fa-solid fa-users text-[#8b5cf6] text-xs"></i></div>
+              <span
+                class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+8.1%</span>
+            </div>
+            <p class="text-textSec text-xs font-medium mt-2">Aktivní už.</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">12,843</p>
+            <p class="text-xs text-textSec mt-1">DAU: 3,210</p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div
+                class="w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center">
+                <i class="fa-solid fa-user-minus text-error text-xs"></i></div>
+              <span
+                class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">-0.3%</span>
+            </div>
+            <p class="text-textSec text-xs font-medium mt-2">Churn Rate</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">2.1%</p>
+            <p class="text-xs text-success mt-1 flex items-center gap-1"><i
+                class="fa-solid fa-arrow-down text-xs"></i>Zlepšení</p>
+          </div>
+        </section><!-- KPI Secondary Row -->
+        <section id="biz-kpi-2" class="grid grid-cols-2 gap-3">
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div
+              class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center mb-2">
+              <i class="fa-solid fa-shopping-cart text-secondary text-xs"></i>
+            </div>
+            <p class="text-textSec text-xs font-medium">Objednávky</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">1,204</p>
+            <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i
+                class="fa-solid fa-arrow-up text-success text-xs"></i><span
+                class="text-success">+142</span></p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div
+              class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center mb-2">
+              <i
+                class="fa-solid fa-hand-holding-dollar text-[#3ecf8e] text-xs"></i>
+            </div>
+            <p class="text-textSec text-xs font-medium">Avg. objednávka</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">$40.13</p>
+            <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i
+                class="fa-solid fa-arrow-up text-success text-xs"></i><span
+                class="text-success">+$2.40</span></p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div
+              class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
+              <i class="fa-solid fa-user-plus text-[#3b82f6] text-xs"></i></div>
+            <p class="text-textSec text-xs font-medium">Noví zákazníci</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">318</p>
+            <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i
+                class="fa-solid fa-arrow-up text-success text-xs"></i><span
+                class="text-success">+52</span></p>
+          </div>
+          <div class="bg-card border border-[#1e293b] rounded-xl p-4">
+            <div
+              class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
+              <i class="fa-solid fa-star text-[#8b5cf6] text-xs"></i></div>
+            <p class="text-textSec text-xs font-medium">NPS Skóre</p>
+            <p class="text-xl font-bold text-textMain mt-0.5">72<span
+                class="text-sm font-normal text-textSec">/100</span></p>
+            <p class="text-xs text-textSec mt-1">1,840 odpovědí</p>
+          </div>
+        </section><!-- MRR Chart -->
+        <section id="biz-mrr-chart"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Vývoj MRR</h3>
+              <p class="text-xs text-textSec mt-0.5">Posledních 12 měsíců</p>
+            </div>
+            <div class="flex gap-1.5"><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>MRR</span><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>Nový</span>
+            </div>
+          </div>
+          <div id="chart-mrr" class="h-[200px] w-full"></div>
+        </section><!-- User Growth Chart -->
+        <section id="biz-users-chart"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Růst uživatelů
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">Aktivní a noví registrovaní
+              </p>
+            </div>
+            <div class="flex gap-1.5"><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] inline-block"></span>Aktivní</span><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>Noví</span>
+            </div>
+          </div>
+          <div id="chart-users" class="h-[200px] w-full"></div>
+        </section><!-- LTV vs CAC Accordion -->
+        <section id="biz-unit-economics"
+          class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+          <button onclick="toggleAccordion('acc-ltv')"
+            class="w-full flex items-center justify-between p-4 text-left">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">LTV vs. CAC</h3>
+              <p class="text-xs text-textSec mt-0.5">Hodnota zákazníka vs.
+                náklady na akvizici</p>
+            </div><i id="arrow-acc-ltv"
+              class="fa-solid fa-chevron-down accordion-arrow text-textSec text-xs"></i>
+          </button>
+          <div id="acc-ltv" class="accordion-body">
+            <div class="px-4 pb-4">
+              <div class="flex gap-1.5 mb-3"><span
+                  class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                    class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>LTV</span><span
+                  class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                    class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>CAC</span>
+              </div>
+              <div id="chart-ltv-cac" class="h-[200px] w-full"></div>
+              <div class="mt-3 grid grid-cols-3 gap-2">
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">LTV/CAC</div>
+                  <div class="text-[#3ecf8e] font-bold text-sm">4.2x</div>
+                </div>
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">Avg. LTV</div>
+                  <div class="text-textMain font-bold text-sm">$1,840</div>
+                </div>
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">Avg. CAC</div>
+                  <div class="text-secondary font-bold text-sm">$438</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section><!-- ARPU Accordion -->
+        <section id="biz-arpu"
+          class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+          <button onclick="toggleAccordion('acc-arpu')"
+            class="w-full flex items-center justify-between p-4 text-left">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">ARPU Trend</h3>
+              <p class="text-xs text-textSec mt-0.5">Průměrný příjem na
+                uživatele</p>
+            </div><i id="arrow-acc-arpu"
+              class="fa-solid fa-chevron-down accordion-arrow text-textSec text-xs"></i>
+          </button>
+          <div id="acc-arpu" class="accordion-body">
+            <div class="px-4 pb-4">
+              <div class="flex gap-1.5 mb-3"><span
+                  class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                    class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>ARPU</span><span
+                  class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                    class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>Cíl</span>
+              </div>
+              <div id="chart-arpu" class="h-[200px] w-full"></div>
+              <div class="mt-3 grid grid-cols-3 gap-2">
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">Aktuální</div>
+                  <div class="text-[#3b82f6] font-bold text-sm">$37.62</div>
+                </div>
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">MoM</div>
+                  <div class="text-success font-bold text-sm">+$1.20</div>
+                </div>
+                <div
+                  class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                  <div class="text-xs text-textSec mb-1">Cíl Q2</div>
+                  <div class="text-textMain font-bold text-sm">$40.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section><!-- Aktivita uživatelů Accordion -->
+        <section id="biz-heatmap"
+          class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+          <button onclick="toggleAccordion('acc-heatmap')"
+            class="w-full flex items-center justify-between p-4 text-left">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Aktivita uživatelů
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">Počet relací dle dne a
+                hodiny</p>
+            </div><i id="arrow-acc-heatmap"
+              class="fa-solid fa-chevron-down accordion-arrow text-textSec text-xs"></i>
+          </button>
+          <div id="acc-heatmap" class="accordion-body">
+            <div class="px-4 pb-4">
+              <div id="chart-heatmap" class="h-[200px] w-full"></div>
+            </div>
+          </div>
+        </section><!-- MRR Bridge Accordion -->
+        <section id="biz-waterfall"
+          class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+          <button onclick="toggleAccordion('acc-waterfall')"
+            class="w-full flex items-center justify-between p-4 text-left">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">MRR Bridge</h3>
+              <p class="text-xs text-textSec mt-0.5">Pohyb MRR v červnu 2024</p>
+            </div><i id="arrow-acc-waterfall"
+              class="fa-solid fa-chevron-down accordion-arrow text-textSec text-xs"></i>
+          </button>
+          <div id="acc-waterfall" class="accordion-body">
+            <div class="px-4 pb-4">
+              <div id="chart-waterfall" class="h-[200px] w-full"></div>
+            </div>
+          </div>
+        </section><!-- Upgrade & Downgrade -->
+        <section id="biz-upgrade"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <h3 class="text-sm font-semibold text-textMain mb-0.5">Upgrade &amp;
+            Downgrade</h3>
+          <p class="text-xs text-textSec mb-3">Pohyb zákazníků mezi plány</p>
+          <div id="chart-upgrade-funnel" class="h-[180px] w-full"></div>
+          <div class="mt-3 space-y-2">
+            <div class="flex justify-between items-center text-xs"><span
+                class="flex items-center gap-2"><span
+                  class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span
+                  class="text-textSec">Upgrades</span></span><span
+                class="text-[#3ecf8e] font-bold">+124 zákazníků</span></div>
+            <div class="flex justify-between items-center text-xs"><span
+                class="flex items-center gap-2"><span
+                  class="w-2 h-2 rounded-full bg-error inline-block"></span><span
+                  class="text-textSec">Downgrades</span></span><span
+                class="text-error font-bold">-38 zákazníků</span></div>
+            <div
+              class="flex justify-between items-center text-xs pt-2 border-t border-[#1e293b]">
+              <span class="text-textSec font-medium">Net expansion</span><span
+                class="text-primary font-bold">+$4,320 MRR</span></div>
+          </div>
+        </section><!-- Daily Revenue -->
+        <section id="biz-daily-rev"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Denní příjem</h3>
+              <p class="text-xs text-textSec mt-0.5">Posledních 30 dní</p>
+            </div>
+            <div class="flex gap-1.5"><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>Příjem</span><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>7d
+                MA</span></div>
+          </div>
+          <div id="chart-daily-revenue" class="h-[180px] w-full"></div>
+        </section><!-- Conversion Funnel -->
+        <section id="biz-funnel"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <h3 class="text-sm font-semibold text-textMain mb-0.5">Konverzní
+            trychtýř</h3>
+          <p class="text-xs text-textSec mb-4">Přehled cesty zákazníka</p>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span
+                  class="text-textSec font-medium">Návštěvníci webu</span><span
+                  class="text-textMain font-semibold">84,210</span></div>
+              <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                <div class="h-full bg-[#3b82f6] rounded-full w-full"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span
+                  class="text-textSec font-medium">Registrace</span><span
+                  class="text-textMain font-semibold">12,318 <span
+                    class="text-textSec font-normal">(14.6%)</span></span></div>
+              <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                <div class="h-full bg-[#8b5cf6] rounded-full" id="ifkehn"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span
+                  class="text-textSec font-medium">Trial aktivace</span><span
+                  class="text-textMain font-semibold">6,840 <span
+                    class="text-textSec font-normal">(8.1%)</span></span></div>
+              <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                <div class="h-full bg-[#3ecf8e] rounded-full" id="i9q9tc"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span
+                  class="text-textSec font-medium">Trial → Placený</span><span
+                  class="text-textMain font-semibold">2,104 <span
+                    class="text-textSec font-normal">(2.5%)</span></span></div>
+              <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                <div class="h-full bg-secondary rounded-full" id="ill7sk"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1.5"><span
+                  class="text-textSec font-medium">Aktivní platiaci</span><span
+                  class="text-textMain font-semibold">1,840 <span
+                    class="text-textSec font-normal">(2.2%)</span></span></div>
+              <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" id="i6j83v"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-[#1e293b]">
+            <div class="flex justify-between text-xs"><span
+                class="text-textSec">Celková konverze</span><span
+                class="text-primary font-bold">2.19%</span></div>
+            <div class="flex justify-between text-xs mt-1"><span
+                class="text-textSec">Trial → Paid</span><span
+                class="text-[#3ecf8e] font-bold">30.76%</span></div>
+          </div>
+        </section><!-- Revenue by Plan -->
+        <section id="biz-plan-revenue"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Příjem podle plánu
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">Distribuce MRR dle tarifů
+              </p>
+            </div><span
+              class="text-xs text-textSec bg-badge px-2 py-1 rounded">Tento
+              měsíc</span>
+          </div>
+          <div id="chart-plan-revenue" class="h-[180px] w-full"></div>
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <div
+              class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+              <div class="flex items-center gap-1.5 mb-1.5"><span
+                  class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span
+                  class="text-xs text-textSec">Starter</span></div>
+              <div class="text-textMain font-bold text-sm">$6,840</div>
+              <div class="text-xs text-textSec mt-0.5">412 zákazníků</div>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+              <div class="flex items-center gap-1.5 mb-1.5"><span
+                  class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span
+                  class="text-xs text-textSec">Pro</span></div>
+              <div class="text-textMain font-bold text-sm">$18,200</div>
+              <div class="text-xs text-textSec mt-0.5">728 zákazníků</div>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+              <div class="flex items-center gap-1.5 mb-1.5"><span
+                  class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span><span
+                  class="text-xs text-textSec">Business</span></div>
+              <div class="text-textMain font-bold text-sm">$14,880</div>
+              <div class="text-xs text-textSec mt-0.5">248 zákazníků</div>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+              <div class="flex items-center gap-1.5 mb-1.5"><span
+                  class="w-2 h-2 rounded-full bg-secondary inline-block"></span><span
+                  class="text-xs text-textSec">Enterprise</span></div>
+              <div class="text-textMain font-bold text-sm">$8,400</div>
+              <div class="text-xs text-textSec mt-0.5">42 zákazníků</div>
+            </div>
+          </div>
+        </section><!-- Churn vs New MRR -->
+        <section id="biz-churn"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Churn vs. Nový MRR
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">Porovnání ztrát a nových
+                příjmů</p>
+            </div>
+            <div class="flex gap-1.5"><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>Nový</span><span
+                class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span
+                  class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>Churn</span>
+            </div>
+          </div>
+          <div id="chart-churn" class="h-[200px] w-full"></div>
+        </section><!-- Retention Cohorts Accordion -->
+        <section id="biz-retention"
+          class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+          <button onclick="toggleAccordion('acc-retention')"
+            class="w-full flex items-center justify-between p-4 text-left">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Retence kohort
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">% uživatelů aktivních v
+                daném měsíci</p>
+            </div><i id="arrow-acc-retention"
+              class="fa-solid fa-chevron-down accordion-arrow text-textSec text-xs"></i>
+          </button>
+          <div id="acc-retention" class="accordion-body">
+            <div class="px-4 pb-4 overflow-x-auto">
+              <table class="w-full text-xs min-w-[340px]">
+                <thead>
+                  <tr class="border-b border-[#1e293b]">
+                    <th
+                      class="text-left text-textSec font-semibold uppercase tracking-wider pb-2 pr-2">
+                      Kohorta</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M0</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M1</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M2</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M3</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M4</th>
+                    <th
+                      class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-1">
+                      M5</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#1e293b]/60">
+                  <tr>
+                    <td
+                      class="py-2 pr-2 text-textSec font-medium whitespace-nowrap">
+                      Únor '24</td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ia639g">100%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i8t37g">84%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ibqslh">71%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ib0zb2">63%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i7324g">57%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="iopjsv">52%</span></td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="py-2 pr-2 text-textSec font-medium whitespace-nowrap">
+                      Březen '24</td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="iygtbh">100%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ipthi1">81%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ipvrh4">68%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i7ic3v">59%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i4zkc7">54%</span></td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="py-2 pr-2 text-textSec font-medium whitespace-nowrap">
+                      Duben '24</td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="io2cht">100%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="imx4os">79%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i9w6mi">65%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="ie124r">58%</span></td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="py-2 pr-2 text-textSec font-medium whitespace-nowrap">
+                      Květen '24</td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i7s4hu">100%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="idjib9">82%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="iuup46">70%</span></td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="py-2 pr-2 text-textSec font-medium whitespace-nowrap">
+                      Červen '24</td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="i1r5tf">100%</span></td>
+                    <td class="py-2 px-1 text-center"><span
+                        class="px-1 py-0.5 rounded text-white font-medium text-xs"
+                        id="inwuxl">86%</span></td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                    <td class="py-2 px-1 text-center text-[#334155]">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section><!-- Revenue by Channel -->
+        <section id="biz-channel"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Příjem dle kanálu
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">MRR příspěvek dle zdroje
+              </p>
+            </div><span
+              class="text-xs text-textSec bg-badge px-2 py-1 rounded">Červen
+              2024</span>
+          </div>
+          <div id="chart-channel" class="h-[200px] w-full"></div>
+        </section><!-- Payback Period -->
+        <section id="biz-payback"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Payback Period
+              </h3>
+              <p class="text-xs text-textSec mt-0.5">Měsíce pro návratnost CAC
+              </p>
+            </div><span
+              class="px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs rounded-lg">&lt;12
+              měs.</span>
+          </div>
+          <div id="chart-payback" class="h-[180px] w-full"></div>
+        </section><!-- Top Customers -->
+        <section id="biz-customers"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Top zákazníci dle
+                MRR</h3>
+              <p class="text-xs text-textSec mt-0.5">Největší platiaci zákazníci
+              </p>
+            </div><span
+              class="text-xs text-textSec bg-badge px-2 py-1 rounded">Top
+              5</span>
+          </div>
+          <div class="space-y-2.5">
+            <div
+              class="flex items-center gap-3 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg"
+                alt="avatar"
+                class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p class="text-textMain text-xs font-semibold truncate">Acme
+                  Corp s.r.o.</p>
+                <p class="text-xs text-textSec mt-0.5 truncate">Enterprise · 14
+                  licencí</p>
+              </div>
+              <div class="flex-shrink-0 text-right"><span
+                  class="block px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium mb-1">Enterprise</span>
+                <div class="text-primary font-bold text-xs">$2,800/mo</div>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg"
+                alt="avatar"
+                class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p class="text-textMain text-xs font-semibold truncate">
+                  TechVision a.s.</p>
+                <p class="text-xs text-textSec mt-0.5 truncate">Enterprise · 8
+                  licencí</p>
+              </div>
+              <div class="flex-shrink-0 text-right"><span
+                  class="block px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium mb-1">Enterprise</span>
+                <div class="text-primary font-bold text-xs">$1,960/mo</div>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+                alt="avatar"
+                class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p class="text-textMain text-xs font-semibold truncate">DataFlow
+                  GmbH</p>
+                <p class="text-xs text-textSec mt-0.5 truncate">Business · 5
+                  licencí</p>
+              </div>
+              <div class="flex-shrink-0 text-right"><span
+                  class="block px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium mb-1">Business</span>
+                <div class="text-primary font-bold text-xs">$1,200/mo</div>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg"
+                alt="avatar"
+                class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p class="text-textMain text-xs font-semibold truncate">Nexo
+                  Solutions Ltd.</p>
+                <p class="text-xs text-textSec mt-0.5 truncate">Business · 4
+                  licence</p>
+              </div>
+              <div class="flex-shrink-0 text-right"><span
+                  class="block px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium mb-1">Business</span>
+                <div class="text-primary font-bold text-xs">$960/mo</div>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3 p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+              <img
+                src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg"
+                alt="avatar"
+                class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+              <div class="flex-1 min-w-0">
+                <p class="text-textMain text-xs font-semibold truncate">Sparkly
+                  Media s.r.o.</p>
+                <p class="text-xs text-textSec mt-0.5 truncate">Pro · 3 licence
+                </p>
+              </div>
+              <div class="flex-shrink-0 text-right"><span
+                  class="block px-1.5 py-0.5 bg-[#3ecf8e]/15 text-[#3ecf8e] text-xs rounded font-medium mb-1">Pro</span>
+                <div class="text-primary font-bold text-xs">$750/mo</div>
+              </div>
+            </div>
+          </div>
+        </section><!-- Geographic Revenue -->
+        <section id="biz-geo"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <h3 class="text-sm font-semibold text-textMain mb-0.5">Příjem dle
+            regionu</h3>
+          <p class="text-xs text-textSec mb-3">Geografická distribuce MRR</p>
+          <div id="chart-geo" class="h-[180px] w-full"></div>
+          <div class="mt-3 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2"><span
+                  class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span
+                  class="text-xs text-textSec">Evropa</span></div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-20 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                  <div class="h-full bg-[#3b82f6] rounded-full" id="ip4mqp">
+                  </div>
+                </div><span
+                  class="text-xs text-textMain font-medium w-14 text-right">$23,194</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2"><span
+                  class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span
+                  class="text-xs text-textSec">Sev. Amerika</span></div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-20 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                  <div class="h-full bg-[#3ecf8e] rounded-full" id="i8x0ob">
+                  </div>
+                </div><span
+                  class="text-xs text-textMain font-medium w-14 text-right">$15,462</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2"><span
+                  class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span
+                  class="text-xs text-textSec">Asie</span></div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-20 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                  <div class="h-full bg-[#8b5cf6] rounded-full" id="iyubm6">
+                  </div>
+                </div><span
+                  class="text-xs text-textMain font-medium w-14 text-right">$6,282</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2"><span
+                  class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span
+                  class="text-xs text-textSec">Ostatní</span></div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-20 h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+                  <div class="h-full bg-secondary rounded-full" id="isak1k">
+                  </div>
+                </div><span
+                  class="text-xs text-textMain font-medium w-14 text-right">$3,382</span>
+              </div>
+            </div>
+          </div>
+        </section><!-- Goals & OKRs -->
+        <section id="biz-goals"
+          class="bg-card border border-[#1e293b] rounded-xl p-4">
+          <div class="flex items-start justify-between mb-4 gap-3">
+            <div>
+              <h3 class="text-sm font-semibold text-textMain">Cíle &amp; OKR –
+                Q2 2024</h3>
+              <p class="text-xs text-textSec mt-0.5">Kvartální obchodní cíle</p>
+            </div><span
+              class="px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs font-medium rounded-lg flex-shrink-0">68%
+              elapsed</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div
+              class="bg-[#1e293b]/50 rounded-xl p-3 border border-[#334155]/40">
+              <div class="flex justify-between items-start mb-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
+                  <i class="fa-solid fa-dollar-sign text-primary text-xs"></i>
+                </div><span class="text-xs text-primary font-medium">96%</span>
+              </div>
+              <p class="text-textSec text-xs font-medium mb-0.5">MRR Cíl Q2</p>
+              <p class="text-textMain font-bold text-sm mb-2">$50,000</p>
+              <div
+                class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full" id="iak4ys"></div>
+              </div>
+              <p class="text-xs text-textSec mt-1.5">$48,320</p>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-xl p-3 border border-[#334155]/40">
+              <div class="flex justify-between items-start mb-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
+                  <i class="fa-solid fa-user-plus text-[#3b82f6] text-xs"></i>
+                </div><span
+                  class="text-xs text-[#3b82f6] font-medium">79%</span>
+              </div>
+              <p class="text-textSec text-xs font-medium mb-0.5">Noví zákazníci
+              </p>
+              <p class="text-textMain font-bold text-sm mb-2">400</p>
+              <div
+                class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+                <div class="h-full bg-[#3b82f6] rounded-full" id="ibsggz"></div>
+              </div>
+              <p class="text-xs text-textSec mt-1.5">Aktuálně: 318</p>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-xl p-3 border border-[#334155]/40">
+              <div class="flex justify-between items-start mb-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center">
+                  <i class="fa-solid fa-user-minus text-error text-xs"></i>
+                </div><span
+                  class="text-xs text-secondary font-medium">~Cíl</span>
+              </div>
+              <p class="text-textSec text-xs font-medium mb-0.5">Churn Cíl Q2
+              </p>
+              <p class="text-textMain font-bold text-sm mb-2">&lt; 2.0%</p>
+              <div
+                class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+                <div class="h-full bg-secondary rounded-full" id="iwhw4d"></div>
+              </div>
+              <p class="text-xs text-textSec mt-1.5">2.1% · Blízko</p>
+            </div>
+            <div
+              class="bg-[#1e293b]/50 rounded-xl p-3 border border-[#334155]/40">
+              <div class="flex justify-between items-start mb-2">
+                <div
+                  class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
+                  <i class="fa-solid fa-star text-[#8b5cf6] text-xs"></i></div>
+                <span class="text-xs text-[#8b5cf6] font-medium">90%</span>
+              </div>
+              <p class="text-textSec text-xs font-medium mb-0.5">NPS Cíl Q2</p>
+              <p class="text-textMain font-bold text-sm mb-2">80</p>
+              <div
+                class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+                <div class="h-full bg-[#8b5cf6] rounded-full" id="ilkirh"></div>
+              </div>
+              <p class="text-xs text-textSec mt-1.5">Aktuálně: 72</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main><!-- Bottom Navigation Bar -->
+    <nav id="bottom-nav"
+      class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
+      <a href="#"
+        class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors"><i
+          class="fa-solid fa-gauge-high text-base"></i><span
+          class="text-xs">Dashboard</span></a><a href="#"
+        class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors"><i
+          class="fa-solid fa-server text-base"></i><span
+          class="text-xs">Dostupnost</span></a><a href="#"
+        class="flex flex-col items-center gap-1 px-3 py-1.5 text-primary">
+      </a></nav>
+  </body>
+
+</html>

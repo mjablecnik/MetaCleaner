@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0a1628',
+                        card: '#111d33',
+                        primary: '#22c55e',
+                        secondary: '#f97316',
+                        textMain: '#ffffff',
+                        textSec: '#94a3b8',
+                        error: '#ef4444',
+                        success: '#22c55e',
+                        badge: '#1e293b',
+                        border: '#1e293b'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row">
+
+<!-- Sidebar -->
+<aside id="sidebar" class="w-full md:w-64 bg-card border-r border-[#1e293b] flex-shrink-0 flex flex-col md:min-h-screen">
+    <div class="p-6 border-b border-[#1e293b] flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
+        <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
+    </div>
+    <nav class="p-4 flex-1 overflow-y-auto space-y-1">
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp; Pády</a>
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Infrastruktura</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a>
+        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Analytika</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-bolt w-5 text-center"></i>Performance</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály</a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60"><i class="fa-solid fa-chart-line w-5 text-center text-primary"></i>Business Metriky</a>
+    </nav>
+    <div class="p-4 border-t border-[#1e293b]">
+        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a>
+    </div>
+</aside>
+
+<!-- Main -->
+<main class="flex-1 overflow-y-auto">
+    <!-- Header -->
+    <header id="header" class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
+                <i class="fa-solid fa-chart-line text-primary text-sm"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-textMain">Business Metriky</h1>
+                <p class="text-sm text-textSec mt-0.5">Produkční prostředí • Všechny regiony • Posledních 30 dní</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
+                <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>Live data
+            </div>
+            <select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
+                <option>Posledních 30 dní</option>
+                <option>Posledních 7 dní</option>
+                <option>Posledních 90 dní</option>
+                <option>Tento rok</option>
+            </select>
+            <button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"><i class="fa-solid fa-download mr-2"></i>Export</button>
+        </div>
+    </header>
+
+    <div class="p-6 max-w-7xl mx-auto space-y-6">
+
+        <!-- KPI Stats Row 1 -->
+        <section id="biz-kpi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center"><i class="fa-solid fa-dollar-sign text-primary text-xs"></i></div>
+                        <h3 class="text-textSec text-sm font-medium">MRR</h3>
+                    </div>
+                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
+                </div>
+                <div class="flex items-end gap-2 mb-1"><span class="text-3xl font-bold text-textMain">$48,320</span></div>
+                <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-success text-xs"></i><span class="text-success">+$5,340</span>&nbsp;vs. minulý měsíc</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center"><i class="fa-solid fa-chart-bar text-[#3b82f6] text-xs"></i></div>
+                        <h3 class="text-textSec text-sm font-medium">ARR</h3>
+                    </div>
+                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+12.4%</span>
+                </div>
+                <div class="flex items-end gap-2 mb-1"><span class="text-3xl font-bold text-textMain">$579,840</span></div>
+                <p class="text-xs text-textSec mt-1">Roční opakující se příjem</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center"><i class="fa-solid fa-users text-[#8b5cf6] text-xs"></i></div>
+                        <h3 class="text-textSec text-sm font-medium">Aktivní uživatelé</h3>
+                    </div>
+                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">+8.1%</span>
+                </div>
+                <div class="flex items-end gap-2 mb-1"><span class="text-3xl font-bold text-textMain">12,842</span></div>
+                <p class="text-xs text-textSec mt-1">DAU: 3,210 · WAU: 8,940</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center"><i class="fa-solid fa-user-minus text-error text-xs"></i></div>
+                        <h3 class="text-textSec text-sm font-medium">Churn Rate</h3>
+                    </div>
+                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">-0.3%</span>
+                </div>
+                <div class="flex items-end gap-2 mb-1"><span class="text-3xl font-bold text-textMain">2.1%</span><span class="text-sm text-success mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-down text-xs"></i>Zlepšení</span></div>
+                <p class="text-xs text-textSec mt-1">Cíl: &lt; 2.0% · Odešlo: 48 zákazníků</p>
+            </div>
+        </section>
+
+        <!-- KPI Stats Row 2 -->
+        <section id="biz-kpi-2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center"><i class="fa-solid fa-shopping-cart text-secondary text-xs"></i></div>
+                    <h3 class="text-textSec text-sm font-medium">Nové objednávky</h3>
+                </div>
+                <div class="text-2xl font-bold text-textMain">1,204</div>
+                <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-success text-xs"></i><span class="text-success">+142</span>&nbsp;vs. minulý měsíc</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center"><i class="fa-solid fa-hand-holding-dollar text-[#3ecf8e] text-xs"></i></div>
+                    <h3 class="text-textSec text-sm font-medium">Průměrná hodnota objednávky</h3>
+                </div>
+                <div class="text-2xl font-bold text-textMain">$40.13</div>
+                <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-success text-xs"></i><span class="text-success">+$2.40</span>&nbsp;vs. minulý měsíc</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center"><i class="fa-solid fa-user-plus text-[#3b82f6] text-xs"></i></div>
+                    <h3 class="text-textSec text-sm font-medium">Noví zákazníci</h3>
+                </div>
+                <div class="text-2xl font-bold text-textMain">318</div>
+                <p class="text-xs text-textSec mt-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-success text-xs"></i><span class="text-success">+52</span>&nbsp;tento měsíc</p>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center"><i class="fa-solid fa-star text-[#8b5cf6] text-xs"></i></div>
+                    <h3 class="text-textSec text-sm font-medium">NPS Skóre</h3>
+                </div>
+                <div class="text-2xl font-bold text-textMain">72 <span class="text-sm font-normal text-textSec">/ 100</span></div>
+                <p class="text-xs text-textSec mt-1">Průzkum: 1,840 odpovědí</p>
+            </div>
+        </section>
+
+        <!-- Revenue + User Growth Charts -->
+        <section id="biz-charts-main" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Vývoj MRR</h3>
+                        <p class="text-xs text-textSec mt-0.5">Měsíční opakující se příjem – posledních 12 měsíců</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>MRR</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>Nový MRR</span>
+                    </div>
+                </div>
+                <div id="chart-mrr" class="h-[240px] w-full"></div>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Růst uživatelů</h3>
+                        <p class="text-xs text-textSec mt-0.5">Aktivní uživatelé a noví registrovaní uživatelé</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span>Aktivní</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>Noví</span>
+                    </div>
+                </div>
+                <div id="chart-users" class="h-[240px] w-full"></div>
+            </div>
+        </section>
+
+        <!-- NEW: LTV, CAC, ARPU, Payback Period Charts -->
+        <section id="biz-unit-economics" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- LTV vs CAC Chart -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">LTV vs. CAC</h3>
+                        <p class="text-xs text-textSec mt-0.5">Hodnota zákazníka vs. náklady na akvizici – dle plánu</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>LTV</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>CAC</span>
+                    </div>
+                </div>
+                <div id="chart-ltv-cac" class="h-[240px] w-full"></div>
+                <div class="mt-3 grid grid-cols-3 gap-3">
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">LTV/CAC Ratio</div>
+                        <div class="text-textMain font-bold text-base text-[#3ecf8e]">4.2x</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">Avg. LTV</div>
+                        <div class="text-textMain font-bold text-base">$1,840</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">Avg. CAC</div>
+                        <div class="text-textMain font-bold text-base text-secondary">$438</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARPU Trend Chart -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">ARPU Trend</h3>
+                        <p class="text-xs text-textSec mt-0.5">Průměrný příjem na uživatele – posledních 12 měsíců</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>ARPU</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Cíl</span>
+                    </div>
+                </div>
+                <div id="chart-arpu" class="h-[240px] w-full"></div>
+                <div class="mt-3 grid grid-cols-3 gap-3">
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">Aktuální ARPU</div>
+                        <div class="text-textMain font-bold text-base text-[#3b82f6]">$37.62</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">MoM změna</div>
+                        <div class="text-textMain font-bold text-base text-success">+$1.20</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40 text-center">
+                        <div class="text-xs text-textSec mb-1">Cíl Q2</div>
+                        <div class="text-textMain font-bold text-base">$40.00</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Weekly Sessions Heatmap + Revenue Breakdown Waterfall -->
+        <section id="biz-heatmap-waterfall" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Session Activity Heatmap -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Aktivita uživatelů</h3>
+                        <p class="text-xs text-textSec mt-0.5">Počet relací dle dne a hodiny</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Heatmapa</span>
+                </div>
+                <div id="chart-heatmap" class="h-[240px] w-full"></div>
+            </div>
+
+            <!-- MRR Waterfall / Bridge Chart -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">MRR Bridge</h3>
+                        <p class="text-xs text-textSec mt-0.5">Pohyb MRR v červnu 2024</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Vodopád</span>
+                </div>
+                <div id="chart-waterfall" class="h-[240px] w-full"></div>
+            </div>
+        </section>
+
+        <!-- NEW: Trial Conversion + Upgrade/Downgrade Funnel -->
+        <section id="biz-conversion-upgrade" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Plan Upgrade / Downgrade Flow -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <h3 class="text-lg font-semibold text-textMain mb-1">Upgrade & Downgrade</h3>
+                <p class="text-xs text-textSec mb-4">Pohyb zákazníků mezi plány</p>
+                <div id="chart-upgrade-funnel" class="h-[200px] w-full"></div>
+                <div class="mt-4 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">Upgrades</span></span>
+                        <span class="text-[#3ecf8e] font-bold">+124 zákazníků</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec">Downgrades</span></span>
+                        <span class="text-error font-bold">-38 zákazníků</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs pt-2 border-t border-[#1e293b]">
+                        <span class="text-textSec font-medium">Net expansion</span>
+                        <span class="text-primary font-bold">+$4,320 MRR</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Revenue Chart (last 30 days) -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Denní příjem</h3>
+                        <p class="text-xs text-textSec mt-0.5">Příjem za posledních 30 dní</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Příjem</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>7d MA</span>
+                    </div>
+                </div>
+                <div id="chart-daily-revenue" class="h-[200px] w-full"></div>
+            </div>
+        </section>
+
+        <!-- Conversion Funnel + Revenue by Plan -->
+        <section id="biz-funnel-plan" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <h3 class="text-lg font-semibold text-textMain mb-1">Konverzní trychtýř</h3>
+                <p class="text-xs text-textSec mb-4">Přehled cesty zákazníka</p>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5"><span class="text-textSec font-medium">Návštěvníci webu</span><span class="text-textMain font-semibold">84,210</span></div>
+                        <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full w-full"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5"><span class="text-textSec font-medium">Registrace</span><span class="text-textMain font-semibold">12,318 <span class="text-textSec font-normal">(14.6%)</span></span></div>
+                        <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:14.6%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5"><span class="text-textSec font-medium">Trial aktivace</span><span class="text-textMain font-semibold">6,840 <span class="text-textSec font-normal">(8.1%)</span></span></div>
+                        <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:8.1%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5"><span class="text-textSec font-medium">Trial → Placený</span><span class="text-textMain font-semibold">2,104 <span class="text-textSec font-normal">(2.5%)</span></span></div>
+                        <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-secondary rounded-full" style="width:2.5%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5"><span class="text-textSec font-medium">Aktivní platiaci</span><span class="text-textMain font-semibold">1,840 <span class="text-textSec font-normal">(2.2%)</span></span></div>
+                        <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width:2.2%"></div></div>
+                    </div>
+                </div>
+                <div class="mt-5 pt-4 border-t border-[#1e293b]">
+                    <div class="flex justify-between text-xs"><span class="text-textSec">Celková konverze</span><span class="text-primary font-bold">2.19%</span></div>
+                    <div class="flex justify-between text-xs mt-1"><span class="text-textSec">Trial → Paid konverze</span><span class="text-[#3ecf8e] font-bold">30.76%</span></div>
+                </div>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Příjem podle plánu</h3>
+                        <p class="text-xs text-textSec mt-0.5">Distribuce MRR dle tarifů</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Tento měsíc</span>
+                </div>
+                <div id="chart-plan-revenue" class="h-[200px] w-full"></div>
+                <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+                        <div class="flex items-center gap-1.5 mb-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-xs text-textSec">Starter</span></div>
+                        <div class="text-textMain font-bold text-sm">$6,840</div>
+                        <div class="text-xs text-textSec mt-0.5">412 zákazníků</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+                        <div class="flex items-center gap-1.5 mb-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-xs text-textSec">Pro</span></div>
+                        <div class="text-textMain font-bold text-sm">$18,200</div>
+                        <div class="text-xs text-textSec mt-0.5">728 zákazníků</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+                        <div class="flex items-center gap-1.5 mb-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-xs text-textSec">Business</span></div>
+                        <div class="text-textMain font-bold text-sm">$14,880</div>
+                        <div class="text-xs text-textSec mt-0.5">248 zákazníků</div>
+                    </div>
+                    <div class="bg-[#1e293b]/50 rounded-lg p-3 border border-[#334155]/40">
+                        <div class="flex items-center gap-1.5 mb-2"><span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span class="text-xs text-textSec">Enterprise</span></div>
+                        <div class="text-textMain font-bold text-sm">$8,400</div>
+                        <div class="text-xs text-textSec mt-0.5">42 zákazníků</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Churn + Retention -->
+        <section id="biz-churn-retention" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Churn vs. Nový MRR</h3>
+                        <p class="text-xs text-textSec mt-0.5">Porovnání ztrát a nových příjmů</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Nový</span>
+                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>Churn</span>
+                    </div>
+                </div>
+                <div id="chart-churn" class="h-[240px] w-full"></div>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Retence kohort</h3>
+                        <p class="text-xs text-textSec mt-0.5">% uživatelů aktivních v daném měsíci</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Posledních 6 měsíců</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead>
+                            <tr class="border-b border-[#1e293b]">
+                                <th class="text-left text-textSec font-semibold uppercase tracking-wider pb-2 pr-3">Kohorta</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M0</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M1</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M2</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M3</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M4</th>
+                                <th class="text-center text-textSec font-semibold uppercase tracking-wider pb-2 px-2">M5</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#1e293b]/60">
+                            <tr class="hover:bg-[#1e293b]/30 transition-colors">
+                                <td class="py-2.5 pr-3 text-textSec font-medium">Únor '24</td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.8)">100%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.65)">84%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.50)">71%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.38)">63%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.28)">57%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.22)">52%</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#1e293b]/30 transition-colors">
+                                <td class="py-2.5 pr-3 text-textSec font-medium">Březen '24</td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.8)">100%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.65)">81%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.50)">68%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.38)">59%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.28)">54%</span></td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                            </tr>
+                            <tr class="hover:bg-[#1e293b]/30 transition-colors">
+                                <td class="py-2.5 pr-3 text-textSec font-medium">Duben '24</td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.8)">100%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.65)">79%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.50)">65%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.38)">58%</span></td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                            </tr>
+                            <tr class="hover:bg-[#1e293b]/30 transition-colors">
+                                <td class="py-2.5 pr-3 text-textSec font-medium">Květen '24</td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.8)">100%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.65)">82%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.50)">70%</span></td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                            </tr>
+                            <tr class="hover:bg-[#1e293b]/30 transition-colors">
+                                <td class="py-2.5 pr-3 text-textSec font-medium">Červen '24</td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.8)">100%</span></td>
+                                <td class="py-2.5 px-2 text-center"><span class="px-1.5 py-0.5 rounded text-white font-medium" style="background:rgba(34,197,94,0.65)">86%</span></td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                                <td class="py-2.5 px-2 text-center text-[#334155]">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Revenue by Channel + Payback Period -->
+        <section id="biz-channel-payback" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Revenue by Channel -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Příjem dle kanálu</h3>
+                        <p class="text-xs text-textSec mt-0.5">Zdroje nových zákazníků a jejich MRR příspěvek</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Červen 2024</span>
+                </div>
+                <div id="chart-channel" class="h-[240px] w-full"></div>
+            </div>
+
+            <!-- Payback Period by Plan -->
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Payback Period</h3>
+                        <p class="text-xs text-textSec mt-0.5">Počet měsíců pro návratnost CAC dle plánu</p>
+                    </div>
+                    <span class="px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs rounded-lg">Benchmark: &lt;12 měs.</span>
+                </div>
+                <div id="chart-payback" class="h-[240px] w-full"></div>
+            </div>
+        </section>
+
+        <!-- Top Customers + Geographic Revenue -->
+        <section id="biz-customers-geo" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-textMain">Top zákazníci dle MRR</h3>
+                        <p class="text-xs text-textSec mt-0.5">Největší platiaci zákazníci tento měsíc</p>
+                    </div>
+                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Top 5</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="avatar" class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-textMain text-sm font-semibold truncate">Acme Corp s.r.o.</p>
+                            <p class="text-xs text-textSec mt-0.5">Enterprise · 14 licencí · od Jan 2023</p>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Enterprise</span>
+                            <div class="text-primary font-bold text-sm">$2,800/mo</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg" alt="avatar" class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-textMain text-sm font-semibold truncate">TechVision a.s.</p>
+                            <p class="text-xs text-textSec mt-0.5">Enterprise · 8 licencí · od Mar 2023</p>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Enterprise</span>
+                            <div class="text-primary font-bold text-sm">$1,960/mo</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="avatar" class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-textMain text-sm font-semibold truncate">DataFlow GmbH</p>
+                            <p class="text-xs text-textSec mt-0.5">Business · 5 licencí · od Jun 2023</p>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Business</span>
+                            <div class="text-primary font-bold text-sm">$1,200/mo</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="avatar" class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-textMain text-sm font-semibold truncate">Nexo Solutions Ltd.</p>
+                            <p class="text-xs text-textSec mt-0.5">Business · 4 licence · od Sep 2023</p>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Business</span>
+                            <div class="text-primary font-bold text-sm">$960/mo</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="avatar" class="w-9 h-9 rounded-lg object-cover flex-shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-textMain text-sm font-semibold truncate">Sparkly Media s.r.o.</p>
+                            <p class="text-xs text-textSec mt-0.5">Pro · 3 licence · od Nov 2023</p>
+                        </div>
+                        <div class="flex-shrink-0 flex items-center gap-3">
+                            <span class="px-2 py-0.5 bg-[#3ecf8e]/15 text-[#3ecf8e] text-xs rounded font-medium">Pro</span>
+                            <div class="text-primary font-bold text-sm">$750/mo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <h3 class="text-lg font-semibold text-textMain mb-1">Příjem dle regionu</h3>
+                <p class="text-xs text-textSec mb-4">Geografická distribuce MRR</p>
+                <div id="chart-geo" class="h-[180px] w-full"></div>
+                <div class="mt-4 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-xs text-textSec">Evropa</span></div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:48%"></div></div>
+                            <span class="text-xs text-textMain font-medium w-12 text-right">$23,194</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-xs text-textSec">Sev. Amerika</span></div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#3ecf8e] rounded-full" style="width:32%"></div></div>
+                            <span class="text-xs text-textMain font-medium w-12 text-right">$15,462</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block"></span><span class="text-xs text-textSec">Asie</span></div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:13%"></div></div>
+                            <span class="text-xs text-textMain font-medium w-12 text-right">$6,282</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span class="text-xs text-textSec">Ostatní</span></div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-24 h-1.5 bg-[#1e293b] rounded-full overflow-hidden"><div class="h-full bg-secondary rounded-full" style="width:7%"></div></div>
+                            <span class="text-xs text-textMain font-medium w-12 text-right">$3,382</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Goals & OKRs -->
+        <section id="biz-goals" class="bg-card border border-[#1e293b] rounded-xl p-5">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+                <div>
+                    <h3 class="text-lg font-semibold text-textMain">Cíle &amp; OKR – Q2 2024</h3>
+                    <p class="text-xs text-textSec mt-0.5">Kvartální obchodní cíle a jejich plnění</p>
+                </div>
+                <span class="px-3 py-1.5 bg-[#3b82f6]/10 border border-[#3b82f6]/20 text-[#3b82f6] text-xs font-medium rounded-lg">Q2 2024 · 68% elapsed</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-[#1e293b]/50 rounded-xl p-4 border border-[#334155]/40">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center"><i class="fa-solid fa-dollar-sign text-primary text-xs"></i></div>
+                        <span class="text-xs text-primary font-medium">96%</span>
+                    </div>
+                    <p class="text-textSec text-xs font-medium mb-1">MRR Cíl Q2</p>
+                    <p class="text-textMain font-bold text-base mb-3">$50,000</p>
+                    <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width:96%"></div></div>
+                    <p class="text-xs text-textSec mt-2">Aktuálně: $48,320</p>
+                </div>
+                <div class="bg-[#1e293b]/50 rounded-xl p-4 border border-[#334155]/40">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center"><i class="fa-solid fa-user-plus text-[#3b82f6] text-xs"></i></div>
+                        <span class="text-xs text-[#3b82f6] font-medium">79%</span>
+                    </div>
+                    <p class="text-textSec text-xs font-medium mb-1">Noví zákazníci Q2</p>
+                    <p class="text-textMain font-bold text-base mb-3">400</p>
+                    <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden"><div class="h-full bg-[#3b82f6] rounded-full" style="width:79%"></div></div>
+                    <p class="text-xs text-textSec mt-2">Aktuálně: 318</p>
+                </div>
+                <div class="bg-[#1e293b]/50 rounded-xl p-4 border border-[#334155]/40">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-error/15 flex items-center justify-center"><i class="fa-solid fa-user-minus text-error text-xs"></i></div>
+                        <span class="text-xs text-secondary font-medium">~Cíl</span>
+                    </div>
+                    <p class="text-textSec text-xs font-medium mb-1">Churn Rate cíl Q2</p>
+                    <p class="text-textMain font-bold text-base mb-3">&lt; 2.0%</p>
+                    <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden"><div class="h-full bg-secondary rounded-full" style="width:55%"></div></div>
+                    <p class="text-xs text-textSec mt-2">Aktuálně: 2.1% · Blízko cíle</p>
+                </div>
+                <div class="bg-[#1e293b]/50 rounded-xl p-4 border border-[#334155]/40">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center"><i class="fa-solid fa-star text-[#8b5cf6] text-xs"></i></div>
+                        <span class="text-xs text-[#8b5cf6] font-medium">90%</span>
+                    </div>
+                    <p class="text-textSec text-xs font-medium mb-1">NPS Cíl Q2</p>
+                    <p class="text-textMain font-bold text-base mb-3">80</p>
+                    <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden"><div class="h-full bg-[#8b5cf6] rounded-full" style="width:90%"></div></div>
+                    <p class="text-xs text-textSec mt-2">Aktuálně: 72 / 80</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+window.addEventListener('load', function() {
+    const bgCard = '#111d33';
+    const textSec = '#94a3b8';
+    const errorColor = '#ef4444';
+    const secondaryColor = '#f97316';
+    const purpleColor = '#8b5cf6';
+    const blueColor = '#3b82f6';
+    const greenColor = '#3ecf8e';
+    const primaryColor = '#22c55e';
+    const gridColor = 'rgba(30,41,59,0.8)';
+
+    const commonLayout = {
+        paper_bgcolor: bgCard,
+        plot_bgcolor: bgCard,
+        font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
+        margin: { t: 10, r: 10, b: 40, l: 50 },
+        showlegend: false,
+        xaxis: { gridcolor: gridColor, linecolor: gridColor, tickcolor: 'transparent', tickfont: { color: textSec, size: 10 }, zeroline: false },
+        yaxis: { gridcolor: gridColor, linecolor: gridColor, tickcolor: 'transparent', tickfont: { color: textSec, size: 10 }, zeroline: false }
+    };
+
+    const config = {
+        responsive: true,
+        displayModeBar: false,
+        displaylogo: false
+    };
+
+    const months = ['Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro', 'Led',
+        'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn'
+    ];
+
+    // ── Chart 1: MRR Vývoj ─────────────────────────────────────────────────
+    try {
+        const mrrData = [28000, 31200, 33800, 35100, 36900, 38400, 40200,
+            41800, 43500, 44900, 46700, 48320
+        ];
+        const newMrrData = [2800, 3200, 2600, 1300, 1800, 1500, 1800,
+            1600, 1700, 1400, 1800, 1620
+        ];
+
+        Plotly.newPlot('chart-mrr', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                fill: 'tozeroy',
+                name: 'MRR',
+                x: months,
+                y: mrrData,
+                line:
+                {
+                    color: primaryColor,
+                    width: 2.5,
+                    shape: 'spline'
+                },
+                fillcolor: 'rgba(34,197,94,0.08)',
+                hovertemplate: '<b>%{x}</b><br>MRR: $%{y:,.0f}<extra></extra>'
+            },
+            {
+                type: 'bar',
+                name: 'Nový MRR',
+                x: months,
+                y: newMrrData,
+                marker:
+                {
+                    color: blueColor,
+                    opacity: 0.7
+                },
+                hovertemplate: '<b>%{x}</b><br>Nový MRR: $%{y:,.0f}<extra></extra>',
+                yaxis: 'y2'
+            }],
+            {
+                ...commonLayout,
+                barmode: 'overlay',
+                yaxis:
+                {
+                    ...commonLayout.yaxis,
+                    title:
+                    {
+                        text: '$',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis2:
+                {
+                    overlaying: 'y',
+                    side: 'right',
+                    gridcolor: 'transparent',
+                    tickfont:
+                    {
+                        color: textSec,
+                        size: 9
+                    },
+                    zeroline: false,
+                    showgrid: false,
+                    tickprefix: '$'
+                },
+                bargap: 0.4
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-mrr').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 2: User Growth ────────────────────────────────────────────────
+    try
+    {
+        const activeUsers = [7200, 7800, 8400, 8900, 9300, 9800, 10200,
+            10700, 11200, 11600, 12100, 12841
+        ];
+        const newUsers = [180, 220, 260, 210, 190, 250, 200, 240, 260,
+            220, 280, 318
+        ];
+
+        Plotly.newPlot('chart-users', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                fill: 'tozeroy',
+                name: 'Aktivní',
+                x: months,
+                y: activeUsers,
+                line:
+                {
+                    color: purpleColor,
+                    width: 2.5,
+                    shape: 'spline'
+                },
+                fillcolor: 'rgba(139,92,246,0.08)',
+                hovertemplate: '<b>%{x}</b><br>Aktivní: %{y:,}<extra></extra>'
+            },
+            {
+                type: 'bar',
+                name: 'Noví',
+                x: months,
+                y: newUsers,
+                marker:
+                {
+                    color: greenColor,
+                    opacity: 0.75
+                },
+                hovertemplate: '<b>%{x}</b><br>Noví: %{y}<extra></extra>',
+                yaxis: 'y2'
+            }],
+            {
+                ...commonLayout,
+                yaxis:
+                {
+                    ...commonLayout.yaxis
+                },
+                yaxis2:
+                {
+                    overlaying: 'y',
+                    side: 'right',
+                    gridcolor: 'transparent',
+                    tickfont:
+                    {
+                        color: textSec,
+                        size: 9
+                    },
+                    zeroline: false,
+                    showgrid: false
+                },
+                bargap: 0.4
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-users').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 3: Plan Revenue Pie ───────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-plan-revenue', [
+            {
+                type: 'pie',
+                labels: ['Starter', 'Pro', 'Business', 'Enterprise'],
+                values: [6840, 18200, 14880, 8400],
+                hole: 0.58,
+                marker:
+                {
+                    colors: [blueColor, greenColor, purpleColor,
+                        secondaryColor
+                    ],
+                    line:
+                    {
+                        color: bgCard,
+                        width: 2
+                    }
+                },
+                textinfo: 'none',
+                hovertemplate: '<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>',
+                direction: 'clockwise'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                annotations: [
+                    {
+                        text: '<b style="font-size:16px;color:#fff">$48,320</b><br><span style="font-size:10px;color:#94a3b8">MRR celkem</span>',
+                        x: 0.5,
+                        y: 0.5,
+                        xanchor: 'center',
+                        yanchor: 'middle',
+                        showarrow: false,
+                        font:
+                        {
+                            size: 13,
+                            color: '#ffffff'
+                        }
+                    }]
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-plan-revenue').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 4: Churn vs New MRR ──────────────────────────────────────────
+    try
+    {
+        const newMrr = [2800, 3200, 2600, 1300, 1800, 1500, 1800, 1600,
+            1700, 1400, 1800, 1620
+        ];
+        const churnMrr = [-800, -650, -900, -1100, -750, -700, -820, -760,
+            -680, -900, -720, -680
+        ];
+
+        Plotly.newPlot('chart-churn', [
+            {
+                type: 'bar',
+                name: 'Nový MRR',
+                x: months,
+                y: newMrr,
+                marker:
+                {
+                    color: primaryColor,
+                    opacity: 0.85
+                },
+                hovertemplate: '<b>%{x}</b><br>+$%{y:,.0f}<extra></extra>'
+            },
+            {
+                type: 'bar',
+                name: 'Churn MRR',
+                x: months,
+                y: churnMrr,
+                marker:
+                {
+                    color: errorColor,
+                    opacity: 0.75
+                },
+                hovertemplate: '<b>%{x}</b><br>-$%{customdata:,.0f}<extra></extra>',
+                customdata: churnMrr.map(v => Math.abs(v))
+            }],
+            {
+                ...commonLayout,
+                barmode: 'relative',
+                bargap: 0.3,
+                yaxis:
+                {
+                    ...commonLayout.yaxis,
+                    tickprefix: '$',
+                    zeroline: true,
+                    zerolinecolor: 'rgba(148,163,184,0.2)',
+                    zerolinewidth: 1
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-churn').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 5: Geo Revenue Pie ────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-geo', [
+            {
+                type: 'pie',
+                labels: ['Evropa', 'Sev. Amerika', 'Asie', 'Ostatní'],
+                values: [23194, 15462, 6282, 3382],
+                hole: 0.55,
+                marker:
+                {
+                    colors: [blueColor, greenColor, purpleColor,
+                        secondaryColor
+                    ],
+                    line:
+                    {
+                        color: bgCard,
+                        width: 2
+                    }
+                },
+                textinfo: 'none',
+                hovertemplate: '<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                annotations: [
+                    {
+                        text: '<b style="font-size:14px;color:#fff">48%</b><br><span style="font-size:10px;color:#94a3b8">MRR celkem</span>',
+                        x: 0.5,
+                        y: 0.5,
+                        xanchor: 'center',
+                        yanchor: 'middle',
+                        showarrow: false,
+                        font:
+                        {
+                            size: 13,
+                            color: '#ffffff'
+                        }
+                    }]
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-geo').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 6: LTV vs CAC ─────────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-ltv-cac', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'LTV',
+                x: ['Starter', 'Pro', 'Business', 'Enterprise'],
+                y: [1840, 1840, 1840, 1840],
+                line:
+                {
+                    color: greenColor,
+                    width: 2
+                },
+                hovertemplate: '<b>%{x}</b><br>LTV: $%{y}<extra></extra>'
+            },
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'CAC',
+                x: ['Starter', 'Pro', 'Business', 'Enterprise'],
+                y: [438, 438, 438, 438],
+                line:
+                {
+                    color: errorColor,
+                    width: 2
+                },
+                hovertemplate: '<b>%{x}</b><br>CAC: $%{y}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: true,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Plán',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'Hodnota',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-ltv-cac').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 7: ARPU Trend ─────────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-arpu', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'ARPU',
+                x: months,
+                y: [37.62, 36.42, 35.22, 34.02, 32.82, 31.62, 30.42, 29.22, 28.02, 26.82, 25.62, 24.42],
+                line:
+                {
+                    color: blueColor,
+                    width: 2
+                },
+                hovertemplate: '<b>%{x}</b><br>ARPU: $%{y}<extra></extra>'
+            },
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Cíl',
+                x: months,
+                y: [40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00, 40.00],
+                line:
+                {
+                    color: primaryColor,
+                    width: 2,
+                    dash: 'dot'
+                },
+                hovertemplate: '<b>%{x}</b><br>Cíl: $%{y}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: true,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Měsíc',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'ARPU',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-arpu').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 8: Session Heatmap ─────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-heatmap', [
+            {
+                type: 'heatmap',
+                z: [
+                    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2],
+                    [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3],
+                    [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4],
+                    [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5],
+                    [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6],
+                    [0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7],
+                    [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8],
+                    [0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9],
+                    [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0],
+                    [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1],
+                    [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2],
+                    [1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3]
+                ],
+                colorscale: 'Viridis',
+                colorbar:
+                {
+                    title:
+                    {
+                        text: 'Počet relací',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Denní aktivita',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'Hodiny',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-heatmap').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 9: MRR Waterfall ───────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-waterfall', [
+            {
+                type: 'waterfall',
+                name: 'MRR Bridge',
+                x: ['Září', 'Říj', 'Lis', 'Pro', 'Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp'],
+                y: [48320, 48320, 48320, 48320, 48320, 48320, 48320, 48320, 48320, 48320, 48320, 48320],
+                text: ['Září', 'Říj', 'Lis', 'Pro', 'Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp'],
+                connector: {
+                    color: 'rgba(34,197,94,0.2)'
+                },
+                hovertemplate: '<b>%{x}</b><br>MRR: $%{y}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Měsíc',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'MRR',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-waterfall').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 10: Upgrade Funnel ─────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-upgrade-funnel', [
+            {
+                type: 'funnel',
+                name: 'Upgrade Funnel',
+                x: ['Návštěvníci webu', 'Registrace', 'Trial aktivace', 'Trial → Placený', 'Aktivní platiaci'],
+                y: [84210, 12318, 6840, 2104, 1840],
+                text: ['Návštěvníci webu', 'Registrace', 'Trial aktivace', 'Trial → Placený', 'Aktivní platiaci'],
+                hovertemplate: '<b>%{x}</b><br>%{y}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Kroky',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'Počet zákazníků',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-upgrade-funnel').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 11: Daily Revenue ──────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-daily-revenue', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Denní příjem',
+                x: ['1.6.24', '2.6.24', '3.6.24', '4.6.24', '5.6.24', '6.6.24', '7.6.24', '8.6.24', '9.6.24', '10.6.24', '11.6.24', '12.6.24'],
+                y: [23194, 23194, 23194, 23194, 23194, 23194, 23194, 23194, 23194, 23194, 23194, 23194],
+                line:
+                {
+                    color: primaryColor,
+                    width: 2
+                },
+                hovertemplate: '<b>%{x}</b><br>Příjem: $%{y}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Denní příjem',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'Příjem',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-daily-revenue').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 12: Channel Revenue ─────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-channel', [
+            {
+                type: 'pie',
+                labels: ['Google Ads', 'LinkedIn', 'Facebook', 'YouTube', 'Other'],
+                values: [23194, 15462, 6282, 3382, 1111],
+                hole: 0.55,
+                marker:
+                {
+                    colors: [blueColor, greenColor, purpleColor, secondaryColor, errorColor],
+                    line:
+                    {
+                        color: bgCard,
+                        width: 2
+                    }
+                },
+                textinfo: 'none',
+                hovertemplate: '<b>%{label}</b><br>$%{value:,.0f}<br>%{percent}<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                annotations: [
+                    {
+                        text: '<b style="font-size:14px;color:#fff">48%</b><br><span style="font-size:10px;color:#94a3b8">MRR celkem</span>',
+                        x: 0.5,
+                        y: 0.5,
+                        xanchor: 'center',
+                        yanchor: 'middle',
+                        showarrow: false,
+                        font:
+                        {
+                            size: 13,
+                            color: '#ffffff'
+                        }
+                    }]
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-channel').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+    // ── Chart 13: Payback Period ─────────────────────────────────────────────
+    try
+    {
+        Plotly.newPlot('chart-payback', [
+            {
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Payback Period',
+                x: ['Starter', 'Pro', 'Business', 'Enterprise'],
+                y: [12, 12, 12, 12],
+                line:
+                {
+                    color: primaryColor,
+                    width: 2
+                },
+                hovertemplate: '<b>%{x}</b><br>Payback: %{y} měsíců<extra></extra>'
+            }],
+            {
+                paper_bgcolor: bgCard,
+                plot_bgcolor: bgCard,
+                font:
+                {
+                    family: 'Inter, sans-serif',
+                    color: textSec,
+                    size: 11
+                },
+                margin:
+                {
+                    t: 5,
+                    r: 5,
+                    b: 5,
+                    l: 5
+                },
+                showlegend: false,
+                xaxis:
+                {
+                    title:
+                    {
+                        text: 'Plán',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                },
+                yaxis:
+                {
+                    title:
+                    {
+                        text: 'Payback Period',
+                        font:
+                        {
+                            size: 10,
+                            color: textSec
+                        }
+                    }
+                }
+            }, config);
+    }
+    catch (e)
+    {
+        document.getElementById('chart-payback').innerHTML =
+            '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+    }
+
+});
+</script>
+</body>
+</html>

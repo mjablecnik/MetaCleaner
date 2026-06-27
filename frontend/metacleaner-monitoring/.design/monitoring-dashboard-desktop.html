@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitorly - Systémový monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#0a1628',
+                        card: '#111d33',
+                        primary: '#22c55e',
+                        secondary: '#f97316',
+                        textMain: '#ffffff',
+                        textSec: '#94a3b8',
+                        error: '#ef4444',
+                        success: '#22c55e',
+                        badge: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-full md:w-64 bg-card border-r border-[#1e293b] flex-shrink-0 flex flex-col">
+        <div class="p-6 border-b border-[#1e293b] flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">M</div>
+            <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
+        </div>
+
+        <nav class="p-4 flex-1 overflow-y-auto space-y-1">
+            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 bg-[#1e293b]/50 text-textMain rounded-lg font-medium">
+                <i class="fa-solid fa-gauge-high w-5 text-center text-primary"></i>
+                Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-server w-5 text-center"></i>
+                Dostupnost
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
+                Chyby & Pády
+            </a>
+            
+            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Infrastruktura</p>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-database w-5 text-center"></i>
+                Databáze (Supabase)
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-microchip w-5 text-center"></i>
+                Runtime (Fly.io)
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-cloud w-5 text-center"></i>
+                Edge (Cloudflare)
+            </a>
+
+            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Analytika</p>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-bolt w-5 text-center"></i>
+                Performance
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+                Security Signály
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                Business Metriky
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-[#1e293b]">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
+                <i class="fa-solid fa-gear w-5 text-center"></i>
+                Nastavení
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+        
+        <!-- Header -->
+        <header id="header" class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-textMain">Přehled systému (MVP)</h1>
+                <p class="text-sm text-textSec mt-1">Produkční prostředí • Posledních 24 hodin</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
+                    <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                    Všechny systémy operativní
+                </div>
+                <button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
+                    <i class="fa-solid fa-download mr-2"></i>Export
+                </button>
+            </div>
+        </header>
+
+        <div class="p-6 max-w-7xl mx-auto space-y-6">
+            
+            <!-- Quick Stats MVP -->
+            <section id="mvp-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-textSec text-sm font-medium">Uptime (Frontend)</h3>
+                        <i class="fa-solid fa-desktop text-textSec"></i>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-textMain">99.99%</span>
+                    </div>
+                    <div class="mt-2 h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
+                        <div class="h-full bg-success w-full rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-textSec text-sm font-medium">Uptime (Backend API)</h3>
+                        <i class="fa-solid fa-server text-textSec"></i>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-textMain">99.95%</span>
+                    </div>
+                    <div class="mt-2 h-1 w-full bg-[#1e293b] rounded-full overflow-hidden">
+                        <div class="h-full bg-success w-[99.95%] rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-textSec text-sm font-medium">Error Rate (5xx)</h3>
+                        <i class="fa-solid fa-bug text-error"></i>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-textMain">0.12%</span>
+                        <span class="text-sm text-success mb-1">-0.05%</span>
+                    </div>
+                    <p class="text-xs text-textSec mt-2">Dnes zaznamenáno 42 chyb</p>
+                </div>
+
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-textSec text-sm font-medium">DB Health</h3>
+                        <i class="fa-solid fa-database text-textSec"></i>
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-textMain">Healthy</span>
+                    </div>
+                    <p class="text-xs text-textSec mt-2">Latence: ~45ms</p>
+                </div>
+            </section>
+
+            <!-- Charts Section 1: Uptime & Errors -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Response Time -->
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-textMain">API Response Time (p95)</h3>
+                        <span class="text-2xl font-bold text-textMain">285 <span class="text-sm text-textSec font-normal">ms</span></span>
+                    </div>
+                    <div id="chart-response-time" class="h-[250px] w-full"></div>
+                </div>
+
+                <!-- Error Tracking -->
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-textMain">Chyby & Pády (Frontend + Backend)</h3>
+                        <select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-md px-3 py-1.5 focus:outline-none">
+                            <option>Všechny</option>
+                            <option>5xx</option>
+                            <option>JS Errors</option>
+                        </select>
+                    </div>
+                    <div id="chart-errors" class="h-[250px] w-full"></div>
+                </div>
+            </section>
+
+            <!-- Charts Section 2: Resources -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Server CPU/RAM -->
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-textMain">Server Zdroje (Fly.io)</h3>
+                        <div class="flex gap-4 text-sm">
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-[#3b82f6]"></span> <span class="text-textSec">CPU</span></div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-[#8b5cf6]"></span> <span class="text-textSec">RAM</span></div>
+                        </div>
+                    </div>
+                    <div id="chart-resources" class="h-[250px] w-full"></div>
+                </div>
+
+                <!-- Database Metrics -->
+                <div class="bg-card border border-[#1e293b] rounded-xl p-5">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-semibold text-textMain">DB Latence & Připojení</h3>
+                        <span class="px-2 py-1 bg-badge rounded text-xs">Supabase</span>
+                    </div>
+                    <div id="chart-db" class="h-[250px] w-full"></div>
+                </div>
+            </section>
+
+            <!-- Alerts / Incidents List -->
+            <section class="bg-card border border-[#1e293b] rounded-xl p-5">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-textMain">Aktivní Alerty & Nedávné Incidenty</h3>
+                    <button class="text-sm text-textSec hover:text-textMain transition-colors">Zobrazit vše</button>
+                </div>
+                
+                <div class="space-y-3">
+                    <!-- Incident 1 -->
+                    <div class="flex items-start gap-4 p-4 rounded-lg bg-[#1e293b]/50 border border-[#334155]/50">
+                        <div class="w-2 h-2 rounded-full bg-error mt-2"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-textMain font-medium text-sm">Zvýšený počet 500 chyb na API</h4>
+                                <span class="text-xs text-textSec">Před 15 min</span>
+                            </div>
+                            <p class="text-sm text-textSec mt-1">Detekován spike chyb na endpointu /api/v1/checkout. Restartováno 1x.</p>
+                        </div>
+                    </div>
+
+                    <!-- Incident 2 -->
+                    <div class="flex items-start gap-4 p-4 rounded-lg bg-[#1e293b]/50 border border-[#334155]/50">
+                        <div class="w-2 h-2 rounded-full bg-secondary mt-2"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-textMain font-medium text-sm">Zpomalené dotazy v DB</h4>
+                                <span class="text-xs text-textSec">Před 2 hod</span>
+                            </div>
+                            <p class="text-sm text-textSec mt-1">Uživatelé hlásí pomalé načítání. Průměrná latence stoupla nad 500ms.</p>
+                        </div>
+                    </div>
+
+                    <!-- Incident 3 (Resolved) -->
+                    <div class="flex items-start gap-4 p-4 rounded-lg bg-background border border-[#334155]/30 opacity-70">
+                        <div class="w-2 h-2 rounded-full bg-success mt-2"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-textMain font-medium text-sm line-through decoration-textSec">Frontend Deployment Timeout</h4>
+                                <span class="text-xs text-textSec">Včera, 14:30</span>
+                            </div>
+                            <p class="text-sm text-textSec mt-1">Vyřešeno automaticky po restartu CI/CD pipeliny.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        function initializeCharts() {
+            const chartConfig = {
+                responsive: true,
+                displayModeBar: false,
+                displaylogo: false
+            };
+
+            const chartLayout = {
+                margin: { t: 10, r: 10, b: 30, l: 30 },
+                plot_bgcolor: 'transparent',
+                paper_bgcolor: 'transparent',
+                font: { color: '#94a3b8' },
+                xaxis: { 
+                    showgrid: true, 
+                    gridcolor: '#1e293b', 
+                    zeroline: false,
+                    tickfont: { size: 10 }
+                },
+                yaxis: { 
+                    showgrid: true, 
+                    gridcolor: '#1e293b', 
+                    zeroline: false,
+                    tickfont: { size: 10 }
+                },
+                showlegend: false
+            };
+
+            // 1. Response Time Chart (Line with spikes)
+            const xTime = Array.from({length: 50}, (_, i) => `10:${i < 10 ? '0'+i : i}`);
+            const yResponse = Array.from({length: 50}, () => Math.random() * 50 + 200);
+            yResponse[15] = 800; // Spike
+            yResponse[35] = 600; // Spike
+            
+            Plotly.newPlot('chart-response-time', [{
+                x: xTime,
+                y: yResponse,
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#22c55e', width: 2, shape: 'spline', smoothing: 0.8 },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(34, 197, 94, 0.1)'
+            }], chartLayout, chartConfig);
+
+            // 2. Errors Chart (Bar chart)
+            const yErrors = Array.from({length: 50}, () => Math.random() > 0.8 ? Math.floor(Math.random() * 5) : 0);
+            
+            Plotly.newPlot('chart-errors', [{
+                x: xTime,
+                y: yErrors,
+                type: 'bar',
+                marker: { 
+                    color: '#ef4444',
+                    cornerradius: 2
+                }
+            }], chartLayout, chartConfig);
+
+            // 3. Resources Chart (Multi-line area)
+            const yCpu = Array.from({length: 50}, () => Math.random() * 20 + 30);
+            const yRam = Array.from({length: 50}, () => Math.random() * 10 + 60);
+
+            Plotly.newPlot('chart-resources', [
+                {
+                    x: xTime,
+                    y: yCpu,
+                    name: 'CPU',
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#3b82f6', width: 2, shape: 'spline' },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(59, 130, 246, 0.1)'
+                },
+                {
+                    x: xTime,
+                    y: yRam,
+                    name: 'RAM',
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#8b5cf6', width: 2, shape: 'spline' },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(139, 92, 246, 0.1)'
+                }
+            ], chartLayout, chartConfig);
+
+            // 4. DB Latency Chart (Scatter/Line)
+            const yDbLat = Array.from({length: 50}, () => Math.random() * 10 + 40);
+            Plotly.newPlot('chart-db', [{
+                x: xTime,
+                y: yDbLat,
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: '#f97316', width: 2, shape: 'spline' }
+            }], chartLayout, chartConfig);
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(initializeCharts, 500);
+        });
+    </script>
+</body>
+</html>
