@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
 
 	let activeChart = $state<'cpu' | 'ram' | 'response' | 'network'>('cpu');
@@ -279,8 +280,8 @@
 				<i class="fa-solid fa-microchip text-[#a78bfa] text-sm"></i>
 			</div>
 			<div>
-				<h1 class="text-2xl font-bold text-textMain">Runtime (Fly.io)</h1>
-				<p class="text-sm text-textSec mt-0.5">Produkční prostředí • Region: fra (Frankfurt) • Posledních 24 hodin</p>
+				<h1 class="text-2xl font-bold text-textMain">{t('layout_nav_runtime')}</h1>
+				<p class="text-sm text-textSec mt-0.5">{t('runtime_header_subtitle')}</p>
 			</div>
 		</div>
 		<div class="flex items-center gap-3 flex-wrap">
@@ -289,12 +290,12 @@
 				3 / 3 Mašiny online
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]">
-				<i class="fa-solid fa-download mr-2"></i>Export
+				<i class="fa-solid fa-download mr-2"></i>{t('common_actions_export')}
 			</button>
 		</div>
 	</header>
@@ -305,8 +306,8 @@
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">CPU Využití</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_cpuUsage')}</h3>
+					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">74</span>
@@ -320,8 +321,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">RAM Využití</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_ramUsage')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-2 mb-3">
 					<span class="text-3xl font-bold text-textMain">1.8</span>
@@ -334,8 +335,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Uptime (30 dní)</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_uptime30d')}</h3>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-success">99.97</span>
@@ -345,8 +346,8 @@
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">Restarty (24h)</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_restarts24h')}</h3>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('common_status_critical')}</span>
 				</div>
 				<div class="flex items-end gap-2">
 					<span class="text-3xl font-bold text-error">5</span>
@@ -363,7 +364,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center">
 						<i class="fa-solid fa-network-wired text-[#a78bfa] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Aktivní instance</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_activeInstances')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">3 <span class="text-sm font-normal text-textSec">/ 5 max</span></div>
 				<p class="text-xs text-textSec mt-1">Autoscale: OFF · fra region</p>
@@ -373,7 +374,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
 						<i class="fa-solid fa-arrows-left-right text-[#3ecf8e] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Síťový provoz</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_networkTraffic')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">2.4 <span class="text-sm font-normal text-textSec">GB/h</span></div>
 				<p class="text-xs text-textSec mt-1">IN: 840 MB · OUT: 1.56 GB</p>
@@ -383,7 +384,7 @@
 					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
 						<i class="fa-solid fa-clock text-[#3b82f6] text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Avg. Response Time</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_avgResponseTime')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">112 <span class="text-sm font-normal text-textSec">ms</span></div>
 				<p class="text-xs text-textSec mt-1">P99: 840ms · P95: 420ms</p>
@@ -393,7 +394,7 @@
 					<div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
 						<i class="fa-solid fa-rocket text-secondary text-xs"></i>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">Posl. deploy</h3>
+					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_lastDeploy')}</h3>
 				</div>
 				<div class="text-2xl font-bold text-textMain">v2.14.1</div>
 				<p class="text-xs text-textSec mt-1">Dnes 11:04 · 38s deploy time</p>
@@ -405,8 +406,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">CPU využití v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Průměr přes všechny instance</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_cpuOverTime')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_cpuSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#a78bfa] inline-block"></span>CPU %</span>
@@ -418,12 +419,12 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">RAM využití v čase</h3>
-						<p class="text-xs text-textSec mt-0.5">Heap & RSS paměť aplikace</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_ramOverTime')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_ramSubtitle')}</p>
 					</div>
 					<div class="flex items-center gap-1.5 px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded text-xs text-[#3b82f6]">
 						<i class="fa-solid fa-memory text-xs"></i>
-						Limit: 4 GB
+						{t('runtime_charts_ramLimit')}
 					</div>
 				</div>
 				<div id="chart-ram" class="h-[220px] w-full"></div>
@@ -436,11 +437,11 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-5">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Stav instancí (Machines)</h3>
-						<p class="text-xs text-textSec mt-0.5">Fly.io · region: fra · 3 aktivní</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_instances_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_instances_flyioInfo')}</p>
 					</div>
 					<button class="flex items-center gap-2 px-3 py-1.5 bg-[#a78bfa]/10 border border-[#a78bfa]/20 rounded-lg text-[#a78bfa] text-xs font-medium hover:bg-[#a78bfa]/20 transition-colors">
-						<i class="fa-solid fa-plus text-xs"></i>Škálovat
+						<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 					</button>
 				</div>
 				<div class="space-y-3">
@@ -469,7 +470,7 @@
 								<div class="text-xs text-textMain mt-1">880 MB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
 							</div>
 						</div>
@@ -499,7 +500,7 @@
 								<div class="text-xs text-textMain mt-1">1.04 GB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">3h 18m</div>
 							</div>
 						</div>
@@ -529,7 +530,7 @@
 								<div class="text-xs text-textMain mt-1">760 MB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
 							</div>
 						</div>
@@ -542,8 +543,8 @@
 				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 					<div class="flex justify-between items-center mb-4">
 						<div>
-							<h3 class="text-lg font-semibold text-textMain">Response time</h3>
-							<p class="text-xs text-textSec mt-0.5">HTTP odpovědi aplikace v čase</p>
+							<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_responseTime')}</h3>
+							<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_responseSubtitle')}</p>
 						</div>
 						<div class="flex gap-2">
 							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>P50</span>
@@ -555,8 +556,8 @@
 				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 					<div class="flex justify-between items-center mb-4">
 						<div>
-							<h3 class="text-lg font-semibold text-textMain">Síťový provoz</h3>
-							<p class="text-xs text-textSec mt-0.5">Ingress / Egress za hodinu</p>
+							<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_networkTraffic')}</h3>
+							<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_networkSubtitle')}</p>
 						</div>
 						<div class="flex gap-2">
 							<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>IN</span>
@@ -574,10 +575,10 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Historie deployů</h3>
-						<p class="text-xs text-textSec mt-0.5">Posledních 7 dní</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_deploys_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_deploys_subtitle')}</p>
 					</div>
-					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">7 dní</span>
+					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('runtime_deploys_badge')}</span>
 				</div>
 				<div class="space-y-3">
 					<div class="flex items-start gap-3">
@@ -652,19 +653,19 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
 				<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Runtime error log</h3>
-						<p class="text-xs text-textSec mt-0.5">Posledních 24 hodin · 8 záznamů</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_errorLog_title')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_errorLog_subtitle')}</p>
 					</div>
 					<div class="flex gap-3 flex-wrap">
 						<div class="flex rounded-lg overflow-hidden border border-[#334155]">
-							<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">Všechny</button>
+							<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">{t('runtime_filters_all')}</button>
 							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">OOM</button>
 							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Crash</button>
 							<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Health</button>
 						</div>
 						<div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
 							<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-							<input type="text" placeholder="Hledat..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-28" />
+							<input type="text" placeholder="{t('runtime_errorLog_searchPlaceholder')}" class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-28" />
 						</div>
 					</div>
 				</div>
@@ -672,11 +673,11 @@
 					<table class="w-full text-sm">
 						<thead>
 							<tr class="border-b border-[#1e293b]">
-								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Čas</th>
-								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Instance</th>
-								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Typ</th>
-								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Zpráva</th>
-								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">Status</th>
+								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_time')}</th>
+								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('runtime_table_instance')}</th>
+								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_type')}</th>
+								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">{t('common_table_message')}</th>
+								<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">{t('common_table_status')}</th>
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-[#1e293b]/60">
@@ -685,56 +686,56 @@
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Process killed – exceeded 2 GB memory limit</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:22:44</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Unhandled exception in /api/v2/orders handler</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:08:31</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Health check failed 3x – /health returned 503</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">10:44:19</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">SIGKILL received after 30s startup timeout</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">08:17:55</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-03</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">RSS memory exceeded limit during batch job</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">06:03:12</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Timeout</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Request timeout 30s exceeded on POST /webhooks</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">03:40:08</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Segfault in native addon – node-canvas v2.11.2</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
 							</tr>
 							<tr class="hover:bg-[#1e293b]/30 transition-colors">
 								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">01:14:33</td>
 								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
 								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span></td>
 								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Readiness probe failed – DB connection not ready</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
+								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -747,8 +748,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">HTTP Status kódy</h3>
-						<p class="text-xs text-textSec mt-0.5">Distribuce odpovědí serveru (24h)</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_httpStatus')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_httpStatusSubtitle')}</p>
 					</div>
 				</div>
 				<div id="chart-http-status" class="h-[200px] w-full"></div>
@@ -774,8 +775,8 @@
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
 				<div class="flex justify-between items-center mb-4">
 					<div>
-						<h3 class="text-lg font-semibold text-textMain">Requesty za minutu</h3>
-						<p class="text-xs text-textSec mt-0.5">HTTP požadavky na aplikaci</p>
+						<h3 class="text-lg font-semibold text-textMain">{t('runtime_charts_rpm')}</h3>
+						<p class="text-xs text-textSec mt-0.5">{t('runtime_charts_rpmSubtitle')}</p>
 					</div>
 					<div class="flex gap-2">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#a78bfa] inline-block"></span>rpm</span>
@@ -798,8 +799,8 @@
 				<i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
 			</div>
 			<div>
-				<h1 class="text-sm font-bold text-textMain leading-tight">Runtime (Fly.io)</h1>
-				<p class="text-xs text-textSec">fra · Produkce</p>
+				<h1 class="text-sm font-bold text-textMain leading-tight">{t('layout_nav_runtime')}</h1>
+				<p class="text-xs text-textSec">{t('runtime_header_subtitleMobile')}</p>
 			</div>
 		</div>
 	</div>
@@ -816,9 +817,9 @@
 	<div class="px-4 pb-4">
 		<div class="flex items-center gap-2">
 			<select class="flex-1 bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none">
-				<option>Posledních 24 hodin</option>
-				<option>Posledních 7 dní</option>
-				<option>Posledních 30 dní</option>
+				<option>{t('common_timeRange_last24h')}</option>
+				<option>{t('common_timeRange_last7d')}</option>
+				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 			<div class="flex items-center gap-1.5 px-3 py-3 bg-card border border-[#1e293b] rounded-xl text-textSec text-xs">
 				<i class="fa-solid fa-server text-xs"></i>
@@ -833,7 +834,7 @@
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">CPU Využití</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_cpuUsage')}</p>
 					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">⚠</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
@@ -849,8 +850,8 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">RAM Využití</p>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_ramUsage')}</p>
+					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-1 mb-2">
 					<span class="text-2xl font-bold text-textMain">1.8</span>
@@ -864,8 +865,8 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">Uptime 30d</p>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_uptime30dMobile')}</p>
+					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">{t('common_status_ok')}</span>
 				</div>
 				<div class="flex items-end gap-1">
 					<span class="text-2xl font-bold text-success">99.97</span>
@@ -876,7 +877,7 @@
 
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
 				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">Restarty 24h</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_restarts24hMobile')}</p>
 					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">!</span>
 				</div>
 				<div class="flex items-end gap-1">
@@ -894,7 +895,7 @@
 					<div class="w-7 h-7 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center flex-shrink-0">
 						<i class="fa-solid fa-network-wired text-[#a78bfa] text-xs"></i>
 					</div>
-					<p class="text-textSec text-xs font-medium">Aktivní instance</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_activeInstances')}</p>
 				</div>
 				<div class="text-2xl font-bold text-textMain">3 <span class="text-sm font-normal text-textSec">/ 5</span></div>
 				<p class="text-[10px] text-textSec mt-1">Autoscale: OFF</p>
@@ -904,7 +905,7 @@
 					<div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0">
 						<i class="fa-solid fa-arrows-left-right text-[#3ecf8e] text-xs"></i>
 					</div>
-					<p class="text-textSec text-xs font-medium">Síťový provoz</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_networkTraffic')}</p>
 				</div>
 				<div class="text-2xl font-bold text-textMain">2.4 <span class="text-sm font-normal text-textSec">GB/h</span></div>
 				<p class="text-[10px] text-textSec mt-1">IN:840 · OUT:1.56GB</p>
@@ -914,7 +915,7 @@
 					<div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
 						<i class="fa-solid fa-clock text-[#3b82f6] text-xs"></i>
 					</div>
-					<p class="text-textSec text-xs font-medium">Response Time</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_avgResponseTime')}</p>
 				</div>
 				<div class="text-2xl font-bold text-textMain">112 <span class="text-sm font-normal text-textSec">ms</span></div>
 				<p class="text-[10px] text-textSec mt-1">P99: 840ms</p>
@@ -924,7 +925,7 @@
 					<div class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center flex-shrink-0">
 						<i class="fa-solid fa-rocket text-secondary text-xs"></i>
 					</div>
-					<p class="text-textSec text-xs font-medium">Posl. deploy</p>
+					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_lastDeploy')}</p>
 				</div>
 				<div class="text-2xl font-bold text-textMain">v2.14.1</div>
 				<p class="text-[10px] text-textSec mt-1">Dnes 11:04 · 38s</p>
@@ -956,8 +957,8 @@
 			<div class="{activeChart === 'cpu' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">CPU využití v čase</p>
-						<p class="text-xs text-textSec">Průměr přes všechny instance</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_charts_cpuOverTime')}</p>
+						<p class="text-xs text-textSec">{t('runtime_charts_cpuSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa] inline-block"></span>CPU</span>
@@ -970,11 +971,11 @@
 			<div class="{activeChart === 'ram' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">RAM využití v čase</p>
-						<p class="text-xs text-textSec">Heap & RSS paměť aplikace</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_charts_ramOverTime')}</p>
+						<p class="text-xs text-textSec">{t('runtime_charts_ramSubtitle')}</p>
 					</div>
 					<div class="flex items-center gap-1 px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded text-xs text-[#3b82f6]">
-						<i class="fa-solid fa-memory text-xs"></i>4 GB limit
+						<i class="fa-solid fa-memory text-xs"></i>{t('runtime_charts_ramLimit')}
 					</div>
 				</div>
 				<div id="chart-ram-m" class="h-[200px] w-full"></div>
@@ -983,8 +984,8 @@
 			<div class="{activeChart === 'response' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">Response time</p>
-						<p class="text-xs text-textSec">HTTP odpovědi aplikace v čase</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_charts_responseTime')}</p>
+						<p class="text-xs text-textSec">{t('runtime_charts_responseSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>P50</span>
@@ -997,8 +998,8 @@
 			<div class="{activeChart === 'network' ? '' : 'hidden'}">
 				<div class="flex items-center justify-between mb-3">
 					<div>
-						<p class="text-sm font-semibold text-textMain">Síťový provoz</p>
-						<p class="text-xs text-textSec">Ingress / Egress za hodinu</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_charts_networkTraffic')}</p>
+						<p class="text-xs text-textSec">{t('runtime_charts_networkSubtitle')}</p>
 					</div>
 					<div class="flex gap-1.5">
 						<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>IN</span>
@@ -1012,8 +1013,8 @@
 		<!-- HTTP Status + RPM side by side -->
 		<section class="grid grid-cols-2 gap-3">
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<p class="text-sm font-semibold text-textMain mb-1">HTTP Status</p>
-				<p class="text-xs text-textSec mb-3">Distribuce (24h)</p>
+				<p class="text-sm font-semibold text-textMain mb-1">{t('runtime_charts_httpStatusMobile')}</p>
+				<p class="text-xs text-textSec mb-3">{t('runtime_charts_httpStatusSubtitleMobile')}</p>
 				<div id="chart-http-status-m" class="h-[150px] w-full"></div>
 				<div class="mt-3 space-y-1.5">
 					<div class="flex items-center justify-between text-xs">
@@ -1035,11 +1036,11 @@
 				</div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<p class="text-sm font-semibold text-textMain mb-1">Req/min</p>
-				<p class="text-xs text-textSec mb-3">HTTP požadavky</p>
+				<p class="text-sm font-semibold text-textMain mb-1">{t('runtime_charts_rpmMobile')}</p>
+				<p class="text-xs text-textSec mb-3">{t('runtime_charts_rpmSubtitleMobile')}</p>
 				<div id="chart-rpm-m" class="h-[150px] w-full"></div>
 				<div class="mt-3 p-2 bg-[#1e293b]/50 rounded-lg text-center">
-					<p class="text-xs text-textSec">Peak</p>
+					<p class="text-xs text-textSec">{t('runtime_charts_rpmPeak')}</p>
 					<p class="text-base font-bold text-[#a78bfa]">1,640</p>
 					<p class="text-xs text-textSec">req/min</p>
 				</div>
@@ -1057,8 +1058,8 @@
 						<i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
 					</div>
 					<div>
-						<p class="text-sm font-semibold text-textMain">Stav instancí</p>
-						<p class="text-[10px] text-textSec">3 aktivní · fra region</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_instances_titleMobile')}</p>
+						<p class="text-[10px] text-textSec">{t('runtime_instances_subtitleMobile')}</p>
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
@@ -1070,7 +1071,7 @@
 				<div class="px-4 pb-4 space-y-3">
 					<div class="flex justify-end">
 						<button class="flex items-center gap-2 px-3 py-2 bg-[#a78bfa]/10 border border-[#a78bfa]/20 rounded-lg text-[#a78bfa] text-xs font-medium">
-							<i class="fa-solid fa-plus text-xs"></i>Škálovat
+							<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 						</button>
 					</div>
 					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
@@ -1098,7 +1099,7 @@
 								<div class="text-xs text-textMain mt-1">880 MB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
 							</div>
 						</div>
@@ -1128,7 +1129,7 @@
 								<div class="text-xs text-textMain mt-1">1.04 GB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">3h 18m</div>
 							</div>
 						</div>
@@ -1158,7 +1159,7 @@
 								<div class="text-xs text-textMain mt-1">760 MB</div>
 							</div>
 							<div>
-								<div class="text-xs text-textSec mb-1">Uptime</div>
+								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
 								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
 							</div>
 						</div>
@@ -1178,8 +1179,8 @@
 						<i class="fa-solid fa-rocket text-secondary text-xs"></i>
 					</div>
 					<div>
-						<p class="text-sm font-semibold text-textMain">Historie deployů</p>
-						<p class="text-[10px] text-textSec">Posledních 7 dní</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_deploys_title')}</p>
+						<p class="text-[10px] text-textSec">{t('runtime_deploys_subtitle')}</p>
 					</div>
 				</div>
 				<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {deploysOpen ? 'rotate-180' : ''}"></i>
@@ -1266,8 +1267,8 @@
 						<i class="fa-solid fa-triangle-exclamation text-error text-xs"></i>
 					</div>
 					<div>
-						<p class="text-sm font-semibold text-textMain">Runtime error log</p>
-						<p class="text-[10px] text-textSec">24h · 8 záznamů</p>
+						<p class="text-sm font-semibold text-textMain">{t('runtime_errorLog_title')}</p>
+						<p class="text-[10px] text-textSec">{t('runtime_errorLog_subtitleMobile')}</p>
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
@@ -1279,7 +1280,7 @@
 				<div class="px-4 pb-4">
 					<div class="flex gap-2 mb-4">
 						<div class="flex rounded-lg overflow-hidden border border-[#334155] flex-1">
-							<button class="flex-1 py-2 bg-error/20 text-error text-xs font-medium">Vše</button>
+							<button class="flex-1 py-2 bg-error/20 text-error text-xs font-medium">{t('common_status_all')}</button>
 							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">OOM</button>
 							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Crash</button>
 							<button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Health</button>
@@ -1296,7 +1297,7 @@
 							</div>
 							<p class="text-xs text-textMain">Process killed – exceeded 2 GB memory limit</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
@@ -1309,7 +1310,7 @@
 							</div>
 							<p class="text-xs text-textMain">Unhandled exception in /api/v2/orders handler</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
@@ -1322,7 +1323,7 @@
 							</div>
 							<p class="text-xs text-textMain">Health check failed 3x – /health returned 503</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
@@ -1335,7 +1336,7 @@
 							</div>
 							<p class="text-xs text-textMain">SIGKILL received after 30s startup timeout</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20">
@@ -1348,7 +1349,7 @@
 							</div>
 							<p class="text-xs text-textMain">RSS memory exceeded limit during batch job</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#8b5cf6]/20">
@@ -1361,7 +1362,7 @@
 							</div>
 							<p class="text-xs text-textMain">Request timeout 30s exceeded on POST /webhooks</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
@@ -1374,7 +1375,7 @@
 							</div>
 							<p class="text-xs text-textMain">Segfault in native addon – node-canvas v2.11.2</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
 							</div>
 						</div>
 						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
@@ -1387,7 +1388,7 @@
 							</div>
 							<p class="text-xs text-textMain">Readiness probe failed – DB connection not ready</p>
 							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
+								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
 							</div>
 						</div>
 					</div>
@@ -1401,11 +1402,11 @@
 	<nav class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2">
 		<a href="{base}/" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gauge-high text-base"></i>
-			<span class="text-[9px] font-medium">Dashboard</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_dashboard')}</span>
 		</a>
 		<a href="{base}/dostupnost" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-server text-base"></i>
-			<span class="text-[9px] font-medium">Dostupnost</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_availability')}</span>
 		</a>
 		<a href="{base}/runtime" class="flex flex-col items-center gap-1 px-3 py-2 text-[#a78bfa] min-w-[44px]">
 			<i class="fa-solid fa-microchip text-base"></i>
@@ -1417,7 +1418,7 @@
 		</a>
 		<a href="{base}/nastaveni" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
 			<i class="fa-solid fa-gear text-base"></i>
-			<span class="text-[9px] font-medium">Nastavení</span>
+			<span class="text-[9px] font-medium">{t('layout_nav_settings')}</span>
 		</a>
 	</nav>
 
