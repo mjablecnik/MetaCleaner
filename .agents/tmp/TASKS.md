@@ -15,12 +15,12 @@
 - [x] 8. [HIGH] Create `src/lib/repositories/errorsRepository.ts` — error KPIs, error type breakdown, top endpoints, error log entries
 - [x] 9. [HIGH] Create `src/lib/repositories/databaseRepository.ts` — connection stats, query latency, storage, slowest queries, table sizes, DB error log
 - [x] 10. [HIGH] Create `src/lib/repositories/runtimeRepository.ts` — CPU/RAM stats, instances, deploy history, runtime error log
-- [ ] 11. [HIGH] Create `src/lib/repositories/edgeRepository.ts` — cache stats, requests, bandwidth, threats, TTFB regions, cache rules, WAF log
-- [ ] 12. [HIGH] Create `src/lib/repositories/performanceRepository.ts` — Apdex, response times, slowest endpoints, Core Web Vitals, event log
-- [ ] 13. [HIGH] Create `src/lib/repositories/securityRepository.ts` — threat score, failed logins, blocked IPs, attack types, active threats, security event log
-- [ ] 14. [HIGH] Create `src/lib/repositories/businessRepository.ts` — MRR/ARR, user counts, churn, funnel, OKR goals, revenue geo, chart data
-- [ ] 15. [HIGH] Create `src/lib/repositories/usersRepository.ts` — user stats, user list with typed User interface, chart data
-- [ ] 16. [HIGH] Create `src/lib/repositories/index.ts` — barrel export of all repositories
+- [x] 11. [HIGH] Create `src/lib/repositories/edgeRepository.ts` — cache stats, requests, bandwidth, threats, TTFB regions, cache rules, WAF log
+- [x] 12. [HIGH] Create `src/lib/repositories/performanceRepository.ts` — Apdex, response times, slowest endpoints, Core Web Vitals, event log
+- [x] 13. [HIGH] Create `src/lib/repositories/securityRepository.ts` — threat score, failed logins, blocked IPs, attack types, active threats, security event log
+- [x] 14. [HIGH] Create `src/lib/repositories/businessRepository.ts` — MRR/ARR, user counts, churn, funnel, OKR goals, revenue geo, chart data
+- [x] 15. [HIGH] Create `src/lib/repositories/usersRepository.ts` — user stats, user list with typed User interface, chart data
+- [x] 16. [HIGH] Create `src/lib/repositories/index.ts` — barrel export of all repositories
 
 ## Phase 3 — Extract static UI strings to i18n
 
