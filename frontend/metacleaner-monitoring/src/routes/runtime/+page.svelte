@@ -2,6 +2,23 @@
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
 	import { base } from '$app/paths';
+	import {
+		getRuntimeStats,
+		getRuntimeSecondaryKpis,
+		getMachineInstances,
+		getDeployHistory,
+		getRuntimeErrorLog,
+		getRuntimeSummary,
+		getRuntimeHttpStatusDistribution
+	} from '$lib/repositories/runtimeRepository';
+
+	const runtimeStats = getRuntimeStats();
+	const secondaryKpis = getRuntimeSecondaryKpis();
+	const machines = getMachineInstances();
+	const deploys = getDeployHistory();
+	const errorLog = getRuntimeErrorLog();
+	const summary = getRuntimeSummary();
+	const httpStatus = getRuntimeHttpStatusDistribution();
 
 	let activeChart = $state<'cpu' | 'ram' | 'response' | 'network'>('cpu');
 	let instancesOpen = $state(true);
@@ -287,7 +304,7 @@
 		<div class="flex items-center gap-3 flex-wrap">
 			<div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				3 / 3 Mašiny online
+				{summary.statusBadge}
 			</div>
 			<select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
 				<option>{t('common_timeRange_last24h')}</option>
@@ -304,101 +321,49 @@
 
 		<!-- KPI Stats Row 1 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_cpuUsage')}</h3>
-					<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">{t('common_status_warning')}</span>
+			{#each runtimeStats as stat (stat.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex justify-between items-start mb-3">
+						<h3 class="text-textSec text-sm font-medium">{t(stat.labelKey)}</h3>
+						{#if stat.badgeKey}
+							<span class="px-2 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium">{t(stat.badgeKey)}</span>
+						{/if}
+					</div>
+					<div class="flex items-end gap-2 {stat.barWidth ? 'mb-3' : ''}">
+						<span class="text-3xl font-bold {stat.valueClass ?? 'text-textMain'}">{stat.value}</span>
+						{#if stat.unit}
+							<span class="text-sm text-textSec mb-1">{stat.unit}</span>
+						{/if}
+						{#if stat.trend}
+							<span class="text-sm {stat.trendClass ?? 'text-secondary'} mb-1 flex items-center gap-1 ml-1">
+								<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i>{stat.trend}
+							</span>
+						{/if}
+					</div>
+					{#if stat.barWidth}
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
+						</div>
+					{/if}
+					<p class="text-xs text-textSec mt-2">{stat.subtext}</p>
 				</div>
-				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">74</span>
-					<span class="text-sm text-textSec mb-1">%</span>
-					<span class="text-sm text-secondary mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>+12%</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-secondary rounded-full" style="width:74%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">Peak: 91% · avg 3 strojů</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_ramUsage')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-2 mb-3">
-					<span class="text-3xl font-bold text-textMain">1.8</span>
-					<span class="text-sm text-textSec mb-1">/ 4 GB</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:45%"></div>
-				</div>
-				<p class="text-xs text-textSec mt-2">45% · bez memory leaků</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_uptime30d')}</h3>
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-success">99.97</span>
-					<span class="text-sm text-textSec mb-1">%</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">Výpadek: 8 min · 1 incident</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex justify-between items-start mb-3">
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_restarts24h')}</h3>
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">{t('common_status_critical')}</span>
-				</div>
-				<div class="flex items-end gap-2">
-					<span class="text-3xl font-bold text-error">5</span>
-					<span class="text-sm text-error mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+3</span>
-				</div>
-				<p class="text-xs text-textSec mt-2">OOM kill: 2 · Crash: 3</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- KPI Stats Row 2 -->
 		<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center">
-						<i class="fa-solid fa-network-wired text-[#a78bfa] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-5">
+					<div class="flex items-center gap-3 mb-3">
+						<div class="w-8 h-8 rounded-lg {kpi.iconClass} flex items-center justify-center">
+							<i class="fa-solid {kpi.icon} text-xs"></i>
+						</div>
+						<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_activeInstances')}</h3>
+					<div class="text-2xl font-bold text-textMain">{kpi.value}{#if kpi.unit} <span class="text-sm font-normal text-textSec">{kpi.unit}</span>{/if}</div>
+					<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
 				</div>
-				<div class="text-2xl font-bold text-textMain">3 <span class="text-sm font-normal text-textSec">/ 5 max</span></div>
-				<p class="text-xs text-textSec mt-1">Autoscale: OFF · fra region</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-						<i class="fa-solid fa-arrows-left-right text-[#3ecf8e] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_networkTraffic')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">2.4 <span class="text-sm font-normal text-textSec">GB/h</span></div>
-				<p class="text-xs text-textSec mt-1">IN: 840 MB · OUT: 1.56 GB</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-						<i class="fa-solid fa-clock text-[#3b82f6] text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_avgResponseTime')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">112 <span class="text-sm font-normal text-textSec">ms</span></div>
-				<p class="text-xs text-textSec mt-1">P99: 840ms · P95: 420ms</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
-						<i class="fa-solid fa-rocket text-secondary text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t('runtime_kpi_lastDeploy')}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">v2.14.1</div>
-				<p class="text-xs text-textSec mt-1">Dnes 11:04 · 38s deploy time</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Row: CPU + RAM -->
@@ -445,96 +410,38 @@
 					</button>
 				</div>
 				<div class="space-y-3">
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-3">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-sm font-mono">fra-01 · 4d4e555f</span>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-							</div>
-							<span class="text-xs text-textSec">shared-cpu-2x · 2 GB RAM</span>
-						</div>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#a78bfa] rounded-full" style="width:68%"></div>
+					{#each machines as m (m.id)}
+						<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
+							<div class="flex items-center justify-between mb-3">
+								<div class="flex items-center gap-3">
+									<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+									<span class="text-textMain font-medium text-sm font-mono">{m.name} · {m.displayId}</span>
+									<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">{m.status}</span>
 								</div>
-								<div class="text-xs text-textMain mt-1">68%</div>
+								<span class="text-xs text-textSec">shared-cpu-2x · {m.ramTotalDisplay} GB RAM</span>
 							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:44%"></div>
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<div class="text-xs text-textSec mb-1">CPU</div>
+									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+										<div class="h-full {m.cpuClass} rounded-full" style="width:{m.cpuPercent}%"></div>
+									</div>
+									<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">{m.cpuDisplay}</div>
 								</div>
-								<div class="text-xs text-textMain mt-1">880 MB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-							</div>
-						</div>
-					</div>
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-3">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-sm font-mono">fra-02 · 7f8a992b</span>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-							</div>
-							<span class="text-xs text-textSec">shared-cpu-2x · 2 GB RAM</span>
-						</div>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-secondary rounded-full" style="width:91%"></div>
+								<div>
+									<div class="text-xs text-textSec mb-1">RAM</div>
+									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+										<div class="h-full bg-[#3b82f6] rounded-full" style="width:{m.ramBarWidth}"></div>
+									</div>
+									<div class="text-xs text-textMain mt-1">{m.ramDisplay}</div>
 								</div>
-								<div class="text-xs text-secondary mt-1">91% ⚠</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:52%"></div>
+								<div>
+									<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
+									<div class="text-xs text-textMain mt-1 font-mono">{m.uptime}</div>
 								</div>
-								<div class="text-xs text-textMain mt-1">1.04 GB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">3h 18m</div>
 							</div>
 						</div>
-					</div>
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-3">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-sm font-mono">fra-03 · b1c2d3e4</span>
-								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-							</div>
-							<span class="text-xs text-textSec">shared-cpu-2x · 2 GB RAM</span>
-						</div>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#a78bfa] rounded-full" style="width:62%"></div>
-								</div>
-								<div class="text-xs text-textMain mt-1">62%</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:38%"></div>
-								</div>
-								<div class="text-xs text-textMain mt-1">760 MB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-							</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 
@@ -581,71 +488,21 @@
 					<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('runtime_deploys_badge')}</span>
 				</div>
 				<div class="space-y-3">
-					<div class="flex items-start gap-3">
-						<div class="mt-1 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.14.1</span>
-								<span class="text-xs text-textSec">Dnes 11:04</span>
+					{#each deploys as d (d.id)}
+						<div class="flex items-start gap-3">
+							<div class="mt-1 w-7 h-7 rounded-lg {d.iconClass} flex items-center justify-center flex-shrink-0">
+								<i class="fa-solid {d.icon} {d.status === 'failed' ? 'text-error' : d.status === 'success' ? 'text-success' : 'text-secondary'} text-xs"></i>
 							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">Fix: memory leak in session handler</p>
-							<p class="text-xs text-textSec mt-0.5">38s · 3 stroje ✓</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3">
-						<div class="mt-1 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.14.0</span>
-								<span class="text-xs text-textSec">Včera 16:32</span>
+							<div class="flex-1 min-w-0">
+								<div class="flex items-center justify-between">
+									<span class="text-textMain text-sm font-semibold">{d.version}</span>
+									<span class="text-xs text-textSec">{d.timestamp}</span>
+								</div>
+								<p class="text-xs {d.status === 'failed' ? 'text-error' : 'text-textSec'} mt-0.5 truncate">{d.commitMessage}</p>
+								<p class="text-xs text-textSec mt-0.5">{d.subtext}</p>
 							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">feat: nový API endpoint /v2/orders</p>
-							<p class="text-xs text-textSec mt-0.5">44s · 3 stroje ✓</p>
 						</div>
-					</div>
-					<div class="flex items-start gap-3">
-						<div class="mt-1 w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-xmark text-error text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.9</span>
-								<span class="text-xs text-textSec">2 dny 09:15</span>
-							</div>
-							<p class="text-xs text-error mt-0.5 truncate">Failed: health check timeout</p>
-							<p class="text-xs text-textSec mt-0.5">Rollback → v2.13.8</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3">
-						<div class="mt-1 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.8</span>
-								<span class="text-xs text-textSec">3 dny 14:00</span>
-							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">chore: deps update, perf patches</p>
-							<p class="text-xs text-textSec mt-0.5">41s · 3 stroje ✓</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3">
-						<div class="mt-1 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.7</span>
-								<span class="text-xs text-textSec">5 dní 08:22</span>
-							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">fix: rate limiter edge case</p>
-							<p class="text-xs text-textSec mt-0.5">36s · 3 stroje ✓</p>
-						</div>
-					</div>
+					{/each}
 				</div>
 			</div>
 
@@ -681,62 +538,15 @@
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-[#1e293b]/60">
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:51:02</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Process killed – exceeded 2 GB memory limit</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:22:44</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Unhandled exception in /api/v2/orders handler</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:08:31</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Health check failed 3x – /health returned 503</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">10:44:19</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">SIGKILL received after 30s startup timeout</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">08:17:55</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-03</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">RSS memory exceeded limit during batch job</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">06:03:12</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Timeout</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Request timeout 30s exceeded on POST /webhooks</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">03:40:08</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-02</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Segfault in native addon – node-canvas v2.11.2</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span></td>
-							</tr>
-							<tr class="hover:bg-[#1e293b]/30 transition-colors">
-								<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">01:14:33</td>
-								<td class="py-3 pr-4 text-textSec font-mono text-xs">fra-01</td>
-								<td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span></td>
-								<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">Readiness probe failed – DB connection not ready</td>
-								<td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span></td>
-							</tr>
+							{#each errorLog as entry (entry.id)}
+								<tr class="hover:bg-[#1e293b]/30 transition-colors">
+									<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{entry.time}</td>
+									<td class="py-3 pr-4 text-textSec font-mono text-xs">{entry.machine}</td>
+									<td class="py-3 pr-4"><span class="px-2 py-0.5 {entry.levelClass} text-xs rounded font-medium">{entry.level}</span></td>
+									<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">{entry.message}</td>
+									<td class="py-3"><span class="px-2 py-0.5 {entry.statusClass} text-xs rounded">{t(entry.statusKey)}</span></td>
+								</tr>
+							{/each}
 						</tbody>
 					</table>
 				</div>
@@ -754,22 +564,12 @@
 				</div>
 				<div id="chart-http-status" class="h-[200px] w-full"></div>
 				<div class="mt-4 grid grid-cols-2 gap-3">
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">2xx OK</span></div>
-						<span class="text-textMain font-medium">94.2%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">3xx Redirect</span></div>
-						<span class="text-textMain font-medium">2.8%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">4xx Client</span></div>
-						<span class="text-textMain font-medium">2.1%</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span><span class="text-textSec">5xx Server</span></div>
-						<span class="text-textMain font-medium">0.9%</span>
-					</div>
+					{#each httpStatus as item}
+						<div class="flex items-center justify-between text-sm">
+							<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full {item.color} inline-block"></span><span class="text-textSec">{item.label}</span></div>
+							<span class="text-textMain font-medium">{item.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-5">
@@ -809,7 +609,7 @@
 	<div class="px-4 pb-3">
 		<div class="flex items-center gap-2 px-3 py-2 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium w-fit">
 			<div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-			3 / 3 Mašiny online
+			{summary.statusBadge}
 		</div>
 	</div>
 
@@ -832,104 +632,51 @@
 
 		<!-- KPI Primary Stats 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_cpuUsage')}</p>
-					<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">⚠</span>
+			{#each runtimeStats as stat (stat.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="flex items-start justify-between mb-2">
+						<p class="text-textSec text-xs font-medium">{t(stat.labelKey)}</p>
+						{#if stat.badgeKey}
+							<span class="px-1.5 py-0.5 {stat.badgeClass} text-[10px] rounded-full font-medium">
+								{#if stat.key === 'cpuUsage'}⚠{:else if stat.key === 'restarts24h'}!{:else}{t(stat.badgeKey)}{/if}
+							</span>
+						{/if}
+					</div>
+					<div class="flex items-end gap-1 {stat.barWidth ? 'mb-2' : ''}">
+						<span class="text-2xl font-bold {stat.valueClass ?? 'text-textMain'}">{stat.value}</span>
+						{#if stat.unit}
+							<span class="text-xs text-textSec mb-0.5">{stat.key === 'ramUsage' ? 'GB' : stat.unit}</span>
+						{/if}
+						{#if stat.trend}
+							<span class="text-xs {stat.trendClass ?? 'text-secondary'} mb-0.5 {stat.unit ? '' : 'ml-1'}">
+								<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i>{stat.trend}
+							</span>
+						{/if}
+					</div>
+					{#if stat.barWidth}
+						<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
+							<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
+						</div>
+					{/if}
+					<p class="text-[10px] text-textSec {!stat.barWidth ? 'mt-1' : ''}">{stat.key === 'cpuUsage' ? 'Peak: 91%' : stat.key === 'ramUsage' ? '45% / 4 GB' : stat.key === 'uptime30d' ? 'Výpadek: 8 min' : 'OOM:2 · Crash:3'}</p>
 				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">74</span>
-					<span class="text-xs text-textSec mb-0.5">%</span>
-					<span class="text-xs text-secondary mb-0.5 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>+12%</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-					<div class="h-full bg-secondary rounded-full" style="width:74%"></div>
-				</div>
-				<p class="text-[10px] text-textSec">Peak: 91%</p>
-			</div>
-
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_ramUsage')}</p>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-1 mb-2">
-					<span class="text-2xl font-bold text-textMain">1.8</span>
-					<span class="text-xs text-textSec mb-0.5">GB</span>
-				</div>
-				<div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-					<div class="h-full bg-[#3b82f6] rounded-full" style="width:45%"></div>
-				</div>
-				<p class="text-[10px] text-textSec">45% / 4 GB</p>
-			</div>
-
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_uptime30dMobile')}</p>
-					<span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">{t('common_status_ok')}</span>
-				</div>
-				<div class="flex items-end gap-1">
-					<span class="text-2xl font-bold text-success">99.97</span>
-					<span class="text-xs text-textSec mb-0.5">%</span>
-				</div>
-				<p class="text-[10px] text-textSec mt-1">Výpadek: 8 min</p>
-			</div>
-
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-start justify-between mb-2">
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_restarts24hMobile')}</p>
-					<span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">!</span>
-				</div>
-				<div class="flex items-end gap-1">
-					<span class="text-2xl font-bold text-error">5</span>
-					<span class="text-xs text-error mb-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+3</span>
-				</div>
-				<p class="text-[10px] text-textSec mt-1">OOM:2 · Crash:3</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- KPI Secondary 2×2 -->
 		<section class="grid grid-cols-2 gap-3">
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-7 h-7 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center flex-shrink-0">
-						<i class="fa-solid fa-network-wired text-[#a78bfa] text-xs"></i>
+			{#each secondaryKpis as kpi (kpi.key)}
+				<div class="bg-card border border-[#1e293b] rounded-xl p-4">
+					<div class="flex items-center gap-2 mb-2">
+						<div class="w-7 h-7 rounded-lg {kpi.iconClass} flex items-center justify-center flex-shrink-0">
+							<i class="fa-solid {kpi.icon} text-xs"></i>
+						</div>
+						<p class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</p>
 					</div>
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_activeInstances')}</p>
+					<div class="text-2xl font-bold text-textMain">{kpi.value}{#if kpi.unit} <span class="text-sm font-normal text-textSec">{kpi.key === 'activeInstances' ? '/ 5' : kpi.unit}</span>{/if}</div>
+					<p class="text-[10px] text-textSec mt-1">{kpi.key === 'activeInstances' ? 'Autoscale: OFF' : kpi.key === 'networkTraffic' ? 'IN:840 · OUT:1.56GB' : kpi.key === 'avgResponseTime' ? 'P99: 840ms' : 'Dnes 11:04 · 38s'}</p>
 				</div>
-				<div class="text-2xl font-bold text-textMain">3 <span class="text-sm font-normal text-textSec">/ 5</span></div>
-				<p class="text-[10px] text-textSec mt-1">Autoscale: OFF</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0">
-						<i class="fa-solid fa-arrows-left-right text-[#3ecf8e] text-xs"></i>
-					</div>
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_networkTraffic')}</p>
-				</div>
-				<div class="text-2xl font-bold text-textMain">2.4 <span class="text-sm font-normal text-textSec">GB/h</span></div>
-				<p class="text-[10px] text-textSec mt-1">IN:840 · OUT:1.56GB</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
-						<i class="fa-solid fa-clock text-[#3b82f6] text-xs"></i>
-					</div>
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_avgResponseTime')}</p>
-				</div>
-				<div class="text-2xl font-bold text-textMain">112 <span class="text-sm font-normal text-textSec">ms</span></div>
-				<p class="text-[10px] text-textSec mt-1">P99: 840ms</p>
-			</div>
-			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center flex-shrink-0">
-						<i class="fa-solid fa-rocket text-secondary text-xs"></i>
-					</div>
-					<p class="text-textSec text-xs font-medium">{t('runtime_kpi_lastDeploy')}</p>
-				</div>
-				<div class="text-2xl font-bold text-textMain">v2.14.1</div>
-				<p class="text-[10px] text-textSec mt-1">Dnes 11:04 · 38s</p>
-			</div>
+			{/each}
 		</section>
 
 		<!-- Charts Tabs -->
@@ -1017,22 +764,12 @@
 				<p class="text-xs text-textSec mb-3">{t('runtime_charts_httpStatusSubtitleMobile')}</p>
 				<div id="chart-http-status-m" class="h-[150px] w-full"></div>
 				<div class="mt-3 space-y-1.5">
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">2xx</span></div>
-						<span class="text-textMain font-medium">94.2%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">3xx</span></div>
-						<span class="text-textMain font-medium">2.8%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">4xx</span></div>
-						<span class="text-textMain font-medium">2.1%</span>
-					</div>
-					<div class="flex items-center justify-between text-xs">
-						<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec">5xx</span></div>
-						<span class="text-textMain font-medium">0.9%</span>
-					</div>
+					{#each httpStatus as item}
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full {item.color} inline-block"></span><span class="text-textSec">{item.label.slice(0, 3)}</span></div>
+							<span class="text-textMain font-medium">{item.percent}%</span>
+						</div>
+					{/each}
 				</div>
 			</div>
 			<div class="bg-card border border-[#1e293b] rounded-xl p-4">
@@ -1063,7 +800,7 @@
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
-					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">3/3</span>
+					<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">{summary.machinesOnline}/{summary.machinesTotal}</span>
 					<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {instancesOpen ? 'rotate-180' : ''}"></i>
 				</div>
 			</button>
@@ -1074,96 +811,38 @@
 							<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 						</button>
 					</div>
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-2">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-xs font-mono">fra-01 · 4d4e555f</span>
-							</div>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-						</div>
-						<p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#a78bfa] rounded-full" style="width:68%"></div>
+					{#each machines as m (m.id)}
+						<div class="p-4 rounded-xl bg-[#1e293b]/40 border {m.cpuWarning ? 'border-secondary/20' : 'border-[#334155]/40'}">
+							<div class="flex items-center justify-between mb-3">
+								<div class="flex items-center gap-2">
+									<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+									<span class="text-textMain font-medium text-xs font-mono">{m.name} · {m.displayId}</span>
 								</div>
-								<div class="text-xs text-textMain mt-1">68%</div>
+								<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">{m.status}</span>
 							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:44%"></div>
+							<p class="text-xs text-textSec mb-3">shared-cpu-2x · {m.ramTotalDisplay} GB RAM</p>
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<div class="text-xs text-textSec mb-1">CPU</div>
+									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+										<div class="h-full {m.cpuClass} rounded-full" style="width:{m.cpuPercent}%"></div>
+									</div>
+									<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">{m.cpuDisplay}</div>
 								</div>
-								<div class="text-xs text-textMain mt-1">880 MB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-							</div>
-						</div>
-					</div>
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-2">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-xs font-mono">fra-02 · 7f8a992b</span>
-							</div>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-						</div>
-						<p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-secondary rounded-full" style="width:91%"></div>
+								<div>
+									<div class="text-xs text-textSec mb-1">RAM</div>
+									<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
+										<div class="h-full bg-[#3b82f6] rounded-full" style="width:{m.ramBarWidth}"></div>
+									</div>
+									<div class="text-xs text-textMain mt-1">{m.ramDisplay}</div>
 								</div>
-								<div class="text-xs text-secondary mt-1">91% ⚠</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:52%"></div>
+								<div>
+									<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
+									<div class="text-xs text-textMain mt-1 font-mono">{m.uptime}</div>
 								</div>
-								<div class="text-xs text-textMain mt-1">1.04 GB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">3h 18m</div>
 							</div>
 						</div>
-					</div>
-					<div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-						<div class="flex items-center justify-between mb-3">
-							<div class="flex items-center gap-2">
-								<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-								<span class="text-textMain font-medium text-xs font-mono">fra-03 · b1c2d3e4</span>
-							</div>
-							<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-						</div>
-						<p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-						<div class="grid grid-cols-3 gap-3">
-							<div>
-								<div class="text-xs text-textSec mb-1">CPU</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#a78bfa] rounded-full" style="width:62%"></div>
-								</div>
-								<div class="text-xs text-textMain mt-1">62%</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">RAM</div>
-								<div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-									<div class="h-full bg-[#3b82f6] rounded-full" style="width:38%"></div>
-								</div>
-								<div class="text-xs text-textMain mt-1">760 MB</div>
-							</div>
-							<div>
-								<div class="text-xs text-textSec mb-1">{t('common_labels_uptime')}</div>
-								<div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-							</div>
-						</div>
-					</div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -1187,71 +866,21 @@
 			</button>
 			{#if deploysOpen}
 				<div class="px-4 pb-4 space-y-3">
-					<div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-						<div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.14.1</span>
-								<span class="text-xs text-textSec">Dnes 11:04</span>
+					{#each deploys as d, i (d.id)}
+						<div class="flex items-start gap-3 py-2 {i < deploys.length - 1 ? 'border-b border-[#1e293b]/60' : ''}">
+							<div class="mt-0.5 w-7 h-7 rounded-lg {d.iconClass} flex items-center justify-center flex-shrink-0">
+								<i class="fa-solid {d.icon} {d.status === 'failed' ? 'text-error' : d.status === 'success' ? 'text-success' : 'text-secondary'} text-xs"></i>
 							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">Fix: memory leak in session handler</p>
-							<p class="text-xs text-textSec mt-0.5">38s · 3 stroje ✓</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-						<div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.14.0</span>
-								<span class="text-xs text-textSec">Včera 16:32</span>
+							<div class="flex-1 min-w-0">
+								<div class="flex items-center justify-between">
+									<span class="text-textMain text-sm font-semibold">{d.version}</span>
+									<span class="text-xs text-textSec">{d.timestamp}</span>
+								</div>
+								<p class="text-xs {d.status === 'failed' ? 'text-error' : 'text-textSec'} mt-0.5 truncate">{d.commitMessage}</p>
+								<p class="text-xs text-textSec mt-0.5">{d.subtext}</p>
 							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">feat: nový API endpoint /v2/orders</p>
-							<p class="text-xs text-textSec mt-0.5">44s · 3 stroje ✓</p>
 						</div>
-					</div>
-					<div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-						<div class="mt-0.5 w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-xmark text-error text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.9</span>
-								<span class="text-xs text-textSec">2 dny 09:15</span>
-							</div>
-							<p class="text-xs text-error mt-0.5 truncate">Failed: health check timeout</p>
-							<p class="text-xs text-textSec mt-0.5">Rollback → v2.13.8</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-						<div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.8</span>
-								<span class="text-xs text-textSec">3 dny 14:00</span>
-							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">chore: deps update, perf patches</p>
-							<p class="text-xs text-textSec mt-0.5">41s · 3 stroje ✓</p>
-						</div>
-					</div>
-					<div class="flex items-start gap-3 py-2">
-						<div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-							<i class="fa-solid fa-check text-success text-xs"></i>
-						</div>
-						<div class="flex-1 min-w-0">
-							<div class="flex items-center justify-between">
-								<span class="text-textMain text-sm font-semibold">v2.13.7</span>
-								<span class="text-xs text-textSec">5 dní 08:22</span>
-							</div>
-							<p class="text-xs text-textSec mt-0.5 truncate">fix: rate limiter edge case</p>
-							<p class="text-xs text-textSec mt-0.5">36s · 3 stroje ✓</p>
-						</div>
-					</div>
+					{/each}
 				</div>
 			{/if}
 		</section>
@@ -1272,7 +901,7 @@
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
-					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-bold">8</span>
+					<span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-bold">{errorLog.length}</span>
 					<i class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-200 {errorsOpen ? 'rotate-180' : ''}"></i>
 				</div>
 			</button>
@@ -1287,110 +916,21 @@
 						</div>
 					</div>
 					<div class="space-y-2">
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span>
-									<span class="text-xs text-textSec font-mono">fra-02</span>
+						{#each errorLog as entry (entry.id)}
+							<div class="p-3 rounded-xl bg-[#1e293b]/40 border {entry.borderClass}">
+								<div class="flex items-center justify-between mb-1.5">
+									<div class="flex items-center gap-2">
+										<span class="px-1.5 py-0.5 {entry.levelClass} text-xs rounded font-medium">{entry.level}</span>
+										<span class="text-xs text-textSec font-mono">{entry.machine}</span>
+									</div>
+									<span class="text-xs text-textSec font-mono">{entry.time}</span>
 								</div>
-								<span class="text-xs text-textSec font-mono">14:51:02</span>
-							</div>
-							<p class="text-xs text-textMain">Process killed – exceeded 2 GB memory limit</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-									<span class="text-xs text-textSec font-mono">fra-02</span>
+								<p class="text-xs text-textMain">{entry.message}</p>
+								<div class="mt-1.5">
+									<span class="px-1.5 py-0.5 {entry.statusClass} text-xs rounded">{t(entry.statusKey)}</span>
 								</div>
-								<span class="text-xs text-textSec font-mono">13:22:44</span>
 							</div>
-							<p class="text-xs text-textMain">Unhandled exception in /api/v2/orders handler</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span>
-									<span class="text-xs text-textSec font-mono">fra-01</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">11:08:31</span>
-							</div>
-							<p class="text-xs text-textMain">Health check failed 3x – /health returned 503</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-									<span class="text-xs text-textSec font-mono">fra-02</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">10:44:19</span>
-							</div>
-							<p class="text-xs text-textMain">SIGKILL received after 30s startup timeout</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span>
-									<span class="text-xs text-textSec font-mono">fra-03</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">08:17:55</span>
-							</div>
-							<p class="text-xs text-textMain">RSS memory exceeded limit during batch job</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#8b5cf6]/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Timeout</span>
-									<span class="text-xs text-textSec font-mono">fra-01</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">06:03:12</span>
-							</div>
-							<p class="text-xs text-textMain">Request timeout 30s exceeded on POST /webhooks</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-									<span class="text-xs text-textSec font-mono">fra-02</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">03:40:08</span>
-							</div>
-							<p class="text-xs text-textMain">Segfault in native addon – node-canvas v2.11.2</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_restarted')}</span>
-							</div>
-						</div>
-						<div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-							<div class="flex items-center justify-between mb-1.5">
-								<div class="flex items-center gap-2">
-									<span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span>
-									<span class="text-xs text-textSec font-mono">fra-01</span>
-								</div>
-								<span class="text-xs text-textSec font-mono">01:14:33</span>
-							</div>
-							<p class="text-xs text-textMain">Readiness probe failed – DB connection not ready</p>
-							<div class="mt-1.5">
-								<span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">{t('common_status_resolved')}</span>
-							</div>
-						</div>
+						{/each}
 					</div>
 				</div>
 			{/if}
