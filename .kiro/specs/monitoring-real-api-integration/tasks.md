@@ -55,7 +55,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Use Bearer token auth, 10s timeout
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 7.1, 7.5_
 
-  - [ ] 2.3 Create the Stripe client (`src/lib/server/clients/stripeClient.ts`)
+  - [x] 2.3 Create the Stripe client (`src/lib/server/clients/stripeClient.ts`)
     - Define `StripeClientConfig` extending `ClientConfig`
     - Define raw response types (`StripeSubscriptionRaw`, `StripePriceRaw`)
     - Implement `getActiveSubscriptions(config)` — list active subs
