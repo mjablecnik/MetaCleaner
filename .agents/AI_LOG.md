@@ -1,5 +1,15 @@
 # AI Log
 
+## 2026-06-28 08:27 — manual
+- Project: frontend (metacleaner-monitoring)
+- Completed the **full UI decomposition refactor** of the Monitorly monitoring app (`.agents/tmp/REFACTORING.md` / `TASKS.md`, all 67 tasks done), breaking the 10 monolithic page files (~8,200 lines) into a Theme → Elements → Components → Sections → Page hierarchy with no visual change; net removed ~7,800 lines of duplicated markup
+- **Phase 0 — theme tokens** (`ec0fa75`): extended `src/routes/layout.css` `@theme` with 10 missing color tokens (`--color-surface`, `--color-border`, `--color-blue`, `--color-green-muted`, `--color-purple`, `--color-amber`, `--color-purple-light`, `--color-surface-hover`, `--color-surface-deep`, `--color-blue-light`), added `src/lib/theme/chartColors.ts` for Plotly, and replaced ~770 hardcoded hex utilities (`bg-[#1e293b]` etc.) with theme tokens across all pages
+- **Phase 1 — shared elements** (`2c24f02`, `8dab7ea`, `3e805d6`, `b12de2f`): created 8 reusable elements under `src/lib/shared/elements/` with Storybook stories — `StatCard`, `ChartCard`, `AccordionSection`, `StatusBadge`, `MethodBadge`, `ProgressBar`, `FilterPill`, `DataTable`
+- **Phase 2 — shared components** (`5abe3c0`, `cb034a3`): created 6 components under `src/lib/shared/components/` with stories — `MobileBottomNav`, `PageHeader`, `KpiGrid`, `PlotlyChart` (Plotly init/resize/cleanup wrapper), `EventLogTable`, `TabSwitcher`
+- **Phase 3 — page-specific components & sections** (`13bbb02`, `bb77aa1`, `90b82ca`, `ba83f5a`, `4f349c2`, `726e4fb`, `7e5715e`, `0ec1a4a`, `936b0df`, `0eaf6ff`, `277fef9`, `996d513`): built per-page `components/` (e.g. `AlertItem`, `ServiceUptimeCard`, `UptimeTimeline`, `InstanceCard`, `DeployItem`, `FunnelStep`, `CohortCell`, `UserRow`, `PaginationControls`) and `sections/` (KPI, charts, log, and feature sections for Dashboard, Availability, Errors, Database, Runtime, Edge, Performance, Security, Business, Users), each with stories
+- **Phase 4 — page refactors** (`7e953f7`, `4d2c90a`): rewrote all 10 `+page.svelte` files to thin compositions of `PageHeader` + sections + `MobileBottomNav`, removing ~7,880 lines of inline markup
+- **Storybook fix** (`bbe6b47`): corrected invalid `exportName` values in story files whose names start with numbers (`CohortCell`, `ErrorLogRow`)
+
 ## 2026-06-27 23:36 — manual
 - Project: frontend (metacleaner-monitoring)
 - Completed the **i18n + repository refactor** of the Monitorly monitoring app (`.agents/tmp/TASKS.md` / `DATA_SPEC.md`, all 41 tasks done), extracting ~1,500 hardcoded Czech/English strings into Paraglide translation keys and moving all mock data out of components into a typed repository layer
