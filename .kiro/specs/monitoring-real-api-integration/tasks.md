@@ -213,7 +213,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Sort slow endpoints by avg response time desc, limit to 10
     - _Requirements: 3.1, 3.3, 14.1, 14.2, 14.3, 14.4, 12.1, 12.4_
 
-  - [ ] 6.8 Create business load function (`src/routes/business/+page.server.ts`)
+  - [x] 6.8 Create business load function (`src/routes/business/+page.server.ts`)
     - Check Stripe config
     - Fetch active subs, canceled subs, prices
     - Map to `BusinessKpiStat[]`, `PlanRevenue[]`, `ConversionFunnelStep[]`
