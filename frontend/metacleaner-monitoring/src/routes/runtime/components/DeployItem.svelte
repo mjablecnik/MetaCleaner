@@ -8,6 +8,13 @@
 	}
 
 	let { deploy: d, variant = 'desktop', showDivider = false }: Props = $props();
+
+	function appBadgeClass(app: string): string {
+		if (app === 'metacleaner-server') return 'bg-[#3b82f6]/15 text-[#3b82f6]';
+		if (app === 'metacleaner-web') return 'bg-success/15 text-success';
+		if (app === 'metacleaner-app') return 'bg-[#8b5cf6]/15 text-[#8b5cf6]';
+		return 'bg-surface/60 text-textSec';
+	}
 </script>
 
 {#if variant === 'desktop'}
@@ -25,8 +32,11 @@
 		</div>
 		<div class="flex-1 min-w-0">
 			<div class="flex items-center justify-between">
-				<span class="text-textMain text-sm font-semibold">{d.version}</span>
-				<span class="text-xs text-textSec">{d.timestamp}</span>
+				<div class="flex items-center gap-1.5 min-w-0">
+					<span class="text-textMain text-sm font-semibold">{d.version}</span>
+					<span class="text-xs px-1.5 py-0.5 rounded-md {appBadgeClass(d.app)}">{d.app}</span>
+				</div>
+				<span class="text-xs text-textSec flex-shrink-0 ml-2">{d.timestamp}</span>
 			</div>
 			<p class="text-xs {d.status === 'failed' ? 'text-error' : 'text-textSec'} mt-0.5 truncate">
 				{d.commitMessage}
@@ -49,8 +59,11 @@
 		</div>
 		<div class="flex-1 min-w-0">
 			<div class="flex items-center justify-between">
-				<span class="text-textMain text-sm font-semibold">{d.version}</span>
-				<span class="text-xs text-textSec">{d.timestamp}</span>
+				<div class="flex items-center gap-1.5 min-w-0">
+					<span class="text-textMain text-sm font-semibold">{d.version}</span>
+					<span class="text-xs px-1.5 py-0.5 rounded-md {appBadgeClass(d.app)}">{d.app}</span>
+				</div>
+				<span class="text-xs text-textSec flex-shrink-0 ml-2">{d.timestamp}</span>
 			</div>
 			<p class="text-xs {d.status === 'failed' ? 'text-error' : 'text-textSec'} mt-0.5 truncate">
 				{d.commitMessage}

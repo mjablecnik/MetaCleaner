@@ -15,7 +15,10 @@
 		<div class="flex items-center justify-between mb-3">
 			<div class="flex items-center gap-3">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				<span class="text-textMain font-medium text-sm font-mono">{m.name} · {m.displayId}</span>
+				<div>
+					<span class="text-textMain font-medium text-sm font-mono">{m.name} · {m.displayId}</span>
+					<span class="text-xs text-textSec block mt-0.5">{m.app}</span>
+				</div>
 				<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">{m.status}</span>
 			</div>
 			<span class="text-xs text-textSec">shared-cpu-2x · {m.ramTotalDisplay} GB RAM</span>
@@ -52,7 +55,10 @@
 		<div class="flex items-center justify-between mb-3">
 			<div class="flex items-center gap-2">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-				<span class="text-textMain font-medium text-xs font-mono">{m.name} · {m.displayId}</span>
+				<div>
+					<span class="text-textMain font-medium text-xs font-mono">{m.name} · {m.displayId}</span>
+					<span class="text-xs text-textSec block mt-0.5">{m.app}</span>
+				</div>
 			</div>
 			<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">{m.status}</span>
 		</div>
