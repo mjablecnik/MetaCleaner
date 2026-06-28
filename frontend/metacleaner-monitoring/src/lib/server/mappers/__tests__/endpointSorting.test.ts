@@ -118,12 +118,11 @@ describe('Property 11: Endpoint Sorting and Limiting', () => {
 		fc.assert(
 			fc.property(fc.array(endpointRecordArb, { minLength: 1, maxLength: 20 }), (records) => {
 				const result = mapToSlowEndpoints(records);
-				const inputById = new Map(records.map((r) => [r.id, r]));
 				for (const entry of result) {
-					const original = inputById.get(entry.id);
-					if (original) {
-						expect(entry.avgMs).toBe(original.avgMs);
-					}
+					// Verify the result entry corresponds to an actual input record (by id AND avgMs),
+					// because duplicate IDs are possible and a Map would only store the last one.
+					const original = records.find((r) => r.id === entry.id && r.avgMs === entry.avgMs);
+					expect(original).toBeDefined();
 				}
 			}),
 			{ numRuns: 100 }

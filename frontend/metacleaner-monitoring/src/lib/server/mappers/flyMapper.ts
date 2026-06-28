@@ -1,4 +1,4 @@
-import type { MachineInstance, DeployEntry, ServiceCard, RuntimeStat, RuntimeErrorEntry } from '$lib/repositories/index.js';
+import type { MachineInstance, DeployEntry, ServiceCard, RuntimeStat, RuntimeErrorEntry, HealthCheck, Incident, SlaGoal } from '$lib/repositories/index.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
 
 const REGION_NAMES: Record<string, string> = {
@@ -326,6 +326,106 @@ export function mapToRuntimeErrors(machines: FlyMachineRaw[]): RuntimeErrorEntry
 	entries.sort((a, b) => b._sortMs - a._sortMs);
 
 	return entries.slice(0, 20).map(({ _sortMs: _ts, ...entry }) => entry);
+}
+
+export function mapToHealthChecks(raw: Map<string, FlyMachineRaw[]>): HealthCheck[] {
+	const checks: HealthCheck[] = [];
+
+	for (const [app, machines] of raw) {
+		for (const machine of machines) {
+			if (machine.checks && machine.checks.length > 0) {
+				for (const check of machine.checks) {
+					const isPassing = check.status === 'passing';
+					checks.push({
+						endpoint: check.name || `check:${machine.id.slice(0, 8)}`,
+						service: app,
+						status: isPassing ? 'online' : 'degraded',
+						statusCode: isPassing ? '200 OK' : '—',
+						latencyMs: 0
+					});
+				}
+			} else {
+				const isRunning = machine.state === 'started';
+				checks.push({
+					endpoint: `machine:${machine.id.slice(0, 8)}`,
+					service: app,
+					status: isRunning ? 'online' : 'offline',
+					statusCode: isRunning ? '200 OK' : '—',
+					latencyMs: 0
+				});
+			}
+		}
+	}
+
+	return checks;
+}
+
+export function mapToIncidents(raw: Map<string, FlyMachineRaw[]>): Incident[] {
+	type WithMs = Incident & { _sortMs: number };
+	const incidents: WithMs[] = [];
+
+	for (const [app, machines] of raw) {
+		for (const machine of machines) {
+			for (const event of machine.events ?? []) {
+				const cfg = classifyEvent(event.type, event.status);
+				if (!cfg) continue;
+
+				const tsMs = flyTimestampToMs(event.timestamp);
+				const date = new Date(tsMs);
+				const diffDays = Math.floor((Date.now() - tsMs) / (1000 * 60 * 60 * 24));
+				const hh = String(date.getHours()).padStart(2, '0');
+				const mm = String(date.getMinutes()).padStart(2, '0');
+
+				let timestampDisplay: string;
+				if (diffDays === 0) timestampDisplay = `Today, ${hh}:${mm}`;
+				else if (diffDays === 1) timestampDisplay = `Yesterday, ${hh}:${mm}`;
+				else timestampDisplay = `${diffDays} days ago, ${hh}:${mm}`;
+
+				incidents.push({
+					_sortMs: tsMs,
+					id: `fly-${machine.id}-${event.timestamp}`,
+					status: 'resolved',
+					title: `${cfg.level} on ${machine.name}`,
+					descriptionDesktop: cfg.message(machine, event.type),
+					descriptionMobile: cfg.message(machine, event.type),
+					service: app,
+					serviceIcon: 'fa-server',
+					timestamp: timestampDisplay,
+					duration: '—'
+				});
+			}
+		}
+	}
+
+	incidents.sort((a, b) => b._sortMs - a._sortMs);
+	return incidents.slice(0, 10).map(({ _sortMs: _, ...inc }) => inc);
+}
+
+export function mapToSlaGoals(raw: Map<string, FlyMachineRaw[]>): SlaGoal[] {
+	const goals: SlaGoal[] = [];
+
+	for (const [app, machines] of raw) {
+		const status = getAppStatus(machines);
+		const totalMachines = machines.length;
+		const onlineMachines = machines.filter((m) => m.state === 'started').length;
+		const uptimePercent =
+			totalMachines > 0 ? Math.round((onlineMachines / totalMachines) * 10000) / 100 : 0;
+
+		const target = 99.9;
+		const met = uptimePercent >= target;
+		const barClass =
+			met ? 'bg-success' : status === 'degraded' ? 'bg-secondary' : 'bg-error';
+
+		goals.push({
+			service: app,
+			actual: uptimePercent,
+			target,
+			met,
+			barClass
+		});
+	}
+
+	return goals;
 }
 
 export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeStat[] {
