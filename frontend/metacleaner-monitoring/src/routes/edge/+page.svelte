@@ -18,7 +18,6 @@
 			label: t('layout_nav_edge'),
 			activeClass: 'text-cf-orange'
 		},
-		{ href: `${base}/security`, icon: 'fa-shield-halved', label: t('layout_nav_security') },
 		{ href: `${base}/business`, icon: 'fa-chart-line', label: t('layout_nav_business') }
 	];
 </script>

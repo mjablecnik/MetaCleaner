@@ -31,7 +31,6 @@ export function getNavSections(base: string): NavSection[] {
 			labelKey: 'layout_nav_analytics',
 			items: [
 				{ href: `${base}/performance`, labelKey: 'layout_nav_performance', icon: 'fa-bolt' },
-				{ href: `${base}/security`, labelKey: 'layout_nav_security', icon: 'fa-shield-halved' },
 				{ href: `${base}/business`, labelKey: 'layout_nav_business', icon: 'fa-chart-line' },
 				{ href: `${base}/uzivatele`, labelKey: 'layout_nav_users', icon: 'fa-users' }
 			]

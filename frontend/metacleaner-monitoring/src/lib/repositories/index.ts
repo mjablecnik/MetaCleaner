@@ -6,6 +6,5 @@ export * from './databaseRepository.js';
 export * from './runtimeRepository.js';
 export * from './edgeRepository.js';
 export * from './performanceRepository.js';
-export * from './securityRepository.js';
 export * from './businessRepository.js';
 export * from './usersRepository.js';

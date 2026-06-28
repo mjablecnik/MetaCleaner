@@ -6,7 +6,6 @@
 	import PerformanceKpiSection from './sections/PerformanceKpiSection.svelte';
 	import PerformanceChartsSection from './sections/PerformanceChartsSection.svelte';
 	import PerformanceEndpointsSection from './sections/PerformanceEndpointsSection.svelte';
-	import PerformanceWebVitalsSection from './sections/PerformanceWebVitalsSection.svelte';
 	import PerformanceEventLogSection from './sections/PerformanceEventLogSection.svelte';
 
 	const navItems = [
@@ -86,7 +85,6 @@
 	<PerformanceKpiSection />
 	<PerformanceChartsSection />
 	<PerformanceEndpointsSection />
-	<PerformanceWebVitalsSection />
 	<PerformanceEventLogSection />
 </div>
 
