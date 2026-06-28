@@ -12,6 +12,7 @@
 		iconClass?: string;
 		statusBadge?: Snippet;
 		actions?: Snippet;
+		mobileContent?: Snippet;
 	}
 
 	let {
@@ -23,7 +24,8 @@
 		iconContainerClass = 'bg-primary/15 border border-primary/30',
 		iconClass = 'text-primary text-sm',
 		statusBadge,
-		actions
+		actions,
+		mobileContent
 	}: Props = $props();
 
 	const mobileTitle = $derived(titleMobileKey ?? titleKey);
@@ -55,15 +57,19 @@
 	</div>
 </header>
 
-<!-- Mobile title area -->
-<div class="lg:hidden p-4 space-y-3">
-	<div>
-		<h1 class="text-2xl font-bold text-textMain">{t(mobileTitle)}</h1>
-		{#if mobileSubtitle}
-			<p class="text-sm text-textSec mt-1">{t(mobileSubtitle)}</p>
+<!-- Mobile title area (custom or default) -->
+{#if mobileContent}
+	{@render mobileContent()}
+{:else}
+	<div class="lg:hidden p-4 space-y-3">
+		<div>
+			<h1 class="text-2xl font-bold text-textMain">{t(mobileTitle)}</h1>
+			{#if mobileSubtitle}
+				<p class="text-sm text-textSec mt-1">{t(mobileSubtitle)}</p>
+			{/if}
+		</div>
+		{#if statusBadge}
+			{@render statusBadge()}
 		{/if}
 	</div>
-	{#if statusBadge}
-		{@render statusBadge()}
-	{/if}
-</div>
+{/if}

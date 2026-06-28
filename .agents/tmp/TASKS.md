@@ -74,36 +74,36 @@
 
 ### Edge
 
-- [ ] 47. [HIGH] Create page-specific components in `src/routes/edge/components/`: `CacheRuleItem`, `TtfbRegionBar` + stories for each
-- [ ] 48. [HIGH] Create sections in `src/routes/edge/sections/`: `EdgeKpiSection`, `EdgeChartsSection`, `EdgeThreatSection`, `EdgeCacheRulesSection`, `EdgeSecurityLogSection`
+- [x] 47. [HIGH] Create page-specific components in `src/routes/edge/components/`: `CacheRuleItem`, `TtfbRegionBar` + stories for each
+- [x] 48. [HIGH] Create sections in `src/routes/edge/sections/`: `EdgeKpiSection`, `EdgeChartsSection`, `EdgeThreatSection`, `EdgeCacheRulesSection`, `EdgeSecurityLogSection`
 
 ### Performance
 
-- [ ] 49. [HIGH] Create page-specific components in `src/routes/performance/components/`: `WebVitalCard`, `SlowEndpointRow` + stories for each
-- [ ] 50. [HIGH] Create sections in `src/routes/performance/sections/`: `PerformanceKpiSection`, `PerformanceChartsSection`, `PerformanceEndpointsSection`, `PerformanceWebVitalsSection`, `PerformanceEventLogSection`
+- [x] 49. [HIGH] Create page-specific components in `src/routes/performance/components/`: `WebVitalCard`, `SlowEndpointRow` + stories for each
+- [x] 50. [HIGH] Create sections in `src/routes/performance/sections/`: `PerformanceKpiSection`, `PerformanceChartsSection`, `PerformanceEndpointsSection`, `PerformanceWebVitalsSection`, `PerformanceEventLogSection`
 
 ### Security
 
-- [ ] 51. [HIGH] Create page-specific components in `src/routes/security/components/`: `ThreatItem`, `BlockedIpRow` + stories for each
-- [ ] 52. [HIGH] Create sections in `src/routes/security/sections/`: `SecurityKpiSection`, `SecurityChartsSection`, `SecurityThreatsSection`, `SecurityBlockedIpsSection`, `SecurityEventLogSection`
+- [x] 51. [HIGH] Create page-specific components in `src/routes/security/components/`: `ThreatItem`, `BlockedIpRow` + stories for each
+- [x] 52. [HIGH] Create sections in `src/routes/security/sections/`: `SecurityKpiSection`, `SecurityChartsSection`, `SecurityThreatsSection`, `SecurityBlockedIpsSection`, `SecurityEventLogSection`
 
 ### Business
 
-- [ ] 53. [HIGH] Create page-specific components in `src/routes/business/components/`: `FunnelStep`, `CohortCell`, `GoalProgressBar`, `TopCustomerRow` + stories for each
-- [ ] 54. [HIGH] Create sections in `src/routes/business/sections/`: `BusinessKpiSection`, `BusinessRevenueChartsSection`, `BusinessFunnelSection`, `BusinessCohortSection`, `BusinessGoalsSection`, `BusinessTopCustomersSection`
+- [x] 53. [HIGH] Create page-specific components in `src/routes/business/components/`: `FunnelStep`, `CohortCell`, `GoalProgressBar`, `TopCustomerRow` + stories for each
+- [x] 54. [HIGH] Create sections in `src/routes/business/sections/`: `BusinessKpiSection`, `BusinessRevenueChartsSection`, `BusinessFunnelSection`, `BusinessCohortSection`, `BusinessGoalsSection`, `BusinessTopCustomersSection`
 
 ### Users (uzivatele)
 
-- [ ] 55. [HIGH] Create page-specific components in `src/routes/uzivatele/components/`: `UserRow`, `UserCard`, `PaginationControls` + stories for each
-- [ ] 56. [HIGH] Create sections in `src/routes/uzivatele/sections/`: `UsersKpiSection`, `UsersChartsSection`, `UsersTableSection`
+- [x] 55. [HIGH] Create page-specific components in `src/routes/uzivatele/components/`: `UserRow`, `UserCard`, `PaginationControls` + stories for each
+- [x] 56. [HIGH] Create sections in `src/routes/uzivatele/sections/`: `UsersKpiSection`, `UsersChartsSection`, `UsersTableSection`
 
 ## Phase 4 — Refactor Pages
 
-- [ ] 57. [MEDIUM] Refactor Dashboard `src/routes/+page.svelte` to compose PageHeader + DashboardKpiSection + DashboardChartsRow1Section + DashboardChartsRow2Section + DashboardAlertsSection + MobileBottomNav
-- [ ] 58. [MEDIUM] Refactor Availability `src/routes/dostupnost/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 59. [MEDIUM] Refactor Errors `src/routes/chyby/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 60. [MEDIUM] Refactor Database `src/routes/databaze/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 61. [MEDIUM] Refactor Runtime `src/routes/runtime/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 57. [MEDIUM] Refactor Dashboard `src/routes/+page.svelte` to compose PageHeader + DashboardKpiSection + DashboardChartsRow1Section + DashboardChartsRow2Section + DashboardAlertsSection + MobileBottomNav
+- [x] 58. [MEDIUM] Refactor Availability `src/routes/dostupnost/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 59. [MEDIUM] Refactor Errors `src/routes/chyby/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 60. [MEDIUM] Refactor Database `src/routes/databaze/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 61. [MEDIUM] Refactor Runtime `src/routes/runtime/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 - [ ] 62. [MEDIUM] Refactor Edge `src/routes/edge/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 - [ ] 63. [MEDIUM] Refactor Performance `src/routes/performance/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 - [ ] 64. [MEDIUM] Refactor Security `src/routes/security/+page.svelte` to compose PageHeader + sections + MobileBottomNav
