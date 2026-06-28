@@ -10,7 +10,7 @@
 </script>
 
 <Story
-	name="500 Error Desktop"
+	name="ServerError Desktop"
 	args={{
 		entry: {
 			id: 'err-1',

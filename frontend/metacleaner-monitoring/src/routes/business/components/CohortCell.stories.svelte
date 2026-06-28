@@ -10,7 +10,7 @@
 </script>
 
 <Story
-	name="100 percent (M0)"
+	name="FullRetention M0"
 	args={{
 		percent: 100
 	}}

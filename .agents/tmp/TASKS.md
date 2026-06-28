@@ -112,4 +112,4 @@
 
 ## Final
 
-- [ ] 67. Verify all pages render correctly — no visual regressions, build passes (`bun run build`), Storybook builds (`bun run build-storybook`), no duplicated code
+- [x] 67. Verify all pages render correctly — no visual regressions, build passes (`bun run build`), Storybook builds (`bun run build-storybook`), no duplicated code
