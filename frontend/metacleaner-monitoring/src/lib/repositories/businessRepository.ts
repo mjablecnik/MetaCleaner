@@ -54,25 +54,25 @@ export function getBusinessKpiStats(): BusinessKpiStat[] {
 		{
 			key: 'mrr',
 			labelKey: 'business_kpi_mrr',
-			value: '$48,320',
-			badgeLabel: '+12.4%',
+			value: '$1,240',
+			badgeLabel: '+5.2%',
 			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
 			subtext: 'business_kpi_mrrSubtext'
 		},
 		{
 			key: 'activeUsers',
 			labelKey: 'business_kpi_activeUsers',
-			value: '12,842',
-			badgeLabel: '+8.1%',
+			value: '89',
+			badgeLabel: '+3.4%',
 			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
 			subtext: 'business_kpi_activeUsersSubtext'
 		},
 		{
 			key: 'churnRate',
 			labelKey: 'business_kpi_churnRate',
-			value: '2.1%',
-			badgeLabel: '-0.3%',
-			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
+			value: '3.2%',
+			badgeLabel: '+0.2%',
+			badgeClass: 'bg-[#ef4444]/10 text-[#ef4444]',
 			subtext: 'business_kpi_churnRateSubtext',
 			valueClass: 'text-[#ef4444]',
 			borderClass: 'border-[#ef4444]/20'
@@ -80,9 +80,9 @@ export function getBusinessKpiStats(): BusinessKpiStat[] {
 		{
 			key: 'newSubscriptions',
 			labelKey: 'business_kpi_newSubscriptions',
-			value: '1,204',
-			badgeLabel: '+142',
-			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
+			value: '$13.93',
+			badgeLabel: 'ARPU',
+			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
 			subtext: 'business_kpi_newSubscriptionsSubtext'
 		}
 	];
@@ -93,9 +93,9 @@ export function getBusinessSecondaryKpis(): BusinessSecondaryKpi[] {
 		{
 			key: 'newOrders',
 			labelKey: 'business_kpi_newOrders',
-			value: '1,204',
+			value: '7',
 			subtextKey: 'business_kpi_newOrdersSubtext',
-			subtextHighlight: '+142',
+			subtextHighlight: '+3',
 			subtextHighlightClass: 'text-[#22c55e] font-medium',
 			icon: 'fa-bag-shopping',
 			iconColor: 'text-[#22c55e]',
@@ -104,9 +104,9 @@ export function getBusinessSecondaryKpis(): BusinessSecondaryKpi[] {
 		{
 			key: 'newCustomers',
 			labelKey: 'business_kpi_newCustomers',
-			value: '318',
+			value: '34',
 			subtextKey: 'business_kpi_newCustomersSubtext',
-			subtextHighlight: '+42',
+			subtextHighlight: '+8',
 			subtextHighlightClass: 'text-[#22c55e] font-medium',
 			icon: 'fa-user-plus',
 			iconColor: 'text-[#8b5cf6]',
@@ -120,10 +120,10 @@ export function getOkrGoals(): OkrGoal[] {
 		{
 			id: 'okr-1',
 			titleKey: 'business_okr_mrrTarget',
-			current: 48320,
-			target: 60000,
+			current: 1240,
+			target: 2000,
 			unit: '$',
-			progressPercent: 80.5,
+			progressPercent: 62,
 			progressClass: 'bg-[#22c55e]',
 			statusKey: 'business_okr_onTrack',
 			statusClass: 'bg-[#22c55e]/10 text-[#22c55e]'
@@ -131,10 +131,10 @@ export function getOkrGoals(): OkrGoal[] {
 		{
 			id: 'okr-2',
 			titleKey: 'business_okr_churnTarget',
-			current: 2.1,
-			target: 2.0,
+			current: 3.2,
+			target: 2.5,
 			unit: '%',
-			progressPercent: 95,
+			progressPercent: 72,
 			progressClass: 'bg-secondary',
 			statusKey: 'business_okr_nearTarget',
 			statusClass: 'bg-secondary/10 text-secondary'
@@ -142,10 +142,10 @@ export function getOkrGoals(): OkrGoal[] {
 		{
 			id: 'okr-3',
 			titleKey: 'business_okr_userTarget',
-			current: 12842,
-			target: 15000,
+			current: 2100,
+			target: 3000,
 			unit: '',
-			progressPercent: 85.6,
+			progressPercent: 70,
 			progressClass: 'bg-[#3b82f6]',
 			statusKey: 'business_okr_onTrack',
 			statusClass: 'bg-[#22c55e]/10 text-[#22c55e]'
@@ -155,42 +155,41 @@ export function getOkrGoals(): OkrGoal[] {
 
 export function getPlanRevenue(): PlanRevenue[] {
 	return [
-		{ id: 'starter', label: 'Starter', value: 6840, color: '#3b82f6', percent: '14.1%' },
-		{ id: 'pro', label: 'Pro', value: 18200, color: '#22c55e', percent: '37.7%' },
-		{ id: 'business', label: 'Business', value: 14880, color: '#8b5cf6', percent: '30.8%' },
-		{ id: 'enterprise', label: 'Enterprise', value: 8400, color: '#f97316', percent: '17.4%' }
+		{ id: 'free', label: 'Free (1,840)', value: 0, color: '#475569', percent: '0%' },
+		{ id: 'pro', label: 'Pro (62)', value: 558, color: '#22c55e', percent: '41.6%' },
+		{ id: 'business', label: 'Business (27)', value: 783, color: '#8b5cf6', percent: '58.4%' }
 	];
 }
 
 export function getConversionFunnel(): ConversionFunnelStep[] {
 	return [
-		{ id: 'visitors', labelKey: 'business_funnel_visitors', value: 84210, color: '#3b82f6' },
+		{ id: 'visitors', labelKey: 'business_funnel_visitors', value: 12400, color: '#3b82f6' },
 		{
 			id: 'registrations',
 			labelKey: 'business_funnel_registrations',
-			value: 12318,
-			conversionPercent: '14.6%',
+			value: 2100,
+			conversionPercent: '16.9%',
 			color: '#8b5cf6'
 		},
 		{
 			id: 'trialActivation',
 			labelKey: 'business_funnel_trialActivation',
-			value: 6840,
-			conversionPercent: '55.5%',
+			value: 1840,
+			conversionPercent: '87.6%',
 			color: '#22c55e'
 		},
 		{
 			id: 'trialConversion',
 			labelKey: 'business_funnel_trialConversion',
-			value: 2104,
-			conversionPercent: '30.8%',
+			value: 89,
+			conversionPercent: '4.8%',
 			color: '#3ecf8e'
 		},
 		{
 			id: 'activePaying',
 			labelKey: 'business_funnel_activePaying',
-			value: 1840,
-			conversionPercent: '87.5%',
+			value: 89,
+			conversionPercent: '100%',
 			color: '#f97316'
 		}
 	];

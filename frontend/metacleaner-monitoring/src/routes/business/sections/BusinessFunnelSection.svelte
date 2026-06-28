@@ -32,11 +32,11 @@
 		const dataPlanRevenue = [
 			{
 				type: 'pie',
-				labels: ['Starter', 'Pro', 'Business', 'Enterprise'],
-				values: [6840, 18200, 14880, 8400],
+				labels: ['Free', 'Pro', 'Business'],
+				values: [0, 558, 783],
 				hole: 0.58,
 				marker: {
-					colors: [blueColor, primary, purpleColor, secondaryColor],
+					colors: ['#475569', primary, purpleColor],
 					line: { color: bgCard, width: 2 }
 				},
 				textinfo: 'none',
@@ -47,7 +47,7 @@
 			...pieLayout,
 			annotations: [
 				{
-					text: `<b style="font-size:14px;color:${chartColors.textMain}">$48,320</b><br><span style="font-size:9px;color:${chartColors.textSec}">MRR celkem</span>`,
+					text: `<b style="font-size:14px;color:${chartColors.textMain}">$1,240</b><br><span style="font-size:9px;color:${chartColors.textSec}">MRR celkem</span>`,
 					x: 0.5,
 					y: 0.5,
 					xanchor: 'center',
@@ -95,11 +95,11 @@
 		<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
 			<div>
 				<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
-				<div class="text-textMain font-semibold">2.19%</div>
+				<div class="text-textMain font-semibold">0.72%</div>
 			</div>
 			<div>
 				<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
-				<div class="text-textMain font-semibold">30.76%</div>
+				<div class="text-textMain font-semibold">4.84%</div>
 			</div>
 		</div>
 	</div>
@@ -111,7 +111,7 @@
 			</div>
 		</div>
 		<div id="chart-plan-revenue" class="h-[200px] w-full"></div>
-		<div class="mt-3 grid grid-cols-4 gap-2">
+		<div class="mt-3 grid grid-cols-3 gap-2">
 			{#each planRevenue as plan (plan.label)}
 				<div
 					class="text-center p-2 rounded-lg"
@@ -147,11 +147,11 @@
 		<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
 			<div>
 				<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
-				<div class="text-textMain font-semibold">2.19%</div>
+				<div class="text-textMain font-semibold">0.72%</div>
 			</div>
 			<div>
 				<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
-				<div class="text-textMain font-semibold">30.76%</div>
+				<div class="text-textMain font-semibold">4.84%</div>
 			</div>
 		</div>
 	</section>

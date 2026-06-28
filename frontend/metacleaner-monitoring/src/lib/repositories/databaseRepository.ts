@@ -56,48 +56,48 @@ export function getDbKpis(): DbKpi[] {
 		{
 			key: 'activeConnections',
 			labelKey: 'database_kpi_activeConnections',
-			value: '87',
-			badgeKey: 'common_status_warning',
-			badgeClass: 'bg-secondary/10 text-secondary',
-			subtext: 'Pool utilization: 87%',
+			value: '42',
+			badgeKey: 'common_status_ok',
+			badgeClass: 'bg-success/10 text-success',
+			subtext: 'Pool utilization: 42%',
 			unit: '',
 			max: '/ 100',
-			barWidth: '87%',
-			barClass: 'bg-secondary'
+			barWidth: '42%',
+			barClass: 'bg-[#3b82f6]'
 		},
 		{
 			key: 'queryLatency',
 			labelKey: 'database_kpi_queryLatency',
-			value: '24',
+			value: '12',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'P95: 142ms · P99: 380ms',
+			subtext: 'P95: 68ms · P99: 180ms',
 			unit: 'ms',
-			trend: '-3ms',
+			trend: '-4ms',
 			trendClass: 'text-success'
 		},
 		{
 			key: 'storageUsed',
 			labelKey: 'database_kpi_storage',
-			value: '6.2',
+			value: '2.4',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: '77.5% kapacity využito',
+			subtext: '30% kapacity využito',
 			unit: '',
 			max: '/ 8 GB',
-			barWidth: '77%',
+			barWidth: '30%',
 			barClass: 'bg-[#3b82f6]'
 		},
 		{
 			key: 'dbErrors',
 			labelKey: 'database_kpi_errors',
-			value: '12',
+			value: '3',
 			valueClass: 'text-error',
-			badgeKey: 'common_status_critical',
-			badgeClass: 'bg-error/10 text-error',
-			subtext: 'Timeout, deadlock, conn reset',
-			trend: '+7',
-			trendClass: 'text-error'
+			badgeKey: 'common_status_warning',
+			badgeClass: 'bg-secondary/10 text-secondary',
+			subtext: 'Timeout, conn reset',
+			trend: '+1',
+			trendClass: 'text-secondary'
 		}
 	];
 }
@@ -185,8 +185,8 @@ export function getDbErrorLog(): DbErrorEntry[] {
 			time: '14:32:11',
 			type: 'Timeout',
 			typeClass: 'bg-error/15 text-error',
-			message: 'Connection pool exhausted – max 100 connections reached',
-			table: 'orders',
+			message: 'Query timeout on reports JOIN – missing index on user_id',
+			table: 'reports',
 			duration: '30,000 ms',
 			durationClass: 'text-error',
 			statusKey: 'common_status_active',
@@ -195,60 +195,24 @@ export function getDbErrorLog(): DbErrorEntry[] {
 		{
 			id: 'dberr-2',
 			time: '13:58:04',
-			type: 'Deadlock',
-			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			message: 'Deadlock detected between transactions T1 and T2',
-			table: 'products',
-			duration: '—',
-			durationClass: 'text-textSec',
-			statusKey: 'common_status_resolved',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'dberr-3',
-			time: '13:21:39',
 			type: 'Conn',
 			typeClass: 'bg-secondary/15 text-secondary',
-			message: 'Connection reset by peer during large SELECT query',
-			table: 'analytics',
+			message: 'Connection reset by peer during large SELECT on files',
+			table: 'files',
 			duration: '8,200 ms',
 			durationClass: 'text-secondary',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
-			id: 'dberr-4',
+			id: 'dberr-3',
 			time: '12:44:17',
 			type: 'Timeout',
 			typeClass: 'bg-error/15 text-error',
-			message: 'Query timeout on full table scan – missing index on user_id',
-			table: 'events',
-			duration: '30,000 ms',
+			message: 'INSERT timeout – jobs table write under high load',
+			table: 'jobs',
+			duration: '15,000 ms',
 			durationClass: 'text-error',
-			statusKey: 'common_status_resolved',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'dberr-5',
-			time: '11:05:52',
-			type: 'Lock',
-			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			message: 'Row-level lock wait exceeded 10s on UPDATE statement',
-			table: 'orders',
-			duration: '10,140 ms',
-			durationClass: 'text-textSec',
-			statusKey: 'common_status_resolved',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'dberr-6',
-			time: '09:30:08',
-			type: 'Repl',
-			typeClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			message: 'Replication lag spike to 480ms detected on standby replica',
-			table: '—',
-			duration: '480 ms lag',
-			durationClass: 'text-textSec',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		}
@@ -264,9 +228,9 @@ export interface DatabaseStats {
 
 export function getDatabaseStats(): DatabaseStats {
 	return {
-		totalStorage: '6.2 GB',
+		totalStorage: '2.4 GB',
 		maxStorage: '8 GB',
-		storagePercent: 77,
-		estimatedFillDays: '~14 dní'
+		storagePercent: 30,
+		estimatedFillDays: '~120 dní'
 	};
 }
