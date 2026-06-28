@@ -14,15 +14,6 @@ export interface DbKpi {
 	barClass?: string;
 }
 
-export interface DbSecondaryKpi {
-	key: string;
-	labelKey: string;
-	value: string;
-	iconClass: string;
-	icon: string;
-	subtext: string;
-}
-
 export interface SlowQuery {
 	type: string;
 	typeClass: string;
@@ -107,43 +98,6 @@ export function getDbKpis(): DbKpi[] {
 			subtext: 'Timeout, deadlock, conn reset',
 			trend: '+7',
 			trendClass: 'text-error'
-		}
-	];
-}
-
-export function getDbSecondaryKpis(): DbSecondaryKpi[] {
-	return [
-		{
-			key: 'queriesPerMin',
-			labelKey: 'database_kpi_queriesPerMin',
-			value: '1,842',
-			icon: 'fa-arrow-right-to-bracket',
-			iconClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			subtext: 'Peak: 3,210 qps (10:42)'
-		},
-		{
-			key: 'replicationLag',
-			labelKey: 'database_kpi_replicationLag',
-			value: '18 ms',
-			icon: 'fa-copy',
-			iconClass: 'bg-[#3ecf8e]/15 text-[#3ecf8e]',
-			subtext: 'Replika: eu-west-1b · OK'
-		},
-		{
-			key: 'locks',
-			labelKey: 'database_kpi_locks',
-			value: '3',
-			icon: 'fa-lock',
-			iconClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			subtext: 'Deadlocks dnes: 1'
-		},
-		{
-			key: 'backups',
-			labelKey: 'database_kpi_backups',
-			value: 'Aktuální',
-			icon: 'fa-shield-halved',
-			iconClass: 'bg-success/15 text-success',
-			subtext: 'Poslední: dnes 03:00 · 4.8 GB'
 		}
 	];
 }

@@ -12,15 +12,15 @@
 - [x] 10. [HIGH] Remove `getErrorCodeDistribution` from `src/lib/repositories/performanceRepository.ts`
 - [x] 11. [HIGH] Delete `src/routes/runtime/sections/RuntimeHttpSection.svelte`
 - [x] 12. [HIGH] Remove `RuntimeHttpSection` import and usage from `src/routes/runtime/+page.svelte`
-- [ ] 13. [HIGH] Remove `getRuntimeHttpStatusDistribution` from `src/lib/repositories/runtimeRepository.ts`
-- [ ] 14. [HIGH] Remove TTFB region content from `src/routes/edge/sections/EdgeThreatSection.svelte` — remove TtfbRegionBar import, TTFB bars/charts (desktop + mobile), simplify grid to single column
-- [ ] 15. [HIGH] Delete `src/routes/edge/components/TtfbRegionBar.svelte` and `TtfbRegionBar.stories.svelte`
-- [ ] 16. [HIGH] Remove `getTtfbRegions` from `src/lib/repositories/edgeRepository.ts`
-- [ ] 17. [HIGH] Delete `src/routes/databaze/sections/DatabaseSecondaryKpiSection.svelte`
-- [ ] 18. [HIGH] Remove `DatabaseSecondaryKpiSection` import and usage from `src/routes/databaze/+page.svelte`
-- [ ] 19. [HIGH] Remove `getDbSecondaryKpis` from `src/lib/repositories/databaseRepository.ts`
-- [ ] 20. [HIGH] Remove Active Sessions chart from `src/routes/uzivatele/sections/UsersChartsSection.svelte` — remove session Plotly code, chart elements, change desktop grid to single full-width
-- [ ] 21. [MEDIUM] Add Sentry and Stripe env vars to `.env.example`
-- [ ] 22. [MEDIUM] Remove unused i18n keys from `messages/en.json` (prefixes: `security_`, `performance_cwv_`, `edge_ttfb_`, `runtime_charts_http`, `runtime_charts_rpm`)
+- [x] 13. [HIGH] Remove `getRuntimeHttpStatusDistribution` from `src/lib/repositories/runtimeRepository.ts`
+- [x] 14. [HIGH] Remove TTFB region content from `src/routes/edge/sections/EdgeThreatSection.svelte` — remove TtfbRegionBar import, TTFB bars/charts (desktop + mobile), simplify grid to single column
+- [x] 15. [HIGH] Delete `src/routes/edge/components/TtfbRegionBar.svelte` and `TtfbRegionBar.stories.svelte`
+- [x] 16. [HIGH] Remove `getTtfbRegions` from `src/lib/repositories/edgeRepository.ts`
+- [x] 17. [HIGH] Delete `src/routes/databaze/sections/DatabaseSecondaryKpiSection.svelte`
+- [x] 18. [HIGH] Remove `DatabaseSecondaryKpiSection` import and usage from `src/routes/databaze/+page.svelte`
+- [x] 19. [HIGH] Remove `getDbSecondaryKpis` from `src/lib/repositories/databaseRepository.ts`
+- [x] 20. [HIGH] Remove Active Sessions chart from `src/routes/uzivatele/sections/UsersChartsSection.svelte` — remove session Plotly code, chart elements, change desktop grid to single full-width
+- [x] 21. [MEDIUM] Add Sentry and Stripe env vars to `.env.example`
+- [x] 22. [MEDIUM] Remove unused i18n keys from `messages/en.json` (prefixes: `security_`, `performance_cwv_`, `edge_ttfb_`, `runtime_charts_http`, `runtime_charts_rpm`)
 - [ ] 23. [MEDIUM] Remove unused i18n keys from `messages/cs.json` (same prefixes as above)
 - [ ] 24. [MEDIUM] Verify build passes with `bun run check`
