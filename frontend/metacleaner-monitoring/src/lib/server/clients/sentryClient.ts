@@ -6,6 +6,7 @@ export interface SentryIssueRaw {
 	title: string;
 	culprit: string;
 	status: string;
+	level: string;
 	lastSeen: string;
 	firstSeen: string;
 	count: string;
