@@ -37,7 +37,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - _Requirements: 1.4_
 
 - [ ] 2. Implement API client modules
-  - [ ] 2.1 Create the Fly.io client (`src/lib/server/clients/flyClient.ts`)
+  - [x] 2.1 Create the Fly.io client (`src/lib/server/clients/flyClient.ts`)
     - Define `FlyClientConfig` extending `ClientConfig` with `org`, `apps` fields
     - Define raw response types (`FlyMachineRaw`, etc.)
     - Implement `getMachines(config, app)` — fetch machine list for a single app
