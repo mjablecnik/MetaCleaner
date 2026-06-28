@@ -270,10 +270,17 @@ export function getIncidents(): Incident[] {
 
 export function getSlaGoals(): SlaGoal[] {
 	return [
-		{ service: 'Frontend', actual: 99.99, target: 99.9, met: true, barClass: 'bg-success' },
-		{ service: 'Backend API', actual: 99.95, target: 99.9, met: true, barClass: 'bg-success' },
-		{ service: 'Databáze', actual: 99.97, target: 99.5, met: true, barClass: 'bg-success' },
-		{ service: 'Edge CDN', actual: 99.82, target: 99.9, met: false, barClass: 'bg-secondary' }
+		{
+			service: 'MetaCleaner Server',
+			actual: 99.92,
+			target: 99.9,
+			met: true,
+			barClass: 'bg-success'
+		},
+		{ service: 'MetaCleaner Web', actual: 99.99, target: 99.9, met: true, barClass: 'bg-success' },
+		{ service: 'MetaCleaner App', actual: 99.99, target: 99.9, met: true, barClass: 'bg-success' },
+		{ service: 'Supabase DB', actual: 99.97, target: 99.5, met: true, barClass: 'bg-success' },
+		{ service: 'Cloudflare CDN', actual: 99.94, target: 99.9, met: true, barClass: 'bg-success' }
 	];
 }
 

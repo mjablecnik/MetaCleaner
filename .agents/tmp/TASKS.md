@@ -5,11 +5,11 @@
 - [x] 3. [HIGH] Replace `getServiceCards()` in `availabilityRepository.ts` with the 7 MetaCleaner services (server/web/app/monitoring/database/auth/edge) per BRIEF A1
 - [x] 4. [HIGH] Replace `getHealthChecks()` in `availabilityRepository.ts` with the 6 MetaCleaner health checks per BRIEF A1
 - [x] 5. [HIGH] Replace `getIncidents()` in `availabilityRepository.ts` with the 4 MetaCleaner incidents per BRIEF A1
-- [ ] 6. [HIGH] Replace `getSlaGoals()` in `availabilityRepository.ts` with the 5 MetaCleaner SLA goals per BRIEF A1
-- [ ] 7. [HIGH] Add `app: string` field to the `MachineInstance` interface in `runtimeRepository.ts` (B2)
-- [ ] 8. [HIGH] Add `app: string` field to the `DeployEntry` interface in `runtimeRepository.ts` (B1)
-- [ ] 9. [HIGH] Replace `getMachineInstances()` in `runtimeRepository.ts` with the 5 real machines (server-01/02, web-01, app-01, mon-01) including the `app` field per BRIEF A4
-- [ ] 10. [HIGH] Replace `getDeployHistory()` in `runtimeRepository.ts` with the 5 real deploys including the `app` field per BRIEF A4
+- [x] 6. [HIGH] Replace `getSlaGoals()` in `availabilityRepository.ts` with the 5 MetaCleaner SLA goals per BRIEF A1
+- [x] 7. [HIGH] Add `app: string` field to the `MachineInstance` interface in `runtimeRepository.ts` (B2)
+- [x] 8. [HIGH] Add `app: string` field to the `DeployEntry` interface in `runtimeRepository.ts` (B1)
+- [x] 9. [HIGH] Replace `getMachineInstances()` in `runtimeRepository.ts` with the 5 real machines (server-01/02, web-01, app-01, mon-01) including the `app` field per BRIEF A4
+- [x] 10. [HIGH] Replace `getDeployHistory()` in `runtimeRepository.ts` with the 5 real deploys including the `app` field per BRIEF A4
 - [ ] 11. [HIGH] Replace `getRuntimeErrorLog()` in `runtimeRepository.ts` with the 8 MetaCleaner runtime error entries per BRIEF A4
 - [ ] 12. [HIGH] Update `getRuntimeStats()` in `runtimeRepository.ts` (CPU 72%, RAM 1.1/2GB, uptime 99.92%, restarts 3) per BRIEF A4
 - [ ] 13. [HIGH] Update `getRuntimeSummary()` in `runtimeRepository.ts` (machinesOnline 5, machinesTotal 5, region "fra (Frankfurt)") per BRIEF A4

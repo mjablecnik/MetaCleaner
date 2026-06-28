@@ -30,6 +30,7 @@ export interface MachineInstance {
 	id: string;
 	name: string;
 	displayId: string;
+	app: string;
 	region: string;
 	status: 'running' | 'stopped' | 'error';
 	cpuPercent: number;
@@ -45,6 +46,7 @@ export interface MachineInstance {
 export interface DeployEntry {
 	id: string;
 	version: string;
+	app: string;
 	author: string;
 	commitMessage: string;
 	timestamp: string;
@@ -179,49 +181,84 @@ export function getRuntimeSecondaryKpis(): RuntimeSecondaryKpi[] {
 export function getMachineInstances(): MachineInstance[] {
 	return [
 		{
-			id: '4d4e555f',
-			name: 'fra-01',
-			displayId: '4d4e555f',
+			id: '4d891a2b',
+			name: 'server-01',
+			displayId: '4d891a2b',
+			app: 'metacleaner-server',
 			region: 'fra (Frankfurt)',
 			status: 'running',
-			cpuPercent: 68,
-			cpuClass: 'bg-[#a78bfa]',
-			cpuDisplay: '68%',
-			cpuWarning: false,
-			ramDisplay: '880 MB',
-			ramTotalDisplay: '2',
-			ramBarWidth: '44%',
-			uptime: '18h 42m'
-		},
-		{
-			id: '7f8a992b',
-			name: 'fra-02',
-			displayId: '7f8a992b',
-			region: 'fra (Frankfurt)',
-			status: 'running',
-			cpuPercent: 91,
+			cpuPercent: 72,
 			cpuClass: 'bg-secondary',
-			cpuDisplay: '91% ⚠',
-			cpuWarning: true,
-			ramDisplay: '1.04 GB',
-			ramTotalDisplay: '2',
-			ramBarWidth: '52%',
-			uptime: '3h 18m'
+			cpuDisplay: '72%',
+			cpuWarning: false,
+			ramDisplay: '680 MB',
+			ramTotalDisplay: '1',
+			ramBarWidth: '66%',
+			uptime: '18h 42m'
 		},
 		{
-			id: 'b1c2d3e4',
-			name: 'fra-03',
-			displayId: 'b1c2d3e4',
+			id: '7f3c552e',
+			name: 'server-02',
+			displayId: '7f3c552e',
+			app: 'metacleaner-server',
 			region: 'fra (Frankfurt)',
 			status: 'running',
-			cpuPercent: 62,
+			cpuPercent: 45,
 			cpuClass: 'bg-[#a78bfa]',
-			cpuDisplay: '62%',
+			cpuDisplay: '45%',
 			cpuWarning: false,
-			ramDisplay: '760 MB',
-			ramTotalDisplay: '2',
-			ramBarWidth: '38%',
-			uptime: '18h 42m'
+			ramDisplay: '420 MB',
+			ramTotalDisplay: '1',
+			ramBarWidth: '41%',
+			uptime: '6h 18m'
+		},
+		{
+			id: 'a1d43f8c',
+			name: 'web-01',
+			displayId: 'a1d43f8c',
+			app: 'metacleaner-web',
+			region: 'fra (Frankfurt)',
+			status: 'running',
+			cpuPercent: 2,
+			cpuClass: 'bg-[#a78bfa]',
+			cpuDisplay: '2%',
+			cpuWarning: false,
+			ramDisplay: '48 MB',
+			ramTotalDisplay: '0.25',
+			ramBarWidth: '19%',
+			uptime: '4d 12h'
+		},
+		{
+			id: 'c2b87e1a',
+			name: 'app-01',
+			displayId: 'c2b87e1a',
+			app: 'metacleaner-app',
+			region: 'fra (Frankfurt)',
+			status: 'running',
+			cpuPercent: 3,
+			cpuClass: 'bg-[#a78bfa]',
+			cpuDisplay: '3%',
+			cpuWarning: false,
+			ramDisplay: '52 MB',
+			ramTotalDisplay: '0.25',
+			ramBarWidth: '20%',
+			uptime: '4d 12h'
+		},
+		{
+			id: 'e9f21d47',
+			name: 'mon-01',
+			displayId: 'e9f21d47',
+			app: 'metacleaner-monitoring',
+			region: 'fra (Frankfurt)',
+			status: 'running',
+			cpuPercent: 8,
+			cpuClass: 'bg-[#a78bfa]',
+			cpuDisplay: '8%',
+			cpuWarning: false,
+			ramDisplay: '180 MB',
+			ramTotalDisplay: '0.5',
+			ramBarWidth: '35%',
+			uptime: '2h 45m'
 		}
 	];
 }
@@ -230,73 +267,78 @@ export function getDeployHistory(): DeployEntry[] {
 	return [
 		{
 			id: 'deploy-1',
-			version: 'v2.14.1',
+			version: 'v1.8.2',
+			app: 'metacleaner-server',
 			author: 'martin.j',
-			commitMessage: 'Fix: memory leak in session handler',
+			commitMessage: 'fix: ExifTool timeout on corrupted HEIC files',
 			timestamp: 'Dnes 11:04',
-			duration: '38s',
+			duration: '42s',
 			status: 'success',
 			statusClass: 'bg-success/15 text-success',
 			statusKey: 'common_status_ok',
 			icon: 'fa-check',
 			iconClass: 'bg-success/15 text-success',
-			subtext: '38s · 3 stroje ✓'
+			subtext: '42s · server-01, server-02 ✓'
 		},
 		{
 			id: 'deploy-2',
-			version: 'v2.14.0',
-			author: 'petra.n',
-			commitMessage: 'feat: nový API endpoint /v2/orders',
-			timestamp: 'Včera 16:32',
-			duration: '44s',
+			version: 'v2.5.1',
+			app: 'metacleaner-app',
+			author: 'martin.j',
+			commitMessage: 'fix: locale switch scroll position preserved',
+			timestamp: 'Včera 15:22',
+			duration: '28s',
 			status: 'success',
 			statusClass: 'bg-success/15 text-success',
 			statusKey: 'common_status_ok',
 			icon: 'fa-check',
 			iconClass: 'bg-success/15 text-success',
-			subtext: '44s · 3 stroje ✓'
+			subtext: '28s · app-01 ✓'
 		},
 		{
 			id: 'deploy-3',
-			version: 'v2.13.9',
-			author: 'ondrej.k',
-			commitMessage: 'Failed: health check timeout',
-			timestamp: '2 dny 09:15',
+			version: 'v1.3.0',
+			app: 'metacleaner-web',
+			author: 'martin.j',
+			commitMessage: 'feat: pricing page redesign with shared components',
+			timestamp: '3 dny 09:45',
+			duration: '25s',
+			status: 'success',
+			statusClass: 'bg-success/15 text-success',
+			statusKey: 'common_status_ok',
+			icon: 'fa-check',
+			iconClass: 'bg-success/15 text-success',
+			subtext: '25s · web-01 ✓'
+		},
+		{
+			id: 'deploy-4',
+			version: 'v1.8.1',
+			app: 'metacleaner-server',
+			author: 'martin.j',
+			commitMessage: 'feat: API key rate limiting (120 RPM default)',
+			timestamp: '5 dní 14:30',
+			duration: '40s',
+			status: 'success',
+			statusClass: 'bg-success/15 text-success',
+			statusKey: 'common_status_ok',
+			icon: 'fa-check',
+			iconClass: 'bg-success/15 text-success',
+			subtext: '40s · server-01, server-02 ✓'
+		},
+		{
+			id: 'deploy-5',
+			version: 'v1.8.0',
+			app: 'metacleaner-server',
+			author: 'martin.j',
+			commitMessage: 'feat: PDF report generation with QR codes',
+			timestamp: '7 dní 10:15',
 			duration: '',
 			status: 'failed',
 			statusClass: 'bg-error/15 text-error',
 			statusKey: 'runtime_deploy_failed',
 			icon: 'fa-xmark',
 			iconClass: 'bg-error/15 text-error',
-			subtext: 'Rollback → v2.13.8'
-		},
-		{
-			id: 'deploy-4',
-			version: 'v2.13.8',
-			author: 'martin.j',
-			commitMessage: 'chore: deps update, perf patches',
-			timestamp: '3 dny 14:00',
-			duration: '41s',
-			status: 'success',
-			statusClass: 'bg-success/15 text-success',
-			statusKey: 'common_status_ok',
-			icon: 'fa-check',
-			iconClass: 'bg-success/15 text-success',
-			subtext: '41s · 3 stroje ✓'
-		},
-		{
-			id: 'deploy-5',
-			version: 'v2.13.7',
-			author: 'jana.h',
-			commitMessage: 'fix: rate limiter edge case',
-			timestamp: '5 dní 08:22',
-			duration: '36s',
-			status: 'success',
-			statusClass: 'bg-success/15 text-success',
-			statusKey: 'common_status_ok',
-			icon: 'fa-check',
-			iconClass: 'bg-success/15 text-success',
-			subtext: '36s · 3 stroje ✓'
+			subtext: 'Rollback → v1.7.9'
 		}
 	];
 }
