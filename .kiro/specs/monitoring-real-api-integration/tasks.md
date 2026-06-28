@@ -182,13 +182,13 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Set `Cache-Control: no-store`
     - _Requirements: 3.1, 3.3, 3.4, 4.1, 5.1, 6.1, 6.2, 6.3, 6.6, 12.1, 12.4_
 
-  - [ ] 6.3 Create availability load function (`src/routes/dostupnost/+page.server.ts`)
+  - [x] 6.3 Create availability load function (`src/routes/dostupnost/+page.server.ts`)
     - Check Fly config
     - Fetch health status for each app in `FLY_APPS`
     - Map to `ServiceCard[]`, `HealthCheck[]`, `Incident[]`, `SlaGoal[]`
     - _Requirements: 3.1, 3.3, 6.5, 12.1, 12.4_
 
-  - [ ] 6.4 Create errors load function (`src/routes/chyby/+page.server.ts`)
+  - [x] 6.4 Create errors load function (`src/routes/chyby/+page.server.ts`)
     - Check Sentry config
     - Fetch recent issues (25 most recent with activity in last 24h) and error aggregations
     - Map to `ErrorLogEntry[]`, `ErrorKpi[]`, `TopEndpoint[]`

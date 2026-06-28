@@ -1,4 +1,4 @@
-import type { ErrorKpi, ErrorLogEntry } from '$lib/repositories/index.js';
+import type { ErrorKpi, ErrorLogEntry, TopEndpoint } from '$lib/repositories/index.js';
 import type { SentryIssueRaw } from '../clients/sentryClient.js';
 
 function formatTime(isoDate: string): string {
@@ -170,4 +170,64 @@ export function mapToErrorKpis(issues: SentryIssueRaw[]): ErrorKpi[] {
 			subtextKeyMobile: 'errors_kpi_timeoutsSubtextMobile'
 		}
 	];
+}
+
+const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
+
+function parseCulprit(culprit: string): { method: string; path: string } {
+	const parts = culprit.trim().split(/\s+/);
+	if (parts.length >= 2 && HTTP_METHODS.includes(parts[0].toUpperCase())) {
+		return { method: parts[0].toUpperCase(), path: parts.slice(1).join(' ') };
+	}
+	return { method: 'ERR', path: culprit || '—' };
+}
+
+function getMethodClass(method: string): string {
+	if (method === 'GET') return 'bg-[#3b82f6]/20 text-[#3b82f6]';
+	if (method === 'POST') return 'bg-error/20 text-error';
+	if (method === 'DELETE') return 'bg-secondary/20 text-secondary';
+	if (method === 'PUT' || method === 'PATCH') return 'bg-[#f59e0b]/20 text-[#f59e0b]';
+	return 'bg-error/20 text-error';
+}
+
+function getBarClass(errorCount: number, maxCount: number): string {
+	const ratio = maxCount > 0 ? errorCount / maxCount : 0;
+	if (ratio >= 0.66) return 'bg-error';
+	if (ratio >= 0.33) return 'bg-secondary';
+	return 'bg-[#3b82f6]';
+}
+
+function getCountClass(errorCount: number, maxCount: number): string {
+	const ratio = maxCount > 0 ? errorCount / maxCount : 0;
+	if (ratio >= 0.66) return 'text-error';
+	if (ratio >= 0.33) return 'text-secondary';
+	return 'text-textSec';
+}
+
+export function mapToTopEndpoints(issues: SentryIssueRaw[]): TopEndpoint[] {
+	const counts = new Map<string, { method: string; path: string; count: number }>();
+
+	for (const issue of issues) {
+		const culprit = issue.culprit || '—';
+		const existing = counts.get(culprit);
+		if (existing) {
+			existing.count++;
+		} else {
+			const { method, path } = parseCulprit(culprit);
+			counts.set(culprit, { method, path, count: 1 });
+		}
+	}
+
+	const sorted = [...counts.values()].sort((a, b) => b.count - a.count).slice(0, 10);
+	const maxCount = sorted[0]?.count ?? 1;
+
+	return sorted.map((entry) => ({
+		method: entry.method,
+		methodClass: getMethodClass(entry.method),
+		path: entry.path,
+		errorCount: entry.count,
+		barWidth: `${Math.round((entry.count / maxCount) * 100)}%`,
+		barClass: getBarClass(entry.count, maxCount),
+		countClass: getCountClass(entry.count, maxCount)
+	}));
 }
