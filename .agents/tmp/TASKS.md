@@ -25,7 +25,7 @@
 - [x] 23. [MEDIUM] Update subscription plan breakdown in `businessRepository.ts` (Free 1,840, Pro 62→$558, Business 27→$783) per BRIEF A7
 - [x] 24. [MEDIUM] Replace user metrics in `usersRepository.ts` (registered 2,100, new 34, active 210, power 18, auth-method split) per BRIEF A8
 - [x] 25. [MEDIUM] Replace Cloudflare metrics in `edgeRepository.ts` (cache 94.2%, 48,200 req, threats, Czech-focused geo split) per BRIEF A9
-- [ ] 26. [MEDIUM] Update `.env.example` to ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_ORG`, `SENTRY_PROJECT`, `STRIPE_SECRET_KEY` are present per BRIEF B3
-- [ ] 27. [MEDIUM] Add/update i18n keys in `messages/en.json` for any new labels (app badge, machine app subtitle, new KPI labels) following existing key patterns (B4)
-- [ ] 28. [MEDIUM] Add/update matching i18n keys in `messages/cs.json` (same keys as en.json) (B4)
-- [ ] 29. [MEDIUM] Run `bun run check` and fix any TypeScript/lint regressions; visually verify the 7-card availability grid still looks good
+- [x] 26. [MEDIUM] Update `.env.example` to ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_ORG`, `SENTRY_PROJECT`, `STRIPE_SECRET_KEY` are present per BRIEF B3
+- [x] 27. [MEDIUM] Add/update i18n keys in `messages/en.json` for any new labels (app badge, machine app subtitle, new KPI labels) following existing key patterns (B4)
+- [x] 28. [MEDIUM] Add/update matching i18n keys in `messages/cs.json` (same keys as en.json) (B4)
+- [x] 29. [MEDIUM] Run `bun run check` and fix any TypeScript/lint regressions; visually verify the 7-card availability grid still looks good
