@@ -1,31 +1,17 @@
 import type { PageServerLoad } from './$types.js';
-import type { DashboardStat, DashboardAlert } from '$lib/repositories/dashboardRepository.js';
+import type { DashboardStat } from '$lib/repositories/dashboardRepository.js';
 import { getServiceConfigs } from '$lib/server/config.js';
 import { getMachinesForAllApps } from '$lib/server/clients/flyClient.js';
 import { getRecentIssues } from '$lib/server/clients/sentryClient.js';
 import { queryTable } from '$lib/server/clients/supabaseClient.js';
 import { callSection } from '$lib/server/clients/types.js';
+import { mergeAndSortAlerts } from '$lib/server/dashboardAlerts.js';
 
 interface JobRow {
 	id: string;
 	status: string;
 	duration_ms?: number;
 	created_at: string;
-}
-
-function flyTsToMs(ts: number): number {
-	if (ts > 1e15) return ts / 1_000_000;
-	if (ts > 1e12) return ts / 1_000;
-	return ts * 1_000;
-}
-
-function timeAgo(ms: number): { mobile: string; desktop: string } {
-	const diff = Date.now() - ms;
-	const mins = Math.round(diff / 60_000);
-	if (mins < 1) return { mobile: 'now', desktop: 'just now' };
-	if (mins < 60) return { mobile: `${mins} min`, desktop: `${mins} min ago` };
-	const hrs = Math.floor(mins / 60);
-	return { mobile: `${hrs} hrs`, desktop: `${hrs} hours ago` };
 }
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
@@ -123,66 +109,12 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	});
 
 	// Alerts section: recent Sentry issues + Fly machine events
-	const alerts = await callSection<DashboardAlert[]>(async () => {
-		const list: Array<DashboardAlert & { _ms: number }> = [];
-
-		// Up to 5 most recent unresolved Sentry issues
-		if (sentrySettled.status === 'fulfilled' && sentrySettled.value !== null) {
-			const unresolved = sentrySettled.value
-				.filter((i) => i.status === 'unresolved')
-				.slice(0, 5);
-
-			for (const issue of unresolved) {
-				const ms = new Date(issue.lastSeen).getTime();
-				const { mobile, desktop } = timeAgo(ms);
-				const severity: 'error' | 'warning' =
-					issue.level === 'warning' || issue.level === 'info' ? 'warning' : 'error';
-
-				list.push({
-					_ms: ms,
-					id: `sentry-${issue.id}`,
-					severity,
-					title: issue.title,
-					descriptionMobile: issue.culprit || issue.title,
-					descriptionDesktop: issue.culprit || issue.title,
-					timeMobile: mobile,
-					timeDesktop: desktop
-				});
-			}
-		}
-
-		// Up to 5 most recent non-healthy Fly machine events
-		if (flySettled.status === 'fulfilled' && flySettled.value !== null) {
-			const flyAlerts: Array<DashboardAlert & { _ms: number }> = [];
-
-			for (const [app, machines] of flySettled.value) {
-				for (const machine of machines) {
-					for (const event of machine.events ?? []) {
-						if (event.type === 'launch' || event.type === 'start') continue;
-						const ms = flyTsToMs(event.timestamp);
-						const isCrash = event.type === 'crash' || event.type === 'exit' || event.status !== 'success';
-						const { mobile, desktop } = timeAgo(ms);
-
-						flyAlerts.push({
-							_ms: ms,
-							id: `fly-${machine.id}-${event.timestamp}`,
-							severity: isCrash ? 'error' : 'warning',
-							title: `${event.type} on ${machine.name}`,
-							descriptionMobile: `${app} (${machine.region})`,
-							descriptionDesktop: `Machine ${machine.name} — ${event.type} in ${machine.region}`,
-							timeMobile: mobile,
-							timeDesktop: desktop
-						});
-					}
-				}
-			}
-
-			flyAlerts.sort((a, b) => b._ms - a._ms);
-			list.push(...flyAlerts.slice(0, 5));
-		}
-
-		list.sort((a, b) => b._ms - a._ms);
-		return list.slice(0, 10).map(({ _ms: _sortKey, ...alert }) => alert);
+	const alerts = await callSection(async () => {
+		const sentryIssues =
+			sentrySettled.status === 'fulfilled' ? sentrySettled.value : null;
+		const flyMachines =
+			flySettled.status === 'fulfilled' ? flySettled.value : null;
+		return mergeAndSortAlerts(sentryIssues, flyMachines, Date.now());
 	});
 
 	return { stats, alerts };

@@ -230,7 +230,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - For any load function with N sections, if K sections throw `ClientError`, exactly K sections return error and N-K return ok
     - **Validates: Requirements 5.1, 5.3**
 
-  - [ ]* 6.11 Write property test for dashboard alert merge and sort (Property 8)
+  - [x]* 6.11 Write property test for dashboard alert merge and sort (Property 8)
     - **Property 8: Dashboard Alert Merge and Sort**
     - Merged alerts sorted by timestamp desc, at most 10 entries, severity correctly derived from source
     - **Validates: Requirements 13.3**
