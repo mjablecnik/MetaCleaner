@@ -225,7 +225,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Map to `UserStat[]`, `User[]`
     - _Requirements: 3.1, 3.3, 9.2, 12.1, 12.4_
 
-  - [ ]* 6.10 Write property test for section error isolation (Property 4)
+  - [x]* 6.10 Write property test for section error isolation (Property 4)
     - **Property 4: Section Error Isolation**
     - For any load function with N sections, if K sections throw `ClientError`, exactly K sections return error and N-K return ok
     - **Validates: Requirements 5.1, 5.3**
