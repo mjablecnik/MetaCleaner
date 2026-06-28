@@ -73,7 +73,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Use service key Bearer auth, 10s timeout
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 9.1, 9.3_
 
-  - [ ] 2.5 Create the Sentry client (`src/lib/server/clients/sentryClient.ts`)
+  - [x] 2.5 Create the Sentry client (`src/lib/server/clients/sentryClient.ts`)
     - Define `SentryClientConfig` extending `ClientConfig` with `org`, `project`
     - Define raw response types (`SentryIssueRaw`)
     - Implement `getRecentIssues(config, limit)` — fetch recent issues
