@@ -14,7 +14,7 @@
 		accordionOpen[key] = !accordionOpen[key];
 		if (accordionOpen[key]) {
 			setTimeout(() => {
-				const Plotly = (window as any).Plotly;
+				const Plotly = window.Plotly;
 				if (!Plotly) return;
 				const elMap: Record<AccordionKey, string> = {
 					response: 'chart-response-time-m',
@@ -27,7 +27,7 @@
 	}
 
 	onMount(() => {
-		const Plotly = (window as any).Plotly;
+		const Plotly = window.Plotly;
 		if (!Plotly) return;
 
 		const bgCard = chartColors.card;
@@ -69,7 +69,20 @@
 			yaxis: { ...commonLayout.yaxis, tickfont: { color: textSec, size: 9 } }
 		};
 
-		const hours = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'];
+		const hours = [
+			'00:00',
+			'02:00',
+			'04:00',
+			'06:00',
+			'08:00',
+			'10:00',
+			'12:00',
+			'14:00',
+			'16:00',
+			'18:00',
+			'20:00',
+			'22:00'
+		];
 		const hoursShort = ['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'];
 
 		const avgResp = [120, 105, 130, 150, 180, 220, 310, 460, 280, 210, 185, 165];
@@ -79,15 +92,23 @@
 
 		const dataResponseTime = [
 			{
-				type: 'scatter', mode: 'lines', fill: 'tozeroy',
-				name: 'P95', x: hours, y: p95Resp,
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
+				name: 'P95',
+				x: hours,
+				y: p95Resp,
 				line: { color: purpleColor, width: 2, shape: 'spline' },
 				fillcolor: 'rgba(139,92,246,0.07)',
 				hovertemplate: '<b>%{x}</b><br>P95: %{y}ms<extra></extra>'
 			},
 			{
-				type: 'scatter', mode: 'lines', fill: 'tozeroy',
-				name: 'Avg', x: hours, y: avgResp,
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
+				name: 'Avg',
+				x: hours,
+				y: avgResp,
 				line: { color: greenColor, width: 2.5, shape: 'spline' },
 				fillcolor: 'rgba(62,207,142,0.10)',
 				hovertemplate: '<b>%{x}</b><br>Avg: %{y}ms<extra></extra>'
@@ -96,14 +117,19 @@
 
 		const dataThroughput = [
 			{
-				type: 'bar', name: 'req/min',
-				x: hours, y: rpm,
+				type: 'bar',
+				name: 'req/min',
+				x: hours,
+				y: rpm,
 				marker: { color: blueColor, opacity: 0.75 },
 				hovertemplate: '<b>%{x}</b><br>%{y} req/min<extra></extra>'
 			},
 			{
-				type: 'scatter', mode: 'lines',
-				name: 'Chyby', x: hours, y: errs,
+				type: 'scatter',
+				mode: 'lines',
+				name: 'Chyby',
+				x: hours,
+				y: errs,
 				yaxis: 'y2',
 				line: { color: errorColor, width: 2, shape: 'spline' },
 				hovertemplate: '<b>%{x}</b><br>Chyby: %{y}<extra></extra>'
@@ -113,21 +139,39 @@
 		const throughputLayout = {
 			...commonLayout,
 			bargap: 0.3,
-			yaxis: { ...commonLayout.yaxis, title: { text: 'req/min', font: { size: 10, color: textSec } } },
+			yaxis: {
+				...commonLayout.yaxis,
+				title: { text: 'req/min', font: { size: 10, color: textSec } }
+			},
 			yaxis2: {
-				overlaying: 'y', side: 'right',
+				overlaying: 'y',
+				side: 'right',
 				gridcolor: 'transparent',
 				tickfont: { color: errorColor, size: 9 },
-				zeroline: false, showgrid: false
+				zeroline: false,
+				showgrid: false
 			}
 		};
 
 		// Desktop charts
 		const elRespTime = document.getElementById('chart-response-time');
-		if (elRespTime) Plotly.newPlot('chart-response-time', dataResponseTime, { ...commonLayout, yaxis: { ...commonLayout.yaxis, title: { text: 'ms', font: { size: 10, color: textSec } } } }, chartConfig);
+		if (elRespTime)
+			Plotly.newPlot(
+				'chart-response-time',
+				dataResponseTime,
+				{
+					...commonLayout,
+					yaxis: {
+						...commonLayout.yaxis,
+						title: { text: 'ms', font: { size: 10, color: textSec } }
+					}
+				},
+				chartConfig
+			);
 
 		const elThroughput = document.getElementById('chart-throughput');
-		if (elThroughput) Plotly.newPlot('chart-throughput', dataThroughput, throughputLayout, chartConfig);
+		if (elThroughput)
+			Plotly.newPlot('chart-throughput', dataThroughput, throughputLayout, chartConfig);
 
 		// Mobile charts
 		const mobileThroughputLayout = {
@@ -135,25 +179,47 @@
 			bargap: 0.3,
 			yaxis: { ...mobileLayout.yaxis, title: { text: 'rpm', font: { size: 9, color: textSec } } },
 			yaxis2: {
-				overlaying: 'y', side: 'right',
+				overlaying: 'y',
+				side: 'right',
 				gridcolor: 'transparent',
 				tickfont: { color: errorColor, size: 8 },
-				zeroline: false, showgrid: false
+				zeroline: false,
+				showgrid: false
 			}
 		};
 
-		const dataResponseTimeM = dataResponseTime.map((d: any) => ({ ...d, x: hoursShort }));
-		const dataThroughputM = dataThroughput.map((d: any) => ({ ...d, x: hoursShort }));
+		const dataResponseTimeM = dataResponseTime.map((d: Record<string, unknown>) => ({
+			...d,
+			x: hoursShort
+		}));
+		const dataThroughputM = dataThroughput.map((d: Record<string, unknown>) => ({
+			...d,
+			x: hoursShort
+		}));
 
 		const elRespTimeM = document.getElementById('chart-response-time-m');
-		if (elRespTimeM) Plotly.newPlot('chart-response-time-m', dataResponseTimeM, { ...mobileLayout, yaxis: { ...mobileLayout.yaxis, title: { text: 'ms', font: { size: 9, color: textSec } } } }, chartConfig);
+		if (elRespTimeM)
+			Plotly.newPlot(
+				'chart-response-time-m',
+				dataResponseTimeM,
+				{
+					...mobileLayout,
+					yaxis: { ...mobileLayout.yaxis, title: { text: 'ms', font: { size: 9, color: textSec } } }
+				},
+				chartConfig
+			);
 
 		const elThroughputM = document.getElementById('chart-throughput-m');
-		if (elThroughputM) Plotly.newPlot('chart-throughput-m', dataThroughputM, mobileThroughputLayout, chartConfig);
+		if (elThroughputM)
+			Plotly.newPlot('chart-throughput-m', dataThroughputM, mobileThroughputLayout, chartConfig);
 
 		const handleResize = () => {
-			['chart-response-time', 'chart-throughput',
-			 'chart-response-time-m', 'chart-throughput-m'].forEach(id => {
+			[
+				'chart-response-time',
+				'chart-throughput',
+				'chart-response-time-m',
+				'chart-throughput-m'
+			].forEach((id) => {
 				const el = document.getElementById(id);
 				if (el) Plotly.Plots.resize(el);
 			});

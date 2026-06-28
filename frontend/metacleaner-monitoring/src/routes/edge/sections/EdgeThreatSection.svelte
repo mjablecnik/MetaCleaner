@@ -7,7 +7,7 @@
 	const threatTypes = getThreatTypes();
 
 	onMount(() => {
-		const Plotly = (window as any).Plotly;
+		const Plotly = window.Plotly;
 		if (!Plotly) return;
 
 		const bgCard = chartColors.card;
@@ -23,7 +23,7 @@
 				type: 'pie',
 				labels: ['DDoS', 'Bad Bots', 'WAF Block', 'IP Block'],
 				values: [54, 28, 13, 5],
-				hole: 0.60,
+				hole: 0.6,
 				marker: {
 					colors: [errorColor, secondaryColor, purpleColor, blueColor],
 					line: { color: bgCard, width: 2 }
@@ -36,8 +36,10 @@
 
 		const pieCenterAnnotation = {
 			text: `<b style="font-size:18px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:10px;color:${chartColors.textSec}">Hrozeb</span>`,
-			x: 0.5, y: 0.5,
-			xanchor: 'center', yanchor: 'middle',
+			x: 0.5,
+			y: 0.5,
+			xanchor: 'center',
+			yanchor: 'middle',
 			showarrow: false,
 			font: { size: 13, color: chartColors.textMain }
 		};
@@ -56,14 +58,30 @@
 
 		// Mobile charts
 		const elThreatPieM = document.getElementById('chart-threat-pie-m');
-		if (elThreatPieM) Plotly.newPlot('chart-threat-pie-m', dataThreatPie, {
-			...pieLayout,
-			margin: { t: 4, r: 4, b: 4, l: 4 },
-			annotations: [{ text: `<b style="font-size:14px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:9px;color:${chartColors.textSec}">Hrozeb</span>`, x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle', showarrow: false, font: { size: 11, color: chartColors.textMain } }]
-		}, chartConfig);
+		if (elThreatPieM)
+			Plotly.newPlot(
+				'chart-threat-pie-m',
+				dataThreatPie,
+				{
+					...pieLayout,
+					margin: { t: 4, r: 4, b: 4, l: 4 },
+					annotations: [
+						{
+							text: `<b style="font-size:14px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:9px;color:${chartColors.textSec}">Hrozeb</span>`,
+							x: 0.5,
+							y: 0.5,
+							xanchor: 'center',
+							yanchor: 'middle',
+							showarrow: false,
+							font: { size: 11, color: chartColors.textMain }
+						}
+					]
+				},
+				chartConfig
+			);
 
 		const handleResize = () => {
-			['chart-threat-pie', 'chart-threat-pie-m'].forEach(id => {
+			['chart-threat-pie', 'chart-threat-pie-m'].forEach((id) => {
 				const el = document.getElementById(id);
 				if (el) Plotly.Plots.resize(el);
 			});

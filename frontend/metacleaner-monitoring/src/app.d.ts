@@ -8,6 +8,13 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	interface Window {
+		Plotly?: {
+			newPlot(id: string, data: unknown[], layout: unknown, config: unknown): void;
+			Plots: { resize(el: HTMLElement): void };
+		};
+	}
 }
 
 export {};

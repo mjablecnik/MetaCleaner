@@ -3,29 +3,21 @@
 
 	interface Props {
 		id: string;
-		data: any[];
-		layout: any;
-		mobileLayout?: any;
+		data: unknown[];
+		layout: Record<string, unknown>;
+		mobileLayout?: Record<string, unknown>;
 		height?: string;
 		class?: string;
 	}
 
-	let {
-		id,
-		data,
-		layout,
-		mobileLayout,
-		height,
-		class: extraClass = ''
-	}: Props = $props();
+	let { id, data, layout, mobileLayout, height, class: extraClass = '' }: Props = $props();
 
 	onMount(() => {
-		const Plotly = (window as any).Plotly;
+		const Plotly = window.Plotly;
 		if (!Plotly) return;
 
 		const isMobile = window.matchMedia('(max-width: 1023px)').matches;
-		const activeLayout =
-			isMobile && mobileLayout ? { ...layout, ...mobileLayout } : layout;
+		const activeLayout = isMobile && mobileLayout ? { ...layout, ...mobileLayout } : layout;
 
 		const config = {
 			responsive: true,

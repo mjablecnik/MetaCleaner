@@ -17,7 +17,9 @@
 			<h3 class="text-lg font-semibold text-textMain">{t('runtime_instances_title')}</h3>
 			<p class="text-xs text-textSec mt-0.5">{t('runtime_instances_flyioInfo')}</p>
 		</div>
-		<button class="flex items-center gap-2 px-3 py-1.5 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium hover:bg-purple-light/20 transition-colors">
+		<button
+			class="flex items-center gap-2 px-3 py-1.5 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium hover:bg-purple-light/20 transition-colors"
+		>
 			<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
 		</button>
 	</div>
@@ -41,17 +43,17 @@
 				{summary.machinesOnline}/{summary.machinesTotal}
 			</span>
 		{/snippet}
-		{#snippet children()}
-			<div class="flex justify-end mb-3">
-				<button class="flex items-center gap-2 px-3 py-2 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium">
-					<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
-				</button>
-			</div>
-			<div class="space-y-3">
-				{#each machines as machine (machine.id)}
-					<InstanceCard {machine} variant="mobile" />
-				{/each}
-			</div>
-		{/snippet}
+		<div class="flex justify-end mb-3">
+			<button
+				class="flex items-center gap-2 px-3 py-2 bg-purple-light/10 border border-purple-light/20 rounded-lg text-purple-light text-xs font-medium"
+			>
+				<i class="fa-solid fa-plus text-xs"></i>{t('runtime_instances_scale')}
+			</button>
+		</div>
+		<div class="space-y-3">
+			{#each machines as machine (machine.id)}
+				<InstanceCard {machine} variant="mobile" />
+			{/each}
+		</div>
 	</AccordionSection>
 </div>

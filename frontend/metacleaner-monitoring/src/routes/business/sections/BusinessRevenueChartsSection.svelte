@@ -4,7 +4,7 @@
 	import { chartColors } from '$lib/theme/chartColors';
 
 	onMount(() => {
-		const P = (window as any).Plotly;
+		const P = window.Plotly;
 		if (!P) return;
 
 		const bgCard = chartColors.card;
@@ -17,17 +17,29 @@
 		const gridColor = 'rgba(30,41,59,0.8)';
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
-		const commonLayout: any = {
+		const commonLayout = {
 			paper_bgcolor: bgCard,
 			plot_bgcolor: bgCard,
 			font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
 			margin: { t: 10, r: 10, b: 40, l: 50 },
 			showlegend: false,
-			xaxis: { gridcolor: gridColor, linecolor: gridColor, tickcolor: 'transparent', tickfont: { color: textSec, size: 10 }, zeroline: false },
-			yaxis: { gridcolor: gridColor, linecolor: gridColor, tickcolor: 'transparent', tickfont: { color: textSec, size: 10 }, zeroline: false }
+			xaxis: {
+				gridcolor: gridColor,
+				linecolor: gridColor,
+				tickcolor: 'transparent',
+				tickfont: { color: textSec, size: 10 },
+				zeroline: false
+			},
+			yaxis: {
+				gridcolor: gridColor,
+				linecolor: gridColor,
+				tickcolor: 'transparent',
+				tickfont: { color: textSec, size: 10 },
+				zeroline: false
+			}
 		};
 
-		const mobileLayout: any = {
+		const mobileLayout = {
 			...commonLayout,
 			font: { ...commonLayout.font, size: 10 },
 			margin: { t: 8, r: 8, b: 36, l: 38 },
@@ -35,60 +47,203 @@
 			yaxis: { ...commonLayout.yaxis, tickfont: { color: textSec, size: 9 } }
 		};
 
-		const months = ['Čvc','Srp','Zář','Říj','Lis','Pro','Led','Úno','Bře','Dub','Kvě','Čvn'];
-		const mrr = [28000,31200,33800,35100,36900,38400,40200,41800,43500,44900,46700,48320];
-		const newMrr = [2800,3200,2600,1300,1800,1500,1800,1600,1700,1400,1800,1620];
-		const churnMrr = [-800,-650,-900,-1100,-750,-700,-820,-760,-680,-900,-720,-680];
-		const activeUsers = [7200,7800,8400,8900,9300,9800,10200,10700,11200,11600,12100,12841];
-		const newUsers = [180,220,260,210,190,250,200,240,260,220,280,318];
+		const months = [
+			'Čvc',
+			'Srp',
+			'Zář',
+			'Říj',
+			'Lis',
+			'Pro',
+			'Led',
+			'Úno',
+			'Bře',
+			'Dub',
+			'Kvě',
+			'Čvn'
+		];
+		const mrr = [
+			28000, 31200, 33800, 35100, 36900, 38400, 40200, 41800, 43500, 44900, 46700, 48320
+		];
+		const newMrr = [2800, 3200, 2600, 1300, 1800, 1500, 1800, 1600, 1700, 1400, 1800, 1620];
+		const churnMrr = [-800, -650, -900, -1100, -750, -700, -820, -760, -680, -900, -720, -680];
+		const activeUsers = [
+			7200, 7800, 8400, 8900, 9300, 9800, 10200, 10700, 11200, 11600, 12100, 12841
+		];
+		const newUsers = [180, 220, 260, 210, 190, 250, 200, 240, 260, 220, 280, 318];
 
 		// MRR chart
 		const dataMrr = [
-			{ type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'MRR', x: months, y: mrr, line: { color: primary, width: 2, shape: 'spline' }, fillcolor: 'rgba(34,197,94,0.08)', yaxis: 'y' },
-			{ type: 'bar', name: 'Nový MRR', x: months, y: newMrr, marker: { color: blueColor, opacity: 0.7 }, yaxis: 'y2' }
+			{
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
+				name: 'MRR',
+				x: months,
+				y: mrr,
+				line: { color: primary, width: 2, shape: 'spline' },
+				fillcolor: 'rgba(34,197,94,0.08)',
+				yaxis: 'y'
+			},
+			{
+				type: 'bar',
+				name: 'Nový MRR',
+				x: months,
+				y: newMrr,
+				marker: { color: blueColor, opacity: 0.7 },
+				yaxis: 'y2'
+			}
 		];
-		const mrrLayout = { ...commonLayout, showlegend: true, legend: { x: 0, y: 1, font: { size: 9, color: textSec }, bgcolor: 'transparent' }, yaxis2: { overlaying: 'y', side: 'right', gridcolor: 'transparent', linecolor: 'transparent', tickcolor: 'transparent', tickfont: { color: textSec, size: 10 }, zeroline: false } };
-		const mrrLayoutM = { ...mobileLayout, showlegend: true, legend: { x: 0, y: 1, font: { size: 8, color: textSec }, bgcolor: 'transparent' }, yaxis2: { overlaying: 'y', side: 'right', gridcolor: 'transparent', linecolor: 'transparent', tickcolor: 'transparent', tickfont: { color: textSec, size: 9 }, zeroline: false } };
+		const mrrLayout = {
+			...commonLayout,
+			showlegend: true,
+			legend: { x: 0, y: 1, font: { size: 9, color: textSec }, bgcolor: 'transparent' },
+			yaxis2: {
+				overlaying: 'y',
+				side: 'right',
+				gridcolor: 'transparent',
+				linecolor: 'transparent',
+				tickcolor: 'transparent',
+				tickfont: { color: textSec, size: 10 },
+				zeroline: false
+			}
+		};
+		const mrrLayoutM = {
+			...mobileLayout,
+			showlegend: true,
+			legend: { x: 0, y: 1, font: { size: 8, color: textSec }, bgcolor: 'transparent' },
+			yaxis2: {
+				overlaying: 'y',
+				side: 'right',
+				gridcolor: 'transparent',
+				linecolor: 'transparent',
+				tickcolor: 'transparent',
+				tickfont: { color: textSec, size: 9 },
+				zeroline: false
+			}
+		};
 
 		// Users chart
 		const dataUsers = [
-			{ type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Aktivní', x: months, y: activeUsers, line: { color: purpleColor, width: 2, shape: 'spline' }, fillcolor: 'rgba(139,92,246,0.08)', yaxis: 'y' },
-			{ type: 'bar', name: 'Noví', x: months, y: newUsers, marker: { color: greenColor, opacity: 0.7 }, yaxis: 'y2' }
+			{
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
+				name: 'Aktivní',
+				x: months,
+				y: activeUsers,
+				line: { color: purpleColor, width: 2, shape: 'spline' },
+				fillcolor: 'rgba(139,92,246,0.08)',
+				yaxis: 'y'
+			},
+			{
+				type: 'bar',
+				name: 'Noví',
+				x: months,
+				y: newUsers,
+				marker: { color: greenColor, opacity: 0.7 },
+				yaxis: 'y2'
+			}
 		];
 		const usersLayout = { ...mrrLayout };
 		const usersLayoutM = { ...mrrLayoutM };
 
 		// Churn vs New MRR
 		const dataChurn = [
-			{ type: 'bar', name: 'Nový MRR', x: months, y: newMrr, marker: { color: primary, opacity: 0.8 } },
-			{ type: 'bar', name: 'Churn MRR', x: months, y: churnMrr, marker: { color: errorColor, opacity: 0.8 } }
+			{
+				type: 'bar',
+				name: 'Nový MRR',
+				x: months,
+				y: newMrr,
+				marker: { color: primary, opacity: 0.8 }
+			},
+			{
+				type: 'bar',
+				name: 'Churn MRR',
+				x: months,
+				y: churnMrr,
+				marker: { color: errorColor, opacity: 0.8 }
+			}
 		];
-		const churnLayout = { ...commonLayout, barmode: 'relative', showlegend: true, legend: { x: 0, y: 1, font: { size: 9, color: textSec }, bgcolor: 'transparent' } };
-		const churnLayoutM = { ...mobileLayout, barmode: 'relative', showlegend: true, legend: { x: 0, y: 1, font: { size: 8, color: textSec }, bgcolor: 'transparent' } };
+		const churnLayout = {
+			...commonLayout,
+			barmode: 'relative',
+			showlegend: true,
+			legend: { x: 0, y: 1, font: { size: 9, color: textSec }, bgcolor: 'transparent' }
+		};
+		const churnLayoutM = {
+			...mobileLayout,
+			barmode: 'relative',
+			showlegend: true,
+			legend: { x: 0, y: 1, font: { size: 8, color: textSec }, bgcolor: 'transparent' }
+		};
 
 		// Daily revenue
-		const dayLabels = Array.from({length: 30}, (_, i) => `${i+1}.6.`);
-		const dailyValues = Array.from({length: 30}, () => Math.floor(Math.random() * 400 + 1400));
-		const dataDailyRevenue = [{ type: 'scatter', mode: 'lines', fill: 'tozeroy', x: dayLabels, y: dailyValues, line: { color: primary, width: 2, shape: 'spline' }, fillcolor: 'rgba(34,197,94,0.08)' }];
+		const dayLabels = Array.from({ length: 30 }, (_, i) => `${i + 1}.6.`);
+		const dailyValues = Array.from({ length: 30 }, () => Math.floor(Math.random() * 400 + 1400));
+		const dataDailyRevenue = [
+			{
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
+				x: dayLabels,
+				y: dailyValues,
+				line: { color: primary, width: 2, shape: 'spline' },
+				fillcolor: 'rgba(34,197,94,0.08)'
+			}
+		];
 		const dailyLayout = { ...commonLayout };
 		const dailyLayoutM = { ...mobileLayout };
 
 		// Desktop charts
-		try { const el = document.getElementById('chart-mrr'); if (el) P.newPlot('chart-mrr', dataMrr, mrrLayout, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-users'); if (el) P.newPlot('chart-users', dataUsers, usersLayout, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-churn'); if (el) P.newPlot('chart-churn', dataChurn, churnLayout, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-daily-revenue'); if (el) P.newPlot('chart-daily-revenue', dataDailyRevenue, dailyLayout, chartConfig); } catch(e) {}
+		try {
+			const el = document.getElementById('chart-mrr');
+			if (el) P.newPlot('chart-mrr', dataMrr, mrrLayout, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-users');
+			if (el) P.newPlot('chart-users', dataUsers, usersLayout, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-churn');
+			if (el) P.newPlot('chart-churn', dataChurn, churnLayout, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-daily-revenue');
+			if (el) P.newPlot('chart-daily-revenue', dataDailyRevenue, dailyLayout, chartConfig);
+		} catch {}
 
 		// Mobile charts
-		try { const el = document.getElementById('chart-mrr-m'); if (el) P.newPlot('chart-mrr-m', dataMrr, mrrLayoutM, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-users-m'); if (el) P.newPlot('chart-users-m', dataUsers, usersLayoutM, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-churn-m'); if (el) P.newPlot('chart-churn-m', dataChurn, churnLayoutM, chartConfig); } catch(e) {}
-		try { const el = document.getElementById('chart-daily-revenue-m'); if (el) P.newPlot('chart-daily-revenue-m', dataDailyRevenue, dailyLayoutM, chartConfig); } catch(e) {}
+		try {
+			const el = document.getElementById('chart-mrr-m');
+			if (el) P.newPlot('chart-mrr-m', dataMrr, mrrLayoutM, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-users-m');
+			if (el) P.newPlot('chart-users-m', dataUsers, usersLayoutM, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-churn-m');
+			if (el) P.newPlot('chart-churn-m', dataChurn, churnLayoutM, chartConfig);
+		} catch {}
+		try {
+			const el = document.getElementById('chart-daily-revenue-m');
+			if (el) P.newPlot('chart-daily-revenue-m', dataDailyRevenue, dailyLayoutM, chartConfig);
+		} catch {}
 
 		const handleResize = () => {
-			['chart-mrr','chart-users','chart-churn','chart-daily-revenue',
-			 'chart-mrr-m','chart-users-m','chart-churn-m','chart-daily-revenue-m'
-			].forEach(id => { const el = document.getElementById(id); if (el) P.Plots.resize(el); });
+			[
+				'chart-mrr',
+				'chart-users',
+				'chart-churn',
+				'chart-daily-revenue',
+				'chart-mrr-m',
+				'chart-users-m',
+				'chart-churn-m',
+				'chart-daily-revenue-m'
+			].forEach((id) => {
+				const el = document.getElementById(id);
+				if (el) P.Plots.resize(el);
+			});
 		};
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
@@ -128,8 +283,16 @@
 					<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitle')}</p>
 				</div>
 				<div class="flex gap-2">
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-success inline-block"></span>{t('business_churnNewMrr_new')}</span>
-					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>{t('business_churnNewMrr_churn')}</span>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
+						><span class="w-2 h-2 rounded-full bg-success inline-block"></span>{t(
+							'business_churnNewMrr_new'
+						)}</span
+					>
+					<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
+						><span class="w-2 h-2 rounded-full bg-error inline-block"></span>{t(
+							'business_churnNewMrr_churn'
+						)}</span
+					>
 				</div>
 			</div>
 			<div id="chart-churn" class="h-[240px] w-full"></div>
@@ -170,8 +333,16 @@
 				<p class="text-xs text-textSec mt-0.5">{t('business_churnNewMrr_subtitleMobile')}</p>
 			</div>
 			<div class="flex gap-2">
-				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>{t('business_churnNewMrr_new')}</span>
-				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>{t('business_churnNewMrr_churn')}</span>
+				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"
+					><span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>{t(
+						'business_churnNewMrr_new'
+					)}</span
+				>
+				<span class="px-2 py-0.5 bg-badge rounded text-xs text-textSec flex items-center gap-1"
+					><span class="w-1.5 h-1.5 rounded-full bg-error inline-block"></span>{t(
+						'business_churnNewMrr_churn'
+					)}</span
+				>
 			</div>
 		</div>
 		<div id="chart-churn-m" class="h-[200px] w-full"></div>

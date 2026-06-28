@@ -23,7 +23,7 @@
 		<h3 class="text-lg font-semibold text-textMain">{t('errors_log_title')}</h3>
 		<div class="flex gap-3 flex-wrap">
 			<div class="flex rounded-lg overflow-hidden border border-border">
-				{#each errorFilters as filter}
+				{#each errorFilters as filter (filter.value)}
 					<button
 						class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value
 							? 'bg-error/20 text-error'
@@ -46,16 +46,20 @@
 		<table class="w-full text-sm">
 			<thead>
 				<tr class="border-b border-surface">
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_time')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_type')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_message')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_endpoint')} / {t('common_table_source')}</th
 					>
 					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3"
@@ -91,7 +95,7 @@
 
 	<!-- Filter pills -->
 	<div class="flex gap-1.5 mb-4 overflow-x-auto pb-1">
-		{#each errorFilters as filter}
+		{#each errorFilters as filter (filter.value)}
 			<button
 				class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors"
 				style="min-height:36px"

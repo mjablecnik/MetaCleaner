@@ -1,6 +1,4 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from 'eslint-plugin-storybook';
-
 import prettier from 'eslint-config-prettier';
 import path from 'node:path';
 import js from '@eslint/js';
@@ -39,6 +37,11 @@ export default defineConfig(
 	{
 		// Override or add rule settings here, such as:
 		// 'svelte/button-has-type': 'error'
-		rules: {}
+		rules: {
+			// This project uses paraglide-js for i18n link resolution instead of SvelteKit's resolve()
+			'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }],
+			// Allow empty catch blocks for intentional error suppression (e.g. Plotly render failures)
+			'no-empty': ['error', { allowEmptyCatch: true }]
+		}
 	}
 );

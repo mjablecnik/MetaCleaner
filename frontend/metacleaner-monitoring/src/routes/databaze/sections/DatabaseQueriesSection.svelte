@@ -4,7 +4,10 @@
 	import PlotlyChart from '$lib/shared/components/PlotlyChart.svelte';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
 	import SlowQueryItem from '../components/SlowQueryItem.svelte';
-	import { getQueryTypeDistribution, getSlowestQueries } from '$lib/repositories/databaseRepository';
+	import {
+		getQueryTypeDistribution,
+		getSlowestQueries
+	} from '$lib/repositories/databaseRepository';
 
 	const queryTypes = getQueryTypeDistribution();
 	const slowQueries = getSlowestQueries();
@@ -17,9 +20,14 @@
 			type: 'pie',
 			labels: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
 			values: [68, 18, 11, 3],
-			hole: 0.60,
+			hole: 0.6,
 			marker: {
-				colors: [chartColors.blue, chartColors.greenMuted, chartColors.secondary, chartColors.error],
+				colors: [
+					chartColors.blue,
+					chartColors.greenMuted,
+					chartColors.secondary,
+					chartColors.error
+				],
 				line: { color: chartColors.card, width: 2 }
 			},
 			textinfo: 'none',
@@ -72,7 +80,7 @@
 		<p class="text-xs text-textSec mb-4">{t('database_charts_queryTypesSubtitle')}</p>
 		<PlotlyChart id="chart-query-pie" data={dataPie} layout={pieLayout} class="h-[200px]" />
 		<div class="mt-4 space-y-2">
-			{#each queryTypes as qt}
+			{#each queryTypes as qt (qt.label)}
 				<div class="flex items-center justify-between text-sm">
 					<div class="flex items-center gap-2">
 						<span class="w-2.5 h-2.5 rounded-full {qt.color} inline-block"></span>
@@ -118,7 +126,7 @@
 			class="h-[180px]"
 		/>
 		<div class="mt-3 grid grid-cols-2 gap-2">
-			{#each queryTypes as qt}
+			{#each queryTypes as qt (qt.label)}
 				<div class="flex items-center justify-between bg-surface/40 rounded-lg px-3 py-2">
 					<div class="flex items-center gap-2">
 						<span class="w-2 h-2 rounded-full {qt.color} inline-block"></span>

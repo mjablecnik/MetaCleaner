@@ -46,9 +46,10 @@
 			{#if filters.length > 0}
 				<div class="flex gap-3 flex-wrap">
 					<div class="flex rounded-lg overflow-hidden border border-border">
-						{#each filters as filter}
+						{#each filters as filter (filter.value)}
 							<button
-								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter === filter.value
+								class="px-3 py-1.5 text-xs font-medium transition-colors {activeFilter ===
+								filter.value
 									? filterActiveClass
 									: 'bg-transparent text-textSec hover:bg-surface'}"
 								onclick={() => onfilterchange?.(filter.value)}
@@ -57,7 +58,9 @@
 							</button>
 						{/each}
 					</div>
-					<div class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5">
+					<div
+						class="flex items-center gap-2 bg-surface border border-border rounded-lg px-3 py-1.5"
+					>
 						<i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
 						<input
 							type="text"

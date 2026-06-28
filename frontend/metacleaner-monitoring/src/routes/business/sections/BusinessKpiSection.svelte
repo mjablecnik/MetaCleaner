@@ -9,14 +9,23 @@
 <div class="hidden lg:block space-y-4">
 	<!-- KPI Row 1 -->
 	<section class="grid grid-cols-4 gap-4">
-		{#each kpiStats as stat}
-			<div class="bg-card border {stat.borderClass ?? 'border-surface'} rounded-xl p-5 {stat.key === 'mrr' ? 'relative overflow-hidden' : ''}">
+		{#each kpiStats as stat (stat.key)}
+			<div
+				class="bg-card border {stat.borderClass ?? 'border-surface'} rounded-xl p-5 {stat.key ===
+				'mrr'
+					? 'relative overflow-hidden'
+					: ''}"
+			>
 				{#if stat.key === 'mrr'}
-					<div class="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8"></div>
+					<div
+						class="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full -translate-y-8 translate-x-8"
+					></div>
 				{/if}
 				<div class="flex justify-between items-start mb-3">
 					<h3 class="text-textSec text-sm font-medium">{t(stat.labelKey)}</h3>
-					<span class="px-2 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium">{stat.badgeLabel}</span>
+					<span class="px-2 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium"
+						>{stat.badgeLabel}</span
+					>
 				</div>
 				<div class="flex items-end gap-2 mb-1">
 					<span class="text-3xl font-bold {stat.valueClass ?? 'text-textMain'}">{stat.value}</span>
@@ -36,7 +45,10 @@
 				<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newOrders')}</h3>
 			</div>
 			<div class="text-2xl font-bold text-textMain">1,204</div>
-			<p class="text-xs text-textSec mt-1 flex items-center gap-1"><span class="text-success font-medium">+142</span> {t('business_kpi_newOrdersSubtext')}</p>
+			<p class="text-xs text-textSec mt-1 flex items-center gap-1">
+				<span class="text-success font-medium">+142</span>
+				{t('business_kpi_newOrdersSubtext')}
+			</p>
 		</div>
 		<div class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex items-center gap-3 mb-3">
@@ -46,7 +58,10 @@
 				<h3 class="text-textSec text-sm font-medium">{t('business_kpi_newCustomers')}</h3>
 			</div>
 			<div class="text-2xl font-bold text-textMain">318</div>
-			<p class="text-xs text-textSec mt-1"><span class="text-success font-medium">+52</span> {t('business_kpi_newOrdersSubtext')}</p>
+			<p class="text-xs text-textSec mt-1">
+				<span class="text-success font-medium">+52</span>
+				{t('business_kpi_newOrdersSubtext')}
+			</p>
 		</div>
 		<div class="bg-card border border-surface rounded-xl p-5">
 			<div class="flex items-center gap-3 mb-3">
@@ -66,7 +81,9 @@
 	<!-- KPI Row 1 grid-cols-2 -->
 	<section class="grid grid-cols-2 gap-3">
 		<div class="bg-card border border-surface rounded-xl p-4 relative overflow-hidden">
-			<div class="absolute top-0 right-0 w-16 h-16 bg-success/5 rounded-full -translate-y-4 translate-x-4"></div>
+			<div
+				class="absolute top-0 right-0 w-16 h-16 bg-success/5 rounded-full -translate-y-4 translate-x-4"
+			></div>
 			<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_mrr')}</h3>
 			<div class="text-2xl font-bold text-textMain">$48,320</div>
 			<span class="text-xs text-success font-medium mt-0.5 block">+12.4%</span>
@@ -75,19 +92,27 @@
 		<div class="bg-card border border-error/20 rounded-xl p-4">
 			<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_churnRate')}</h3>
 			<div class="text-2xl font-bold text-error">2.1%</div>
-			<span class="text-xs text-success font-medium mt-0.5 block">{t('business_kpi_churnBadge')}</span>
+			<span class="text-xs text-success font-medium mt-0.5 block"
+				>{t('business_kpi_churnBadge')}</span
+			>
 			<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_churnRateSubtext')}</p>
 		</div>
 		<div class="bg-card border border-surface rounded-xl p-4">
-			<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('business_kpi_activeUsers')}</h3>
+			<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">
+				{t('business_kpi_activeUsers')}
+			</h3>
 			<div class="text-2xl font-bold text-textMain">12,842</div>
 			<span class="text-xs text-success font-medium mt-0.5 block">+8.1%</span>
 			<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_activeUsersSubtext')}</p>
 		</div>
 		<div class="bg-card border border-surface rounded-xl p-4">
-			<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">{t('business_kpi_activeSubscriptions')}</h3>
+			<h3 class="text-textSec text-xs font-medium mb-2 leading-tight">
+				{t('business_kpi_activeSubscriptions')}
+			</h3>
 			<div class="text-2xl font-bold text-textMain">1,840</div>
-			<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_activeSubscriptionsSubtext')}</p>
+			<p class="text-xs text-textSec mt-1 leading-tight">
+				{t('business_kpi_activeSubscriptionsSubtext')}
+			</p>
 		</div>
 	</section>
 

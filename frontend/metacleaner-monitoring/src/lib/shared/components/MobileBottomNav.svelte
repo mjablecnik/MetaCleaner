@@ -15,8 +15,10 @@
 	let { items, activeHref }: Props = $props();
 </script>
 
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2">
-	{#each items as item}
+<nav
+	class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-surface flex items-center justify-around px-2 py-2"
+>
+	{#each items as item (item.href)}
 		{@const isActive = item.href === activeHref}
 		<a
 			href={item.href}

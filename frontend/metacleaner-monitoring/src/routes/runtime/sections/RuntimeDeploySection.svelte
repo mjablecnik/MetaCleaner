@@ -16,7 +16,8 @@
 			<h3 class="text-lg font-semibold text-textMain">{t('runtime_deploys_title')}</h3>
 			<p class="text-xs text-textSec mt-0.5">{t('runtime_deploys_subtitle')}</p>
 		</div>
-		<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('runtime_deploys_badge')}</span>
+		<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('runtime_deploys_badge')}</span
+		>
 	</div>
 	<div class="space-y-3">
 		{#each deploys as deploy (deploy.id)}
@@ -33,12 +34,10 @@
 		{open}
 		ontoggle={() => (open = !open)}
 	>
-		{#snippet children()}
-			<div class="space-y-0">
-				{#each deploys as deploy, i (deploy.id)}
-					<DeployItem {deploy} variant="mobile" showDivider={i < deploys.length - 1} />
-				{/each}
-			</div>
-		{/snippet}
+		<div class="space-y-0">
+			{#each deploys as deploy, i (deploy.id)}
+				<DeployItem {deploy} variant="mobile" showDivider={i < deploys.length - 1} />
+			{/each}
+		</div>
 	</AccordionSection>
 </div>

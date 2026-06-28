@@ -11,7 +11,7 @@
 	function switchChart(tab: 'requests' | 'bandwidth' | 'http') {
 		activeChart = tab;
 		setTimeout(() => {
-			const Plotly = (window as any).Plotly;
+			const Plotly = window.Plotly;
 			if (!Plotly) return;
 			const el = document.getElementById(`chart-${tab}-m`);
 			if (el) Plotly.Plots.resize(el);
@@ -19,7 +19,7 @@
 	}
 
 	onMount(() => {
-		const Plotly = (window as any).Plotly;
+		const Plotly = window.Plotly;
 		if (!Plotly) return;
 
 		const bgCard = chartColors.card;
@@ -63,8 +63,18 @@
 		};
 
 		const hours = [
-			'00:00', '02:00', '04:00', '06:00', '08:00', '10:00',
-			'12:00', '14:00', '16:00', '18:00', '20:00', '22:00'
+			'00:00',
+			'02:00',
+			'04:00',
+			'06:00',
+			'08:00',
+			'10:00',
+			'12:00',
+			'14:00',
+			'16:00',
+			'18:00',
+			'20:00',
+			'22:00'
 		];
 		const hoursShort = ['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'];
 
@@ -74,17 +84,23 @@
 
 		const dataRequests = [
 			{
-				type: 'scatter', mode: 'lines', fill: 'tozeroy',
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
 				name: 'Cache HIT',
-				x: hours, y: cacheHit,
+				x: hours,
+				y: cacheHit,
 				line: { color: greenColor, width: 2.5, shape: 'spline' },
 				fillcolor: 'rgba(62,207,142,0.10)',
 				hovertemplate: '<b>%{x}</b><br>Cache HIT: %{y}k req<extra></extra>'
 			},
 			{
-				type: 'scatter', mode: 'lines', fill: 'tozeroy',
+				type: 'scatter',
+				mode: 'lines',
+				fill: 'tozeroy',
 				name: 'Cache MISS',
-				x: hours, y: cacheMiss,
+				x: hours,
+				y: cacheMiss,
 				line: { color: cfOrange, width: 2, shape: 'spline' },
 				fillcolor: 'rgba(246,130,31,0.10)',
 				hovertemplate: '<b>%{x}</b><br>Cache MISS: %{y}k req<extra></extra>'
@@ -94,9 +110,10 @@
 		const dataBandwidth = [
 			{
 				type: 'bar',
-				x: hours, y: bw,
+				x: hours,
+				y: bw,
 				marker: {
-					color: bw.map((v: number) => v > 180 ? cfOrange : blueColor),
+					color: bw.map((v: number) => (v > 180 ? cfOrange : blueColor)),
 					opacity: 0.85
 				},
 				hovertemplate: '<b>%{x}</b><br>%{y} GB/h<extra></extra>'
@@ -104,15 +121,46 @@
 		];
 
 		const dataHttpStatus = [
-			{ type: 'bar', name: '2xx', x: hoursShort, y: [960, 940, 975, 950, 948, 952, 960, 945, 970, 958, 965, 972], marker: { color: greenColor, opacity: 0.85 }, hovertemplate: '<b>%{x}:00</b><br>2xx: %{y}‰<extra></extra>' },
-			{ type: 'bar', name: '3xx', x: hoursShort, y: [22, 28, 14, 26, 28, 24, 20, 30, 18, 24, 20, 18], marker: { color: blueColor, opacity: 0.85 }, hovertemplate: '<b>%{x}:00</b><br>3xx: %{y}‰<extra></extra>' },
-			{ type: 'bar', name: '4xx', x: hoursShort, y: [12, 20, 8, 16, 16, 14, 14, 16, 8, 12, 10, 8], marker: { color: secondaryColor, opacity: 0.85 }, hovertemplate: '<b>%{x}:00</b><br>4xx: %{y}‰<extra></extra>' },
-			{ type: 'bar', name: '5xx', x: hoursShort, y: [6, 12, 3, 8, 8, 10, 6, 9, 4, 6, 5, 2], marker: { color: errorColor, opacity: 0.85 }, hovertemplate: '<b>%{x}:00</b><br>5xx: %{y}‰<extra></extra>' }
+			{
+				type: 'bar',
+				name: '2xx',
+				x: hoursShort,
+				y: [960, 940, 975, 950, 948, 952, 960, 945, 970, 958, 965, 972],
+				marker: { color: greenColor, opacity: 0.85 },
+				hovertemplate: '<b>%{x}:00</b><br>2xx: %{y}‰<extra></extra>'
+			},
+			{
+				type: 'bar',
+				name: '3xx',
+				x: hoursShort,
+				y: [22, 28, 14, 26, 28, 24, 20, 30, 18, 24, 20, 18],
+				marker: { color: blueColor, opacity: 0.85 },
+				hovertemplate: '<b>%{x}:00</b><br>3xx: %{y}‰<extra></extra>'
+			},
+			{
+				type: 'bar',
+				name: '4xx',
+				x: hoursShort,
+				y: [12, 20, 8, 16, 16, 14, 14, 16, 8, 12, 10, 8],
+				marker: { color: secondaryColor, opacity: 0.85 },
+				hovertemplate: '<b>%{x}:00</b><br>4xx: %{y}‰<extra></extra>'
+			},
+			{
+				type: 'bar',
+				name: '5xx',
+				x: hoursShort,
+				y: [6, 12, 3, 8, 8, 10, 6, 9, 4, 6, 5, 2],
+				marker: { color: errorColor, opacity: 0.85 },
+				hovertemplate: '<b>%{x}:00</b><br>5xx: %{y}‰<extra></extra>'
+			}
 		];
 
 		const requestsLayout = {
 			...commonLayout,
-			yaxis: { ...commonLayout.yaxis, title: { text: 'req/tis.', font: { size: 10, color: textSec } } }
+			yaxis: {
+				...commonLayout.yaxis,
+				title: { text: 'req/tis.', font: { size: 10, color: textSec } }
+			}
 		};
 		const bandwidthLayout = {
 			...commonLayout,
@@ -139,17 +187,47 @@
 
 		// Mobile charts
 		const elRequestsM = document.getElementById('chart-requests-m');
-		if (elRequestsM) Plotly.newPlot('chart-requests-m', dataRequests, { ...mobileLayout, yaxis: { ...mobileLayout.yaxis, title: { text: 'req/tis.', font: { size: 9, color: textSec } } } }, chartConfig);
+		if (elRequestsM)
+			Plotly.newPlot(
+				'chart-requests-m',
+				dataRequests,
+				{
+					...mobileLayout,
+					yaxis: {
+						...mobileLayout.yaxis,
+						title: { text: 'req/tis.', font: { size: 9, color: textSec } }
+					}
+				},
+				chartConfig
+			);
 
 		const elBandwidthM = document.getElementById('chart-bandwidth-m');
-		if (elBandwidthM) Plotly.newPlot('chart-bandwidth-m', dataBandwidth, { ...mobileLayout, bargap: 0.3 }, chartConfig);
+		if (elBandwidthM)
+			Plotly.newPlot(
+				'chart-bandwidth-m',
+				dataBandwidth,
+				{ ...mobileLayout, bargap: 0.3 },
+				chartConfig
+			);
 
 		const elHttpM = document.getElementById('chart-http-status-m');
-		if (elHttpM) Plotly.newPlot('chart-http-status-m', dataHttpStatus, { ...mobileLayout, barmode: 'stack', bargap: 0.3 }, chartConfig);
+		if (elHttpM)
+			Plotly.newPlot(
+				'chart-http-status-m',
+				dataHttpStatus,
+				{ ...mobileLayout, barmode: 'stack', bargap: 0.3 },
+				chartConfig
+			);
 
 		const handleResize = () => {
-			['chart-requests', 'chart-bandwidth', 'chart-http-status',
-			 'chart-requests-m', 'chart-bandwidth-m', 'chart-http-status-m'].forEach(id => {
+			[
+				'chart-requests',
+				'chart-bandwidth',
+				'chart-http-status',
+				'chart-requests-m',
+				'chart-bandwidth-m',
+				'chart-http-status-m'
+			].forEach((id) => {
 				const el = document.getElementById(id);
 				if (el) Plotly.Plots.resize(el);
 			});
@@ -168,15 +246,15 @@
 				<p class="text-xs text-textSec mt-0.5">{t('edge_charts_requestsSubtitle')}</p>
 			</div>
 			<div class="flex gap-2">
-				<span
-					class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
-					><span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span
-					>{t('edge_charts_cacheHit')}</span
+				<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
+					><span class="w-2 h-2 rounded-full bg-green-muted inline-block"></span>{t(
+						'edge_charts_cacheHit'
+					)}</span
 				>
-				<span
-					class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
-					><span class="w-2 h-2 rounded-full bg-cf-orange inline-block"></span
-					>{t('edge_charts_cacheMiss')}</span
+				<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"
+					><span class="w-2 h-2 rounded-full bg-cf-orange inline-block"></span>{t(
+						'edge_charts_cacheMiss'
+					)}</span
 				>
 			</div>
 		</div>
@@ -222,19 +300,25 @@
 	<div class="flex items-center gap-1 mb-4 bg-background rounded-lg p-1">
 		<button
 			onclick={() => switchChart('requests')}
-			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'requests' ? 'bg-surface text-white' : 'text-textSec'}"
-		>{t('edge_tabs_requests')}</button>
+			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'requests'
+				? 'bg-surface text-white'
+				: 'text-textSec'}">{t('edge_tabs_requests')}</button
+		>
 		<button
 			onclick={() => switchChart('bandwidth')}
-			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'bandwidth' ? 'bg-surface text-white' : 'text-textSec'}"
-		>{t('edge_tabs_bandwidth')}</button>
+			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'bandwidth'
+				? 'bg-surface text-white'
+				: 'text-textSec'}">{t('edge_tabs_bandwidth')}</button
+		>
 		<button
 			onclick={() => switchChart('http')}
-			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'http' ? 'bg-surface text-white' : 'text-textSec'}"
-		>{t('edge_tabs_httpStatus')}</button>
+			class="flex-1 py-2 text-xs font-medium rounded-md transition-all {activeChart === 'http'
+				? 'bg-surface text-white'
+				: 'text-textSec'}">{t('edge_tabs_httpStatus')}</button
+		>
 	</div>
 
-	<div class="{activeChart === 'requests' ? '' : 'hidden'}">
+	<div class={activeChart === 'requests' ? '' : 'hidden'}>
 		<div class="flex items-center justify-between mb-3">
 			<div>
 				<p class="text-sm font-semibold text-textMain">{t('edge_charts_requestsOverTime')}</p>
@@ -242,19 +326,21 @@
 			</div>
 			<div class="flex gap-1.5">
 				<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"
-					><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span
-					>{t('edge_charts_cacheHit')}</span
+					><span class="w-1.5 h-1.5 rounded-full bg-green-muted inline-block"></span>{t(
+						'edge_charts_cacheHit'
+					)}</span
 				>
 				<span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"
-					><span class="w-1.5 h-1.5 rounded-full bg-cf-orange inline-block"></span
-					>{t('edge_charts_cacheMiss')}</span
+					><span class="w-1.5 h-1.5 rounded-full bg-cf-orange inline-block"></span>{t(
+						'edge_charts_cacheMiss'
+					)}</span
 				>
 			</div>
 		</div>
 		<div id="chart-requests-m" class="h-[200px] w-full"></div>
 	</div>
 
-	<div class="{activeChart === 'bandwidth' ? '' : 'hidden'}">
+	<div class={activeChart === 'bandwidth' ? '' : 'hidden'}>
 		<div class="flex items-center justify-between mb-3">
 			<div>
 				<p class="text-sm font-semibold text-textMain">{t('edge_charts_bandwidth')}</p>
@@ -264,7 +350,7 @@
 		<div id="chart-bandwidth-m" class="h-[200px] w-full"></div>
 	</div>
 
-	<div class="{activeChart === 'http' ? '' : 'hidden'}">
+	<div class={activeChart === 'http' ? '' : 'hidden'}>
 		<div class="flex items-center justify-between mb-3">
 			<div>
 				<p class="text-sm font-semibold text-textMain">{t('edge_charts_httpStatus')}</p>
