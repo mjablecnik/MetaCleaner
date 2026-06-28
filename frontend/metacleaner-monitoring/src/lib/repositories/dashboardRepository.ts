@@ -26,42 +26,40 @@ export interface AlertItem {
 export function getDashboardStats(): DashboardStat[] {
 	return [
 		{
-			key: 'uptimeFrontend',
-			labelKey: 'dashboard_stats_uptimeFrontend',
-			value: '99.99%',
-			icon: 'fa-desktop',
-			iconClass: 'text-textSec',
-			barWidth: 'w-full',
-			barClass: 'bg-success'
-		},
-		{
-			key: 'uptimeBackend',
-			labelKey: 'dashboard_stats_uptimeBackend',
-			value: '99.95%',
+			key: 'uptimeServer',
+			labelKey: 'dashboard_stats_uptimeServer',
+			value: '99.92%',
 			icon: 'fa-server',
 			iconClass: 'text-textSec',
-			barWidth: 'w-[99.95%]',
+			barWidth: 'w-[99.92%]',
 			barClass: 'bg-success'
 		},
 		{
-			key: 'errorRate',
-			labelKey: 'dashboard_stats_errorRate',
-			value: '0.12%',
-			trend: '-0.05%',
-			trendPositive: true,
-			icon: 'fa-bug',
-			iconClass: 'text-error bg-error/10 p-2 rounded-lg',
-			subtextMobile: 'dashboard_stats_errorRateSubtextMobile',
-			subtextDesktop: 'dashboard_stats_errorRateSubtextMobile'
+			key: 'jobsProcessed',
+			labelKey: 'dashboard_stats_jobsProcessed',
+			value: '847',
+			icon: 'fa-broom',
+			iconClass: 'text-textSec',
+			subtextMobile: 'dashboard_stats_jobsProcessedSubtext',
+			subtextDesktop: 'dashboard_stats_jobsProcessedSubtext'
 		},
 		{
-			key: 'dbHealth',
-			labelKey: 'dashboard_stats_dbHealth',
-			value: 'Healthy',
-			icon: 'fa-database',
+			key: 'avgCleaningTime',
+			labelKey: 'dashboard_stats_avgCleaningTime',
+			value: '4.2s',
+			icon: 'fa-clock',
 			iconClass: 'text-textSec',
-			subtextMobile: 'dashboard_stats_dbHealthSubtextMobile',
-			subtextDesktop: 'dashboard_stats_dbHealthSubtextDesktop'
+			subtextMobile: 'dashboard_stats_avgCleaningTimeSubtext',
+			subtextDesktop: 'dashboard_stats_avgCleaningTimeSubtext'
+		},
+		{
+			key: 'failedJobs',
+			labelKey: 'dashboard_stats_failedJobs',
+			value: '0.8%',
+			trend: '-0.2%',
+			trendPositive: true,
+			icon: 'fa-bug',
+			iconClass: 'text-error bg-error/10 p-2 rounded-lg'
 		}
 	];
 }
@@ -81,29 +79,32 @@ export function getDashboardAlerts(): DashboardAlert[] {
 		{
 			id: 'alert-1',
 			severity: 'error',
-			title: 'Zvýšený počet 500 chyb na API',
-			descriptionMobile: 'Detekován spike chyb na endpointu /api/v1/checkout. Restartováno 1x.',
-			descriptionDesktop: 'Detekován spike chyb na endpointu /api/v1/checkout. Restartováno 1x.',
+			title: 'ExifTool process timeout',
+			descriptionMobile: 'ExifTool hung on corrupted HEIC file, job failed after 30s timeout. POST /api/jobs.',
+			descriptionDesktop:
+				'ExifTool hung on a corrupted HEIC file, job failed after 30s timeout. POST /api/jobs.',
 			timeMobile: '15 min',
-			timeDesktop: 'Před 15 min'
+			timeDesktop: '15 min ago'
 		},
 		{
 			id: 'alert-2',
 			severity: 'warning',
-			title: 'Zpomalené dotazy v DB',
-			descriptionMobile: 'Uživatelé hlásí pomalé načítání. Průměrná latence stoupla nad 500ms.',
-			descriptionDesktop: 'Uživatelé hlásí pomalé načítání. Průměrná latence stoupla nad 500ms.',
-			timeMobile: '2 hod',
-			timeDesktop: 'Před 2 hod'
+			title: 'High memory on metacleaner-server',
+			descriptionMobile: 'RAM at 89% (910MB / 1024MB) during concurrent video processing.',
+			descriptionDesktop:
+				'RAM at 89% (910MB / 1024MB), approaching limit during concurrent video processing.',
+			timeMobile: '2 hrs',
+			timeDesktop: '2 hours ago'
 		},
 		{
 			id: 'alert-3',
 			severity: 'resolved',
-			title: 'Frontend Deployment Timeout',
-			descriptionMobile: 'Vyřešeno po restartu pipeliny.',
-			descriptionDesktop: 'Vyřešeno automaticky po restartu CI/CD pipeliny.',
-			timeMobile: 'Včera',
-			timeDesktop: 'Včera, 14:30'
+			title: 'Stripe webhook retry storm',
+			descriptionMobile: 'Stripe retried webhook 3× before delivery, billing delayed 4 min.',
+			descriptionDesktop:
+				'Stripe retried failed webhook 3× before successful delivery, billing data synced with 4-minute delay.',
+			timeMobile: 'Yesterday',
+			timeDesktop: 'Yesterday 14:30'
 		}
 	];
 }

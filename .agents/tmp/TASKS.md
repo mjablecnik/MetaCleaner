@@ -1,26 +1,31 @@
-# Tasks — MetaCleaner Monitoring Simplification
+# Tasks — MetaCleaner Monitoring: Mock Data Alignment
 
-- [x] 1. [HIGH] Delete `src/routes/security/` directory entirely (page, sections, components)
-- [x] 2. [HIGH] Delete `src/lib/repositories/securityRepository.ts`
-- [x] 3. [HIGH] Remove security nav item from `src/lib/repositories/navigationRepository.ts`
-- [x] 4. [HIGH] Remove security route from MobileBottomNav `navItems` in `src/routes/edge/+page.svelte`
-- [x] 5. [HIGH] Delete `src/routes/performance/sections/PerformanceWebVitalsSection.svelte`
-- [x] 6. [HIGH] Delete `src/routes/performance/components/WebVitalCard.svelte` and `WebVitalCard.stories.svelte`
-- [x] 7. [HIGH] Remove `PerformanceWebVitalsSection` import and usage from `src/routes/performance/+page.svelte`
-- [x] 8. [HIGH] Remove `getCoreWebVitals` from `src/lib/repositories/performanceRepository.ts`
-- [x] 9. [HIGH] Remove Charts Row 2 (CPU/RAM + Error Distribution) from `src/routes/performance/sections/PerformanceChartsSection.svelte` — desktop section and mobile accordions for `cpu` and `errors`
-- [x] 10. [HIGH] Remove `getErrorCodeDistribution` from `src/lib/repositories/performanceRepository.ts`
-- [x] 11. [HIGH] Delete `src/routes/runtime/sections/RuntimeHttpSection.svelte`
-- [x] 12. [HIGH] Remove `RuntimeHttpSection` import and usage from `src/routes/runtime/+page.svelte`
-- [x] 13. [HIGH] Remove `getRuntimeHttpStatusDistribution` from `src/lib/repositories/runtimeRepository.ts`
-- [x] 14. [HIGH] Remove TTFB region content from `src/routes/edge/sections/EdgeThreatSection.svelte` — remove TtfbRegionBar import, TTFB bars/charts (desktop + mobile), simplify grid to single column
-- [x] 15. [HIGH] Delete `src/routes/edge/components/TtfbRegionBar.svelte` and `TtfbRegionBar.stories.svelte`
-- [x] 16. [HIGH] Remove `getTtfbRegions` from `src/lib/repositories/edgeRepository.ts`
-- [x] 17. [HIGH] Delete `src/routes/databaze/sections/DatabaseSecondaryKpiSection.svelte`
-- [x] 18. [HIGH] Remove `DatabaseSecondaryKpiSection` import and usage from `src/routes/databaze/+page.svelte`
-- [x] 19. [HIGH] Remove `getDbSecondaryKpis` from `src/lib/repositories/databaseRepository.ts`
-- [x] 20. [HIGH] Remove Active Sessions chart from `src/routes/uzivatele/sections/UsersChartsSection.svelte` — remove session Plotly code, chart elements, change desktop grid to single full-width
-- [x] 21. [MEDIUM] Add Sentry and Stripe env vars to `.env.example`
-- [x] 22. [MEDIUM] Remove unused i18n keys from `messages/en.json` (prefixes: `security_`, `performance_cwv_`, `edge_ttfb_`, `runtime_charts_http`, `runtime_charts_rpm`)
-- [x] 23. [MEDIUM] Remove unused i18n keys from `messages/cs.json` (same prefixes as above)
-- [x] 24. [MEDIUM] Verify build passes with `bun run check`
+- [x] 1. [HIGH] Replace `getDashboardStats()` in `dashboardRepository.ts` with the 4 MetaCleaner overview KPIs (Server Uptime 99.92%, Jobs/24h 847, Avg Clean Time 4.2s, Failed Jobs 0.8%) per BRIEF A2
+- [x] 2. [HIGH] Replace `getDashboardAlerts()` in `dashboardRepository.ts` with the 3 MetaCleaner alerts (ExifTool timeout / high memory / Stripe retry storm) per BRIEF A2
+- [x] 3. [HIGH] Replace `getServiceCards()` in `availabilityRepository.ts` with the 7 MetaCleaner services (server/web/app/monitoring/database/auth/edge) per BRIEF A1
+- [x] 4. [HIGH] Replace `getHealthChecks()` in `availabilityRepository.ts` with the 6 MetaCleaner health checks per BRIEF A1
+- [x] 5. [HIGH] Replace `getIncidents()` in `availabilityRepository.ts` with the 4 MetaCleaner incidents per BRIEF A1
+- [ ] 6. [HIGH] Replace `getSlaGoals()` in `availabilityRepository.ts` with the 5 MetaCleaner SLA goals per BRIEF A1
+- [ ] 7. [HIGH] Add `app: string` field to the `MachineInstance` interface in `runtimeRepository.ts` (B2)
+- [ ] 8. [HIGH] Add `app: string` field to the `DeployEntry` interface in `runtimeRepository.ts` (B1)
+- [ ] 9. [HIGH] Replace `getMachineInstances()` in `runtimeRepository.ts` with the 5 real machines (server-01/02, web-01, app-01, mon-01) including the `app` field per BRIEF A4
+- [ ] 10. [HIGH] Replace `getDeployHistory()` in `runtimeRepository.ts` with the 5 real deploys including the `app` field per BRIEF A4
+- [ ] 11. [HIGH] Replace `getRuntimeErrorLog()` in `runtimeRepository.ts` with the 8 MetaCleaner runtime error entries per BRIEF A4
+- [ ] 12. [HIGH] Update `getRuntimeStats()` in `runtimeRepository.ts` (CPU 72%, RAM 1.1/2GB, uptime 99.92%, restarts 3) per BRIEF A4
+- [ ] 13. [HIGH] Update `getRuntimeSummary()` in `runtimeRepository.ts` (machinesOnline 5, machinesTotal 5, region "fra (Frankfurt)") per BRIEF A4
+- [ ] 14. [HIGH] In `runtime/components/DeployItem.svelte`, render a colored app badge from the `app` field (server=blue, web=green, app=purple, monitoring=gray) (B1)
+- [ ] 15. [HIGH] In `runtime/components/InstanceCard.svelte`, render the `app` name as a secondary label under the machine name (B2)
+- [ ] 16. [HIGH] Replace `getSlowEndpoints()` in `performanceRepository.ts` with the 6 real MetaCleaner endpoints per BRIEF A3
+- [ ] 17. [HIGH] Replace `getPerformanceEvents()` in `performanceRepository.ts` with the 5 MetaCleaner performance events per BRIEF A3
+- [ ] 18. [MEDIUM] Update `getPerformanceKpiStats()` in `performanceRepository.ts` (Apdex 0.91, avg 340ms, throughput 890 req/min, error 1.2%) per BRIEF A3
+- [ ] 19. [HIGH] Replace error entries in `errorsRepository.ts` with the 8 MetaCleaner Sentry errors per BRIEF A5
+- [ ] 20. [MEDIUM] Replace table stats in `databaseRepository.ts` with the 7 Supabase tables (jobs/reports/files/users/api_keys/subscriptions/credits) per BRIEF A6
+- [ ] 21. [MEDIUM] Update DB key metrics in `databaseRepository.ts` (total ~30MB, pool 42/100, avg query 12ms, slowest query, storage 2.4GB) per BRIEF A6
+- [ ] 22. [MEDIUM] Replace business KPIs in `businessRepository.ts` (MRR $1,240, subscribers 89, free 1,840, churn 3.2%, ARPU $13.93, etc.) per BRIEF A7
+- [ ] 23. [MEDIUM] Update subscription plan breakdown in `businessRepository.ts` (Free 1,840, Pro 62→$558, Business 27→$783) per BRIEF A7
+- [ ] 24. [MEDIUM] Replace user metrics in `usersRepository.ts` (registered 2,100, new 34, active 210, power 18, auth-method split) per BRIEF A8
+- [ ] 25. [MEDIUM] Replace Cloudflare metrics in `edgeRepository.ts` (cache 94.2%, 48,200 req, threats, Czech-focused geo split) per BRIEF A9
+- [ ] 26. [MEDIUM] Update `.env.example` to ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_ORG`, `SENTRY_PROJECT`, `STRIPE_SECRET_KEY` are present per BRIEF B3
+- [ ] 27. [MEDIUM] Add/update i18n keys in `messages/en.json` for any new labels (app badge, machine app subtitle, new KPI labels) following existing key patterns (B4)
+- [ ] 28. [MEDIUM] Add/update matching i18n keys in `messages/cs.json` (same keys as en.json) (B4)
+- [ ] 29. [MEDIUM] Run `bun run check` and fix any TypeScript/lint regressions; visually verify the 7-card availability grid still looks good

@@ -54,68 +54,116 @@ export interface QuickStat {
 export function getServiceCards(): ServiceCard[] {
 	return [
 		{
-			key: 'frontend',
-			name: 'Frontend',
-			icon: 'fa-desktop',
-			provider: 'Vercel / CDN',
+			key: 'server',
+			name: 'MetaCleaner Server',
+			icon: 'fa-server',
+			provider: 'Fly.io',
+			status: 'online',
+			uptimePercent: 99.92,
+			uptimeDisplay: '99.92',
+			outageCount: 3,
+			outageLabel: '3 outages',
+			trend: '-0.02%',
+			trendPositive: false,
+			barClass: 'bg-success',
+			downDays: [8, 45],
+			degradedDays: [12, 23, 67]
+		},
+		{
+			key: 'web',
+			name: 'MetaCleaner Web',
+			icon: 'fa-globe',
+			provider: 'Fly.io',
 			status: 'online',
 			uptimePercent: 99.99,
 			uptimeDisplay: '99.99',
 			outageCount: 0,
-			outageLabel: '0 výpadků',
-			trend: '+0.01%',
+			outageLabel: '0 outages',
+			trend: '+0.00%',
 			trendPositive: true,
 			barClass: 'bg-success',
 			downDays: [],
-			degradedDays: [45]
+			degradedDays: [34]
 		},
 		{
-			key: 'backend',
-			name: 'Backend API',
-			icon: 'fa-server',
+			key: 'app',
+			name: 'MetaCleaner App',
+			icon: 'fa-desktop',
+			provider: 'Fly.io',
+			status: 'online',
+			uptimePercent: 99.99,
+			uptimeDisplay: '99.99',
+			outageCount: 0,
+			outageLabel: '0 outages',
+			trend: '+0.00%',
+			trendPositive: true,
+			barClass: 'bg-success',
+			downDays: [],
+			degradedDays: [34]
+		},
+		{
+			key: 'monitoring',
+			name: 'Monitoring',
+			icon: 'fa-chart-line',
 			provider: 'Fly.io',
 			status: 'online',
 			uptimePercent: 99.95,
 			uptimeDisplay: '99.95',
-			outageCount: 2,
-			outageLabel: '2 výpadky',
-			trend: '-0.03%',
-			trendPositive: false,
+			outageCount: 1,
+			outageLabel: '1 outage',
+			trend: '+0.02%',
+			trendPositive: true,
 			barClass: 'bg-success',
-			downDays: [12, 67],
-			degradedDays: [23, 55]
+			downDays: [],
+			degradedDays: [5, 28, 56]
 		},
 		{
 			key: 'database',
-			name: 'Databáze',
+			name: 'Supabase DB',
 			icon: 'fa-database',
 			provider: 'Supabase',
 			status: 'online',
 			uptimePercent: 99.97,
 			uptimeDisplay: '99.97',
 			outageCount: 1,
-			outageLabel: '1 výpadek',
-			trend: '+0.02%',
+			outageLabel: '1 outage',
+			trend: '+0.01%',
 			trendPositive: true,
 			barClass: 'bg-success',
-			downDays: [34],
-			degradedDays: [20, 60]
+			downDays: [23],
+			degradedDays: [44, 71]
+		},
+		{
+			key: 'auth',
+			name: 'Supabase Auth',
+			icon: 'fa-shield-halved',
+			provider: 'Supabase',
+			status: 'online',
+			uptimePercent: 99.98,
+			uptimeDisplay: '99.98',
+			outageCount: 0,
+			outageLabel: '0 outages',
+			trend: '+0.01%',
+			trendPositive: true,
+			barClass: 'bg-success',
+			downDays: [],
+			degradedDays: [15]
 		},
 		{
 			key: 'edge',
-			name: 'Edge / CDN',
+			name: 'Cloudflare CDN',
 			icon: 'fa-cloud',
 			provider: 'Cloudflare',
-			status: 'degraded',
-			uptimePercent: 99.82,
-			uptimeDisplay: '99.82',
-			outageCount: 5,
-			outageLabel: '5 výpadků',
-			trend: '-0.08%',
+			status: 'online',
+			uptimePercent: 99.94,
+			uptimeDisplay: '99.94',
+			outageCount: 1,
+			outageLabel: '1 outage',
+			trend: '-0.01%',
 			trendPositive: false,
-			barClass: 'bg-secondary',
-			downDays: [5, 18, 42, 71, 83],
-			degradedDays: [0, 10, 25, 50, 65, 78]
+			barClass: 'bg-success',
+			downDays: [62],
+			degradedDays: [8, 33, 57]
 		}
 	];
 }
@@ -123,39 +171,46 @@ export function getServiceCards(): ServiceCard[] {
 export function getHealthChecks(): HealthCheck[] {
 	return [
 		{
-			endpoint: '/health',
-			service: 'Backend API',
+			endpoint: 'GET /api/health',
+			service: 'MetaCleaner Server',
 			status: 'online',
 			statusCode: '200 OK',
-			latencyMs: 42
+			latencyMs: 28
 		},
 		{
-			endpoint: '/api/ping',
-			service: 'Backend API',
+			endpoint: 'GET / (200 check)',
+			service: 'MetaCleaner Web',
 			status: 'online',
 			statusCode: '200 OK',
-			latencyMs: 18
+			latencyMs: 12
 		},
 		{
-			endpoint: '/ (root)',
-			service: 'Frontend',
+			endpoint: 'GET / (200 check)',
+			service: 'MetaCleaner App',
 			status: 'online',
 			statusCode: '200 OK',
-			latencyMs: 91
+			latencyMs: 9
 		},
 		{
-			endpoint: '/api/db-health',
-			service: 'Supabase',
-			status: 'degraded',
-			statusCode: '200 OK',
-			latencyMs: 412
-		},
-		{
-			endpoint: 'CF Edge Check',
-			service: 'Cloudflare',
+			endpoint: 'GET / (200 check)',
+			service: 'Monitoring',
 			status: 'online',
 			statusCode: '200 OK',
-			latencyMs: 8
+			latencyMs: 47
+		},
+		{
+			endpoint: 'Supabase REST ping',
+			service: 'Supabase DB',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 68
+		},
+		{
+			endpoint: 'CF edge check',
+			service: 'Cloudflare CDN',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 5
 		}
 	];
 }
@@ -165,48 +220,50 @@ export function getIncidents(): Incident[] {
 		{
 			id: 'inc-1',
 			status: 'active',
-			title: 'Zvýšená latence Edge CDN',
+			title: 'Backend OOM during video cleaning',
 			descriptionDesktop:
-				'Cloudflare edge uzly v regionu EU reportují zvýšenou latenci. Tým zkoumá příčinu.',
-			descriptionMobile: 'Cloudflare edge uzly v regionu EU reportují zvýšenou latenci.',
-			service: 'Cloudflare Edge',
-			serviceIcon: 'fa-cloud',
-			timestamp: 'Dnes, 08:14',
-			duration: '2h 18m'
+				'metacleaner-server machine exceeded 1GB RAM limit processing a 4K MOV file. Auto-restarted in 12s.',
+			descriptionMobile: 'Server exceeded 1GB RAM on 4K MOV file. Auto-restarted in 12s.',
+			service: 'Fly.io Backend',
+			serviceIcon: 'fa-server',
+			timestamp: 'Today, 08:14',
+			duration: '12s'
 		},
 		{
 			id: 'inc-2',
 			status: 'resolved',
-			title: 'Backend API restart (500 errors)',
-			descriptionDesktop: 'Instance crashla kvůli OOM. Automatický restart obnovil provoz za 43s.',
-			descriptionMobile: 'OOM crash. Automatický restart za 43s.',
-			service: 'Fly.io Backend',
-			serviceIcon: 'fa-server',
-			timestamp: 'Včera, 22:45',
-			duration: '43s'
+			title: 'Supabase connection pool exhausted',
+			descriptionDesktop:
+				'PostgREST connection pool hit 100 limit during evening traffic spike. Resolved after scaling pool to 150.',
+			descriptionMobile: 'PostgREST pool hit 100 during traffic spike. Scaled to 150.',
+			service: 'Supabase DB',
+			serviceIcon: 'fa-database',
+			timestamp: 'Yesterday, 19:42',
+			duration: '7m 12s'
 		},
 		{
 			id: 'inc-3',
 			status: 'resolved',
-			title: 'Supabase DB connection pool exhausted',
+			title: 'Stripe webhook delivery timeout',
 			descriptionDesktop:
-				'Pool připojení dosáhl limitu 100. Zvýšen limit a přidána queue pro čekající spojení.',
-			descriptionMobile: 'Pool dosáhl limitu 100. Zvýšen limit + queue.',
-			service: 'Supabase DB',
-			serviceIcon: 'fa-database',
-			timestamp: '20. 5., 16:02',
-			duration: '7m 12s'
+				'Billing webhook endpoint returned 504 during Stripe event flood. Events delivered on retry.',
+			descriptionMobile: 'Billing webhook returned 504 during Stripe event flood. Delivered on retry.',
+			service: 'Fly.io Backend',
+			serviceIcon: 'fa-server',
+			timestamp: '20 May, 16:02',
+			duration: '2m 45s'
 		},
 		{
 			id: 'inc-4',
 			status: 'resolved',
-			title: 'Frontend deployment timeout',
-			descriptionDesktop: 'CI/CD pipeline se zasekla. Vyřešeno ručním triggernutím deploymentu.',
-			descriptionMobile: 'CI/CD pipeline se zasekla. Ruční deploy.',
-			service: 'Vercel Frontend',
-			serviceIcon: 'fa-desktop',
-			timestamp: '15. 5., 11:30',
-			duration: '18m 5s'
+			title: 'Cloudflare certificate renewal hiccup',
+			descriptionDesktop:
+				'Brief edge degradation during automated SSL cert rotation. All regions recovered automatically.',
+			descriptionMobile: 'Brief edge degradation during SSL cert rotation. Auto-recovered.',
+			service: 'Cloudflare',
+			serviceIcon: 'fa-cloud',
+			timestamp: '15 May, 11:30',
+			duration: '48s'
 		}
 	];
 }
