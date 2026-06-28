@@ -14,10 +14,8 @@
 
 		const bgCard = chartColors.card;
 		const textSec = chartColors.textSec;
-		const blueColor = chartColors.blue;
 		const primary = chartColors.primary;
 		const purpleColor = chartColors.purple;
-		const secondaryColor = chartColors.secondary;
 		const chartConfig = { responsive: true, displayModeBar: false, displaylogo: false };
 
 		const pieLayout = {

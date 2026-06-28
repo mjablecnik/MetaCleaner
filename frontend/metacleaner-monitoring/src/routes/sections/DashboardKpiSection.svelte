@@ -1,55 +1,43 @@
 <script lang="ts">
-	import { t } from '$lib/i18n';
 	import StatCard from '$lib/shared/elements/StatCard.svelte';
 	import { getDashboardStats } from '$lib/repositories/dashboardRepository';
 
 	const stats = getDashboardStats();
-	const uf = stats.find((s) => s.key === 'uptimeFrontend')!;
-	const ub = stats.find((s) => s.key === 'uptimeBackend')!;
-	const er = stats.find((s) => s.key === 'errorRate')!;
-	const db = stats.find((s) => s.key === 'dbHealth')!;
-
-	const mobileIconBg = 'bg-surface lg:bg-transparent p-2 lg:p-0 rounded-lg lg:rounded-none';
+	const us = stats.find((s) => s.key === 'uptimeServer')!;
+	const jp = stats.find((s) => s.key === 'jobsProcessed')!;
+	const act = stats.find((s) => s.key === 'avgCleaningTime')!;
+	const fj = stats.find((s) => s.key === 'failedJobs')!;
 </script>
 
 <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 	<StatCard
-		labelKey={uf.labelKey}
-		value={uf.value}
-		icon={uf.icon}
-		iconClass="{uf.iconClass} {mobileIconBg}"
-		barWidth={uf.barWidth}
-		barClass={uf.barClass}
+		labelKey={us.labelKey}
+		value={us.value}
+		icon={us.icon}
+		iconClass={us.iconClass}
+		barWidth={us.barWidth}
+		barClass={us.barClass}
 	/>
 	<StatCard
-		labelKey={ub.labelKey}
-		value={ub.value}
-		icon={ub.icon}
-		iconClass="{ub.iconClass} {mobileIconBg}"
-		barWidth={ub.barWidth}
-		barClass={ub.barClass}
+		labelKey={jp.labelKey}
+		value={jp.value}
+		icon={jp.icon}
+		iconClass={jp.iconClass}
+		subtextKey={jp.subtextMobile}
 	/>
 	<StatCard
-		labelKey={er.labelKey}
-		value={er.value}
-		icon={er.icon}
-		iconClass={er.iconClass}
-		trend={er.trend}
-		trendPositive={er.trendPositive}
-		subtextKey={er.subtextMobile}
+		labelKey={act.labelKey}
+		value={act.value}
+		icon={act.icon}
+		iconClass={act.iconClass}
+		subtextKey={act.subtextMobile}
 	/>
-	<!-- DB Health — responsive value color and mobile/desktop subtext -->
-	<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-5 shadow-sm">
-		<div class="flex justify-between items-start mb-3 lg:mb-4">
-			<h3 class="text-textSec text-sm font-medium">{t(db.labelKey)}</h3>
-			<i class="fa-solid {db.icon} {db.iconClass} {mobileIconBg}"></i>
-		</div>
-		<span class="text-3xl font-bold text-success lg:text-textMain tracking-tight"
-			>{t('common_status_healthy')}</span
-		>
-		<p class="text-xs lg:text-sm text-textSec mt-2">
-			<span class="lg:hidden">{t(db.subtextMobile!)}</span>
-			<span class="hidden lg:inline">{t(db.subtextDesktop!)}</span>
-		</p>
-	</div>
+	<StatCard
+		labelKey={fj.labelKey}
+		value={fj.value}
+		icon={fj.icon}
+		iconClass={fj.iconClass}
+		trend={fj.trend}
+		trendPositive={fj.trendPositive}
+	/>
 </section>

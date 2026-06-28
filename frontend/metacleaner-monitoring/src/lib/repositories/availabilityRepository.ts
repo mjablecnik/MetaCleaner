@@ -247,7 +247,8 @@ export function getIncidents(): Incident[] {
 			title: 'Stripe webhook delivery timeout',
 			descriptionDesktop:
 				'Billing webhook endpoint returned 504 during Stripe event flood. Events delivered on retry.',
-			descriptionMobile: 'Billing webhook returned 504 during Stripe event flood. Delivered on retry.',
+			descriptionMobile:
+				'Billing webhook returned 504 during Stripe event flood. Delivered on retry.',
 			service: 'Fly.io Backend',
 			serviceIcon: 'fa-server',
 			timestamp: '20 May, 16:02',

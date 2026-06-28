@@ -92,8 +92,7 @@
 		<div class="bg-card border border-error/20 rounded-xl p-4">
 			<h3 class="text-textSec text-xs font-medium mb-2">{t('business_kpi_churnRate')}</h3>
 			<div class="text-2xl font-bold text-error">3.2%</div>
-			<span class="text-xs text-error font-medium mt-0.5 block"
-				>{t('business_kpi_churnBadge')}</span
+			<span class="text-xs text-error font-medium mt-0.5 block">{t('business_kpi_churnBadge')}</span
 			>
 			<p class="text-xs text-textSec mt-1 leading-tight">{t('business_kpi_churnRateSubtext')}</p>
 		</div>

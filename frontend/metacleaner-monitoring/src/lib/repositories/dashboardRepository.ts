@@ -80,7 +80,8 @@ export function getDashboardAlerts(): DashboardAlert[] {
 			id: 'alert-1',
 			severity: 'error',
 			title: 'ExifTool process timeout',
-			descriptionMobile: 'ExifTool hung on corrupted HEIC file, job failed after 30s timeout. POST /api/jobs.',
+			descriptionMobile:
+				'ExifTool hung on corrupted HEIC file, job failed after 30s timeout. POST /api/jobs.',
 			descriptionDesktop:
 				'ExifTool hung on a corrupted HEIC file, job failed after 30s timeout. POST /api/jobs.',
 			timeMobile: '15 min',
