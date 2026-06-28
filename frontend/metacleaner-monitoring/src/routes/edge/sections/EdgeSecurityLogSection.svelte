@@ -49,22 +49,28 @@
 		<table class="w-full text-sm">
 			<thead>
 				<tr class="border-b border-surface">
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_time')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_type')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('edge_table_ipAddress')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('edge_table_country')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('edge_table_ruleMessage')}</th
 					>
-					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
+					<th
+						class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4"
 						>{t('common_table_action')}</th
 					>
 					<th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3"
@@ -114,13 +120,16 @@
 			<button class="flex-1 px-2 py-2 bg-secondary/20 text-secondary text-xs font-medium"
 				>{t('common_status_all')}</button
 			>
-			<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+			<button
+				class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 				>DDoS</button
 			>
-			<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+			<button
+				class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 				>WAF</button
 			>
-			<button class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+			<button
+				class="flex-1 px-2 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 				>Bot</button
 			>
 		</div>

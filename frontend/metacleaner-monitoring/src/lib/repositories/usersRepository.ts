@@ -37,9 +37,24 @@ export interface UserStatusConfig {
 }
 
 export const userStatusConfig: Record<UserStatus, UserStatusConfig> = {
-	online: { dot: 'bg-success', labelKey: 'users_status_online', text: 'text-success', bg: 'bg-success/10' },
-	idle: { dot: 'bg-secondary', labelKey: 'users_status_idle', text: 'text-secondary', bg: 'bg-secondary/10' },
-	offline: { dot: 'bg-[#475569]', labelKey: 'users_status_offline', text: 'text-textSec', bg: 'bg-badge' }
+	online: {
+		dot: 'bg-success',
+		labelKey: 'users_status_online',
+		text: 'text-success',
+		bg: 'bg-success/10'
+	},
+	idle: {
+		dot: 'bg-secondary',
+		labelKey: 'users_status_idle',
+		text: 'text-secondary',
+		bg: 'bg-secondary/10'
+	},
+	offline: {
+		dot: 'bg-[#475569]',
+		labelKey: 'users_status_offline',
+		text: 'text-textSec',
+		bg: 'bg-badge'
+	}
 };
 
 export interface UserChartData {

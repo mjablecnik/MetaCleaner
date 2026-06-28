@@ -18,8 +18,8 @@
 			<div class="flex items-end gap-2">
 				<span class="text-3xl font-bold {kpi.valueClass}">{kpi.value}</span>
 				<span class="text-sm {kpi.trendClass} mb-1 flex items-center gap-1">
-					<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i
-					>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
+					<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"
+					></i>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
 				</span>
 			</div>
 			<p class="text-xs text-textSec mt-2">{t(kpi.subtextKey)}</p>
@@ -40,8 +40,8 @@
 			<div class="flex items-end gap-1.5">
 				<span class="text-2xl font-bold {kpi.valueClass}">{kpi.value}</span>
 				<span class="text-xs {kpi.trendClass} mb-0.5 flex items-center gap-0.5">
-					<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-[10px]"></i
-					>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
+					<i class="fa-solid {kpi.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-[10px]"
+					></i>{kpi.trend > 0 ? '+' : ''}{kpi.trend}
 				</span>
 			</div>
 			<p class="text-[10px] text-textSec mt-1.5">{t(kpi.subtextKeyMobile)}</p>

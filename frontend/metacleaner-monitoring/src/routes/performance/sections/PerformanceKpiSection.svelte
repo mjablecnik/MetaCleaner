@@ -26,10 +26,12 @@
 				{/if}
 				{#if stat.trend}
 					<span
-						class="text-sm {stat.trendPositive ? 'text-success' : 'text-error'} mb-1 flex items-center gap-1"
+						class="text-sm {stat.trendPositive
+							? 'text-success'
+							: 'text-error'} mb-1 flex items-center gap-1"
 					>
-						<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i
-						>{stat.trend}
+						<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"
+						></i>{stat.trend}
 					</span>
 				{/if}
 			</div>
@@ -88,7 +90,9 @@
 				<span
 					class="px-1.5 py-0.5 {stat.badgeClass} text-xs rounded-full font-medium flex-shrink-0 ml-1"
 				>
-					{#if stat.key === 'apdex'}✓{:else if stat.key === 'errorRate'}⚠{:else if stat.key === 'throughput'}N{:else}{t(stat.badgeKey)}{/if}
+					{#if stat.key === 'apdex'}✓{:else if stat.key === 'errorRate'}⚠{:else if stat.key === 'throughput'}N{:else}{t(
+							stat.badgeKey
+						)}{/if}
 				</span>
 			</div>
 			<div class="flex items-end gap-1 mb-2">
@@ -98,10 +102,12 @@
 				{/if}
 				{#if stat.trend}
 					<span
-						class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'} mb-0.5 flex items-center gap-0.5"
+						class="text-xs {stat.trendPositive
+							? 'text-success'
+							: 'text-error'} mb-0.5 flex items-center gap-0.5"
 					>
-						<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"></i
-						>{stat.trend}
+						<i class="fa-solid {stat.trendUp ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs"
+						></i>{stat.trend}
 					</span>
 				{/if}
 			</div>

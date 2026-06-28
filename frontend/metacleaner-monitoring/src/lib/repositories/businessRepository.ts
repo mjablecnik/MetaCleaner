@@ -165,9 +165,33 @@ export function getPlanRevenue(): PlanRevenue[] {
 export function getConversionFunnel(): ConversionFunnelStep[] {
 	return [
 		{ id: 'visitors', labelKey: 'business_funnel_visitors', value: 84210, color: '#3b82f6' },
-		{ id: 'registrations', labelKey: 'business_funnel_registrations', value: 12318, conversionPercent: '14.6%', color: '#8b5cf6' },
-		{ id: 'trialActivation', labelKey: 'business_funnel_trialActivation', value: 6840, conversionPercent: '55.5%', color: '#22c55e' },
-		{ id: 'trialConversion', labelKey: 'business_funnel_trialConversion', value: 2104, conversionPercent: '30.8%', color: '#3ecf8e' },
-		{ id: 'activePaying', labelKey: 'business_funnel_activePaying', value: 1840, conversionPercent: '87.5%', color: '#f97316' }
+		{
+			id: 'registrations',
+			labelKey: 'business_funnel_registrations',
+			value: 12318,
+			conversionPercent: '14.6%',
+			color: '#8b5cf6'
+		},
+		{
+			id: 'trialActivation',
+			labelKey: 'business_funnel_trialActivation',
+			value: 6840,
+			conversionPercent: '55.5%',
+			color: '#22c55e'
+		},
+		{
+			id: 'trialConversion',
+			labelKey: 'business_funnel_trialConversion',
+			value: 2104,
+			conversionPercent: '30.8%',
+			color: '#3ecf8e'
+		},
+		{
+			id: 'activePaying',
+			labelKey: 'business_funnel_activePaying',
+			value: 1840,
+			conversionPercent: '87.5%',
+			color: '#f97316'
+		}
 	];
 }

@@ -7,7 +7,20 @@
 	let latencyOpen = $state(true);
 	let connectionsOpen = $state(false);
 
-	const hours = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'];
+	const hours = [
+		'00:00',
+		'02:00',
+		'04:00',
+		'06:00',
+		'08:00',
+		'10:00',
+		'12:00',
+		'14:00',
+		'16:00',
+		'18:00',
+		'20:00',
+		'22:00'
+	];
 	const avgLatency = [18, 16, 20, 22, 28, 35, 42, 55, 38, 30, 26, 22];
 	const p95Latency = [80, 70, 90, 100, 130, 160, 200, 280, 175, 140, 115, 95];
 	const conns = [32, 28, 35, 42, 58, 72, 81, 87, 76, 68, 59, 50];
@@ -82,7 +95,10 @@
 
 	const latencyLayout = {
 		...baseLayout,
-		yaxis: { ...baseLayout.yaxis, title: { text: 'ms', font: { size: 10, color: chartColors.textSec } } }
+		yaxis: {
+			...baseLayout.yaxis,
+			title: { text: 'ms', font: { size: 10, color: chartColors.textSec } }
+		}
 	};
 
 	const connectionsLayout = {
@@ -163,7 +179,7 @@
 			id="chart-latency-m"
 			data={dataLatency}
 			layout={latencyLayout}
-			mobileLayout={mobileLayout}
+			{mobileLayout}
 			class="h-[200px]"
 		/>
 	</AccordionSection>
@@ -184,7 +200,7 @@
 			id="chart-connections-m"
 			data={dataConnections}
 			layout={connectionsLayout}
-			mobileLayout={mobileLayout}
+			{mobileLayout}
 			class="h-[200px]"
 		/>
 	</AccordionSection>

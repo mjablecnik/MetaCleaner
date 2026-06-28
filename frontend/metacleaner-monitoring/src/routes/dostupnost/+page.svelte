@@ -66,8 +66,12 @@
 					<i class="fa-solid fa-triangle-exclamation text-secondary text-sm"></i>
 				</div>
 				<div class="flex-1 min-w-0">
-					<p class="text-sm font-semibold text-textMain">{t('availability_status_activeIncident')}</p>
-					<p class="text-xs text-textSec truncate">{activeIncident.title} · {activeIncident.duration}</p>
+					<p class="text-sm font-semibold text-textMain">
+						{t('availability_status_activeIncident')}
+					</p>
+					<p class="text-xs text-textSec truncate">
+						{activeIncident.title} · {activeIncident.duration}
+					</p>
 				</div>
 				<i class="fa-solid fa-chevron-right text-textSec text-xs flex-shrink-0"></i>
 			</div>

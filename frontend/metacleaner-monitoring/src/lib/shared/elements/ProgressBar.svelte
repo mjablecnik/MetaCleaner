@@ -8,7 +8,14 @@
 		height?: 'sm' | 'md';
 	}
 
-	let { value, max = 100, color = 'bg-primary', label, showPercent = false, height = 'md' }: Props = $props();
+	let {
+		value,
+		max = 100,
+		color = 'bg-primary',
+		label,
+		showPercent = false,
+		height = 'md'
+	}: Props = $props();
 
 	const percent = $derived(Math.min(100, Math.max(0, (value / max) * 100)));
 	const heightClass = $derived(height === 'sm' ? 'h-1' : 'h-1.5');

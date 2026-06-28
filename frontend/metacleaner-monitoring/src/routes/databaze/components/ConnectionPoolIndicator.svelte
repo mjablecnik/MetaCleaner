@@ -12,7 +12,7 @@
 <div class="w-full">
 	<div class="flex justify-between text-xs mb-1">
 		<span class="text-textSec">Pool</span>
-		<span class="{labelClass ?? 'text-textMain'}">{value}/{max}</span>
+		<span class={labelClass ?? 'text-textMain'}>{value}/{max}</span>
 	</div>
 	<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 		<div

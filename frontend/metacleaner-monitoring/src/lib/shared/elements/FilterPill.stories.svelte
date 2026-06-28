@@ -12,10 +12,24 @@
 	});
 </script>
 
-<Story name="Active" args={{ label: 'All', active: true, activeClass: 'bg-primary/20 text-primary', onclick: () => {} }} />
+<Story
+	name="Active"
+	args={{
+		label: 'All',
+		active: true,
+		activeClass: 'bg-primary/20 text-primary',
+		onclick: () => {}
+	}}
+/>
 
 <Story name="Inactive" args={{ label: 'Critical', active: false, onclick: () => {} }} />
 
-<Story name="ActiveError" args={{ label: 'All', active: true, activeClass: 'bg-error/20 text-error', onclick: () => {} }} />
+<Story
+	name="ActiveError"
+	args={{ label: 'All', active: true, activeClass: 'bg-error/20 text-error', onclick: () => {} }}
+/>
 
-<Story name="ActiveAmber" args={{ label: 'All', active: true, activeClass: 'bg-amber/20 text-amber', onclick: () => {} }} />
+<Story
+	name="ActiveAmber"
+	args={{ label: 'All', active: true, activeClass: 'bg-amber/20 text-amber', onclick: () => {} }}
+/>

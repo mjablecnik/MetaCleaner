@@ -9,16 +9,12 @@
 		children: Snippet;
 	}
 
-	let {
-		title,
-		subtitle,
-		titleRight,
-		class: className = '',
-		children
-	}: Props = $props();
+	let { title, subtitle, titleRight, class: className = '', children }: Props = $props();
 </script>
 
-<div class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm {className}">
+<div
+	class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm {className}"
+>
 	<div class="flex justify-between items-start lg:items-center mb-4 lg:mb-6">
 		<div>
 			<h3 class="text-base lg:text-lg font-semibold text-textMain">{title}</h3>

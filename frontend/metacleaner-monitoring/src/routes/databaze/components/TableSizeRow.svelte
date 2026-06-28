@@ -10,9 +10,7 @@
 </script>
 
 <div class="flex items-center gap-3">
-	<div
-		class="{variant === 'desktop' ? 'w-24' : 'w-16'} text-xs text-textSec font-mono truncate"
-	>
+	<div class="{variant === 'desktop' ? 'w-24' : 'w-16'} text-xs text-textSec font-mono truncate">
 		{tableSize.name}
 	</div>
 	<div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">

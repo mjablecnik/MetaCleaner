@@ -1,771 +1,1112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b',
-                        border: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Database</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b',
+							border: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-        /* Drawer */
-        #drawer-overlay { transition: opacity 0.25s ease; }
-        #nav-drawer { transition: transform 0.25s ease; }
-        #nav-drawer.open { transform: translateX(0); }
-        #nav-drawer.closed { transform: translateX(-100%); }
+			/* Drawer */
+			#drawer-overlay {
+				transition: opacity 0.25s ease;
+			}
+			#nav-drawer {
+				transition: transform 0.25s ease;
+			}
+			#nav-drawer.open {
+				transform: translateX(0);
+			}
+			#nav-drawer.closed {
+				transform: translateX(-100%);
+			}
 
-        /* Accordion */
-        .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .acc-body.open { max-height: 2000px; }
-        .acc-chevron { transition: transform 0.25s ease; }
-        .acc-chevron.open { transform: rotate(180deg); }
-    </style>
-</head>
-<body class="bg-background min-h-screen flex flex-col pb-20">
-
-<!-- ═══════════════════════════════════════════════
+			/* Accordion */
+			.acc-body {
+				max-height: 0;
+				overflow: hidden;
+				transition: max-height 0.3s ease;
+			}
+			.acc-body.open {
+				max-height: 2000px;
+			}
+			.acc-chevron {
+				transition: transform 0.25s ease;
+			}
+			.acc-chevron.open {
+				transform: rotate(180deg);
+			}
+		</style>
+	</head>
+	<body class="flex min-h-screen flex-col bg-background pb-20">
+		<!-- ═══════════════════════════════════════════════
      DRAWER OVERLAY
 ════════════════════════════════════════════════ -->
-<div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none" onclick="closeDrawer()"></div>
+		<div
+			id="drawer-overlay"
+			class="pointer-events-none fixed inset-0 z-40 bg-black/60 opacity-0"
+			onclick="closeDrawer()"
+		></div>
 
-<!-- ═══════════════════════════════════════════════
+		<!-- ═══════════════════════════════════════════════
      SLIDE-OVER NAV DRAWER
 ════════════════════════════════════════════════ -->
-<aside id="nav-drawer" class="fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col closed">
-    <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-            <span class="text-lg font-bold text-textMain tracking-tight">Monitorly</span>
-        </div>
-        <button onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center text-textSec hover:text-white">
-            <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-    </div>
-    <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-gauge-high w-5 text-center"></i><span>Dashboard</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-server w-5 text-center"></i><span>Dostupnost</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i><span>Chyby &amp; Pády</span>
-        </a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60">
-            <i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i><span>Databáze (Supabase)</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-microchip w-5 text-center"></i><span>Runtime (Fly.io)</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-cloud w-5 text-center"></i><span>Edge (Cloudflare)</span>
-        </a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-bolt w-5 text-center"></i><span>Performance</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-shield-halved w-5 text-center"></i><span>Security Signály</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-chart-line w-5 text-center"></i><span>Business Metriky</span>
-        </a>
-    </nav>
-    <div class="p-4 border-t border-[#1e293b]">
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-gear w-5 text-center"></i><span>Nastavení</span>
-        </a>
-    </div>
-</aside>
+		<aside
+			id="nav-drawer"
+			class="closed fixed top-0 left-0 z-50 flex h-full w-72 flex-col border-r border-[#1e293b] bg-card"
+		>
+			<div class="flex items-center justify-between border-b border-[#1e293b] p-5">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-lg font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+				<button
+					onclick="closeDrawer()"
+					class="flex h-8 w-8 items-center justify-center text-textSec hover:text-white"
+				>
+					<i class="fa-solid fa-xmark text-lg"></i>
+				</button>
+			</div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gauge-high w-5 text-center"></i><span>Dashboard</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-server w-5 text-center"></i><span>Dostupnost</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i
+					><span>Chyby &amp; Pády</span>
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg border border-[#334155]/60 bg-[#1e293b]/80 px-3 py-3 font-medium text-textMain"
+				>
+					<i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i
+					><span>Databáze (Supabase)</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-microchip w-5 text-center"></i><span>Runtime (Fly.io)</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-cloud w-5 text-center"></i><span>Edge (Cloudflare)</span>
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-bolt w-5 text-center"></i><span>Performance</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-shield-halved w-5 text-center"></i><span>Security Signály</span>
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-chart-line w-5 text-center"></i><span>Business Metriky</span>
+				</a>
+			</nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gear w-5 text-center"></i><span>Nastavení</span>
+				</a>
+			</div>
+		</aside>
 
-<!-- ═══════════════════════════════════════════════
+		<!-- ═══════════════════════════════════════════════
      TOP HEADER
 ════════════════════════════════════════════════ -->
-<header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-        <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center text-textSec hover:text-white rounded-lg hover:bg-[#1e293b] transition-colors">
-            <i class="fa-solid fa-bars text-lg"></i>
-        </button>
-        <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-md bg-[#3ecf8e]/15 border border-[#3ecf8e]/30 flex items-center justify-center">
-                <i class="fa-solid fa-database text-[#3ecf8e] text-xs"></i>
-            </div>
-            <div>
-                <h1 class="text-sm font-bold text-textMain leading-tight">Databáze (Supabase)</h1>
-                <p class="text-xs text-textSec">eu-west-1 · Prod</p>
-            </div>
-        </div>
-    </div>
-    <div class="flex items-center gap-2">
-        <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
-            <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-            Online
-        </div>
-        <button class="w-10 h-10 flex items-center justify-center text-textSec hover:text-white rounded-lg hover:bg-[#1e293b] transition-colors border border-[#334155]">
-            <i class="fa-solid fa-download text-sm"></i>
-        </button>
-    </div>
-</header>
+		<header
+			id="header"
+			class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[#1e293b] bg-background/95 px-4 py-3 backdrop-blur-md"
+		>
+			<div class="flex items-center gap-3">
+				<button
+					onclick="openDrawer()"
+					class="flex h-10 w-10 items-center justify-center rounded-lg text-textSec transition-colors hover:bg-[#1e293b] hover:text-white"
+				>
+					<i class="fa-solid fa-bars text-lg"></i>
+				</button>
+				<div class="flex items-center gap-2">
+					<div
+						class="flex h-7 w-7 items-center justify-center rounded-md border border-[#3ecf8e]/30 bg-[#3ecf8e]/15"
+					>
+						<i class="fa-solid fa-database text-xs text-[#3ecf8e]"></i>
+					</div>
+					<div>
+						<h1 class="text-sm leading-tight font-bold text-textMain">Databáze (Supabase)</h1>
+						<p class="text-xs text-textSec">eu-west-1 · Prod</p>
+					</div>
+				</div>
+			</div>
+			<div class="flex items-center gap-2">
+				<div
+					class="flex items-center gap-1.5 rounded-lg border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs font-medium text-success"
+				>
+					<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-success"></div>
+					Online
+				</div>
+				<button
+					class="flex h-10 w-10 items-center justify-center rounded-lg border border-[#334155] text-textSec transition-colors hover:bg-[#1e293b] hover:text-white"
+				>
+					<i class="fa-solid fa-download text-sm"></i>
+				</button>
+			</div>
+		</header>
 
-<!-- ═══════════════════════════════════════════════
+		<!-- ═══════════════════════════════════════════════
      TIME RANGE SELECTOR
 ════════════════════════════════════════════════ -->
-<div class="px-4 pt-4">
-    <select class="w-full bg-card border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none focus:border-[#3ecf8e]/50 transition-colors">
-        <option>Posledních 24 hodin</option>
-        <option>Posledních 7 dní</option>
-        <option>Posledních 30 dní</option>
-    </select>
-</div>
+		<div class="px-4 pt-4">
+			<select
+				class="w-full rounded-xl border border-[#334155] bg-card px-4 py-3 text-sm text-textMain transition-colors focus:border-[#3ecf8e]/50 focus:outline-none"
+			>
+				<option>Posledních 24 hodin</option>
+				<option>Posledních 7 dní</option>
+				<option>Posledních 30 dní</option>
+			</select>
+		</div>
 
-<!-- ═══════════════════════════════════════════════
+		<!-- ═══════════════════════════════════════════════
      MAIN CONTENT
 ════════════════════════════════════════════════ -->
-<main class="flex-1 px-4 pt-4 pb-6 space-y-4 w-full max-w-lg mx-auto">
+		<main class="mx-auto w-full max-w-lg flex-1 space-y-4 px-4 pt-4 pb-6">
+			<!-- ── KPI PRIMARY STATS (2×2 grid) ── -->
+			<section id="db-stats" class="grid grid-cols-2 gap-3">
+				<!-- Connection Pool -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs font-medium text-textSec">Aktivní spojení</h3>
+						<span
+							class="rounded-full bg-secondary/10 px-1.5 py-0.5 text-[10px] font-medium text-secondary"
+							>!</span
+						>
+					</div>
+					<div class="mb-2 flex items-end gap-1">
+						<span class="text-2xl font-bold text-textMain">87</span>
+						<span class="mb-0.5 text-xs text-textSec">/ 100</span>
+					</div>
+					<div class="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+						<div class="h-full rounded-full bg-secondary" style="width: 87%"></div>
+					</div>
+					<p class="text-[10px] font-medium text-secondary">Varování · 87%</p>
+				</div>
 
-    <!-- ── KPI PRIMARY STATS (2×2 grid) ── -->
-    <section id="db-stats" class="grid grid-cols-2 gap-3">
-        <!-- Connection Pool -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium">Aktivní spojení</h3>
-                <span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium">!</span>
-            </div>
-            <div class="flex items-end gap-1 mb-2">
-                <span class="text-2xl font-bold text-textMain">87</span>
-                <span class="text-xs text-textSec mb-0.5">/ 100</span>
-            </div>
-            <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-                <div class="h-full bg-secondary rounded-full" style="width:87%"></div>
-            </div>
-            <p class="text-[10px] text-secondary font-medium">Varování · 87%</p>
-        </div>
+				<!-- Query latency -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs font-medium text-textSec">Avg Latency</h3>
+						<span
+							class="rounded-full bg-success/10 px-1.5 py-0.5 text-[10px] font-medium text-success"
+							>OK</span
+						>
+					</div>
+					<div class="mb-1 flex items-end gap-1">
+						<span class="text-2xl font-bold text-textMain">24</span>
+						<span class="mb-0.5 text-xs text-textSec">ms</span>
+						<span class="mb-0.5 ml-1 flex items-center gap-0.5 text-xs text-success"
+							><i class="fa-solid fa-arrow-down text-[9px]"></i>-3ms</span
+						>
+					</div>
+					<p class="text-[10px] text-textSec">P95: 142ms · P99: 380ms</p>
+				</div>
 
-        <!-- Query latency -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium">Avg Latency</h3>
-                <span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
-            </div>
-            <div class="flex items-end gap-1 mb-1">
-                <span class="text-2xl font-bold text-textMain">24</span>
-                <span class="text-xs text-textSec mb-0.5">ms</span>
-                <span class="text-xs text-success mb-0.5 flex items-center gap-0.5 ml-1"><i class="fa-solid fa-arrow-down text-[9px]"></i>-3ms</span>
-            </div>
-            <p class="text-[10px] text-textSec">P95: 142ms · P99: 380ms</p>
-        </div>
+				<!-- Storage -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs font-medium text-textSec">Úložiště</h3>
+						<span
+							class="rounded-full bg-success/10 px-1.5 py-0.5 text-[10px] font-medium text-success"
+							>OK</span
+						>
+					</div>
+					<div class="mb-2 flex items-end gap-1">
+						<span class="text-2xl font-bold text-textMain">6.2</span>
+						<span class="mb-0.5 text-xs text-textSec">/ 8 GB</span>
+					</div>
+					<div class="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+						<div class="h-full rounded-full bg-[#3b82f6]" style="width: 77%"></div>
+					</div>
+					<p class="text-[10px] text-textSec">77.5% využito</p>
+				</div>
 
-        <!-- Storage -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium">Úložiště</h3>
-                <span class="px-1.5 py-0.5 bg-success/10 text-success text-[10px] rounded-full font-medium">OK</span>
-            </div>
-            <div class="flex items-end gap-1 mb-2">
-                <span class="text-2xl font-bold text-textMain">6.2</span>
-                <span class="text-xs text-textSec mb-0.5">/ 8 GB</span>
-            </div>
-            <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-                <div class="h-full bg-[#3b82f6] rounded-full" style="width:77%"></div>
-            </div>
-            <p class="text-[10px] text-textSec">77.5% využito</p>
-        </div>
+				<!-- DB Errors -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs font-medium text-textSec">DB Chyby (24h)</h3>
+						<span class="rounded-full bg-error/10 px-1.5 py-0.5 text-[10px] font-medium text-error"
+							>Krit.</span
+						>
+					</div>
+					<div class="mb-1 flex items-end gap-1">
+						<span class="text-2xl font-bold text-error">12</span>
+						<span class="mb-0.5 flex items-center gap-0.5 text-xs text-error"
+							><i class="fa-solid fa-arrow-up text-[9px]"></i>+7</span
+						>
+					</div>
+					<p class="text-[10px] text-textSec">Timeout, deadlock</p>
+				</div>
+			</section>
 
-        <!-- DB Errors -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium">DB Chyby (24h)</h3>
-                <span class="px-1.5 py-0.5 bg-error/10 text-error text-[10px] rounded-full font-medium">Krit.</span>
-            </div>
-            <div class="flex items-end gap-1 mb-1">
-                <span class="text-2xl font-bold text-error">12</span>
-                <span class="text-xs text-error mb-0.5 flex items-center gap-0.5"><i class="fa-solid fa-arrow-up text-[9px]"></i>+7</span>
-            </div>
-            <p class="text-[10px] text-textSec">Timeout, deadlock</p>
-        </div>
-    </section>
+			<!-- ── SECONDARY STATS (horizontal scrollable) ── -->
+			<section id="db-stats-2" class="flex gap-3 overflow-x-auto pb-1">
+				<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-[#3b82f6]/15">
+						<i class="fa-solid fa-arrow-right-to-bracket text-xs text-[#3b82f6]"></i>
+					</div>
+					<div class="text-lg font-bold text-textMain">1,842</div>
+					<p class="mt-0.5 text-[10px] text-textSec">Queries / min</p>
+					<p class="text-[10px] text-textSec">Peak: 3,210 qps</p>
+				</div>
+				<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-[#3ecf8e]/15">
+						<i class="fa-solid fa-copy text-xs text-[#3ecf8e]"></i>
+					</div>
+					<div class="text-lg font-bold text-textMain">
+						18 <span class="text-xs font-normal text-textSec">ms</span>
+					</div>
+					<p class="mt-0.5 text-[10px] text-textSec">Replikace lag</p>
+					<p class="text-[10px] text-textSec">eu-west-1b · OK</p>
+				</div>
+				<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-[#8b5cf6]/15">
+						<i class="fa-solid fa-lock text-xs text-[#8b5cf6]"></i>
+					</div>
+					<div class="text-lg font-bold text-textMain">3</div>
+					<p class="mt-0.5 text-[10px] text-textSec">Zámky (locks)</p>
+					<p class="text-[10px] text-textSec">Deadlocks: 1</p>
+				</div>
+				<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex h-7 w-7 items-center justify-center rounded-lg bg-success/15">
+						<i class="fa-solid fa-shield-halved text-xs text-success"></i>
+					</div>
+					<div class="text-base font-bold text-textMain">Aktuální</div>
+					<p class="mt-0.5 text-[10px] text-textSec">Zálohy</p>
+					<p class="text-[10px] text-textSec">03:00 · 4.8 GB</p>
+				</div>
+			</section>
 
-    <!-- ── SECONDARY STATS (horizontal scrollable) ── -->
-    <section id="db-stats-2" class="flex gap-3 overflow-x-auto pb-1">
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-            <div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-                <i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
-            </div>
-            <div class="text-lg font-bold text-textMain">1,842</div>
-            <p class="text-[10px] text-textSec mt-0.5">Queries / min</p>
-            <p class="text-[10px] text-textSec">Peak: 3,210 qps</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-            <div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center mb-2">
-                <i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
-            </div>
-            <div class="text-lg font-bold text-textMain">18 <span class="text-xs font-normal text-textSec">ms</span></div>
-            <p class="text-[10px] text-textSec mt-0.5">Replikace lag</p>
-            <p class="text-[10px] text-textSec">eu-west-1b · OK</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-            <div class="w-7 h-7 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
-                <i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
-            </div>
-            <div class="text-lg font-bold text-textMain">3</div>
-            <p class="text-[10px] text-textSec mt-0.5">Zámky (locks)</p>
-            <p class="text-[10px] text-textSec">Deadlocks: 1</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4 flex-shrink-0 w-36">
-            <div class="w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center mb-2">
-                <i class="fa-solid fa-shield-halved text-success text-xs"></i>
-            </div>
-            <div class="text-base font-bold text-textMain">Aktuální</div>
-            <p class="text-[10px] text-textSec mt-0.5">Zálohy</p>
-            <p class="text-[10px] text-textSec">03:00 · 4.8 GB</p>
-        </div>
-    </section>
+			<!-- ── CHARTS ACCORDION ── -->
+			<section id="db-charts" class="space-y-3">
+				<!-- Chart: Query Latency -->
+				<div class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+					<button
+						onclick="toggleAcc('acc-latency')"
+						class="flex w-full items-center justify-between px-4 py-4 text-left"
+					>
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Query latency v čase</h3>
+							<p class="mt-0.5 text-[10px] text-textSec">Průměrná latence databázových dotazů</p>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="flex gap-1.5">
+								<span class="flex items-center gap-1 text-[10px] text-textSec"
+									><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#3ecf8e]"></span>Avg</span
+								>
+								<span class="flex items-center gap-1 text-[10px] text-textSec"
+									><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#8b5cf6]"></span>P95</span
+								>
+							</div>
+							<i
+								id="chevron-acc-latency"
+								class="fa-solid fa-chevron-down acc-chevron open text-xs text-textSec"
+							></i>
+						</div>
+					</button>
+					<div id="acc-latency" class="acc-body open">
+						<div class="px-4 pb-4">
+							<div id="chart-latency" class="w-full" style="height: 200px"></div>
+						</div>
+					</div>
+				</div>
 
-    <!-- ── CHARTS ACCORDION ── -->
-    <section id="db-charts" class="space-y-3">
+				<!-- Chart: Active Connections -->
+				<div class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+					<button
+						onclick="toggleAcc('acc-connections')"
+						class="flex w-full items-center justify-between px-4 py-4 text-left"
+					>
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Aktivní spojení v čase</h3>
+							<p class="mt-0.5 text-[10px] text-textSec">Connection pool utilization</p>
+						</div>
+						<div class="flex items-center gap-3">
+							<div
+								class="flex items-center gap-1 rounded border border-secondary/20 bg-secondary/10 px-2 py-1 text-[10px] text-secondary"
+							>
+								<i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Limit: 100
+							</div>
+							<i
+								id="chevron-acc-connections"
+								class="fa-solid fa-chevron-down acc-chevron text-xs text-textSec"
+							></i>
+						</div>
+					</button>
+					<div id="acc-connections" class="acc-body">
+						<div class="px-4 pb-4">
+							<div id="chart-connections" class="w-full" style="height: 200px"></div>
+						</div>
+					</div>
+				</div>
 
-        <!-- Chart: Query Latency -->
-        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-            <button onclick="toggleAcc('acc-latency')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-                <div>
-                    <h3 class="text-sm font-semibold text-textMain">Query latency v čase</h3>
-                    <p class="text-[10px] text-textSec mt-0.5">Průměrná latence databázových dotazů</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex gap-1.5">
-                        <span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>Avg</span>
-                        <span class="flex items-center gap-1 text-[10px] text-textSec"><span class="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] inline-block"></span>P95</span>
-                    </div>
-                    <i id="chevron-acc-latency" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron open"></i>
-                </div>
-            </button>
-            <div id="acc-latency" class="acc-body open">
-                <div class="px-4 pb-4">
-                    <div id="chart-latency" class="w-full" style="height:200px;"></div>
-                </div>
-            </div>
-        </div>
+				<!-- Chart: QPS -->
+				<div class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+					<button
+						onclick="toggleAcc('acc-qps')"
+						class="flex w-full items-center justify-between px-4 py-4 text-left"
+					>
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Queries za minutu</h3>
+							<p class="mt-0.5 text-[10px] text-textSec">Objem SQL dotazů v průběhu dne</p>
+						</div>
+						<i
+							id="chevron-acc-qps"
+							class="fa-solid fa-chevron-down acc-chevron text-xs text-textSec"
+						></i>
+					</button>
+					<div id="acc-qps" class="acc-body">
+						<div class="px-4 pb-4">
+							<div id="chart-qps" class="w-full" style="height: 200px"></div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-        <!-- Chart: Active Connections -->
-        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-            <button onclick="toggleAcc('acc-connections')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-                <div>
-                    <h3 class="text-sm font-semibold text-textMain">Aktivní spojení v čase</h3>
-                    <p class="text-[10px] text-textSec mt-0.5">Connection pool utilization</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1 px-2 py-1 bg-secondary/10 border border-secondary/20 rounded text-[10px] text-secondary">
-                        <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Limit: 100
-                    </div>
-                    <i id="chevron-acc-connections" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron"></i>
-                </div>
-            </button>
-            <div id="acc-connections" class="acc-body">
-                <div class="px-4 pb-4">
-                    <div id="chart-connections" class="w-full" style="height:200px;"></div>
-                </div>
-            </div>
-        </div>
+			<!-- ── QUERY TYPES ── -->
+			<section id="db-queries" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<button
+					onclick="toggleAcc('acc-querytypes')"
+					class="flex w-full items-center justify-between px-4 py-4 text-left"
+				>
+					<div>
+						<h3 class="text-sm font-semibold text-textMain">Typy dotazů</h3>
+						<p class="mt-0.5 text-[10px] text-textSec">Distribuce SQL operací</p>
+					</div>
+					<i
+						id="chevron-acc-querytypes"
+						class="fa-solid fa-chevron-down acc-chevron text-xs text-textSec"
+					></i>
+				</button>
+				<div id="acc-querytypes" class="acc-body">
+					<div class="px-4 pb-5">
+						<div id="chart-query-pie" class="w-full" style="height: 180px"></div>
+						<div class="mt-3 grid grid-cols-2 gap-2">
+							<div class="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-3 py-2">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2 w-2 rounded-full bg-[#3b82f6]"></span
+									><span class="text-xs text-textSec">SELECT</span>
+								</div>
+								<span class="text-xs font-semibold text-textMain">68%</span>
+							</div>
+							<div class="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-3 py-2">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2 w-2 rounded-full bg-[#3ecf8e]"></span
+									><span class="text-xs text-textSec">INSERT</span>
+								</div>
+								<span class="text-xs font-semibold text-textMain">18%</span>
+							</div>
+							<div class="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-3 py-2">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2 w-2 rounded-full bg-secondary"></span
+									><span class="text-xs text-textSec">UPDATE</span>
+								</div>
+								<span class="text-xs font-semibold text-textMain">11%</span>
+							</div>
+							<div class="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-3 py-2">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2 w-2 rounded-full bg-error"></span
+									><span class="text-xs text-textSec">DELETE</span>
+								</div>
+								<span class="text-xs font-semibold text-textMain">3%</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-        <!-- Chart: QPS -->
-        <div class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-            <button onclick="toggleAcc('acc-qps')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-                <div>
-                    <h3 class="text-sm font-semibold text-textMain">Queries za minutu</h3>
-                    <p class="text-[10px] text-textSec mt-0.5">Objem SQL dotazů v průběhu dne</p>
-                </div>
-                <i id="chevron-acc-qps" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron"></i>
-            </button>
-            <div id="acc-qps" class="acc-body">
-                <div class="px-4 pb-4">
-                    <div id="chart-qps" class="w-full" style="height:200px;"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- ── SLOW QUERIES ── -->
+			<section
+				id="db-slow-queries"
+				class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+			>
+				<button
+					onclick="toggleAcc('acc-slowq')"
+					class="flex w-full items-center justify-between px-4 py-4 text-left"
+				>
+					<div>
+						<h3 class="text-sm font-semibold text-textMain">Nejpomalejší dotazy</h3>
+						<p class="mt-0.5 text-[10px] text-textSec">Top 5 · Posledních 24h</p>
+					</div>
+					<i
+						id="chevron-acc-slowq"
+						class="fa-solid fa-chevron-down acc-chevron open text-xs text-textSec"
+					></i>
+				</button>
+				<div id="acc-slowq" class="acc-body open">
+					<div class="space-y-2 px-4 pb-4">
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+							<div class="mb-1.5 flex items-start justify-between gap-2">
+								<span
+									class="flex-shrink-0 rounded bg-error/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-error"
+									>SELECT</span
+								>
+								<span class="text-sm font-bold text-error">1,240 ms</span>
+							</div>
+							<p class="truncate font-mono text-xs text-textMain">
+								SELECT * FROM orders JOIN users ON...
+							</p>
+							<p class="mt-1 text-[10px] text-textSec">orders · 842 volání</p>
+						</div>
 
-    <!-- ── QUERY TYPES ── -->
-    <section id="db-queries" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAcc('acc-querytypes')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-            <div>
-                <h3 class="text-sm font-semibold text-textMain">Typy dotazů</h3>
-                <p class="text-[10px] text-textSec mt-0.5">Distribuce SQL operací</p>
-            </div>
-            <i id="chevron-acc-querytypes" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron"></i>
-        </button>
-        <div id="acc-querytypes" class="acc-body">
-            <div class="px-4 pb-5">
-                <div id="chart-query-pie" class="w-full" style="height:180px;"></div>
-                <div class="mt-3 grid grid-cols-2 gap-2">
-                    <div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec text-xs">SELECT</span></div>
-                        <span class="text-textMain text-xs font-semibold">68%</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec text-xs">INSERT</span></div>
-                        <span class="text-textMain text-xs font-semibold">18%</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span><span class="text-textSec text-xs">UPDATE</span></div>
-                        <span class="text-textMain text-xs font-semibold">11%</span>
-                    </div>
-                    <div class="flex items-center justify-between bg-[#1e293b]/40 rounded-lg px-3 py-2">
-                        <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec text-xs">DELETE</span></div>
-                        <span class="text-textMain text-xs font-semibold">3%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+							<div class="mb-1.5 flex items-start justify-between gap-2">
+								<span
+									class="flex-shrink-0 rounded bg-secondary/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-secondary"
+									>UPDATE</span
+								>
+								<span class="text-sm font-bold text-secondary">620 ms</span>
+							</div>
+							<p class="truncate font-mono text-xs text-textMain">
+								UPDATE products SET stock = stock - 1 WHERE...
+							</p>
+							<p class="mt-1 text-[10px] text-textSec">products · 1,203 volání</p>
+						</div>
 
-    <!-- ── SLOW QUERIES ── -->
-    <section id="db-slow-queries" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAcc('acc-slowq')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-            <div>
-                <h3 class="text-sm font-semibold text-textMain">Nejpomalejší dotazy</h3>
-                <p class="text-[10px] text-textSec mt-0.5">Top 5 · Posledních 24h</p>
-            </div>
-            <i id="chevron-acc-slowq" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron open"></i>
-        </button>
-        <div id="acc-slowq" class="acc-body open">
-            <div class="px-4 pb-4 space-y-2">
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+							<div class="mb-1.5 flex items-start justify-between gap-2">
+								<span
+									class="flex-shrink-0 rounded bg-[#3b82f6]/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#3b82f6]"
+									>SELECT</span
+								>
+								<span class="text-sm font-bold text-[#3b82f6]">390 ms</span>
+							</div>
+							<p class="truncate font-mono text-xs text-textMain">
+								SELECT COUNT(*) FROM analytics WHERE date &gt;
+							</p>
+							<p class="mt-1 text-[10px] text-textSec">analytics · 312 volání</p>
+						</div>
 
-                <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-start justify-between gap-2 mb-1.5">
-                        <span class="px-2 py-0.5 bg-error/20 text-error text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-                        <span class="text-error font-bold text-sm">1,240 ms</span>
-                    </div>
-                    <p class="text-textMain text-xs font-mono truncate">SELECT * FROM orders JOIN users ON...</p>
-                    <p class="text-[10px] text-textSec mt-1">orders · 842 volání</p>
-                </div>
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+							<div class="mb-1.5 flex items-start justify-between gap-2">
+								<span
+									class="flex-shrink-0 rounded bg-[#3ecf8e]/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#3ecf8e]"
+									>INSERT</span
+								>
+								<span class="text-sm font-bold text-textMain">84 ms</span>
+							</div>
+							<p class="truncate font-mono text-xs text-textMain">
+								INSERT INTO events (user_id, type, meta) VALUES...
+							</p>
+							<p class="mt-1 text-[10px] text-textSec">events · 5,841 volání</p>
+						</div>
 
-                <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-start justify-between gap-2 mb-1.5">
-                        <span class="px-2 py-0.5 bg-secondary/20 text-secondary text-[10px] font-mono rounded font-semibold flex-shrink-0">UPDATE</span>
-                        <span class="text-secondary font-bold text-sm">620 ms</span>
-                    </div>
-                    <p class="text-textMain text-xs font-mono truncate">UPDATE products SET stock = stock - 1 WHERE...</p>
-                    <p class="text-[10px] text-textSec mt-1">products · 1,203 volání</p>
-                </div>
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+							<div class="mb-1.5 flex items-start justify-between gap-2">
+								<span
+									class="flex-shrink-0 rounded bg-[#3b82f6]/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#3b82f6]"
+									>SELECT</span
+								>
+								<span class="text-sm font-bold text-textMain">31 ms</span>
+							</div>
+							<p class="truncate font-mono text-xs text-textMain">
+								SELECT * FROM sessions WHERE expires_at &gt; NOW()
+							</p>
+							<p class="mt-1 text-[10px] text-textSec">sessions · 22,100 volání</p>
+						</div>
+					</div>
+				</div>
+			</section>
 
-                <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-start justify-between gap-2 mb-1.5">
-                        <span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-                        <span class="text-[#3b82f6] font-bold text-sm">390 ms</span>
-                    </div>
-                    <p class="text-textMain text-xs font-mono truncate">SELECT COUNT(*) FROM analytics WHERE date &gt;</p>
-                    <p class="text-[10px] text-textSec mt-1">analytics · 312 volání</p>
-                </div>
+			<!-- ── TABLE SIZES ── -->
+			<section
+				id="db-table-sizes"
+				class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+			>
+				<button
+					onclick="toggleAcc('acc-tables')"
+					class="flex w-full items-center justify-between px-4 py-4 text-left"
+				>
+					<div>
+						<h3 class="text-sm font-semibold text-textMain">Velikost tabulek</h3>
+						<p class="mt-0.5 text-[10px] text-textSec">Top tabulky dle velikosti</p>
+					</div>
+					<i
+						id="chevron-acc-tables"
+						class="fa-solid fa-chevron-down acc-chevron text-xs text-textSec"
+					></i>
+				</button>
+				<div id="acc-tables" class="acc-body">
+					<div class="space-y-3 px-4 pb-5">
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">events</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-[#3b82f6]" style="width: 82%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">2.1 GB</span>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">orders</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-[#3ecf8e]" style="width: 60%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">1.5 GB</span>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">analytics</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-[#8b5cf6]" style="width: 48%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">1.2 GB</span>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">users</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-secondary" style="width: 30%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">780 MB</span>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">sessions</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-[#3b82f6]/60" style="width: 18%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">460 MB</span>
+						</div>
+						<div class="flex items-center gap-3">
+							<div class="w-16 font-mono text-xs text-textSec">products</div>
+							<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+								<div class="h-full rounded-full bg-[#3b82f6]/40" style="width: 8%"></div>
+							</div>
+							<span class="w-14 text-right text-xs font-medium text-textMain">210 MB</span>
+						</div>
+						<!-- Storage summary -->
+						<div class="mt-2 border-t border-[#1e293b] pt-4">
+							<div class="mb-2 flex justify-between text-xs text-textSec">
+								<span>Celkové úložiště</span>
+								<span class="font-semibold text-textMain">6.2 GB / 8 GB</span>
+							</div>
+							<div class="h-2.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+								<div
+									class="h-full rounded-full"
+									style="width: 77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"
+								></div>
+							</div>
+							<p class="mt-2 text-xs text-textSec">
+								Odhadované zaplnění: <span class="font-medium text-secondary">~14 dní</span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
 
-                <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-start justify-between gap-2 mb-1.5">
-                        <span class="px-2 py-0.5 bg-[#3ecf8e]/20 text-[#3ecf8e] text-[10px] font-mono rounded font-semibold flex-shrink-0">INSERT</span>
-                        <span class="text-textMain font-bold text-sm">84 ms</span>
-                    </div>
-                    <p class="text-textMain text-xs font-mono truncate">INSERT INTO events (user_id, type, meta) VALUES...</p>
-                    <p class="text-[10px] text-textSec mt-1">events · 5,841 volání</p>
-                </div>
+			<!-- ── ERROR LOG ── -->
+			<section id="db-error-log" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<div class="border-b border-[#1e293b] px-4 pt-4 pb-3">
+					<div class="mb-3 flex items-center justify-between">
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Databázový error log</h3>
+							<p class="mt-0.5 text-[10px] text-textSec">Posledních 24 hodin · 12 záznamů</p>
+						</div>
+					</div>
+					<!-- Filter tabs -->
+					<div class="mb-3 flex gap-2 overflow-x-auto pb-1">
+						<button
+							class="flex-shrink-0 rounded-lg bg-error/20 px-3 py-1.5 text-xs font-medium whitespace-nowrap text-error"
+						>
+							Všechny
+						</button>
+						<button
+							class="flex-shrink-0 rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-white"
+						>
+							Timeout
+						</button>
+						<button
+							class="flex-shrink-0 rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-white"
+						>
+							Deadlock
+						</button>
+						<button
+							class="flex-shrink-0 rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-white"
+						>
+							Conn
+						</button>
+					</div>
+					<!-- Search -->
+					<div
+						class="flex items-center gap-2 rounded-xl border border-[#334155] bg-[#1e293b] px-3 py-2.5"
+					>
+						<i class="fa-solid fa-magnifying-glass text-xs text-textSec"></i>
+						<input
+							type="text"
+							placeholder="Hledat v logu..."
+							class="flex-1 bg-transparent text-sm text-textMain placeholder-textSec outline-none"
+						/>
+					</div>
+				</div>
 
-                <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-start justify-between gap-2 mb-1.5">
-                        <span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-[10px] font-mono rounded font-semibold flex-shrink-0">SELECT</span>
-                        <span class="text-textMain font-bold text-sm">31 ms</span>
-                    </div>
-                    <p class="text-textMain text-xs font-mono truncate">SELECT * FROM sessions WHERE expires_at &gt; NOW()</p>
-                    <p class="text-[10px] text-textSec mt-1">sessions · 22,100 volání</p>
-                </div>
+				<!-- Error cards -->
+				<div class="divide-y divide-[#1e293b]/60">
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span class="rounded bg-error/15 px-2 py-0.5 text-[10px] font-medium text-error"
+									>Timeout</span
+								>
+								<span class="rounded bg-error/10 px-2 py-0.5 text-[10px] text-error">Aktivní</span>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">14:32:11</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Connection pool exhausted – max 100 connections reached
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">orders</span>
+							<span class="font-mono text-[10px] font-semibold text-error">30,000 ms</span>
+						</div>
+					</div>
 
-            </div>
-        </div>
-    </section>
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span
+									class="rounded bg-[#8b5cf6]/15 px-2 py-0.5 text-[10px] font-medium text-[#8b5cf6]"
+									>Deadlock</span
+								>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-[10px] text-success"
+									>Vyřešeno</span
+								>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">13:58:04</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Deadlock detected between transactions T1 and T2
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">products</span>
+							<span class="font-mono text-[10px] text-textSec">—</span>
+						</div>
+					</div>
 
-    <!-- ── TABLE SIZES ── -->
-    <section id="db-table-sizes" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAcc('acc-tables')" class="w-full flex items-center justify-between px-4 py-4 text-left">
-            <div>
-                <h3 class="text-sm font-semibold text-textMain">Velikost tabulek</h3>
-                <p class="text-[10px] text-textSec mt-0.5">Top tabulky dle velikosti</p>
-            </div>
-            <i id="chevron-acc-tables" class="fa-solid fa-chevron-down text-textSec text-xs acc-chevron"></i>
-        </button>
-        <div id="acc-tables" class="acc-body">
-            <div class="px-4 pb-5 space-y-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">events</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-[#3b82f6] rounded-full" style="width:82%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">2.1 GB</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">orders</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-[#3ecf8e] rounded-full" style="width:60%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">1.5 GB</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">analytics</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-[#8b5cf6] rounded-full" style="width:48%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">1.2 GB</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">users</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-secondary rounded-full" style="width:30%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">780 MB</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">sessions</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:18%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">460 MB</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-16 text-xs text-textSec font-mono">products</div>
-                    <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-[#3b82f6]/40 rounded-full" style="width:8%"></div>
-                    </div>
-                    <span class="text-xs text-textMain font-medium w-14 text-right">210 MB</span>
-                </div>
-                <!-- Storage summary -->
-                <div class="mt-2 pt-4 border-t border-[#1e293b]">
-                    <div class="flex justify-between text-xs text-textSec mb-2">
-                        <span>Celkové úložiště</span>
-                        <span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
-                    </div>
-                    <div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full rounded-full" style="width:77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
-                    </div>
-                    <p class="text-xs text-textSec mt-2">Odhadované zaplnění: <span class="text-secondary font-medium">~14 dní</span></p>
-                </div>
-            </div>
-        </div>
-    </section>
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span
+									class="rounded bg-secondary/15 px-2 py-0.5 text-[10px] font-medium text-secondary"
+									>Conn</span
+								>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-[10px] text-success"
+									>Vyřešeno</span
+								>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">13:21:39</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Connection reset by peer during large SELECT query
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">analytics</span>
+							<span class="font-mono text-[10px] font-semibold text-secondary">8,200 ms</span>
+						</div>
+					</div>
 
-    <!-- ── ERROR LOG ── -->
-    <section id="db-error-log" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <div class="px-4 pt-4 pb-3 border-b border-[#1e293b]">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <h3 class="text-sm font-semibold text-textMain">Databázový error log</h3>
-                    <p class="text-[10px] text-textSec mt-0.5">Posledních 24 hodin · 12 záznamů</p>
-                </div>
-            </div>
-            <!-- Filter tabs -->
-            <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
-                <button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0">Všechny</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Timeout</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Deadlock</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap flex-shrink-0 hover:text-white transition-colors">Conn</button>
-            </div>
-            <!-- Search -->
-            <div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-xl px-3 py-2.5">
-                <i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-                <input type="text" placeholder="Hledat v logu..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1">
-            </div>
-        </div>
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span class="rounded bg-error/15 px-2 py-0.5 text-[10px] font-medium text-error"
+									>Timeout</span
+								>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-[10px] text-success"
+									>Vyřešeno</span
+								>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">12:44:17</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Query timeout on full table scan – missing index on user_id
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">events</span>
+							<span class="font-mono text-[10px] font-semibold text-error">30,000 ms</span>
+						</div>
+					</div>
 
-        <!-- Error cards -->
-        <div class="divide-y divide-[#1e293b]/60">
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span
+									class="rounded bg-[#8b5cf6]/15 px-2 py-0.5 text-[10px] font-medium text-[#8b5cf6]"
+									>Lock</span
+								>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-[10px] text-success"
+									>Vyřešeno</span
+								>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">11:05:52</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Row-level lock wait exceeded 10s on UPDATE statement
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">orders</span>
+							<span class="font-mono text-[10px] text-textSec">10,140 ms</span>
+						</div>
+					</div>
 
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-                        <span class="px-2 py-0.5 bg-error/10 text-error text-[10px] rounded">Aktivní</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">14:32:11</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Connection pool exhausted – max 100 connections reached</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">orders</span>
-                    <span class="text-error text-[10px] font-mono font-semibold">30,000 ms</span>
-                </div>
-            </div>
+					<div class="px-4 py-3">
+						<div class="mb-1 flex items-start justify-between gap-2">
+							<div class="flex flex-wrap items-center gap-2">
+								<span
+									class="rounded bg-[#3b82f6]/15 px-2 py-0.5 text-[10px] font-medium text-[#3b82f6]"
+									>Repl</span
+								>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-[10px] text-success"
+									>Vyřešeno</span
+								>
+							</div>
+							<span class="flex-shrink-0 font-mono text-[10px] text-textSec">09:30:08</span>
+						</div>
+						<p class="mt-1 text-xs leading-relaxed text-textMain">
+							Replication lag spike to 480ms detected on standby replica
+						</p>
+						<div class="mt-1.5 flex items-center gap-3">
+							<span class="font-mono text-[10px] text-textSec">—</span>
+							<span class="font-mono text-[10px] text-textSec">480 ms lag</span>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
 
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Deadlock</span>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">13:58:04</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Deadlock detected between transactions T1 and T2</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">products</span>
-                    <span class="text-textSec text-[10px] font-mono">—</span>
-                </div>
-            </div>
-
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-[10px] rounded font-medium">Conn</span>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">13:21:39</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Connection reset by peer during large SELECT query</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">analytics</span>
-                    <span class="text-secondary text-[10px] font-mono font-semibold">8,200 ms</span>
-                </div>
-            </div>
-
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-error/15 text-error text-[10px] rounded font-medium">Timeout</span>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">12:44:17</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Query timeout on full table scan – missing index on user_id</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">events</span>
-                    <span class="text-error text-[10px] font-mono font-semibold">30,000 ms</span>
-                </div>
-            </div>
-
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-[10px] rounded font-medium">Lock</span>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">11:05:52</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Row-level lock wait exceeded 10s on UPDATE statement</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">orders</span>
-                    <span class="text-textSec text-[10px] font-mono">10,140 ms</span>
-                </div>
-            </div>
-
-            <div class="px-4 py-3">
-                <div class="flex items-start justify-between gap-2 mb-1">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-[10px] rounded font-medium">Repl</span>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-[10px] rounded">Vyřešeno</span>
-                    </div>
-                    <span class="text-[10px] text-textSec font-mono flex-shrink-0">09:30:08</span>
-                </div>
-                <p class="text-xs text-textMain mt-1 leading-relaxed">Replication lag spike to 480ms detected on standby replica</p>
-                <div class="flex items-center gap-3 mt-1.5">
-                    <span class="text-[10px] text-textSec font-mono">—</span>
-                    <span class="text-textSec text-[10px] font-mono">480 ms lag</span>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-</main>
-
-<!-- ═══════════════════════════════════════════════
+		<!-- ═══════════════════════════════════════════════
      BOTTOM TAB BAR
 ════════════════════════════════════════════════ -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2 safe-area-inset-bottom">
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
-        <i class="fa-solid fa-gauge-high text-base"></i>
-        <span class="text-[9px] font-medium">Dashboard</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
-        <i class="fa-solid fa-server text-base"></i>
-        <span class="text-[9px] font-medium">Dostupnost</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-[#3ecf8e] min-w-[44px]">
-        <i class="fa-solid fa-database text-base"></i>
-        <span class="text-[9px] font-semibold">Databáze</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
-        <i class="fa-solid fa-bolt text-base"></i>
-        <span class="text-[9px] font-medium">Perf.</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-white transition-colors min-w-[44px]">
-        <i class="fa-solid fa-gear text-base"></i>
-        <span class="text-[9px] font-medium">Nastavení</span>
-    </a>
-</nav>
+		<nav
+			id="bottom-nav"
+			class="safe-area-inset-bottom fixed right-0 bottom-0 left-0 z-30 flex items-center justify-around border-t border-[#1e293b] bg-card px-2 py-2"
+		>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-white"
+			>
+				<i class="fa-solid fa-gauge-high text-base"></i>
+				<span class="text-[9px] font-medium">Dashboard</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-white"
+			>
+				<i class="fa-solid fa-server text-base"></i>
+				<span class="text-[9px] font-medium">Dostupnost</span>
+			</a>
+			<a href="#" class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-2 text-[#3ecf8e]">
+				<i class="fa-solid fa-database text-base"></i>
+				<span class="text-[9px] font-semibold">Databáze</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-white"
+			>
+				<i class="fa-solid fa-bolt text-base"></i>
+				<span class="text-[9px] font-medium">Perf.</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-white"
+			>
+				<i class="fa-solid fa-gear text-base"></i>
+				<span class="text-[9px] font-medium">Nastavení</span>
+			</a>
+		</nav>
 
-<script>
-    // ── Drawer ──
-    function openDrawer() {
-        const drawer = document.getElementById('nav-drawer');
-        const overlay = document.getElementById('drawer-overlay');
-        drawer.classList.remove('closed');
-        drawer.classList.add('open');
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        overlay.classList.add('opacity-100');
-    }
-    function closeDrawer() {
-        const drawer = document.getElementById('nav-drawer');
-        const overlay = document.getElementById('drawer-overlay');
-        drawer.classList.remove('open');
-        drawer.classList.add('closed');
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-        overlay.classList.remove('opacity-100');
-    }
+		<script>
+			// ── Drawer ──
+			function openDrawer() {
+				const drawer = document.getElementById('nav-drawer');
+				const overlay = document.getElementById('drawer-overlay');
+				drawer.classList.remove('closed');
+				drawer.classList.add('open');
+				overlay.classList.remove('opacity-0', 'pointer-events-none');
+				overlay.classList.add('opacity-100');
+			}
+			function closeDrawer() {
+				const drawer = document.getElementById('nav-drawer');
+				const overlay = document.getElementById('drawer-overlay');
+				drawer.classList.remove('open');
+				drawer.classList.add('closed');
+				overlay.classList.add('opacity-0', 'pointer-events-none');
+				overlay.classList.remove('opacity-100');
+			}
 
-    // ── Accordion ──
-    function toggleAcc(id) {
-        const body = document.getElementById(id);
-        const chevron = document.getElementById('chevron-' + id);
-        body.classList.toggle('open');
-        chevron.classList.toggle('open');
-    }
+			// ── Accordion ──
+			function toggleAcc(id) {
+				const body = document.getElementById(id);
+				const chevron = document.getElementById('chevron-' + id);
+				body.classList.toggle('open');
+				chevron.classList.toggle('open');
+			}
 
-    // ── Charts ──
-    window.addEventListener('load', function () {
-        const bgCard = '#111d33';
-        const textSec = '#94a3b8';
-        const errorColor = '#ef4444';
-        const secondaryColor = '#f97316';
-        const purpleColor = '#8b5cf6';
-        const blueColor = '#3b82f6';
-        const greenColor = '#3ecf8e';
-        const gridColor = 'rgba(30,41,59,0.8)';
+			// ── Charts ──
+			window.addEventListener('load', function () {
+				const bgCard = '#111d33';
+				const textSec = '#94a3b8';
+				const errorColor = '#ef4444';
+				const secondaryColor = '#f97316';
+				const purpleColor = '#8b5cf6';
+				const blueColor = '#3b82f6';
+				const greenColor = '#3ecf8e';
+				const gridColor = 'rgba(30,41,59,0.8)';
 
-        const commonLayout = {
-            paper_bgcolor: bgCard,
-            plot_bgcolor: bgCard,
-            font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
-            margin: { t: 8, r: 8, b: 36, l: 38 },
-            showlegend: false,
-            xaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false
-            },
-            yaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false
-            }
-        };
+				const commonLayout = {
+					paper_bgcolor: bgCard,
+					plot_bgcolor: bgCard,
+					font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+					margin: { t: 8, r: 8, b: 36, l: 38 },
+					showlegend: false,
+					xaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false
+					},
+					yaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false
+					}
+				};
 
-        const config = { responsive: true, displayModeBar: false, displaylogo: false };
-        const hours = ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'];
+				const config = { responsive: true, displayModeBar: false, displaylogo: false };
+				const hours = [
+					'00:00',
+					'02:00',
+					'04:00',
+					'06:00',
+					'08:00',
+					'10:00',
+					'12:00',
+					'14:00',
+					'16:00',
+					'18:00',
+					'20:00',
+					'22:00'
+				];
 
-        // Chart 1: Latency
-        try {
-            Plotly.newPlot('chart-latency', [
-                {
-                    type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'P95',
-                    x: hours, y: [80, 70, 90, 100, 130, 160, 200, 280, 175, 140, 115, 95],
-                    line: { color: purpleColor, width: 2, shape: 'spline' },
-                    fillcolor: 'rgba(139,92,246,0.08)',
-                    hovertemplate: '<b>%{x}</b><br>P95: %{y}ms<extra></extra>'
-                },
-                {
-                    type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Avg',
-                    x: hours, y: [18, 16, 20, 22, 28, 35, 42, 55, 38, 30, 26, 22],
-                    line: { color: greenColor, width: 2.5, shape: 'spline' },
-                    fillcolor: 'rgba(62,207,142,0.10)',
-                    hovertemplate: '<b>%{x}</b><br>Avg: %{y}ms<extra></extra>'
-                }
-            ], { ...commonLayout }, config);
-        } catch(e) {}
+				// Chart 1: Latency
+				try {
+					Plotly.newPlot(
+						'chart-latency',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'P95',
+								x: hours,
+								y: [80, 70, 90, 100, 130, 160, 200, 280, 175, 140, 115, 95],
+								line: { color: purpleColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(139,92,246,0.08)',
+								hovertemplate: '<b>%{x}</b><br>P95: %{y}ms<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'Avg',
+								x: hours,
+								y: [18, 16, 20, 22, 28, 35, 42, 55, 38, 30, 26, 22],
+								line: { color: greenColor, width: 2.5, shape: 'spline' },
+								fillcolor: 'rgba(62,207,142,0.10)',
+								hovertemplate: '<b>%{x}</b><br>Avg: %{y}ms<extra></extra>'
+							}
+						],
+						{ ...commonLayout },
+						config
+					);
+				} catch (e) {}
 
-        // Chart 2: Connections
-        try {
-            const conns = [32, 28, 35, 42, 58, 72, 81, 87, 76, 68, 59, 50];
-            Plotly.newPlot('chart-connections', [
-                {
-                    type: 'scatter', mode: 'lines', fill: 'tozeroy',
-                    x: hours, y: conns,
-                    line: { color: secondaryColor, width: 2.5, shape: 'spline' },
-                    fillcolor: 'rgba(249,115,22,0.10)',
-                    hovertemplate: '<b>%{x}</b><br>Spojení: %{y}<extra></extra>'
-                },
-                {
-                    type: 'scatter', mode: 'lines',
-                    x: hours, y: Array(hours.length).fill(100),
-                    line: { color: errorColor, width: 1.5, dash: 'dot' },
-                    hovertemplate: 'Limit: 100<extra></extra>'
-                }
-            ], { ...commonLayout, yaxis: { ...commonLayout.yaxis, range: [0, 115] } }, config);
-        } catch(e) {}
+				// Chart 2: Connections
+				try {
+					const conns = [32, 28, 35, 42, 58, 72, 81, 87, 76, 68, 59, 50];
+					Plotly.newPlot(
+						'chart-connections',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: conns,
+								line: { color: secondaryColor, width: 2.5, shape: 'spline' },
+								fillcolor: 'rgba(249,115,22,0.10)',
+								hovertemplate: '<b>%{x}</b><br>Spojení: %{y}<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								x: hours,
+								y: Array(hours.length).fill(100),
+								line: { color: errorColor, width: 1.5, dash: 'dot' },
+								hovertemplate: 'Limit: 100<extra></extra>'
+							}
+						],
+						{ ...commonLayout, yaxis: { ...commonLayout.yaxis, range: [0, 115] } },
+						config
+					);
+				} catch (e) {}
 
-        // Chart 3: Pie
-        try {
-            Plotly.newPlot('chart-query-pie', [
-                {
-                    type: 'pie',
-                    labels: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
-                    values: [68, 18, 11, 3],
-                    hole: 0.60,
-                    marker: { colors: [blueColor, greenColor, secondaryColor, errorColor], line: { color: bgCard, width: 2 } },
-                    textinfo: 'none',
-                    hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
-                    direction: 'clockwise'
-                }
-            ], {
-                paper_bgcolor: bgCard, plot_bgcolor: bgCard,
-                font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
-                margin: { t: 5, r: 5, b: 5, l: 5 },
-                showlegend: false,
-                annotations: [{
-                    text: '<b style="font-size:16px;color:#fff">68%</b><br><span style="font-size:9px;color:#94a3b8">SELECT</span>',
-                    x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle',
-                    showarrow: false, font: { size: 12, color: '#ffffff' }
-                }]
-            }, config);
-        } catch(e) {}
+				// Chart 3: Pie
+				try {
+					Plotly.newPlot(
+						'chart-query-pie',
+						[
+							{
+								type: 'pie',
+								labels: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+								values: [68, 18, 11, 3],
+								hole: 0.6,
+								marker: {
+									colors: [blueColor, greenColor, secondaryColor, errorColor],
+									line: { color: bgCard, width: 2 }
+								},
+								textinfo: 'none',
+								hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
+								direction: 'clockwise'
+							}
+						],
+						{
+							paper_bgcolor: bgCard,
+							plot_bgcolor: bgCard,
+							font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+							margin: { t: 5, r: 5, b: 5, l: 5 },
+							showlegend: false,
+							annotations: [
+								{
+									text: '<b style="font-size:16px;color:#fff">68%</b><br><span style="font-size:9px;color:#94a3b8">SELECT</span>',
+									x: 0.5,
+									y: 0.5,
+									xanchor: 'center',
+									yanchor: 'middle',
+									showarrow: false,
+									font: { size: 12, color: '#ffffff' }
+								}
+							]
+						},
+						config
+					);
+				} catch (e) {}
 
-        // Chart 4: QPS bar
-        try {
-            const qps = [420, 380, 510, 640, 980, 1420, 1840, 2100, 1780, 1540, 1200, 860];
-            Plotly.newPlot('chart-qps', [
-                {
-                    type: 'bar', x: hours, y: qps,
-                    marker: { color: qps.map(v => v > 1800 ? secondaryColor : blueColor), opacity: 0.85 },
-                    hovertemplate: '<b>%{x}</b><br>%{y} q/min<extra></extra>'
-                }
-            ], { ...commonLayout, bargap: 0.3 }, config);
-        } catch(e) {}
-    });
-</script>
-</body>
+				// Chart 4: QPS bar
+				try {
+					const qps = [420, 380, 510, 640, 980, 1420, 1840, 2100, 1780, 1540, 1200, 860];
+					Plotly.newPlot(
+						'chart-qps',
+						[
+							{
+								type: 'bar',
+								x: hours,
+								y: qps,
+								marker: {
+									color: qps.map((v) => (v > 1800 ? secondaryColor : blueColor)),
+									opacity: 0.85
+								},
+								hovertemplate: '<b>%{x}</b><br>%{y} q/min<extra></extra>'
+							}
+						],
+						{ ...commonLayout, bargap: 0.3 },
+						config
+					);
+				} catch (e) {}
+			});
+		</script>
+	</body>
 </html>

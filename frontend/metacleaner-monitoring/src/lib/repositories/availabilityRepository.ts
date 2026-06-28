@@ -122,11 +122,41 @@ export function getServiceCards(): ServiceCard[] {
 
 export function getHealthChecks(): HealthCheck[] {
 	return [
-		{ endpoint: '/health', service: 'Backend API', status: 'online', statusCode: '200 OK', latencyMs: 42 },
-		{ endpoint: '/api/ping', service: 'Backend API', status: 'online', statusCode: '200 OK', latencyMs: 18 },
-		{ endpoint: '/ (root)', service: 'Frontend', status: 'online', statusCode: '200 OK', latencyMs: 91 },
-		{ endpoint: '/api/db-health', service: 'Supabase', status: 'degraded', statusCode: '200 OK', latencyMs: 412 },
-		{ endpoint: 'CF Edge Check', service: 'Cloudflare', status: 'online', statusCode: '200 OK', latencyMs: 8 }
+		{
+			endpoint: '/health',
+			service: 'Backend API',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 42
+		},
+		{
+			endpoint: '/api/ping',
+			service: 'Backend API',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 18
+		},
+		{
+			endpoint: '/ (root)',
+			service: 'Frontend',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 91
+		},
+		{
+			endpoint: '/api/db-health',
+			service: 'Supabase',
+			status: 'degraded',
+			statusCode: '200 OK',
+			latencyMs: 412
+		},
+		{
+			endpoint: 'CF Edge Check',
+			service: 'Cloudflare',
+			status: 'online',
+			statusCode: '200 OK',
+			latencyMs: 8
+		}
 	];
 }
 
@@ -136,7 +166,8 @@ export function getIncidents(): Incident[] {
 			id: 'inc-1',
 			status: 'active',
 			title: 'Zvýšená latence Edge CDN',
-			descriptionDesktop: 'Cloudflare edge uzly v regionu EU reportují zvýšenou latenci. Tým zkoumá příčinu.',
+			descriptionDesktop:
+				'Cloudflare edge uzly v regionu EU reportují zvýšenou latenci. Tým zkoumá příčinu.',
 			descriptionMobile: 'Cloudflare edge uzly v regionu EU reportují zvýšenou latenci.',
 			service: 'Cloudflare Edge',
 			serviceIcon: 'fa-cloud',
@@ -158,7 +189,8 @@ export function getIncidents(): Incident[] {
 			id: 'inc-3',
 			status: 'resolved',
 			title: 'Supabase DB connection pool exhausted',
-			descriptionDesktop: 'Pool připojení dosáhl limitu 100. Zvýšen limit a přidána queue pro čekající spojení.',
+			descriptionDesktop:
+				'Pool připojení dosáhl limitu 100. Zvýšen limit a přidána queue pro čekající spojení.',
 			descriptionMobile: 'Pool dosáhl limitu 100. Zvýšen limit + queue.',
 			service: 'Supabase DB',
 			serviceIcon: 'fa-database',

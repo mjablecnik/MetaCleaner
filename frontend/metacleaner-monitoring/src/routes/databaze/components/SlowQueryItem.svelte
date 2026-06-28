@@ -28,7 +28,8 @@
 {:else}
 	<div class="p-3 rounded-xl bg-surface/40 border border-border/40">
 		<div class="flex items-start justify-between gap-2 mb-1.5">
-			<span class="px-2 py-0.5 {query.typeClass} text-[10px] font-mono rounded font-semibold flex-shrink-0"
+			<span
+				class="px-2 py-0.5 {query.typeClass} text-[10px] font-mono rounded font-semibold flex-shrink-0"
 				>{query.type}</span
 			>
 			<span class="{query.avgClass} font-bold text-sm">{query.avgMs.toLocaleString()} ms</span>

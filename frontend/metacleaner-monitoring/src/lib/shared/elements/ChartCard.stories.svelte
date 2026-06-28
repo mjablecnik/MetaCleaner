@@ -11,7 +11,9 @@
 
 <Story name="Default">
 	<ChartCard title="Response Time">
-		<div class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm">
+		<div
+			class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm"
+		>
 			Chart placeholder
 		</div>
 	</ChartCard>
@@ -19,7 +21,9 @@
 
 <Story name="WithSubtitle">
 	<ChartCard title="Response Time" subtitle="Last 24 hours">
-		<div class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm">
+		<div
+			class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm"
+		>
 			Chart placeholder
 		</div>
 	</ChartCard>
@@ -39,7 +43,9 @@
 				</div>
 			</div>
 		{/snippet}
-		<div class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm">
+		<div
+			class="h-[200px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm"
+		>
 			Chart placeholder
 		</div>
 	</ChartCard>
@@ -48,7 +54,9 @@
 <Story name="Mobile">
 	<div style="max-width: 375px">
 		<ChartCard title="Response Time" subtitle="Last 24h">
-			<div class="h-[180px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm">
+			<div
+				class="h-[180px] w-full bg-surface/30 rounded-lg flex items-center justify-center text-textSec text-sm"
+			>
 				Chart placeholder
 			</div>
 		</ChartCard>

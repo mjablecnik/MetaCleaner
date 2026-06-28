@@ -10,9 +10,7 @@
 
 <!-- Desktop: Performance Event Log -->
 <section class="hidden lg:block bg-card border border-surface rounded-xl p-5">
-	<div
-		class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5"
-	>
+	<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
 		<div>
 			<h3 class="text-lg font-semibold text-textMain">{t('performance_eventLog_title')}</h3>
 			<p class="text-xs text-textSec mt-0.5">{t('performance_eventLog_subtitle')}</p>
@@ -22,16 +20,13 @@
 				<button class="px-3 py-1.5 bg-amber/20 text-amber text-xs font-medium"
 					>{t('performance_filters_all')}</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>{t('performance_filters_critical')}</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>{t('performance_filters_warning')}</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>{t('performance_filters_info')}</button
 				>
 			</div>
@@ -87,8 +82,7 @@
 						<td class="py-3 pr-4 text-textMain max-w-xs truncate">{evt.message}</td>
 						<td class="py-3 pr-4 text-textSec font-mono text-xs">{evt.endpoint ?? ''}</td>
 						<td class="py-3"
-							><span class="px-2 py-0.5 {evt.statusClass} text-xs rounded"
-								>{t(evt.statusKey)}</span
+							><span class="px-2 py-0.5 {evt.statusClass} text-xs rounded">{t(evt.statusKey)}</span
 							></td
 						>
 					</tr>

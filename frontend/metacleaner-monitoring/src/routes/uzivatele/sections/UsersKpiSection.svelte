@@ -23,8 +23,14 @@
 				</div>
 			{:else}
 				<div class="flex items-center gap-1 mt-2">
-					<i class="fa-solid {stat.trendPositive ? 'fa-arrow-trend-up text-success' : 'fa-arrow-trend-down text-error'} text-xs"></i>
-					<span class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'}">{stat.trendValue}</span>
+					<i
+						class="fa-solid {stat.trendPositive
+							? 'fa-arrow-trend-up text-success'
+							: 'fa-arrow-trend-down text-error'} text-xs"
+					></i>
+					<span class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'}"
+						>{stat.trendValue}</span
+					>
 					<span class="text-xs text-textSec ml-1">{t(stat.trendKey)}</span>
 				</div>
 			{/if}
@@ -46,7 +52,9 @@
 						{t(stat.labelKey)}
 					{/if}
 				</h3>
-				<div class="w-7 h-7 rounded-lg {stat.iconBg} flex items-center justify-center flex-shrink-0">
+				<div
+					class="w-7 h-7 rounded-lg {stat.iconBg} flex items-center justify-center flex-shrink-0"
+				>
 					<i class="fa-solid {stat.icon} {stat.iconColor} text-xs"></i>
 				</div>
 			</div>
@@ -58,8 +66,14 @@
 				</div>
 			{:else}
 				<div class="flex items-center gap-1 mt-1.5">
-					<i class="fa-solid {stat.trendPositive ? 'fa-arrow-trend-up text-success' : 'fa-arrow-trend-down text-error'} text-xs"></i>
-					<span class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'} font-medium">{stat.trendValue}</span>
+					<i
+						class="fa-solid {stat.trendPositive
+							? 'fa-arrow-trend-up text-success'
+							: 'fa-arrow-trend-down text-error'} text-xs"
+					></i>
+					<span class="text-xs {stat.trendPositive ? 'text-success' : 'text-error'} font-medium"
+						>{stat.trendValue}</span
+					>
 				</div>
 			{/if}
 		</div>

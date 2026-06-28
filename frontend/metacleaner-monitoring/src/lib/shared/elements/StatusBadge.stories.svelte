@@ -9,7 +9,16 @@
 		argTypes: {
 			status: {
 				control: 'select',
-				options: ['online', 'degraded', 'offline', 'active', 'resolved', 'critical', 'warning', 'info']
+				options: [
+					'online',
+					'degraded',
+					'offline',
+					'active',
+					'resolved',
+					'critical',
+					'warning',
+					'info'
+				]
 			}
 		}
 	});

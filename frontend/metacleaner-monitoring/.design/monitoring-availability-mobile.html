@@ -1,745 +1,1064 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dostupnost</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
-        .uptime-block { width: 100%; height: 20px; border-radius: 2px; flex-shrink: 0; }
-        .uptime-bar-wrap { display: flex; gap: 1.5px; align-items: flex-end; width: 100%; overflow: hidden; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Dostupnost</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+			.uptime-block {
+				width: 100%;
+				height: 20px;
+				border-radius: 2px;
+				flex-shrink: 0;
+			}
+			.uptime-bar-wrap {
+				display: flex;
+				gap: 1.5px;
+				align-items: flex-end;
+				width: 100%;
+				overflow: hidden;
+			}
 
-        /* Slide-over drawer */
-        #drawer-overlay { transition: opacity 0.3s ease; }
-        #drawer { transition: transform 0.3s ease; }
-        #drawer.open { transform: translateX(0); }
-        #drawer.closed { transform: translateX(-100%); }
+			/* Slide-over drawer */
+			#drawer-overlay {
+				transition: opacity 0.3s ease;
+			}
+			#drawer {
+				transition: transform 0.3s ease;
+			}
+			#drawer.open {
+				transform: translateX(0);
+			}
+			#drawer.closed {
+				transform: translateX(-100%);
+			}
 
-        /* Accordion */
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .accordion-content.open { max-height: 2000px; }
-        .accordion-icon { transition: transform 0.3s ease; }
-        .accordion-icon.rotated { transform: rotate(180deg); }
-    </style>
-</head>
-<body class="bg-background min-h-screen flex flex-col">
+			/* Accordion */
+			.accordion-content {
+				max-height: 0;
+				overflow: hidden;
+				transition: max-height 0.3s ease;
+			}
+			.accordion-content.open {
+				max-height: 2000px;
+			}
+			.accordion-icon {
+				transition: transform 0.3s ease;
+			}
+			.accordion-icon.rotated {
+				transform: rotate(180deg);
+			}
+		</style>
+	</head>
+	<body class="flex min-h-screen flex-col bg-background">
+		<!-- Drawer Overlay -->
+		<div
+			id="drawer-overlay"
+			class="pointer-events-none fixed inset-0 z-40 bg-black/60 opacity-0"
+			onclick="closeDrawer()"
+		></div>
 
-    <!-- Drawer Overlay -->
-    <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none" onclick="closeDrawer()"></div>
+		<!-- Slide-over Drawer -->
+		<div
+			id="drawer"
+			class="closed fixed top-0 left-0 z-50 flex h-full w-72 flex-col border-r border-[#1e293b] bg-card"
+		>
+			<div class="flex items-center justify-between border-b border-[#1e293b] p-5">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-xl font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+				<button
+					onclick="closeDrawer()"
+					class="flex h-9 w-9 items-center justify-center rounded-lg text-textSec hover:text-textMain"
+				>
+					<i class="fa-solid fa-xmark text-lg"></i>
+				</button>
+			</div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg border border-[#334155]/60 bg-[#1e293b]/70 px-3 py-3 font-medium text-textMain"
+				>
+					<i class="fa-solid fa-server w-5 text-center text-primary"></i>Dostupnost
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>Chyby & Pády
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-database w-5 text-center"></i>Databáze (Supabase)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-bolt w-5 text-center"></i>Performance
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky
+				</a>
+			</nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gear w-5 text-center"></i>Nastavení
+				</a>
+			</div>
+		</div>
 
-    <!-- Slide-over Drawer -->
-    <div id="drawer" class="fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col closed">
-        <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-                <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
-            </div>
-            <button onclick="closeDrawer()" class="w-9 h-9 flex items-center justify-center text-textSec hover:text-textMain rounded-lg">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-        </div>
-        <nav class="p-4 flex-1 overflow-y-auto space-y-1">
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/70 text-textMain rounded-lg font-medium border border-[#334155]/60">
-                <i class="fa-solid fa-server w-5 text-center text-primary"></i>Dostupnost
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>Chyby & Pády
-            </a>
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-database w-5 text-center"></i>Databáze (Supabase)
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)
-            </a>
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-bolt w-5 text-center"></i>Performance
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky
-            </a>
-        </nav>
-        <div class="p-4 border-t border-[#1e293b]">
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-gear w-5 text-center"></i>Nastavení
-            </a>
-        </div>
-    </div>
+		<!-- Top App Bar -->
+		<header
+			id="header"
+			class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[#1e293b] bg-background/95 px-4 py-3 backdrop-blur-md"
+		>
+			<div class="flex items-center gap-3">
+				<button
+					onclick="openDrawer()"
+					class="flex h-10 min-h-[44px] w-10 min-w-[44px] items-center justify-center rounded-lg text-textSec hover:text-textMain"
+				>
+					<i class="fa-solid fa-bars text-lg"></i>
+				</button>
+				<div>
+					<div class="flex items-center gap-2">
+						<div
+							class="flex h-5 w-5 items-center justify-center rounded bg-primary text-xs font-bold text-white"
+						>
+							M
+						</div>
+						<span class="text-xs font-semibold tracking-widest text-textSec uppercase"
+							>Monitorly</span
+						>
+					</div>
+					<h1 class="text-base leading-tight font-bold text-textMain">Dostupnost služeb</h1>
+				</div>
+			</div>
+			<div class="flex items-center gap-2">
+				<div
+					class="flex items-center gap-1.5 rounded-lg border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs font-medium text-success"
+				>
+					<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-success"></div>
+					<span class="hidden sm:inline">Operativní</span>
+					<span class="sm:hidden">OK</span>
+				</div>
+				<button
+					class="flex h-10 min-h-[44px] w-10 min-w-[44px] items-center justify-center rounded-lg border border-[#334155] bg-[#1e293b] text-textSec"
+				>
+					<i class="fa-solid fa-download text-sm"></i>
+				</button>
+			</div>
+		</header>
 
-    <!-- Top App Bar -->
-    <header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-            <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center text-textSec hover:text-textMain rounded-lg min-h-[44px] min-w-[44px]">
-                <i class="fa-solid fa-bars text-lg"></i>
-            </button>
-            <div>
-                <div class="flex items-center gap-2">
-                    <div class="w-5 h-5 rounded bg-primary flex items-center justify-center text-white font-bold text-xs">M</div>
-                    <span class="text-xs font-semibold text-textSec tracking-widest uppercase">Monitorly</span>
-                </div>
-                <h1 class="text-base font-bold text-textMain leading-tight">Dostupnost služeb</h1>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
-                <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-                <span class="hidden sm:inline">Operativní</span>
-                <span class="sm:hidden">OK</span>
-            </div>
-            <button class="w-10 h-10 flex items-center justify-center bg-[#1e293b] border border-[#334155] text-textSec rounded-lg min-h-[44px] min-w-[44px]">
-                <i class="fa-solid fa-download text-sm"></i>
-            </button>
-        </div>
-    </header>
+		<!-- Main Scrollable Content -->
+		<main class="flex-1 overflow-y-auto pb-24">
+			<!-- Status Banner -->
+			<div
+				class="mx-4 mt-4 flex items-center gap-3 rounded-xl border border-secondary/30 bg-secondary/10 p-3"
+			>
+				<div
+					class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-secondary/40 bg-secondary/20"
+				>
+					<i class="fa-solid fa-triangle-exclamation text-sm text-secondary"></i>
+				</div>
+				<div class="min-w-0 flex-1">
+					<p class="text-sm font-semibold text-textMain">Aktivní incident</p>
+					<p class="truncate text-xs text-textSec">Zvýšená latence Edge CDN · Trvá 2h 18m</p>
+				</div>
+				<i class="fa-solid fa-chevron-right flex-shrink-0 text-xs text-textSec"></i>
+			</div>
 
-    <!-- Main Scrollable Content -->
-    <main class="flex-1 overflow-y-auto pb-24">
+			<!-- Time Range Selector -->
+			<div class="mx-4 mt-4">
+				<select
+					class="min-h-[44px] w-full rounded-xl border border-[#334155] bg-[#1e293b] px-4 py-3 text-sm text-textMain focus:outline-none"
+				>
+					<option>Posledních 24 hodin</option>
+					<option>Posledních 7 dní</option>
+					<option>Posledních 30 dní</option>
+				</select>
+			</div>
 
-        <!-- Status Banner -->
-        <div class="mx-4 mt-4 p-3 rounded-xl bg-secondary/10 border border-secondary/30 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-secondary/20 border border-secondary/40 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-triangle-exclamation text-secondary text-sm"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-textMain">Aktivní incident</p>
-                <p class="text-xs text-textSec truncate">Zvýšená latence Edge CDN · Trvá 2h 18m</p>
-            </div>
-            <i class="fa-solid fa-chevron-right text-textSec text-xs flex-shrink-0"></i>
-        </div>
+			<div class="mt-4 space-y-4 px-4">
+				<!-- Summary Cards — 2 col grid -->
+				<section id="uptime-summary">
+					<h2 class="mb-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+						Přehled dostupnosti
+					</h2>
+					<div class="grid grid-cols-2 gap-3">
+						<!-- Frontend -->
+						<div class="relative overflow-hidden rounded-xl border border-[#1e293b] bg-card p-4">
+							<div class="absolute top-0 left-0 h-full w-1 rounded-l-xl bg-success"></div>
+							<div class="pl-1">
+								<div class="mb-2 flex items-start justify-between">
+									<div>
+										<p
+											class="text-xs leading-tight font-semibold tracking-wider text-textSec uppercase"
+										>
+											Frontend
+										</p>
+										<p class="text-xs text-textSec">Vercel</p>
+									</div>
+									<span
+										class="mt-1 h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></span>
+								</div>
+								<span class="text-2xl font-bold text-textMain"
+									>99.99<span class="text-base">%</span></span
+								>
+								<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 99.99%"></div>
+								</div>
+								<div class="mt-1.5 flex justify-between">
+									<span class="text-xs text-textSec">0 výpadků</span>
+									<span class="text-xs text-success">↑ +0.01%</span>
+								</div>
+							</div>
+						</div>
 
-        <!-- Time Range Selector -->
-        <div class="mx-4 mt-4">
-            <select class="w-full bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-xl px-4 py-3 focus:outline-none min-h-[44px]">
-                <option>Posledních 24 hodin</option>
-                <option>Posledních 7 dní</option>
-                <option>Posledních 30 dní</option>
-            </select>
-        </div>
+						<!-- Backend API -->
+						<div class="relative overflow-hidden rounded-xl border border-[#1e293b] bg-card p-4">
+							<div class="absolute top-0 left-0 h-full w-1 rounded-l-xl bg-success"></div>
+							<div class="pl-1">
+								<div class="mb-2 flex items-start justify-between">
+									<div>
+										<p
+											class="text-xs leading-tight font-semibold tracking-wider text-textSec uppercase"
+										>
+											Backend
+										</p>
+										<p class="text-xs text-textSec">Fly.io</p>
+									</div>
+									<span
+										class="mt-1 h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></span>
+								</div>
+								<span class="text-2xl font-bold text-textMain"
+									>99.95<span class="text-base">%</span></span
+								>
+								<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 99.95%"></div>
+								</div>
+								<div class="mt-1.5 flex justify-between">
+									<span class="text-xs text-textSec">2 výpadky</span>
+									<span class="text-xs text-error">↓ -0.03%</span>
+								</div>
+							</div>
+						</div>
 
-        <div class="px-4 mt-4 space-y-4">
+						<!-- Database -->
+						<div class="relative overflow-hidden rounded-xl border border-[#1e293b] bg-card p-4">
+							<div class="absolute top-0 left-0 h-full w-1 rounded-l-xl bg-success"></div>
+							<div class="pl-1">
+								<div class="mb-2 flex items-start justify-between">
+									<div>
+										<p
+											class="text-xs leading-tight font-semibold tracking-wider text-textSec uppercase"
+										>
+											Databáze
+										</p>
+										<p class="text-xs text-textSec">Supabase</p>
+									</div>
+									<span
+										class="mt-1 h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></span>
+								</div>
+								<span class="text-2xl font-bold text-textMain"
+									>99.97<span class="text-base">%</span></span
+								>
+								<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 99.97%"></div>
+								</div>
+								<div class="mt-1.5 flex justify-between">
+									<span class="text-xs text-textSec">1 výpadek</span>
+									<span class="text-xs text-success">↑ +0.02%</span>
+								</div>
+							</div>
+						</div>
 
-            <!-- Summary Cards — 2 col grid -->
-            <section id="uptime-summary">
-                <h2 class="text-xs font-semibold text-textSec uppercase tracking-wider mb-3">Přehled dostupnosti</h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <!-- Frontend -->
-                    <div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-success rounded-l-xl"></div>
-                        <div class="pl-1">
-                            <div class="flex items-start justify-between mb-2">
-                                <div>
-                                    <p class="text-xs text-textSec uppercase tracking-wider font-semibold leading-tight">Frontend</p>
-                                    <p class="text-xs text-textSec">Vercel</p>
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-success animate-pulse mt-1 flex-shrink-0"></span>
-                            </div>
-                            <span class="text-2xl font-bold text-textMain">99.99<span class="text-base">%</span></span>
-                            <div class="mt-2 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:99.99%"></div>
-                            </div>
-                            <div class="flex justify-between mt-1.5">
-                                <span class="text-xs text-textSec">0 výpadků</span>
-                                <span class="text-xs text-success">↑ +0.01%</span>
-                            </div>
-                        </div>
-                    </div>
+						<!-- Edge CDN -->
+						<div class="relative overflow-hidden rounded-xl border border-[#1e293b] bg-card p-4">
+							<div class="absolute top-0 left-0 h-full w-1 rounded-l-xl bg-secondary"></div>
+							<div class="pl-1">
+								<div class="mb-2 flex items-start justify-between">
+									<div>
+										<p
+											class="text-xs leading-tight font-semibold tracking-wider text-textSec uppercase"
+										>
+											Edge CDN
+										</p>
+										<p class="text-xs text-textSec">Cloudflare</p>
+									</div>
+									<span class="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-secondary"></span>
+								</div>
+								<span class="text-2xl font-bold text-textMain"
+									>99.82<span class="text-base">%</span></span
+								>
+								<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-secondary" style="width: 99.82%"></div>
+								</div>
+								<div class="mt-1.5 flex justify-between">
+									<span class="text-xs text-textSec">5 výpadků</span>
+									<span class="text-xs text-error">↓ -0.08%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-                    <!-- Backend API -->
-                    <div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-success rounded-l-xl"></div>
-                        <div class="pl-1">
-                            <div class="flex items-start justify-between mb-2">
-                                <div>
-                                    <p class="text-xs text-textSec uppercase tracking-wider font-semibold leading-tight">Backend</p>
-                                    <p class="text-xs text-textSec">Fly.io</p>
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-success animate-pulse mt-1 flex-shrink-0"></span>
-                            </div>
-                            <span class="text-2xl font-bold text-textMain">99.95<span class="text-base">%</span></span>
-                            <div class="mt-2 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:99.95%"></div>
-                            </div>
-                            <div class="flex justify-between mt-1.5">
-                                <span class="text-xs text-textSec">2 výpadky</span>
-                                <span class="text-xs text-error">↓ -0.03%</span>
-                            </div>
-                        </div>
-                    </div>
+				<!-- Response Time Chart -->
+				<section id="response-time-chart" class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-1 flex items-center justify-between">
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Response Time (p95)</h3>
+							<p class="mt-0.5 text-xs text-textSec">Posledních 24 hodin</p>
+						</div>
+						<div class="flex gap-3 text-xs">
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-0.5 w-2.5 rounded bg-success"></span
+								><span class="text-textSec">FE</span>
+							</div>
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-0.5 w-2.5 rounded bg-blue-500"></span
+								><span class="text-textSec">API</span>
+							</div>
+						</div>
+					</div>
+					<div id="chart-response-time" class="h-[200px] w-full"></div>
+				</section>
 
-                    <!-- Database -->
-                    <div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-success rounded-l-xl"></div>
-                        <div class="pl-1">
-                            <div class="flex items-start justify-between mb-2">
-                                <div>
-                                    <p class="text-xs text-textSec uppercase tracking-wider font-semibold leading-tight">Databáze</p>
-                                    <p class="text-xs text-textSec">Supabase</p>
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-success animate-pulse mt-1 flex-shrink-0"></span>
-                            </div>
-                            <span class="text-2xl font-bold text-textMain">99.97<span class="text-base">%</span></span>
-                            <div class="mt-2 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:99.97%"></div>
-                            </div>
-                            <div class="flex justify-between mt-1.5">
-                                <span class="text-xs text-textSec">1 výpadek</span>
-                                <span class="text-xs text-success">↑ +0.02%</span>
-                            </div>
-                        </div>
-                    </div>
+				<!-- Health Checks — Accordion -->
+				<section
+					id="health-checks"
+					class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+				>
+					<button
+						class="flex min-h-[52px] w-full items-center justify-between p-4"
+						onclick="toggleAccordion('hc')"
+					>
+						<div class="flex items-center gap-2">
+							<h3 class="text-sm font-semibold text-textMain">Health Checks</h3>
+							<span class="rounded-full bg-[#1e293b] px-2 py-0.5 text-xs text-textSec"
+								>5 endpointů</span
+							>
+						</div>
+						<div class="flex items-center gap-2">
+							<span class="text-xs text-textSec">Každých 60s</span>
+							<i
+								class="fa-solid fa-chevron-down accordion-icon text-xs text-textSec"
+								id="icon-hc"
+							></i>
+						</div>
+					</button>
+					<div class="accordion-content" id="content-hc">
+						<div class="space-y-2 px-4 pb-4">
+							<div
+								class="flex min-h-[52px] items-center justify-between rounded-lg border border-[#334155]/40 bg-[#1e293b]/50 p-3"
+							>
+								<div class="flex items-center gap-3">
+									<div
+										class="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></div>
+									<div>
+										<p class="text-sm font-medium text-textMain">/health</p>
+										<p class="text-xs text-textSec">Backend API</p>
+									</div>
+								</div>
+								<div class="text-right">
+									<p class="text-sm font-semibold text-success">200 OK</p>
+									<p class="text-xs text-textSec">42ms</p>
+								</div>
+							</div>
+							<div
+								class="flex min-h-[52px] items-center justify-between rounded-lg border border-[#334155]/40 bg-[#1e293b]/50 p-3"
+							>
+								<div class="flex items-center gap-3">
+									<div
+										class="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></div>
+									<div>
+										<p class="text-sm font-medium text-textMain">/api/ping</p>
+										<p class="text-xs text-textSec">Backend API</p>
+									</div>
+								</div>
+								<div class="text-right">
+									<p class="text-sm font-semibold text-success">200 OK</p>
+									<p class="text-xs text-textSec">18ms</p>
+								</div>
+							</div>
+							<div
+								class="flex min-h-[52px] items-center justify-between rounded-lg border border-[#334155]/40 bg-[#1e293b]/50 p-3"
+							>
+								<div class="flex items-center gap-3">
+									<div
+										class="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></div>
+									<div>
+										<p class="text-sm font-medium text-textMain">/ (root)</p>
+										<p class="text-xs text-textSec">Frontend</p>
+									</div>
+								</div>
+								<div class="text-right">
+									<p class="text-sm font-semibold text-success">200 OK</p>
+									<p class="text-xs text-textSec">91ms</p>
+								</div>
+							</div>
+							<div
+								class="flex min-h-[52px] items-center justify-between rounded-lg border border-secondary/20 bg-[#1e293b]/50 p-3"
+							>
+								<div class="flex items-center gap-3">
+									<div class="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-secondary"></div>
+									<div>
+										<p class="text-sm font-medium text-textMain">/api/db-health</p>
+										<p class="text-xs text-textSec">Supabase</p>
+									</div>
+								</div>
+								<div class="text-right">
+									<p class="text-sm font-semibold text-secondary">200 OK</p>
+									<p class="text-xs text-textSec">412ms</p>
+								</div>
+							</div>
+							<div
+								class="flex min-h-[52px] items-center justify-between rounded-lg border border-[#334155]/40 bg-[#1e293b]/50 p-3"
+							>
+								<div class="flex items-center gap-3">
+									<div
+										class="h-2.5 w-2.5 flex-shrink-0 animate-pulse rounded-full bg-success"
+									></div>
+									<div>
+										<p class="text-sm font-medium text-textMain">CF Edge Check</p>
+										<p class="text-xs text-textSec">Cloudflare</p>
+									</div>
+								</div>
+								<div class="text-right">
+									<p class="text-sm font-semibold text-success">200 OK</p>
+									<p class="text-xs text-textSec">8ms</p>
+								</div>
+							</div>
+							<div class="flex items-center justify-between border-t border-[#1e293b] pt-2">
+								<span class="text-xs text-textSec">Posl. kontrola: před 12s</span>
+								<button
+									class="flex min-h-[44px] items-center gap-1 px-3 py-2 text-xs font-medium text-primary"
+								>
+									<i class="fa-solid fa-rotate-right"></i>Obnovit
+								</button>
+							</div>
+						</div>
+					</div>
+				</section>
 
-                    <!-- Edge CDN -->
-                    <div class="bg-card border border-[#1e293b] rounded-xl p-4 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-secondary rounded-l-xl"></div>
-                        <div class="pl-1">
-                            <div class="flex items-start justify-between mb-2">
-                                <div>
-                                    <p class="text-xs text-textSec uppercase tracking-wider font-semibold leading-tight">Edge CDN</p>
-                                    <p class="text-xs text-textSec">Cloudflare</p>
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-secondary mt-1 flex-shrink-0"></span>
-                            </div>
-                            <span class="text-2xl font-bold text-textMain">99.82<span class="text-base">%</span></span>
-                            <div class="mt-2 h-1.5 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-secondary rounded-full" style="width:99.82%"></div>
-                            </div>
-                            <div class="flex justify-between mt-1.5">
-                                <span class="text-xs text-textSec">5 výpadků</span>
-                                <span class="text-xs text-error">↓ -0.08%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+				<!-- Uptime Timeline — Accordion -->
+				<section
+					id="uptime-timeline"
+					class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+				>
+					<button
+						class="flex min-h-[52px] w-full items-center justify-between p-4"
+						onclick="toggleAccordion('ut')"
+					>
+						<h3 class="text-sm font-semibold text-textMain">Historie dostupnosti</h3>
+						<div class="flex items-center gap-2">
+							<span class="text-xs text-textSec">90 dní</span>
+							<i
+								class="fa-solid fa-chevron-down accordion-icon text-xs text-textSec"
+								id="icon-ut"
+							></i>
+						</div>
+					</button>
+					<div class="accordion-content open" id="content-ut">
+						<div class="px-4 pb-4">
+							<!-- Legend -->
+							<div class="mb-4 flex flex-wrap items-center gap-3 text-xs text-textSec">
+								<div class="flex items-center gap-1">
+									<span class="inline-block h-2.5 w-2.5 rounded-sm bg-success"></span>Provoz
+								</div>
+								<div class="flex items-center gap-1">
+									<span class="inline-block h-2.5 w-2.5 rounded-sm bg-secondary"></span>Degradace
+								</div>
+								<div class="flex items-center gap-1">
+									<span class="inline-block h-2.5 w-2.5 rounded-sm bg-error"></span>Výpadek
+								</div>
+							</div>
+							<div class="space-y-4" id="uptime-bars-container">
+								<div>
+									<div class="mb-1.5 flex items-center justify-between">
+										<div class="flex items-center gap-1.5">
+											<i class="fa-solid fa-desktop text-xs text-textSec"></i>
+											<span class="text-xs font-medium text-textMain">Frontend</span>
+										</div>
+										<span class="text-xs font-semibold text-success">99.99%</span>
+									</div>
+									<div class="uptime-bar-wrap h-5" id="bar-frontend"></div>
+									<div class="mt-1 flex justify-between">
+										<span class="text-xs text-textSec">90d</span>
+										<span class="text-xs text-textSec">dnes</span>
+									</div>
+								</div>
+								<div>
+									<div class="mb-1.5 flex items-center justify-between">
+										<div class="flex items-center gap-1.5">
+											<i class="fa-solid fa-server text-xs text-textSec"></i>
+											<span class="text-xs font-medium text-textMain">Backend API</span>
+										</div>
+										<span class="text-xs font-semibold text-success">99.95%</span>
+									</div>
+									<div class="uptime-bar-wrap h-5" id="bar-backend"></div>
+									<div class="mt-1 flex justify-between">
+										<span class="text-xs text-textSec">90d</span>
+										<span class="text-xs text-textSec">dnes</span>
+									</div>
+								</div>
+								<div>
+									<div class="mb-1.5 flex items-center justify-between">
+										<div class="flex items-center gap-1.5">
+											<i class="fa-solid fa-database text-xs text-textSec"></i>
+											<span class="text-xs font-medium text-textMain">Databáze</span>
+										</div>
+										<span class="text-xs font-semibold text-success">99.97%</span>
+									</div>
+									<div class="uptime-bar-wrap h-5" id="bar-db"></div>
+									<div class="mt-1 flex justify-between">
+										<span class="text-xs text-textSec">90d</span>
+										<span class="text-xs text-textSec">dnes</span>
+									</div>
+								</div>
+								<div>
+									<div class="mb-1.5 flex items-center justify-between">
+										<div class="flex items-center gap-1.5">
+											<i class="fa-solid fa-cloud text-xs text-textSec"></i>
+											<span class="text-xs font-medium text-textMain">Edge CDN</span>
+										</div>
+										<span class="text-xs font-semibold text-secondary">99.82%</span>
+									</div>
+									<div class="uptime-bar-wrap h-5" id="bar-cf"></div>
+									<div class="mt-1 flex justify-between">
+										<span class="text-xs text-textSec">90d</span>
+										<span class="text-xs text-textSec">dnes</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-            <!-- Response Time Chart -->
-            <section id="response-time-chart" class="bg-card border border-[#1e293b] rounded-xl p-4">
-                <div class="flex items-center justify-between mb-1">
-                    <div>
-                        <h3 class="text-sm font-semibold text-textMain">Response Time (p95)</h3>
-                        <p class="text-xs text-textSec mt-0.5">Posledních 24 hodin</p>
-                    </div>
-                    <div class="flex gap-3 text-xs">
-                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 bg-success inline-block rounded"></span><span class="text-textSec">FE</span></div>
-                        <div class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 bg-blue-500 inline-block rounded"></span><span class="text-textSec">API</span></div>
-                    </div>
-                </div>
-                <div id="chart-response-time" class="h-[200px] w-full"></div>
-            </section>
+				<!-- Incidents -->
+				<section
+					id="incident-log"
+					class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+				>
+					<div class="flex items-center justify-between border-b border-[#1e293b] p-4">
+						<h3 class="text-sm font-semibold text-textMain">Výpadky & Incidenty</h3>
+						<div class="flex gap-1.5">
+							<button
+								class="min-h-[36px] rounded-lg border border-[#334155] bg-[#1e293b] px-2.5 py-1.5 text-xs font-medium text-textMain"
+							>
+								Všechny
+							</button>
+							<button
+								class="min-h-[36px] rounded-lg px-2.5 py-1.5 text-xs text-textSec transition-colors hover:bg-[#1e293b]"
+							>
+								Aktivní
+							</button>
+							<button
+								class="min-h-[36px] rounded-lg px-2.5 py-1.5 text-xs text-textSec transition-colors hover:bg-[#1e293b]"
+							>
+								Vyřešené
+							</button>
+						</div>
+					</div>
+					<div class="space-y-3 p-4">
+						<!-- Active incident -->
+						<div class="rounded-xl border border-secondary/30 bg-[#1e293b]/60 p-4">
+							<div class="flex items-start gap-3">
+								<div
+									class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-secondary/40 bg-secondary/20"
+								>
+									<i class="fa-solid fa-triangle-exclamation text-xs text-secondary"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex flex-wrap items-start justify-between gap-2">
+										<span class="text-sm leading-tight font-semibold text-textMain"
+											>Zvýšená latence Edge CDN</span
+										>
+										<span
+											class="flex-shrink-0 rounded-full border border-secondary/20 bg-secondary/10 px-1.5 py-0.5 text-xs font-medium text-secondary"
+											>Aktivní</span
+										>
+									</div>
+									<p class="mt-1.5 text-xs leading-relaxed text-textSec">
+										Cloudflare edge uzly v regionu EU reportují zvýšenou latenci.
+									</p>
+									<div class="mt-2 flex flex-wrap items-center gap-3">
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-clock mr-1"></i>2h 18m</span
+										>
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-cloud mr-1"></i>Cloudflare Edge</span
+										>
+										<span class="text-xs text-textSec">Dnes, 08:14</span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            <!-- Health Checks — Accordion -->
-            <section id="health-checks" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-                <button class="w-full flex items-center justify-between p-4 min-h-[52px]" onclick="toggleAccordion('hc')">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-sm font-semibold text-textMain">Health Checks</h3>
-                        <span class="text-xs text-textSec bg-[#1e293b] px-2 py-0.5 rounded-full">5 endpointů</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-textSec">Každých 60s</span>
-                        <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon" id="icon-hc"></i>
-                    </div>
-                </button>
-                <div class="accordion-content" id="content-hc">
-                    <div class="px-4 pb-4 space-y-2">
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-[#334155]/40 min-h-[52px]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-success animate-pulse flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-medium text-textMain">/health</p>
-                                    <p class="text-xs text-textSec">Backend API</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-success">200 OK</p>
-                                <p class="text-xs text-textSec">42ms</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-[#334155]/40 min-h-[52px]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-success animate-pulse flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-medium text-textMain">/api/ping</p>
-                                    <p class="text-xs text-textSec">Backend API</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-success">200 OK</p>
-                                <p class="text-xs text-textSec">18ms</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-[#334155]/40 min-h-[52px]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-success animate-pulse flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-medium text-textMain">/ (root)</p>
-                                    <p class="text-xs text-textSec">Frontend</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-success">200 OK</p>
-                                <p class="text-xs text-textSec">91ms</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-secondary/20 min-h-[52px]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-secondary flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-medium text-textMain">/api/db-health</p>
-                                    <p class="text-xs text-textSec">Supabase</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-secondary">200 OK</p>
-                                <p class="text-xs text-textSec">412ms</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-[#1e293b]/50 border border-[#334155]/40 min-h-[52px]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-success animate-pulse flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-sm font-medium text-textMain">CF Edge Check</p>
-                                    <p class="text-xs text-textSec">Cloudflare</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-success">200 OK</p>
-                                <p class="text-xs text-textSec">8ms</p>
-                            </div>
-                        </div>
-                        <div class="pt-2 border-t border-[#1e293b] flex items-center justify-between">
-                            <span class="text-xs text-textSec">Posl. kontrola: před 12s</span>
-                            <button class="text-xs text-primary font-medium flex items-center gap-1 py-2 px-3 min-h-[44px]">
-                                <i class="fa-solid fa-rotate-right"></i>Obnovit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+						<!-- Resolved incidents -->
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-4">
+							<div class="flex items-start gap-3">
+								<div
+									class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-success/30 bg-success/10"
+								>
+									<i class="fa-solid fa-check text-xs text-success"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex flex-wrap items-start justify-between gap-2">
+										<span class="text-sm leading-tight font-medium text-textSec line-through"
+											>Backend API restart (500 errors)</span
+										>
+										<span
+											class="flex-shrink-0 rounded-full border border-success/20 bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+											>Vyřešeno</span
+										>
+									</div>
+									<p class="mt-1.5 text-xs leading-relaxed text-textSec">
+										OOM crash. Automatický restart za 43s.
+									</p>
+									<div class="mt-2 flex flex-wrap items-center gap-3">
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-stopwatch mr-1"></i>43s</span
+										>
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-server mr-1"></i>Fly.io</span
+										>
+										<span class="text-xs text-textSec">Včera, 22:45</span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            <!-- Uptime Timeline — Accordion -->
-            <section id="uptime-timeline" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-                <button class="w-full flex items-center justify-between p-4 min-h-[52px]" onclick="toggleAccordion('ut')">
-                    <h3 class="text-sm font-semibold text-textMain">Historie dostupnosti</h3>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-textSec">90 dní</span>
-                        <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon" id="icon-ut"></i>
-                    </div>
-                </button>
-                <div class="accordion-content open" id="content-ut">
-                    <div class="px-4 pb-4">
-                        <!-- Legend -->
-                        <div class="flex flex-wrap items-center gap-3 mb-4 text-xs text-textSec">
-                            <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-success inline-block"></span>Provoz</div>
-                            <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-secondary inline-block"></span>Degradace</div>
-                            <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-error inline-block"></span>Výpadek</div>
-                        </div>
-                        <div class="space-y-4" id="uptime-bars-container">
-                            <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-desktop text-textSec text-xs"></i>
-                                        <span class="text-xs font-medium text-textMain">Frontend</span>
-                                    </div>
-                                    <span class="text-xs font-semibold text-success">99.99%</span>
-                                </div>
-                                <div class="uptime-bar-wrap h-5" id="bar-frontend"></div>
-                                <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-textSec">90d</span>
-                                    <span class="text-xs text-textSec">dnes</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-server text-textSec text-xs"></i>
-                                        <span class="text-xs font-medium text-textMain">Backend API</span>
-                                    </div>
-                                    <span class="text-xs font-semibold text-success">99.95%</span>
-                                </div>
-                                <div class="uptime-bar-wrap h-5" id="bar-backend"></div>
-                                <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-textSec">90d</span>
-                                    <span class="text-xs text-textSec">dnes</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-database text-textSec text-xs"></i>
-                                        <span class="text-xs font-medium text-textMain">Databáze</span>
-                                    </div>
-                                    <span class="text-xs font-semibold text-success">99.97%</span>
-                                </div>
-                                <div class="uptime-bar-wrap h-5" id="bar-db"></div>
-                                <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-textSec">90d</span>
-                                    <span class="text-xs text-textSec">dnes</span>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-cloud text-textSec text-xs"></i>
-                                        <span class="text-xs font-medium text-textMain">Edge CDN</span>
-                                    </div>
-                                    <span class="text-xs font-semibold text-secondary">99.82%</span>
-                                </div>
-                                <div class="uptime-bar-wrap h-5" id="bar-cf"></div>
-                                <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-textSec">90d</span>
-                                    <span class="text-xs text-textSec">dnes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-4">
+							<div class="flex items-start gap-3">
+								<div
+									class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-success/30 bg-success/10"
+								>
+									<i class="fa-solid fa-check text-xs text-success"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex flex-wrap items-start justify-between gap-2">
+										<span class="text-sm leading-tight font-medium text-textSec line-through"
+											>Supabase DB pool exhausted</span
+										>
+										<span
+											class="flex-shrink-0 rounded-full border border-success/20 bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+											>Vyřešeno</span
+										>
+									</div>
+									<p class="mt-1.5 text-xs leading-relaxed text-textSec">
+										Pool dosáhl limitu 100. Zvýšen limit + queue.
+									</p>
+									<div class="mt-2 flex flex-wrap items-center gap-3">
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-stopwatch mr-1"></i>7m 12s</span
+										>
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-database mr-1"></i>Supabase</span
+										>
+										<span class="text-xs text-textSec">20. 5.</span>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            <!-- Incidents -->
-            <section id="incident-log" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-                <div class="p-4 border-b border-[#1e293b] flex items-center justify-between">
-                    <h3 class="text-sm font-semibold text-textMain">Výpadky & Incidenty</h3>
-                    <div class="flex gap-1.5">
-                        <button class="px-2.5 py-1.5 text-xs bg-[#1e293b] text-textMain rounded-lg border border-[#334155] font-medium min-h-[36px]">Všechny</button>
-                        <button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors min-h-[36px]">Aktivní</button>
-                        <button class="px-2.5 py-1.5 text-xs text-textSec hover:bg-[#1e293b] rounded-lg transition-colors min-h-[36px]">Vyřešené</button>
-                    </div>
-                </div>
-                <div class="p-4 space-y-3">
-                    <!-- Active incident -->
-                    <div class="p-4 rounded-xl bg-[#1e293b]/60 border border-secondary/30">
-                        <div class="flex items-start gap-3">
-                            <div class="w-7 h-7 rounded-full bg-secondary/20 border border-secondary/40 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fa-solid fa-triangle-exclamation text-secondary text-xs"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2 flex-wrap">
-                                    <span class="text-sm font-semibold text-textMain leading-tight">Zvýšená latence Edge CDN</span>
-                                    <span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full border border-secondary/20 font-medium flex-shrink-0">Aktivní</span>
-                                </div>
-                                <p class="text-xs text-textSec mt-1.5 leading-relaxed">Cloudflare edge uzly v regionu EU reportují zvýšenou latenci.</p>
-                                <div class="flex flex-wrap items-center gap-3 mt-2">
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-clock mr-1"></i>2h 18m</span>
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-cloud mr-1"></i>Cloudflare Edge</span>
-                                    <span class="text-xs text-textSec">Dnes, 08:14</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-4">
+							<div class="flex items-start gap-3">
+								<div
+									class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-success/30 bg-success/10"
+								>
+									<i class="fa-solid fa-check text-xs text-success"></i>
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex flex-wrap items-start justify-between gap-2">
+										<span class="text-sm leading-tight font-medium text-textSec line-through"
+											>Frontend deployment timeout</span
+										>
+										<span
+											class="flex-shrink-0 rounded-full border border-success/20 bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+											>Vyřešeno</span
+										>
+									</div>
+									<p class="mt-1.5 text-xs leading-relaxed text-textSec">
+										CI/CD pipeline se zasekla. Ruční deploy.
+									</p>
+									<div class="mt-2 flex flex-wrap items-center gap-3">
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-stopwatch mr-1"></i>18m 5s</span
+										>
+										<span class="text-xs text-textSec"
+											><i class="fa-solid fa-desktop mr-1"></i>Vercel</span
+										>
+										<span class="text-xs text-textSec">15. 5.</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-                    <!-- Resolved incidents -->
-                    <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex items-start gap-3">
-                            <div class="w-7 h-7 rounded-full bg-success/10 border border-success/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fa-solid fa-check text-success text-xs"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2 flex-wrap">
-                                    <span class="text-sm font-medium text-textSec line-through leading-tight">Backend API restart (500 errors)</span>
-                                    <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full border border-success/20 font-medium flex-shrink-0">Vyřešeno</span>
-                                </div>
-                                <p class="text-xs text-textSec mt-1.5 leading-relaxed">OOM crash. Automatický restart za 43s.</p>
-                                <div class="flex flex-wrap items-center gap-3 mt-2">
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-stopwatch mr-1"></i>43s</span>
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-server mr-1"></i>Fly.io</span>
-                                    <span class="text-xs text-textSec">Včera, 22:45</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+				<!-- SLA Goals — Accordion -->
+				<section id="sla-panel" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+					<button
+						class="flex min-h-[52px] w-full items-center justify-between p-4"
+						onclick="toggleAccordion('sla')"
+					>
+						<h3 class="text-sm font-semibold text-textMain">SLA Cíle (tento měsíc)</h3>
+						<i
+							class="fa-solid fa-chevron-down accordion-icon open text-xs text-textSec"
+							id="icon-sla"
+						></i>
+					</button>
+					<div class="accordion-content open" id="content-sla">
+						<div class="space-y-4 px-4 pb-4">
+							<div>
+								<div class="mb-1.5 flex items-center justify-between">
+									<span class="text-sm text-textSec">Frontend</span>
+									<span class="text-sm font-semibold text-success">99.99%</span>
+								</div>
+								<div class="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 100%"></div>
+								</div>
+								<p class="mt-1 text-xs text-textSec">Cíl: 99.9% ✓</p>
+							</div>
+							<div>
+								<div class="mb-1.5 flex items-center justify-between">
+									<span class="text-sm text-textSec">Backend API</span>
+									<span class="text-sm font-semibold text-success">99.95%</span>
+								</div>
+								<div class="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 99.95%"></div>
+								</div>
+								<p class="mt-1 text-xs text-textSec">Cíl: 99.9% ✓</p>
+							</div>
+							<div>
+								<div class="mb-1.5 flex items-center justify-between">
+									<span class="text-sm text-textSec">Databáze</span>
+									<span class="text-sm font-semibold text-success">99.97%</span>
+								</div>
+								<div class="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-success" style="width: 99.97%"></div>
+								</div>
+								<p class="mt-1 text-xs text-textSec">Cíl: 99.5% ✓</p>
+							</div>
+							<div>
+								<div class="mb-1.5 flex items-center justify-between">
+									<span class="text-sm text-textSec">Edge CDN</span>
+									<span class="text-sm font-semibold text-secondary">99.82%</span>
+								</div>
+								<div class="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-secondary" style="width: 99.82%"></div>
+								</div>
+								<p class="mt-1 text-xs text-secondary">Cíl: 99.9% ✗ (pod cílem)</p>
+							</div>
+						</div>
+					</div>
+				</section>
 
-                    <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex items-start gap-3">
-                            <div class="w-7 h-7 rounded-full bg-success/10 border border-success/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fa-solid fa-check text-success text-xs"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2 flex-wrap">
-                                    <span class="text-sm font-medium text-textSec line-through leading-tight">Supabase DB pool exhausted</span>
-                                    <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full border border-success/20 font-medium flex-shrink-0">Vyřešeno</span>
-                                </div>
-                                <p class="text-xs text-textSec mt-1.5 leading-relaxed">Pool dosáhl limitu 100. Zvýšen limit + queue.</p>
-                                <div class="flex flex-wrap items-center gap-3 mt-2">
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-stopwatch mr-1"></i>7m 12s</span>
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-database mr-1"></i>Supabase</span>
-                                    <span class="text-xs text-textSec">20. 5.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+				<!-- Quick Stats -->
+				<section id="quick-stats" class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<h3 class="mb-4 text-sm font-semibold text-textMain">Rychlé statistiky</h3>
+					<div class="grid grid-cols-2 gap-3">
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-textMain">8</p>
+							<p class="mt-1 text-xs text-textSec">Výpadky (30d)</p>
+						</div>
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-textMain">6m 34s</p>
+							<p class="mt-1 text-xs text-textSec">MTTR průměr</p>
+						</div>
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-textMain">8.4d</p>
+							<p class="mt-1 text-xs text-textSec">MTBF průměr</p>
+						</div>
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-error">18m 5s</p>
+							<p class="mt-1 text-xs text-textSec">Nejdelší výpadek</p>
+						</div>
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-textMain">60s</p>
+							<p class="mt-1 text-xs text-textSec">Check interval</p>
+						</div>
+						<div class="rounded-xl bg-[#1e293b]/50 p-3 text-center">
+							<p class="text-2xl font-bold text-textMain">12</p>
+							<p class="mt-1 text-xs text-textSec">Alerty odesláno</p>
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
 
-                    <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex items-start gap-3">
-                            <div class="w-7 h-7 rounded-full bg-success/10 border border-success/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fa-solid fa-check text-success text-xs"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2 flex-wrap">
-                                    <span class="text-sm font-medium text-textSec line-through leading-tight">Frontend deployment timeout</span>
-                                    <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full border border-success/20 font-medium flex-shrink-0">Vyřešeno</span>
-                                </div>
-                                <p class="text-xs text-textSec mt-1.5 leading-relaxed">CI/CD pipeline se zasekla. Ruční deploy.</p>
-                                <div class="flex flex-wrap items-center gap-3 mt-2">
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-stopwatch mr-1"></i>18m 5s</span>
-                                    <span class="text-xs text-textSec"><i class="fa-solid fa-desktop mr-1"></i>Vercel</span>
-                                    <span class="text-xs text-textSec">15. 5.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+		<!-- Bottom Navigation -->
+		<nav
+			id="bottom-nav"
+			class="safe-area-bottom fixed right-0 bottom-0 left-0 z-30 flex items-center justify-around border-t border-[#1e293b] bg-card px-2 py-2"
+		>
+			<a
+				href="#"
+				class="flex min-h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gauge-high text-lg"></i>
+				<span class="text-xs">Dashboard</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 px-3 py-2 text-primary"
+			>
+				<i class="fa-solid fa-server text-lg"></i>
+				<span class="text-xs font-semibold">Dostupnost</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-triangle-exclamation text-lg"></i>
+				<span class="text-xs">Chyby</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-bolt text-lg"></i>
+				<span class="text-xs">Perf.</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[52px] min-w-[52px] flex-col items-center justify-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gear text-lg"></i>
+				<span class="text-xs">Více</span>
+			</a>
+		</nav>
 
-            <!-- SLA Goals — Accordion -->
-            <section id="sla-panel" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-                <button class="w-full flex items-center justify-between p-4 min-h-[52px]" onclick="toggleAccordion('sla')">
-                    <h3 class="text-sm font-semibold text-textMain">SLA Cíle (tento měsíc)</h3>
-                    <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon open" id="icon-sla"></i>
-                </button>
-                <div class="accordion-content open" id="content-sla">
-                    <div class="px-4 pb-4 space-y-4">
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <span class="text-sm text-textSec">Frontend</span>
-                                <span class="text-sm font-semibold text-success">99.99%</span>
-                            </div>
-                            <div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:100%"></div>
-                            </div>
-                            <p class="text-xs text-textSec mt-1">Cíl: 99.9% ✓</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <span class="text-sm text-textSec">Backend API</span>
-                                <span class="text-sm font-semibold text-success">99.95%</span>
-                            </div>
-                            <div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:99.95%"></div>
-                            </div>
-                            <p class="text-xs text-textSec mt-1">Cíl: 99.9% ✓</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <span class="text-sm text-textSec">Databáze</span>
-                                <span class="text-sm font-semibold text-success">99.97%</span>
-                            </div>
-                            <div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-success rounded-full" style="width:99.97%"></div>
-                            </div>
-                            <p class="text-xs text-textSec mt-1">Cíl: 99.5% ✓</p>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <span class="text-sm text-textSec">Edge CDN</span>
-                                <span class="text-sm font-semibold text-secondary">99.82%</span>
-                            </div>
-                            <div class="h-2 w-full bg-[#1e293b] rounded-full overflow-hidden">
-                                <div class="h-full bg-secondary rounded-full" style="width:99.82%"></div>
-                            </div>
-                            <p class="text-xs text-secondary mt-1">Cíl: 99.9% ✗ (pod cílem)</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+		<script>
+			// Drawer
+			function openDrawer() {
+				const drawer = document.getElementById('drawer');
+				const overlay = document.getElementById('drawer-overlay');
+				drawer.classList.remove('closed');
+				drawer.classList.add('open');
+				overlay.classList.remove('opacity-0', 'pointer-events-none');
+				overlay.classList.add('opacity-100');
+			}
+			function closeDrawer() {
+				const drawer = document.getElementById('drawer');
+				const overlay = document.getElementById('drawer-overlay');
+				drawer.classList.remove('open');
+				drawer.classList.add('closed');
+				overlay.classList.add('opacity-0', 'pointer-events-none');
+				overlay.classList.remove('opacity-100');
+			}
 
-            <!-- Quick Stats -->
-            <section id="quick-stats" class="bg-card border border-[#1e293b] rounded-xl p-4">
-                <h3 class="text-sm font-semibold text-textMain mb-4">Rychlé statistiky</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-textMain">8</p>
-                        <p class="text-xs text-textSec mt-1">Výpadky (30d)</p>
-                    </div>
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-textMain">6m 34s</p>
-                        <p class="text-xs text-textSec mt-1">MTTR průměr</p>
-                    </div>
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-textMain">8.4d</p>
-                        <p class="text-xs text-textSec mt-1">MTBF průměr</p>
-                    </div>
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-error">18m 5s</p>
-                        <p class="text-xs text-textSec mt-1">Nejdelší výpadek</p>
-                    </div>
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-textMain">60s</p>
-                        <p class="text-xs text-textSec mt-1">Check interval</p>
-                    </div>
-                    <div class="bg-[#1e293b]/50 rounded-xl p-3 text-center">
-                        <p class="text-2xl font-bold text-textMain">12</p>
-                        <p class="text-xs text-textSec mt-1">Alerty odesláno</p>
-                    </div>
-                </div>
-            </section>
+			// Accordion
+			function toggleAccordion(id) {
+				const content = document.getElementById('content-' + id);
+				const icon = document.getElementById('icon-' + id);
+				content.classList.toggle('open');
+				icon.classList.toggle('rotated');
+			}
 
-        </div>
-    </main>
+			// Uptime bars — thinner blocks for mobile
+			function generateUptimeBars(containerId, config) {
+				const container = document.getElementById(containerId);
+				if (!container) return;
+				const days = 90;
+				for (let i = 0; i < days; i++) {
+					const block = document.createElement('div');
+					block.style.flex = '1';
+					block.style.minWidth = '2px';
+					block.style.height = '20px';
+					block.style.borderRadius = '2px';
+					block.style.flexShrink = '0';
+					block.style.cursor = 'pointer';
+					let color = '#22c55e';
+					let title = `Dne ${days - i}: Provoz`;
+					if (config.downDays && config.downDays.includes(i)) {
+						color = '#ef4444';
+						title = `Dne ${days - i}: Výpadek`;
+					} else if (config.degradedDays && config.degradedDays.includes(i)) {
+						color = '#f97316';
+						title = `Dne ${days - i}: Degradace`;
+					}
+					block.style.backgroundColor = color;
+					block.title = title;
+					container.appendChild(block);
+				}
+			}
 
-    <!-- Bottom Navigation -->
-    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2 safe-area-bottom">
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[52px] min-h-[52px] justify-center">
-            <i class="fa-solid fa-gauge-high text-lg"></i>
-            <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-primary min-w-[52px] min-h-[52px] justify-center">
-            <i class="fa-solid fa-server text-lg"></i>
-            <span class="text-xs font-semibold">Dostupnost</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[52px] min-h-[52px] justify-center">
-            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-            <span class="text-xs">Chyby</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[52px] min-h-[52px] justify-center">
-            <i class="fa-solid fa-bolt text-lg"></i>
-            <span class="text-xs">Perf.</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[52px] min-h-[52px] justify-center">
-            <i class="fa-solid fa-gear text-lg"></i>
-            <span class="text-xs">Více</span>
-        </a>
-    </nav>
+			generateUptimeBars('bar-frontend', { downDays: [], degradedDays: [45] });
+			generateUptimeBars('bar-backend', { downDays: [12, 67], degradedDays: [23, 55] });
+			generateUptimeBars('bar-db', { downDays: [34], degradedDays: [20, 60] });
+			generateUptimeBars('bar-cf', {
+				downDays: [5, 18, 42, 71, 83],
+				degradedDays: [0, 10, 25, 50, 65, 78]
+			});
 
-    <script>
-        // Drawer
-        function openDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            drawer.classList.remove('closed');
-            drawer.classList.add('open');
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
-            overlay.classList.add('opacity-100');
-        }
-        function closeDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            drawer.classList.remove('open');
-            drawer.classList.add('closed');
-            overlay.classList.add('opacity-0', 'pointer-events-none');
-            overlay.classList.remove('opacity-100');
-        }
+			// Charts
+			window.addEventListener('load', function () {
+				try {
+					const baseLayout = {
+						margin: { t: 8, r: 8, b: 28, l: 36 },
+						plot_bgcolor: 'transparent',
+						paper_bgcolor: 'transparent',
+						font: { color: '#94a3b8', family: 'Inter, sans-serif', size: 10 },
+						xaxis: {
+							showgrid: true,
+							gridcolor: '#1e293b',
+							zeroline: false,
+							tickfont: { size: 9 },
+							nticks: 6
+						},
+						yaxis: {
+							showgrid: true,
+							gridcolor: '#1e293b',
+							zeroline: false,
+							tickfont: { size: 9 },
+							title: 'ms'
+						},
+						showlegend: false
+					};
 
-        // Accordion
-        function toggleAccordion(id) {
-            const content = document.getElementById('content-' + id);
-            const icon = document.getElementById('icon-' + id);
-            content.classList.toggle('open');
-            icon.classList.toggle('rotated');
-        }
+					const config = { responsive: true, displayModeBar: false, displaylogo: false };
 
-        // Uptime bars — thinner blocks for mobile
-        function generateUptimeBars(containerId, config) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const days = 90;
-            for (let i = 0; i < days; i++) {
-                const block = document.createElement('div');
-                block.style.flex = '1';
-                block.style.minWidth = '2px';
-                block.style.height = '20px';
-                block.style.borderRadius = '2px';
-                block.style.flexShrink = '0';
-                block.style.cursor = 'pointer';
-                let color = '#22c55e';
-                let title = `Dne ${days - i}: Provoz`;
-                if (config.downDays && config.downDays.includes(i)) {
-                    color = '#ef4444';
-                    title = `Dne ${days - i}: Výpadek`;
-                } else if (config.degradedDays && config.degradedDays.includes(i)) {
-                    color = '#f97316';
-                    title = `Dne ${days - i}: Degradace`;
-                }
-                block.style.backgroundColor = color;
-                block.title = title;
-                container.appendChild(block);
-            }
-        }
+					const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+					const frontendRT = hours.map(() => Math.random() * 30 + 80);
+					frontendRT[5] = 420;
+					const backendRT = hours.map(() => Math.random() * 60 + 220);
+					backendRT[11] = 820;
 
-        generateUptimeBars('bar-frontend', { downDays: [], degradedDays: [45] });
-        generateUptimeBars('bar-backend', { downDays: [12, 67], degradedDays: [23, 55] });
-        generateUptimeBars('bar-db', { downDays: [34], degradedDays: [20, 60] });
-        generateUptimeBars('bar-cf', { downDays: [5, 18, 42, 71, 83], degradedDays: [0, 10, 25, 50, 65, 78] });
-
-        // Charts
-        window.addEventListener('load', function () {
-            try {
-                const baseLayout = {
-                    margin: { t: 8, r: 8, b: 28, l: 36 },
-                    plot_bgcolor: 'transparent',
-                    paper_bgcolor: 'transparent',
-                    font: { color: '#94a3b8', family: 'Inter, sans-serif', size: 10 },
-                    xaxis: { showgrid: true, gridcolor: '#1e293b', zeroline: false, tickfont: { size: 9 }, nticks: 6 },
-                    yaxis: { showgrid: true, gridcolor: '#1e293b', zeroline: false, tickfont: { size: 9 }, title: 'ms' },
-                    showlegend: false
-                };
-
-                const config = { responsive: true, displayModeBar: false, displaylogo: false };
-
-                const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2,'0')}:00`);
-                const frontendRT = hours.map(() => Math.random() * 30 + 80);
-                frontendRT[5] = 420;
-                const backendRT = hours.map(() => Math.random() * 60 + 220);
-                backendRT[11] = 820;
-
-                Plotly.newPlot('chart-response-time', [
-                    {
-                        x: hours, y: frontendRT,
-                        type: 'scatter', mode: 'lines',
-                        name: 'Frontend',
-                        line: { color: '#22c55e', width: 2, shape: 'spline', smoothing: 0.8 },
-                        fill: 'tozeroy', fillcolor: 'rgba(34,197,94,0.07)'
-                    },
-                    {
-                        x: hours, y: backendRT,
-                        type: 'scatter', mode: 'lines',
-                        name: 'Backend API',
-                        line: { color: '#3b82f6', width: 2, shape: 'spline', smoothing: 0.8 },
-                        fill: 'tozeroy', fillcolor: 'rgba(59,130,246,0.07)'
-                    }
-                ], baseLayout, config);
-
-            } catch (e) {}
-        });
-    </script>
-</body>
+					Plotly.newPlot(
+						'chart-response-time',
+						[
+							{
+								x: hours,
+								y: frontendRT,
+								type: 'scatter',
+								mode: 'lines',
+								name: 'Frontend',
+								line: { color: '#22c55e', width: 2, shape: 'spline', smoothing: 0.8 },
+								fill: 'tozeroy',
+								fillcolor: 'rgba(34,197,94,0.07)'
+							},
+							{
+								x: hours,
+								y: backendRT,
+								type: 'scatter',
+								mode: 'lines',
+								name: 'Backend API',
+								line: { color: '#3b82f6', width: 2, shape: 'spline', smoothing: 0.8 },
+								fill: 'tozeroy',
+								fillcolor: 'rgba(59,130,246,0.07)'
+							}
+						],
+						baseLayout,
+						config
+					);
+				} catch (e) {}
+			});
+		</script>
+	</body>
 </html>

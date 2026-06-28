@@ -20,7 +20,6 @@ export interface ErrorTypeBreakdown {
 	count: number;
 }
 
-
 export interface TopEndpoint {
 	method: string;
 	methodClass: string;

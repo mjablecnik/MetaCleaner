@@ -46,7 +46,12 @@
 	];
 
 	const total = breakdown.reduce((s, b) => s + b.count, 0);
-	const pieColors = [chartColors.error, chartColors.secondary, chartColors.purple, chartColors.blue];
+	const pieColors = [
+		chartColors.error,
+		chartColors.secondary,
+		chartColors.purple,
+		chartColors.blue
+	];
 
 	const dataPie = [
 		{

@@ -1,675 +1,1001 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b',
-                        border: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
-    </style>
-</head>
-<body class="flex flex-col md:flex-row">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Database</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b',
+							border: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+	</head>
+	<body class="flex flex-col md:flex-row">
+		<!-- Sidebar -->
+		<aside
+			id="sidebar"
+			class="flex w-full flex-shrink-0 flex-col border-r border-[#1e293b] bg-card md:min-h-screen md:w-64"
+		>
+			<div class="flex items-center gap-3 border-b border-[#1e293b] p-6">
+				<div
+					class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+				>
+					M
+				</div>
+				<span class="text-xl font-bold tracking-tight text-textMain">Monitorly</span>
+			</div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp;
+					Pády</a
+				>
+				<p class="mt-6 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg border border-[#334155]/60 bg-[#1e293b]/80 px-3 py-2 font-medium text-textMain"
+					><i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a
+				>
+				<p class="mt-6 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-bolt w-5 text-center"></i>Performance</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky</a
+				>
+			</nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-2 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a
+				>
+			</div>
+		</aside>
 
-<!-- Sidebar -->
-<aside id="sidebar" class="w-full md:w-64 bg-card border-r border-[#1e293b] flex-shrink-0 flex flex-col md:min-h-screen">
-    <div class="p-6 border-b border-[#1e293b] flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-        <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
-    </div>
-    <nav class="p-4 flex-1 overflow-y-auto space-y-1">
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp; Pády</a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Infrastruktura</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60"><i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-6 mb-2 px-3">Analytika</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-bolt w-5 text-center"></i>Performance</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky</a>
-    </nav>
-    <div class="p-4 border-t border-[#1e293b]">
-        <a href="#" class="flex items-center gap-3 px-3 py-2 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a>
-    </div>
-</aside>
+		<!-- Main -->
+		<main class="flex-1 overflow-y-auto">
+			<!-- Header -->
+			<header
+				id="header"
+				class="sticky top-0 z-10 flex flex-col justify-between gap-4 border-b border-[#1e293b] bg-background/90 px-6 py-4 backdrop-blur-md sm:flex-row sm:items-center"
+			>
+				<div class="flex items-center gap-4">
+					<div
+						class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#3ecf8e]/30 bg-[#3ecf8e]/15"
+					>
+						<i class="fa-solid fa-database text-sm text-[#3ecf8e]"></i>
+					</div>
+					<div>
+						<h1 class="text-2xl font-bold text-textMain">Databáze (Supabase)</h1>
+						<p class="mt-0.5 text-sm text-textSec">
+							Produkční prostředí • Region: eu-west-1 • Posledních 24 hodin
+						</p>
+					</div>
+				</div>
+				<div class="flex flex-wrap items-center gap-3">
+					<div
+						class="flex items-center gap-2 rounded-lg border border-success/20 bg-success/10 px-3 py-1.5 text-sm font-medium text-success"
+					>
+						<div class="h-2 w-2 animate-pulse rounded-full bg-success"></div>
+						Databáze online
+					</div>
+					<select
+						class="rounded-lg border border-[#334155] bg-[#1e293b] px-3 py-2 text-sm text-textMain focus:outline-none"
+					>
+						<option>Posledních 24 hodin</option>
+						<option>Posledních 7 dní</option>
+						<option>Posledních 30 dní</option>
+					</select>
+					<button
+						class="rounded-lg border border-[#334155] bg-[#1e293b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2d3748]"
+					>
+						<i class="fa-solid fa-download mr-2"></i>Export
+					</button>
+				</div>
+			</header>
 
-<!-- Main -->
-<main class="flex-1 overflow-y-auto">
-    <!-- Header -->
-    <header id="header" class="sticky top-0 z-10 bg-background/90 backdrop-blur-md border-b border-[#1e293b] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-9 h-9 rounded-lg bg-[#3ecf8e]/15 border border-[#3ecf8e]/30 flex items-center justify-center">
-                <i class="fa-solid fa-database text-[#3ecf8e] text-sm"></i>
-            </div>
-            <div>
-                <h1 class="text-2xl font-bold text-textMain">Databáze (Supabase)</h1>
-                <p class="text-sm text-textSec mt-0.5">Produkční prostředí • Region: eu-west-1 • Posledních 24 hodin</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-3 flex-wrap">
-            <div class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium">
-                <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                Databáze online
-            </div>
-            <select class="bg-[#1e293b] border border-[#334155] text-sm text-textMain rounded-lg px-3 py-2 focus:outline-none">
-                <option>Posledních 24 hodin</option>
-                <option>Posledních 7 dní</option>
-                <option>Posledních 30 dní</option>
-            </select>
-            <button class="px-4 py-2 bg-[#1e293b] hover:bg-[#2d3748] text-white rounded-lg text-sm font-medium transition-colors border border-[#334155]"><i class="fa-solid fa-download mr-2"></i>Export</button>
-        </div>
-    </header>
+			<div class="mx-auto max-w-7xl space-y-6 p-6">
+				<!-- KPI Stats -->
+				<section id="db-stats" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+					<!-- Connection Pool -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-sm font-medium text-textSec">Aktivní spojení</h3>
+							<span
+								class="rounded-full bg-secondary/10 px-2 py-0.5 text-xs font-medium text-secondary"
+								>Varování</span
+							>
+						</div>
+						<div class="mb-3 flex items-end gap-2">
+							<span class="text-3xl font-bold text-textMain">87</span>
+							<span class="mb-1 text-sm text-textSec">/ 100</span>
+						</div>
+						<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+							<div class="h-full rounded-full bg-secondary" style="width: 87%"></div>
+						</div>
+						<p class="mt-2 text-xs text-textSec">Pool utilization: 87%</p>
+					</div>
+					<!-- Query latency -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-sm font-medium text-textSec">Avg. Query Latency</h3>
+							<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success"
+								>OK</span
+							>
+						</div>
+						<div class="flex items-end gap-2">
+							<span class="text-3xl font-bold text-textMain">24</span>
+							<span class="mb-1 text-sm text-textSec">ms</span>
+							<span class="mb-1 ml-1 flex items-center gap-1 text-sm text-success"
+								><i class="fa-solid fa-arrow-down text-xs"></i>-3ms</span
+							>
+						</div>
+						<p class="mt-2 text-xs text-textSec">P95: 142ms · P99: 380ms</p>
+					</div>
+					<!-- Storage -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-sm font-medium text-textSec">Využití úložiště</h3>
+							<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success"
+								>OK</span
+							>
+						</div>
+						<div class="mb-3 flex items-end gap-2">
+							<span class="text-3xl font-bold text-textMain">6.2</span>
+							<span class="mb-1 text-sm text-textSec">/ 8 GB</span>
+						</div>
+						<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+							<div class="h-full rounded-full bg-[#3b82f6]" style="width: 77%"></div>
+						</div>
+						<p class="mt-2 text-xs text-textSec">77.5% kapacity využito</p>
+					</div>
+					<!-- DB Errors -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-sm font-medium text-textSec">DB Chyby (24h)</h3>
+							<span class="rounded-full bg-error/10 px-2 py-0.5 text-xs font-medium text-error"
+								>Kritické</span
+							>
+						</div>
+						<div class="flex items-end gap-2">
+							<span class="text-3xl font-bold text-error">12</span>
+							<span class="mb-1 flex items-center gap-1 text-sm text-error"
+								><i class="fa-solid fa-arrow-up text-xs"></i>+7</span
+							>
+						</div>
+						<p class="mt-2 text-xs text-textSec">Timeout, deadlock, conn reset</p>
+					</div>
+				</section>
 
-    <div class="p-6 max-w-7xl mx-auto space-y-6">
+				<!-- Second stats row -->
+				<section id="db-stats-2" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-center gap-3">
+							<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3b82f6]/15">
+								<i class="fa-solid fa-arrow-right-to-bracket text-xs text-[#3b82f6]"></i>
+							</div>
+							<h3 class="text-sm font-medium text-textSec">Queries / min</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">1,842</div>
+						<p class="mt-1 text-xs text-textSec">Peak: 3,210 qps (10:42)</p>
+					</div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-center gap-3">
+							<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3ecf8e]/15">
+								<i class="fa-solid fa-copy text-xs text-[#3ecf8e]"></i>
+							</div>
+							<h3 class="text-sm font-medium text-textSec">Replikace lag</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">
+							18 <span class="text-sm font-normal text-textSec">ms</span>
+						</div>
+						<p class="mt-1 text-xs text-textSec">Replika: eu-west-1b · OK</p>
+					</div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-center gap-3">
+							<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#8b5cf6]/15">
+								<i class="fa-solid fa-lock text-xs text-[#8b5cf6]"></i>
+							</div>
+							<h3 class="text-sm font-medium text-textSec">Zámky (locks)</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">3</div>
+						<p class="mt-1 text-xs text-textSec">Deadlocks dnes: 1</p>
+					</div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-3 flex items-center gap-3">
+							<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-success/15">
+								<i class="fa-solid fa-shield-halved text-xs text-success"></i>
+							</div>
+							<h3 class="text-sm font-medium text-textSec">Zálohy</h3>
+						</div>
+						<div class="text-2xl font-bold text-textMain">Aktuální</div>
+						<p class="mt-1 text-xs text-textSec">Poslední: dnes 03:00 · 4.8 GB</p>
+					</div>
+				</section>
 
-        <!-- KPI Stats -->
-        <section id="db-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Connection Pool -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-textSec text-sm font-medium">Aktivní spojení</h3>
-                    <span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
-                </div>
-                <div class="flex items-end gap-2 mb-3">
-                    <span class="text-3xl font-bold text-textMain">87</span>
-                    <span class="text-sm text-textSec mb-1">/ 100</span>
-                </div>
-                <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-                    <div class="h-full bg-secondary rounded-full" style="width:87%"></div>
-                </div>
-                <p class="text-xs text-textSec mt-2">Pool utilization: 87%</p>
-            </div>
-            <!-- Query latency -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-textSec text-sm font-medium">Avg. Query Latency</h3>
-                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
-                </div>
-                <div class="flex items-end gap-2">
-                    <span class="text-3xl font-bold text-textMain">24</span>
-                    <span class="text-sm text-textSec mb-1">ms</span>
-                    <span class="text-sm text-success mb-1 flex items-center gap-1 ml-1"><i class="fa-solid fa-arrow-down text-xs"></i>-3ms</span>
-                </div>
-                <p class="text-xs text-textSec mt-2">P95: 142ms · P99: 380ms</p>
-            </div>
-            <!-- Storage -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-textSec text-sm font-medium">Využití úložiště</h3>
-                    <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
-                </div>
-                <div class="flex items-end gap-2 mb-3">
-                    <span class="text-3xl font-bold text-textMain">6.2</span>
-                    <span class="text-sm text-textSec mb-1">/ 8 GB</span>
-                </div>
-                <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
-                    <div class="h-full bg-[#3b82f6] rounded-full" style="width:77%"></div>
-                </div>
-                <p class="text-xs text-textSec mt-2">77.5% kapacity využito</p>
-            </div>
-            <!-- DB Errors -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-textSec text-sm font-medium">DB Chyby (24h)</h3>
-                    <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
-                </div>
-                <div class="flex items-end gap-2">
-                    <span class="text-3xl font-bold text-error">12</span>
-                    <span class="text-sm text-error mb-1 flex items-center gap-1"><i class="fa-solid fa-arrow-up text-xs"></i>+7</span>
-                </div>
-                <p class="text-xs text-textSec mt-2">Timeout, deadlock, conn reset</p>
-            </div>
-        </section>
+				<!-- Charts Row -->
+				<section id="db-charts" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-4 flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-semibold text-textMain">Query latency v čase</h3>
+								<p class="mt-0.5 text-xs text-textSec">Průměrná latence databázových dotazů</p>
+							</div>
+							<div class="flex gap-2">
+								<span
+									class="flex items-center gap-1.5 rounded bg-badge px-2 py-1 text-xs text-textSec"
+									><span class="inline-block h-2 w-2 rounded-full bg-[#3ecf8e]"></span>Avg</span
+								>
+								<span
+									class="flex items-center gap-1.5 rounded bg-badge px-2 py-1 text-xs text-textSec"
+									><span class="inline-block h-2 w-2 rounded-full bg-[#8b5cf6]"></span>P95</span
+								>
+							</div>
+						</div>
+						<div id="chart-latency" class="h-[220px] w-full"></div>
+					</div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-4 flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-semibold text-textMain">Aktivní spojení v čase</h3>
+								<p class="mt-0.5 text-xs text-textSec">Connection pool utilization</p>
+							</div>
+							<div
+								class="flex items-center gap-1.5 rounded border border-secondary/20 bg-secondary/10 px-2 py-1 text-xs text-secondary"
+							>
+								<i class="fa-solid fa-triangle-exclamation text-xs"></i>
+								Limit: 100
+							</div>
+						</div>
+						<div id="chart-connections" class="h-[220px] w-full"></div>
+					</div>
+				</section>
 
-        <!-- Second stats row -->
-        <section id="db-stats-2" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center">
-                        <i class="fa-solid fa-arrow-right-to-bracket text-[#3b82f6] text-xs"></i>
-                    </div>
-                    <h3 class="text-textSec text-sm font-medium">Queries / min</h3>
-                </div>
-                <div class="text-2xl font-bold text-textMain">1,842</div>
-                <p class="text-xs text-textSec mt-1">Peak: 3,210 qps (10:42)</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center">
-                        <i class="fa-solid fa-copy text-[#3ecf8e] text-xs"></i>
-                    </div>
-                    <h3 class="text-textSec text-sm font-medium">Replikace lag</h3>
-                </div>
-                <div class="text-2xl font-bold text-textMain">18 <span class="text-sm font-normal text-textSec">ms</span></div>
-                <p class="text-xs text-textSec mt-1">Replika: eu-west-1b · OK</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center">
-                        <i class="fa-solid fa-lock text-[#8b5cf6] text-xs"></i>
-                    </div>
-                    <h3 class="text-textSec text-sm font-medium">Zámky (locks)</h3>
-                </div>
-                <div class="text-2xl font-bold text-textMain">3</div>
-                <p class="text-xs text-textSec mt-1">Deadlocks dnes: 1</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center">
-                        <i class="fa-solid fa-shield-halved text-success text-xs"></i>
-                    </div>
-                    <h3 class="text-textSec text-sm font-medium">Zálohy</h3>
-                </div>
-                <div class="text-2xl font-bold text-textMain">Aktuální</div>
-                <p class="text-xs text-textSec mt-1">Poslední: dnes 03:00 · 4.8 GB</p>
-            </div>
-        </section>
+				<!-- Query Distribution + Top Slow Queries -->
+				<section id="db-queries" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+					<!-- Pie -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<h3 class="mb-1 text-lg font-semibold text-textMain">Typy dotazů</h3>
+						<p class="mb-4 text-xs text-textSec">Distribuce SQL operací</p>
+						<div id="chart-query-pie" class="h-[200px] w-full"></div>
+						<div class="mt-4 space-y-2">
+							<div class="flex items-center justify-between text-sm">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3b82f6]"></span
+									><span class="text-textSec">SELECT</span>
+								</div>
+								<span class="font-medium text-textMain">68%</span>
+							</div>
+							<div class="flex items-center justify-between text-sm">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2.5 w-2.5 rounded-full bg-[#3ecf8e]"></span
+									><span class="text-textSec">INSERT</span>
+								</div>
+								<span class="font-medium text-textMain">18%</span>
+							</div>
+							<div class="flex items-center justify-between text-sm">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2.5 w-2.5 rounded-full bg-secondary"></span
+									><span class="text-textSec">UPDATE</span>
+								</div>
+								<span class="font-medium text-textMain">11%</span>
+							</div>
+							<div class="flex items-center justify-between text-sm">
+								<div class="flex items-center gap-2">
+									<span class="inline-block h-2.5 w-2.5 rounded-full bg-error"></span
+									><span class="text-textSec">DELETE</span>
+								</div>
+								<span class="font-medium text-textMain">3%</span>
+							</div>
+						</div>
+					</div>
 
-        <!-- Charts Row -->
-        <section id="db-charts" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-textMain">Query latency v čase</h3>
-                        <p class="text-xs text-textSec mt-0.5">Průměrná latence databázových dotazů</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span>Avg</span>
-                        <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#8b5cf6] inline-block"></span>P95</span>
-                    </div>
-                </div>
-                <div id="chart-latency" class="h-[220px] w-full"></div>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-textMain">Aktivní spojení v čase</h3>
-                        <p class="text-xs text-textSec mt-0.5">Connection pool utilization</p>
-                    </div>
-                    <div class="flex items-center gap-1.5 px-2 py-1 bg-secondary/10 border border-secondary/20 rounded text-xs text-secondary">
-                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
-                        Limit: 100
-                    </div>
-                </div>
-                <div id="chart-connections" class="h-[220px] w-full"></div>
-            </div>
-        </section>
+					<!-- Slow Queries -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5 lg:col-span-2">
+						<div class="mb-4 flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-semibold text-textMain">Nejpomalejší dotazy</h3>
+								<p class="mt-0.5 text-xs text-textSec">Top 5 podle průměrné doby trvání</p>
+							</div>
+							<span class="rounded bg-badge px-2 py-1 text-xs text-textSec">Posledních 24h</span>
+						</div>
+						<div class="space-y-3">
+							<div
+								class="flex items-start gap-4 rounded-lg border border-[#334155]/40 bg-[#1e293b]/40 p-3"
+							>
+								<div class="mt-0.5 flex-shrink-0">
+									<span
+										class="rounded bg-error/20 px-2 py-0.5 font-mono text-xs font-semibold text-error"
+										>SELECT</span
+									>
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="truncate font-mono text-sm font-medium text-textMain">
+										SELECT * FROM orders JOIN users ON...
+									</p>
+									<p class="mt-0.5 text-xs text-textSec">Tabulka: orders · Volání: 842x</p>
+								</div>
+								<div class="flex-shrink-0 text-right">
+									<div class="text-sm font-bold text-error">1,240 ms</div>
+									<div class="text-xs text-textSec">avg</div>
+								</div>
+							</div>
+							<div
+								class="flex items-start gap-4 rounded-lg border border-[#334155]/40 bg-[#1e293b]/40 p-3"
+							>
+								<div class="mt-0.5 flex-shrink-0">
+									<span
+										class="rounded bg-secondary/20 px-2 py-0.5 font-mono text-xs font-semibold text-secondary"
+										>UPDATE</span
+									>
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="truncate font-mono text-sm font-medium text-textMain">
+										UPDATE products SET stock = stock - 1 WHERE...
+									</p>
+									<p class="mt-0.5 text-xs text-textSec">Tabulka: products · Volání: 1,203x</p>
+								</div>
+								<div class="flex-shrink-0 text-right">
+									<div class="text-sm font-bold text-secondary">620 ms</div>
+									<div class="text-xs text-textSec">avg</div>
+								</div>
+							</div>
+							<div
+								class="flex items-start gap-4 rounded-lg border border-[#334155]/40 bg-[#1e293b]/40 p-3"
+							>
+								<div class="mt-0.5 flex-shrink-0">
+									<span
+										class="rounded bg-[#3b82f6]/20 px-2 py-0.5 font-mono text-xs font-semibold text-[#3b82f6]"
+										>SELECT</span
+									>
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="truncate font-mono text-sm font-medium text-textMain">
+										SELECT COUNT(*) FROM analytics WHERE date >
+									</p>
+									<p class="mt-0.5 text-xs text-textSec">Tabulka: analytics · Volání: 312x</p>
+								</div>
+								<div class="flex-shrink-0 text-right">
+									<div class="text-sm font-bold text-[#3b82f6]">390 ms</div>
+									<div class="text-xs text-textSec">avg</div>
+								</div>
+							</div>
+							<div
+								class="flex items-start gap-4 rounded-lg border border-[#334155]/40 bg-[#1e293b]/40 p-3"
+							>
+								<div class="mt-0.5 flex-shrink-0">
+									<span
+										class="rounded bg-[#3ecf8e]/20 px-2 py-0.5 font-mono text-xs font-semibold text-[#3ecf8e]"
+										>INSERT</span
+									>
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="truncate font-mono text-sm font-medium text-textMain">
+										INSERT INTO events (user_id, type, meta) VALUES...
+									</p>
+									<p class="mt-0.5 text-xs text-textSec">Tabulka: events · Volání: 5,841x</p>
+								</div>
+								<div class="flex-shrink-0 text-right">
+									<div class="text-sm font-bold text-textMain">84 ms</div>
+									<div class="text-xs text-textSec">avg</div>
+								</div>
+							</div>
+							<div
+								class="flex items-start gap-4 rounded-lg border border-[#334155]/40 bg-[#1e293b]/40 p-3"
+							>
+								<div class="mt-0.5 flex-shrink-0">
+									<span
+										class="rounded bg-[#3b82f6]/20 px-2 py-0.5 font-mono text-xs font-semibold text-[#3b82f6]"
+										>SELECT</span
+									>
+								</div>
+								<div class="min-w-0 flex-1">
+									<p class="truncate font-mono text-sm font-medium text-textMain">
+										SELECT * FROM sessions WHERE expires_at > NOW()
+									</p>
+									<p class="mt-0.5 text-xs text-textSec">Tabulka: sessions · Volání: 22,100x</p>
+								</div>
+								<div class="flex-shrink-0 text-right">
+									<div class="text-sm font-bold text-textMain">31 ms</div>
+									<div class="text-xs text-textSec">avg</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 
-        <!-- Query Distribution + Top Slow Queries -->
-        <section id="db-queries" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Pie -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <h3 class="text-lg font-semibold text-textMain mb-1">Typy dotazů</h3>
-                <p class="text-xs text-textSec mb-4">Distribuce SQL operací</p>
-                <div id="chart-query-pie" class="h-[200px] w-full"></div>
-                <div class="mt-4 space-y-2">
-                    <div class="flex items-center justify-between text-sm">
-                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">SELECT</span></div>
-                        <span class="text-textMain font-medium">68%</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">INSERT</span></div>
-                        <span class="text-textMain font-medium">18%</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-secondary inline-block"></span><span class="text-textSec">UPDATE</span></div>
-                        <span class="text-textMain font-medium">11%</span>
-                    </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-error inline-block"></span><span class="text-textSec">DELETE</span></div>
-                        <span class="text-textMain font-medium">3%</span>
-                    </div>
-                </div>
-            </div>
+				<!-- Table Sizes + DB Error Log -->
+				<section id="db-tables-errors" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+					<!-- Table Sizes -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-4 flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-semibold text-textMain">Velikost tabulek</h3>
+								<p class="mt-0.5 text-xs text-textSec">Top tabulky dle velikosti</p>
+							</div>
+						</div>
+						<div class="space-y-3">
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">events</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-[#3b82f6]" style="width: 82%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">2.1 GB</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">orders</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-[#3ecf8e]" style="width: 60%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">1.5 GB</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">analytics</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-[#8b5cf6]" style="width: 48%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">1.2 GB</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">users</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-secondary" style="width: 30%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">780 MB</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">sessions</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-[#3b82f6]/60" style="width: 18%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">460 MB</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="w-24 truncate font-mono text-xs text-textSec">products</div>
+								<div class="h-2 flex-1 overflow-hidden rounded-full bg-[#1e293b]">
+									<div class="h-full rounded-full bg-[#3b82f6]/40" style="width: 8%"></div>
+								</div>
+								<span class="w-12 text-right text-xs font-medium text-textMain">210 MB</span>
+							</div>
+						</div>
 
-            <!-- Slow Queries -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5 lg:col-span-2">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-textMain">Nejpomalejší dotazy</h3>
-                        <p class="text-xs text-textSec mt-0.5">Top 5 podle průměrné doby trvání</p>
-                    </div>
-                    <span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Posledních 24h</span>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex-shrink-0 mt-0.5">
-                            <span class="px-2 py-0.5 bg-error/20 text-error text-xs font-mono rounded font-semibold">SELECT</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-textMain text-sm font-medium font-mono truncate">SELECT * FROM orders JOIN users ON...</p>
-                            <p class="text-xs text-textSec mt-0.5">Tabulka: orders · Volání: 842x</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            <div class="text-error font-bold text-sm">1,240 ms</div>
-                            <div class="text-xs text-textSec">avg</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex-shrink-0 mt-0.5">
-                            <span class="px-2 py-0.5 bg-secondary/20 text-secondary text-xs font-mono rounded font-semibold">UPDATE</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-textMain text-sm font-medium font-mono truncate">UPDATE products SET stock = stock - 1 WHERE...</p>
-                            <p class="text-xs text-textSec mt-0.5">Tabulka: products · Volání: 1,203x</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            <div class="text-secondary font-bold text-sm">620 ms</div>
-                            <div class="text-xs text-textSec">avg</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex-shrink-0 mt-0.5">
-                            <span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold">SELECT</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-textMain text-sm font-medium font-mono truncate">SELECT COUNT(*) FROM analytics WHERE date ></p>
-                            <p class="text-xs text-textSec mt-0.5">Tabulka: analytics · Volání: 312x</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            <div class="text-[#3b82f6] font-bold text-sm">390 ms</div>
-                            <div class="text-xs text-textSec">avg</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex-shrink-0 mt-0.5">
-                            <span class="px-2 py-0.5 bg-[#3ecf8e]/20 text-[#3ecf8e] text-xs font-mono rounded font-semibold">INSERT</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-textMain text-sm font-medium font-mono truncate">INSERT INTO events (user_id, type, meta) VALUES...</p>
-                            <p class="text-xs text-textSec mt-0.5">Tabulka: events · Volání: 5,841x</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            <div class="text-textMain font-bold text-sm">84 ms</div>
-                            <div class="text-xs text-textSec">avg</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4 p-3 rounded-lg bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex-shrink-0 mt-0.5">
-                            <span class="px-2 py-0.5 bg-[#3b82f6]/20 text-[#3b82f6] text-xs font-mono rounded font-semibold">SELECT</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-textMain text-sm font-medium font-mono truncate">SELECT * FROM sessions WHERE expires_at > NOW()</p>
-                            <p class="text-xs text-textSec mt-0.5">Tabulka: sessions · Volání: 22,100x</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            <div class="text-textMain font-bold text-sm">31 ms</div>
-                            <div class="text-xs text-textSec">avg</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+						<!-- Storage summary -->
+						<div class="mt-5 border-t border-[#1e293b] pt-4">
+							<div class="mb-2 flex justify-between text-xs text-textSec">
+								<span>Celkové úložiště</span>
+								<span class="font-semibold text-textMain">6.2 GB / 8 GB</span>
+							</div>
+							<div class="h-2.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+								<div
+									class="h-full rounded-full"
+									style="width: 77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"
+								></div>
+							</div>
+							<p class="mt-2 text-xs text-textSec">
+								Odhadované zaplnění při současném tempu:
+								<span class="font-medium text-secondary">~14 dní</span>
+							</p>
+						</div>
+					</div>
 
-        <!-- Table Sizes + DB Error Log -->
-        <section id="db-tables-errors" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					<!-- DB Queries over time chart -->
+					<div class="rounded-xl border border-[#1e293b] bg-card p-5">
+						<div class="mb-4 flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-semibold text-textMain">Queries za minutu</h3>
+								<p class="mt-0.5 text-xs text-textSec">Objem SQL dotazů v průběhu dne</p>
+							</div>
+						</div>
+						<div id="chart-qps" class="h-[220px] w-full"></div>
+					</div>
+				</section>
 
-            <!-- Table Sizes -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-textMain">Velikost tabulek</h3>
-                        <p class="text-xs text-textSec mt-0.5">Top tabulky dle velikosti</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">events</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-[#3b82f6] rounded-full" style="width:82%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">2.1 GB</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">orders</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-[#3ecf8e] rounded-full" style="width:60%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">1.5 GB</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">analytics</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-[#8b5cf6] rounded-full" style="width:48%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">1.2 GB</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">users</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-secondary rounded-full" style="width:30%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">780 MB</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">sessions</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-[#3b82f6]/60 rounded-full" style="width:18%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">460 MB</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-24 text-xs text-textSec font-mono truncate">products</div>
-                        <div class="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                            <div class="h-full bg-[#3b82f6]/40 rounded-full" style="width:8%"></div>
-                        </div>
-                        <span class="text-xs text-textMain font-medium w-12 text-right">210 MB</span>
-                    </div>
-                </div>
+				<!-- DB Error Log -->
+				<section id="db-error-log" class="rounded-xl border border-[#1e293b] bg-card p-5">
+					<div
+						class="mb-5 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
+					>
+						<div>
+							<h3 class="text-lg font-semibold text-textMain">Databázový error log</h3>
+							<p class="mt-0.5 text-xs text-textSec">Posledních 24 hodin · 12 záznamů</p>
+						</div>
+						<div class="flex flex-wrap gap-3">
+							<div class="flex overflow-hidden rounded-lg border border-[#334155]">
+								<button class="bg-error/20 px-3 py-1.5 text-xs font-medium text-error">
+									Všechny
+								</button>
+								<button
+									class="bg-transparent px-3 py-1.5 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									Timeout
+								</button>
+								<button
+									class="bg-transparent px-3 py-1.5 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									Deadlock
+								</button>
+								<button
+									class="bg-transparent px-3 py-1.5 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									Conn
+								</button>
+							</div>
+							<div
+								class="flex items-center gap-2 rounded-lg border border-[#334155] bg-[#1e293b] px-3 py-1.5"
+							>
+								<i class="fa-solid fa-magnifying-glass text-xs text-textSec"></i>
+								<input
+									type="text"
+									placeholder="Hledat..."
+									class="w-32 bg-transparent text-sm text-textMain placeholder-textSec outline-none"
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="w-full text-sm">
+							<thead>
+								<tr class="border-b border-[#1e293b]">
+									<th
+										class="pr-4 pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Čas
+									</th>
+									<th
+										class="pr-4 pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Typ
+									</th>
+									<th
+										class="pr-4 pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Zpráva
+									</th>
+									<th
+										class="pr-4 pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Tabulka
+									</th>
+									<th
+										class="pr-4 pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Trvání
+									</th>
+									<th
+										class="pb-3 text-left text-xs font-semibold tracking-wider text-textSec uppercase"
+									>
+										Status
+									</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-[#1e293b]/60">
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										14:32:11
+									</td>
+									<td class="py-3 pr-4">
+										<span class="rounded bg-error/15 px-2 py-0.5 text-xs font-medium text-error"
+											>Timeout</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Connection pool exhausted – max 100 connections reached
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">orders</td>
+									<td class="py-3 pr-4 font-mono text-xs text-error">30,000 ms</td>
+									<td class="py-3">
+										<span class="rounded bg-error/10 px-2 py-0.5 text-xs text-error">Aktivní</span>
+									</td>
+								</tr>
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										13:58:04
+									</td>
+									<td class="py-3 pr-4">
+										<span
+											class="rounded bg-[#8b5cf6]/15 px-2 py-0.5 text-xs font-medium text-[#8b5cf6]"
+											>Deadlock</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Deadlock detected between transactions T1 and T2
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">products</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">—</td>
+									<td class="py-3">
+										<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+											>Vyřešeno</span
+										>
+									</td>
+								</tr>
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										13:21:39
+									</td>
+									<td class="py-3 pr-4">
+										<span
+											class="rounded bg-secondary/15 px-2 py-0.5 text-xs font-medium text-secondary"
+											>Conn</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Connection reset by peer during large SELECT query
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">analytics</td>
+									<td class="py-3 pr-4 font-mono text-xs text-secondary">8,200 ms</td>
+									<td class="py-3">
+										<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+											>Vyřešeno</span
+										>
+									</td>
+								</tr>
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										12:44:17
+									</td>
+									<td class="py-3 pr-4">
+										<span class="rounded bg-error/15 px-2 py-0.5 text-xs font-medium text-error"
+											>Timeout</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Query timeout on full table scan – missing index on user_id
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">events</td>
+									<td class="py-3 pr-4 font-mono text-xs text-error">30,000 ms</td>
+									<td class="py-3">
+										<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+											>Vyřešeno</span
+										>
+									</td>
+								</tr>
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										11:05:52
+									</td>
+									<td class="py-3 pr-4">
+										<span
+											class="rounded bg-[#8b5cf6]/15 px-2 py-0.5 text-xs font-medium text-[#8b5cf6]"
+											>Lock</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Row-level lock wait exceeded 10s on UPDATE statement
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">orders</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">10,140 ms</td>
+									<td class="py-3">
+										<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+											>Vyřešeno</span
+										>
+									</td>
+								</tr>
+								<tr class="transition-colors hover:bg-[#1e293b]/30">
+									<td class="py-3 pr-4 font-mono text-xs whitespace-nowrap text-textSec">
+										09:30:08
+									</td>
+									<td class="py-3 pr-4">
+										<span
+											class="rounded bg-[#3b82f6]/15 px-2 py-0.5 text-xs font-medium text-[#3b82f6]"
+											>Repl</span
+										>
+									</td>
+									<td class="max-w-xs truncate py-3 pr-4 text-textMain">
+										Replication lag spike to 480ms detected on standby replica
+									</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">—</td>
+									<td class="py-3 pr-4 font-mono text-xs text-textSec">480 ms lag</td>
+									<td class="py-3">
+										<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+											>Vyřešeno</span
+										>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+		</main>
 
-                <!-- Storage summary -->
-                <div class="mt-5 pt-4 border-t border-[#1e293b]">
-                    <div class="flex justify-between text-xs text-textSec mb-2">
-                        <span>Celkové úložiště</span>
-                        <span class="text-textMain font-semibold">6.2 GB / 8 GB</span>
-                    </div>
-                    <div class="w-full h-2.5 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full rounded-full" style="width:77%; background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)"></div>
-                    </div>
-                    <p class="text-xs text-textSec mt-2">Odhadované zaplnění při současném tempu: <span class="text-secondary font-medium">~14 dní</span></p>
-                </div>
-            </div>
+		<script>
+			window.addEventListener('load', function () {
+				const bgCard = '#111d33';
+				const bgBadge = '#1e293b';
+				const textSec = '#94a3b8';
+				const errorColor = '#ef4444';
+				const secondaryColor = '#f97316';
+				const purpleColor = '#8b5cf6';
+				const blueColor = '#3b82f6';
+				const greenColor = '#3ecf8e';
+				const gridColor = 'rgba(30,41,59,0.8)';
 
-            <!-- DB Queries over time chart -->
-            <div class="bg-card border border-[#1e293b] rounded-xl p-5">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-textMain">Queries za minutu</h3>
-                        <p class="text-xs text-textSec mt-0.5">Objem SQL dotazů v průběhu dne</p>
-                    </div>
-                </div>
-                <div id="chart-qps" class="h-[220px] w-full"></div>
-            </div>
-        </section>
+				const commonLayout = {
+					paper_bgcolor: bgCard,
+					plot_bgcolor: bgCard,
+					font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
+					margin: { t: 10, r: 10, b: 40, l: 45 },
+					showlegend: false,
+					xaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 10 },
+						zeroline: false
+					},
+					yaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 10 },
+						zeroline: false
+					}
+				};
 
-        <!-- DB Error Log -->
-        <section id="db-error-log" class="bg-card border border-[#1e293b] rounded-xl p-5">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
-                <div>
-                    <h3 class="text-lg font-semibold text-textMain">Databázový error log</h3>
-                    <p class="text-xs text-textSec mt-0.5">Posledních 24 hodin · 12 záznamů</p>
-                </div>
-                <div class="flex gap-3 flex-wrap">
-                    <div class="flex rounded-lg overflow-hidden border border-[#334155]">
-                        <button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium">Všechny</button>
-                        <button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Timeout</button>
-                        <button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Deadlock</button>
-                        <button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Conn</button>
-                    </div>
-                    <div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5">
-                        <i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-                        <input type="text" placeholder="Hledat..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none w-32">
-                    </div>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-[#1e293b]">
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Čas</th>
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Typ</th>
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Zpráva</th>
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Tabulka</th>
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3 pr-4">Trvání</th>
-                            <th class="text-left text-xs text-textSec font-semibold uppercase tracking-wider pb-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#1e293b]/60">
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">14:32:11</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Timeout</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection pool exhausted – max 100 connections reached</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
-                            <td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span></td>
-                        </tr>
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:58:04</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Deadlock</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Deadlock detected between transactions T1 and T2</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">products</td>
-                            <td class="py-3 pr-4 text-textSec text-xs font-mono">—</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
-                        </tr>
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">13:21:39</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Conn</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Connection reset by peer during large SELECT query</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">analytics</td>
-                            <td class="py-3 pr-4 text-secondary text-xs font-mono">8,200 ms</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
-                        </tr>
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">12:44:17</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Timeout</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Query timeout on full table scan – missing index on user_id</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">events</td>
-                            <td class="py-3 pr-4 text-error text-xs font-mono">30,000 ms</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
-                        </tr>
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">11:05:52</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Lock</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Row-level lock wait exceeded 10s on UPDATE statement</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">orders</td>
-                            <td class="py-3 pr-4 text-textSec text-xs font-mono">10,140 ms</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
-                        </tr>
-                        <tr class="hover:bg-[#1e293b]/30 transition-colors">
-                            <td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">09:30:08</td>
-                            <td class="py-3 pr-4"><span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Repl</span></td>
-                            <td class="py-3 pr-4 text-textMain max-w-xs truncate">Replication lag spike to 480ms detected on standby replica</td>
-                            <td class="py-3 pr-4 text-textSec font-mono text-xs">—</td>
-                            <td class="py-3 pr-4 text-textSec text-xs font-mono">480 ms lag</td>
-                            <td class="py-3"><span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+				const config = { responsive: true, displayModeBar: false, displaylogo: false };
 
-    </div>
-</main>
+				const hours = [
+					'00:00',
+					'02:00',
+					'04:00',
+					'06:00',
+					'08:00',
+					'10:00',
+					'12:00',
+					'14:00',
+					'16:00',
+					'18:00',
+					'20:00',
+					'22:00'
+				];
 
-<script>
-window.addEventListener('load', function () {
+				// ── Chart 1: Query Latency ──────────────────────────────────────────────
+				try {
+					const avgLatency = [18, 16, 20, 22, 28, 35, 42, 55, 38, 30, 26, 22];
+					const p95Latency = [80, 70, 90, 100, 130, 160, 200, 280, 175, 140, 115, 95];
 
-    const bgCard = '#111d33';
-    const bgBadge = '#1e293b';
-    const textSec = '#94a3b8';
-    const errorColor = '#ef4444';
-    const secondaryColor = '#f97316';
-    const purpleColor = '#8b5cf6';
-    const blueColor = '#3b82f6';
-    const greenColor = '#3ecf8e';
-    const gridColor = 'rgba(30,41,59,0.8)';
+					Plotly.newPlot(
+						'chart-latency',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'P95',
+								x: hours,
+								y: p95Latency,
+								line: { color: purpleColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(139,92,246,0.08)',
+								hovertemplate: '<b>%{x}</b><br>P95: %{y}ms<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'Avg',
+								x: hours,
+								y: avgLatency,
+								line: { color: greenColor, width: 2.5, shape: 'spline' },
+								fillcolor: 'rgba(62,207,142,0.10)',
+								hovertemplate: '<b>%{x}</b><br>Avg: %{y}ms<extra></extra>'
+							}
+						],
+						{
+							...commonLayout,
+							yaxis: {
+								...commonLayout.yaxis,
+								title: { text: 'ms', font: { size: 10, color: textSec } }
+							}
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-latency').innerHTML =
+						'<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+				}
 
-    const commonLayout = {
-        paper_bgcolor: bgCard,
-        plot_bgcolor: bgCard,
-        font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
-        margin: { t: 10, r: 10, b: 40, l: 45 },
-        showlegend: false,
-        xaxis: {
-            gridcolor: gridColor,
-            linecolor: gridColor,
-            tickcolor: 'transparent',
-            tickfont: { color: textSec, size: 10 },
-            zeroline: false
-        },
-        yaxis: {
-            gridcolor: gridColor,
-            linecolor: gridColor,
-            tickcolor: 'transparent',
-            tickfont: { color: textSec, size: 10 },
-            zeroline: false
-        }
-    };
+				// ── Chart 2: Active Connections ─────────────────────────────────────────
+				try {
+					const conns = [32, 28, 35, 42, 58, 72, 81, 87, 76, 68, 59, 50];
 
-    const config = { responsive: true, displayModeBar: false, displaylogo: false };
+					Plotly.newPlot(
+						'chart-connections',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: conns,
+								line: { color: secondaryColor, width: 2.5, shape: 'spline' },
+								fillcolor: 'rgba(249,115,22,0.10)',
+								hovertemplate: '<b>%{x}</b><br>Spojení: %{y}<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								x: hours,
+								y: Array(hours.length).fill(100),
+								line: { color: errorColor, width: 1.5, dash: 'dot' },
+								hovertemplate: 'Limit: 100<extra></extra>'
+							}
+						],
+						{
+							...commonLayout,
+							yaxis: { ...commonLayout.yaxis, range: [0, 115] }
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-connections').innerHTML =
+						'<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+				}
 
-    const hours = ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'];
+				// ── Chart 3: Query Type Pie ─────────────────────────────────────────────
+				try {
+					Plotly.newPlot(
+						'chart-query-pie',
+						[
+							{
+								type: 'pie',
+								labels: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+								values: [68, 18, 11, 3],
+								hole: 0.6,
+								marker: {
+									colors: [blueColor, greenColor, secondaryColor, errorColor],
+									line: { color: bgCard, width: 2 }
+								},
+								textinfo: 'none',
+								hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
+								direction: 'clockwise'
+							}
+						],
+						{
+							paper_bgcolor: bgCard,
+							plot_bgcolor: bgCard,
+							font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
+							margin: { t: 5, r: 5, b: 5, l: 5 },
+							showlegend: false,
+							annotations: [
+								{
+									text: '<b style="font-size:18px;color:#fff">68%</b><br><span style="font-size:10px;color:#94a3b8">SELECT</span>',
+									x: 0.5,
+									y: 0.5,
+									xanchor: 'center',
+									yanchor: 'middle',
+									showarrow: false,
+									font: { size: 13, color: '#ffffff' }
+								}
+							]
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-query-pie').innerHTML =
+						'<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+				}
 
-    // ── Chart 1: Query Latency ──────────────────────────────────────────────
-    try {
-        const avgLatency = [18, 16, 20, 22, 28, 35, 42, 55, 38, 30, 26, 22];
-        const p95Latency = [80, 70, 90, 100, 130, 160, 200, 280, 175, 140, 115, 95];
+				// ── Chart 4: Queries per minute ────────────────────────────────────────
+				try {
+					const qps = [420, 380, 510, 640, 980, 1420, 1840, 2100, 1780, 1540, 1200, 860];
 
-        Plotly.newPlot('chart-latency', [
-            {
-                type: 'scatter',
-                mode: 'lines',
-                fill: 'tozeroy',
-                name: 'P95',
-                x: hours,
-                y: p95Latency,
-                line: { color: purpleColor, width: 2, shape: 'spline' },
-                fillcolor: 'rgba(139,92,246,0.08)',
-                hovertemplate: '<b>%{x}</b><br>P95: %{y}ms<extra></extra>'
-            },
-            {
-                type: 'scatter',
-                mode: 'lines',
-                fill: 'tozeroy',
-                name: 'Avg',
-                x: hours,
-                y: avgLatency,
-                line: { color: greenColor, width: 2.5, shape: 'spline' },
-                fillcolor: 'rgba(62,207,142,0.10)',
-                hovertemplate: '<b>%{x}</b><br>Avg: %{y}ms<extra></extra>'
-            }
-        ], {
-            ...commonLayout,
-            yaxis: { ...commonLayout.yaxis, title: { text: 'ms', font: { size: 10, color: textSec } } }
-        }, config);
-    } catch(e) {
-        document.getElementById('chart-latency').innerHTML = '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
-    }
-
-    // ── Chart 2: Active Connections ─────────────────────────────────────────
-    try {
-        const conns = [32, 28, 35, 42, 58, 72, 81, 87, 76, 68, 59, 50];
-
-        Plotly.newPlot('chart-connections', [
-            {
-                type: 'scatter',
-                mode: 'lines',
-                fill: 'tozeroy',
-                x: hours,
-                y: conns,
-                line: { color: secondaryColor, width: 2.5, shape: 'spline' },
-                fillcolor: 'rgba(249,115,22,0.10)',
-                hovertemplate: '<b>%{x}</b><br>Spojení: %{y}<extra></extra>'
-            },
-            {
-                type: 'scatter',
-                mode: 'lines',
-                x: hours,
-                y: Array(hours.length).fill(100),
-                line: { color: errorColor, width: 1.5, dash: 'dot' },
-                hovertemplate: 'Limit: 100<extra></extra>'
-            }
-        ], {
-            ...commonLayout,
-            yaxis: { ...commonLayout.yaxis, range: [0, 115] }
-        }, config);
-    } catch(e) {
-        document.getElementById('chart-connections').innerHTML = '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
-    }
-
-    // ── Chart 3: Query Type Pie ─────────────────────────────────────────────
-    try {
-        Plotly.newPlot('chart-query-pie', [
-            {
-                type: 'pie',
-                labels: ['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
-                values: [68, 18, 11, 3],
-                hole: 0.60,
-                marker: {
-                    colors: [blueColor, greenColor, secondaryColor, errorColor],
-                    line: { color: bgCard, width: 2 }
-                },
-                textinfo: 'none',
-                hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
-                direction: 'clockwise'
-            }
-        ], {
-            paper_bgcolor: bgCard,
-            plot_bgcolor: bgCard,
-            font: { family: 'Inter, sans-serif', color: textSec, size: 11 },
-            margin: { t: 5, r: 5, b: 5, l: 5 },
-            showlegend: false,
-            annotations: [
-                {
-                    text: '<b style="font-size:18px;color:#fff">68%</b><br><span style="font-size:10px;color:#94a3b8">SELECT</span>',
-                    x: 0.5, y: 0.5,
-                    xanchor: 'center', yanchor: 'middle',
-                    showarrow: false,
-                    font: { size: 13, color: '#ffffff' }
-                }
-            ]
-        }, config);
-    } catch(e) {
-        document.getElementById('chart-query-pie').innerHTML = '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
-    }
-
-    // ── Chart 4: Queries per minute ────────────────────────────────────────
-    try {
-        const qps = [420, 380, 510, 640, 980, 1420, 1840, 2100, 1780, 1540, 1200, 860];
-
-        Plotly.newPlot('chart-qps', [
-            {
-                type: 'bar',
-                x: hours,
-                y: qps,
-                marker: {
-                    color: qps.map(v => v > 1800 ? secondaryColor : blueColor),
-                    opacity: 0.85
-                },
-                hovertemplate: '<b>%{x}</b><br>%{y} queries/min<extra></extra>'
-            }
-        ], {
-            ...commonLayout,
-            bargap: 0.3,
-            yaxis: { ...commonLayout.yaxis, title: { text: 'q/min', font: { size: 10, color: textSec } } }
-        }, config);
-    } catch(e) {
-        document.getElementById('chart-qps').innerHTML = '<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
-    }
-
-});
-</script>
-</body>
+					Plotly.newPlot(
+						'chart-qps',
+						[
+							{
+								type: 'bar',
+								x: hours,
+								y: qps,
+								marker: {
+									color: qps.map((v) => (v > 1800 ? secondaryColor : blueColor)),
+									opacity: 0.85
+								},
+								hovertemplate: '<b>%{x}</b><br>%{y} queries/min<extra></extra>'
+							}
+						],
+						{
+							...commonLayout,
+							bargap: 0.3,
+							yaxis: {
+								...commonLayout.yaxis,
+								title: { text: 'q/min', font: { size: 10, color: textSec } }
+							}
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-qps').innerHTML =
+						'<div class="flex items-center justify-center h-full text-textSec text-sm">Graf není dostupný</div>';
+				}
+			});
+		</script>
+	</body>
 </html>

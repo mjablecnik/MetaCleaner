@@ -23,6 +23,9 @@
 
 <Story name="Empty" args={{ value: 0, label: 'Cache Hit Rate', showPercent: true }} />
 
-<Story name="CustomColor" args={{ value: 45, color: 'bg-blue', label: 'CPU Usage', showPercent: true }} />
+<Story
+	name="CustomColor"
+	args={{ value: 45, color: 'bg-blue', label: 'CPU Usage', showPercent: true }}
+/>
 
 <Story name="SmallHeight" args={{ value: 80, height: 'sm', color: 'bg-success' }} />

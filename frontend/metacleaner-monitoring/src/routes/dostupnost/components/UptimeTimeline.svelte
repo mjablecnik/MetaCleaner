@@ -71,9 +71,7 @@
 				<i class="fa-solid {card.icon} text-textSec text-xs"></i>
 				<span class="text-sm font-medium text-textMain">{card.name} ({card.provider})</span>
 			</div>
-			<span class="text-sm font-semibold {valueClass}"
-				>{card.uptimeDisplay}% uptime</span
-			>
+			<span class="text-sm font-semibold {valueClass}">{card.uptimeDisplay}% uptime</span>
 		</div>
 		<div class="flex gap-0.5 items-end" id={containerId}></div>
 		<div class="flex justify-between mt-1">

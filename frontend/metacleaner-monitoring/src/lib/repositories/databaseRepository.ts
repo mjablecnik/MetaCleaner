@@ -156,7 +156,7 @@ export function getSlowestQueries(): SlowQuery[] {
 		{
 			type: 'SELECT',
 			typeClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
-			sql: "SELECT * FROM sessions WHERE expires_at > NOW()",
+			sql: 'SELECT * FROM sessions WHERE expires_at > NOW()',
 			table: 'sessions',
 			calls: '22,100x',
 			avgMs: 31,

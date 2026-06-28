@@ -1,391 +1,707 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Users</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
 
-        /* Slide-over drawer */
-        #drawer-overlay { display: none; }
-        #drawer-overlay.open { display: block; }
-        #nav-drawer { transform: translateX(-100%); transition: transform 0.3s ease; }
-        #nav-drawer.open { transform: translateX(0); }
+			/* Slide-over drawer */
+			#drawer-overlay {
+				display: none;
+			}
+			#drawer-overlay.open {
+				display: block;
+			}
+			#nav-drawer {
+				transform: translateX(-100%);
+				transition: transform 0.3s ease;
+			}
+			#nav-drawer.open {
+				transform: translateX(0);
+			}
 
-        /* Tab scrollable */
-        #tab-bar { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        #tab-bar::-webkit-scrollbar { display: none; }
-    </style>
-</head>
-<body class="bg-background min-h-screen flex flex-col">
+			/* Tab scrollable */
+			#tab-bar {
+				-webkit-overflow-scrolling: touch;
+				scrollbar-width: none;
+			}
+			#tab-bar::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+	</head>
+	<body class="flex min-h-screen flex-col bg-background">
+		<!-- Drawer Overlay -->
+		<div
+			id="drawer-overlay"
+			class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+			onclick="closeDrawer()"
+		></div>
 
-    <!-- Drawer Overlay -->
-    <div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onclick="closeDrawer()"></div>
+		<!-- Slide-over Nav Drawer -->
+		<div
+			id="nav-drawer"
+			class="fixed top-0 left-0 z-50 flex h-full w-72 flex-col border-r border-[#1e293b] bg-card"
+		>
+			<div class="flex items-center justify-between border-b border-[#1e293b] p-5">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-lg font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+				<button
+					onclick="closeDrawer()"
+					class="flex h-9 w-9 items-center justify-center rounded-lg bg-badge text-textSec transition-colors hover:text-textMain"
+				>
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
 
-    <!-- Slide-over Nav Drawer -->
-    <div id="nav-drawer" class="fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col">
-        <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-                <span class="text-lg font-bold text-textMain tracking-tight">Monitorly</span>
-            </div>
-            <button onclick="closeDrawer()" class="w-9 h-9 flex items-center justify-center rounded-lg bg-badge text-textSec hover:text-textMain transition-colors">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gauge-high w-5 text-center"></i>
+					Dashboard
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-server w-5 text-center"></i>
+					Dostupnost
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
+					Chyby & Pády
+				</a>
 
-        <nav class="p-4 flex-1 overflow-y-auto space-y-1">
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-gauge-high w-5 text-center"></i>
-                Dashboard
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-server w-5 text-center"></i>
-                Dostupnost
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
-                Chyby & Pády
-            </a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-database w-5 text-center"></i>
+					Databáze (Supabase)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-microchip w-5 text-center"></i>
+					Runtime (Fly.io)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-cloud w-5 text-center"></i>
+					Edge (Cloudflare)
+				</a>
 
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-database w-5 text-center"></i>
-                Databáze (Supabase)
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-microchip w-5 text-center"></i>
-                Runtime (Fly.io)
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-cloud w-5 text-center"></i>
-                Edge (Cloudflare)
-            </a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-bolt w-5 text-center"></i>
+					Performance
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-shield-halved w-5 text-center"></i>
+					Security Signály
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-chart-line w-5 text-center"></i>
+					Business Metriky
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg bg-[#1e293b] px-3 py-3 font-medium text-textMain"
+				>
+					<i class="fa-solid fa-users w-5 text-center text-primary"></i>
+					Uživatelé
+				</a>
+			</nav>
 
-            <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-bolt w-5 text-center"></i>
-                Performance
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-shield-halved w-5 text-center"></i>
-                Security Signály
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-chart-line w-5 text-center"></i>
-                Business Metriky
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b] text-textMain rounded-lg font-medium">
-                <i class="fa-solid fa-users w-5 text-center text-primary"></i>
-                Uživatelé
-            </a>
-        </nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gear w-5 text-center"></i>
+					Nastavení
+				</a>
+			</div>
+		</div>
 
-        <div class="p-4 border-t border-[#1e293b]">
-            <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-                <i class="fa-solid fa-gear w-5 text-center"></i>
-                Nastavení
-            </a>
-        </div>
-    </div>
+		<!-- Top Header Bar -->
+		<header
+			id="header"
+			class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[#1e293b] bg-background/95 px-4 py-3 backdrop-blur-md"
+		>
+			<div class="flex items-center gap-3">
+				<button
+					onclick="openDrawer()"
+					class="flex h-10 w-10 items-center justify-center rounded-lg bg-badge text-textSec transition-colors hover:text-textMain"
+				>
+					<i class="fa-solid fa-bars"></i>
+				</button>
+				<div class="flex items-center gap-2">
+					<div
+						class="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-base font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+			</div>
+			<div class="flex items-center gap-2">
+				<button
+					id="search-toggle"
+					onclick="toggleSearch()"
+					class="flex h-10 w-10 items-center justify-center rounded-lg border border-[#334155] bg-badge text-textSec transition-colors hover:text-textMain"
+				>
+					<i class="fa-solid fa-search text-sm"></i>
+				</button>
+				<button
+					class="flex h-10 w-10 items-center justify-center rounded-lg border border-[#334155] bg-badge text-textSec transition-colors hover:text-textMain"
+				>
+					<i class="fa-solid fa-download text-sm"></i>
+				</button>
+			</div>
+		</header>
 
-    <!-- Top Header Bar -->
-    <header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-            <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge text-textSec hover:text-textMain transition-colors">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white font-bold text-xs">M</div>
-                <span class="text-base font-bold text-textMain tracking-tight">Monitorly</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <button id="search-toggle" onclick="toggleSearch()" class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-[#334155] text-textSec hover:text-textMain transition-colors">
-                <i class="fa-solid fa-search text-sm"></i>
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-[#334155] text-textSec hover:text-textMain transition-colors">
-                <i class="fa-solid fa-download text-sm"></i>
-            </button>
-        </div>
-    </header>
+		<!-- Expandable Search Bar -->
+		<div
+			id="search-bar"
+			class="hidden border-b border-[#1e293b] bg-background/95 px-4 py-3 backdrop-blur-md"
+		>
+			<div class="relative">
+				<i
+					class="fa-solid fa-search absolute top-1/2 left-3 -translate-y-1/2 text-sm text-textSec"
+				></i>
+				<input
+					type="text"
+					placeholder="Hledat uživatele..."
+					class="w-full rounded-xl border border-[#334155] bg-[#1e293b] py-3 pr-10 pl-9 text-sm text-white placeholder-textSec focus:border-primary focus:outline-none"
+				/>
+				<button
+					onclick="toggleSearch()"
+					class="absolute top-1/2 right-3 -translate-y-1/2 text-textSec hover:text-textMain"
+				>
+					<i class="fa-solid fa-xmark text-sm"></i>
+				</button>
+			</div>
+		</div>
 
-    <!-- Expandable Search Bar -->
-    <div id="search-bar" class="hidden bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3">
-        <div class="relative">
-            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"></i>
-            <input type="text" placeholder="Hledat uživatele..." class="w-full pl-9 pr-10 py-3 bg-[#1e293b] border border-[#334155] text-white text-sm rounded-xl focus:outline-none focus:border-primary placeholder-textSec">
-            <button onclick="toggleSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-textSec hover:text-textMain">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-        </div>
-    </div>
+		<!-- Page Title -->
+		<div class="px-4 pt-5 pb-2">
+			<h1 class="text-xl font-bold text-textMain">Uživatelé</h1>
+			<p class="mt-0.5 text-xs text-textSec">
+				Přihlášení a registrovaní uživatelé • Posledních 30 dní
+			</p>
+		</div>
 
-    <!-- Page Title -->
-    <div class="px-4 pt-5 pb-2">
-        <h1 class="text-xl font-bold text-textMain">Uživatelé</h1>
-        <p class="text-xs text-textSec mt-0.5">Přihlášení a registrovaní uživatelé • Posledních 30 dní</p>
-    </div>
+		<!-- Main Scrollable Content -->
+		<main id="main-content" class="flex-1 overflow-y-auto pb-24">
+			<div class="space-y-4 px-4">
+				<!-- Stats Cards — 2x2 Grid -->
+				<section id="user-stats" class="grid grid-cols-2 gap-3">
+					<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-xs leading-tight font-medium text-textSec">Celkem uživatelů</h3>
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10"
+							>
+								<i class="fa-solid fa-users text-xs text-primary"></i>
+							</div>
+						</div>
+						<div class="text-2xl font-bold text-textMain">12 847</div>
+						<div class="mt-1.5 flex items-center gap-1">
+							<i class="fa-solid fa-arrow-trend-up text-xs text-success"></i>
+							<span class="text-xs font-medium text-success">+8.4%</span>
+						</div>
+					</div>
 
-    <!-- Main Scrollable Content -->
-    <main id="main-content" class="flex-1 overflow-y-auto pb-24">
-        <div class="px-4 space-y-4">
+					<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-xs leading-tight font-medium text-textSec">Právě přihlášeni</h3>
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10"
+							>
+								<i class="fa-solid fa-circle-dot text-xs text-blue-400"></i>
+							</div>
+						</div>
+						<div class="text-2xl font-bold text-textMain">342</div>
+						<div class="mt-1.5 flex items-center gap-1.5">
+							<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400"></div>
+							<span class="text-xs text-textSec">Live nyní</span>
+						</div>
+					</div>
 
-            <!-- Stats Cards — 2x2 Grid -->
-            <section id="user-stats" class="grid grid-cols-2 gap-3">
-                <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-textSec text-xs font-medium leading-tight">Celkem uživatelů</h3>
-                        <div class="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-users text-primary text-xs"></i>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold text-textMain">12 847</div>
-                    <div class="flex items-center gap-1 mt-1.5">
-                        <i class="fa-solid fa-arrow-trend-up text-success text-xs"></i>
-                        <span class="text-xs text-success font-medium">+8.4%</span>
-                    </div>
-                </div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-xs leading-tight font-medium text-textSec">Nové registrace</h3>
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-secondary/10"
+							>
+								<i class="fa-solid fa-user-plus text-xs text-secondary"></i>
+							</div>
+						</div>
+						<div class="text-2xl font-bold text-textMain">1 024</div>
+						<div class="mt-1.5 flex items-center gap-1">
+							<i class="fa-solid fa-arrow-trend-up text-xs text-success"></i>
+							<span class="text-xs font-medium text-success">+12.1%</span>
+						</div>
+					</div>
 
-                <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-textSec text-xs font-medium leading-tight">Právě přihlášeni</h3>
-                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-circle-dot text-blue-400 text-xs"></i>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold text-textMain">342</div>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <div class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></div>
-                        <span class="text-xs text-textSec">Live nyní</span>
-                    </div>
-                </div>
+					<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-3 flex items-start justify-between">
+							<h3 class="text-xs leading-tight font-medium text-textSec">Délka relace</h3>
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-purple-500/10"
+							>
+								<i class="fa-solid fa-clock text-xs text-purple-400"></i>
+							</div>
+						</div>
+						<div class="text-2xl font-bold text-textMain">8m 24s</div>
+						<div class="mt-1.5 flex items-center gap-1">
+							<i class="fa-solid fa-arrow-trend-down text-xs text-error"></i>
+							<span class="text-xs font-medium text-error">-1.2%</span>
+						</div>
+					</div>
+				</section>
 
-                <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-textSec text-xs font-medium leading-tight">Nové registrace</h3>
-                        <div class="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-user-plus text-secondary text-xs"></i>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold text-textMain">1 024</div>
-                    <div class="flex items-center gap-1 mt-1.5">
-                        <i class="fa-solid fa-arrow-trend-up text-success text-xs"></i>
-                        <span class="text-xs text-success font-medium">+12.1%</span>
-                    </div>
-                </div>
+				<!-- Registrations Chart -->
+				<section id="chart-reg-section" class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-4 flex items-center justify-between">
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Registrace uživatelů</h3>
+							<p class="mt-0.5 text-xs text-textSec">Posledních 30 dní</p>
+						</div>
+						<span
+							class="rounded-md border border-[#334155] bg-badge px-2.5 py-1 text-xs text-textSec"
+							>30 dní</span
+						>
+					</div>
+					<div id="chart-registrations" class="h-[180px] w-full"></div>
+				</section>
 
-                <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-textSec text-xs font-medium leading-tight">Délka relace</h3>
-                        <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-clock text-purple-400 text-xs"></i>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-bold text-textMain">8m 24s</div>
-                    <div class="flex items-center gap-1 mt-1.5">
-                        <i class="fa-solid fa-arrow-trend-down text-error text-xs"></i>
-                        <span class="text-xs text-error font-medium">-1.2%</span>
-                    </div>
-                </div>
-            </section>
+				<!-- Sessions Chart -->
+				<section id="chart-sess-section" class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-4 flex items-center justify-between">
+						<div>
+							<h3 class="text-sm font-semibold text-textMain">Aktivní relace (24h)</h3>
+							<p class="mt-0.5 text-xs text-textSec">Přihlášení uživatelé v čase</p>
+						</div>
+						<div
+							class="flex items-center gap-2 rounded-md border border-blue-500/20 bg-blue-500/10 px-2.5 py-1"
+						>
+							<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400"></div>
+							<span class="text-xs font-medium text-blue-400">Live</span>
+						</div>
+					</div>
+					<div id="chart-sessions" class="h-[180px] w-full"></div>
+				</section>
 
-            <!-- Registrations Chart -->
-            <section id="chart-reg-section" class="bg-card border border-[#1e293b] rounded-xl p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-sm font-semibold text-textMain">Registrace uživatelů</h3>
-                        <p class="text-xs text-textSec mt-0.5">Posledních 30 dní</p>
-                    </div>
-                    <span class="px-2.5 py-1 bg-badge rounded-md text-xs text-textSec border border-[#334155]">30 dní</span>
-                </div>
-                <div id="chart-registrations" class="h-[180px] w-full"></div>
-            </section>
+				<!-- User List Section -->
+				<section
+					id="user-table-section"
+					class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+				>
+					<!-- Tabs — horizontally scrollable -->
+					<div class="border-b border-[#1e293b]">
+						<div id="tab-bar" class="flex gap-1 overflow-x-auto px-3 pt-3">
+							<button
+								onclick="switchTab('all')"
+								id="tab-all"
+								class="tab-btn -mb-px flex-shrink-0 border-b-2 border-primary px-3 py-2.5 text-xs font-medium whitespace-nowrap text-textMain transition-colors"
+							>
+								Všichni
+								<span class="ml-1.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-xs text-primary"
+									>12 847</span
+								>
+							</button>
+							<button
+								onclick="switchTab('online')"
+								id="tab-online"
+								class="tab-btn -mb-px flex-shrink-0 border-b-2 border-transparent px-3 py-2.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-textMain"
+							>
+								Online
+								<span class="ml-1.5 rounded-full bg-badge px-1.5 py-0.5 text-xs text-textSec"
+									>342</span
+								>
+							</button>
+							<button
+								onclick="switchTab('new')"
+								id="tab-new"
+								class="tab-btn -mb-px flex-shrink-0 border-b-2 border-transparent px-3 py-2.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-textMain"
+							>
+								Noví (30d)
+								<span class="ml-1.5 rounded-full bg-badge px-1.5 py-0.5 text-xs text-textSec"
+									>1 024</span
+								>
+							</button>
+							<button
+								onclick="switchTab('inactive')"
+								id="tab-inactive"
+								class="tab-btn -mb-px flex-shrink-0 border-b-2 border-transparent px-3 py-2.5 text-xs font-medium whitespace-nowrap text-textSec transition-colors hover:text-textMain"
+							>
+								Neaktivní
+								<span class="ml-1.5 rounded-full bg-badge px-1.5 py-0.5 text-xs text-textSec"
+									>874</span
+								>
+							</button>
+						</div>
+					</div>
 
-            <!-- Sessions Chart -->
-            <section id="chart-sess-section" class="bg-card border border-[#1e293b] rounded-xl p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h3 class="text-sm font-semibold text-textMain">Aktivní relace (24h)</h3>
-                        <p class="text-xs text-textSec mt-0.5">Přihlášení uživatelé v čase</p>
-                    </div>
-                    <div class="flex items-center gap-2 px-2.5 py-1 bg-blue-500/10 border border-blue-500/20 rounded-md">
-                        <div class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></div>
-                        <span class="text-xs text-blue-400 font-medium">Live</span>
-                    </div>
-                </div>
-                <div id="chart-sessions" class="h-[180px] w-full"></div>
-            </section>
+					<!-- Filter / Sort row -->
+					<div class="flex items-center justify-between border-b border-[#1e293b]/60 px-4 py-2.5">
+						<p class="text-xs text-textSec">
+							Zobrazeno <span class="font-medium text-textMain">1–10</span> z
+							<span class="font-medium text-textMain">12 847</span>
+						</p>
+						<div class="flex items-center gap-2">
+							<button
+								class="flex min-h-[36px] items-center gap-1.5 rounded-lg border border-[#334155] bg-badge px-3 py-1.5 text-xs text-textSec transition-colors hover:text-textMain"
+							>
+								<i class="fa-solid fa-filter text-xs"></i> Filtr
+							</button>
+							<button
+								class="flex min-h-[36px] items-center gap-1.5 rounded-lg border border-[#334155] bg-badge px-3 py-1.5 text-xs text-textSec transition-colors hover:text-textMain"
+							>
+								<i class="fa-solid fa-sort text-xs"></i> Řadit
+							</button>
+						</div>
+					</div>
 
-            <!-- User List Section -->
-            <section id="user-table-section" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
+					<!-- User Cards List (mobile-optimized, replaces table) -->
+					<div id="user-list" class="divide-y divide-[#1e293b]/50"></div>
 
-                <!-- Tabs — horizontally scrollable -->
-                <div class="border-b border-[#1e293b]">
-                    <div id="tab-bar" class="flex overflow-x-auto px-3 pt-3 gap-1">
-                        <button onclick="switchTab('all')" id="tab-all" class="tab-btn flex-shrink-0 px-3 py-2.5 text-xs font-medium text-textMain border-b-2 border-primary -mb-px transition-colors whitespace-nowrap">
-                            Všichni <span class="ml-1.5 px-1.5 py-0.5 bg-primary/10 text-primary text-xs rounded-full">12 847</span>
-                        </button>
-                        <button onclick="switchTab('online')" id="tab-online" class="tab-btn flex-shrink-0 px-3 py-2.5 text-xs font-medium text-textSec border-b-2 border-transparent -mb-px hover:text-textMain transition-colors whitespace-nowrap">
-                            Online <span class="ml-1.5 px-1.5 py-0.5 bg-badge text-textSec text-xs rounded-full">342</span>
-                        </button>
-                        <button onclick="switchTab('new')" id="tab-new" class="tab-btn flex-shrink-0 px-3 py-2.5 text-xs font-medium text-textSec border-b-2 border-transparent -mb-px hover:text-textMain transition-colors whitespace-nowrap">
-                            Noví (30d) <span class="ml-1.5 px-1.5 py-0.5 bg-badge text-textSec text-xs rounded-full">1 024</span>
-                        </button>
-                        <button onclick="switchTab('inactive')" id="tab-inactive" class="tab-btn flex-shrink-0 px-3 py-2.5 text-xs font-medium text-textSec border-b-2 border-transparent -mb-px hover:text-textMain transition-colors whitespace-nowrap">
-                            Neaktivní <span class="ml-1.5 px-1.5 py-0.5 bg-badge text-textSec text-xs rounded-full">874</span>
-                        </button>
-                    </div>
-                </div>
+					<!-- Pagination -->
+					<div class="flex items-center justify-between border-t border-[#1e293b] px-4 py-3">
+						<button
+							class="flex min-h-[44px] items-center gap-2 rounded-lg border border-[#334155] bg-badge px-4 py-2 text-sm text-textSec transition-colors hover:text-textMain"
+						>
+							<i class="fa-solid fa-chevron-left text-xs"></i>
+							<span>Předchozí</span>
+						</button>
+						<div class="flex items-center gap-1">
+							<button class="h-9 w-9 rounded-lg bg-primary text-sm font-medium text-white">
+								1
+							</button>
+							<button
+								class="h-9 w-9 rounded-lg border border-[#334155] bg-badge text-sm text-textSec transition-colors hover:text-textMain"
+							>
+								2
+							</button>
+							<button
+								class="h-9 w-9 rounded-lg border border-[#334155] bg-badge text-sm text-textSec transition-colors hover:text-textMain"
+							>
+								3
+							</button>
+							<span class="px-1 text-sm text-textSec">…</span>
+						</div>
+						<button
+							class="flex min-h-[44px] items-center gap-2 rounded-lg border border-[#334155] bg-badge px-4 py-2 text-sm text-textSec transition-colors hover:text-textMain"
+						>
+							<span>Další</span>
+							<i class="fa-solid fa-chevron-right text-xs"></i>
+						</button>
+					</div>
+				</section>
+			</div>
+		</main>
 
-                <!-- Filter / Sort row -->
-                <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#1e293b]/60">
-                    <p class="text-xs text-textSec">Zobrazeno <span class="text-textMain font-medium">1–10</span> z <span class="text-textMain font-medium">12 847</span></p>
-                    <div class="flex items-center gap-2">
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
-                            <i class="fa-solid fa-filter text-xs"></i> Filtr
-                        </button>
-                        <button class="flex items-center gap-1.5 px-3 py-1.5 bg-badge border border-[#334155] text-textSec text-xs rounded-lg hover:text-textMain transition-colors min-h-[36px]">
-                            <i class="fa-solid fa-sort text-xs"></i> Řadit
-                        </button>
-                    </div>
-                </div>
+		<!-- Bottom Navigation Bar -->
+		<nav
+			id="bottom-nav"
+			class="safe-area-bottom fixed right-0 bottom-0 left-0 z-30 flex items-center justify-around border-t border-[#1e293b] bg-card px-2 py-2"
+		>
+			<a
+				href="#"
+				class="flex min-w-[56px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gauge-high text-lg"></i>
+				<span class="text-[10px] font-medium">Dashboard</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[56px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-server text-lg"></i>
+				<span class="text-[10px] font-medium">Dostupnost</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[56px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-triangle-exclamation text-lg"></i>
+				<span class="text-[10px] font-medium">Chyby</span>
+			</a>
+			<a href="#" class="flex min-w-[56px] flex-col items-center gap-1 px-3 py-2 text-primary">
+				<i class="fa-solid fa-users text-lg"></i>
+				<span class="text-[10px] font-medium text-primary">Uživatelé</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[56px] flex-col items-center gap-1 px-3 py-2 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gear text-lg"></i>
+				<span class="text-[10px] font-medium">Nastavení</span>
+			</a>
+		</nav>
 
-                <!-- User Cards List (mobile-optimized, replaces table) -->
-                <div id="user-list" class="divide-y divide-[#1e293b]/50"></div>
+		<script>
+			// ---- DRAWER ----
+			function openDrawer() {
+				document.getElementById('nav-drawer').classList.add('open');
+				document.getElementById('drawer-overlay').classList.add('open');
+				document.body.style.overflow = 'hidden';
+			}
+			function closeDrawer() {
+				document.getElementById('nav-drawer').classList.remove('open');
+				document.getElementById('drawer-overlay').classList.remove('open');
+				document.body.style.overflow = '';
+			}
 
-                <!-- Pagination -->
-                <div class="flex items-center justify-between px-4 py-3 border-t border-[#1e293b]">
-                    <button class="flex items-center gap-2 px-4 py-2 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
-                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                        <span>Předchozí</span>
-                    </button>
-                    <div class="flex items-center gap-1">
-                        <button class="w-9 h-9 bg-primary text-white text-sm rounded-lg font-medium">1</button>
-                        <button class="w-9 h-9 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">2</button>
-                        <button class="w-9 h-9 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors">3</button>
-                        <span class="text-textSec px-1 text-sm">…</span>
-                    </div>
-                    <button class="flex items-center gap-2 px-4 py-2 bg-badge border border-[#334155] text-textSec text-sm rounded-lg hover:text-textMain transition-colors min-h-[44px]">
-                        <span>Další</span>
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
-                </div>
-            </section>
+			// ---- SEARCH TOGGLE ----
+			function toggleSearch() {
+				const bar = document.getElementById('search-bar');
+				bar.classList.toggle('hidden');
+				if (!bar.classList.contains('hidden')) {
+					bar.querySelector('input').focus();
+				}
+			}
 
-        </div>
-    </main>
+			// ---- USER DATA ----
+			const users = [
+				{
+					id: 1,
+					name: 'Karolína Novotná',
+					email: 'karolina.novotna@email.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg',
+					status: 'online',
+					registered: '2. 1. 2024',
+					lastLogin: 'Právě teď',
+					sessions: 148,
+					location: 'Praha, CZ',
+					role: 'Admin'
+				},
+				{
+					id: 2,
+					name: 'Tomáš Kovář',
+					email: 'tomas.kovar@firma.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg',
+					status: 'online',
+					registered: '15. 3. 2024',
+					lastLogin: 'Před 5 min',
+					sessions: 87,
+					location: 'Brno, CZ',
+					role: 'Editor'
+				},
+				{
+					id: 3,
+					name: 'Martin Blaha',
+					email: 'martin.blaha@dev.io',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg',
+					status: 'online',
+					registered: '8. 7. 2023',
+					lastLogin: 'Před 12 min',
+					sessions: 312,
+					location: 'Ostrava, CZ',
+					role: 'Developer'
+				},
+				{
+					id: 4,
+					name: 'Lucie Horáčková',
+					email: 'lucie.h@gmail.com',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg',
+					status: 'idle',
+					registered: '20. 6. 2024',
+					lastLogin: 'Před 1 hod',
+					sessions: 22,
+					location: 'Plzeň, CZ',
+					role: 'Viewer'
+				},
+				{
+					id: 5,
+					name: 'Jakub Procházka',
+					email: 'j.prochazka@corp.eu',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg',
+					status: 'offline',
+					registered: '3. 11. 2023',
+					lastLogin: 'Před 2 dny',
+					sessions: 55,
+					location: 'Liberec, CZ',
+					role: 'Editor'
+				},
+				{
+					id: 6,
+					name: 'Tereza Málková',
+					email: 'tereza.m@startup.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg',
+					status: 'online',
+					registered: '1. 5. 2024',
+					lastLogin: 'Před 8 min',
+					sessions: 63,
+					location: 'Praha, CZ',
+					role: 'Viewer'
+				},
+				{
+					id: 7,
+					name: 'Ondřej Šimánek',
+					email: 'ondrej.simanek@tech.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg',
+					status: 'offline',
+					registered: '14. 2. 2024',
+					lastLogin: 'Před 5 dny',
+					sessions: 19,
+					location: 'Olomouc, CZ',
+					role: 'Viewer'
+				},
+				{
+					id: 8,
+					name: 'Petra Veselá',
+					email: 'petra.vesela@media.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg',
+					status: 'online',
+					registered: '29. 9. 2024',
+					lastLogin: 'Před 3 min',
+					sessions: 11,
+					location: 'Hradec Králové, CZ',
+					role: 'Editor'
+				},
+				{
+					id: 9,
+					name: 'Radek Horák',
+					email: 'radek.horak@business.cz',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg',
+					status: 'idle',
+					registered: '7. 4. 2023',
+					lastLogin: 'Před 45 min',
+					sessions: 204,
+					location: 'Zlín, CZ',
+					role: 'Admin'
+				},
+				{
+					id: 10,
+					name: 'Simona Křížková',
+					email: 'simona.k@freelance.eu',
+					avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg',
+					status: 'offline',
+					registered: '18. 8. 2024',
+					lastLogin: 'Před 1 týdnem',
+					sessions: 7,
+					location: 'České Budějovice, CZ',
+					role: 'Viewer'
+				}
+			];
 
-    <!-- Bottom Navigation Bar -->
-    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2 safe-area-bottom">
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[56px]">
-            <i class="fa-solid fa-gauge-high text-lg"></i>
-            <span class="text-[10px] font-medium">Dashboard</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[56px]">
-            <i class="fa-solid fa-server text-lg"></i>
-            <span class="text-[10px] font-medium">Dostupnost</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[56px]">
-            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-            <span class="text-[10px] font-medium">Chyby</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-primary min-w-[56px]">
-            <i class="fa-solid fa-users text-lg"></i>
-            <span class="text-[10px] font-medium text-primary">Uživatelé</span>
-        </a>
-        <a href="#" class="flex flex-col items-center gap-1 px-3 py-2 text-textSec hover:text-textMain transition-colors min-w-[56px]">
-            <i class="fa-solid fa-gear text-lg"></i>
-            <span class="text-[10px] font-medium">Nastavení</span>
-        </a>
-    </nav>
+			const roleColors = {
+				Admin: 'bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/20',
+				Editor: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
+				Developer: 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
+				Viewer: 'bg-[#1e293b] text-[#94a3b8] border border-[#334155]'
+			};
 
-    <script>
-        // ---- DRAWER ----
-        function openDrawer() {
-            document.getElementById('nav-drawer').classList.add('open');
-            document.getElementById('drawer-overlay').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeDrawer() {
-            document.getElementById('nav-drawer').classList.remove('open');
-            document.getElementById('drawer-overlay').classList.remove('open');
-            document.body.style.overflow = '';
-        }
+			const statusConfig = {
+				online: {
+					dot: 'bg-[#22c55e]',
+					label: 'Online',
+					text: 'text-[#22c55e]',
+					bg: 'bg-[#22c55e]/10'
+				},
+				idle: { dot: 'bg-[#f97316]', label: 'Idle', text: 'text-[#f97316]', bg: 'bg-[#f97316]/10' },
+				offline: {
+					dot: 'bg-[#475569]',
+					label: 'Offline',
+					text: 'text-[#94a3b8]',
+					bg: 'bg-[#1e293b]'
+				}
+			};
 
-        // ---- SEARCH TOGGLE ----
-        function toggleSearch() {
-            const bar = document.getElementById('search-bar');
-            bar.classList.toggle('hidden');
-            if (!bar.classList.contains('hidden')) {
-                bar.querySelector('input').focus();
-            }
-        }
-
-        // ---- USER DATA ----
-        const users = [
-            { id: 1, name: 'Karolína Novotná', email: 'karolina.novotna@email.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg', status: 'online', registered: '2. 1. 2024', lastLogin: 'Právě teď', sessions: 148, location: 'Praha, CZ', role: 'Admin' },
-            { id: 2, name: 'Tomáš Kovář', email: 'tomas.kovar@firma.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg', status: 'online', registered: '15. 3. 2024', lastLogin: 'Před 5 min', sessions: 87, location: 'Brno, CZ', role: 'Editor' },
-            { id: 3, name: 'Martin Blaha', email: 'martin.blaha@dev.io', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg', status: 'online', registered: '8. 7. 2023', lastLogin: 'Před 12 min', sessions: 312, location: 'Ostrava, CZ', role: 'Developer' },
-            { id: 4, name: 'Lucie Horáčková', email: 'lucie.h@gmail.com', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg', status: 'idle', registered: '20. 6. 2024', lastLogin: 'Před 1 hod', sessions: 22, location: 'Plzeň, CZ', role: 'Viewer' },
-            { id: 5, name: 'Jakub Procházka', email: 'j.prochazka@corp.eu', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg', status: 'offline', registered: '3. 11. 2023', lastLogin: 'Před 2 dny', sessions: 55, location: 'Liberec, CZ', role: 'Editor' },
-            { id: 6, name: 'Tereza Málková', email: 'tereza.m@startup.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg', status: 'online', registered: '1. 5. 2024', lastLogin: 'Před 8 min', sessions: 63, location: 'Praha, CZ', role: 'Viewer' },
-            { id: 7, name: 'Ondřej Šimánek', email: 'ondrej.simanek@tech.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg', status: 'offline', registered: '14. 2. 2024', lastLogin: 'Před 5 dny', sessions: 19, location: 'Olomouc, CZ', role: 'Viewer' },
-            { id: 8, name: 'Petra Veselá', email: 'petra.vesela@media.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg', status: 'online', registered: '29. 9. 2024', lastLogin: 'Před 3 min', sessions: 11, location: 'Hradec Králové, CZ', role: 'Editor' },
-            { id: 9, name: 'Radek Horák', email: 'radek.horak@business.cz', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg', status: 'idle', registered: '7. 4. 2023', lastLogin: 'Před 45 min', sessions: 204, location: 'Zlín, CZ', role: 'Admin' },
-            { id: 10, name: 'Simona Křížková', email: 'simona.k@freelance.eu', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg', status: 'offline', registered: '18. 8. 2024', lastLogin: 'Před 1 týdnem', sessions: 7, location: 'České Budějovice, CZ', role: 'Viewer' },
-        ];
-
-        const roleColors = {
-            'Admin': 'bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/20',
-            'Editor': 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-            'Developer': 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
-            'Viewer': 'bg-[#1e293b] text-[#94a3b8] border border-[#334155]'
-        };
-
-        const statusConfig = {
-            'online': { dot: 'bg-[#22c55e]', label: 'Online', text: 'text-[#22c55e]', bg: 'bg-[#22c55e]/10' },
-            'idle': { dot: 'bg-[#f97316]', label: 'Idle', text: 'text-[#f97316]', bg: 'bg-[#f97316]/10' },
-            'offline': { dot: 'bg-[#475569]', label: 'Offline', text: 'text-[#94a3b8]', bg: 'bg-[#1e293b]' }
-        };
-
-        function renderList(data) {
-            const list = document.getElementById('user-list');
-            list.innerHTML = data.map(u => {
-                const s = statusConfig[u.status];
-                const r = roleColors[u.role] || roleColors['Viewer'];
-                return `
+			function renderList(data) {
+				const list = document.getElementById('user-list');
+				list.innerHTML = data
+					.map((u) => {
+						const s = statusConfig[u.status];
+						const r = roleColors[u.role] || roleColors['Viewer'];
+						return `
                 <div class="flex items-center gap-3 px-4 py-3.5 hover:bg-[#1e293b]/30 active:bg-[#1e293b]/50 transition-colors min-h-[72px]">
                     <div class="relative flex-shrink-0">
                         <img src="${u.avatar}" alt="${u.name}" class="w-11 h-11 rounded-full object-cover border border-[#334155]">
@@ -412,82 +728,96 @@
                         <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                     </button>
                 </div>`;
-            }).join('');
-        }
+					})
+					.join('');
+			}
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('text-textMain', 'border-primary');
-                btn.classList.add('text-[#94a3b8]', 'border-transparent');
-            });
-            const active = document.getElementById('tab-' + tab);
-            active.classList.add('text-textMain', 'border-primary');
-            active.classList.remove('text-[#94a3b8]', 'border-transparent');
+			function switchTab(tab) {
+				document.querySelectorAll('.tab-btn').forEach((btn) => {
+					btn.classList.remove('text-textMain', 'border-primary');
+					btn.classList.add('text-[#94a3b8]', 'border-transparent');
+				});
+				const active = document.getElementById('tab-' + tab);
+				active.classList.add('text-textMain', 'border-primary');
+				active.classList.remove('text-[#94a3b8]', 'border-transparent');
 
-            let filtered = users;
-            if (tab === 'online') filtered = users.filter(u => u.status === 'online');
-            else if (tab === 'new') filtered = users.filter((_, i) => i < 4);
-            else if (tab === 'inactive') filtered = users.filter(u => u.status === 'offline');
-            renderList(filtered);
-        }
+				let filtered = users;
+				if (tab === 'online') filtered = users.filter((u) => u.status === 'online');
+				else if (tab === 'new') filtered = users.filter((_, i) => i < 4);
+				else if (tab === 'inactive') filtered = users.filter((u) => u.status === 'offline');
+				renderList(filtered);
+			}
 
-        renderList(users);
+			renderList(users);
 
-        // ---- CHARTS ----
-        window.addEventListener('load', function () {
-            try {
-                const baseLayout = {
-                    margin: { t: 5, r: 8, b: 28, l: 36 },
-                    plot_bgcolor: 'transparent',
-                    paper_bgcolor: 'transparent',
-                    font: { color: '#94a3b8', family: 'Inter, sans-serif', size: 10 },
-                    xaxis: { showgrid: false, zeroline: false, tickfont: { size: 9 } },
-                    yaxis: { showgrid: true, gridcolor: '#1e293b', zeroline: false, tickfont: { size: 9 } },
-                    showlegend: false
-                };
-                const cfg = { responsive: true, displayModeBar: false, displaylogo: false };
+			// ---- CHARTS ----
+			window.addEventListener('load', function () {
+				try {
+					const baseLayout = {
+						margin: { t: 5, r: 8, b: 28, l: 36 },
+						plot_bgcolor: 'transparent',
+						paper_bgcolor: 'transparent',
+						font: { color: '#94a3b8', family: 'Inter, sans-serif', size: 10 },
+						xaxis: { showgrid: false, zeroline: false, tickfont: { size: 9 } },
+						yaxis: { showgrid: true, gridcolor: '#1e293b', zeroline: false, tickfont: { size: 9 } },
+						showlegend: false
+					};
+					const cfg = { responsive: true, displayModeBar: false, displaylogo: false };
 
-                // Registrations chart — show every 5th label for mobile
-                const days = Array.from({ length: 30 }, (_, i) => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - (29 - i));
-                    return i % 5 === 0 || i === 29 ? `${d.getDate()}.${d.getMonth() + 1}.` : '';
-                });
-                const regData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 55 + 15));
+					// Registrations chart — show every 5th label for mobile
+					const days = Array.from({ length: 30 }, (_, i) => {
+						const d = new Date();
+						d.setDate(d.getDate() - (29 - i));
+						return i % 5 === 0 || i === 29 ? `${d.getDate()}.${d.getMonth() + 1}.` : '';
+					});
+					const regData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 55 + 15));
 
-                Plotly.newPlot('chart-registrations', [{
-                    x: days,
-                    y: regData,
-                    type: 'bar',
-                    marker: {
-                        color: regData.map((v, i) => i === 29 ? '#22c55e' : 'rgba(34,197,94,0.35)'),
-                        line: { width: 0 }
-                    },
-                    hovertemplate: '<b>%{x}</b><br>%{y} registrací<extra></extra>'
-                }], { ...baseLayout }, cfg);
+					Plotly.newPlot(
+						'chart-registrations',
+						[
+							{
+								x: days,
+								y: regData,
+								type: 'bar',
+								marker: {
+									color: regData.map((v, i) => (i === 29 ? '#22c55e' : 'rgba(34,197,94,0.35)')),
+									line: { width: 0 }
+								},
+								hovertemplate: '<b>%{x}</b><br>%{y} registrací<extra></extra>'
+							}
+						],
+						{ ...baseLayout },
+						cfg
+					);
 
-                // Sessions chart — show every 4th hour label
-                const hours = Array.from({ length: 24 }, (_, i) => i % 4 === 0 ? `${i}:00` : '');
-                const sessionData = Array.from({ length: 24 }, (_, i) => {
-                    const base = i >= 8 && i <= 22 ? 200 : 40;
-                    return Math.floor(Math.random() * 120 + base);
-                });
+					// Sessions chart — show every 4th hour label
+					const hours = Array.from({ length: 24 }, (_, i) => (i % 4 === 0 ? `${i}:00` : ''));
+					const sessionData = Array.from({ length: 24 }, (_, i) => {
+						const base = i >= 8 && i <= 22 ? 200 : 40;
+						return Math.floor(Math.random() * 120 + base);
+					});
 
-                Plotly.newPlot('chart-sessions', [{
-                    x: hours,
-                    y: sessionData,
-                    type: 'scatter',
-                    mode: 'lines',
-                    line: { color: '#3b82f6', width: 2.5, shape: 'spline', smoothing: 0.8 },
-                    fill: 'tozeroy',
-                    fillcolor: 'rgba(59,130,246,0.1)',
-                    hovertemplate: '<b>%{x}</b><br>%{y} uživatelů<extra></extra>'
-                }], { ...baseLayout }, cfg);
-
-            } catch (e) {
-                // silent fail
-            }
-        });
-    </script>
-</body>
+					Plotly.newPlot(
+						'chart-sessions',
+						[
+							{
+								x: hours,
+								y: sessionData,
+								type: 'scatter',
+								mode: 'lines',
+								line: { color: '#3b82f6', width: 2.5, shape: 'spline', smoothing: 0.8 },
+								fill: 'tozeroy',
+								fillcolor: 'rgba(59,130,246,0.1)',
+								hovertemplate: '<b>%{x}</b><br>%{y} uživatelů<extra></extra>'
+							}
+						],
+						{ ...baseLayout },
+						cfg
+					);
+				} catch (e) {
+					// silent fail
+				}
+			});
+		</script>
+	</body>
 </html>

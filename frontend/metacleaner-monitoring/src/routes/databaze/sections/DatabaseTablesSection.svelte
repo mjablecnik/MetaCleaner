@@ -12,7 +12,20 @@
 	let tableSizesOpen = $state(false);
 	let qpsOpen = $state(false);
 
-	const hours = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'];
+	const hours = [
+		'00:00',
+		'02:00',
+		'04:00',
+		'06:00',
+		'08:00',
+		'10:00',
+		'12:00',
+		'14:00',
+		'16:00',
+		'18:00',
+		'20:00',
+		'22:00'
+	];
 	const qps = [420, 380, 510, 640, 980, 1420, 1840, 2100, 1780, 1540, 1200, 860];
 
 	const dataQps = [
@@ -78,7 +91,9 @@
 		<div class="mt-5 pt-4 border-t border-surface">
 			<div class="flex justify-between text-xs text-textSec mb-2">
 				<span>{t('database_tableSizes_totalStorage')}</span>
-				<span class="text-textMain font-semibold">{dbStats.totalStorage} / {dbStats.maxStorage}</span>
+				<span class="text-textMain font-semibold"
+					>{dbStats.totalStorage} / {dbStats.maxStorage}</span
+				>
 			</div>
 			<div class="w-full h-2.5 bg-surface rounded-full overflow-hidden">
 				<div
@@ -148,7 +163,7 @@
 			id="chart-qps-m"
 			data={dataQps}
 			layout={baseLayout}
-			mobileLayout={mobileLayout}
+			{mobileLayout}
 			class="h-[200px]"
 		/>
 	</AccordionSection>

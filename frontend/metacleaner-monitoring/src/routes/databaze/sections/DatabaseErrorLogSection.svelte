@@ -17,16 +17,13 @@
 				<button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium"
 					>{t('common_status_all')}</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>Timeout</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>Deadlock</button
 				>
-				<button
-					class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
+				<button class="px-3 py-1.5 bg-transparent text-textSec text-xs font-medium hover:bg-surface"
 					>Conn</button
 				>
 			</div>

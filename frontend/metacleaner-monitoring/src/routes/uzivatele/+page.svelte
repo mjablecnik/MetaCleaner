@@ -29,8 +29,7 @@
 
 {#snippet actions()}
 	<div class="relative">
-		<i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"
-		></i>
+		<i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"></i>
 		<input
 			type="text"
 			placeholder={t('users_search_placeholder')}
@@ -77,7 +76,8 @@
 		{#if searchOpen}
 			<div class="bg-background/95 backdrop-blur-md border-b border-surface px-4 py-3">
 				<div class="relative">
-					<i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"
+					<i
+						class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-textSec text-sm"
 					></i>
 					<input
 						type="text"

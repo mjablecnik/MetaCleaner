@@ -14,7 +14,8 @@
 			<h3 class="text-lg font-semibold text-textMain">{t('edge_cacheRules_title')}</h3>
 			<p class="text-xs text-textSec mt-0.5">{t('edge_cacheRules_subtitle')}</p>
 		</div>
-		<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_cacheRules_badge')}</span>
+		<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">{t('edge_cacheRules_badge')}</span
+		>
 	</div>
 	<div class="space-y-3">
 		{#each cacheRules as rule (rule.id)}

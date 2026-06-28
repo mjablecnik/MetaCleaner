@@ -11,8 +11,7 @@
 
 {#if variant === 'desktop'}
 	<div class="flex items-center gap-4 p-3 rounded-lg bg-surface/40 border border-border/40">
-		<span
-			class="px-2 py-0.5 {ep.methodClass} text-xs font-mono rounded font-semibold flex-shrink-0"
+		<span class="px-2 py-0.5 {ep.methodClass} text-xs font-mono rounded font-semibold flex-shrink-0"
 			>{ep.method}</span
 		>
 		<div class="flex-1 min-w-0">

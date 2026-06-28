@@ -1,886 +1,1324 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Runtime</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b',
-                        border: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
-        .drawer-open { transform: translateX(0) !important; }
-        .drawer-overlay-visible { opacity: 1 !important; pointer-events: auto !important; }
-        .tab-active { background: #1e293b; color: #ffffff; }
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .accordion-content.open { max-height: 2000px; }
-        .accordion-icon { transition: transform 0.3s ease; }
-        .accordion-icon.open { transform: rotate(180deg); }
-    </style>
-</head>
-<body class="flex flex-col bg-background min-h-screen">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Runtime</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b',
+							border: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+			.drawer-open {
+				transform: translateX(0) !important;
+			}
+			.drawer-overlay-visible {
+				opacity: 1 !important;
+				pointer-events: auto !important;
+			}
+			.tab-active {
+				background: #1e293b;
+				color: #ffffff;
+			}
+			.accordion-content {
+				max-height: 0;
+				overflow: hidden;
+				transition: max-height 0.3s ease;
+			}
+			.accordion-content.open {
+				max-height: 2000px;
+			}
+			.accordion-icon {
+				transition: transform 0.3s ease;
+			}
+			.accordion-icon.open {
+				transform: rotate(180deg);
+			}
+		</style>
+	</head>
+	<body class="flex min-h-screen flex-col bg-background">
+		<!-- Drawer Overlay -->
+		<div
+			id="drawer-overlay"
+			class="pointer-events-none fixed inset-0 z-40 bg-black/60 opacity-0 transition-opacity duration-300"
+			onclick="closeDrawer()"
+		></div>
 
-<!-- Drawer Overlay -->
-<div id="drawer-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeDrawer()"></div>
+		<!-- Slide-over Drawer Navigation -->
+		<div
+			id="nav-drawer"
+			class="fixed top-0 left-0 z-50 flex h-full w-72 -translate-x-full transform flex-col border-r border-[#1e293b] bg-card transition-transform duration-300"
+		>
+			<div class="flex items-center justify-between border-b border-[#1e293b] p-5">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-xl font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+				<button
+					onclick="closeDrawer()"
+					class="flex h-9 w-9 items-center justify-center rounded-lg text-textSec transition-colors hover:bg-[#1e293b] hover:text-textMain"
+				>
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp;
+					Pády</a
+				>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg border border-[#334155]/60 bg-[#1e293b]/80 px-3 py-3 font-medium text-textMain"
+					><i class="fa-solid fa-microchip w-5 text-center text-[#a78bfa]"></i>Runtime (Fly.io)</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a
+				>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-bolt w-5 text-center"></i>Performance</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály</a
+				>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky</a
+				>
+			</nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+					><i class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a
+				>
+			</div>
+		</div>
 
-<!-- Slide-over Drawer Navigation -->
-<div id="nav-drawer" class="fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-    <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-            <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
-        </div>
-        <button onclick="closeDrawer()" class="w-9 h-9 flex items-center justify-center text-textSec hover:text-textMain rounded-lg hover:bg-[#1e293b] transition-colors">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-    </div>
-    <nav class="p-4 flex-1 overflow-y-auto space-y-1">
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-server w-5 text-center"></i>Dostupnost</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp; Pády</a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60"><i class="fa-solid fa-microchip w-5 text-center text-[#a78bfa]"></i>Runtime (Fly.io)</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)</a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-bolt w-5 text-center"></i>Performance</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-shield-halved w-5 text-center"></i>Security Signály</a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky</a>
-    </nav>
-    <div class="p-4 border-t border-[#1e293b]">
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors"><i class="fa-solid fa-gear w-5 text-center"></i>Nastavení</a>
-    </div>
-</div>
+		<!-- Top App Bar -->
+		<header
+			id="header"
+			class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-[#1e293b] bg-background/95 px-4 py-3 backdrop-blur-md"
+		>
+			<div class="flex items-center gap-3">
+				<button
+					onclick="openDrawer()"
+					class="flex h-10 w-10 items-center justify-center rounded-lg text-textSec transition-colors hover:bg-[#1e293b] hover:text-textMain"
+				>
+					<i class="fa-solid fa-bars text-base"></i>
+				</button>
+				<div class="flex items-center gap-2">
+					<div
+						class="flex h-7 w-7 items-center justify-center rounded-lg border border-[#a78bfa]/30 bg-[#a78bfa]/15"
+					>
+						<i class="fa-solid fa-microchip text-xs text-[#a78bfa]"></i>
+					</div>
+					<div>
+						<h1 class="text-base leading-tight font-bold text-textMain">Runtime (Fly.io)</h1>
+						<p class="text-xs leading-tight text-textSec">fra · Produkce</p>
+					</div>
+				</div>
+			</div>
+			<div class="flex items-center gap-2">
+				<div
+					class="flex items-center gap-1.5 rounded-lg border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs font-medium text-success"
+				>
+					<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-success"></div>
+					3/3
+				</div>
+				<button
+					class="flex h-10 w-10 items-center justify-center rounded-lg text-textSec transition-colors hover:bg-[#1e293b] hover:text-textMain"
+				>
+					<i class="fa-solid fa-download text-sm"></i>
+				</button>
+			</div>
+		</header>
 
-<!-- Top App Bar -->
-<header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b] px-4 py-3 flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-        <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center text-textSec hover:text-textMain rounded-lg hover:bg-[#1e293b] transition-colors">
-            <i class="fa-solid fa-bars text-base"></i>
-        </button>
-        <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-[#a78bfa]/15 border border-[#a78bfa]/30 flex items-center justify-center">
-                <i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
-            </div>
-            <div>
-                <h1 class="text-base font-bold text-textMain leading-tight">Runtime (Fly.io)</h1>
-                <p class="text-xs text-textSec leading-tight">fra · Produkce</p>
-            </div>
-        </div>
-    </div>
-    <div class="flex items-center gap-2">
-        <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium">
-            <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-            3/3
-        </div>
-        <button class="w-10 h-10 flex items-center justify-center text-textSec hover:text-textMain rounded-lg hover:bg-[#1e293b] transition-colors">
-            <i class="fa-solid fa-download text-sm"></i>
-        </button>
-    </div>
-</header>
+		<!-- Main Content -->
+		<main class="mx-auto w-full max-w-2xl flex-1 space-y-4 px-4 pt-4 pb-24">
+			<!-- Time Range Selector -->
+			<div class="flex items-center gap-2">
+				<select
+					class="flex-1 rounded-lg border border-[#1e293b] bg-card px-3 py-2.5 text-sm text-textMain focus:border-[#a78bfa]/50 focus:outline-none"
+				>
+					<option>Posledních 24 hodin</option>
+					<option>Posledních 7 dní</option>
+					<option>Posledních 30 dní</option>
+				</select>
+				<div
+					class="flex items-center gap-1.5 rounded-lg border border-[#1e293b] bg-card px-3 py-2.5 text-xs text-textSec"
+				>
+					<i class="fa-solid fa-server text-xs"></i>
+					<span>fra (Frankfurt)</span>
+				</div>
+			</div>
 
-<!-- Main Content -->
-<main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-24 pt-4 space-y-4">
+			<!-- KPI Grid – Row 1 -->
+			<section id="kpi-row1" class="grid grid-cols-2 gap-3">
+				<!-- CPU -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-start justify-between">
+						<p class="text-xs font-medium text-textSec">CPU Využití</p>
+						<span
+							class="rounded-full bg-secondary/10 px-1.5 py-0.5 text-xs font-medium text-secondary"
+							>⚠</span
+						>
+					</div>
+					<div class="mb-2 flex items-end gap-1">
+						<span class="text-2xl font-bold text-textMain">74</span>
+						<span class="mb-0.5 text-xs text-textSec">%</span>
+						<span class="mb-0.5 ml-1 text-xs text-secondary"
+							><i class="fa-solid fa-arrow-up text-xs"></i>+12%</span
+						>
+					</div>
+					<div class="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+						<div class="h-full rounded-full bg-secondary" style="width: 74%"></div>
+					</div>
+					<p class="text-xs text-textSec">Peak: 91%</p>
+				</div>
+				<!-- RAM -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-start justify-between">
+						<p class="text-xs font-medium text-textSec">RAM Využití</p>
+						<span class="rounded-full bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+							>OK</span
+						>
+					</div>
+					<div class="mb-2 flex items-end gap-1">
+						<span class="text-2xl font-bold text-textMain">1.8</span>
+						<span class="mb-0.5 text-xs text-textSec">GB</span>
+					</div>
+					<div class="mb-1 h-1.5 w-full overflow-hidden rounded-full bg-[#1e293b]">
+						<div class="h-full rounded-full bg-[#3b82f6]" style="width: 45%"></div>
+					</div>
+					<p class="text-xs text-textSec">45% / 4 GB</p>
+				</div>
+				<!-- Uptime -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-start justify-between">
+						<p class="text-xs font-medium text-textSec">Uptime 30d</p>
+						<span class="rounded-full bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+							>OK</span
+						>
+					</div>
+					<div class="flex items-end gap-1">
+						<span class="text-2xl font-bold text-success">99.97</span>
+						<span class="mb-0.5 text-xs text-textSec">%</span>
+					</div>
+					<p class="mt-1 text-xs text-textSec">Výpadek: 8 min</p>
+				</div>
+				<!-- Restarts -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-start justify-between">
+						<p class="text-xs font-medium text-textSec">Restarty 24h</p>
+						<span class="rounded-full bg-error/10 px-1.5 py-0.5 text-xs font-medium text-error"
+							>!</span
+						>
+					</div>
+					<div class="flex items-end gap-1">
+						<span class="text-2xl font-bold text-error">5</span>
+						<span class="mb-0.5 text-xs text-error"
+							><i class="fa-solid fa-arrow-up text-xs"></i>+3</span
+						>
+					</div>
+					<p class="mt-1 text-xs text-textSec">OOM:2 · Crash:3</p>
+				</div>
+			</section>
 
-    <!-- Time Range Selector -->
-    <div class="flex items-center gap-2">
-        <select class="flex-1 bg-card border border-[#1e293b] text-sm text-textMain rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]/50">
-            <option>Posledních 24 hodin</option>
-            <option>Posledních 7 dní</option>
-            <option>Posledních 30 dní</option>
-        </select>
-        <div class="flex items-center gap-1.5 px-3 py-2.5 bg-card border border-[#1e293b] rounded-lg text-textSec text-xs">
-            <i class="fa-solid fa-server text-xs"></i>
-            <span>fra (Frankfurt)</span>
-        </div>
-    </div>
+			<!-- KPI Grid – Row 2 -->
+			<section id="kpi-row2" class="grid grid-cols-2 gap-3">
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center gap-2">
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-[#a78bfa]/15"
+						>
+							<i class="fa-solid fa-network-wired text-xs text-[#a78bfa]"></i>
+						</div>
+						<p class="text-xs font-medium text-textSec">Aktivní instance</p>
+					</div>
+					<div class="text-2xl font-bold text-textMain">
+						3 <span class="text-sm font-normal text-textSec">/ 5</span>
+					</div>
+					<p class="mt-1 text-xs text-textSec">Autoscale: OFF</p>
+				</div>
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center gap-2">
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-[#3ecf8e]/15"
+						>
+							<i class="fa-solid fa-arrows-left-right text-xs text-[#3ecf8e]"></i>
+						</div>
+						<p class="text-xs font-medium text-textSec">Síťový provoz</p>
+					</div>
+					<div class="text-2xl font-bold text-textMain">
+						2.4 <span class="text-sm font-normal text-textSec">GB/h</span>
+					</div>
+					<p class="mt-1 text-xs text-textSec">IN:840 · OUT:1.56GB</p>
+				</div>
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center gap-2">
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-[#3b82f6]/15"
+						>
+							<i class="fa-solid fa-clock text-xs text-[#3b82f6]"></i>
+						</div>
+						<p class="text-xs font-medium text-textSec">Response Time</p>
+					</div>
+					<div class="text-2xl font-bold text-textMain">
+						112 <span class="text-sm font-normal text-textSec">ms</span>
+					</div>
+					<p class="mt-1 text-xs text-textSec">P99: 840ms</p>
+				</div>
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center gap-2">
+						<div
+							class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-secondary/15"
+						>
+							<i class="fa-solid fa-rocket text-xs text-secondary"></i>
+						</div>
+						<p class="text-xs font-medium text-textSec">Posl. deploy</p>
+					</div>
+					<div class="text-2xl font-bold text-textMain">v2.14.1</div>
+					<p class="mt-1 text-xs text-textSec">Dnes 11:04 · 38s</p>
+				</div>
+			</section>
 
-    <!-- KPI Grid – Row 1 -->
-    <section id="kpi-row1" class="grid grid-cols-2 gap-3">
-        <!-- CPU -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-start justify-between mb-2">
-                <p class="text-textSec text-xs font-medium">CPU Využití</p>
-                <span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">⚠</span>
-            </div>
-            <div class="flex items-end gap-1 mb-2">
-                <span class="text-2xl font-bold text-textMain">74</span>
-                <span class="text-xs text-textSec mb-0.5">%</span>
-                <span class="text-xs text-secondary mb-0.5 ml-1"><i class="fa-solid fa-arrow-up text-xs"></i>+12%</span>
-            </div>
-            <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-                <div class="h-full bg-secondary rounded-full" style="width:74%"></div>
-            </div>
-            <p class="text-xs text-textSec">Peak: 91%</p>
-        </div>
-        <!-- RAM -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-start justify-between mb-2">
-                <p class="text-textSec text-xs font-medium">RAM Využití</p>
-                <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
-            </div>
-            <div class="flex items-end gap-1 mb-2">
-                <span class="text-2xl font-bold text-textMain">1.8</span>
-                <span class="text-xs text-textSec mb-0.5">GB</span>
-            </div>
-            <div class="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden mb-1">
-                <div class="h-full bg-[#3b82f6] rounded-full" style="width:45%"></div>
-            </div>
-            <p class="text-xs text-textSec">45% / 4 GB</p>
-        </div>
-        <!-- Uptime -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-start justify-between mb-2">
-                <p class="text-textSec text-xs font-medium">Uptime 30d</p>
-                <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">OK</span>
-            </div>
-            <div class="flex items-end gap-1">
-                <span class="text-2xl font-bold text-success">99.97</span>
-                <span class="text-xs text-textSec mb-0.5">%</span>
-            </div>
-            <p class="text-xs text-textSec mt-1">Výpadek: 8 min</p>
-        </div>
-        <!-- Restarts -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-start justify-between mb-2">
-                <p class="text-textSec text-xs font-medium">Restarty 24h</p>
-                <span class="px-1.5 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">!</span>
-            </div>
-            <div class="flex items-end gap-1">
-                <span class="text-2xl font-bold text-error">5</span>
-                <span class="text-xs text-error mb-0.5"><i class="fa-solid fa-arrow-up text-xs"></i>+3</span>
-            </div>
-            <p class="text-xs text-textSec mt-1">OOM:2 · Crash:3</p>
-        </div>
-    </section>
+			<!-- Charts Tabs Section -->
+			<section id="charts-section" class="rounded-xl border border-[#1e293b] bg-card p-4">
+				<div class="mb-4 flex items-center gap-1 rounded-lg bg-[#0a1628] p-1">
+					<button
+						onclick="switchChart('cpu')"
+						id="tab-cpu"
+						class="tab-active flex-1 rounded-md py-2 text-xs font-medium transition-all"
+					>
+						CPU
+					</button>
+					<button
+						onclick="switchChart('ram')"
+						id="tab-ram"
+						class="flex-1 rounded-md py-2 text-xs font-medium text-textSec transition-all"
+					>
+						RAM
+					</button>
+					<button
+						onclick="switchChart('response')"
+						id="tab-response"
+						class="flex-1 rounded-md py-2 text-xs font-medium text-textSec transition-all"
+					>
+						Response
+					</button>
+					<button
+						onclick="switchChart('network')"
+						id="tab-network"
+						class="flex-1 rounded-md py-2 text-xs font-medium text-textSec transition-all"
+					>
+						Network
+					</button>
+				</div>
 
-    <!-- KPI Grid – Row 2 -->
-    <section id="kpi-row2" class="grid grid-cols-2 gap-3">
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-                <div class="w-7 h-7 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-network-wired text-[#a78bfa] text-xs"></i>
-                </div>
-                <p class="text-textSec text-xs font-medium">Aktivní instance</p>
-            </div>
-            <div class="text-2xl font-bold text-textMain">3 <span class="text-sm font-normal text-textSec">/ 5</span></div>
-            <p class="text-xs text-textSec mt-1">Autoscale: OFF</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-                <div class="w-7 h-7 rounded-lg bg-[#3ecf8e]/15 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-arrows-left-right text-[#3ecf8e] text-xs"></i>
-                </div>
-                <p class="text-textSec text-xs font-medium">Síťový provoz</p>
-            </div>
-            <div class="text-2xl font-bold text-textMain">2.4 <span class="text-sm font-normal text-textSec">GB/h</span></div>
-            <p class="text-xs text-textSec mt-1">IN:840 · OUT:1.56GB</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-                <div class="w-7 h-7 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-clock text-[#3b82f6] text-xs"></i>
-                </div>
-                <p class="text-textSec text-xs font-medium">Response Time</p>
-            </div>
-            <div class="text-2xl font-bold text-textMain">112 <span class="text-sm font-normal text-textSec">ms</span></div>
-            <p class="text-xs text-textSec mt-1">P99: 840ms</p>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-                <div class="w-7 h-7 rounded-lg bg-secondary/15 flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-rocket text-secondary text-xs"></i>
-                </div>
-                <p class="text-textSec text-xs font-medium">Posl. deploy</p>
-            </div>
-            <div class="text-2xl font-bold text-textMain">v2.14.1</div>
-            <p class="text-xs text-textSec mt-1">Dnes 11:04 · 38s</p>
-        </div>
-    </section>
+				<!-- CPU Chart -->
+				<div id="panel-cpu" class="chart-panel">
+					<div class="mb-3 flex items-center justify-between">
+						<div>
+							<p class="text-sm font-semibold text-textMain">CPU využití v čase</p>
+							<p class="text-xs text-textSec">Průměr přes všechny instance</p>
+						</div>
+						<div class="flex gap-1.5">
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#a78bfa]"></span>CPU</span
+							>
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#f97316]"></span>Peak</span
+							>
+						</div>
+					</div>
+					<div id="chart-cpu" class="h-[200px] w-full"></div>
+				</div>
 
-    <!-- Charts Tabs Section -->
-    <section id="charts-section" class="bg-card border border-[#1e293b] rounded-xl p-4">
-        <div class="flex items-center gap-1 mb-4 bg-[#0a1628] rounded-lg p-1">
-            <button onclick="switchChart('cpu')" id="tab-cpu" class="flex-1 py-2 text-xs font-medium rounded-md transition-all tab-active">CPU</button>
-            <button onclick="switchChart('ram')" id="tab-ram" class="flex-1 py-2 text-xs font-medium rounded-md transition-all text-textSec">RAM</button>
-            <button onclick="switchChart('response')" id="tab-response" class="flex-1 py-2 text-xs font-medium rounded-md transition-all text-textSec">Response</button>
-            <button onclick="switchChart('network')" id="tab-network" class="flex-1 py-2 text-xs font-medium rounded-md transition-all text-textSec">Network</button>
-        </div>
+				<!-- RAM Chart -->
+				<div id="panel-ram" class="chart-panel hidden">
+					<div class="mb-3 flex items-center justify-between">
+						<div>
+							<p class="text-sm font-semibold text-textMain">RAM využití v čase</p>
+							<p class="text-xs text-textSec">Heap & RSS paměť aplikace</p>
+						</div>
+						<div
+							class="flex items-center gap-1 rounded border border-[#3b82f6]/20 bg-[#3b82f6]/10 px-2 py-1 text-xs text-[#3b82f6]"
+						>
+							<i class="fa-solid fa-memory text-xs"></i>4 GB limit
+						</div>
+					</div>
+					<div id="chart-ram" class="h-[200px] w-full"></div>
+				</div>
 
-        <!-- CPU Chart -->
-        <div id="panel-cpu" class="chart-panel">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <p class="text-sm font-semibold text-textMain">CPU využití v čase</p>
-                    <p class="text-xs text-textSec">Průměr přes všechny instance</p>
-                </div>
-                <div class="flex gap-1.5">
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#a78bfa] inline-block"></span>CPU</span>
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f97316] inline-block"></span>Peak</span>
-                </div>
-            </div>
-            <div id="chart-cpu" class="h-[200px] w-full"></div>
-        </div>
+				<!-- Response Chart -->
+				<div id="panel-response" class="chart-panel hidden">
+					<div class="mb-3 flex items-center justify-between">
+						<div>
+							<p class="text-sm font-semibold text-textMain">Response time</p>
+							<p class="text-xs text-textSec">HTTP odpovědi aplikace v čase</p>
+						</div>
+						<div class="flex gap-1.5">
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#3ecf8e]"></span>P50</span
+							>
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#f97316]"></span>P99</span
+							>
+						</div>
+					</div>
+					<div id="chart-response" class="h-[200px] w-full"></div>
+				</div>
 
-        <!-- RAM Chart -->
-        <div id="panel-ram" class="chart-panel hidden">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <p class="text-sm font-semibold text-textMain">RAM využití v čase</p>
-                    <p class="text-xs text-textSec">Heap & RSS paměť aplikace</p>
-                </div>
-                <div class="flex items-center gap-1 px-2 py-1 bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded text-xs text-[#3b82f6]">
-                    <i class="fa-solid fa-memory text-xs"></i>4 GB limit
-                </div>
-            </div>
-            <div id="chart-ram" class="h-[200px] w-full"></div>
-        </div>
+				<!-- Network Chart -->
+				<div id="panel-network" class="chart-panel hidden">
+					<div class="mb-3 flex items-center justify-between">
+						<div>
+							<p class="text-sm font-semibold text-textMain">Síťový provoz</p>
+							<p class="text-xs text-textSec">Ingress / Egress za hodinu</p>
+						</div>
+						<div class="flex gap-1.5">
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#3b82f6]"></span>IN</span
+							>
+							<span class="flex items-center gap-1 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-1.5 w-1.5 rounded-full bg-[#3ecf8e]"></span>OUT</span
+							>
+						</div>
+					</div>
+					<div id="chart-network" class="h-[200px] w-full"></div>
+				</div>
+			</section>
 
-        <!-- Response Chart -->
-        <div id="panel-response" class="chart-panel hidden">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <p class="text-sm font-semibold text-textMain">Response time</p>
-                    <p class="text-xs text-textSec">HTTP odpovědi aplikace v čase</p>
-                </div>
-                <div class="flex gap-1.5">
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>P50</span>
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#f97316] inline-block"></span>P99</span>
-                </div>
-            </div>
-            <div id="chart-response" class="h-[200px] w-full"></div>
-        </div>
+			<!-- HTTP Status + RPM -->
+			<section id="http-section" class="grid grid-cols-2 gap-3">
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<p class="mb-1 text-sm font-semibold text-textMain">HTTP Status</p>
+					<p class="mb-3 text-xs text-textSec">Distribuce (24h)</p>
+					<div id="chart-http-status" class="h-[150px] w-full"></div>
+					<div class="mt-3 space-y-1.5">
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-2 w-2 rounded-full bg-[#3ecf8e]"></span
+								><span class="text-textSec">2xx</span>
+							</div>
+							<span class="font-medium text-textMain">94.2%</span>
+						</div>
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-2 w-2 rounded-full bg-[#3b82f6]"></span
+								><span class="text-textSec">3xx</span>
+							</div>
+							<span class="font-medium text-textMain">2.8%</span>
+						</div>
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-2 w-2 rounded-full bg-[#f97316]"></span
+								><span class="text-textSec">4xx</span>
+							</div>
+							<span class="font-medium text-textMain">2.1%</span>
+						</div>
+						<div class="flex items-center justify-between text-xs">
+							<div class="flex items-center gap-1.5">
+								<span class="inline-block h-2 w-2 rounded-full bg-error"></span
+								><span class="text-textSec">5xx</span>
+							</div>
+							<span class="font-medium text-textMain">0.9%</span>
+						</div>
+					</div>
+				</div>
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<p class="mb-1 text-sm font-semibold text-textMain">Req/min</p>
+					<p class="mb-3 text-xs text-textSec">HTTP požadavky</p>
+					<div id="chart-rpm" class="h-[150px] w-full"></div>
+					<div class="mt-3 rounded-lg bg-[#1e293b]/50 p-2 text-center">
+						<p class="text-xs text-textSec">Peak</p>
+						<p class="text-base font-bold text-[#a78bfa]">1,640</p>
+						<p class="text-xs text-textSec">req/min</p>
+					</div>
+				</div>
+			</section>
 
-        <!-- Network Chart -->
-        <div id="panel-network" class="chart-panel hidden">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <p class="text-sm font-semibold text-textMain">Síťový provoz</p>
-                    <p class="text-xs text-textSec">Ingress / Egress za hodinu</p>
-                </div>
-                <div class="flex gap-1.5">
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6] inline-block"></span>IN</span>
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#3ecf8e] inline-block"></span>OUT</span>
-                </div>
-            </div>
-            <div id="chart-network" class="h-[200px] w-full"></div>
-        </div>
-    </section>
+			<!-- Instances – Accordion -->
+			<section
+				id="instances-section"
+				class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+			>
+				<button
+					onclick="toggleAccordion('acc-instances')"
+					class="flex w-full items-center justify-between p-4 text-left"
+				>
+					<div class="flex items-center gap-3">
+						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a78bfa]/15">
+							<i class="fa-solid fa-microchip text-xs text-[#a78bfa]"></i>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-textMain">Stav instancí</p>
+							<p class="text-xs text-textSec">3 aktivní · fra region</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs text-success">3/3</span>
+						<i
+							class="fa-solid fa-chevron-down accordion-icon text-xs text-textSec"
+							id="icon-instances"
+						></i>
+					</div>
+				</button>
+				<div class="accordion-content open" id="acc-instances">
+					<div class="space-y-3 px-4 pb-4">
+						<div class="flex justify-end">
+							<button
+								class="flex items-center gap-2 rounded-lg border border-[#a78bfa]/20 bg-[#a78bfa]/10 px-3 py-2 text-xs font-medium text-[#a78bfa]"
+							>
+								<i class="fa-solid fa-plus text-xs"></i>Škálovat
+							</button>
+						</div>
+						<!-- Machine 1 -->
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-4">
+							<div class="mb-3 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<div class="h-2 w-2 animate-pulse rounded-full bg-success"></div>
+									<span class="font-mono text-xs font-medium text-textMain">fra-01 · 4d4e555f</span>
+								</div>
+								<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs text-success"
+									>running</span
+								>
+							</div>
+							<p class="mb-3 text-xs text-textSec">shared-cpu-2x · 2 GB RAM</p>
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<div class="mb-1 text-xs text-textSec">CPU</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-[#a78bfa]" style="width: 68%"></div>
+									</div>
+									<div class="mt-1 text-xs text-textMain">68%</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">RAM</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-[#3b82f6]" style="width: 44%"></div>
+									</div>
+									<div class="mt-1 text-xs text-textMain">880 MB</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">Uptime</div>
+									<div class="mt-1 font-mono text-xs text-textMain">18h 42m</div>
+								</div>
+							</div>
+						</div>
+						<!-- Machine 2 -->
+						<div class="rounded-xl border border-secondary/20 bg-[#1e293b]/40 p-4">
+							<div class="mb-3 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<div class="h-2 w-2 animate-pulse rounded-full bg-success"></div>
+									<span class="font-mono text-xs font-medium text-textMain">fra-02 · 7f8a992b</span>
+								</div>
+								<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs text-success"
+									>running</span
+								>
+							</div>
+							<p class="mb-3 text-xs text-textSec">shared-cpu-2x · 2 GB RAM</p>
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<div class="mb-1 text-xs text-textSec">CPU</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-secondary" style="width: 91%"></div>
+									</div>
+									<div class="mt-1 text-xs text-secondary">91% ⚠</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">RAM</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-[#3b82f6]" style="width: 52%"></div>
+									</div>
+									<div class="mt-1 text-xs text-textMain">1.04 GB</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">Uptime</div>
+									<div class="mt-1 font-mono text-xs text-textMain">3h 18m</div>
+								</div>
+							</div>
+						</div>
+						<!-- Machine 3 -->
+						<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-4">
+							<div class="mb-3 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<div class="h-2 w-2 animate-pulse rounded-full bg-success"></div>
+									<span class="font-mono text-xs font-medium text-textMain">fra-03 · b1c2d3e4</span>
+								</div>
+								<span class="rounded-full bg-success/10 px-2 py-0.5 text-xs text-success"
+									>running</span
+								>
+							</div>
+							<p class="mb-3 text-xs text-textSec">shared-cpu-2x · 2 GB RAM</p>
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<div class="mb-1 text-xs text-textSec">CPU</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-[#a78bfa]" style="width: 62%"></div>
+									</div>
+									<div class="mt-1 text-xs text-textMain">62%</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">RAM</div>
+									<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#0a1628]">
+										<div class="h-full rounded-full bg-[#3b82f6]" style="width: 38%"></div>
+									</div>
+									<div class="mt-1 text-xs text-textMain">760 MB</div>
+								</div>
+								<div>
+									<div class="mb-1 text-xs text-textSec">Uptime</div>
+									<div class="mt-1 font-mono text-xs text-textMain">18h 42m</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- HTTP Status + RPM -->
-    <section id="http-section" class="grid grid-cols-2 gap-3">
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <p class="text-sm font-semibold text-textMain mb-1">HTTP Status</p>
-            <p class="text-xs text-textSec mb-3">Distribuce (24h)</p>
-            <div id="chart-http-status" class="h-[150px] w-full"></div>
-            <div class="mt-3 space-y-1.5">
-                <div class="flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3ecf8e] inline-block"></span><span class="text-textSec">2xx</span></div>
-                    <span class="text-textMain font-medium">94.2%</span>
-                </div>
-                <div class="flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span><span class="text-textSec">3xx</span></div>
-                    <span class="text-textMain font-medium">2.8%</span>
-                </div>
-                <div class="flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f97316] inline-block"></span><span class="text-textSec">4xx</span></div>
-                    <span class="text-textMain font-medium">2.1%</span>
-                </div>
-                <div class="flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span><span class="text-textSec">5xx</span></div>
-                    <span class="text-textMain font-medium">0.9%</span>
-                </div>
-            </div>
-        </div>
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <p class="text-sm font-semibold text-textMain mb-1">Req/min</p>
-            <p class="text-xs text-textSec mb-3">HTTP požadavky</p>
-            <div id="chart-rpm" class="h-[150px] w-full"></div>
-            <div class="mt-3 p-2 bg-[#1e293b]/50 rounded-lg text-center">
-                <p class="text-xs text-textSec">Peak</p>
-                <p class="text-base font-bold text-[#a78bfa]">1,640</p>
-                <p class="text-xs text-textSec">req/min</p>
-            </div>
-        </div>
-    </section>
+			<!-- Deploy History – Accordion -->
+			<section
+				id="deploys-section"
+				class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+			>
+				<button
+					onclick="toggleAccordion('acc-deploys')"
+					class="flex w-full items-center justify-between p-4 text-left"
+				>
+					<div class="flex items-center gap-3">
+						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary/15">
+							<i class="fa-solid fa-rocket text-xs text-secondary"></i>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-textMain">Historie deployů</p>
+							<p class="text-xs text-textSec">Posledních 7 dní</p>
+						</div>
+					</div>
+					<i
+						class="fa-solid fa-chevron-down accordion-icon text-xs text-textSec"
+						id="icon-deploys"
+					></i>
+				</button>
+				<div class="accordion-content" id="acc-deploys">
+					<div class="space-y-3 px-4 pb-4">
+						<div class="flex items-start gap-3 border-b border-[#1e293b]/60 py-2">
+							<div
+								class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-success/15"
+							>
+								<i class="fa-solid fa-check text-xs text-success"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center justify-between">
+									<span class="text-sm font-semibold text-textMain">v2.14.1</span>
+									<span class="text-xs text-textSec">Dnes 11:04</span>
+								</div>
+								<p class="mt-0.5 truncate text-xs text-textSec">
+									Fix: memory leak in session handler
+								</p>
+								<p class="mt-0.5 text-xs text-textSec">38s · 3 stroje ✓</p>
+							</div>
+						</div>
+						<div class="flex items-start gap-3 border-b border-[#1e293b]/60 py-2">
+							<div
+								class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-success/15"
+							>
+								<i class="fa-solid fa-check text-xs text-success"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center justify-between">
+									<span class="text-sm font-semibold text-textMain">v2.14.0</span>
+									<span class="text-xs text-textSec">Včera 16:32</span>
+								</div>
+								<p class="mt-0.5 truncate text-xs text-textSec">
+									feat: nový API endpoint /v2/orders
+								</p>
+								<p class="mt-0.5 text-xs text-textSec">44s · 3 stroje ✓</p>
+							</div>
+						</div>
+						<div class="flex items-start gap-3 border-b border-[#1e293b]/60 py-2">
+							<div
+								class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-error/15"
+							>
+								<i class="fa-solid fa-xmark text-xs text-error"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center justify-between">
+									<span class="text-sm font-semibold text-textMain">v2.13.9</span>
+									<span class="text-xs text-textSec">2 dny 09:15</span>
+								</div>
+								<p class="mt-0.5 truncate text-xs text-error">Failed: health check timeout</p>
+								<p class="mt-0.5 text-xs text-textSec">Rollback → v2.13.8</p>
+							</div>
+						</div>
+						<div class="flex items-start gap-3 border-b border-[#1e293b]/60 py-2">
+							<div
+								class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-success/15"
+							>
+								<i class="fa-solid fa-check text-xs text-success"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center justify-between">
+									<span class="text-sm font-semibold text-textMain">v2.13.8</span>
+									<span class="text-xs text-textSec">3 dny 14:00</span>
+								</div>
+								<p class="mt-0.5 truncate text-xs text-textSec">chore: deps update, perf patches</p>
+								<p class="mt-0.5 text-xs text-textSec">41s · 3 stroje ✓</p>
+							</div>
+						</div>
+						<div class="flex items-start gap-3 py-2">
+							<div
+								class="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-success/15"
+							>
+								<i class="fa-solid fa-check text-xs text-success"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center justify-between">
+									<span class="text-sm font-semibold text-textMain">v2.13.7</span>
+									<span class="text-xs text-textSec">5 dní 08:22</span>
+								</div>
+								<p class="mt-0.5 truncate text-xs text-textSec">fix: rate limiter edge case</p>
+								<p class="mt-0.5 text-xs text-textSec">36s · 3 stroje ✓</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Instances – Accordion -->
-    <section id="instances-section" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAccordion('acc-instances')" class="w-full flex items-center justify-between p-4 text-left">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-[#a78bfa]/15 flex items-center justify-center">
-                    <i class="fa-solid fa-microchip text-[#a78bfa] text-xs"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-textMain">Stav instancí</p>
-                    <p class="text-xs text-textSec">3 aktivní · fra region</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">3/3</span>
-                <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon" id="icon-instances"></i>
-            </div>
-        </button>
-        <div class="accordion-content open" id="acc-instances">
-            <div class="px-4 pb-4 space-y-3">
-                <div class="flex justify-end">
-                    <button class="flex items-center gap-2 px-3 py-2 bg-[#a78bfa]/10 border border-[#a78bfa]/20 rounded-lg text-[#a78bfa] text-xs font-medium">
-                        <i class="fa-solid fa-plus text-xs"></i>Škálovat
-                    </button>
-                </div>
-                <!-- Machine 1 -->
-                <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                            <span class="text-textMain font-medium text-xs font-mono">fra-01 · 4d4e555f</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-                    </div>
-                    <p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div>
-                            <div class="text-xs text-textSec mb-1">CPU</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#a78bfa] rounded-full" style="width:68%"></div>
-                            </div>
-                            <div class="text-xs text-textMain mt-1">68%</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">RAM</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#3b82f6] rounded-full" style="width:44%"></div>
-                            </div>
-                            <div class="text-xs text-textMain mt-1">880 MB</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">Uptime</div>
-                            <div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Machine 2 -->
-                <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                            <span class="text-textMain font-medium text-xs font-mono">fra-02 · 7f8a992b</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-                    </div>
-                    <p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div>
-                            <div class="text-xs text-textSec mb-1">CPU</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-secondary rounded-full" style="width:91%"></div>
-                            </div>
-                            <div class="text-xs text-secondary mt-1">91% ⚠</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">RAM</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#3b82f6] rounded-full" style="width:52%"></div>
-                            </div>
-                            <div class="text-xs text-textMain mt-1">1.04 GB</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">Uptime</div>
-                            <div class="text-xs text-textMain mt-1 font-mono">3h 18m</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Machine 3 -->
-                <div class="p-4 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                            <span class="text-textMain font-medium text-xs font-mono">fra-03 · b1c2d3e4</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">running</span>
-                    </div>
-                    <p class="text-xs text-textSec mb-3">shared-cpu-2x · 2 GB RAM</p>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div>
-                            <div class="text-xs text-textSec mb-1">CPU</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#a78bfa] rounded-full" style="width:62%"></div>
-                            </div>
-                            <div class="text-xs text-textMain mt-1">62%</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">RAM</div>
-                            <div class="w-full h-1.5 bg-[#0a1628] rounded-full overflow-hidden">
-                                <div class="h-full bg-[#3b82f6] rounded-full" style="width:38%"></div>
-                            </div>
-                            <div class="text-xs text-textMain mt-1">760 MB</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-textSec mb-1">Uptime</div>
-                            <div class="text-xs text-textMain mt-1 font-mono">18h 42m</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- Error Log – Accordion -->
+			<section
+				id="errors-section"
+				class="overflow-hidden rounded-xl border border-[#1e293b] bg-card"
+			>
+				<button
+					onclick="toggleAccordion('acc-errors')"
+					class="flex w-full items-center justify-between p-4 text-left"
+				>
+					<div class="flex items-center gap-3">
+						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-error/15">
+							<i class="fa-solid fa-triangle-exclamation text-xs text-error"></i>
+						</div>
+						<div>
+							<p class="text-sm font-semibold text-textMain">Runtime error log</p>
+							<p class="text-xs text-textSec">24h · 8 záznamů</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="rounded-full bg-error/10 px-2 py-0.5 text-xs font-bold text-error">8</span>
+						<i
+							class="fa-solid fa-chevron-down accordion-icon text-xs text-textSec"
+							id="icon-errors"
+						></i>
+					</div>
+				</button>
+				<div class="accordion-content open" id="acc-errors">
+					<div class="px-4 pb-4">
+						<!-- Filter bar -->
+						<div class="mb-4 flex gap-2">
+							<div class="flex flex-1 overflow-hidden rounded-lg border border-[#334155]">
+								<button class="flex-1 bg-error/20 py-2 text-xs font-medium text-error">Vše</button>
+								<button
+									class="flex-1 bg-transparent py-2 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									OOM
+								</button>
+								<button
+									class="flex-1 bg-transparent py-2 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									Crash
+								</button>
+								<button
+									class="flex-1 bg-transparent py-2 text-xs font-medium text-textSec hover:bg-[#1e293b]"
+								>
+									Health
+								</button>
+							</div>
+						</div>
+						<!-- Error cards -->
+						<div class="space-y-2">
+							<div class="rounded-xl border border-error/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span class="rounded bg-error/15 px-1.5 py-0.5 text-xs font-medium text-error"
+											>OOM Kill</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-02</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">14:51:02</span>
+								</div>
+								<p class="text-xs text-textMain">Process killed – exceeded 2 GB memory limit</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Restartováno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-secondary/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-secondary/15 px-1.5 py-0.5 text-xs font-medium text-secondary"
+											>Crash</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-02</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">13:22:44</span>
+								</div>
+								<p class="text-xs text-textMain">Unhandled exception in /api/v2/orders handler</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Restartováno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-[#3b82f6]/15 px-1.5 py-0.5 text-xs font-medium text-[#3b82f6]"
+											>Health</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-01</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">11:08:31</span>
+								</div>
+								<p class="text-xs text-textMain">Health check failed 3x – /health returned 503</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Vyřešeno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-secondary/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-secondary/15 px-1.5 py-0.5 text-xs font-medium text-secondary"
+											>Crash</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-02</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">10:44:19</span>
+								</div>
+								<p class="text-xs text-textMain">SIGKILL received after 30s startup timeout</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Vyřešeno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-error/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span class="rounded bg-error/15 px-1.5 py-0.5 text-xs font-medium text-error"
+											>OOM Kill</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-03</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">08:17:55</span>
+								</div>
+								<p class="text-xs text-textMain">RSS memory exceeded limit during batch job</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Restartováno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-[#8b5cf6]/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-[#8b5cf6]/15 px-1.5 py-0.5 text-xs font-medium text-[#8b5cf6]"
+											>Timeout</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-01</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">06:03:12</span>
+								</div>
+								<p class="text-xs text-textMain">Request timeout 30s exceeded on POST /webhooks</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Vyřešeno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-secondary/20 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-secondary/15 px-1.5 py-0.5 text-xs font-medium text-secondary"
+											>Crash</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-02</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">03:40:08</span>
+								</div>
+								<p class="text-xs text-textMain">Segfault in native addon – node-canvas v2.11.2</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Restartováno</span
+									>
+								</div>
+							</div>
+							<div class="rounded-xl border border-[#334155]/40 bg-[#1e293b]/40 p-3">
+								<div class="mb-1.5 flex items-center justify-between">
+									<div class="flex items-center gap-2">
+										<span
+											class="rounded bg-[#3b82f6]/15 px-1.5 py-0.5 text-xs font-medium text-[#3b82f6]"
+											>Health</span
+										>
+										<span class="font-mono text-xs text-textSec">fra-01</span>
+									</div>
+									<span class="font-mono text-xs text-textSec">01:14:33</span>
+								</div>
+								<p class="text-xs text-textMain">
+									Readiness probe failed – DB connection not ready
+								</p>
+								<div class="mt-1.5">
+									<span class="rounded bg-success/10 px-1.5 py-0.5 text-xs text-success"
+										>Vyřešeno</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
 
-    <!-- Deploy History – Accordion -->
-    <section id="deploys-section" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAccordion('acc-deploys')" class="w-full flex items-center justify-between p-4 text-left">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center">
-                    <i class="fa-solid fa-rocket text-secondary text-xs"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-textMain">Historie deployů</p>
-                    <p class="text-xs text-textSec">Posledních 7 dní</p>
-                </div>
-            </div>
-            <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon" id="icon-deploys"></i>
-        </button>
-        <div class="accordion-content" id="acc-deploys">
-            <div class="px-4 pb-4 space-y-3">
-                <div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-                    <div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-check text-success text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-textMain text-sm font-semibold">v2.14.1</span>
-                            <span class="text-xs text-textSec">Dnes 11:04</span>
-                        </div>
-                        <p class="text-xs text-textSec mt-0.5 truncate">Fix: memory leak in session handler</p>
-                        <p class="text-xs text-textSec mt-0.5">38s · 3 stroje ✓</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-                    <div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-check text-success text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-textMain text-sm font-semibold">v2.14.0</span>
-                            <span class="text-xs text-textSec">Včera 16:32</span>
-                        </div>
-                        <p class="text-xs text-textSec mt-0.5 truncate">feat: nový API endpoint /v2/orders</p>
-                        <p class="text-xs text-textSec mt-0.5">44s · 3 stroje ✓</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-                    <div class="mt-0.5 w-7 h-7 rounded-lg bg-error/15 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-xmark text-error text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-textMain text-sm font-semibold">v2.13.9</span>
-                            <span class="text-xs text-textSec">2 dny 09:15</span>
-                        </div>
-                        <p class="text-xs text-error mt-0.5 truncate">Failed: health check timeout</p>
-                        <p class="text-xs text-textSec mt-0.5">Rollback → v2.13.8</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3 py-2 border-b border-[#1e293b]/60">
-                    <div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-check text-success text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-textMain text-sm font-semibold">v2.13.8</span>
-                            <span class="text-xs text-textSec">3 dny 14:00</span>
-                        </div>
-                        <p class="text-xs text-textSec mt-0.5 truncate">chore: deps update, perf patches</p>
-                        <p class="text-xs text-textSec mt-0.5">41s · 3 stroje ✓</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3 py-2">
-                    <div class="mt-0.5 w-7 h-7 rounded-lg bg-success/15 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-check text-success text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="text-textMain text-sm font-semibold">v2.13.7</span>
-                            <span class="text-xs text-textSec">5 dní 08:22</span>
-                        </div>
-                        <p class="text-xs text-textSec mt-0.5 truncate">fix: rate limiter edge case</p>
-                        <p class="text-xs text-textSec mt-0.5">36s · 3 stroje ✓</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+		<!-- Bottom Navigation Bar -->
+		<nav
+			id="bottom-nav"
+			class="safe-area-bottom fixed right-0 bottom-0 left-0 z-30 flex items-center justify-around border-t border-[#1e293b] bg-card px-2 py-2"
+		>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-1.5 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gauge-high text-base"></i>
+				<span class="text-xs">Dashboard</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-1.5 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-server text-base"></i>
+				<span class="text-xs">Dostupnost</span>
+			</a>
+			<a href="#" class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-1.5 text-[#a78bfa]">
+				<i class="fa-solid fa-microchip text-base"></i>
+				<span class="text-xs font-medium">Runtime</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-1.5 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-bolt text-base"></i>
+				<span class="text-xs">Perf</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-w-[44px] flex-col items-center gap-1 px-3 py-1.5 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gear text-base"></i>
+				<span class="text-xs">Nastavení</span>
+			</a>
+		</nav>
 
-    <!-- Error Log – Accordion -->
-    <section id="errors-section" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAccordion('acc-errors')" class="w-full flex items-center justify-between p-4 text-left">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-error/15 flex items-center justify-center">
-                    <i class="fa-solid fa-triangle-exclamation text-error text-xs"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-textMain">Runtime error log</p>
-                    <p class="text-xs text-textSec">24h · 8 záznamů</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-bold">8</span>
-                <i class="fa-solid fa-chevron-down text-textSec text-xs accordion-icon" id="icon-errors"></i>
-            </div>
-        </button>
-        <div class="accordion-content open" id="acc-errors">
-            <div class="px-4 pb-4">
-                <!-- Filter bar -->
-                <div class="flex gap-2 mb-4">
-                    <div class="flex rounded-lg overflow-hidden border border-[#334155] flex-1">
-                        <button class="flex-1 py-2 bg-error/20 text-error text-xs font-medium">Vše</button>
-                        <button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">OOM</button>
-                        <button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Crash</button>
-                        <button class="flex-1 py-2 bg-transparent text-textSec text-xs font-medium hover:bg-[#1e293b]">Health</button>
-                    </div>
-                </div>
-                <!-- Error cards -->
-                <div class="space-y-2">
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span>
-                                <span class="text-xs text-textSec font-mono">fra-02</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">14:51:02</span>
-                        </div>
-                        <p class="text-xs text-textMain">Process killed – exceeded 2 GB memory limit</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-                                <span class="text-xs text-textSec font-mono">fra-02</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">13:22:44</span>
-                        </div>
-                        <p class="text-xs text-textMain">Unhandled exception in /api/v2/orders handler</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span>
-                                <span class="text-xs text-textSec font-mono">fra-01</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">11:08:31</span>
-                        </div>
-                        <p class="text-xs text-textMain">Health check failed 3x – /health returned 503</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-                                <span class="text-xs text-textSec font-mono">fra-02</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">10:44:19</span>
-                        </div>
-                        <p class="text-xs text-textMain">SIGKILL received after 30s startup timeout</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-error/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">OOM Kill</span>
-                                <span class="text-xs text-textSec font-mono">fra-03</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">08:17:55</span>
-                        </div>
-                        <p class="text-xs text-textMain">RSS memory exceeded limit during batch job</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#8b5cf6]/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">Timeout</span>
-                                <span class="text-xs text-textSec font-mono">fra-01</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">06:03:12</span>
-                        </div>
-                        <p class="text-xs text-textMain">Request timeout 30s exceeded on POST /webhooks</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-secondary/20">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Crash</span>
-                                <span class="text-xs text-textSec font-mono">fra-02</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">03:40:08</span>
-                        </div>
-                        <p class="text-xs text-textMain">Segfault in native addon – node-canvas v2.11.2</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Restartováno</span>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-[#1e293b]/40 border border-[#334155]/40">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Health</span>
-                                <span class="text-xs text-textSec font-mono">fra-01</span>
-                            </div>
-                            <span class="text-xs text-textSec font-mono">01:14:33</span>
-                        </div>
-                        <p class="text-xs text-textMain">Readiness probe failed – DB connection not ready</p>
-                        <div class="mt-1.5">
-                            <span class="px-1.5 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+		<script>
+			// Drawer
+			function openDrawer() {
+				document.getElementById('nav-drawer').classList.add('drawer-open');
+				document.getElementById('drawer-overlay').classList.add('drawer-overlay-visible');
+			}
+			function closeDrawer() {
+				document.getElementById('nav-drawer').classList.remove('drawer-open');
+				document.getElementById('drawer-overlay').classList.remove('drawer-overlay-visible');
+			}
 
-</main>
+			// Accordion
+			function toggleAccordion(id) {
+				const content = document.getElementById(id);
+				const iconId = 'icon-' + id.replace('acc-', '');
+				const icon = document.getElementById(iconId);
+				content.classList.toggle('open');
+				if (icon) icon.classList.toggle('open');
+			}
 
-<!-- Bottom Navigation Bar -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center justify-around px-2 py-2 safe-area-bottom">
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
-        <i class="fa-solid fa-gauge-high text-base"></i>
-        <span class="text-xs">Dashboard</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
-        <i class="fa-solid fa-server text-base"></i>
-        <span class="text-xs">Dostupnost</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-[#a78bfa] min-w-[44px]">
-        <i class="fa-solid fa-microchip text-base"></i>
-        <span class="text-xs font-medium">Runtime</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
-        <i class="fa-solid fa-bolt text-base"></i>
-        <span class="text-xs">Perf</span>
-    </a>
-    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1.5 text-textSec hover:text-textMain transition-colors min-w-[44px]">
-        <i class="fa-solid fa-gear text-base"></i>
-        <span class="text-xs">Nastavení</span>
-    </a>
-</nav>
+			// Chart Tabs
+			function switchChart(tab) {
+				const panels = document.querySelectorAll('.chart-panel');
+				panels.forEach((p) => p.classList.add('hidden'));
+				document.getElementById('panel-' + tab).classList.remove('hidden');
 
-<script>
-    // Drawer
-    function openDrawer() {
-        document.getElementById('nav-drawer').classList.add('drawer-open');
-        document.getElementById('drawer-overlay').classList.add('drawer-overlay-visible');
-    }
-    function closeDrawer() {
-        document.getElementById('nav-drawer').classList.remove('drawer-open');
-        document.getElementById('drawer-overlay').classList.remove('drawer-overlay-visible');
-    }
+				const tabs = ['cpu', 'ram', 'response', 'network'];
+				tabs.forEach((t) => {
+					const btn = document.getElementById('tab-' + t);
+					if (t === tab) {
+						btn.classList.add('tab-active');
+						btn.classList.remove('text-textSec');
+					} else {
+						btn.classList.remove('tab-active');
+						btn.classList.add('text-textSec');
+					}
+				});
 
-    // Accordion
-    function toggleAccordion(id) {
-        const content = document.getElementById(id);
-        const iconId = 'icon-' + id.replace('acc-', '');
-        const icon = document.getElementById(iconId);
-        content.classList.toggle('open');
-        if (icon) icon.classList.toggle('open');
-    }
+				// Trigger Plotly resize for the newly visible chart
+				setTimeout(() => {
+					try {
+						Plotly.Plots.resize(document.getElementById('chart-' + tab));
+					} catch (e) {}
+				}, 50);
+			}
 
-    // Chart Tabs
-    function switchChart(tab) {
-        const panels = document.querySelectorAll('.chart-panel');
-        panels.forEach(p => p.classList.add('hidden'));
-        document.getElementById('panel-' + tab).classList.remove('hidden');
+			window.addEventListener('load', function () {
+				const bgCard = '#111d33';
+				const textSec = '#94a3b8';
+				const errorColor = '#ef4444';
+				const secondaryColor = '#f97316';
+				const purpleColor = '#a78bfa';
+				const blueColor = '#3b82f6';
+				const greenColor = '#3ecf8e';
+				const gridColor = 'rgba(30,41,59,0.8)';
 
-        const tabs = ['cpu', 'ram', 'response', 'network'];
-        tabs.forEach(t => {
-            const btn = document.getElementById('tab-' + t);
-            if (t === tab) {
-                btn.classList.add('tab-active');
-                btn.classList.remove('text-textSec');
-            } else {
-                btn.classList.remove('tab-active');
-                btn.classList.add('text-textSec');
-            }
-        });
+				const commonLayout = {
+					paper_bgcolor: bgCard,
+					plot_bgcolor: bgCard,
+					font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+					margin: { t: 8, r: 8, b: 32, l: 38 },
+					showlegend: false,
+					xaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false,
+						nticks: 6
+					},
+					yaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false
+					}
+				};
 
-        // Trigger Plotly resize for the newly visible chart
-        setTimeout(() => {
-            try { Plotly.Plots.resize(document.getElementById('chart-' + tab)); } catch(e) {}
-        }, 50);
-    }
+				const config = { responsive: true, displayModeBar: false, displaylogo: false };
+				const hours = [
+					'00:00',
+					'02:00',
+					'04:00',
+					'06:00',
+					'08:00',
+					'10:00',
+					'12:00',
+					'14:00',
+					'16:00',
+					'18:00',
+					'20:00',
+					'22:00'
+				];
 
-    window.addEventListener('load', function () {
-        const bgCard = '#111d33';
-        const textSec = '#94a3b8';
-        const errorColor = '#ef4444';
-        const secondaryColor = '#f97316';
-        const purpleColor = '#a78bfa';
-        const blueColor = '#3b82f6';
-        const greenColor = '#3ecf8e';
-        const gridColor = 'rgba(30,41,59,0.8)';
+				// CPU
+				try {
+					const avgCpu = [28, 24, 30, 38, 52, 64, 71, 74, 68, 62, 55, 48];
+					const peakCpu = [45, 38, 51, 62, 78, 88, 91, 91, 84, 78, 70, 61];
+					Plotly.newPlot(
+						'chart-cpu',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: peakCpu,
+								line: { color: secondaryColor, width: 1.5, shape: 'spline', dash: 'dot' },
+								fillcolor: 'rgba(249,115,22,0.06)',
+								hovertemplate: '<b>%{x}</b><br>Peak: %{y}%<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: avgCpu,
+								line: { color: purpleColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(167,139,250,0.10)',
+								hovertemplate: '<b>%{x}</b><br>CPU: %{y}%<extra></extra>'
+							}
+						],
+						{ ...commonLayout, yaxis: { ...commonLayout.yaxis, range: [0, 100] } },
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-cpu').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
 
-        const commonLayout = {
-            paper_bgcolor: bgCard,
-            plot_bgcolor: bgCard,
-            font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
-            margin: { t: 8, r: 8, b: 32, l: 38 },
-            showlegend: false,
-            xaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false,
-                nticks: 6
-            },
-            yaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false
-            }
-        };
+				// RAM
+				try {
+					const ramData = [0.9, 0.85, 1.0, 1.1, 1.4, 1.7, 1.85, 1.8, 1.75, 1.65, 1.55, 1.4];
+					Plotly.newPlot(
+						'chart-ram',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: ramData,
+								line: { color: blueColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(59,130,246,0.10)',
+								hovertemplate: '<b>%{x}</b><br>RAM: %{y} GB<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								x: hours,
+								y: Array(hours.length).fill(4),
+								line: { color: errorColor, width: 1, dash: 'dot' },
+								hovertemplate: 'Limit: 4 GB<extra></extra>'
+							}
+						],
+						{ ...commonLayout, yaxis: { ...commonLayout.yaxis, range: [0, 4.5] } },
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-ram').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
 
-        const config = { responsive: true, displayModeBar: false, displaylogo: false };
-        const hours = ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'];
+				// Response
+				try {
+					const p50 = [88, 80, 95, 105, 112, 118, 122, 115, 108, 102, 96, 90];
+					const p99 = [320, 290, 380, 440, 600, 780, 840, 790, 660, 540, 420, 360];
+					Plotly.newPlot(
+						'chart-response',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: p99,
+								line: { color: secondaryColor, width: 1.5, shape: 'spline' },
+								fillcolor: 'rgba(249,115,22,0.07)',
+								hovertemplate: '<b>%{x}</b><br>P99: %{y}ms<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: p50,
+								line: { color: greenColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(62,207,142,0.10)',
+								hovertemplate: '<b>%{x}</b><br>P50: %{y}ms<extra></extra>'
+							}
+						],
+						commonLayout,
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-response').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
 
-        // CPU
-        try {
-            const avgCpu = [28,24,30,38,52,64,71,74,68,62,55,48];
-            const peakCpu = [45,38,51,62,78,88,91,91,84,78,70,61];
-            Plotly.newPlot('chart-cpu', [
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:peakCpu, line:{color:secondaryColor,width:1.5,shape:'spline',dash:'dot'}, fillcolor:'rgba(249,115,22,0.06)', hovertemplate:'<b>%{x}</b><br>Peak: %{y}%<extra></extra>' },
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:avgCpu, line:{color:purpleColor,width:2,shape:'spline'}, fillcolor:'rgba(167,139,250,0.10)', hovertemplate:'<b>%{x}</b><br>CPU: %{y}%<extra></extra>' }
-            ], { ...commonLayout, yaxis:{...commonLayout.yaxis,range:[0,100]} }, config);
-        } catch(e) {
-            document.getElementById('chart-cpu').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
+				// Network
+				try {
+					const netIn = [180, 150, 200, 260, 420, 680, 840, 900, 780, 650, 520, 380];
+					const netOut = [320, 280, 360, 480, 780, 1200, 1560, 1620, 1380, 1100, 880, 620];
+					Plotly.newPlot(
+						'chart-network',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: netOut,
+								line: { color: greenColor, width: 1.5, shape: 'spline' },
+								fillcolor: 'rgba(62,207,142,0.08)',
+								hovertemplate: '<b>%{x}</b><br>OUT: %{y} MB<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								x: hours,
+								y: netIn,
+								line: { color: blueColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(59,130,246,0.10)',
+								hovertemplate: '<b>%{x}</b><br>IN: %{y} MB<extra></extra>'
+							}
+						],
+						commonLayout,
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-network').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
 
-        // RAM
-        try {
-            const ramData = [0.9,0.85,1.0,1.1,1.4,1.7,1.85,1.8,1.75,1.65,1.55,1.4];
-            Plotly.newPlot('chart-ram', [
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:ramData, line:{color:blueColor,width:2,shape:'spline'}, fillcolor:'rgba(59,130,246,0.10)', hovertemplate:'<b>%{x}</b><br>RAM: %{y} GB<extra></extra>' },
-                { type:'scatter', mode:'lines', x:hours, y:Array(hours.length).fill(4), line:{color:errorColor,width:1,dash:'dot'}, hovertemplate:'Limit: 4 GB<extra></extra>' }
-            ], { ...commonLayout, yaxis:{...commonLayout.yaxis,range:[0,4.5]} }, config);
-        } catch(e) {
-            document.getElementById('chart-ram').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
+				// HTTP Status Pie
+				try {
+					Plotly.newPlot(
+						'chart-http-status',
+						[
+							{
+								type: 'pie',
+								labels: ['2xx OK', '3xx Redirect', '4xx Client', '5xx Server'],
+								values: [94.2, 2.8, 2.1, 0.9],
+								hole: 0.62,
+								marker: {
+									colors: [greenColor, blueColor, secondaryColor, errorColor],
+									line: { color: bgCard, width: 2 }
+								},
+								textinfo: 'none',
+								hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>',
+								direction: 'clockwise'
+							}
+						],
+						{
+							paper_bgcolor: bgCard,
+							plot_bgcolor: bgCard,
+							font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+							margin: { t: 4, r: 4, b: 4, l: 4 },
+							showlegend: false,
+							annotations: [
+								{
+									text: '<b style="font-size:14px;color:#fff">94.2%</b>',
+									x: 0.5,
+									y: 0.5,
+									xanchor: 'center',
+									yanchor: 'middle',
+									showarrow: false,
+									font: { size: 11, color: '#ffffff' }
+								}
+							]
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-http-status').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
 
-        // Response
-        try {
-            const p50 = [88,80,95,105,112,118,122,115,108,102,96,90];
-            const p99 = [320,290,380,440,600,780,840,790,660,540,420,360];
-            Plotly.newPlot('chart-response', [
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:p99, line:{color:secondaryColor,width:1.5,shape:'spline'}, fillcolor:'rgba(249,115,22,0.07)', hovertemplate:'<b>%{x}</b><br>P99: %{y}ms<extra></extra>' },
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:p50, line:{color:greenColor,width:2,shape:'spline'}, fillcolor:'rgba(62,207,142,0.10)', hovertemplate:'<b>%{x}</b><br>P50: %{y}ms<extra></extra>' }
-            ], commonLayout, config);
-        } catch(e) {
-            document.getElementById('chart-response').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
-
-        // Network
-        try {
-            const netIn  = [180,150,200,260,420,680,840,900,780,650,520,380];
-            const netOut = [320,280,360,480,780,1200,1560,1620,1380,1100,880,620];
-            Plotly.newPlot('chart-network', [
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:netOut, line:{color:greenColor,width:1.5,shape:'spline'}, fillcolor:'rgba(62,207,142,0.08)', hovertemplate:'<b>%{x}</b><br>OUT: %{y} MB<extra></extra>' },
-                { type:'scatter', mode:'lines', fill:'tozeroy', x:hours, y:netIn, line:{color:blueColor,width:2,shape:'spline'}, fillcolor:'rgba(59,130,246,0.10)', hovertemplate:'<b>%{x}</b><br>IN: %{y} MB<extra></extra>' }
-            ], commonLayout, config);
-        } catch(e) {
-            document.getElementById('chart-network').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
-
-        // HTTP Status Pie
-        try {
-            Plotly.newPlot('chart-http-status', [
-                {
-                    type:'pie',
-                    labels:['2xx OK','3xx Redirect','4xx Client','5xx Server'],
-                    values:[94.2,2.8,2.1,0.9],
-                    hole:0.62,
-                    marker:{ colors:[greenColor,blueColor,secondaryColor,errorColor], line:{color:bgCard,width:2} },
-                    textinfo:'none',
-                    hovertemplate:'<b>%{label}</b><br>%{value}%<extra></extra>',
-                    direction:'clockwise'
-                }
-            ], {
-                paper_bgcolor: bgCard,
-                plot_bgcolor: bgCard,
-                font:{ family:'Inter, sans-serif', color:textSec, size:10 },
-                margin:{ t:4, r:4, b:4, l:4 },
-                showlegend:false,
-                annotations:[{
-                    text:'<b style="font-size:14px;color:#fff">94.2%</b>',
-                    x:0.5, y:0.5,
-                    xanchor:'center', yanchor:'middle',
-                    showarrow:false,
-                    font:{ size:11, color:'#ffffff' }
-                }]
-            }, config);
-        } catch(e) {
-            document.getElementById('chart-http-status').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
-
-        // RPM Bar
-        try {
-            const rpm = [280,240,310,420,740,1120,1480,1640,1390,1180,920,660];
-            Plotly.newPlot('chart-rpm', [
-                {
-                    type:'bar',
-                    x:hours,
-                    y:rpm,
-                    marker:{ color:rpm.map(v => v > 1400 ? purpleColor : 'rgba(167,139,250,0.45)'), opacity:0.9 },
-                    hovertemplate:'<b>%{x}</b><br>%{y} req/min<extra></extra>'
-                }
-            ], {
-                ...commonLayout,
-                bargap:0.35,
-                margin:{ t:8, r:8, b:32, l:38 }
-            }, config);
-        } catch(e) {
-            document.getElementById('chart-rpm').innerHTML = '<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
-        }
-    });
-</script>
-</body>
+				// RPM Bar
+				try {
+					const rpm = [280, 240, 310, 420, 740, 1120, 1480, 1640, 1390, 1180, 920, 660];
+					Plotly.newPlot(
+						'chart-rpm',
+						[
+							{
+								type: 'bar',
+								x: hours,
+								y: rpm,
+								marker: {
+									color: rpm.map((v) => (v > 1400 ? purpleColor : 'rgba(167,139,250,0.45)')),
+									opacity: 0.9
+								},
+								hovertemplate: '<b>%{x}</b><br>%{y} req/min<extra></extra>'
+							}
+						],
+						{
+							...commonLayout,
+							bargap: 0.35,
+							margin: { t: 8, r: 8, b: 32, l: 38 }
+						},
+						config
+					);
+				} catch (e) {
+					document.getElementById('chart-rpm').innerHTML =
+						'<div style="color:#94a3b8;text-align:center;padding:20px;font-size:12px">Graf není dostupný</div>';
+				}
+			});
+		</script>
+	</body>
 </html>

@@ -22,15 +22,18 @@
 			</div>
 			<div class="flex items-end gap-2 {kpi.barWidth ? 'mb-3' : ''}">
 				<span
-					class="text-3xl font-bold {kpi.key === 'blockedThreats' ? 'text-secondary' : 'text-textMain'}"
-					>{kpi.value}</span
+					class="text-3xl font-bold {kpi.key === 'blockedThreats'
+						? 'text-secondary'
+						: 'text-textMain'}">{kpi.value}</span
 				>
 				{#if kpi.unit}
 					<span class="text-sm text-textSec mb-1">{kpi.unit}</span>
 				{/if}
 				{#if kpi.trend}
 					<span
-						class="text-sm {kpi.trendPositive ? 'text-success' : 'text-secondary'} mb-1 flex items-center gap-1 ml-1"
+						class="text-sm {kpi.trendPositive
+							? 'text-success'
+							: 'text-secondary'} mb-1 flex items-center gap-1 ml-1"
 					>
 						<i class="fa-solid fa-arrow-up text-xs"></i>{kpi.trend}
 					</span>
@@ -57,8 +60,8 @@
 				<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
 			</div>
 			<div class="text-2xl font-bold text-textMain">
-				{kpi.value}{#if kpi.unit} <span class="text-sm font-normal text-textSec">{kpi.unit}</span
-					>{/if}
+				{kpi.value}{#if kpi.unit}
+					<span class="text-sm font-normal text-textSec">{kpi.unit}</span>{/if}
 			</div>
 			<p class="text-xs text-textSec mt-1">
 				{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}
@@ -86,7 +89,9 @@
 						{#if kpi.unit}<span class="text-sm text-textSec mb-1">{kpi.unit}</span>{/if}
 						{#if kpi.trend}
 							<span
-								class="text-sm {kpi.trendPositive ? 'text-success' : 'text-secondary'} mb-1 flex items-center gap-1 ml-1"
+								class="text-sm {kpi.trendPositive
+									? 'text-success'
+									: 'text-secondary'} mb-1 flex items-center gap-1 ml-1"
 							>
 								<i class="fa-solid fa-arrow-up text-xs"></i>{kpi.trend}
 							</span>

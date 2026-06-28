@@ -57,7 +57,9 @@
 					<i class="fa-solid fa-database text-green-muted text-xs"></i>
 				</div>
 				<div>
-					<h1 class="text-sm font-bold text-textMain leading-tight">{t('database_header_title')}</h1>
+					<h1 class="text-sm font-bold text-textMain leading-tight">
+						{t('database_header_title')}
+					</h1>
 					<p class="text-xs text-textSec">eu-west-1 · Prod</p>
 				</div>
 			</div>

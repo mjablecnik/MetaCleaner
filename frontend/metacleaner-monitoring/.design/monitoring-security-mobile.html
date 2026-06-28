@@ -1,773 +1,1156 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Signals</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
-    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: '#0a1628',
-                        card: '#111d33',
-                        primary: '#22c55e',
-                        secondary: '#f97316',
-                        textMain: '#ffffff',
-                        textSec: '#94a3b8',
-                        error: '#ef4444',
-                        success: '#22c55e',
-                        badge: '#1e293b',
-                        border: '#1e293b'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a1628; color: #ffffff; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { display: none; }
-        .drawer-overlay { transition: opacity 0.3s ease; }
-        .drawer-panel { transition: transform 0.3s ease; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .accordion-body { display: none; }
-        .accordion-body.open { display: block; }
-    </style>
-</head>
-<body class="flex flex-col bg-background min-h-screen">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Security Signals</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							background: '#0a1628',
+							card: '#111d33',
+							primary: '#22c55e',
+							secondary: '#f97316',
+							textMain: '#ffffff',
+							textSec: '#94a3b8',
+							error: '#ef4444',
+							success: '#22c55e',
+							badge: '#1e293b',
+							border: '#1e293b'
+						},
+						fontFamily: {
+							sans: ['Inter', 'sans-serif']
+						}
+					}
+				}
+			};
+		</script>
+		<style>
+			body {
+				font-family: 'Inter', sans-serif;
+				background-color: #0a1628;
+				color: #ffffff;
+				margin: 0;
+				padding: 0;
+			}
+			::-webkit-scrollbar {
+				display: none;
+			}
+			.drawer-overlay {
+				transition: opacity 0.3s ease;
+			}
+			.drawer-panel {
+				transition: transform 0.3s ease;
+			}
+			.tab-content {
+				display: none;
+			}
+			.tab-content.active {
+				display: block;
+			}
+			.accordion-body {
+				display: none;
+			}
+			.accordion-body.open {
+				display: block;
+			}
+		</style>
+	</head>
+	<body class="flex min-h-screen flex-col bg-background">
+		<!-- Drawer Overlay -->
+		<div
+			id="drawer-overlay"
+			class="drawer-overlay pointer-events-none fixed inset-0 z-40 bg-black/60 opacity-0"
+			onclick="closeDrawer()"
+		></div>
 
-<!-- Drawer Overlay -->
-<div id="drawer-overlay" class="drawer-overlay fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none" onclick="closeDrawer()"></div>
+		<!-- Slide-over Drawer -->
+		<div
+			id="drawer-panel"
+			class="drawer-panel fixed top-0 left-0 z-50 flex h-full w-72 -translate-x-full transform flex-col border-r border-[#1e293b] bg-card"
+		>
+			<div class="flex items-center justify-between border-b border-[#1e293b] p-5">
+				<div class="flex items-center gap-3">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white"
+					>
+						M
+					</div>
+					<span class="text-xl font-bold tracking-tight text-textMain">Monitorly</span>
+				</div>
+				<button
+					onclick="closeDrawer()"
+					class="flex h-8 w-8 items-center justify-center rounded-lg text-textSec hover:bg-[#1e293b] hover:text-textMain"
+				>
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+			<nav class="flex-1 space-y-1 overflow-y-auto p-4">
+				<p class="mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Přehledy
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-server w-5 text-center"></i>Dostupnost
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp;
+					Pády
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Infrastruktura
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)
+				</a>
+				<p class="mt-5 mb-2 px-3 text-xs font-semibold tracking-wider text-textSec uppercase">
+					Analytika
+				</p>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-bolt w-5 text-center"></i>Performance
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg border border-[#334155]/60 bg-[#1e293b]/80 px-3 py-3 font-medium text-textMain"
+				>
+					<i class="fa-solid fa-shield-halved w-5 text-center text-error"></i>Security Signály
+				</a>
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky
+				</a>
+			</nav>
+			<div class="border-t border-[#1e293b] p-4">
+				<a
+					href="#"
+					class="flex items-center gap-3 rounded-lg px-3 py-3 text-textSec transition-colors hover:bg-[#1e293b]/50 hover:text-textMain"
+				>
+					<i class="fa-solid fa-gear w-5 text-center"></i>Nastavení
+				</a>
+			</div>
+		</div>
 
-<!-- Slide-over Drawer -->
-<div id="drawer-panel" class="drawer-panel fixed top-0 left-0 h-full w-72 bg-card border-r border-[#1e293b] z-50 flex flex-col transform -translate-x-full">
-    <div class="p-5 border-b border-[#1e293b] flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-sm">M</div>
-            <span class="text-xl font-bold text-textMain tracking-tight">Monitorly</span>
-        </div>
-        <button onclick="closeDrawer()" class="w-8 h-8 flex items-center justify-center rounded-lg text-textSec hover:text-textMain hover:bg-[#1e293b]">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-    </div>
-    <nav class="p-4 flex-1 overflow-y-auto space-y-1">
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mb-2 px-3">Přehledy</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-gauge-high w-5 text-center"></i>Dashboard
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-server w-5 text-center"></i>Dostupnost
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-triangle-exclamation w-5 text-center text-error"></i>Chyby &amp; Pády
-        </a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Infrastruktura</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-database w-5 text-center text-[#3ecf8e]"></i>Databáze (Supabase)
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-microchip w-5 text-center"></i>Runtime (Fly.io)
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-cloud w-5 text-center"></i>Edge (Cloudflare)
-        </a>
-        <p class="text-xs font-semibold text-textSec uppercase tracking-wider mt-5 mb-2 px-3">Analytika</p>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-bolt w-5 text-center"></i>Performance
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 bg-[#1e293b]/80 text-textMain rounded-lg font-medium border border-[#334155]/60">
-            <i class="fa-solid fa-shield-halved w-5 text-center text-error"></i>Security Signály
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-chart-line w-5 text-center"></i>Business Metriky
-        </a>
-    </nav>
-    <div class="p-4 border-t border-[#1e293b]">
-        <a href="#" class="flex items-center gap-3 px-3 py-3 text-textSec hover:text-textMain hover:bg-[#1e293b]/50 rounded-lg transition-colors">
-            <i class="fa-solid fa-gear w-5 text-center"></i>Nastavení
-        </a>
-    </div>
-</div>
+		<!-- Top App Bar -->
+		<header
+			id="header"
+			class="sticky top-0 z-30 border-b border-[#1e293b] bg-background/95 backdrop-blur-md"
+		>
+			<div class="flex items-center justify-between px-4 py-3">
+				<div class="flex items-center gap-3">
+					<button
+						onclick="openDrawer()"
+						class="flex h-10 w-10 items-center justify-center rounded-xl text-textSec transition-colors hover:bg-[#1e293b] hover:text-textMain"
+					>
+						<i class="fa-solid fa-bars text-lg"></i>
+					</button>
+					<div class="flex items-center gap-2">
+						<div
+							class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-white"
+						>
+							M
+						</div>
+						<span class="text-base font-bold tracking-tight text-textMain">Monitorly</span>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<div
+						class="flex items-center gap-1.5 rounded-lg border border-error/20 bg-error/10 px-2.5 py-1.5 text-xs font-medium text-error"
+					>
+						<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-error"></div>
+						3 hrozby
+					</div>
+					<button
+						class="flex h-10 w-10 items-center justify-center rounded-xl text-textSec transition-colors hover:bg-[#1e293b] hover:text-textMain"
+					>
+						<i class="fa-solid fa-download text-sm"></i>
+					</button>
+				</div>
+			</div>
+			<!-- Page Title Bar -->
+			<div class="flex items-center justify-between px-4 pb-3">
+				<div class="flex items-center gap-2.5">
+					<div
+						class="flex h-8 w-8 items-center justify-center rounded-lg border border-error/30 bg-error/15"
+					>
+						<i class="fa-solid fa-shield-halved text-xs text-error"></i>
+					</div>
+					<div>
+						<h1 class="text-base leading-tight font-bold text-textMain">Security Signály</h1>
+						<p class="text-xs text-textSec">Produkce · Všechny regiony</p>
+					</div>
+				</div>
+				<select
+					class="min-h-[36px] rounded-lg border border-[#334155] bg-[#1e293b] px-2.5 py-2 text-xs text-textMain focus:outline-none"
+				>
+					<option>24 hodin</option>
+					<option>7 dní</option>
+					<option>30 dní</option>
+				</select>
+			</div>
+		</header>
 
-<!-- Top App Bar -->
-<header id="header" class="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-[#1e293b]">
-    <div class="flex items-center justify-between px-4 py-3">
-        <div class="flex items-center gap-3">
-            <button onclick="openDrawer()" class="w-10 h-10 flex items-center justify-center rounded-xl text-textSec hover:text-textMain hover:bg-[#1e293b] transition-colors">
-                <i class="fa-solid fa-bars text-lg"></i>
-            </button>
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xs">M</div>
-                <span class="text-base font-bold text-textMain tracking-tight">Monitorly</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-2">
-            <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-xs font-medium">
-                <div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
-                3 hrozby
-            </div>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl text-textSec hover:text-textMain hover:bg-[#1e293b] transition-colors">
-                <i class="fa-solid fa-download text-sm"></i>
-            </button>
-        </div>
-    </div>
-    <!-- Page Title Bar -->
-    <div class="px-4 pb-3 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-error/15 border border-error/30 flex items-center justify-center">
-                <i class="fa-solid fa-shield-halved text-error text-xs"></i>
-            </div>
-            <div>
-                <h1 class="text-base font-bold text-textMain leading-tight">Security Signály</h1>
-                <p class="text-xs text-textSec">Produkce · Všechny regiony</p>
-            </div>
-        </div>
-        <select class="bg-[#1e293b] border border-[#334155] text-xs text-textMain rounded-lg px-2.5 py-2 focus:outline-none min-h-[36px]">
-            <option>24 hodin</option>
-            <option>7 dní</option>
-            <option>30 dní</option>
-        </select>
-    </div>
-</header>
+		<!-- Main Content -->
+		<main class="mx-auto w-full max-w-lg flex-1 space-y-4 px-4 py-4 pb-24">
+			<!-- KPI Primary Stats (2x2 grid) -->
+			<section id="sec-stats" class="grid grid-cols-2 gap-3">
+				<!-- Threat Score -->
+				<div
+					class="relative col-span-2 overflow-hidden rounded-xl border border-error/30 bg-card p-4"
+				>
+					<div
+						class="absolute top-0 right-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full bg-error/5"
+					></div>
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs font-medium text-textSec">Threat Score</h3>
+						<span class="rounded-full bg-error/10 px-2 py-0.5 text-xs font-medium text-error"
+							>Kritické</span
+						>
+					</div>
+					<div class="mb-3 flex items-center gap-3">
+						<span class="text-4xl font-bold text-error">74</span>
+						<div class="flex flex-col gap-0.5">
+							<span class="text-xs text-textSec">/ 100</span>
+							<span class="flex items-center gap-1 text-xs font-medium text-error"
+								><i class="fa-solid fa-arrow-up text-xs"></i>+12 dnes</span
+							>
+						</div>
+						<div class="ml-2 flex-1">
+							<div class="h-2 w-full overflow-hidden rounded-full bg-[#1e293b]">
+								<div
+									class="h-full rounded-full bg-gradient-to-r from-error/60 to-error"
+									style="width: 74%"
+								></div>
+							</div>
+							<p class="mt-1 text-xs text-textSec">Oproti včerejšku: +12 bodů</p>
+						</div>
+					</div>
+				</div>
 
-<!-- Main Content -->
-<main class="flex-1 w-full max-w-lg mx-auto px-4 py-4 space-y-4 pb-24">
+				<!-- Failed Logins -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs leading-tight font-medium text-textSec">Neúspěšná přihlášení</h3>
+					</div>
+					<div class="text-2xl font-bold text-textMain">1,284</div>
+					<div class="mt-0.5 flex items-center gap-1">
+						<span class="flex items-center gap-0.5 text-xs font-medium text-secondary"
+							><i class="fa-solid fa-arrow-up text-xs"></i>+340</span
+						>
+					</div>
+					<p class="mt-1.5 text-xs leading-tight text-textSec">Brute-force: 4 IP</p>
+					<span
+						class="mt-2 inline-block rounded-full bg-secondary/10 px-1.5 py-0.5 text-xs font-medium text-secondary"
+						>Varování</span
+					>
+				</div>
 
-    <!-- KPI Primary Stats (2x2 grid) -->
-    <section id="sec-stats" class="grid grid-cols-2 gap-3">
-        <!-- Threat Score -->
-        <div class="bg-card border border-error/30 rounded-xl p-4 relative overflow-hidden col-span-2">
-            <div class="absolute top-0 right-0 w-20 h-20 bg-error/5 rounded-full -translate-y-6 translate-x-6"></div>
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium">Threat Score</h3>
-                <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
-            </div>
-            <div class="flex items-center gap-3 mb-3">
-                <span class="text-4xl font-bold text-error">74</span>
-                <div class="flex flex-col gap-0.5">
-                    <span class="text-xs text-textSec">/ 100</span>
-                    <span class="text-xs text-error flex items-center gap-1 font-medium"><i class="fa-solid fa-arrow-up text-xs"></i>+12 dnes</span>
-                </div>
-                <div class="flex-1 ml-2">
-                    <div class="w-full h-2 bg-[#1e293b] rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-error/60 to-error rounded-full" style="width:74%"></div>
-                    </div>
-                    <p class="text-xs text-textSec mt-1">Oproti včerejšku: +12 bodů</p>
-                </div>
-            </div>
-        </div>
+				<!-- Blocked IPs -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<div class="mb-2 flex items-center justify-between">
+						<h3 class="text-xs leading-tight font-medium text-textSec">Blokované IP</h3>
+					</div>
+					<div class="text-2xl font-bold text-textMain">38</div>
+					<div class="mt-0.5 flex items-center gap-1">
+						<span class="flex items-center gap-0.5 text-xs font-medium text-success"
+							><i class="fa-solid fa-arrow-up text-xs"></i>+6</span
+						>
+					</div>
+					<p class="mt-1.5 text-xs leading-tight text-textSec">Auto: 28 · Manual: 10</p>
+					<span
+						class="mt-2 inline-block rounded-full bg-success/10 px-1.5 py-0.5 text-xs font-medium text-success"
+						>Aktivní</span
+					>
+				</div>
 
-        <!-- Failed Logins -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium leading-tight">Neúspěšná přihlášení</h3>
-            </div>
-            <div class="text-2xl font-bold text-textMain">1,284</div>
-            <div class="flex items-center gap-1 mt-0.5">
-                <span class="text-xs text-secondary flex items-center gap-0.5 font-medium"><i class="fa-solid fa-arrow-up text-xs"></i>+340</span>
-            </div>
-            <p class="text-xs text-textSec mt-1.5 leading-tight">Brute-force: 4 IP</p>
-            <span class="mt-2 inline-block px-1.5 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full font-medium">Varování</span>
-        </div>
+				<!-- Anomálie -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<h3 class="mb-2 text-xs font-medium text-textSec">Anomálie (24h)</h3>
+					<div class="text-2xl font-bold text-error">7</div>
+					<div class="mt-0.5 flex items-center gap-1">
+						<span class="flex items-center gap-0.5 text-xs font-medium text-error"
+							><i class="fa-solid fa-arrow-up text-xs"></i>+3</span
+						>
+					</div>
+					<p class="mt-1.5 text-xs leading-tight text-textSec">SQL, XSS, Rate</p>
+					<span
+						class="mt-2 inline-block rounded-full bg-error/10 px-1.5 py-0.5 text-xs font-medium text-error"
+						>Kritické</span
+					>
+				</div>
 
-        <!-- Blocked IPs -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-textSec text-xs font-medium leading-tight">Blokované IP</h3>
-            </div>
-            <div class="text-2xl font-bold text-textMain">38</div>
-            <div class="flex items-center gap-1 mt-0.5">
-                <span class="text-xs text-success flex items-center gap-0.5 font-medium"><i class="fa-solid fa-arrow-up text-xs"></i>+6</span>
-            </div>
-            <p class="text-xs text-textSec mt-1.5 leading-tight">Auto: 28 · Manual: 10</p>
-            <span class="mt-2 inline-block px-1.5 py-0.5 bg-success/10 text-success text-xs rounded-full font-medium">Aktivní</span>
-        </div>
+				<!-- SSL -->
+				<div class="rounded-xl border border-[#1e293b] bg-card p-4">
+					<h3 class="mb-2 text-xs font-medium text-textSec">SSL Certifikáty</h3>
+					<div class="text-2xl font-bold text-success">Platné</div>
+					<p class="mt-1.5 text-xs text-textSec">
+						Vyprší za: <span class="font-medium text-secondary">18 dní</span>
+					</p>
+					<div class="mt-2 flex h-8 w-8 items-center justify-center rounded-lg bg-success/15">
+						<i class="fa-solid fa-certificate text-xs text-success"></i>
+					</div>
+				</div>
+			</section>
 
-        <!-- Anomálie -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <h3 class="text-textSec text-xs font-medium mb-2">Anomálie (24h)</h3>
-            <div class="text-2xl font-bold text-error">7</div>
-            <div class="flex items-center gap-1 mt-0.5">
-                <span class="text-xs text-error flex items-center gap-0.5 font-medium"><i class="fa-solid fa-arrow-up text-xs"></i>+3</span>
-            </div>
-            <p class="text-xs text-textSec mt-1.5 leading-tight">SQL, XSS, Rate</p>
-            <span class="mt-2 inline-block px-1.5 py-0.5 bg-error/10 text-error text-xs rounded-full font-medium">Kritické</span>
-        </div>
+			<!-- Secondary Stats (horizontal scroll row) -->
+			<section id="sec-stats-2" class="-mx-4 overflow-x-auto px-4">
+				<div class="flex w-max gap-3">
+					<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-[#3b82f6]/15">
+							<i class="fa-solid fa-eye text-xs text-[#3b82f6]"></i>
+						</div>
+						<div class="text-xl font-bold text-textMain">12</div>
+						<p class="mt-0.5 text-xs leading-tight text-textSec">Skenování portů</p>
+					</div>
+					<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-error/15">
+							<i class="fa-solid fa-bug text-xs text-error"></i>
+						</div>
+						<div class="text-xl font-bold text-textMain">23</div>
+						<p class="mt-0.5 text-xs leading-tight text-textSec">SQL Injection</p>
+					</div>
+					<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-[#8b5cf6]/15">
+							<i class="fa-solid fa-key text-xs text-[#8b5cf6]"></i>
+						</div>
+						<div class="text-xl font-bold text-textMain">2</div>
+						<p class="mt-0.5 text-xs leading-tight text-textSec">API klíče – podezřelé</p>
+					</div>
+					<div class="w-36 flex-shrink-0 rounded-xl border border-[#1e293b] bg-card p-4">
+						<div class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-[#3b82f6]/15">
+							<i class="fa-solid fa-eye text-xs text-[#3b82f6]"></i>
+						</div>
+						<div class="text-xl font-bold text-textMain">12</div>
+						<p class="mt-0.5 text-xs leading-tight text-textSec">Unikátní útočníci</p>
+					</div>
+				</div>
+			</section>
 
-        <!-- SSL -->
-        <div class="bg-card border border-[#1e293b] rounded-xl p-4">
-            <h3 class="text-textSec text-xs font-medium mb-2">SSL Certifikáty</h3>
-            <div class="text-2xl font-bold text-success">Platné</div>
-            <p class="text-xs text-textSec mt-1.5">Vyprší za: <span class="text-secondary font-medium">18 dní</span></p>
-            <div class="w-8 h-8 rounded-lg bg-success/15 flex items-center justify-center mt-2">
-                <i class="fa-solid fa-certificate text-success text-xs"></i>
-            </div>
-        </div>
-    </section>
+			<!-- Active Threats (Priority Section) -->
+			<section id="sec-active" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<div class="flex items-center justify-between border-b border-[#1e293b] px-4 pt-4 pb-3">
+					<div>
+						<h3 class="text-base font-semibold text-textMain">Aktivní hrozby</h3>
+						<p class="mt-0.5 text-xs text-textSec">Vyžadují okamžitou pozornost</p>
+					</div>
+					<span
+						class="flex items-center gap-1.5 rounded-lg border border-error/20 bg-error/10 px-2.5 py-1 text-xs font-medium text-error"
+					>
+						<div class="h-1.5 w-1.5 animate-pulse rounded-full bg-error"></div>
+						3 aktivní
+					</span>
+				</div>
+				<div class="divide-y divide-[#1e293b]/60">
+					<!-- Threat 1 -->
+					<div class="bg-error/5 p-4">
+						<div class="flex items-start gap-3">
+							<div
+								class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-error/15"
+							>
+								<i class="fa-solid fa-user-ninja text-sm text-error"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="mb-1 flex flex-wrap items-center gap-2">
+									<p class="text-sm leading-tight font-semibold text-textMain">
+										Brute Force – Admin panel
+									</p>
+									<span class="rounded bg-error/20 px-1.5 py-0.5 text-xs font-medium text-error"
+										>Kritické</span
+									>
+								</div>
+								<p class="text-xs text-textSec">IP: 185.234.219.14 · RU · 1,084 pokusů za 2h</p>
+								<p class="mt-0.5 font-mono text-xs text-textSec">/api/auth/login</p>
+								<div class="mt-3 flex items-center justify-between">
+									<span class="text-xs font-bold text-error">14:32 – aktivní</span>
+									<button
+										class="min-h-[36px] rounded-lg bg-error px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-error/90"
+									>
+										Blokovat IP
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Threat 2 -->
+					<div class="bg-[#8b5cf6]/5 p-4">
+						<div class="flex items-start gap-3">
+							<div
+								class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[#8b5cf6]/15"
+							>
+								<i class="fa-solid fa-bug text-sm text-[#8b5cf6]"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="mb-1 flex flex-wrap items-center gap-2">
+									<p class="text-sm leading-tight font-semibold text-textMain">
+										SQL Injection pokus
+									</p>
+									<span
+										class="rounded bg-[#8b5cf6]/20 px-1.5 py-0.5 text-xs font-medium text-[#8b5cf6]"
+										>Vysoké</span
+									>
+								</div>
+								<p class="text-xs text-textSec">IP: 92.118.160.47 · CN · WAF blok</p>
+								<p class="mt-0.5 text-xs text-textSec">
+									Payload:
+									<code class="rounded bg-[#1e293b] px-1 text-xs text-[#8b5cf6]">1' OR '1'='1</code>
+								</p>
+								<div class="mt-3 flex items-center justify-between">
+									<span class="text-xs font-bold text-[#8b5cf6]">13:58 – aktivní</span>
+									<button
+										class="min-h-[36px] rounded-lg bg-[#8b5cf6] px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-[#7c3aed]"
+									>
+										Blokovat IP
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Threat 3 -->
+					<div class="bg-secondary/5 p-4">
+						<div class="flex items-start gap-3">
+							<div
+								class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-secondary/15"
+							>
+								<i class="fa-solid fa-key text-sm text-secondary"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<div class="mb-1 flex flex-wrap items-center gap-2">
+									<p class="text-sm leading-tight font-semibold text-textMain">
+										Podezřelý API klíč
+									</p>
+									<span
+										class="rounded bg-secondary/20 px-1.5 py-0.5 text-xs font-medium text-secondary"
+										>Střední</span
+									>
+								</div>
+								<p class="text-xs text-textSec">Key: sk_live_***8f2a · NG · u_4821</p>
+								<p class="mt-0.5 text-xs text-textSec">3,200 req/h (limit: 500)</p>
+								<div class="mt-3 flex items-center justify-between">
+									<span class="text-xs font-bold text-secondary">12:15 – aktivní</span>
+									<button
+										class="min-h-[36px] rounded-lg bg-secondary px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-orange-600"
+									>
+										Revokovat klíč
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Secondary Stats (horizontal scroll row) -->
-    <section id="sec-stats-2" class="overflow-x-auto -mx-4 px-4">
-        <div class="flex gap-3 w-max">
-            <div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
-                <div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-eye text-[#3b82f6] text-xs"></i>
-                </div>
-                <div class="text-xl font-bold text-textMain">12</div>
-                <p class="text-xs text-textSec mt-0.5 leading-tight">Skenování portů</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
-                <div class="w-8 h-8 rounded-lg bg-error/15 flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-bug text-error text-xs"></i>
-                </div>
-                <div class="text-xl font-bold text-textMain">23</div>
-                <p class="text-xs text-textSec mt-0.5 leading-tight">SQL Injection</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
-                <div class="w-8 h-8 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-key text-[#8b5cf6] text-xs"></i>
-                </div>
-                <div class="text-xl font-bold text-textMain">2</div>
-                <p class="text-xs text-textSec mt-0.5 leading-tight">API klíče – podezřelé</p>
-            </div>
-            <div class="bg-card border border-[#1e293b] rounded-xl p-4 w-36 flex-shrink-0">
-                <div class="w-8 h-8 rounded-lg bg-[#3b82f6]/15 flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-eye text-[#3b82f6] text-xs"></i>
-                </div>
-                <div class="text-xl font-bold text-textMain">12</div>
-                <p class="text-xs text-textSec mt-0.5 leading-tight">Unikátní útočníci</p>
-            </div>
-        </div>
-    </section>
+			<!-- Charts — tabbed -->
+			<section id="sec-charts" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<div class="border-b border-[#1e293b]">
+					<div class="flex">
+						<button
+							id="tab-btn-threats"
+							onclick="switchTab('threats')"
+							class="tab-btn flex-1 border-b-2 border-error py-3 text-xs font-semibold text-textMain transition-colors"
+						>
+							Události v čase
+						</button>
+						<button
+							id="tab-btn-geo"
+							onclick="switchTab('geo')"
+							class="tab-btn flex-1 border-b-2 border-transparent py-3 text-xs font-semibold text-textSec transition-colors hover:text-textMain"
+						>
+							Geografie
+						</button>
+						<button
+							id="tab-btn-attacks"
+							onclick="switchTab('attacks')"
+							class="tab-btn flex-1 border-b-2 border-transparent py-3 text-xs font-semibold text-textSec transition-colors hover:text-textMain"
+						>
+							Typy útoků
+						</button>
+					</div>
+				</div>
+				<!-- Tab: Threats -->
+				<div id="tab-threats" class="tab-content active p-4">
+					<div class="mb-3 flex items-center justify-between">
+						<p class="text-xs text-textSec">Hrozby za hodinu</p>
+						<div class="flex gap-2">
+							<span
+								class="flex items-center gap-1.5 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-2 w-2 rounded-full bg-error"></span>Kritické</span
+							>
+							<span
+								class="flex items-center gap-1.5 rounded bg-badge px-2 py-1 text-xs text-textSec"
+								><span class="inline-block h-2 w-2 rounded-full bg-secondary"></span>Varování</span
+							>
+						</div>
+					</div>
+					<div id="chart-threats" class="h-[200px] w-full"></div>
+				</div>
+				<!-- Tab: Geo -->
+				<div id="tab-geo" class="tab-content p-4">
+					<p class="mb-3 text-xs text-textSec">Top 5 zdrojových zemí</p>
+					<div id="chart-geo" class="h-[200px] w-full"></div>
+				</div>
+				<!-- Tab: Attacks -->
+				<div id="tab-attacks" class="tab-content p-4">
+					<p class="mb-3 text-xs text-textSec">Distribuce detekovaných hrozeb</p>
+					<div id="chart-attack-pie" class="h-[180px] w-full"></div>
+					<div class="mt-3 grid grid-cols-2 gap-2">
+						<div class="flex items-center gap-2 text-xs">
+							<span class="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-error"></span
+							><span class="text-textSec">Brute Force</span
+							><span class="ml-auto font-semibold text-textMain">42%</span>
+						</div>
+						<div class="flex items-center gap-2 text-xs">
+							<span class="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#8b5cf6]"></span
+							><span class="text-textSec">SQL Inject.</span
+							><span class="ml-auto font-semibold text-textMain">28%</span>
+						</div>
+						<div class="flex items-center gap-2 text-xs">
+							<span class="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-secondary"></span
+							><span class="text-textSec">XSS</span
+							><span class="ml-auto font-semibold text-textMain">18%</span>
+						</div>
+						<div class="flex items-center gap-2 text-xs">
+							<span class="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#3b82f6]"></span
+							><span class="text-textSec">Rate Abuse</span
+							><span class="ml-auto font-semibold text-textMain">12%</span>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <!-- Active Threats (Priority Section) -->
-    <section id="sec-active" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <div class="px-4 pt-4 pb-3 flex items-center justify-between border-b border-[#1e293b]">
-            <div>
-                <h3 class="text-base font-semibold text-textMain">Aktivní hrozby</h3>
-                <p class="text-xs text-textSec mt-0.5">Vyžadují okamžitou pozornost</p>
-            </div>
-            <span class="flex items-center gap-1.5 text-xs text-error bg-error/10 border border-error/20 px-2.5 py-1 rounded-lg font-medium">
-                <div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
-                3 aktivní
-            </span>
-        </div>
-        <div class="divide-y divide-[#1e293b]/60">
-            <!-- Threat 1 -->
-            <div class="p-4 bg-error/5">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-error/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <i class="fa-solid fa-user-ninja text-error text-sm"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <p class="text-textMain text-sm font-semibold leading-tight">Brute Force – Admin panel</p>
-                            <span class="px-1.5 py-0.5 bg-error/20 text-error text-xs rounded font-medium">Kritické</span>
-                        </div>
-                        <p class="text-xs text-textSec">IP: 185.234.219.14 · RU · 1,084 pokusů za 2h</p>
-                        <p class="text-xs text-textSec mt-0.5 font-mono">/api/auth/login</p>
-                        <div class="flex items-center justify-between mt-3">
-                            <span class="text-error font-bold text-xs">14:32 – aktivní</span>
-                            <button class="px-4 py-2 bg-error text-white text-xs font-medium rounded-lg hover:bg-error/90 transition-colors min-h-[36px]">Blokovat IP</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Threat 2 -->
-            <div class="p-4 bg-[#8b5cf6]/5">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-[#8b5cf6]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <i class="fa-solid fa-bug text-[#8b5cf6] text-sm"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <p class="text-textMain text-sm font-semibold leading-tight">SQL Injection pokus</p>
-                            <span class="px-1.5 py-0.5 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs rounded font-medium">Vysoké</span>
-                        </div>
-                        <p class="text-xs text-textSec">IP: 92.118.160.47 · CN · WAF blok</p>
-                        <p class="text-xs text-textSec mt-0.5">Payload: <code class="text-[#8b5cf6] bg-[#1e293b] px-1 rounded text-xs">1' OR '1'='1</code></p>
-                        <div class="flex items-center justify-between mt-3">
-                            <span class="text-[#8b5cf6] font-bold text-xs">13:58 – aktivní</span>
-                            <button class="px-4 py-2 bg-[#8b5cf6] text-white text-xs font-medium rounded-lg hover:bg-[#7c3aed] transition-colors min-h-[36px]">Blokovat IP</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Threat 3 -->
-            <div class="p-4 bg-secondary/5">
-                <div class="flex items-start gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-secondary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <i class="fa-solid fa-key text-secondary text-sm"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <p class="text-textMain text-sm font-semibold leading-tight">Podezřelý API klíč</p>
-                            <span class="px-1.5 py-0.5 bg-secondary/20 text-secondary text-xs rounded font-medium">Střední</span>
-                        </div>
-                        <p class="text-xs text-textSec">Key: sk_live_***8f2a · NG · u_4821</p>
-                        <p class="text-xs text-textSec mt-0.5">3,200 req/h (limit: 500)</p>
-                        <div class="flex items-center justify-between mt-3">
-                            <span class="text-secondary font-bold text-xs">12:15 – aktivní</span>
-                            <button class="px-4 py-2 bg-secondary text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors min-h-[36px]">Revokovat klíč</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- Failed Logins Chart -->
+			<section id="sec-logins-chart" class="rounded-xl border border-[#1e293b] bg-card p-4">
+				<div class="mb-3 flex items-center justify-between">
+					<div>
+						<h3 class="text-sm font-semibold text-textMain">Neúspěšná přihlášení</h3>
+						<p class="mt-0.5 text-xs text-textSec">Pokusy za hodinu</p>
+					</div>
+				</div>
+				<div id="chart-logins" class="h-[180px] w-full"></div>
+			</section>
 
-    <!-- Charts — tabbed -->
-    <section id="sec-charts" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <div class="border-b border-[#1e293b]">
-            <div class="flex">
-                <button id="tab-btn-threats" onclick="switchTab('threats')" class="tab-btn flex-1 py-3 text-xs font-semibold text-textMain border-b-2 border-error transition-colors">Události v čase</button>
-                <button id="tab-btn-geo" onclick="switchTab('geo')" class="tab-btn flex-1 py-3 text-xs font-semibold text-textSec border-b-2 border-transparent hover:text-textMain transition-colors">Geografie</button>
-                <button id="tab-btn-attacks" onclick="switchTab('attacks')" class="tab-btn flex-1 py-3 text-xs font-semibold text-textSec border-b-2 border-transparent hover:text-textMain transition-colors">Typy útoků</button>
-            </div>
-        </div>
-        <!-- Tab: Threats -->
-        <div id="tab-threats" class="tab-content active p-4">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-xs text-textSec">Hrozby za hodinu</p>
-                <div class="flex gap-2">
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error inline-block"></span>Kritické</span>
-                    <span class="px-2 py-1 bg-badge rounded text-xs text-textSec flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Varování</span>
-                </div>
-            </div>
-            <div id="chart-threats" class="h-[200px] w-full"></div>
-        </div>
-        <!-- Tab: Geo -->
-        <div id="tab-geo" class="tab-content p-4">
-            <p class="text-xs text-textSec mb-3">Top 5 zdrojových zemí</p>
-            <div id="chart-geo" class="h-[200px] w-full"></div>
-        </div>
-        <!-- Tab: Attacks -->
-        <div id="tab-attacks" class="tab-content p-4">
-            <p class="text-xs text-textSec mb-3">Distribuce detekovaných hrozeb</p>
-            <div id="chart-attack-pie" class="h-[180px] w-full"></div>
-            <div class="mt-3 grid grid-cols-2 gap-2">
-                <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-error flex-shrink-0"></span><span class="text-textSec">Brute Force</span><span class="text-textMain font-semibold ml-auto">42%</span></div>
-                <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] flex-shrink-0"></span><span class="text-textSec">SQL Inject.</span><span class="text-textMain font-semibold ml-auto">28%</span></div>
-                <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-secondary flex-shrink-0"></span><span class="text-textSec">XSS</span><span class="text-textMain font-semibold ml-auto">18%</span></div>
-                <div class="flex items-center gap-2 text-xs"><span class="w-2.5 h-2.5 rounded-full bg-[#3b82f6] flex-shrink-0"></span><span class="text-textSec">Rate Abuse</span><span class="text-textMain font-semibold ml-auto">12%</span></div>
-            </div>
-        </div>
-    </section>
+			<!-- Blocked IPs (Accordion) -->
+			<section id="sec-blocked" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<button
+					onclick="toggleAccordion('acc-ips')"
+					class="flex min-h-[56px] w-full items-center justify-between px-4 py-4"
+				>
+					<div class="flex items-center gap-3">
+						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-error/10">
+							<i class="fa-solid fa-ban text-xs text-error"></i>
+						</div>
+						<div class="text-left">
+							<p class="text-sm font-semibold text-textMain">Blokované IP adresy</p>
+							<p class="text-xs text-textSec">38 blokovaných · 5 zobrazeno</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-2">
+						<button
+							class="min-h-[36px] rounded-lg border border-[#334155] bg-[#1e293b] px-3 py-1.5 text-xs text-textSec"
+							onclick="event.stopPropagation()"
+						>
+							<i class="fa-solid fa-plus mr-1"></i>Přidat
+						</button>
+						<i
+							id="acc-ips-icon"
+							class="fa-solid fa-chevron-down text-xs text-textSec transition-transform duration-300"
+						></i>
+					</div>
+				</button>
+				<div id="acc-ips" class="accordion-body border-t border-[#1e293b]">
+					<div class="divide-y divide-[#1e293b]/60">
+						<div class="flex items-center gap-3 p-4">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-error/10"
+							>
+								<i class="fa-solid fa-ban text-xs text-error"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="font-mono text-sm text-textMain">185.234.219.14</p>
+								<p class="text-xs text-textSec">RU · Brute force · 1,084x</p>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<span class="rounded bg-error/15 px-1.5 py-0.5 text-xs font-medium text-error"
+									>Auto</span
+								>
+								<span class="text-xs text-textSec">14:32</span>
+							</div>
+						</div>
+						<div class="flex items-center gap-3 p-4">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-error/10"
+							>
+								<i class="fa-solid fa-ban text-xs text-error"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="font-mono text-sm text-textMain">92.118.160.47</p>
+								<p class="text-xs text-textSec">CN · SQL Injection · WAF</p>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<span
+									class="rounded bg-[#8b5cf6]/15 px-1.5 py-0.5 text-xs font-medium text-[#8b5cf6]"
+									>WAF</span
+								>
+								<span class="text-xs text-textSec">13:58</span>
+							</div>
+						</div>
+						<div class="flex items-center gap-3 p-4">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-secondary/10"
+							>
+								<i class="fa-solid fa-ban text-xs text-secondary"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="font-mono text-sm text-textMain">45.142.212.100</p>
+								<p class="text-xs text-textSec">UA · Rate abuse · 8,200/h</p>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<span
+									class="rounded bg-secondary/15 px-1.5 py-0.5 text-xs font-medium text-secondary"
+									>Auto</span
+								>
+								<span class="text-xs text-textSec">11:14</span>
+							</div>
+						</div>
+						<div class="flex items-center gap-3 p-4">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-[#3b82f6]/10"
+							>
+								<i class="fa-solid fa-ban text-xs text-[#3b82f6]"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="font-mono text-sm text-textMain">103.21.244.0/22</p>
+								<p class="text-xs text-textSec">IR · Manuální · CIDR</p>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<span
+									class="rounded bg-[#3b82f6]/15 px-1.5 py-0.5 text-xs font-medium text-[#3b82f6]"
+									>Manual</span
+								>
+								<span class="text-xs text-textSec">09:20</span>
+							</div>
+						</div>
+						<div class="flex items-center gap-3 p-4">
+							<div
+								class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-error/10"
+							>
+								<i class="fa-solid fa-ban text-xs text-error"></i>
+							</div>
+							<div class="min-w-0 flex-1">
+								<p class="font-mono text-sm text-textMain">194.165.16.75</p>
+								<p class="text-xs text-textSec">KZ · Brute force · 521x</p>
+							</div>
+							<div class="flex flex-col items-end gap-1">
+								<span class="rounded bg-error/15 px-1.5 py-0.5 text-xs font-medium text-error"
+									>Auto</span
+								>
+								<span class="text-xs text-textSec">22:41</span>
+							</div>
+						</div>
+					</div>
+					<div
+						class="flex items-center justify-between border-t border-[#1e293b] px-4 py-3 text-xs text-textSec"
+					>
+						<span>5 z 38 blokovaných IP</span>
+						<button class="min-h-[36px] px-2 font-medium text-[#3b82f6]">Zobrazit vše →</button>
+					</div>
+				</div>
+			</section>
 
-    <!-- Failed Logins Chart -->
-    <section id="sec-logins-chart" class="bg-card border border-[#1e293b] rounded-xl p-4">
-        <div class="flex items-center justify-between mb-3">
-            <div>
-                <h3 class="text-sm font-semibold text-textMain">Neúspěšná přihlášení</h3>
-                <p class="text-xs text-textSec mt-0.5">Pokusy za hodinu</p>
-            </div>
-        </div>
-        <div id="chart-logins" class="h-[180px] w-full"></div>
-    </section>
+			<!-- Security Event Log (Accordion) -->
+			<section id="sec-log" class="overflow-hidden rounded-xl border border-[#1e293b] bg-card">
+				<button
+					onclick="toggleAccordion('acc-log')"
+					class="flex min-h-[56px] w-full items-center justify-between px-4 py-4"
+				>
+					<div class="flex items-center gap-3">
+						<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e293b]">
+							<i class="fa-solid fa-list text-xs text-textSec"></i>
+						</div>
+						<div class="text-left">
+							<p class="text-sm font-semibold text-textMain">Security Event Log</p>
+							<p class="text-xs text-textSec">47 záznamů · 24 hodin</p>
+						</div>
+					</div>
+					<i
+						id="acc-log-icon"
+						class="fa-solid fa-chevron-down text-xs text-textSec transition-transform duration-300"
+					></i>
+				</button>
+				<div id="acc-log" class="accordion-body border-t border-[#1e293b]">
+					<!-- Filter Tabs -->
+					<div class="flex gap-2 overflow-x-auto border-b border-[#1e293b] px-4 py-3">
+						<button
+							class="min-h-[36px] rounded-lg bg-error/20 px-3 py-1.5 text-xs font-medium whitespace-nowrap text-error"
+						>
+							Všechny
+						</button>
+						<button
+							class="min-h-[36px] rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec hover:text-textMain"
+						>
+							Kritické
+						</button>
+						<button
+							class="min-h-[36px] rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec hover:text-textMain"
+						>
+							Varování
+						</button>
+						<button
+							class="min-h-[36px] rounded-lg bg-[#1e293b] px-3 py-1.5 text-xs font-medium whitespace-nowrap text-textSec hover:text-textMain"
+						>
+							Info
+						</button>
+					</div>
+					<!-- Search -->
+					<div class="border-b border-[#1e293b] px-4 py-3">
+						<div
+							class="flex items-center gap-2 rounded-lg border border-[#334155] bg-[#1e293b] px-3 py-2.5"
+						>
+							<i class="fa-solid fa-magnifying-glass text-xs text-textSec"></i>
+							<input
+								type="text"
+								placeholder="Hledat v logu..."
+								class="flex-1 bg-transparent text-sm text-textMain placeholder-textSec outline-none"
+							/>
+						</div>
+					</div>
+					<!-- Log Entries (mobile card style) -->
+					<div class="divide-y divide-[#1e293b]/60">
+						<!-- Entry 1 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span class="rounded bg-error/15 px-2 py-0.5 text-xs font-medium text-error"
+										>Brute Force</span
+									>
+									<span class="font-mono text-xs text-textSec">14:32:11</span>
+								</div>
+								<span class="rounded bg-error/10 px-2 py-0.5 text-xs text-error">Aktivní</span>
+							</div>
+							<p class="mb-1 text-sm text-textMain">1,084 neúspěšných přihlášení za 2 hodiny</p>
+							<p class="font-mono text-xs text-textSec">185.234.219.14 · RU · /api/auth/login</p>
+						</div>
+						<!-- Entry 2 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span
+										class="rounded bg-[#8b5cf6]/15 px-2 py-0.5 text-xs font-medium text-[#8b5cf6]"
+										>SQL Inject.</span
+									>
+									<span class="font-mono text-xs text-textSec">13:58:04</span>
+								</div>
+								<span class="rounded bg-[#8b5cf6]/10 px-2 py-0.5 text-xs text-[#8b5cf6]"
+									>Blokováno</span
+								>
+							</div>
+							<p class="mb-1 text-sm text-textMain">Pokus o SQL injection v parametru query</p>
+							<p class="font-mono text-xs text-textSec">
+								92.118.160.47 · CN · /api/products/search
+							</p>
+						</div>
+						<!-- Entry 3 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span
+										class="rounded bg-secondary/15 px-2 py-0.5 text-xs font-medium text-secondary"
+										>Rate Abuse</span
+									>
+									<span class="font-mono text-xs text-textSec">13:21:39</span>
+								</div>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success">Vyřešeno</span>
+							</div>
+							<p class="mb-1 text-sm text-textMain">Překročení rate limitu 8,200 req/h</p>
+							<p class="font-mono text-xs text-textSec">45.142.212.100 · UA · /api/export</p>
+						</div>
+						<!-- Entry 4 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span
+										class="rounded bg-secondary/15 px-2 py-0.5 text-xs font-medium text-secondary"
+										>API Abuse</span
+									>
+									<span class="font-mono text-xs text-textSec">12:15:22</span>
+								</div>
+								<span class="rounded bg-error/10 px-2 py-0.5 text-xs text-error">Aktivní</span>
+							</div>
+							<p class="mb-1 text-sm text-textMain">Podezřelý API klíč z regionu NG</p>
+							<p class="font-mono text-xs text-textSec">sk_live_***8f2a · NG · /api/export</p>
+						</div>
+						<!-- Entry 5 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span
+										class="rounded bg-[#3b82f6]/15 px-2 py-0.5 text-xs font-medium text-[#3b82f6]"
+										>XSS</span
+									>
+									<span class="font-mono text-xs text-textSec">11:44:08</span>
+								</div>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+									>Blokováno</span
+								>
+							</div>
+							<p class="mb-1 text-sm text-textMain">XSS payload detekován v komentáři</p>
+							<p class="font-mono text-xs text-textSec">78.141.212.55 · DE · /api/reviews</p>
+						</div>
+						<!-- Entry 6 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span
+										class="rounded bg-[#3b82f6]/15 px-2 py-0.5 text-xs font-medium text-[#3b82f6]"
+										>Port Scan</span
+									>
+									<span class="font-mono text-xs text-textSec">09:30:18</span>
+								</div>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+									>Blokováno</span
+								>
+							</div>
+							<p class="mb-1 text-sm text-textMain">Skenování 240 portů za 30 sekund</p>
+							<p class="font-mono text-xs text-textSec">91.108.4.200 · NL · —</p>
+						</div>
+						<!-- Entry 7 -->
+						<div class="p-4">
+							<div class="mb-2 flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<span class="rounded bg-error/15 px-2 py-0.5 text-xs font-medium text-error"
+										>Brute Force</span
+									>
+									<span class="font-mono text-xs text-textSec">07:12:55</span>
+								</div>
+								<span class="rounded bg-success/10 px-2 py-0.5 text-xs text-success"
+									>Blokováno</span
+								>
+							</div>
+							<p class="mb-1 text-sm text-textMain">521 neúspěšných přihlášení – různé ID</p>
+							<p class="font-mono text-xs text-textSec">194.165.16.75 · KZ · /api/auth/login</p>
+						</div>
+					</div>
+					<div class="border-t border-[#1e293b] px-4 py-3">
+						<button
+							class="min-h-[44px] w-full py-2.5 text-center text-xs font-medium text-[#3b82f6]"
+						>
+							Načíst více záznamů →
+						</button>
+					</div>
+				</div>
+			</section>
+		</main>
 
-    <!-- Blocked IPs (Accordion) -->
-    <section id="sec-blocked" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAccordion('acc-ips')" class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-error/10 flex items-center justify-center">
-                    <i class="fa-solid fa-ban text-error text-xs"></i>
-                </div>
-                <div class="text-left">
-                    <p class="text-sm font-semibold text-textMain">Blokované IP adresy</p>
-                    <p class="text-xs text-textSec">38 blokovaných · 5 zobrazeno</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs rounded-lg border border-[#334155] min-h-[36px]" onclick="event.stopPropagation()">
-                    <i class="fa-solid fa-plus mr-1"></i>Přidat
-                </button>
-                <i id="acc-ips-icon" class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300"></i>
-            </div>
-        </button>
-        <div id="acc-ips" class="accordion-body border-t border-[#1e293b]">
-            <div class="divide-y divide-[#1e293b]/60">
-                <div class="flex items-center gap-3 p-4">
-                    <div class="w-7 h-7 rounded-lg bg-error/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-ban text-error text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-textMain text-sm font-mono">185.234.219.14</p>
-                        <p class="text-xs text-textSec">RU · Brute force · 1,084x</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
-                        <span class="text-xs text-textSec">14:32</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4">
-                    <div class="w-7 h-7 rounded-lg bg-error/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-ban text-error text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-textMain text-sm font-mono">92.118.160.47</p>
-                        <p class="text-xs text-textSec">CN · SQL Injection · WAF</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="px-1.5 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">WAF</span>
-                        <span class="text-xs text-textSec">13:58</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4">
-                    <div class="w-7 h-7 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-ban text-secondary text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-textMain text-sm font-mono">45.142.212.100</p>
-                        <p class="text-xs text-textSec">UA · Rate abuse · 8,200/h</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="px-1.5 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Auto</span>
-                        <span class="text-xs text-textSec">11:14</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4">
-                    <div class="w-7 h-7 rounded-lg bg-[#3b82f6]/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-ban text-[#3b82f6] text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-textMain text-sm font-mono">103.21.244.0/22</p>
-                        <p class="text-xs text-textSec">IR · Manuální · CIDR</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="px-1.5 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Manual</span>
-                        <span class="text-xs text-textSec">09:20</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4">
-                    <div class="w-7 h-7 rounded-lg bg-error/10 flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid fa-ban text-error text-xs"></i>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-textMain text-sm font-mono">194.165.16.75</p>
-                        <p class="text-xs text-textSec">KZ · Brute force · 521x</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="px-1.5 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Auto</span>
-                        <span class="text-xs text-textSec">22:41</span>
-                    </div>
-                </div>
-            </div>
-            <div class="px-4 py-3 border-t border-[#1e293b] flex items-center justify-between text-xs text-textSec">
-                <span>5 z 38 blokovaných IP</span>
-                <button class="text-[#3b82f6] font-medium min-h-[36px] px-2">Zobrazit vše →</button>
-            </div>
-        </div>
-    </section>
+		<!-- Bottom Nav -->
+		<nav
+			id="bottom-nav"
+			class="fixed right-0 bottom-0 left-0 z-30 flex items-center border-t border-[#1e293b] bg-card"
+		>
+			<a
+				href="#"
+				class="flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 py-3 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gauge-high text-base"></i>
+				<span class="text-xs">Dashboard</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 py-3 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-server text-base"></i>
+				<span class="text-xs">Infra</span>
+			</a>
+			<a
+				href="#"
+				class="relative flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 py-3 text-error transition-colors"
+			>
+				<div
+					class="absolute -top-1 right-1/4 flex h-4 w-4 items-center justify-center rounded-full bg-error"
+				>
+					<span class="text-xs font-bold text-white" style="font-size: 9px">3</span>
+				</div>
+				<i class="fa-solid fa-shield-halved text-base"></i>
+				<span class="text-xs font-semibold">Security</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 py-3 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-chart-line text-base"></i>
+				<span class="text-xs">Analytika</span>
+			</a>
+			<a
+				href="#"
+				class="flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 py-3 text-textSec transition-colors hover:text-textMain"
+			>
+				<i class="fa-solid fa-gear text-base"></i>
+				<span class="text-xs">Nastavení</span>
+			</a>
+		</nav>
 
-    <!-- Security Event Log (Accordion) -->
-    <section id="sec-log" class="bg-card border border-[#1e293b] rounded-xl overflow-hidden">
-        <button onclick="toggleAccordion('acc-log')" class="w-full flex items-center justify-between px-4 py-4 min-h-[56px]">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-[#1e293b] flex items-center justify-center">
-                    <i class="fa-solid fa-list text-textSec text-xs"></i>
-                </div>
-                <div class="text-left">
-                    <p class="text-sm font-semibold text-textMain">Security Event Log</p>
-                    <p class="text-xs text-textSec">47 záznamů · 24 hodin</p>
-                </div>
-            </div>
-            <i id="acc-log-icon" class="fa-solid fa-chevron-down text-textSec text-xs transition-transform duration-300"></i>
-        </button>
-        <div id="acc-log" class="accordion-body border-t border-[#1e293b]">
-            <!-- Filter Tabs -->
-            <div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-[#1e293b]">
-                <button class="px-3 py-1.5 bg-error/20 text-error text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px]">Všechny</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Kritické</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Varování</button>
-                <button class="px-3 py-1.5 bg-[#1e293b] text-textSec text-xs font-medium rounded-lg whitespace-nowrap min-h-[36px] hover:text-textMain">Info</button>
-            </div>
-            <!-- Search -->
-            <div class="px-4 py-3 border-b border-[#1e293b]">
-                <div class="flex items-center gap-2 bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-2.5">
-                    <i class="fa-solid fa-magnifying-glass text-textSec text-xs"></i>
-                    <input type="text" placeholder="Hledat v logu..." class="bg-transparent text-sm text-textMain placeholder-textSec outline-none flex-1">
-                </div>
-            </div>
-            <!-- Log Entries (mobile card style) -->
-            <div class="divide-y divide-[#1e293b]/60">
-                <!-- Entry 1 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Brute Force</span>
-                            <span class="font-mono text-xs text-textSec">14:32:11</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">1,084 neúspěšných přihlášení za 2 hodiny</p>
-                    <p class="text-xs text-textSec font-mono">185.234.219.14 · RU · /api/auth/login</p>
-                </div>
-                <!-- Entry 2 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-[#8b5cf6]/15 text-[#8b5cf6] text-xs rounded font-medium">SQL Inject.</span>
-                            <span class="font-mono text-xs text-textSec">13:58:04</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-[#8b5cf6]/10 text-[#8b5cf6] text-xs rounded">Blokováno</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">Pokus o SQL injection v parametru query</p>
-                    <p class="text-xs text-textSec font-mono">92.118.160.47 · CN · /api/products/search</p>
-                </div>
-                <!-- Entry 3 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">Rate Abuse</span>
-                            <span class="font-mono text-xs text-textSec">13:21:39</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Vyřešeno</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">Překročení rate limitu 8,200 req/h</p>
-                    <p class="text-xs text-textSec font-mono">45.142.212.100 · UA · /api/export</p>
-                </div>
-                <!-- Entry 4 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-secondary/15 text-secondary text-xs rounded font-medium">API Abuse</span>
-                            <span class="font-mono text-xs text-textSec">12:15:22</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-error/10 text-error text-xs rounded">Aktivní</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">Podezřelý API klíč z regionu NG</p>
-                    <p class="text-xs text-textSec font-mono">sk_live_***8f2a · NG · /api/export</p>
-                </div>
-                <!-- Entry 5 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">XSS</span>
-                            <span class="font-mono text-xs text-textSec">11:44:08</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">XSS payload detekován v komentáři</p>
-                    <p class="text-xs text-textSec font-mono">78.141.212.55 · DE · /api/reviews</p>
-                </div>
-                <!-- Entry 6 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-[#3b82f6]/15 text-[#3b82f6] text-xs rounded font-medium">Port Scan</span>
-                            <span class="font-mono text-xs text-textSec">09:30:18</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">Skenování 240 portů za 30 sekund</p>
-                    <p class="text-xs text-textSec font-mono">91.108.4.200 · NL · —</p>
-                </div>
-                <!-- Entry 7 -->
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="px-2 py-0.5 bg-error/15 text-error text-xs rounded font-medium">Brute Force</span>
-                            <span class="font-mono text-xs text-textSec">07:12:55</span>
-                        </div>
-                        <span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded">Blokováno</span>
-                    </div>
-                    <p class="text-sm text-textMain mb-1">521 neúspěšných přihlášení – různé ID</p>
-                    <p class="text-xs text-textSec font-mono">194.165.16.75 · KZ · /api/auth/login</p>
-                </div>
-            </div>
-            <div class="px-4 py-3 border-t border-[#1e293b]">
-                <button class="w-full py-2.5 text-xs text-[#3b82f6] font-medium text-center min-h-[44px]">Načíst více záznamů →</button>
-            </div>
-        </div>
-    </section>
+		<script>
+			// Drawer
+			function openDrawer() {
+				document
+					.getElementById('drawer-overlay')
+					.classList.remove('opacity-0', 'pointer-events-none');
+				document.getElementById('drawer-overlay').classList.add('opacity-100');
+				document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+				document.getElementById('drawer-panel').classList.add('translate-x-0');
+			}
+			function closeDrawer() {
+				document.getElementById('drawer-overlay').classList.add('opacity-0', 'pointer-events-none');
+				document.getElementById('drawer-overlay').classList.remove('opacity-100');
+				document.getElementById('drawer-panel').classList.add('-translate-x-full');
+				document.getElementById('drawer-panel').classList.remove('translate-x-0');
+			}
 
-</main>
+			// Tabs
+			function switchTab(name) {
+				document.querySelectorAll('.tab-content').forEach((el) => el.classList.remove('active'));
+				document.querySelectorAll('.tab-btn').forEach((el) => {
+					el.classList.remove('text-textMain', 'border-error');
+					el.classList.add('text-textSec', 'border-transparent');
+				});
+				document.getElementById('tab-' + name).classList.add('active');
+				const btn = document.getElementById('tab-btn-' + name);
+				btn.classList.remove('text-textSec', 'border-transparent');
+				btn.classList.add('text-textMain', 'border-error');
+			}
 
-<!-- Bottom Nav -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 z-30 bg-card border-t border-[#1e293b] flex items-center">
-    <a href="#" class="flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] gap-1 text-textSec hover:text-textMain transition-colors">
-        <i class="fa-solid fa-gauge-high text-base"></i>
-        <span class="text-xs">Dashboard</span>
-    </a>
-    <a href="#" class="flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] gap-1 text-textSec hover:text-textMain transition-colors">
-        <i class="fa-solid fa-server text-base"></i>
-        <span class="text-xs">Infra</span>
-    </a>
-    <a href="#" class="flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] gap-1 text-error transition-colors relative">
-        <div class="absolute -top-1 right-1/4 w-4 h-4 bg-error rounded-full flex items-center justify-center">
-            <span class="text-white text-xs font-bold" style="font-size:9px">3</span>
-        </div>
-        <i class="fa-solid fa-shield-halved text-base"></i>
-        <span class="text-xs font-semibold">Security</span>
-    </a>
-    <a href="#" class="flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] gap-1 text-textSec hover:text-textMain transition-colors">
-        <i class="fa-solid fa-chart-line text-base"></i>
-        <span class="text-xs">Analytika</span>
-    </a>
-    <a href="#" class="flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] gap-1 text-textSec hover:text-textMain transition-colors">
-        <i class="fa-solid fa-gear text-base"></i>
-        <span class="text-xs">Nastavení</span>
-    </a>
-</nav>
+			// Accordion
+			function toggleAccordion(id) {
+				const body = document.getElementById(id);
+				const icon = document.getElementById(id + '-icon');
+				const isOpen = body.classList.contains('open');
+				body.classList.toggle('open', !isOpen);
+				if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+			}
 
-<script>
-    // Drawer
-    function openDrawer() {
-        document.getElementById('drawer-overlay').classList.remove('opacity-0', 'pointer-events-none');
-        document.getElementById('drawer-overlay').classList.add('opacity-100');
-        document.getElementById('drawer-panel').classList.remove('-translate-x-full');
-        document.getElementById('drawer-panel').classList.add('translate-x-0');
-    }
-    function closeDrawer() {
-        document.getElementById('drawer-overlay').classList.add('opacity-0', 'pointer-events-none');
-        document.getElementById('drawer-overlay').classList.remove('opacity-100');
-        document.getElementById('drawer-panel').classList.add('-translate-x-full');
-        document.getElementById('drawer-panel').classList.remove('translate-x-0');
-    }
+			// Charts
+			window.addEventListener('load', function () {
+				const bgCard = '#111d33';
+				const textSec = '#94a3b8';
+				const errorColor = '#ef4444';
+				const secondaryColor = '#f97316';
+				const purpleColor = '#8b5cf6';
+				const blueColor = '#3b82f6';
+				const gridColor = 'rgba(30,41,59,0.8)';
+				const config = { responsive: true, displayModeBar: false, displaylogo: false };
 
-    // Tabs
-    function switchTab(name) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => {
-            el.classList.remove('text-textMain', 'border-error');
-            el.classList.add('text-textSec', 'border-transparent');
-        });
-        document.getElementById('tab-' + name).classList.add('active');
-        const btn = document.getElementById('tab-btn-' + name);
-        btn.classList.remove('text-textSec', 'border-transparent');
-        btn.classList.add('text-textMain', 'border-error');
-    }
+				const commonLayout = {
+					paper_bgcolor: bgCard,
+					plot_bgcolor: bgCard,
+					font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+					margin: { t: 8, r: 8, b: 36, l: 38 },
+					showlegend: false,
+					xaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false,
+						nticks: 6
+					},
+					yaxis: {
+						gridcolor: gridColor,
+						linecolor: gridColor,
+						tickcolor: 'transparent',
+						tickfont: { color: textSec, size: 9 },
+						zeroline: false
+					}
+				};
 
-    // Accordion
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const icon = document.getElementById(id + '-icon');
-        const isOpen = body.classList.contains('open');
-        body.classList.toggle('open', !isOpen);
-        if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
+				const hours = [
+					'00:00',
+					'02:00',
+					'04:00',
+					'06:00',
+					'08:00',
+					'10:00',
+					'12:00',
+					'14:00',
+					'16:00',
+					'18:00',
+					'20:00',
+					'22:00'
+				];
 
-    // Charts
-    window.addEventListener('load', function () {
-        const bgCard = '#111d33';
-        const textSec = '#94a3b8';
-        const errorColor = '#ef4444';
-        const secondaryColor = '#f97316';
-        const purpleColor = '#8b5cf6';
-        const blueColor = '#3b82f6';
-        const gridColor = 'rgba(30,41,59,0.8)';
-        const config = { responsive: true, displayModeBar: false, displaylogo: false };
+				// Chart 1: Threats over time
+				try {
+					Plotly.newPlot(
+						'chart-threats',
+						[
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'Varování',
+								x: hours,
+								y: [2, 1, 1, 3, 5, 8, 10, 14, 8, 6, 4, 2],
+								line: { color: secondaryColor, width: 2, shape: 'spline' },
+								fillcolor: 'rgba(249,115,22,0.08)',
+								hovertemplate: '<b>%{x}</b><br>Varování: %{y}<extra></extra>'
+							},
+							{
+								type: 'scatter',
+								mode: 'lines',
+								fill: 'tozeroy',
+								name: 'Kritické',
+								x: hours,
+								y: [1, 0, 0, 1, 2, 3, 4, 6, 3, 2, 1, 1],
+								line: { color: errorColor, width: 2.5, shape: 'spline' },
+								fillcolor: 'rgba(239,68,68,0.12)',
+								hovertemplate: '<b>%{x}</b><br>Kritické: %{y}<extra></extra>'
+							}
+						],
+						{ ...commonLayout },
+						config
+					);
+				} catch (e) {}
 
-        const commonLayout = {
-            paper_bgcolor: bgCard,
-            plot_bgcolor: bgCard,
-            font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
-            margin: { t: 8, r: 8, b: 36, l: 38 },
-            showlegend: false,
-            xaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false,
-                nticks: 6
-            },
-            yaxis: {
-                gridcolor: gridColor,
-                linecolor: gridColor,
-                tickcolor: 'transparent',
-                tickfont: { color: textSec, size: 9 },
-                zeroline: false
-            }
-        };
+				// Chart 2: Geo
+				try {
+					Plotly.newPlot(
+						'chart-geo',
+						[
+							{
+								type: 'bar',
+								orientation: 'h',
+								x: [12, 18, 24, 38, 67],
+								y: ['Ostatní', 'Iran', 'Ukraine', 'China', 'Russia'],
+								marker: {
+									color: [
+										'rgba(148,163,184,0.6)',
+										'rgba(139,92,246,0.7)',
+										'rgba(249,115,22,0.7)',
+										'rgba(59,130,246,0.7)',
+										'rgba(239,68,68,0.8)'
+									]
+								},
+								hovertemplate: '<b>%{y}</b><br>%{x} hrozeb<extra></extra>'
+							}
+						],
+						{ ...commonLayout, margin: { t: 8, r: 16, b: 28, l: 60 } },
+						config
+					);
+				} catch (e) {}
 
-        const hours = ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'];
+				// Chart 3: Attack Pie
+				try {
+					Plotly.newPlot(
+						'chart-attack-pie',
+						[
+							{
+								type: 'pie',
+								labels: ['Brute Force', 'SQL Injection', 'XSS', 'Rate Abuse'],
+								values: [42, 28, 18, 12],
+								hole: 0.6,
+								marker: {
+									colors: [errorColor, purpleColor, secondaryColor, blueColor],
+									line: { color: bgCard, width: 2 }
+								},
+								textinfo: 'none',
+								hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>'
+							}
+						],
+						{
+							paper_bgcolor: bgCard,
+							plot_bgcolor: bgCard,
+							font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
+							margin: { t: 5, r: 5, b: 5, l: 5 },
+							showlegend: false,
+							annotations: [
+								{
+									text: '<b style="font-size:16px;color:#ef4444">42%</b><br><span style="font-size:9px;color:#94a3b8">Brute Force</span>',
+									x: 0.5,
+									y: 0.5,
+									xanchor: 'center',
+									yanchor: 'middle',
+									showarrow: false,
+									font: { size: 12, color: '#ffffff' }
+								}
+							]
+						},
+						config
+					);
+				} catch (e) {}
 
-        // Chart 1: Threats over time
-        try {
-            Plotly.newPlot('chart-threats', [
-                {
-                    type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Varování',
-                    x: hours, y: [2,1,1,3,5,8,10,14,8,6,4,2],
-                    line: { color: secondaryColor, width: 2, shape: 'spline' },
-                    fillcolor: 'rgba(249,115,22,0.08)',
-                    hovertemplate: '<b>%{x}</b><br>Varování: %{y}<extra></extra>'
-                },
-                {
-                    type: 'scatter', mode: 'lines', fill: 'tozeroy', name: 'Kritické',
-                    x: hours, y: [1,0,0,1,2,3,4,6,3,2,1,1],
-                    line: { color: errorColor, width: 2.5, shape: 'spline' },
-                    fillcolor: 'rgba(239,68,68,0.12)',
-                    hovertemplate: '<b>%{x}</b><br>Kritické: %{y}<extra></extra>'
-                }
-            ], { ...commonLayout }, config);
-        } catch(e) {}
-
-        // Chart 2: Geo
-        try {
-            Plotly.newPlot('chart-geo', [
-                {
-                    type: 'bar', orientation: 'h',
-                    x: [12, 18, 24, 38, 67],
-                    y: ['Ostatní', 'Iran', 'Ukraine', 'China', 'Russia'],
-                    marker: { color: ['rgba(148,163,184,0.6)','rgba(139,92,246,0.7)','rgba(249,115,22,0.7)','rgba(59,130,246,0.7)','rgba(239,68,68,0.8)'] },
-                    hovertemplate: '<b>%{y}</b><br>%{x} hrozeb<extra></extra>'
-                }
-            ], { ...commonLayout, margin: { t: 8, r: 16, b: 28, l: 60 } }, config);
-        } catch(e) {}
-
-        // Chart 3: Attack Pie
-        try {
-            Plotly.newPlot('chart-attack-pie', [
-                {
-                    type: 'pie',
-                    labels: ['Brute Force','SQL Injection','XSS','Rate Abuse'],
-                    values: [42, 28, 18, 12],
-                    hole: 0.60,
-                    marker: {
-                        colors: [errorColor, purpleColor, secondaryColor, blueColor],
-                        line: { color: bgCard, width: 2 }
-                    },
-                    textinfo: 'none',
-                    hovertemplate: '<b>%{label}</b><br>%{value}%<extra></extra>'
-                }
-            ], {
-                paper_bgcolor: bgCard, plot_bgcolor: bgCard,
-                font: { family: 'Inter, sans-serif', color: textSec, size: 10 },
-                margin: { t: 5, r: 5, b: 5, l: 5 },
-                showlegend: false,
-                annotations: [{
-                    text: '<b style="font-size:16px;color:#ef4444">42%</b><br><span style="font-size:9px;color:#94a3b8">Brute Force</span>',
-                    x: 0.5, y: 0.5, xanchor: 'center', yanchor: 'middle',
-                    showarrow: false, font: { size: 12, color: '#ffffff' }
-                }]
-            }, config);
-        } catch(e) {}
-
-        // Chart 4: Failed Logins
-        try {
-            const logins = [28,14,10,22,65,148,210,340,180,120,88,60];
-            Plotly.newPlot('chart-logins', [
-                {
-                    type: 'bar', x: hours, y: logins,
-                    marker: {
-                        color: logins.map(v => v > 200 ? errorColor : v > 100 ? secondaryColor : 'rgba(239,68,68,0.35)'),
-                        opacity: 0.85
-                    },
-                    hovertemplate: '<b>%{x}</b><br>%{y} pokusů<extra></extra>'
-                }
-            ], { ...commonLayout, bargap: 0.3 }, config);
-        } catch(e) {}
-    });
-</script>
-</body>
+				// Chart 4: Failed Logins
+				try {
+					const logins = [28, 14, 10, 22, 65, 148, 210, 340, 180, 120, 88, 60];
+					Plotly.newPlot(
+						'chart-logins',
+						[
+							{
+								type: 'bar',
+								x: hours,
+								y: logins,
+								marker: {
+									color: logins.map((v) =>
+										v > 200 ? errorColor : v > 100 ? secondaryColor : 'rgba(239,68,68,0.35)'
+									),
+									opacity: 0.85
+								},
+								hovertemplate: '<b>%{x}</b><br>%{y} pokusů<extra></extra>'
+							}
+						],
+						{ ...commonLayout, bargap: 0.3 },
+						config
+					);
+				} catch (e) {}
+			});
+		</script>
+	</body>
 </html>

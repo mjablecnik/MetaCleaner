@@ -17,7 +17,8 @@
 </script>
 
 <div
-	class="flex items-center justify-between p-3 rounded-lg bg-surface/50 border {hc.status === 'degraded'
+	class="flex items-center justify-between p-3 rounded-lg bg-surface/50 border {hc.status ===
+	'degraded'
 		? 'border-secondary/20'
 		: 'border-border/40'}"
 	style="min-height:52px"

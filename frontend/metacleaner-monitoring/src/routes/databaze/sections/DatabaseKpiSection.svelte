@@ -85,7 +85,8 @@
 	<div class="bg-card border border-surface rounded-xl p-4">
 		<div class="flex items-center justify-between mb-2">
 			<h3 class="text-textSec text-xs font-medium">{t(kpis[0].labelKey)}</h3>
-			<span class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
+			<span
+				class="px-1.5 py-0.5 bg-secondary/10 text-secondary text-[10px] rounded-full font-medium"
 				>!</span
 			>
 		</div>
@@ -139,8 +140,7 @@
 	<div class="bg-card border border-surface rounded-xl p-4">
 		<div class="flex items-center justify-between mb-2">
 			<h3 class="text-textSec text-xs font-medium">{t(kpis[3].labelKey)}</h3>
-			<span
-				class="px-1.5 py-0.5 {kpis[3].badgeClass} text-[10px] rounded-full font-medium"
+			<span class="px-1.5 py-0.5 {kpis[3].badgeClass} text-[10px] rounded-full font-medium"
 				>{t(kpis[3].badgeKey)}</span
 			>
 		</div>

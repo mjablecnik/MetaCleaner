@@ -26,7 +26,9 @@
 				<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
 					<div class="h-full {m.cpuClass} rounded-full" style="width:{m.cpuPercent}%"></div>
 				</div>
-				<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">{m.cpuDisplay}</div>
+				<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">
+					{m.cpuDisplay}
+				</div>
 			</div>
 			<div>
 				<div class="text-xs text-textSec mb-1">RAM</div>
@@ -42,7 +44,11 @@
 		</div>
 	</div>
 {:else}
-	<div class="p-4 rounded-xl bg-surface/40 border {m.cpuWarning ? 'border-secondary/20' : 'border-border/40'}">
+	<div
+		class="p-4 rounded-xl bg-surface/40 border {m.cpuWarning
+			? 'border-secondary/20'
+			: 'border-border/40'}"
+	>
 		<div class="flex items-center justify-between mb-3">
 			<div class="flex items-center gap-2">
 				<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
@@ -57,7 +63,9 @@
 				<div class="w-full h-1.5 bg-surface-deep rounded-full overflow-hidden">
 					<div class="h-full {m.cpuClass} rounded-full" style="width:{m.cpuPercent}%"></div>
 				</div>
-				<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">{m.cpuDisplay}</div>
+				<div class="text-xs {m.cpuWarning ? 'text-secondary' : 'text-textMain'} mt-1">
+					{m.cpuDisplay}
+				</div>
 			</div>
 			<div>
 				<div class="text-xs text-textSec mb-1">RAM</div>

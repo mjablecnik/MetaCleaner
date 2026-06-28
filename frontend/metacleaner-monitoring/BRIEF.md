@@ -9,10 +9,12 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Path:** `src/routes/security/`
 
 **Reason:** The Security page is a near-duplicate of the Edge (Cloudflare) page. All security data (blocked IPs, WAF events, failed logins, threat types, geo origins) comes from Cloudflare Analytics API. The Edge page already has:
+
 - EdgeThreatSection (threat types pie + TTFB by region)
 - EdgeSecurityLogSection (WAF & security log table)
 
 **Action:**
+
 - Delete `src/routes/security/` directory entirely (page + all sections + all components)
 - Remove security route from sidebar navigation in `+layout.svelte`
 - Remove security route from all MobileBottomNav `navItems` arrays across pages
@@ -28,6 +30,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** Core Web Vitals (LCP, FID, CLS) require Real User Monitoring (RUM) — collecting metrics in the browser and sending them to a backend. We don't have Vercel Analytics, Google Analytics 4, or any RUM infrastructure. No data source exists for these metrics.
 
 **Action:**
+
 - Remove `PerformanceWebVitalsSection` import and usage from `src/routes/performance/+page.svelte`
 - Delete `src/routes/performance/sections/PerformanceWebVitalsSection.svelte`
 - Delete `src/routes/performance/components/WebVitalCard.svelte` and its stories file
@@ -43,6 +46,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** CPU and RAM charts are already displayed on the Runtime page (RuntimeChartsSection) with more detail (avg + peak CPU, RAM with limit line). Showing the same Fly.io Prometheus data on Performance is redundant.
 
 **Action:**
+
 - Remove the "Charts Row 2" section (CPU/RAM + Error Distribution donut) from `PerformanceChartsSection.svelte`
 - Keep only: Response Time chart + Throughput chart (Charts Row 1)
 - Move the Error Distribution donut into the existing Errors page (or drop it — it's also partially duplicated there)
@@ -56,6 +60,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** HTTP status distribution and requests-per-minute are already shown on the Performance page (PerformanceChartsSection throughput chart). Duplicating them on Runtime adds no value.
 
 **Action:**
+
 - Remove `RuntimeHttpSection` import and usage from `src/routes/runtime/+page.svelte`
 - Delete `src/routes/runtime/sections/RuntimeHttpSection.svelte`
 - Clean up unused i18n keys prefixed with `runtime_charts_http`, `runtime_charts_rpm`
@@ -70,6 +75,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** Cloudflare doesn't expose per-region TTFB easily via API. You'd need to query analytics per colo and aggregate — significant complexity for minimal value. The overall TTFB is already shown as a KPI card in EdgeKpiSection.
 
 **Action:**
+
 - From `EdgeThreatSection.svelte`, remove the TTFB region bars (TtfbRegionBar), the `chart-ttfb-region` chart, and related Plotly code
 - Keep only the Threat Types donut pie + legend
 - Change the desktop grid from `grid-cols-3` to a simpler layout (single card or 2-col with threats + something else)
@@ -86,6 +92,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** The Database page has 8 KPI cards total (4 primary + 4 secondary). Secondary KPIs include "Queries/min", "Replikace lag", "Zámky (locks)", "Zálohy". Replication lag and locks are niche PostgreSQL metrics that provide no actionable insight at this stage. Queries/min is already shown as a chart.
 
 **Action:**
+
 - Remove `DatabaseSecondaryKpiSection` import and usage from `src/routes/databaze/+page.svelte`
 - Delete `src/routes/databaze/sections/DatabaseSecondaryKpiSection.svelte`
 - Keep the "Zálohy" (backups) status as a simple text indicator inside the primary KPI section or the tables section
@@ -101,6 +108,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 **Reason:** The "Active Sessions" chart shows real-time online users per hour with a "Live" indicator. Supabase Auth doesn't expose who is currently online. Implementing this requires a WebSocket presence system or periodic heartbeat tracking — infrastructure we don't have.
 
 **Action:**
+
 - From `UsersChartsSection.svelte`, remove the "Active Sessions" chart (keep only "New Registrations" bar chart)
 - Change desktop layout from 2-col grid to single full-width chart
 - Remove session-related Plotly data and chart IDs
@@ -111,6 +119,7 @@ This document describes all changes to simplify the monitoring dashboard by remo
 ## 8. ALREADY DONE: Business → Simplified metrics
 
 The following were already removed from the Business page in a previous iteration:
+
 - ARR (duplicate of MRR × 12)
 - NPS Score (needs survey system)
 - Average Order Value (irrelevant for subscription model)
@@ -130,6 +139,7 @@ The following were already removed from the Business page in a previous iteratio
 After removing the Security page, update the sidebar to reflect the final page list:
 
 **Final pages (8 total):**
+
 1. Dashboard (`/`)
 2. Dostupnost (`/dostupnost`)
 3. Chyby & Pády (`/chyby`)
@@ -141,6 +151,7 @@ After removing the Security page, update the sidebar to reflect the final page l
 9. Uživatelé (`/uzivatele`)
 
 **Remove from sidebar:**
+
 - Security Signály link
 
 ---

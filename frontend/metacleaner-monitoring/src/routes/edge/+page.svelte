@@ -48,7 +48,9 @@
 
 {#snippet mobileContent()}
 	<div class="lg:hidden">
-		<div class="px-4 pt-3 pb-3 bg-card border-b border-surface flex items-center justify-between gap-3">
+		<div
+			class="px-4 pt-3 pb-3 bg-card border-b border-surface flex items-center justify-between gap-3"
+		>
 			<div class="flex items-center gap-2.5">
 				<div
 					class="w-7 h-7 rounded-md bg-cf-orange/15 border border-cf-orange/30 flex items-center justify-center"

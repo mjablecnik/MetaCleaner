@@ -26,8 +26,7 @@
 	<div class="p-3 rounded-xl bg-surface/40 border border-border/40 space-y-2">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2">
-				<span class="px-2 py-0.5 text-[10px] rounded font-bold {entry.typeClass}"
-					>{entry.type}</span
+				<span class="px-2 py-0.5 text-[10px] rounded font-bold {entry.typeClass}">{entry.type}</span
 				>
 				<span class="text-textSec text-[10px]">{entry.time}</span>
 			</div>

@@ -54,12 +54,7 @@
 			type: 'pie',
 			hole: 0.55,
 			marker: {
-				colors: [
-					chartColors.error,
-					chartColors.secondary,
-					chartColors.purple,
-					chartColors.blue
-				]
+				colors: [chartColors.error, chartColors.secondary, chartColors.purple, chartColors.blue]
 			},
 			textinfo: 'none'
 		}

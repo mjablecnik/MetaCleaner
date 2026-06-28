@@ -60,7 +60,9 @@
 					<i class="fa-solid fa-chart-line text-success text-xs"></i>
 				</div>
 				<div>
-					<h1 class="text-base font-bold text-textMain leading-tight">{t('layout_nav_business')}</h1>
+					<h1 class="text-base font-bold text-textMain leading-tight">
+						{t('layout_nav_business')}
+					</h1>
 					<p class="text-xs text-textSec">{t('business_header_subtitleMobile')}</p>
 				</div>
 			</div>

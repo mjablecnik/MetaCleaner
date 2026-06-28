@@ -12,7 +12,10 @@
 
 	const statusBadge: Record<string, { bg: string; label: string }> = {
 		online: { bg: 'bg-success/10 text-success border border-success/20', label: 'ONLINE' },
-		degraded: { bg: 'bg-secondary/10 text-secondary border border-secondary/20', label: 'DEGRADED' },
+		degraded: {
+			bg: 'bg-secondary/10 text-secondary border border-secondary/20',
+			label: 'DEGRADED'
+		},
 		offline: { bg: 'bg-error/10 text-error border border-error/20', label: 'OFFLINE' }
 	};
 
@@ -111,7 +114,9 @@
 					<p class="text-xs text-textSec">{card.provider.split(' /')[0]}</p>
 				</div>
 				<span
-					class="w-2 h-2 rounded-full {dot.dot} {dot.pulse ? 'animate-pulse' : ''} mt-1 flex-shrink-0"
+					class="w-2 h-2 rounded-full {dot.dot} {dot.pulse
+						? 'animate-pulse'
+						: ''} mt-1 flex-shrink-0"
 				></span>
 			</div>
 			<span class="text-2xl font-bold text-textMain"
@@ -128,10 +133,7 @@
 					<span class="text-xs text-error">↓ {card.trend}</span>
 				{/if}
 			</div>
-			<div
-				class="flex gap-px items-end w-full overflow-hidden h-5 mt-2"
-				id={barContainerId}
-			></div>
+			<div class="flex gap-px items-end w-full overflow-hidden h-5 mt-2" id={barContainerId}></div>
 		</div>
 	</div>
 {/if}

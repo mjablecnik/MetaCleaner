@@ -29,7 +29,12 @@
 			items={[
 				{ href: '/', icon: 'fa-gauge-high', label: 'Dashboard' },
 				{ href: '/runtime', icon: 'fa-server', label: 'Runtime' },
-				{ href: '/chyby', icon: 'fa-triangle-exclamation', label: 'Errors', activeClass: 'text-error' },
+				{
+					href: '/chyby',
+					icon: 'fa-triangle-exclamation',
+					label: 'Errors',
+					activeClass: 'text-error'
+				},
 				{ href: '/performance', icon: 'fa-bolt', label: 'Performance' },
 				{ href: '/nastaveni', icon: 'fa-gear', label: 'Settings' }
 			]}
@@ -44,7 +49,13 @@
 			items={[
 				{ href: '/', icon: 'fa-gauge-high', label: 'Dashboard' },
 				{ href: '/runtime', icon: 'fa-server', label: 'Runtime' },
-				{ href: '/security', icon: 'fa-shield-halved', label: 'Security', activeClass: 'text-error', badge: 3 },
+				{
+					href: '/security',
+					icon: 'fa-shield-halved',
+					label: 'Security',
+					activeClass: 'text-error',
+					badge: 3
+				},
 				{ href: '/business', icon: 'fa-chart-line', label: 'Business' },
 				{ href: '/nastaveni', icon: 'fa-gear', label: 'Settings' }
 			]}

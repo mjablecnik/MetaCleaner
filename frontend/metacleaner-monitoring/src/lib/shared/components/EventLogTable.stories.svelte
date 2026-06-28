@@ -12,9 +12,36 @@
 	const sampleHeaders = ['Time', 'Type', 'Message', 'Source', 'Status'];
 
 	const sampleRows = [
-		{ id: 1, time: '14:23:01', type: 'Error', typeClass: 'bg-error/20 text-error', message: 'Connection timeout on /api/users', source: '/api/users', statusClass: 'bg-error/20 text-error', status: 'Active' },
-		{ id: 2, time: '14:21:45', type: 'Warning', typeClass: 'bg-secondary/20 text-secondary', message: 'Slow query detected (>500ms)', source: 'DB pool', statusClass: 'bg-secondary/20 text-secondary', status: 'Pending' },
-		{ id: 3, time: '14:19:32', type: 'Info', typeClass: 'bg-blue/20 text-blue', message: 'Deploy v2.4.1 completed', source: 'CI/CD', statusClass: 'bg-success/20 text-success', status: 'Resolved' }
+		{
+			id: 1,
+			time: '14:23:01',
+			type: 'Error',
+			typeClass: 'bg-error/20 text-error',
+			message: 'Connection timeout on /api/users',
+			source: '/api/users',
+			statusClass: 'bg-error/20 text-error',
+			status: 'Active'
+		},
+		{
+			id: 2,
+			time: '14:21:45',
+			type: 'Warning',
+			typeClass: 'bg-secondary/20 text-secondary',
+			message: 'Slow query detected (>500ms)',
+			source: 'DB pool',
+			statusClass: 'bg-secondary/20 text-secondary',
+			status: 'Pending'
+		},
+		{
+			id: 3,
+			time: '14:19:32',
+			type: 'Info',
+			typeClass: 'bg-blue/20 text-blue',
+			message: 'Deploy v2.4.1 completed',
+			source: 'CI/CD',
+			statusClass: 'bg-success/20 text-success',
+			status: 'Resolved'
+		}
 	];
 
 	const { Story } = defineMeta({
@@ -30,7 +57,8 @@
 			<tr class="hover:bg-surface/30 transition-colors">
 				<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{row.time}</td>
 				<td class="py-3 pr-4"
-					><span class="px-2 py-0.5 text-xs rounded font-medium {row.typeClass}">{row.type}</span></td
+					><span class="px-2 py-0.5 text-xs rounded font-medium {row.typeClass}">{row.type}</span
+					></td
 				>
 				<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">{row.message}</td>
 				<td class="py-3 pr-4 text-textSec font-mono text-xs">{row.source}</td>
@@ -55,7 +83,8 @@
 			<tr class="hover:bg-surface/30 transition-colors">
 				<td class="py-3 pr-4 text-textSec whitespace-nowrap font-mono text-xs">{row.time}</td>
 				<td class="py-3 pr-4"
-					><span class="px-2 py-0.5 text-xs rounded font-medium {row.typeClass}">{row.type}</span></td
+					><span class="px-2 py-0.5 text-xs rounded font-medium {row.typeClass}">{row.type}</span
+					></td
 				>
 				<td class="py-3 pr-4 text-textMain max-w-xs truncate text-xs">{row.message}</td>
 				<td class="py-3 pr-4 text-textSec font-mono text-xs">{row.source}</td>
