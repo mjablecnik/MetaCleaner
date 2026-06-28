@@ -104,11 +104,11 @@
 - [x] 59. [MEDIUM] Refactor Errors `src/routes/chyby/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 - [x] 60. [MEDIUM] Refactor Database `src/routes/databaze/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 - [x] 61. [MEDIUM] Refactor Runtime `src/routes/runtime/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 62. [MEDIUM] Refactor Edge `src/routes/edge/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 63. [MEDIUM] Refactor Performance `src/routes/performance/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 64. [MEDIUM] Refactor Security `src/routes/security/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 65. [MEDIUM] Refactor Business `src/routes/business/+page.svelte` to compose PageHeader + sections + MobileBottomNav
-- [ ] 66. [MEDIUM] Refactor Users `src/routes/uzivatele/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 62. [MEDIUM] Refactor Edge `src/routes/edge/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 63. [MEDIUM] Refactor Performance `src/routes/performance/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 64. [MEDIUM] Refactor Security `src/routes/security/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 65. [MEDIUM] Refactor Business `src/routes/business/+page.svelte` to compose PageHeader + sections + MobileBottomNav
+- [x] 66. [MEDIUM] Refactor Users `src/routes/uzivatele/+page.svelte` to compose PageHeader + sections + MobileBottomNav
 
 ## Final
 
