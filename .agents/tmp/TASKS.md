@@ -10,16 +10,16 @@
 - [x] 8. [HIGH] Add `app: string` field to the `DeployEntry` interface in `runtimeRepository.ts` (B1)
 - [x] 9. [HIGH] Replace `getMachineInstances()` in `runtimeRepository.ts` with the 5 real machines (server-01/02, web-01, app-01, mon-01) including the `app` field per BRIEF A4
 - [x] 10. [HIGH] Replace `getDeployHistory()` in `runtimeRepository.ts` with the 5 real deploys including the `app` field per BRIEF A4
-- [ ] 11. [HIGH] Replace `getRuntimeErrorLog()` in `runtimeRepository.ts` with the 8 MetaCleaner runtime error entries per BRIEF A4
-- [ ] 12. [HIGH] Update `getRuntimeStats()` in `runtimeRepository.ts` (CPU 72%, RAM 1.1/2GB, uptime 99.92%, restarts 3) per BRIEF A4
-- [ ] 13. [HIGH] Update `getRuntimeSummary()` in `runtimeRepository.ts` (machinesOnline 5, machinesTotal 5, region "fra (Frankfurt)") per BRIEF A4
-- [ ] 14. [HIGH] In `runtime/components/DeployItem.svelte`, render a colored app badge from the `app` field (server=blue, web=green, app=purple, monitoring=gray) (B1)
-- [ ] 15. [HIGH] In `runtime/components/InstanceCard.svelte`, render the `app` name as a secondary label under the machine name (B2)
-- [ ] 16. [HIGH] Replace `getSlowEndpoints()` in `performanceRepository.ts` with the 6 real MetaCleaner endpoints per BRIEF A3
-- [ ] 17. [HIGH] Replace `getPerformanceEvents()` in `performanceRepository.ts` with the 5 MetaCleaner performance events per BRIEF A3
-- [ ] 18. [MEDIUM] Update `getPerformanceKpiStats()` in `performanceRepository.ts` (Apdex 0.91, avg 340ms, throughput 890 req/min, error 1.2%) per BRIEF A3
-- [ ] 19. [HIGH] Replace error entries in `errorsRepository.ts` with the 8 MetaCleaner Sentry errors per BRIEF A5
-- [ ] 20. [MEDIUM] Replace table stats in `databaseRepository.ts` with the 7 Supabase tables (jobs/reports/files/users/api_keys/subscriptions/credits) per BRIEF A6
+- [x] 11. [HIGH] Replace `getRuntimeErrorLog()` in `runtimeRepository.ts` with the 8 MetaCleaner runtime error entries per BRIEF A4
+- [x] 12. [HIGH] Update `getRuntimeStats()` in `runtimeRepository.ts` (CPU 72%, RAM 1.1/2GB, uptime 99.92%, restarts 3) per BRIEF A4
+- [x] 13. [HIGH] Update `getRuntimeSummary()` in `runtimeRepository.ts` (machinesOnline 5, machinesTotal 5, region "fra (Frankfurt)") per BRIEF A4
+- [x] 14. [HIGH] In `runtime/components/DeployItem.svelte`, render a colored app badge from the `app` field (server=blue, web=green, app=purple, monitoring=gray) (B1)
+- [x] 15. [HIGH] In `runtime/components/InstanceCard.svelte`, render the `app` name as a secondary label under the machine name (B2)
+- [x] 16. [HIGH] Replace `getSlowEndpoints()` in `performanceRepository.ts` with the 6 real MetaCleaner endpoints per BRIEF A3
+- [x] 17. [HIGH] Replace `getPerformanceEvents()` in `performanceRepository.ts` with the 5 MetaCleaner performance events per BRIEF A3
+- [x] 18. [MEDIUM] Update `getPerformanceKpiStats()` in `performanceRepository.ts` (Apdex 0.91, avg 340ms, throughput 890 req/min, error 1.2%) per BRIEF A3
+- [x] 19. [HIGH] Replace error entries in `errorsRepository.ts` with the 8 MetaCleaner Sentry errors per BRIEF A5
+- [x] 20. [MEDIUM] Replace table stats in `databaseRepository.ts` with the 7 Supabase tables (jobs/reports/files/users/api_keys/subscriptions/credits) per BRIEF A6
 - [ ] 21. [MEDIUM] Update DB key metrics in `databaseRepository.ts` (total ~30MB, pool 42/100, avg query 12ms, slowest query, storage 2.4GB) per BRIEF A6
 - [ ] 22. [MEDIUM] Replace business KPIs in `businessRepository.ts` (MRR $1,240, subscribers 89, free 1,840, churn 3.2%, ARPU $13.93, etc.) per BRIEF A7
 - [ ] 23. [MEDIUM] Update subscription plan breakdown in `businessRepository.ts` (Free 1,840, Pro 62→$558, Business 27→$783) per BRIEF A7

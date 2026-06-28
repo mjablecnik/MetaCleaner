@@ -116,64 +116,65 @@ export function getSlowestQueries(): SlowQuery[] {
 		{
 			type: 'SELECT',
 			typeClass: 'bg-error/20 text-error',
-			sql: 'SELECT * FROM orders JOIN users ON...',
-			table: 'orders',
-			calls: '842x',
-			avgMs: 1240,
+			sql: 'SELECT * FROM reports WHERE user_id = $1 ORDER BY created_at DESC',
+			table: 'reports',
+			calls: '640x',
+			avgMs: 180,
 			avgClass: 'text-error',
-			meta: 'Tabulka: orders · Volání: 842x'
-		},
-		{
-			type: 'UPDATE',
-			typeClass: 'bg-secondary/20 text-secondary',
-			sql: 'UPDATE products SET stock = stock - 1 WHERE...',
-			table: 'products',
-			calls: '1,203x',
-			avgMs: 620,
-			avgClass: 'text-secondary',
-			meta: 'Tabulka: products · Volání: 1,203x'
+			meta: 'Tabulka: reports · Volání: 640x'
 		},
 		{
 			type: 'SELECT',
-			typeClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
-			sql: 'SELECT COUNT(*) FROM analytics WHERE date >',
-			table: 'analytics',
-			calls: '312x',
-			avgMs: 390,
-			avgClass: 'text-[#3b82f6]',
-			meta: 'Tabulka: analytics · Volání: 312x'
+			typeClass: 'bg-secondary/20 text-secondary',
+			sql: 'SELECT f.* FROM files f JOIN jobs j ON f.job_id = j.id WHERE j.user_id = $1',
+			table: 'files',
+			calls: '1,420x',
+			avgMs: 95,
+			avgClass: 'text-secondary',
+			meta: 'Tabulka: files · Volání: 1,420x'
 		},
 		{
 			type: 'INSERT',
 			typeClass: 'bg-[#3ecf8e]/20 text-[#3ecf8e]',
-			sql: 'INSERT INTO events (user_id, type, meta) VALUES...',
-			table: 'events',
-			calls: '5,841x',
-			avgMs: 84,
+			sql: 'INSERT INTO jobs (user_id, status, created_at) VALUES ($1, $2, NOW())',
+			table: 'jobs',
+			calls: '1,380x',
+			avgMs: 42,
+			avgClass: 'text-[#3b82f6]',
+			meta: 'Tabulka: jobs · Volání: 1,380x'
+		},
+		{
+			type: 'UPDATE',
+			typeClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
+			sql: 'UPDATE credits SET balance = balance - $1 WHERE user_id = $2',
+			table: 'credits',
+			calls: '1,380x',
+			avgMs: 28,
 			avgClass: 'text-textMain',
-			meta: 'Tabulka: events · Volání: 5,841x'
+			meta: 'Tabulka: credits · Volání: 1,380x'
 		},
 		{
 			type: 'SELECT',
 			typeClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
-			sql: 'SELECT * FROM sessions WHERE expires_at > NOW()',
-			table: 'sessions',
-			calls: '22,100x',
-			avgMs: 31,
+			sql: 'SELECT status FROM jobs WHERE id = $1',
+			table: 'jobs',
+			calls: '8,400x',
+			avgMs: 8,
 			avgClass: 'text-textMain',
-			meta: 'Tabulka: sessions · Volání: 22,100x'
+			meta: 'Tabulka: jobs · Volání: 8,400x'
 		}
 	];
 }
 
 export function getTableSizes(): TableSize[] {
 	return [
-		{ name: 'events', sizeLabel: '2.1 GB', barWidth: '82%', barClass: 'bg-[#3b82f6]' },
-		{ name: 'orders', sizeLabel: '1.5 GB', barWidth: '60%', barClass: 'bg-[#3ecf8e]' },
-		{ name: 'analytics', sizeLabel: '1.2 GB', barWidth: '48%', barClass: 'bg-[#8b5cf6]' },
-		{ name: 'users', sizeLabel: '780 MB', barWidth: '30%', barClass: 'bg-secondary' },
-		{ name: 'sessions', sizeLabel: '460 MB', barWidth: '18%', barClass: 'bg-[#3b82f6]/60' },
-		{ name: 'products', sizeLabel: '210 MB', barWidth: '8%', barClass: 'bg-[#3b82f6]/40' }
+		{ name: 'reports', sizeLabel: '15 MB', barWidth: '95%', barClass: 'bg-[#3b82f6]' },
+		{ name: 'jobs', sizeLabel: '8 MB', barWidth: '53%', barClass: 'bg-[#3ecf8e]' },
+		{ name: 'files', sizeLabel: '5 MB', barWidth: '35%', barClass: 'bg-[#8b5cf6]' },
+		{ name: 'users', sizeLabel: '1 MB', barWidth: '10%', barClass: 'bg-secondary' },
+		{ name: 'subscriptions', sizeLabel: '400 KB', barWidth: '6%', barClass: 'bg-[#3b82f6]/60' },
+		{ name: 'credits', sizeLabel: '300 KB', barWidth: '5%', barClass: 'bg-[#3b82f6]/40' },
+		{ name: 'api_keys', sizeLabel: '200 KB', barWidth: '5%', barClass: 'bg-[#f59e0b]/40' }
 	];
 }
 

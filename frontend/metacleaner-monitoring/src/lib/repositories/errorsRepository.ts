@@ -114,47 +114,47 @@ export function getErrorTypeBreakdown(): ErrorTypeBreakdown[] {
 export function getTopEndpoints(): TopEndpoint[] {
 	return [
 		{
+			method: 'GET',
+			methodClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
+			path: '/api/jobs/{id}/progress',
+			errorCount: 41,
+			barWidth: '100%',
+			barClass: 'bg-secondary',
+			countClass: 'text-secondary'
+		},
+		{
 			method: 'POST',
 			methodClass: 'bg-error/20 text-error',
-			path: '/api/v1/checkout',
-			errorCount: 24,
-			barWidth: '85%',
+			path: '/api/upload',
+			errorCount: 27,
+			barWidth: '66%',
 			barClass: 'bg-error',
 			countClass: 'text-error'
 		},
 		{
-			method: 'GET',
-			methodClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
-			path: '/api/v1/users/profile',
-			errorCount: 11,
-			barWidth: '45%',
-			barClass: 'bg-secondary',
-			countClass: 'text-secondary'
-		},
-		{
-			method: 'GET',
-			methodClass: 'bg-[#3b82f6]/20 text-[#3b82f6]',
-			path: '/api/v1/products',
-			errorCount: 7,
-			barWidth: '28%',
-			barClass: 'bg-secondary',
-			countClass: 'text-secondary'
-		},
-		{
-			method: 'PUT',
-			methodClass: 'bg-success/20 text-success',
-			path: '/api/v1/orders/update',
-			errorCount: 4,
-			barWidth: '15%',
-			barClass: 'bg-[#3b82f6]',
-			countClass: 'text-textSec'
-		},
-		{
-			method: 'DEL',
+			method: 'POST',
 			methodClass: 'bg-error/20 text-error',
-			path: '/api/v1/sessions',
+			path: '/api/jobs',
+			errorCount: 14,
+			barWidth: '34%',
+			barClass: 'bg-error',
+			countClass: 'text-error'
+		},
+		{
+			method: 'POST',
+			methodClass: 'bg-error/20 text-error',
+			path: '/api/auth/login',
+			errorCount: 12,
+			barWidth: '29%',
+			barClass: 'bg-secondary',
+			countClass: 'text-secondary'
+		},
+		{
+			method: 'POST',
+			methodClass: 'bg-error/20 text-error',
+			path: '/api/billing/webhook',
 			errorCount: 2,
-			barWidth: '8%',
+			barWidth: '5%',
 			barClass: 'bg-[#3b82f6]',
 			countClass: 'text-textSec'
 		}
@@ -165,63 +165,83 @@ export function getErrorLog(): ErrorLogEntry[] {
 	return [
 		{
 			id: 'err-1',
-			time: '14:32:11',
-			type: '500',
-			typeClass: 'bg-error/15 text-error',
-			message: 'Internal Server Error – DB connection pool exhausted',
-			source: '/api/v1/checkout',
-			statusKey: 'common_status_active',
-			statusClass: 'bg-error/10 text-error'
-		},
-		{
-			id: 'err-2',
-			time: '14:28:45',
-			type: 'JS',
-			typeClass: 'bg-secondary/15 text-secondary',
-			message: "TypeError: Cannot read property 'id' of undefined",
-			source: 'cart.component.js:142',
+			time: '19:14:32',
+			type: 'EXC',
+			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
+			message: 'ExifTool exit code 1 — unsupported format .cr3 (Canon RAW)',
+			source: 'metacleaner-server/pipeline',
 			statusKey: 'common_status_warning',
 			statusClass: 'bg-secondary/10 text-secondary'
 		},
 		{
-			id: 'err-3',
-			time: '14:15:02',
-			type: '503',
+			id: 'err-2',
+			time: '18:52:07',
+			type: 'TMT',
 			typeClass: 'bg-error/15 text-error',
-			message: 'Service Unavailable – upstream timeout from Fly.io',
-			source: '/api/v1/users/profile',
+			message: 'Job exceeded 60s processing limit (large video file)',
+			source: 'metacleaner-server/worker',
+			statusKey: 'common_status_active',
+			statusClass: 'bg-error/10 text-error'
+		},
+		{
+			id: 'err-3',
+			time: '17:38:44',
+			type: 'ERR',
+			typeClass: 'bg-error/15 text-error',
+			message: 'Temp cleaned file not found after pipeline completion (race condition)',
+			source: 'metacleaner-server/storage',
 			statusKey: 'common_status_active',
 			statusClass: 'bg-error/10 text-error'
 		},
 		{
 			id: 'err-4',
-			time: '13:50:33',
+			time: '16:44:21',
 			type: 'EXC',
-			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			message: 'NullPointerException in OrderService.processPayment()',
-			source: 'OrderService.java:87',
+			typeClass: 'bg-secondary/15 text-secondary',
+			message: 'Webhook signature verification failed (possible clock skew)',
+			source: 'metacleaner-server/billing',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'err-5',
-			time: '13:22:09',
-			type: 'TMT',
+			time: '15:22:09',
+			type: 'WS',
 			typeClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			message: 'Request timeout after 30000ms on products endpoint',
-			source: '/api/v1/products',
+			message: 'Write to closed connection — client disconnected mid-stream',
+			source: 'metacleaner-server/ws',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'err-6',
-			time: '12:48:55',
-			type: 'JS',
+			time: '14:08:55',
+			type: 'AUTH',
 			typeClass: 'bg-secondary/15 text-secondary',
-			message: 'ReferenceError: analytics is not defined',
-			source: 'analytics.js:23',
-			statusKey: 'common_labels_info',
-			statusClass: 'bg-badge text-textSec'
+			message: 'Refresh token expired — user session invalidated',
+			source: 'supabase/auth',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'err-7',
+			time: '12:55:33',
+			type: '503',
+			typeClass: 'bg-error/15 text-error',
+			message: 'PostgREST 503 — connection pool exhausted during peak',
+			source: 'metacleaner-server/db',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
+		},
+		{
+			id: 'err-8',
+			time: '11:30:18',
+			type: 'OOM',
+			typeClass: 'bg-error/15 text-error',
+			message: 'FFmpeg exit code 137 (SIGKILL) — OOM during video processing',
+			source: 'metacleaner-server/pipeline',
+			statusKey: 'common_status_resolved',
+			statusClass: 'bg-success/10 text-success'
 		}
 	];
 }
