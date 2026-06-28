@@ -49,28 +49,28 @@
 - [x] 34. [HIGH] Create `AlertItem` component in `src/routes/components/AlertItem.svelte` + story — single alert row with severity styling
 - [x] 35. [HIGH] Create `DashboardKpiSection` in `src/routes/sections/DashboardKpiSection.svelte` — 4 stat cards section
 - [x] 36. [HIGH] Create `DashboardChartsRow1Section` in `src/routes/sections/DashboardChartsRow1Section.svelte` — response time + errors charts
-- [ ] 37. [HIGH] Create `DashboardChartsRow2Section` in `src/routes/sections/DashboardChartsRow2Section.svelte` — server resources + DB latency charts
-- [ ] 38. [HIGH] Create `DashboardAlertsSection` in `src/routes/sections/DashboardAlertsSection.svelte` — alerts list composing AlertItem
+- [x] 37. [HIGH] Create `DashboardChartsRow2Section` in `src/routes/sections/DashboardChartsRow2Section.svelte` — server resources + DB latency charts
+- [x] 38. [HIGH] Create `DashboardAlertsSection` in `src/routes/sections/DashboardAlertsSection.svelte` — alerts list composing AlertItem
 
 ### Availability (dostupnost)
 
-- [ ] 39. [HIGH] Create page-specific components in `src/routes/dostupnost/components/`: `ServiceUptimeCard`, `UptimeTimeline`, `HealthCheckRow`, `IncidentItem`, `SlaGoalBar` + stories for each
-- [ ] 40. [HIGH] Create sections in `src/routes/dostupnost/sections/`: `AvailabilityServiceCardsSection`, `AvailabilityResponseChartSection`, `AvailabilityHealthChecksSection`, `AvailabilityTimelineSection`, `AvailabilityIncidentsSection`, `AvailabilitySlaSection`, `AvailabilityQuickStatsSection`
+- [x] 39. [HIGH] Create page-specific components in `src/routes/dostupnost/components/`: `ServiceUptimeCard`, `UptimeTimeline`, `HealthCheckRow`, `IncidentItem`, `SlaGoalBar` + stories for each
+- [x] 40. [HIGH] Create sections in `src/routes/dostupnost/sections/`: `AvailabilityServiceCardsSection`, `AvailabilityResponseChartSection`, `AvailabilityHealthChecksSection`, `AvailabilityTimelineSection`, `AvailabilityIncidentsSection`, `AvailabilitySlaSection`, `AvailabilityQuickStatsSection`
 
 ### Errors (chyby)
 
-- [ ] 41. [HIGH] Create page-specific components in `src/routes/chyby/components/`: `ErrorEndpointRow`, `ErrorLogRow` + stories for each
-- [ ] 42. [HIGH] Create sections in `src/routes/chyby/sections/`: `ErrorsKpiSection`, `ErrorsTimelineSection`, `ErrorsComparisonSection`, `ErrorsEndpointsSection`, `ErrorsLogSection`
+- [x] 41. [HIGH] Create page-specific components in `src/routes/chyby/components/`: `ErrorEndpointRow`, `ErrorLogRow` + stories for each
+- [x] 42. [HIGH] Create sections in `src/routes/chyby/sections/`: `ErrorsKpiSection`, `ErrorsTimelineSection`, `ErrorsComparisonSection`, `ErrorsEndpointsSection`, `ErrorsLogSection`
 
 ### Database (databaze)
 
-- [ ] 43. [HIGH] Create page-specific components in `src/routes/databaze/components/`: `SlowQueryItem`, `TableSizeRow`, `ConnectionPoolIndicator` + stories for each
-- [ ] 44. [HIGH] Create sections in `src/routes/databaze/sections/`: `DatabaseKpiSection`, `DatabaseSecondaryKpiSection`, `DatabaseChartsSection`, `DatabaseQueriesSection`, `DatabaseTablesSection`, `DatabaseErrorLogSection`
+- [x] 43. [HIGH] Create page-specific components in `src/routes/databaze/components/`: `SlowQueryItem`, `TableSizeRow`, `ConnectionPoolIndicator` + stories for each
+- [x] 44. [HIGH] Create sections in `src/routes/databaze/sections/`: `DatabaseKpiSection`, `DatabaseSecondaryKpiSection`, `DatabaseChartsSection`, `DatabaseQueriesSection`, `DatabaseTablesSection`, `DatabaseErrorLogSection`
 
 ### Runtime
 
-- [ ] 45. [HIGH] Create page-specific components in `src/routes/runtime/components/`: `InstanceCard`, `DeployItem` + stories for each
-- [ ] 46. [HIGH] Create sections in `src/routes/runtime/sections/`: `RuntimeKpiSection`, `RuntimeChartsSection`, `RuntimeInstancesSection`, `RuntimeDeploySection`, `RuntimeErrorLogSection`, `RuntimeHttpSection`
+- [x] 45. [HIGH] Create page-specific components in `src/routes/runtime/components/`: `InstanceCard`, `DeployItem` + stories for each
+- [x] 46. [HIGH] Create sections in `src/routes/runtime/sections/`: `RuntimeKpiSection`, `RuntimeChartsSection`, `RuntimeInstancesSection`, `RuntimeDeploySection`, `RuntimeErrorLogSection`, `RuntimeHttpSection`
 
 ### Edge
 
