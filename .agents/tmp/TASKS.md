@@ -29,11 +29,11 @@
 
 ## Phase 2 — Shared Components
 
-- [ ] 22. [HIGH] Create `MobileBottomNav` component in `src/lib/shared/components/MobileBottomNav.svelte` — fixed bottom navigation bar with active state; used by 9 pages
-- [ ] 23. [HIGH] Create `MobileBottomNav.stories.svelte` — states: Default, DifferentActiveItem
-- [ ] 24. [HIGH] Create `PageHeader` component in `src/lib/shared/components/PageHeader.svelte` — desktop sticky header + mobile title area combined; used by all 10 pages
-- [ ] 25. [HIGH] Create `PageHeader.stories.svelte` — states: Default, WithStatusBadge, WithActions
-- [ ] 26. [HIGH] Create `KpiGrid` component in `src/lib/shared/components/KpiGrid.svelte` — responsive grid rendering StatCard elements; used by 8 pages
+- [x] 22. [HIGH] Create `MobileBottomNav` component in `src/lib/shared/components/MobileBottomNav.svelte` — fixed bottom navigation bar with active state; used by 9 pages
+- [x] 23. [HIGH] Create `MobileBottomNav.stories.svelte` — states: Default, DifferentActiveItem
+- [x] 24. [HIGH] Create `PageHeader` component in `src/lib/shared/components/PageHeader.svelte` — desktop sticky header + mobile title area combined; used by all 10 pages
+- [x] 25. [HIGH] Create `PageHeader.stories.svelte` — states: Default, WithStatusBadge, WithActions
+- [x] 26. [HIGH] Create `KpiGrid` component in `src/lib/shared/components/KpiGrid.svelte` — responsive grid rendering StatCard elements; used by 8 pages
 - [ ] 27. [HIGH] Create `KpiGrid.stories.svelte` — states: FourColumns, TwoColumns, WithTrends
 - [ ] 28. [HIGH] Create `PlotlyChart` component in `src/lib/shared/components/PlotlyChart.svelte` — Plotly init/resize/cleanup wrapper; used by all 10 pages
 - [ ] 29. [HIGH] Create `PlotlyChart.stories.svelte` — states: LineChart, BarChart, PieChart
