@@ -526,5 +526,8 @@
 	"users_status_idle": "Idle",
 	"users_status_offline": "Offline",
 
-	"language_switcher_label": "Jazyk"
+	"language_switcher_label": "Jazyk",
+	"common_notConfigured_title": "Služba není připojena",
+	"common_notConfigured_description": "Tato sekce vyžaduje proměnné prostředí, které nejsou nakonfigurované.",
+	"common_notConfigured_missingLabel": "Chybějící proměnné:"
 }

@@ -526,5 +526,8 @@
 	"users_status_idle": "Idle",
 	"users_status_offline": "Offline",
 
-	"language_switcher_label": "Language"
+	"language_switcher_label": "Language",
+	"common_notConfigured_title": "Service Not Connected",
+	"common_notConfigured_description": "This section requires environment variables that are not configured.",
+	"common_notConfigured_missingLabel": "Missing variables:"
 }
