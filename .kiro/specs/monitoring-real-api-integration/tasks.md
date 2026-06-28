@@ -165,7 +165,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Implement load functions for all routes
-  - [ ] 6.1 Create dashboard load function (`src/routes/+page.server.ts`)
+  - [x] 6.1 Create dashboard load function (`src/routes/+page.server.ts`)
     - Call `getServiceConfigs()` and check each service
     - Fetch uptime from Fly, error rate from Sentry, job count from Supabase concurrently via `Promise.allSettled`
     - Map to `DashboardStat[]` and `DashboardAlert[]`
@@ -174,7 +174,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Return `SectionResult` per section, isolating failures
     - _Requirements: 3.1, 3.3, 3.4, 5.1, 5.3, 12.1, 12.4, 13.1, 13.2, 13.3, 13.4, 13.5_
 
-  - [ ] 6.2 Create runtime load function (`src/routes/runtime/+page.server.ts`)
+  - [x] 6.2 Create runtime load function (`src/routes/runtime/+page.server.ts`)
     - Check Fly config, return `not-configured` if missing
     - Fetch machines for all apps + deploy history
     - Map via `flyMapper` to `MachineInstance[]`, `DeployEntry[]`, `RuntimeStat[]`, `RuntimeErrorEntry[]`

@@ -1,4 +1,4 @@
-import type { MachineInstance, DeployEntry, ServiceCard, RuntimeStat } from '$lib/repositories/index.js';
+import type { MachineInstance, DeployEntry, ServiceCard, RuntimeStat, RuntimeErrorEntry } from '$lib/repositories/index.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
 
 const REGION_NAMES: Record<string, string> = {
@@ -216,6 +216,116 @@ export function mapToServiceCards(raw: Map<string, FlyMachineRaw[]>): ServiceCar
 	}
 
 	return cards;
+}
+
+function formatTimeHms(ms: number): string {
+	const date = new Date(ms);
+	const hh = String(date.getHours()).padStart(2, '0');
+	const mm = String(date.getMinutes()).padStart(2, '0');
+	const ss = String(date.getSeconds()).padStart(2, '0');
+	return `${hh}:${mm}:${ss}`;
+}
+
+type ErrorEventConfig = {
+	level: string;
+	levelClass: string;
+	borderClass: string;
+	statusKey: string;
+	statusClass: string;
+	message: (machine: FlyMachineRaw, eventType: string) => string;
+};
+
+function classifyEvent(type: string, status: string): ErrorEventConfig | null {
+	if (type === 'kill') {
+		return {
+			level: 'OOM Kill',
+			levelClass: 'bg-error/15 text-error',
+			borderClass: 'border-error/20',
+			statusKey: 'common_status_restarted',
+			statusClass: 'bg-success/10 text-success',
+			message: (m) => `Machine ${m.name} killed in ${m.region}`
+		};
+	}
+	if (type === 'crash') {
+		return {
+			level: 'Crash',
+			levelClass: 'bg-secondary/15 text-secondary',
+			borderClass: 'border-secondary/20',
+			statusKey: 'common_status_restarted',
+			statusClass: 'bg-success/10 text-success',
+			message: (m) => `Machine ${m.name} crashed in ${m.region}`
+		};
+	}
+	if (type === 'exit' && status !== 'success') {
+		return {
+			level: 'Crash',
+			levelClass: 'bg-secondary/15 text-secondary',
+			borderClass: 'border-secondary/20',
+			statusKey: 'common_status_restarted',
+			statusClass: 'bg-success/10 text-success',
+			message: (m) => `Machine ${m.name} exited with status: ${status}`
+		};
+	}
+	if (type === 'restart') {
+		return {
+			level: 'Restart',
+			levelClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
+			borderClass: 'border-[#8b5cf6]/20',
+			statusKey: 'common_status_restarted',
+			statusClass: 'bg-success/10 text-success',
+			message: (m) => `Machine ${m.name} restarted in ${m.region}`
+		};
+	}
+	return null;
+}
+
+export function mapToRuntimeErrors(machines: FlyMachineRaw[]): RuntimeErrorEntry[] {
+	type WithMs = RuntimeErrorEntry & { _sortMs: number };
+	const entries: WithMs[] = [];
+
+	for (const machine of machines) {
+		// Collect health check failures as error entries
+		const failingChecks = (machine.checks ?? []).filter((c) => c.status !== 'passing');
+		if (failingChecks.length > 0) {
+			const tsMs = new Date(machine.updated_at).getTime();
+			entries.push({
+				_sortMs: tsMs,
+				id: `health-${machine.id}`,
+				time: formatTimeHms(tsMs),
+				level: 'Health',
+				levelClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
+				borderClass: 'border-[#334155]/40',
+				message: `Health checks failing on ${machine.name}: ${failingChecks.map((c) => c.name).join(', ')}`,
+				machine: machine.name,
+				statusKey: 'common_status_resolved',
+				statusClass: 'bg-success/10 text-success'
+			});
+		}
+
+		// Collect error events
+		for (const event of machine.events ?? []) {
+			const cfg = classifyEvent(event.type, event.status);
+			if (!cfg) continue;
+
+			const tsMs = flyTimestampToMs(event.timestamp);
+			entries.push({
+				_sortMs: tsMs,
+				id: `${event.type}-${machine.id}-${event.timestamp}`,
+				time: formatTimeHms(tsMs),
+				level: cfg.level,
+				levelClass: cfg.levelClass,
+				borderClass: cfg.borderClass,
+				message: cfg.message(machine, event.type),
+				machine: machine.name,
+				statusKey: cfg.statusKey,
+				statusClass: cfg.statusClass
+			});
+		}
+	}
+
+	entries.sort((a, b) => b._sortMs - a._sortMs);
+
+	return entries.slice(0, 20).map(({ _sortMs: _ts, ...entry }) => entry);
 }
 
 export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeStat[] {
