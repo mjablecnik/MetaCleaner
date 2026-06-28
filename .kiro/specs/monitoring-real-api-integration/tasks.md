@@ -121,7 +121,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Implement `computeArpu(mrr, activeCount)` — MRR / active subscribers
     - _Requirements: 3.2, 8.1, 8.2, 8.3, 11.1, 11.4_
 
-  - [ ] 4.4 Create the Supabase mapper (`src/lib/server/mappers/supabaseMapper.ts`)
+  - [x] 4.4 Create the Supabase mapper (`src/lib/server/mappers/supabaseMapper.ts`)
     - Implement `mapToTableSizes(raw)` → `TableSize[]`
     - Implement `mapToDbKpis(raw)` → `DbKpi[]`
     - Implement `mapToUserStats(users)` → `UserStat[]`
