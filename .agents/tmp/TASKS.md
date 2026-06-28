@@ -22,5 +22,5 @@
 - [x] 20. [HIGH] Remove Active Sessions chart from `src/routes/uzivatele/sections/UsersChartsSection.svelte` — remove session Plotly code, chart elements, change desktop grid to single full-width
 - [x] 21. [MEDIUM] Add Sentry and Stripe env vars to `.env.example`
 - [x] 22. [MEDIUM] Remove unused i18n keys from `messages/en.json` (prefixes: `security_`, `performance_cwv_`, `edge_ttfb_`, `runtime_charts_http`, `runtime_charts_rpm`)
-- [ ] 23. [MEDIUM] Remove unused i18n keys from `messages/cs.json` (same prefixes as above)
-- [ ] 24. [MEDIUM] Verify build passes with `bun run check`
+- [x] 23. [MEDIUM] Remove unused i18n keys from `messages/cs.json` (same prefixes as above)
+- [x] 24. [MEDIUM] Verify build passes with `bun run check`
