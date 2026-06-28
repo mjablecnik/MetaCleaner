@@ -25,7 +25,7 @@
 - [x] 18. [MEDIUM] Create `FilterPill` element in `src/lib/shared/elements/FilterPill.svelte` — toggleable filter button; used by 5 pages
 - [x] 19. [MEDIUM] Create `FilterPill.stories.svelte` — states: Active, Inactive
 - [x] 20. [MEDIUM] Create `DataTable` element in `src/lib/shared/elements/DataTable.svelte` — responsive table container with header row; used by 8 pages
-- [ ] 21. [MEDIUM] Create `DataTable.stories.svelte` — states: Default, Empty, ManyRows
+- [x] 21. [MEDIUM] Create `DataTable.stories.svelte` — states: Default, Empty, ManyRows
 
 ## Phase 2 — Shared Components
 
