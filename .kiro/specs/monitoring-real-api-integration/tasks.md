@@ -156,7 +156,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Machine state "started" + all checks passing → `online`; "started" + any check failing → `degraded`; "stopped"/"destroyed"/unreachable → `offline`
     - **Validates: Requirements 6.5**
 
-  - [ ]* 4.10 Write property test for endpoint sorting and limiting (Property 11)
+  - [x]* 4.10 Write property test for endpoint sorting and limiting (Property 11)
     - **Property 11: Endpoint Sorting and Limiting**
     - For any array of endpoint records, result has at most 10 entries sorted by avg response time descending
     - **Validates: Requirements 14.1**
