@@ -105,7 +105,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Ensure all required fields in repository interfaces are populated (no undefined)
     - _Requirements: 3.2, 6.2, 6.3, 6.5, 11.1, 11.4, 11.5_
 
-  - [ ] 4.2 Create the Cloudflare mapper (`src/lib/server/mappers/cloudflareMapper.ts`)
+  - [x] 4.2 Create the Cloudflare mapper (`src/lib/server/mappers/cloudflareMapper.ts`)
     - Implement `mapToEdgeKpiStats(raw)` → `EdgeKpiStat[]`
     - Implement `mapToGeoDistribution(raw)` → `GeoDistribution[]` (top 5 + "Other")
     - Implement `mapToWafLog(raw)` → `WafLogEntry[]`
