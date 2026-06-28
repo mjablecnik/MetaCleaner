@@ -69,12 +69,6 @@ export interface RuntimeErrorEntry {
 	statusClass: string;
 }
 
-export interface HttpStatusItem {
-	label: string;
-	percent: number;
-	color: string;
-}
-
 export interface RuntimeSummary {
 	machinesOnline: number;
 	machinesTotal: number;
@@ -397,15 +391,6 @@ export function getRuntimeErrorLog(): RuntimeErrorEntry[] {
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		}
-	];
-}
-
-export function getRuntimeHttpStatusDistribution(): HttpStatusItem[] {
-	return [
-		{ label: '2xx OK', percent: 94.2, color: 'bg-[#3ecf8e]' },
-		{ label: '3xx Redirect', percent: 2.8, color: 'bg-[#3b82f6]' },
-		{ label: '4xx Client', percent: 2.1, color: 'bg-[#f97316]' },
-		{ label: '5xx Server', percent: 0.9, color: 'bg-error' }
 	];
 }
 

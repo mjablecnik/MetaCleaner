@@ -4,7 +4,6 @@
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
 	import DatabaseKpiSection from './sections/DatabaseKpiSection.svelte';
-	import DatabaseSecondaryKpiSection from './sections/DatabaseSecondaryKpiSection.svelte';
 	import DatabaseChartsSection from './sections/DatabaseChartsSection.svelte';
 	import DatabaseQueriesSection from './sections/DatabaseQueriesSection.svelte';
 	import DatabaseTablesSection from './sections/DatabaseTablesSection.svelte';
@@ -96,7 +95,6 @@
 
 <div class="px-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
 	<DatabaseKpiSection />
-	<DatabaseSecondaryKpiSection />
 	<DatabaseChartsSection />
 	<DatabaseQueriesSection />
 	<DatabaseTablesSection />

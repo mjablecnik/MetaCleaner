@@ -24,19 +24,6 @@ export interface EdgeSecondaryKpi {
 	iconBg: string;
 }
 
-export interface TtfbRegion {
-	id: string;
-	name: string;
-	shortName: string;
-	ttfbMs: number;
-	barWidth: string;
-	barColor: string;
-	barOpacity?: number;
-	dotColor: string;
-	statusKey: string;
-	statusClass: string;
-}
-
 export interface CacheRule {
 	id: string;
 	pattern: string;
@@ -164,78 +151,6 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 			icon: 'fa-rotate',
 			iconColor: 'text-[#3b82f6]',
 			iconBg: 'bg-[#3b82f6]/15'
-		}
-	];
-}
-
-export function getTtfbRegions(): TtfbRegion[] {
-	return [
-		{
-			id: 'eu-west',
-			name: 'EU West',
-			shortName: 'EU West',
-			ttfbMs: 38,
-			barWidth: '19%',
-			barColor: '#3ecf8e',
-			dotColor: 'text-[#3ecf8e]',
-			statusKey: 'common_status_ok',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'us-east',
-			name: 'US East',
-			shortName: 'US East',
-			ttfbMs: 61,
-			barWidth: '30%',
-			barColor: '#3b82f6',
-			dotColor: 'text-[#3b82f6]',
-			statusKey: 'common_status_ok',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'us-west',
-			name: 'US West',
-			shortName: 'US West',
-			ttfbMs: 78,
-			barWidth: '38%',
-			barColor: '#f6821f',
-			dotColor: 'text-[#f6821f]',
-			statusKey: 'common_status_ok',
-			statusClass: 'bg-success/10 text-success'
-		},
-		{
-			id: 'asia-pac',
-			name: 'Asia Pacific',
-			shortName: 'Asia Pac.',
-			ttfbMs: 114,
-			barWidth: '56%',
-			barColor: '#8b5cf6',
-			dotColor: 'text-[#8b5cf6]',
-			statusKey: 'common_status_warning',
-			statusClass: 'bg-secondary/10 text-secondary'
-		},
-		{
-			id: 's-america',
-			name: 'South America',
-			shortName: 'S. America',
-			ttfbMs: 152,
-			barWidth: '74%',
-			barColor: '#ef4444',
-			dotColor: 'text-[#ef4444]',
-			statusKey: 'common_status_slow',
-			statusClass: 'bg-error/10 text-error'
-		},
-		{
-			id: 'mid-east',
-			name: 'Middle East',
-			shortName: 'Mid. East',
-			ttfbMs: 98,
-			barWidth: '48%',
-			barColor: '#3b82f6',
-			barOpacity: 0.6,
-			dotColor: 'text-[#3b82f6]',
-			statusKey: 'common_status_ok',
-			statusClass: 'bg-success/10 text-success'
 		}
 	];
 }
