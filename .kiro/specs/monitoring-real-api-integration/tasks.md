@@ -219,7 +219,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Map to `BusinessKpiStat[]`, `PlanRevenue[]`, `ConversionFunnelStep[]`
     - _Requirements: 3.1, 3.3, 8.1, 8.2, 8.3, 8.5, 12.1, 12.4_
 
-  - [ ] 6.9 Create users load function (`src/routes/uzivatele/+page.server.ts`)
+  - [x] 6.9 Create users load function (`src/routes/uzivatele/+page.server.ts`)
     - Check Supabase config
     - Fetch user list + statistics from Supabase Auth admin
     - Map to `UserStat[]`, `User[]`
@@ -240,7 +240,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Apdex = (satisfied + tolerating * 0.5) / total with 500ms/2000ms thresholds; error rate = (5xx count / total) * 100
     - **Validates: Requirements 14.2**
 
-- [ ] 7. Checkpoint - Ensure all tests pass
+- [x] 7. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Create error state UI components and wire pages to load data
