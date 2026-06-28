@@ -266,7 +266,7 @@
 				<h3 class="text-lg font-semibold text-textMain">{t('edge_charts_bandwidth')}</h3>
 				<p class="text-xs text-textSec mt-0.5">{t('edge_charts_bandwidthSubtitle')}</p>
 			</div>
-			<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Celkem: 3.9 TB</span>
+			<span class="text-xs text-textSec bg-badge px-2 py-1 rounded">Celkem: 13.2 GB</span>
 		</div>
 		<div id="chart-bandwidth" class="h-[220px] w-full"></div>
 	</div>

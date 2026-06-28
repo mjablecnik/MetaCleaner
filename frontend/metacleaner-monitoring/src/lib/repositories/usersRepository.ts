@@ -74,9 +74,9 @@ export function getUserStats(): UserStat[] {
 		{
 			key: 'totalUsers',
 			labelKey: 'users_stats_totalUsers',
-			value: '12 847',
+			value: '2 100',
 			trendKey: 'users_stats_vsLastMonth',
-			trendValue: '+8.4%',
+			trendValue: '+1.6%',
 			trendPositive: true,
 			icon: 'fa-users',
 			iconColor: 'text-primary',
@@ -85,7 +85,7 @@ export function getUserStats(): UserStat[] {
 		{
 			key: 'loggedIn',
 			labelKey: 'users_stats_currentlyLoggedIn',
-			value: '342',
+			value: '210',
 			trendKey: 'users_stats_activeSessionsNow',
 			trendValue: '',
 			trendPositive: true,
@@ -98,9 +98,9 @@ export function getUserStats(): UserStat[] {
 		{
 			key: 'newRegistrations',
 			labelKey: 'users_stats_newRegistrations',
-			value: '1 024',
+			value: '34',
 			trendKey: 'users_stats_vsPreviousPeriod',
-			trendValue: '+12.1%',
+			trendValue: '+6.3%',
 			trendPositive: true,
 			icon: 'fa-user-plus',
 			iconColor: 'text-secondary',
@@ -109,13 +109,14 @@ export function getUserStats(): UserStat[] {
 		{
 			key: 'avgSessionDuration',
 			labelKey: 'users_stats_avgSessionDuration',
-			value: '8m 24s',
+			value: '18',
 			trendKey: 'users_stats_vsLastMonth',
-			trendValue: '-1.2%',
-			trendPositive: false,
-			icon: 'fa-clock',
+			trendValue: '+12.5%',
+			trendPositive: true,
+			icon: 'fa-bolt',
 			iconColor: 'text-purple-400',
-			iconBg: 'bg-purple-500/10'
+			iconBg: 'bg-purple-500/10',
+			subtextKey: 'users_stats_powerUsers'
 		}
 	];
 }
@@ -128,10 +129,10 @@ export interface UserTab {
 
 export function getUserTabs(): UserTab[] {
 	return [
-		{ key: 'all', labelKey: 'users_tabs_all', count: '12 847' },
-		{ key: 'online', labelKey: 'users_tabs_online', count: '342' },
-		{ key: 'new', labelKey: 'users_tabs_new', count: '1 024' },
-		{ key: 'inactive', labelKey: 'users_tabs_inactive', count: '874' }
+		{ key: 'all', labelKey: 'users_tabs_all', count: '2 100' },
+		{ key: 'online', labelKey: 'users_tabs_online', count: '210' },
+		{ key: 'new', labelKey: 'users_tabs_new', count: '34' },
+		{ key: 'inactive', labelKey: 'users_tabs_inactive', count: '1 856' }
 	];
 }
 

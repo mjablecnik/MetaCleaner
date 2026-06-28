@@ -35,7 +35,7 @@
 		];
 
 		const pieCenterAnnotation = {
-			text: `<b style="font-size:18px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:10px;color:${chartColors.textSec}">Hrozeb</span>`,
+			text: `<b style="font-size:18px;color:${chartColors.textMain}">83</b><br><span style="font-size:10px;color:${chartColors.textSec}">Hrozeb</span>`,
 			x: 0.5,
 			y: 0.5,
 			xanchor: 'center',
@@ -67,7 +67,7 @@
 					margin: { t: 4, r: 4, b: 4, l: 4 },
 					annotations: [
 						{
-							text: `<b style="font-size:14px;color:${chartColors.textMain}">1,247</b><br><span style="font-size:9px;color:${chartColors.textSec}">Hrozeb</span>`,
+							text: `<b style="font-size:14px;color:${chartColors.textMain}">83</b><br><span style="font-size:9px;color:${chartColors.textSec}">Hrozeb</span>`,
 							x: 0.5,
 							y: 0.5,
 							xanchor: 'center',

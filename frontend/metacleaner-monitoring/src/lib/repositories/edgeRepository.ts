@@ -65,6 +65,24 @@ export interface WafLogEntry {
 	statusClass: string;
 }
 
+export interface GeoDistribution {
+	country: string;
+	code: string;
+	flag: string;
+	percent: number;
+	color: string;
+}
+
+export function getGeoDistribution(): GeoDistribution[] {
+	return [
+		{ country: 'Česká republika', code: 'CZ', flag: '🇨🇿', percent: 62, color: '#3b82f6' },
+		{ country: 'Slovensko', code: 'SK', flag: '🇸🇰', percent: 8, color: '#22c55e' },
+		{ country: 'Německo', code: 'DE', flag: '🇩🇪', percent: 7, color: '#8b5cf6' },
+		{ country: 'USA', code: 'US', flag: '🇺🇸', percent: 5, color: '#f97316' },
+		{ country: 'Ostatní', code: 'XX', flag: '🌍', percent: 18, color: '#475569' }
+	];
+}
+
 export function getEdgeKpiStats(): EdgeKpiStat[] {
 	return [
 		{
@@ -83,27 +101,27 @@ export function getEdgeKpiStats(): EdgeKpiStat[] {
 		{
 			key: 'totalRequests',
 			labelKey: 'edge_kpi_totalRequests',
-			value: '48.3M',
+			value: '48 200',
 			badgeKey: '',
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
-			subtext: 'Peak: 2.4M/h v 10:00'
+			subtext: 'Peak: 5 800/h v 10:00 · CZ 62%'
 		},
 		{
 			key: 'savedBandwidth',
 			labelKey: 'edge_kpi_savedBandwidth',
-			value: '2.8',
-			unit: 'TB',
+			value: '12.4',
+			unit: 'GB',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: '3.9 TB celkem · 72% z cache',
-			barWidth: '72%',
+			subtext: '13.2 GB celkem · 94% z cache',
+			barWidth: '94%',
 			barClass: 'bg-[#3b82f6]'
 		},
 		{
 			key: 'blockedThreats',
 			labelKey: 'edge_kpi_blockedThreats',
-			value: '1,247',
-			trend: '+312',
+			value: '83',
+			trend: '+12',
 			trendPositive: false,
 			badgeKey: 'common_status_caution',
 			badgeClass: 'bg-secondary/10 text-secondary',
@@ -158,41 +176,41 @@ export function getEdgeSecondaryKpis(): EdgeSecondaryKpi[] {
 export function getCacheRules(): CacheRule[] {
 	return [
 		{
-			id: 'images',
-			pattern: '/assets/images/*',
-			ttlLabel: 'TTL: 30 dní',
-			description: 'TTL: 30 dní · Statické soubory',
-			hitRate: '99.1%',
+			id: 'landing',
+			pattern: '/*.html',
+			ttlLabel: 'TTL: 1 den',
+			description: 'TTL: 1 den · Landing page HTML',
+			hitRate: '98.7%',
 			hitRateColor: 'text-success',
-			icon: 'fa-image',
+			icon: 'fa-globe',
 			iconBg: 'bg-[#3ecf8e]/15',
 			iconColor: 'text-[#3ecf8e]'
 		},
 		{
-			id: 'js-bundles',
-			pattern: '/static/js/*.bundle.js',
-			ttlLabel: 'TTL: 7 dní',
-			description: 'TTL: 7 dní · JS bundly',
-			hitRate: '98.4%',
+			id: 'assets',
+			pattern: '/_app/immutable/*',
+			ttlLabel: 'TTL: 1 rok',
+			description: 'TTL: 1 rok · SPA assets (hashed)',
+			hitRate: '99.4%',
 			hitRateColor: 'text-[#3b82f6]',
 			icon: 'fa-code',
 			iconBg: 'bg-[#3b82f6]/15',
 			iconColor: 'text-[#3b82f6]'
 		},
 		{
-			id: 'api-products',
-			pattern: '/api/v1/products*',
-			ttlLabel: 'TTL: 5 min',
-			description: 'TTL: 5 min · API cache',
-			hitRate: '72.3%',
+			id: 'docs',
+			pattern: '/api/v1/docs*',
+			ttlLabel: 'TTL: 30 min',
+			description: 'TTL: 30 min · API docs',
+			hitRate: '88.2%',
 			hitRateColor: 'text-[#8b5cf6]',
 			icon: 'fa-database',
 			iconBg: 'bg-[#8b5cf6]/15',
 			iconColor: 'text-[#8b5cf6]'
 		},
 		{
-			id: 'user-profile',
-			pattern: '/api/v1/user/profile',
+			id: 'upload',
+			pattern: '/api/v1/upload*',
 			ttlLabel: 'TTL: Bypass',
 			description: 'TTL: Bypass · Auth required',
 			hitRate: '0%',
@@ -208,7 +226,7 @@ export function getCacheRules(): CacheRule[] {
 			description: 'TTL: 1 den · SEO',
 			hitRate: '97.8%',
 			hitRateColor: 'text-success',
-			icon: 'fa-globe',
+			icon: 'fa-sitemap',
 			iconBg: 'bg-[#3ecf8e]/15',
 			iconColor: 'text-[#3ecf8e]'
 		}
@@ -243,7 +261,7 @@ export function getWafLog(): WafLogEntry[] {
 			ip: '185.220.101.47',
 			country: 'RU',
 			countryFlag: '🇷🇺',
-			message: 'L7 HTTP flood – 8,400 req/s z jedné IP',
+			message: 'L7 HTTP flood – 420 req/s na /api/v1/upload',
 			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_active',
@@ -269,9 +287,9 @@ export function getWafLog(): WafLogEntry[] {
 			type: 'Bot',
 			typeClass: 'bg-[#f97316]/15 text-[#f97316]',
 			ip: '45.33.32.156',
-			country: 'US',
-			countryFlag: '🇺🇸',
-			message: 'Scraping bot – User-Agent: Scrapy/2.11',
+			country: 'DE',
+			countryFlag: '🇩🇪',
+			message: 'Scraping bot – User-Agent: Scrapy/2.11 na /sitemap.xml',
 			actionKey: 'edge_status_challenge',
 			actionClass: 'bg-secondary/15 text-secondary',
 			statusKey: 'common_status_resolved',
@@ -279,27 +297,27 @@ export function getWafLog(): WafLogEntry[] {
 		},
 		{
 			id: 'waf-4',
-			time: '13:12:40',
-			type: 'WAF',
-			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			ip: '103.21.244.0',
-			country: 'IN',
-			countryFlag: '🇮🇳',
-			message: 'XSS pokus – pravidlo CF-WAF-XSS-012',
-			actionKey: 'common_status_blocked',
-			actionClass: 'bg-error/15 text-error',
+			time: '12:44:17',
+			type: 'Rate Limit',
+			typeClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
+			ip: '77.48.220.14',
+			country: 'CZ',
+			countryFlag: '🇨🇿',
+			message: 'Rate limit překročen – /api/v1/jobs (100 req/min)',
+			actionKey: 'edge_status_throttle',
+			actionClass: 'bg-secondary/15 text-secondary',
 			statusKey: 'common_status_resolved',
 			statusClass: 'bg-success/10 text-success'
 		},
 		{
 			id: 'waf-5',
-			time: '12:04:09',
-			type: 'DDoS',
-			typeClass: 'bg-error/15 text-error',
-			ip: '195.178.110.33',
-			country: 'DE',
-			countryFlag: '🇩🇪',
-			message: 'SYN flood útok – 12,000 req/s z botnet sítě',
+			time: '11:20:04',
+			type: 'WAF',
+			typeClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
+			ip: '103.21.244.0',
+			country: 'US',
+			countryFlag: '🇺🇸',
+			message: 'XSS pokus na /api/v1/auth/login – pravidlo CF-WAF-XSS-012',
 			actionKey: 'common_status_blocked',
 			actionClass: 'bg-error/15 text-error',
 			statusKey: 'common_status_resolved',
@@ -307,13 +325,13 @@ export function getWafLog(): WafLogEntry[] {
 		},
 		{
 			id: 'waf-6',
-			time: '10:28:55',
+			time: '09:38:30',
 			type: 'Rate Limit',
 			typeClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			ip: '82.102.17.84',
-			country: 'GB',
-			countryFlag: '🇬🇧',
-			message: 'Rate limit překročen – /api/v1/login (200 req/min)',
+			ip: '89.173.45.22',
+			country: 'SK',
+			countryFlag: '🇸🇰',
+			message: 'Rate limit překročen – /api/v1/upload (10 req/min)',
 			actionKey: 'edge_status_throttle',
 			actionClass: 'bg-secondary/15 text-secondary',
 			statusKey: 'common_status_resolved',

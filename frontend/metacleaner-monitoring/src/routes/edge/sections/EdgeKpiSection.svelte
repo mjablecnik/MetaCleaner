@@ -134,7 +134,7 @@
 							<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 						</div>
 					{/if}
-					<p class="text-xs text-textSec mt-1">72% z cache</p>
+					<p class="text-xs text-textSec mt-1">94% z cache</p>
 				</div>
 			{/if}
 		{/each}
@@ -155,7 +155,7 @@
 					</div>
 					<div class="text-2xl font-bold text-secondary">{kpi.value}</div>
 					<p class="text-xs text-secondary mt-1 flex items-center gap-1">
-						<i class="fa-solid fa-arrow-up text-xs"></i>+312 dnes
+						<i class="fa-solid fa-arrow-up text-xs"></i>+12 dnes
 					</p>
 				</div>
 			{/if}

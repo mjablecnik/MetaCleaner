@@ -23,8 +23,8 @@
 - [x] 21. [MEDIUM] Update DB key metrics in `databaseRepository.ts` (total ~30MB, pool 42/100, avg query 12ms, slowest query, storage 2.4GB) per BRIEF A6
 - [x] 22. [MEDIUM] Replace business KPIs in `businessRepository.ts` (MRR $1,240, subscribers 89, free 1,840, churn 3.2%, ARPU $13.93, etc.) per BRIEF A7
 - [x] 23. [MEDIUM] Update subscription plan breakdown in `businessRepository.ts` (Free 1,840, Pro 62→$558, Business 27→$783) per BRIEF A7
-- [ ] 24. [MEDIUM] Replace user metrics in `usersRepository.ts` (registered 2,100, new 34, active 210, power 18, auth-method split) per BRIEF A8
-- [ ] 25. [MEDIUM] Replace Cloudflare metrics in `edgeRepository.ts` (cache 94.2%, 48,200 req, threats, Czech-focused geo split) per BRIEF A9
+- [x] 24. [MEDIUM] Replace user metrics in `usersRepository.ts` (registered 2,100, new 34, active 210, power 18, auth-method split) per BRIEF A8
+- [x] 25. [MEDIUM] Replace Cloudflare metrics in `edgeRepository.ts` (cache 94.2%, 48,200 req, threats, Czech-focused geo split) per BRIEF A9
 - [ ] 26. [MEDIUM] Update `.env.example` to ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_ORG`, `SENTRY_PROJECT`, `STRIPE_SECRET_KEY` are present per BRIEF B3
 - [ ] 27. [MEDIUM] Add/update i18n keys in `messages/en.json` for any new labels (app badge, machine app subtitle, new KPI labels) following existing key patterns (B4)
 - [ ] 28. [MEDIUM] Add/update matching i18n keys in `messages/cs.json` (same keys as en.json) (B4)

@@ -12,8 +12,8 @@
 
 	let {
 		currentPage = 1,
-		totalPages = 1285,
-		totalItems = '12 847',
+		totalPages = 210,
+		totalItems = '2 100',
 		from = '1',
 		to = '10',
 		variant = 'desktop'

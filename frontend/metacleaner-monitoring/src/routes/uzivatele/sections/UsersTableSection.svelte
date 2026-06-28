@@ -137,7 +137,7 @@
 	<!-- Filter / Sort row -->
 	<div class="flex items-center justify-between px-4 py-2.5 border-b border-surface/60">
 		<p class="text-xs text-textSec">
-			{t('common_pagination_showing', { from: '1', to: '10', total: '12 847' })}
+			{t('common_pagination_showing', { from: '1', to: '10', total: '2 100' })}
 		</p>
 		<div class="flex items-center gap-2">
 			<button
