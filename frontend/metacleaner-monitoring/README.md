@@ -1,42 +1,63 @@
-# sv
+# metacleaner-monitoring
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+SvelteKit 2 monitoring dashboard with Svelte 5 runes, Tailwind CSS v4, paraglide-js i18n, and Plotly charts.
 
-## Creating a project
+## Prerequisites
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Node.js 22+
+- [Bun](https://bun.sh/) (primary package manager)
+
+## Install dependencies
 
 ```sh
-# create a new project
-npx sv create my-app
+bun install
 ```
 
-To recreate this project with the same configuration:
+## Development
 
 ```sh
-# recreate this project
-bun x sv@0.16.1 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:auto" paraglide="languageTags:en, cs+demo:no" storybook mcp="ide:claude-code,other+setup:remote" --install bun metacleaner-monitoring
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
+bun run dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
+## Build
 
 ```sh
-npm run build
+bun run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build locally:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```sh
+bun run preview
+```
+
+Start the production server (after build):
+
+```sh
+node build/index.js
+```
+
+## Docker
+
+```sh
+docker build -t metacleaner-monitoring .
+docker run -p 3000:3000 metacleaner-monitoring
+```
+
+## Lint & type-check
+
+```sh
+bun run lint
+bun run check
+```
+
+## Tests
+
+```sh
+bun run test
+```
+
+Unit tests use Vitest; E2E tests use Playwright. The first run of `bun run test` (or `bun run test:e2e`) will automatically download required browser binaries.
