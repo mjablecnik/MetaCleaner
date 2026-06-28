@@ -200,7 +200,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Map to `TableSize[]`, `DbKpi[]`
     - _Requirements: 3.1, 3.3, 9.1, 12.1, 12.4_
 
-  - [ ] 6.6 Create edge load function (`src/routes/edge/+page.server.ts`)
+  - [x] 6.6 Create edge load function (`src/routes/edge/+page.server.ts`)
     - Check Cloudflare config
     - Fetch analytics, geo distribution, firewall events
     - Map to `EdgeKpiStat[]`, `GeoDistribution[]`, `WafLogEntry[]`, `HttpStatusDistribution[]`
