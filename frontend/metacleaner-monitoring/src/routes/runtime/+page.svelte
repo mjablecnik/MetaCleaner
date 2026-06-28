@@ -9,7 +9,6 @@
 	import RuntimeInstancesSection from './sections/RuntimeInstancesSection.svelte';
 	import RuntimeDeploySection from './sections/RuntimeDeploySection.svelte';
 	import RuntimeErrorLogSection from './sections/RuntimeErrorLogSection.svelte';
-	import RuntimeHttpSection from './sections/RuntimeHttpSection.svelte';
 
 	const summary = getRuntimeSummary();
 
@@ -111,7 +110,6 @@
 	<RuntimeInstancesSection />
 	<RuntimeDeploySection />
 	<RuntimeErrorLogSection />
-	<RuntimeHttpSection />
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/runtime" />

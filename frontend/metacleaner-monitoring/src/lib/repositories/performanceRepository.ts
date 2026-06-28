@@ -41,28 +41,6 @@ export interface SlowEndpoint {
 	barColor: string;
 }
 
-export interface CoreWebVital {
-	key: string;
-	label: string;
-	value: string;
-	unit: string;
-	statusKey: string;
-	statusClass: string;
-	badgeClass: string;
-	barClass: string;
-	description: string;
-	barWidth: string;
-	threshold: string;
-	statusSymbol: string;
-}
-
-export interface ErrorCodeDistribution {
-	code: string;
-	label: string;
-	percent: number;
-	color: string;
-}
-
 export interface PerformanceEvent {
 	id: string;
 	time: string;
@@ -255,90 +233,6 @@ export function getSlowEndpoints(): SlowEndpoint[] {
 			timeColor: 'text-[#3ecf8e]',
 			barColor: 'bg-[#3ecf8e]'
 		}
-	];
-}
-
-export function getCoreWebVitals(): CoreWebVital[] {
-	return [
-		{
-			key: 'lcp',
-			label: 'LCP',
-			value: '1.8',
-			unit: 's',
-			statusKey: 'common_status_ok',
-			statusClass: 'text-success',
-			badgeClass: 'bg-success/10 text-success',
-			barClass: 'bg-success',
-			description: 'Largest Contentful Paint',
-			barWidth: '60%',
-			threshold: 'Good (<2.5s)',
-			statusSymbol: '✓ OK'
-		},
-		{
-			key: 'fid',
-			label: 'FID',
-			value: '48',
-			unit: 'ms',
-			statusKey: 'common_status_ok',
-			statusClass: 'text-success',
-			badgeClass: 'bg-success/10 text-success',
-			barClass: 'bg-success',
-			description: 'First Input Delay',
-			barWidth: '32%',
-			threshold: 'Good (<100ms)',
-			statusSymbol: '✓ OK'
-		},
-		{
-			key: 'cls',
-			label: 'CLS',
-			value: '0.18',
-			unit: '',
-			statusKey: 'common_status_warning',
-			statusClass: 'text-secondary',
-			badgeClass: 'bg-secondary/10 text-secondary',
-			barClass: 'bg-secondary',
-			description: 'Cumulative Layout Shift',
-			barWidth: '72%',
-			threshold: 'Needs improvement (<0.1)',
-			statusSymbol: '⚠ Warning'
-		},
-		{
-			key: 'ttfb',
-			label: 'TTFB',
-			value: '210',
-			unit: 'ms',
-			statusKey: 'common_status_ok',
-			statusClass: 'text-success',
-			badgeClass: 'bg-success/10 text-success',
-			barClass: 'bg-success',
-			description: 'Time To First Byte',
-			barWidth: '42%',
-			threshold: 'Good (<800ms)',
-			statusSymbol: '✓ OK'
-		},
-		{
-			key: 'inp',
-			label: 'INP',
-			value: '84',
-			unit: 'ms',
-			statusKey: 'common_status_ok',
-			statusClass: 'text-success',
-			badgeClass: 'bg-success/10 text-success',
-			barClass: 'bg-success',
-			description: 'Interaction to Next Paint',
-			barWidth: '28%',
-			threshold: 'Good (<200ms)',
-			statusSymbol: '✓ OK'
-		}
-	];
-}
-
-export function getErrorCodeDistribution(): ErrorCodeDistribution[] {
-	return [
-		{ code: '500', label: '500 Internal', percent: 42, color: '#ef4444' },
-		{ code: '503', label: '503 Timeout', percent: 31, color: '#f97316' },
-		{ code: '502', label: '502 Bad GW', percent: 18, color: '#f59e0b' },
-		{ code: 'other', label: 'Other', percent: 9, color: '#8b5cf6' }
 	];
 }
 
