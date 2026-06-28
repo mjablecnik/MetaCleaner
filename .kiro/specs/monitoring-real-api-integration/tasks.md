@@ -64,7 +64,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Use Stripe standard auth (Basic with secret key), 10s timeout
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 8.4_
 
-  - [ ] 2.4 Create the Supabase client (`src/lib/server/clients/supabaseClient.ts`)
+  - [x] 2.4 Create the Supabase client (`src/lib/server/clients/supabaseClient.ts`)
     - Define `SupabaseClientConfig` with `url`, `serviceKey`, `timeout`
     - Define raw response types (`SupabaseTableStatsRaw`, `SupabaseUserRaw`)
     - Implement `getTableStats(config)` — table size and row count data
