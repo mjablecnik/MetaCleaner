@@ -113,7 +113,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Compute cache hit rate, saved bandwidth (bytes → GB), format request counts with separators
     - _Requirements: 3.2, 7.2, 7.3, 7.4, 11.1, 11.4_
 
-  - [ ] 4.3 Create the Stripe mapper (`src/lib/server/mappers/stripeMapper.ts`)
+  - [x] 4.3 Create the Stripe mapper (`src/lib/server/mappers/stripeMapper.ts`)
     - Implement `mapToBusinessKpiStats(subs, canceled)` → `BusinessKpiStat[]`
     - Implement `mapToPlanRevenue(subs, prices)` → `PlanRevenue[]`
     - Implement `computeMrr(subs)` — normalize billing intervals to monthly
