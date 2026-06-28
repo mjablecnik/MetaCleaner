@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getUserStats } from '$lib/repositories/usersRepository';
+	import type { UserStat } from '$lib/repositories/usersRepository';
 
-	const stats = getUserStats();
+	let { stats }: { stats: UserStat[] } = $props();
 </script>
 
 <!-- ===== DESKTOP: Stats Cards (4-col grid) ===== -->

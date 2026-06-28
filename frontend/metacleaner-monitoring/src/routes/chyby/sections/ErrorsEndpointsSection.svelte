@@ -2,9 +2,9 @@
 	import { t } from '$lib/i18n';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
 	import ErrorEndpointRow from '../components/ErrorEndpointRow.svelte';
-	import { getTopEndpoints } from '$lib/repositories/errorsRepository';
+	import type { TopEndpoint } from '$lib/repositories/errorsRepository';
 
-	const endpoints = getTopEndpoints();
+	let { endpoints }: { endpoints: TopEndpoint[] } = $props();
 
 	let endpointsOpen = $state(true);
 </script>

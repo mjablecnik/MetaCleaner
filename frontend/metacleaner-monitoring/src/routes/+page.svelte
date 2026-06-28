@@ -1,10 +1,16 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import DashboardKpiSection from './sections/DashboardKpiSection.svelte';
 	import DashboardChartsRow1Section from './sections/DashboardChartsRow1Section.svelte';
 	import DashboardChartsRow2Section from './sections/DashboardChartsRow2Section.svelte';
 	import DashboardAlertsSection from './sections/DashboardAlertsSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 </script>
 
 {#snippet statusBadge()}
@@ -34,8 +40,28 @@
 />
 
 <div class="p-4 lg:p-6 max-w-7xl mx-auto space-y-5 lg:space-y-6">
-	<DashboardKpiSection />
+	{#if data.stats.status === 'ok'}
+		<DashboardKpiSection stats={data.stats.data} />
+	{:else if data.stats.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.stats.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.stats.error.category}
+			message={data.stats.error.message}
+			onretry={() => invalidate('app:dashboard')}
+		/>
+	{/if}
 	<DashboardChartsRow1Section />
 	<DashboardChartsRow2Section />
-	<DashboardAlertsSection />
+	{#if data.alerts.status === 'ok'}
+		<DashboardAlertsSection alerts={data.alerts.data} />
+	{:else if data.alerts.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.alerts.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.alerts.error.category}
+			message={data.alerts.error.message}
+			onretry={() => invalidate('app:dashboard')}
+		/>
+	{/if}
 </div>

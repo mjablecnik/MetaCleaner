@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import { chartColors } from '$lib/theme/chartColors';
-	import { getWafLog } from '$lib/repositories/edgeRepository';
+	import type { WafLogEntry } from '$lib/repositories/edgeRepository';
 
-	const wafLog = getWafLog();
+	let { wafLog }: { wafLog: WafLogEntry[] } = $props();
 
 	function borderColor(typeClass: string): string {
 		if (typeClass.includes('error')) return chartColors.error;

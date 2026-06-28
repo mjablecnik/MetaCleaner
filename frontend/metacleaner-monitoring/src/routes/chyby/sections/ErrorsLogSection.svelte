@@ -2,9 +2,9 @@
 	import { t } from '$lib/i18n';
 	import { chartColors } from '$lib/theme/chartColors';
 	import ErrorLogRow from '../components/ErrorLogRow.svelte';
-	import { getErrorLog } from '$lib/repositories/errorsRepository';
+	import type { ErrorLogEntry } from '$lib/repositories/errorsRepository';
 
-	const logEntries = getErrorLog();
+	let { logEntries }: { logEntries: ErrorLogEntry[] } = $props();
 
 	let activeFilter = $state('all');
 

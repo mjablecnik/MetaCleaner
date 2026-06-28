@@ -4,9 +4,11 @@
 	import PlotlyChart from '$lib/shared/components/PlotlyChart.svelte';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
 	import TableSizeRow from '../components/TableSizeRow.svelte';
-	import { getTableSizes, getDatabaseStats } from '$lib/repositories/databaseRepository';
+	import { getDatabaseStats } from '$lib/repositories/databaseRepository';
+	import type { TableSize } from '$lib/repositories/databaseRepository';
 
-	const tableSizes = getTableSizes();
+	let { tableSizes }: { tableSizes: TableSize[] } = $props();
+
 	const dbStats = getDatabaseStats();
 
 	let tableSizesOpen = $state(false);

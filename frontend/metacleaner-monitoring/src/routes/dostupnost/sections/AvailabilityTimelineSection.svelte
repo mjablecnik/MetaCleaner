@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import UptimeTimeline from '../components/UptimeTimeline.svelte';
-	import { getServiceCards } from '$lib/repositories/availabilityRepository';
+	import type { ServiceCard } from '$lib/repositories/availabilityRepository';
 
-	const serviceCards = getServiceCards();
+	let { services }: { services: ServiceCard[] } = $props();
 
+	const serviceCards = $derived(services);
 	let utOpen = $state(true);
 </script>
 

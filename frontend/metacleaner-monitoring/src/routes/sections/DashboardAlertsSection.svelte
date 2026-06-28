@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import AlertItem from '../components/AlertItem.svelte';
-	import { getDashboardAlerts } from '$lib/repositories/dashboardRepository';
+	import type { DashboardAlert } from '$lib/repositories/dashboardRepository';
 
-	const alerts = getDashboardAlerts();
+	let { alerts }: { alerts: DashboardAlert[] } = $props();
 </script>
 
 <section class="bg-card border border-surface rounded-2xl lg:rounded-xl p-4 lg:p-5 shadow-sm">

@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import PerformanceKpiSection from './sections/PerformanceKpiSection.svelte';
 	import PerformanceChartsSection from './sections/PerformanceChartsSection.svelte';
 	import PerformanceEndpointsSection from './sections/PerformanceEndpointsSection.svelte';
 	import PerformanceEventLogSection from './sections/PerformanceEventLogSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -82,10 +88,40 @@
 />
 
 <div class="px-4 py-4 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto pb-20">
-	<PerformanceKpiSection />
+	{#if data.kpis.status === 'ok'}
+		<PerformanceKpiSection kpis={data.kpis.data} />
+	{:else if data.kpis.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.kpis.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.kpis.error.category}
+			message={data.kpis.error.message}
+			onretry={() => invalidate('app:performance')}
+		/>
+	{/if}
 	<PerformanceChartsSection />
-	<PerformanceEndpointsSection />
-	<PerformanceEventLogSection />
+	{#if data.slowEndpoints.status === 'ok'}
+		<PerformanceEndpointsSection slowEndpoints={data.slowEndpoints.data} />
+	{:else if data.slowEndpoints.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.slowEndpoints.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.slowEndpoints.error.category}
+			message={data.slowEndpoints.error.message}
+			onretry={() => invalidate('app:performance')}
+		/>
+	{/if}
+	{#if data.events.status === 'ok'}
+		<PerformanceEventLogSection events={data.events.data} />
+	{:else if data.events.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.events.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.events.error.category}
+			message={data.events.error.message}
+			onretry={() => invalidate('app:performance')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/performance" />

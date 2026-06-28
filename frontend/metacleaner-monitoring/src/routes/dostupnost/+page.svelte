@@ -1,16 +1,24 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
-	import { getIncidents } from '$lib/repositories/availabilityRepository';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import AvailabilityServiceCardsSection from './sections/AvailabilityServiceCardsSection.svelte';
 	import AvailabilityHealthChecksSection from './sections/AvailabilityHealthChecksSection.svelte';
 	import AvailabilityTimelineSection from './sections/AvailabilityTimelineSection.svelte';
 	import AvailabilitySlaSection from './sections/AvailabilitySlaSection.svelte';
+	import type { PageData } from './$types';
 
-	const incidents = getIncidents();
-	const activeIncident = incidents.find((i) => i.status === 'active');
+	let { data }: { data: PageData } = $props();
+
+	const activeIncident = $derived(
+		data.incidents.status === 'ok'
+			? data.incidents.data.find((i) => i.status === 'active')
+			: undefined
+	);
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -96,10 +104,48 @@
 />
 
 <div class="px-4 pt-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<AvailabilityServiceCardsSection />
-	<AvailabilityHealthChecksSection />
-	<AvailabilityTimelineSection />
-	<AvailabilitySlaSection />
+	{#if data.services.status === 'ok'}
+		<AvailabilityServiceCardsSection services={data.services.data} />
+	{:else if data.services.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.services.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.services.error.category}
+			message={data.services.error.message}
+			onretry={() => invalidate('app:dostupnost')}
+		/>
+	{/if}
+	{#if data.healthChecks.status === 'ok'}
+		<AvailabilityHealthChecksSection healthChecks={data.healthChecks.data} />
+	{:else if data.healthChecks.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.healthChecks.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.healthChecks.error.category}
+			message={data.healthChecks.error.message}
+			onretry={() => invalidate('app:dostupnost')}
+		/>
+	{/if}
+	{#if data.services.status === 'ok'}
+		<AvailabilityTimelineSection services={data.services.data} />
+	{/if}
+	{#if data.slaGoals.status === 'ok' && data.incidents.status === 'ok'}
+		<AvailabilitySlaSection slaGoals={data.slaGoals.data} incidents={data.incidents.data} />
+	{:else if data.slaGoals.status === 'not-configured' || data.incidents.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.slaGoals.status === 'not-configured' ? data.slaGoals.missingVars : (data.incidents.status === 'not-configured' ? data.incidents.missingVars : [])} />
+	{:else if data.slaGoals.status === 'error'}
+		<SectionErrorCard
+			category={data.slaGoals.error.category}
+			message={data.slaGoals.error.message}
+			onretry={() => invalidate('app:dostupnost')}
+		/>
+	{:else if data.incidents.status === 'error'}
+		<SectionErrorCard
+			category={data.incidents.error.category}
+			message={data.incidents.error.message}
+			onretry={() => invalidate('app:dostupnost')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/dostupnost" />

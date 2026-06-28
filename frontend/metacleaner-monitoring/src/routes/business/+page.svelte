@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import BusinessKpiSection from './sections/BusinessKpiSection.svelte';
 	import BusinessRevenueChartsSection from './sections/BusinessRevenueChartsSection.svelte';
 	import BusinessFunnelSection from './sections/BusinessFunnelSection.svelte';
 	import BusinessCohortSection from './sections/BusinessCohortSection.svelte';
 	import BusinessTopCustomersSection from './sections/BusinessTopCustomersSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -97,9 +103,35 @@
 />
 
 <div class="px-4 pb-24 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<BusinessKpiSection />
+	{#if data.kpis.status === 'ok'}
+		<BusinessKpiSection kpis={data.kpis.data} />
+	{:else if data.kpis.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.kpis.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.kpis.error.category}
+			message={data.kpis.error.message}
+			onretry={() => invalidate('app:business')}
+		/>
+	{/if}
 	<BusinessRevenueChartsSection />
-	<BusinessFunnelSection />
+	{#if data.planRevenue.status === 'ok' && data.conversionFunnel.status === 'ok'}
+		<BusinessFunnelSection planRevenue={data.planRevenue.data} conversionFunnel={data.conversionFunnel.data} />
+	{:else if data.planRevenue.status === 'not-configured' || data.conversionFunnel.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.planRevenue.status === 'not-configured' ? data.planRevenue.missingVars : (data.conversionFunnel.status === 'not-configured' ? data.conversionFunnel.missingVars : [])} />
+	{:else if data.planRevenue.status === 'error'}
+		<SectionErrorCard
+			category={data.planRevenue.error.category}
+			message={data.planRevenue.error.message}
+			onretry={() => invalidate('app:business')}
+		/>
+	{:else if data.conversionFunnel.status === 'error'}
+		<SectionErrorCard
+			category={data.conversionFunnel.error.category}
+			message={data.conversionFunnel.error.message}
+			onretry={() => invalidate('app:business')}
+		/>
+	{/if}
 	<BusinessCohortSection />
 	<BusinessTopCustomersSection />
 </div>

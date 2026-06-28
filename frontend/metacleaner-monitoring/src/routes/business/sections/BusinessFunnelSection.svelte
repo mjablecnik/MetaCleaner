@@ -2,11 +2,10 @@
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
 	import { chartColors } from '$lib/theme/chartColors';
-	import { getConversionFunnel, getPlanRevenue } from '$lib/repositories/businessRepository';
+	import type { ConversionFunnelStep, PlanRevenue } from '$lib/repositories/businessRepository';
 	import FunnelStep from '../components/FunnelStep.svelte';
 
-	const conversionFunnel = getConversionFunnel();
-	const planRevenue = getPlanRevenue();
+	let { conversionFunnel, planRevenue }: { conversionFunnel: ConversionFunnelStep[]; planRevenue: PlanRevenue[] } = $props();
 
 	onMount(() => {
 		const P = window.Plotly;

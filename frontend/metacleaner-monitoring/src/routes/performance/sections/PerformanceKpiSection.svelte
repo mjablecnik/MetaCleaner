@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import {
-		getPerformanceKpiStats,
-		getPerformanceSecondaryKpis
-	} from '$lib/repositories/performanceRepository';
+	import { getPerformanceSecondaryKpis } from '$lib/repositories/performanceRepository';
+	import type { PerformanceKpiStat } from '$lib/repositories/performanceRepository';
 
-	const kpiStats = getPerformanceKpiStats();
+	let { kpis }: { kpis: PerformanceKpiStat[] } = $props();
+
+	const kpiStats = $derived(kpis);
 	const secondaryKpis = getPerformanceSecondaryKpis();
 </script>
 

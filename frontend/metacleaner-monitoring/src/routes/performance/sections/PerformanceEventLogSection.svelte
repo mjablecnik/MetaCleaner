@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getPerformanceEvents } from '$lib/repositories/performanceRepository';
+	import type { PerformanceEvent } from '$lib/repositories/performanceRepository';
 
 	type EventFilter = 'all' | 'critical' | 'warning' | 'info';
 
-	const performanceEvents = getPerformanceEvents();
+	let { events }: { events: PerformanceEvent[] } = $props();
+
+	const performanceEvents = $derived(events);
 	let activeEventFilter = $state<EventFilter>('all');
 </script>
 

@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import UsersKpiSection from './sections/UsersKpiSection.svelte';
 	import UsersChartsSection from './sections/UsersChartsSection.svelte';
 	import UsersTableSection from './sections/UsersTableSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	let searchOpen = $state(false);
 
@@ -109,9 +115,29 @@
 />
 
 <div class="px-4 pb-20 space-y-4 lg:px-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto lg:pt-6">
-	<UsersKpiSection />
+	{#if data.stats.status === 'ok'}
+		<UsersKpiSection stats={data.stats.data} />
+	{:else if data.stats.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.stats.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.stats.error.category}
+			message={data.stats.error.message}
+			onretry={() => invalidate('app:uzivatele')}
+		/>
+	{/if}
 	<UsersChartsSection />
-	<UsersTableSection />
+	{#if data.users.status === 'ok'}
+		<UsersTableSection users={data.users.data} />
+	{:else if data.users.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.users.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.users.error.category}
+			message={data.users.error.message}
+			onretry={() => invalidate('app:uzivatele')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/uzivatele" />

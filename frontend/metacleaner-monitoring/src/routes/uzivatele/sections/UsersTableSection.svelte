@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getUsers, getUserTabs, type User } from '$lib/repositories/usersRepository';
+	import { getUserTabs, type User } from '$lib/repositories/usersRepository';
 	import UserRow from '../components/UserRow.svelte';
 	import UserCard from '../components/UserCard.svelte';
 	import PaginationControls from '../components/PaginationControls.svelte';
 
 	type TabKey = 'all' | 'online' | 'new' | 'inactive';
 
-	const users = getUsers();
+	let { users }: { users: User[] } = $props();
+
 	const tabs = getUserTabs();
 
 	let activeTab = $state<TabKey>('all');

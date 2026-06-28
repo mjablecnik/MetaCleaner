@@ -2,10 +2,12 @@
 	import { t } from '$lib/i18n';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
 	import InstanceCard from '../components/InstanceCard.svelte';
-	import { getMachineInstances, getRuntimeSummary } from '$lib/repositories/runtimeRepository';
+	import type { MachineInstance } from '$lib/repositories/runtimeRepository';
 
-	const machines = getMachineInstances();
-	const summary = getRuntimeSummary();
+	let { machines }: { machines: MachineInstance[] } = $props();
+
+	const machinesOnline = $derived(machines.filter((m) => m.status === 'running').length);
+	const machinesTotal = $derived(machines.length);
 
 	let open = $state(true);
 </script>
@@ -40,7 +42,7 @@
 	>
 		{#snippet headerRight()}
 			<span class="px-2 py-0.5 bg-success/10 text-success text-xs rounded-full">
-				{summary.machinesOnline}/{summary.machinesTotal}
+				{machinesOnline}/{machinesTotal}
 			</span>
 		{/snippet}
 		<div class="flex justify-end mb-3">

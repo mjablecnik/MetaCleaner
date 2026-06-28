@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getEdgeKpiStats, getEdgeSecondaryKpis } from '$lib/repositories/edgeRepository';
+	import { getEdgeSecondaryKpis } from '$lib/repositories/edgeRepository';
+	import type { EdgeKpiStat } from '$lib/repositories/edgeRepository';
 
-	const edgeKpis = getEdgeKpiStats();
+	let { kpis }: { kpis: EdgeKpiStat[] } = $props();
+
+	const edgeKpis = $derived(kpis);
 	const secondaryKpis = getEdgeSecondaryKpis();
 </script>
 

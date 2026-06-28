@@ -1,16 +1,25 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
-	import { getRuntimeSummary } from '$lib/repositories/runtimeRepository';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import RuntimeKpiSection from './sections/RuntimeKpiSection.svelte';
 	import RuntimeChartsSection from './sections/RuntimeChartsSection.svelte';
 	import RuntimeInstancesSection from './sections/RuntimeInstancesSection.svelte';
 	import RuntimeDeploySection from './sections/RuntimeDeploySection.svelte';
 	import RuntimeErrorLogSection from './sections/RuntimeErrorLogSection.svelte';
+	import type { PageData } from './$types';
 
-	const summary = getRuntimeSummary();
+	let { data }: { data: PageData } = $props();
+
+	const statusBadgeText = $derived(
+		data.machines.status === 'ok'
+			? `${data.machines.data.filter((m) => m.status === 'running').length}/${data.machines.data.length} online`
+			: t('common_status_allSystemsOperational')
+	);
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -31,7 +40,7 @@
 		class="flex items-center gap-2 px-3 py-1.5 bg-success/10 border border-success/20 rounded-lg text-success text-sm font-medium"
 	>
 		<div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-		{summary.statusBadge}
+		{statusBadgeText}
 	</div>
 {/snippet}
 
@@ -70,7 +79,7 @@
 				class="flex items-center gap-2 px-3 py-2 bg-success/10 border border-success/20 rounded-lg text-success text-xs font-medium w-fit"
 			>
 				<div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-				{summary.statusBadge}
+				{statusBadgeText}
 			</div>
 		</div>
 		<div class="px-4 pb-4">
@@ -105,11 +114,51 @@
 />
 
 <div class="px-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<RuntimeKpiSection />
+	{#if data.stats.status === 'ok'}
+		<RuntimeKpiSection stats={data.stats.data} />
+	{:else if data.stats.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.stats.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.stats.error.category}
+			message={data.stats.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
 	<RuntimeChartsSection />
-	<RuntimeInstancesSection />
-	<RuntimeDeploySection />
-	<RuntimeErrorLogSection />
+	{#if data.machines.status === 'ok'}
+		<RuntimeInstancesSection machines={data.machines.data} />
+	{:else if data.machines.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.machines.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.machines.error.category}
+			message={data.machines.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
+	{#if data.deploys.status === 'ok'}
+		<RuntimeDeploySection deploys={data.deploys.data} />
+	{:else if data.deploys.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.deploys.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.deploys.error.category}
+			message={data.deploys.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
+	{#if data.errors.status === 'ok'}
+		<RuntimeErrorLogSection errors={data.errors.data} />
+	{:else if data.errors.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.errors.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.errors.error.category}
+			message={data.errors.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/runtime" />

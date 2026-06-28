@@ -2,9 +2,9 @@
 	import { t } from '$lib/i18n';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
 	import DeployItem from '../components/DeployItem.svelte';
-	import { getDeployHistory } from '$lib/repositories/runtimeRepository';
+	import type { DeployEntry } from '$lib/repositories/runtimeRepository';
 
-	const deploys = getDeployHistory();
+	let { deploys }: { deploys: DeployEntry[] } = $props();
 
 	let open = $state(false);
 </script>

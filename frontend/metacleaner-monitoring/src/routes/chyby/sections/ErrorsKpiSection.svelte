@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getErrorKpis } from '$lib/repositories/errorsRepository';
+	import type { ErrorKpi } from '$lib/repositories/errorsRepository';
 
-	const kpis = getErrorKpis();
+	let { kpis }: { kpis: ErrorKpi[] } = $props();
 </script>
 
 <!-- Desktop: 4-col KPI grid -->

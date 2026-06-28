@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getDbKpis } from '$lib/repositories/databaseRepository';
+	import type { DbKpi } from '$lib/repositories/databaseRepository';
 
-	const kpis = getDbKpis();
+	let { kpis }: { kpis: DbKpi[] } = $props();
 </script>
 
 <!-- Desktop: 4-col KPI grid -->

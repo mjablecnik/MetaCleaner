@@ -3,16 +3,16 @@
 	import SlaGoalBar from '../components/SlaGoalBar.svelte';
 	import AvailabilityIncidentsSection from './AvailabilityIncidentsSection.svelte';
 	import AvailabilityQuickStatsSection from './AvailabilityQuickStatsSection.svelte';
-	import { getSlaGoals } from '$lib/repositories/availabilityRepository';
+	import type { SlaGoal, Incident } from '$lib/repositories/availabilityRepository';
 
-	const slaGoals = getSlaGoals();
+	let { slaGoals, incidents }: { slaGoals: SlaGoal[]; incidents: Incident[] } = $props();
 
 	let slaOpen = $state(true);
 </script>
 
 <!-- Desktop: 3-col grid with incidents (col-span-2) + SLA + QuickStats sidebar -->
 <section class="hidden lg:grid grid-cols-3 gap-6">
-	<AvailabilityIncidentsSection />
+	<AvailabilityIncidentsSection {incidents} />
 
 	<div class="space-y-4">
 		<div class="bg-card border border-surface rounded-xl p-5">
@@ -29,7 +29,7 @@
 
 <!-- Mobile: incidents first, then SLA accordion -->
 <div class="lg:hidden space-y-3">
-	<AvailabilityIncidentsSection />
+	<AvailabilityIncidentsSection {incidents} />
 
 	<section class="bg-card border border-surface rounded-xl overflow-hidden">
 		<button

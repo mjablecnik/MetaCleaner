@@ -256,7 +256,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Include a retry button that calls the `onretry` handler
     - _Requirements: 5.2, 5.4, 5.5_
 
-  - [ ] 8.3 Update page components to consume `data` prop from load functions
+  - [x] 8.3 Update page components to consume `data` prop from load functions
     - In each route's `+page.svelte`, accept `data` from the load function via `$props()`
     - For each section, check `section.status` and render `NotConfiguredCard`, `SectionErrorCard`, or actual content
     - Retain all existing section components unchanged — only change the data source from direct repository calls to `data` prop fields

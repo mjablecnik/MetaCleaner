@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import IncidentItem from '../components/IncidentItem.svelte';
-	import { getIncidents } from '$lib/repositories/availabilityRepository';
+	import type { Incident } from '$lib/repositories/availabilityRepository';
 
-	const incidents = getIncidents();
+	let { incidents }: { incidents: Incident[] } = $props();
 </script>
 
 <!-- Desktop: col-span-2 in a 3-col grid (used alongside SLA section) -->

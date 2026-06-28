@@ -2,9 +2,9 @@
 	import { t } from '$lib/i18n';
 	import HealthCheckRow from '../components/HealthCheckRow.svelte';
 	import AvailabilityResponseChartSection from './AvailabilityResponseChartSection.svelte';
-	import { getHealthChecks } from '$lib/repositories/availabilityRepository';
+	import type { HealthCheck } from '$lib/repositories/availabilityRepository';
 
-	const healthChecks = getHealthChecks();
+	let { healthChecks }: { healthChecks: HealthCheck[] } = $props();
 
 	let hcOpen = $state(false);
 </script>

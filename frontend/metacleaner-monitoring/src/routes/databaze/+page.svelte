@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import DatabaseKpiSection from './sections/DatabaseKpiSection.svelte';
 	import DatabaseChartsSection from './sections/DatabaseChartsSection.svelte';
 	import DatabaseQueriesSection from './sections/DatabaseQueriesSection.svelte';
 	import DatabaseTablesSection from './sections/DatabaseTablesSection.svelte';
 	import DatabaseErrorLogSection from './sections/DatabaseErrorLogSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -96,10 +102,30 @@
 />
 
 <div class="px-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<DatabaseKpiSection />
+	{#if data.kpis.status === 'ok'}
+		<DatabaseKpiSection kpis={data.kpis.data} />
+	{:else if data.kpis.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.kpis.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.kpis.error.category}
+			message={data.kpis.error.message}
+			onretry={() => invalidate('app:databaze')}
+		/>
+	{/if}
 	<DatabaseChartsSection />
 	<DatabaseQueriesSection />
-	<DatabaseTablesSection />
+	{#if data.tableSizes.status === 'ok'}
+		<DatabaseTablesSection tableSizes={data.tableSizes.data} />
+	{:else if data.tableSizes.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.tableSizes.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.tableSizes.error.category}
+			message={data.tableSizes.error.message}
+			onretry={() => invalidate('app:databaze')}
+		/>
+	{/if}
 	<DatabaseErrorLogSection />
 </div>
 

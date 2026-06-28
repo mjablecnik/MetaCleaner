@@ -2,9 +2,11 @@
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
 	import { chartColors } from '$lib/theme/chartColors';
-	import { getHttpStatusDistribution } from '$lib/repositories/edgeRepository';
+	import type { HttpStatusDistribution } from '$lib/repositories/edgeRepository';
 
-	const httpStatus = getHttpStatusDistribution();
+	let { httpStatusDistribution }: { httpStatusDistribution: HttpStatusDistribution[] } = $props();
+
+	const httpStatus = $derived(httpStatusDistribution);
 
 	let activeChart = $state<'requests' | 'bandwidth' | 'http'>('requests');
 

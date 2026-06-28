@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import AccordionSection from '$lib/shared/elements/AccordionSection.svelte';
-	import { getRuntimeErrorLog } from '$lib/repositories/runtimeRepository';
+	import type { RuntimeErrorEntry } from '$lib/repositories/runtimeRepository';
 
-	const errorLog = getRuntimeErrorLog();
+	let { errors }: { errors: RuntimeErrorEntry[] } = $props();
 
+	const errorLog = $derived(errors);
 	let open = $state(true);
 </script>
 

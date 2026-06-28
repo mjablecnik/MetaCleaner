@@ -1,14 +1,20 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import { getErrorsStats } from '$lib/repositories/errorsRepository';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import ErrorsKpiSection from './sections/ErrorsKpiSection.svelte';
 	import ErrorsTimelineSection from './sections/ErrorsTimelineSection.svelte';
 	import ErrorsComparisonSection from './sections/ErrorsComparisonSection.svelte';
 	import ErrorsEndpointsSection from './sections/ErrorsEndpointsSection.svelte';
 	import ErrorsLogSection from './sections/ErrorsLogSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const errStats = getErrorsStats();
 
@@ -94,11 +100,41 @@
 />
 
 <div class="px-4 pt-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<ErrorsKpiSection />
+	{#if data.kpis.status === 'ok'}
+		<ErrorsKpiSection kpis={data.kpis.data} />
+	{:else if data.kpis.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.kpis.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.kpis.error.category}
+			message={data.kpis.error.message}
+			onretry={() => invalidate('app:chyby')}
+		/>
+	{/if}
 	<ErrorsTimelineSection />
 	<ErrorsComparisonSection />
-	<ErrorsEndpointsSection />
-	<ErrorsLogSection />
+	{#if data.topEndpoints.status === 'ok'}
+		<ErrorsEndpointsSection endpoints={data.topEndpoints.data} />
+	{:else if data.topEndpoints.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.topEndpoints.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.topEndpoints.error.category}
+			message={data.topEndpoints.error.message}
+			onretry={() => invalidate('app:chyby')}
+		/>
+	{/if}
+	{#if data.log.status === 'ok'}
+		<ErrorsLogSection logEntries={data.log.data} />
+	{:else if data.log.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.log.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.log.error.category}
+			message={data.log.error.message}
+			onretry={() => invalidate('app:chyby')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/chyby" />

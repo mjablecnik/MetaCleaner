@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getRuntimeStats, getRuntimeSecondaryKpis } from '$lib/repositories/runtimeRepository';
+	import { getRuntimeSecondaryKpis } from '$lib/repositories/runtimeRepository';
+	import type { RuntimeStat } from '$lib/repositories/runtimeRepository';
 
-	const runtimeStats = getRuntimeStats();
+	let { stats }: { stats: RuntimeStat[] } = $props();
+
+	const runtimeStats = $derived(stats);
 	const secondaryKpis = getRuntimeSecondaryKpis();
 </script>
 

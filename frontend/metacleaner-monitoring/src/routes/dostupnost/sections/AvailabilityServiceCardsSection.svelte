@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
 	import ServiceUptimeCard from '../components/ServiceUptimeCard.svelte';
-	import { getServiceCards } from '$lib/repositories/availabilityRepository';
+	import type { ServiceCard } from '$lib/repositories/availabilityRepository';
 
-	const serviceCards = getServiceCards();
+	let { services }: { services: ServiceCard[] } = $props();
+
+	const serviceCards = $derived(services);
 </script>
 
 <!-- Desktop: 4-column grid -->

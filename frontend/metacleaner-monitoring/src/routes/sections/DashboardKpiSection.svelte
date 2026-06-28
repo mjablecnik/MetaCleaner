@@ -1,12 +1,13 @@
 <script lang="ts">
 	import StatCard from '$lib/shared/elements/StatCard.svelte';
-	import { getDashboardStats } from '$lib/repositories/dashboardRepository';
+	import type { DashboardStat } from '$lib/repositories/dashboardRepository';
 
-	const stats = getDashboardStats();
-	const us = stats.find((s) => s.key === 'uptimeServer')!;
-	const jp = stats.find((s) => s.key === 'jobsProcessed')!;
-	const act = stats.find((s) => s.key === 'avgCleaningTime')!;
-	const fj = stats.find((s) => s.key === 'failedJobs')!;
+	let { stats }: { stats: DashboardStat[] } = $props();
+
+	const us = $derived(stats.find((s) => s.key === 'uptimeServer')!);
+	const jp = $derived(stats.find((s) => s.key === 'jobsProcessed')!);
+	const act = $derived(stats.find((s) => s.key === 'avgCleaningTime')!);
+	const fj = $derived(stats.find((s) => s.key === 'failedJobs')!);
 </script>
 
 <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

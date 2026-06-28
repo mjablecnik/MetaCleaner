@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getSlowEndpoints } from '$lib/repositories/performanceRepository';
 	import SlowEndpointRow from '../components/SlowEndpointRow.svelte';
+	import type { SlowEndpoint } from '$lib/repositories/performanceRepository';
 
-	const slowEndpoints = getSlowEndpoints();
+	let { slowEndpoints }: { slowEndpoints: SlowEndpoint[] } = $props();
 </script>
 
 <!-- Desktop: Slowest Endpoints -->

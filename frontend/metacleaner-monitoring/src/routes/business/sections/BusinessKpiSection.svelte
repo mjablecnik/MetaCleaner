@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getBusinessKpiStats } from '$lib/repositories/businessRepository';
+	import type { BusinessKpiStat } from '$lib/repositories/businessRepository';
 
-	const kpiStats = getBusinessKpiStats();
+	let { kpis }: { kpis: BusinessKpiStat[] } = $props();
+
+	const kpiStats = $derived(kpis);
 </script>
 
 <!-- ===== DESKTOP KPI ===== -->

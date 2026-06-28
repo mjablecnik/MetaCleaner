@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
+	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
+	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import EdgeKpiSection from './sections/EdgeKpiSection.svelte';
 	import EdgeChartsSection from './sections/EdgeChartsSection.svelte';
 	import EdgeThreatSection from './sections/EdgeThreatSection.svelte';
 	import EdgeCacheRulesSection from './sections/EdgeCacheRulesSection.svelte';
 	import EdgeSecurityLogSection from './sections/EdgeSecurityLogSection.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -93,11 +99,41 @@
 />
 
 <div class="px-4 pb-20 space-y-4 lg:p-6 lg:pb-6 lg:space-y-6 lg:max-w-7xl lg:mx-auto">
-	<EdgeKpiSection />
-	<EdgeChartsSection />
+	{#if data.kpis.status === 'ok'}
+		<EdgeKpiSection kpis={data.kpis.data} />
+	{:else if data.kpis.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.kpis.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.kpis.error.category}
+			message={data.kpis.error.message}
+			onretry={() => invalidate('app:edge')}
+		/>
+	{/if}
+	{#if data.httpStatusDistribution.status === 'ok'}
+		<EdgeChartsSection httpStatusDistribution={data.httpStatusDistribution.data} />
+	{:else if data.httpStatusDistribution.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.httpStatusDistribution.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.httpStatusDistribution.error.category}
+			message={data.httpStatusDistribution.error.message}
+			onretry={() => invalidate('app:edge')}
+		/>
+	{/if}
 	<EdgeThreatSection />
 	<EdgeCacheRulesSection />
-	<EdgeSecurityLogSection />
+	{#if data.wafLog.status === 'ok'}
+		<EdgeSecurityLogSection wafLog={data.wafLog.data} />
+	{:else if data.wafLog.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.wafLog.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.wafLog.error.category}
+			message={data.wafLog.error.message}
+			onretry={() => invalidate('app:edge')}
+		/>
+	{/if}
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/edge" />
