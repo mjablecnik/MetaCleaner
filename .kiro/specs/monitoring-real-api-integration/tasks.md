@@ -206,7 +206,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Map to `EdgeKpiStat[]`, `GeoDistribution[]`, `WafLogEntry[]`, `HttpStatusDistribution[]`
     - _Requirements: 3.1, 3.3, 7.1, 7.2, 7.3, 7.4, 7.6, 7.7, 12.1, 12.4_
 
-  - [ ] 6.7 Create performance load function (`src/routes/performance/+page.server.ts`)
+  - [x] 6.7 Create performance load function (`src/routes/performance/+page.server.ts`)
     - Check Fly and/or Cloudflare config
     - Fetch endpoint metrics, compute Apdex, avg response time, throughput, error rate
     - Map to `PerformanceKpiStat[]`, `SlowEndpoint[]`, `PerformanceEvent[]`
