@@ -1,90 +1,105 @@
-# MetaCleaner Monitoring — Simplification Spec
+# SPEC — MetaCleaner Monitoring: Mock Data Alignment
 
-## Goal
+## 1. Overview & Goals
 
-Remove duplicated, unrealizable, and low-value metrics from the monitoring dashboard. This is a deletion/simplification task — no new features are added.
+The MetaCleaner Monitoring dashboard (`frontend/metacleaner-monitoring/`) is a
+SvelteKit UI-only mockup. All data is hardcoded in repository factory functions
+under `src/lib/repositories/`. No real API calls are made.
 
-## Technical Context
+**Problem:** the mock data uses generic placeholder content (fictional
+e-commerce endpoints, generic errors, unnamed machines) that does not reflect
+the real MetaCleaner product.
 
-- Project: `frontend/metacleaner-monitoring/` — SvelteKit 2, Svelte 5 (runes), Tailwind CSS 4, Paraglide i18n (en/cs)
-- Navigation is driven by `src/lib/repositories/navigationRepository.ts` (sidebar) and per-page `navItems` arrays (MobileBottomNav)
-- Charts use Plotly.js (loaded globally via `window.Plotly`)
-- i18n keys live in `messages/en.json` and `messages/cs.json`
+**Goal:** replace all generic mock data with realistic MetaCleaner-specific
+values (real services, endpoints, error scenarios, business model, Czech-focused
+geo) so the dashboard works as a credible visual prototype and design reference,
+and so the data layer is shaped for eventual real API integration.
 
-## Changes
+MetaCleaner = SaaS that strips privacy metadata (GPS/EXIF/XMP) from photos and
+videos. Services run on Fly.io (Frankfurt): `metacleaner-server` (Go backend +
+ExifTool/FFmpeg pipeline), `metacleaner-web` (nginx landing), `metacleaner-app`
+(nginx SPA), `metacleaner-monitoring` (this app). External: Supabase
+(Postgres/Auth/Storage), Cloudflare (CDN), Stripe (billing), Sentry (errors).
 
-### 1. Delete Security Route (entire page)
+## 2. Technical Approach & Architecture
 
-Delete `src/routes/security/` directory and `src/lib/repositories/securityRepository.ts`. Remove security from sidebar navigation (`navigationRepository.ts`) and from the Edge page's MobileBottomNav `navItems` array.
+- **Data layer:** each file in `src/lib/repositories/` exports factory functions
+  returning typed arrays/objects of hardcoded data. UI components consume them
+  directly. Keep data static — no randomization or date math.
+- **Two change categories:**
+  - **A — Mock data replacement:** edit returned values only. Do NOT change
+    TypeScript interfaces or function signatures (except where B requires it).
+  - **B — Frontend code changes:** add `app` field to two interfaces and surface
+    it in components; update `.env.example` and i18n.
+- **No files deleted, no new files created.**
+- **No layout/styling changes** beyond minimal field additions in B1/B2.
+- Validate with `bun run check` (and visually confirm the availability grid
+  handles 7 cards).
 
-### 2. Remove Performance → Web Vitals Section
+## 3. Key Components & Responsibilities
 
-Delete `PerformanceWebVitalsSection.svelte` and `WebVitalCard.svelte` (+ stories). Remove import/usage from `performance/+page.svelte`. Remove `getCoreWebVitals` from `performanceRepository.ts`.
+| Repository | Functions to update | Content |
+|---|---|---|
+| `dashboardRepository.ts` | `getDashboardStats`, `getDashboardAlerts` | Overview KPIs (server uptime, jobs/24h, avg clean time, failed jobs) + 3 alerts |
+| `availabilityRepository.ts` | `getServiceCards`, `getHealthChecks`, `getIncidents`, `getSlaGoals` | 7 services, 6 health checks, 4 incidents, 5 SLA goals |
+| `runtimeRepository.ts` | `getMachineInstances`, `getDeployHistory`, `getRuntimeErrorLog`, `getRuntimeStats`, `getRuntimeSummary` + interfaces `MachineInstance`, `DeployEntry` | 5 machines, 5 deploys, 8 error-log entries, KPIs, summary; add `app` field |
+| `performanceRepository.ts` | `getSlowEndpoints`, `getPerformanceEvents`, `getPerformanceKpiStats` | 6 real endpoints, 5 events, adjusted KPIs |
+| `errorsRepository.ts` | error entries | 8 Sentry-style MetaCleaner errors |
+| `databaseRepository.ts` | table + query metrics | 7 Supabase tables, pool/query/storage metrics |
+| `businessRepository.ts` | business KPIs | MRR, subscribers, credits, plan breakdown |
+| `usersRepository.ts` | user metrics | registrations, activity, auth-method split |
+| `edgeRepository.ts` | Cloudflare metrics | cache ratio, threats, Czech-focused geo |
 
-### 3. Remove Performance → CPU/RAM + Error Distribution (Charts Row 2)
+**UI components (Category B):**
+- `src/routes/runtime/components/DeployItem.svelte` — render colored app badge
+  (server=blue, web=green, app=purple, monitoring=gray).
+- `src/routes/runtime/components/InstanceCard.svelte` — render app name as
+  secondary label under machine name.
 
-From `PerformanceChartsSection.svelte`: remove the entire "Charts Row 2" section (desktop `lg:grid-cols-3` with CPU/RAM chart + Error Distribution donut) and its mobile accordion equivalents (`cpu` and `errors`). Keep only Response Time + Throughput (Row 1). Remove `getErrorCodeDistribution` from `performanceRepository.ts`.
+**Config / i18n:**
+- `.env.example` — ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_*`, `STRIPE_SECRET_KEY`.
+- `messages/en.json`, `messages/cs.json` — i18n keys for any new labels (badge,
+  app subtitle, KPI labels), following existing patterns (`dashboard_stats_*`,
+  `runtime_kpi_*`).
 
-### 4. Remove Runtime → HTTP Section
-
-Delete `RuntimeHttpSection.svelte`. Remove import/usage from `runtime/+page.svelte`. Remove `getRuntimeHttpStatusDistribution` from `runtimeRepository.ts`.
-
-### 5. Remove Edge → TTFB by Region
-
-From `EdgeThreatSection.svelte`: remove TTFB region bars (desktop + mobile), the `chart-ttfb-region` / `chart-ttfb-region-m` Plotly charts, and related resize handlers. Keep only the Threat Types donut pie + legend. Change desktop grid from `grid-cols-3` to a single column card. Delete `TtfbRegionBar.svelte` (+ stories). Remove `getTtfbRegions` from `edgeRepository.ts`.
-
-### 6. Remove Database → Secondary KPI Section
-
-Delete `DatabaseSecondaryKpiSection.svelte`. Remove import/usage from `databaze/+page.svelte`. Remove `getDbSecondaryKpis` from `databaseRepository.ts`.
-
-### 7. Simplify Users → Remove Active Sessions Chart
-
-From `UsersChartsSection.svelte`: remove the "Active Sessions" chart (desktop + mobile). Change desktop layout from `grid-cols-2` to single full-width. Remove session-related Plotly code and chart elements.
-
-### 8. Update .env.example
-
-Add Sentry and Stripe environment variables.
-
-### 9. Clean i18n Keys
-
-Remove unused i18n keys from `messages/en.json` and `messages/cs.json` for deleted sections (prefixes: `security_`, `performance_cwv_`, `edge_ttfb_`, `runtime_charts_http`, `runtime_charts_rpm`).
-
-## File Deletions
+## 4. File Structure (existing — modify in place)
 
 ```
-src/routes/security/                    (entire directory)
-src/lib/repositories/securityRepository.ts
-src/routes/performance/sections/PerformanceWebVitalsSection.svelte
-src/routes/performance/components/WebVitalCard.svelte
-src/routes/performance/components/WebVitalCard.stories.svelte
-src/routes/runtime/sections/RuntimeHttpSection.svelte
-src/routes/edge/components/TtfbRegionBar.svelte
-src/routes/edge/components/TtfbRegionBar.stories.svelte
-src/routes/databaze/sections/DatabaseSecondaryKpiSection.svelte
+frontend/metacleaner-monitoring/
+├── .env.example
+├── messages/{en,cs}.json
+└── src/
+    ├── lib/repositories/
+    │   ├── dashboardRepository.ts
+    │   ├── availabilityRepository.ts
+    │   ├── runtimeRepository.ts
+    │   ├── performanceRepository.ts
+    │   ├── errorsRepository.ts
+    │   ├── databaseRepository.ts
+    │   ├── businessRepository.ts
+    │   ├── usersRepository.ts
+    │   └── edgeRepository.ts
+    └── routes/runtime/components/
+        ├── DeployItem.svelte
+        └── InstanceCard.svelte
 ```
 
-## File Modifications
+## 5. Exact Data Values
 
-```
-src/lib/repositories/navigationRepository.ts  (remove security nav item)
-src/routes/edge/+page.svelte                   (remove security from MobileBottomNav navItems)
-src/routes/performance/+page.svelte            (remove WebVitals import/usage)
-src/routes/performance/sections/PerformanceChartsSection.svelte (remove Row 2 + mobile cpu/errors)
-src/routes/runtime/+page.svelte                (remove RuntimeHttpSection import/usage)
-src/routes/edge/sections/EdgeThreatSection.svelte (remove TTFB, simplify grid)
-src/routes/databaze/+page.svelte               (remove DatabaseSecondaryKpiSection import/usage)
-src/routes/uzivatele/sections/UsersChartsSection.svelte (remove Active Sessions chart)
-src/lib/repositories/edgeRepository.ts         (remove getTtfbRegions)
-src/lib/repositories/runtimeRepository.ts      (remove getRuntimeHttpStatusDistribution)
-src/lib/repositories/performanceRepository.ts  (remove getCoreWebVitals, getErrorCodeDistribution)
-src/lib/repositories/databaseRepository.ts     (remove getDbSecondaryKpis)
-.env.example                                   (add Sentry + Stripe keys)
-messages/en.json                               (remove unused keys)
-messages/cs.json                               (remove unused keys)
-```
+All concrete values (service tables, endpoint lists, error rows, KPI numbers,
+geo splits, plan breakdown) are specified in `BRIEF.md` sections A1–A9 and
+B1–B4. Use those tables verbatim as the source of truth.
 
-## Constraints
+## 6. Constraints, Edge Cases & Considerations
 
-- Do not delete any files that are still imported elsewhere after the changes
-- The build must pass after all changes (`bun run check`)
-- Keep all remaining functionality intact — this is purely subtractive
+- **Interfaces are frozen** except the explicit `app: string` additions to
+  `MachineInstance` and `DeployEntry`.
+- **Keep all existing i18n keys working;** if a key is renamed, update both
+  `en.json` and `cs.json`.
+- **Availability grid** currently renders 4 cards; with 7 it must still look
+  good (responsive grid — verify visually).
+- **Static data only** — no `Date.now()`, no randomization.
+- **Adding the `app` field to runtime data depends on the interface change** —
+  do the interface edits (B1/B2) before/with the runtime data updates.
+- Czech-market focus for edge geo (CZ 62%, SK 8%, DE 7%, US 5%, Other 18%).
+- Final gate: `bun run check` passes; no TypeScript/lint regressions.
