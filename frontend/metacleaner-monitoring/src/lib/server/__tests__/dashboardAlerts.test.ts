@@ -33,7 +33,10 @@ const sentryIssueArb: fc.Arbitrary<SentryIssueRaw> = fc.record({
 	firstSeen: isoTimestampArb,
 	count: fc.integer({ min: 1, max: 9999 }).map(String),
 	userCount: fc.integer({ min: 0, max: 999 }),
-	metadata: fc.record({ type: fc.option(fc.string(), { nil: undefined }), value: fc.option(fc.string(), { nil: undefined }) }),
+	metadata: fc.record({
+		type: fc.option(fc.string(), { nil: undefined }),
+		value: fc.option(fc.string(), { nil: undefined })
+	}),
 	type: fc.string({ minLength: 1, maxLength: 20 }),
 	tags: fc.constant([])
 });
@@ -46,7 +49,12 @@ const flyMachineArb: fc.Arbitrary<FlyMachineRaw> = fc.record({
 	name: fc.string({ minLength: 1, maxLength: 30 }),
 	state: fc.constantFrom('started', 'stopped'),
 	region: fc.string({ minLength: 3, maxLength: 3 }),
-	config: fc.record({ guest: fc.record({ cpus: fc.integer({ min: 1, max: 8 }), memory_mb: fc.integer({ min: 256, max: 8192 }) }) }),
+	config: fc.record({
+		guest: fc.record({
+			cpus: fc.integer({ min: 1, max: 8 }),
+			memory_mb: fc.integer({ min: 256, max: 8192 })
+		})
+	}),
 	checks: fc.constant(undefined),
 	created_at: isoTimestampArb,
 	updated_at: isoTimestampArb,
@@ -130,23 +138,18 @@ describe('Property 8: Dashboard Alert Merge and Sort', () => {
 
 	it('only unresolved Sentry issues appear (at most 5)', () => {
 		fc.assert(
-			fc.property(
-				fc.array(sentryIssueArb, { minLength: 0, maxLength: 20 }),
-				(sentryIssues) => {
-					const alerts = mergeAndSortAlerts(sentryIssues, null, NOW);
-					const sentryAlerts = alerts.filter((a) => a.id.startsWith('sentry-'));
-					expect(sentryAlerts.length).toBeLessThanOrEqual(5);
+			fc.property(fc.array(sentryIssueArb, { minLength: 0, maxLength: 20 }), (sentryIssues) => {
+				const alerts = mergeAndSortAlerts(sentryIssues, null, NOW);
+				const sentryAlerts = alerts.filter((a) => a.id.startsWith('sentry-'));
+				expect(sentryAlerts.length).toBeLessThanOrEqual(5);
 
-					const resolvedIds = new Set(
-						sentryIssues
-							.filter((i) => i.status !== 'unresolved')
-							.map((i) => `sentry-${i.id}`)
-					);
-					for (const alert of sentryAlerts) {
-						expect(resolvedIds.has(alert.id)).toBe(false);
-					}
+				const resolvedIds = new Set(
+					sentryIssues.filter((i) => i.status !== 'unresolved').map((i) => `sentry-${i.id}`)
+				);
+				for (const alert of sentryAlerts) {
+					expect(resolvedIds.has(alert.id)).toBe(false);
 				}
-			),
+			}),
 			{ numRuns: 200 }
 		);
 	});

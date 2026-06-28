@@ -116,9 +116,18 @@
 	{/if}
 	<BusinessRevenueChartsSection />
 	{#if data.planRevenue.status === 'ok' && data.conversionFunnel.status === 'ok'}
-		<BusinessFunnelSection planRevenue={data.planRevenue.data} conversionFunnel={data.conversionFunnel.data} />
+		<BusinessFunnelSection
+			planRevenue={data.planRevenue.data}
+			conversionFunnel={data.conversionFunnel.data}
+		/>
 	{:else if data.planRevenue.status === 'not-configured' || data.conversionFunnel.status === 'not-configured'}
-		<NotConfiguredCard missingVars={data.planRevenue.status === 'not-configured' ? data.planRevenue.missingVars : (data.conversionFunnel.status === 'not-configured' ? data.conversionFunnel.missingVars : [])} />
+		<NotConfiguredCard
+			missingVars={data.planRevenue.status === 'not-configured'
+				? data.planRevenue.missingVars
+				: data.conversionFunnel.status === 'not-configured'
+					? data.conversionFunnel.missingVars
+					: []}
+		/>
 	{:else if data.planRevenue.status === 'error'}
 		<SectionErrorCard
 			category={data.planRevenue.error.category}

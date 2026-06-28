@@ -24,21 +24,17 @@ export interface SentryClientConfig extends ClientConfig {
 }
 
 export interface ServiceConfigs {
-	fly:
-		| { configured: true; config: FlyClientConfig }
-		| { configured: false; missingVars: string[] };
+	fly: { configured: true; config: FlyClientConfig } | { configured: false; missingVars: string[] };
 	cloudflare:
 		| { configured: true; config: CloudflareClientConfig }
 		| { configured: false; missingVars: string[] };
 	stripe:
-		| { configured: true; config: StripeClientConfig }
-		| { configured: false; missingVars: string[] };
+		{ configured: true; config: StripeClientConfig } | { configured: false; missingVars: string[] };
 	supabase:
 		| { configured: true; config: SupabaseClientConfig }
 		| { configured: false; missingVars: string[] };
 	sentry:
-		| { configured: true; config: SentryClientConfig }
-		| { configured: false; missingVars: string[] };
+		{ configured: true; config: SentryClientConfig } | { configured: false; missingVars: string[] };
 }
 
 function isPresent(value: string | undefined): value is string {
@@ -66,7 +62,10 @@ export function getServiceConfigs(): ServiceConfigs {
 						token: env.FLY_API_TOKEN!,
 						baseUrl: 'https://api.machines.dev/v1',
 						org: env.FLY_ORG!,
-						apps: env.FLY_APPS!.split(',').map((s) => s.trim()).filter(Boolean),
+						apps: env
+							.FLY_APPS!.split(',')
+							.map((s) => s.trim())
+							.filter(Boolean),
 						timeout: 10_000
 					}
 				}

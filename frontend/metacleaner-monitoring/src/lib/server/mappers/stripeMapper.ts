@@ -18,7 +18,11 @@ export function computeMrr(subs: StripeSubscriptionRaw[]): number {
 		for (const item of sub.items.data) {
 			const { unit_amount, recurring } = item.price;
 			const quantity = item.quantity ?? 1;
-			mrr += normalizeToMonthly(unit_amount * quantity, recurring.interval, recurring.interval_count);
+			mrr += normalizeToMonthly(
+				unit_amount * quantity,
+				recurring.interval,
+				recurring.interval_count
+			);
 		}
 	}
 	return mrr;
@@ -108,7 +112,10 @@ export function mapToPlanRevenue(
 		priceMap.set(price.id, price);
 	}
 
-	const plans = new Map<string, { nickname: string; valueCents: number; count: number; unitAmount: number }>();
+	const plans = new Map<
+		string,
+		{ nickname: string; valueCents: number; count: number; unitAmount: number }
+	>();
 
 	for (const sub of activeSubs) {
 		for (const item of sub.items.data) {
@@ -127,7 +134,12 @@ export function mapToPlanRevenue(
 				existing.valueCents += monthly;
 				existing.count += 1;
 			} else {
-				plans.set(priceId, { nickname, valueCents: monthly, count: 1, unitAmount: item.price.unit_amount });
+				plans.set(priceId, {
+					nickname,
+					valueCents: monthly,
+					count: 1,
+					unitAmount: item.price.unit_amount
+				});
 			}
 		}
 	}

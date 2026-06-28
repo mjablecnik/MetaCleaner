@@ -91,20 +91,14 @@ export async function getRecentIssues(
 
 	const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-	return sentryGet<SentryIssueRaw[]>(
-		config,
-		`/projects/${config.org}/${config.project}/issues/`,
-		{
-			limit: String(limit),
-			query: `lastSeen:>${since}`,
-			sort: 'date'
-		}
-	);
+	return sentryGet<SentryIssueRaw[]>(config, `/projects/${config.org}/${config.project}/issues/`, {
+		limit: String(limit),
+		query: `lastSeen:>${since}`,
+		sort: 'date'
+	});
 }
 
-export async function getIssueStats(
-	config: SentryClientConfig
-): Promise<SentryIssueStatsRaw[]> {
+export async function getIssueStats(config: SentryClientConfig): Promise<SentryIssueStatsRaw[]> {
 	if (!config.token?.trim()) {
 		throw new ClientError('sentry', null, 'unauthorized', 'SENTRY_AUTH_TOKEN is missing or empty');
 	}

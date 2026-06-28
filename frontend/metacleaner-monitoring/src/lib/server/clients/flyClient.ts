@@ -37,7 +37,12 @@ export async function getMachines(config: FlyClientConfig, app: string): Promise
 		if (err instanceof Error && err.name === 'AbortError') {
 			throw new ClientError('fly', null, 'timeout', `Fly.io request timed out for app ${app}`);
 		}
-		throw new ClientError('fly', null, 'request_error', `Fly.io network error for app ${app}: ${String(err)}`);
+		throw new ClientError(
+			'fly',
+			null,
+			'request_error',
+			`Fly.io network error for app ${app}: ${String(err)}`
+		);
 	}
 
 	if (!response.ok) {
@@ -52,7 +57,9 @@ export async function getMachines(config: FlyClientConfig, app: string): Promise
 	return response.json() as Promise<FlyMachineRaw[]>;
 }
 
-export async function getMachinesForAllApps(config: FlyClientConfig): Promise<Map<string, FlyMachineRaw[]>> {
+export async function getMachinesForAllApps(
+	config: FlyClientConfig
+): Promise<Map<string, FlyMachineRaw[]>> {
 	const result = new Map<string, FlyMachineRaw[]>();
 
 	await Promise.all(

@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install dependencies first (layer caching)
 COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # Copy config files (change less frequently)
 COPY vite.config.ts tsconfig.json eslint.config.js ./

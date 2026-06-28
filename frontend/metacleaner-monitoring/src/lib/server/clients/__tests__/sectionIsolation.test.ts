@@ -9,14 +9,17 @@ import { ClientError, callSection } from '../types.js';
 
 const categories = ['timeout', 'unauthorized', 'service_unavailable', 'request_error'] as const;
 
-const clientErrorArb = fc.record({
-	service: fc.string({ minLength: 1, maxLength: 20 }),
-	statusCode: fc.option(fc.integer({ min: 400, max: 599 }), { nil: null }),
-	category: fc.constantFrom(...categories),
-	message: fc.string({ minLength: 1, maxLength: 100 })
-}).map(({ service, statusCode, category, message }) =>
-	new ClientError(service, statusCode, category, message)
-);
+const clientErrorArb = fc
+	.record({
+		service: fc.string({ minLength: 1, maxLength: 20 }),
+		statusCode: fc.option(fc.integer({ min: 400, max: 599 }), { nil: null }),
+		category: fc.constantFrom(...categories),
+		message: fc.string({ minLength: 1, maxLength: 100 })
+	})
+	.map(
+		({ service, statusCode, category, message }) =>
+			new ClientError(service, statusCode, category, message)
+	);
 
 // Each section is either a success (returns some string data) or a failure (throws ClientError)
 const sectionSpecArb = fc.record({
@@ -28,27 +31,24 @@ const sectionSpecArb = fc.record({
 describe('Property 4: Section Error Isolation', () => {
 	it('exactly K sections return error when K sections throw ClientError', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.array(sectionSpecArb, { minLength: 1, maxLength: 10 }),
-				async (specs) => {
-					const throwingCount = specs.filter((s) => s.throws).length;
+			fc.asyncProperty(fc.array(sectionSpecArb, { minLength: 1, maxLength: 10 }), async (specs) => {
+				const throwingCount = specs.filter((s) => s.throws).length;
 
-					const results = await Promise.all(
-						specs.map((spec) =>
-							callSection(async () => {
-								if (spec.throws) throw spec.error;
-								return spec.data;
-							})
-						)
-					);
+				const results = await Promise.all(
+					specs.map((spec) =>
+						callSection(async () => {
+							if (spec.throws) throw spec.error;
+							return spec.data;
+						})
+					)
+				);
 
-					const errorResults = results.filter((r) => r.status === 'error');
-					const okResults = results.filter((r) => r.status === 'ok');
+				const errorResults = results.filter((r) => r.status === 'error');
+				const okResults = results.filter((r) => r.status === 'ok');
 
-					expect(errorResults.length).toBe(throwingCount);
-					expect(okResults.length).toBe(specs.length - throwingCount);
-				}
-			),
+				expect(errorResults.length).toBe(throwingCount);
+				expect(okResults.length).toBe(specs.length - throwingCount);
+			}),
 			{ numRuns: 200 }
 		);
 	});
@@ -86,20 +86,17 @@ describe('Property 4: Section Error Isolation', () => {
 
 	it('non-ClientError exceptions also produce error status (not crashing the section)', async () => {
 		await fc.assert(
-			fc.asyncProperty(
-				fc.string({ minLength: 1, maxLength: 50 }),
-				async (message) => {
-					const result = await callSection(async () => {
-						throw new Error(message);
-					});
+			fc.asyncProperty(fc.string({ minLength: 1, maxLength: 50 }), async (message) => {
+				const result = await callSection(async () => {
+					throw new Error(message);
+				});
 
-					expect(result.status).toBe('error');
-					if (result.status === 'error') {
-						expect(result.error.category).toBe('request_error');
-						expect(result.error.message).toBe(message);
-					}
+				expect(result.status).toBe('error');
+				if (result.status === 'error') {
+					expect(result.error.category).toBe('request_error');
+					expect(result.error.message).toBe(message);
 				}
-			),
+			}),
 			{ numRuns: 100 }
 		);
 	});

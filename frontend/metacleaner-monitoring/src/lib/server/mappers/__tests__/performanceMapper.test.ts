@@ -108,14 +108,10 @@ describe('Property 9: Apdex Formula', () => {
 	it('returns 1.0 when total is 0', () => {
 		expect(computeApdex(0, 0, 0)).toBe(1.0);
 		fc.assert(
-			fc.property(
-				fc.integer({ min: 0, max: 1000 }),
-				fc.integer({ min: 0, max: 1000 }),
-				(a, b) => {
-					// total = 0 regardless of satisfied/tolerating if we call with total=0
-					expect(computeApdex(a, b, 0)).toBe(1.0);
-				}
-			),
+			fc.property(fc.integer({ min: 0, max: 1000 }), fc.integer({ min: 0, max: 1000 }), (a, b) => {
+				// total = 0 regardless of satisfied/tolerating if we call with total=0
+				expect(computeApdex(a, b, 0)).toBe(1.0);
+			}),
 			{ numRuns: 100 }
 		);
 	});
@@ -269,7 +265,7 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 					const tpKpi = result.find((kpi) => kpi.key === 'throughput');
 					expect(tpKpi).toBeDefined();
 					// value may have locale separators (e.g. cs-CZ uses non-breaking space)
-					const raw = tpKpi!.value.replace(/\s/g, '').replace(/ /g, '');
+					const raw = tpKpi!.value.replace(/\s/g, '').replace(/\u00A0/g, '');
 					const tpVal = parseInt(raw, 10);
 					expect(isNaN(tpVal)).toBe(false);
 					expect(tpVal).toBeGreaterThanOrEqual(0);
@@ -301,32 +297,26 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 
 	it('when all Fly machines are started, uptime is 100%', () => {
 		fc.assert(
-			fc.property(
-				fc.array(flyMachineArb, { minLength: 1, maxLength: 10 }),
-				(machines) => {
-					const allStarted = machines.map((m) => ({ ...m, state: 'started' as const }));
-					const flyMap = new Map([['app', allStarted]]);
-					const result = mapToPerformanceKpiStats(null, flyMap, []);
-					const uptimeKpi = result.find((kpi) => kpi.key === 'uptime')!;
-					expect(parseFloat(uptimeKpi.value)).toBeCloseTo(100, 5);
-				}
-			),
+			fc.property(fc.array(flyMachineArb, { minLength: 1, maxLength: 10 }), (machines) => {
+				const allStarted = machines.map((m) => ({ ...m, state: 'started' as const }));
+				const flyMap = new Map([['app', allStarted]]);
+				const result = mapToPerformanceKpiStats(null, flyMap, []);
+				const uptimeKpi = result.find((kpi) => kpi.key === 'uptime')!;
+				expect(parseFloat(uptimeKpi.value)).toBeCloseTo(100, 5);
+			}),
 			{ numRuns: 100 }
 		);
 	});
 
 	it('when all Fly machines are stopped, uptime is 0%', () => {
 		fc.assert(
-			fc.property(
-				fc.array(flyMachineArb, { minLength: 1, maxLength: 10 }),
-				(machines) => {
-					const allStopped = machines.map((m) => ({ ...m, state: 'stopped' as const }));
-					const flyMap = new Map([['app', allStopped]]);
-					const result = mapToPerformanceKpiStats(null, flyMap, []);
-					const uptimeKpi = result.find((kpi) => kpi.key === 'uptime')!;
-					expect(parseFloat(uptimeKpi.value)).toBeCloseTo(0, 5);
-				}
-			),
+			fc.property(fc.array(flyMachineArb, { minLength: 1, maxLength: 10 }), (machines) => {
+				const allStopped = machines.map((m) => ({ ...m, state: 'stopped' as const }));
+				const flyMap = new Map([['app', allStopped]]);
+				const result = mapToPerformanceKpiStats(null, flyMap, []);
+				const uptimeKpi = result.find((kpi) => kpi.key === 'uptime')!;
+				expect(parseFloat(uptimeKpi.value)).toBeCloseTo(0, 5);
+			}),
 			{ numRuns: 100 }
 		);
 	});
@@ -343,8 +333,13 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 					const result = mapToPerformanceKpiStats(cfData, flyData, issues);
 					for (const kpi of result) {
 						for (const field of requiredFields) {
-							expect(kpi[field], `KPI "${kpi.key}" field "${field}" must not be undefined`).not.toBeUndefined();
-							expect(kpi[field], `KPI "${kpi.key}" field "${field}" must not be empty`).not.toBe('');
+							expect(
+								kpi[field],
+								`KPI "${kpi.key}" field "${field}" must not be undefined`
+							).not.toBeUndefined();
+							expect(kpi[field], `KPI "${kpi.key}" field "${field}" must not be empty`).not.toBe(
+								''
+							);
 						}
 					}
 				}

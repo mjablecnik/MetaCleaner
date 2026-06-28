@@ -62,15 +62,15 @@ describe('Property 1: Configuration Detection', () => {
 
 	it('missing optional service vars → configured=false with exact missingVars', () => {
 		// For each optional service, generate a non-empty subset of vars to omit
-		const serviceArb = fc.constantFrom(...(Object.keys(OPTIONAL_SERVICE_VARS) as Array<keyof typeof OPTIONAL_SERVICE_VARS>));
+		const serviceArb = fc.constantFrom(
+			...(Object.keys(OPTIONAL_SERVICE_VARS) as Array<keyof typeof OPTIONAL_SERVICE_VARS>)
+		);
 
 		fc.assert(
 			fc.property(
 				serviceArb.chain((service) => {
 					const vars = OPTIONAL_SERVICE_VARS[service];
-					return fc
-						.subarray(vars, { minLength: 1 })
-						.map((omitted) => ({ service, omitted }));
+					return fc.subarray(vars, { minLength: 1 }).map((omitted) => ({ service, omitted }));
 				}),
 				({ service, omitted }) => {
 					const envVars: Record<string, string | undefined> = {
@@ -96,22 +96,25 @@ describe('Property 1: Configuration Detection', () => {
 
 	it('empty-string optional service vars are treated as missing', () => {
 		// Whitespace-only or empty values should count as missing
-		const serviceArb = fc.constantFrom(...(Object.keys(OPTIONAL_SERVICE_VARS) as Array<keyof typeof OPTIONAL_SERVICE_VARS>));
+		const serviceArb = fc.constantFrom(
+			...(Object.keys(OPTIONAL_SERVICE_VARS) as Array<keyof typeof OPTIONAL_SERVICE_VARS>)
+		);
 
 		fc.assert(
 			fc.property(
 				serviceArb.chain((service) => {
 					const vars = OPTIONAL_SERVICE_VARS[service];
-					return fc
-						.subarray(vars, { minLength: 1 })
-						.chain((emptyKeys) =>
-							fc
-								.array(
-									fc.oneof(fc.constant(''), fc.string({ maxLength: 5 }).map((s) => '   ' + s.trim() === '' ? s : '   ')),
-									{ minLength: emptyKeys.length, maxLength: emptyKeys.length }
-								)
-								.map((emptyVals) => ({ service, emptyKeys, emptyVals }))
-						);
+					return fc.subarray(vars, { minLength: 1 }).chain((emptyKeys) =>
+						fc
+							.array(
+								fc.oneof(
+									fc.constant(''),
+									fc.string({ maxLength: 5 }).map((s) => ('   ' + s.trim() === '' ? s : '   '))
+								),
+								{ minLength: emptyKeys.length, maxLength: emptyKeys.length }
+							)
+							.map((emptyVals) => ({ service, emptyKeys, emptyVals }))
+					);
 				}),
 				({ service, emptyKeys, emptyVals }) => {
 					const envVars: Record<string, string | undefined> = {

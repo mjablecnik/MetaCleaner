@@ -14,6 +14,18 @@ bun install
 # or: npm install
 ```
 
+## Environment setup
+
+Copy `.env.example` to `.env` and fill in your service credentials before running the app:
+
+```sh
+cp .env.example .env
+```
+
+The app requires at minimum `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. Other variables
+(`FLY_API_TOKEN`, `CLOUDFLARE_API_TOKEN`, `SENTRY_DSN`, `STRIPE_SECRET_KEY`, etc.) enable
+the corresponding dashboard sections.
+
 ## Development
 
 ```sh
@@ -73,6 +85,7 @@ will automatically download required browser binaries.
 
 > **Note:** If `PLAYWRIGHT_BROWSERS_PATH` is set to a read-only directory, install browsers to
 > a writable path instead:
+>
 > ```sh
 > PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npx playwright install chromium
 > PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npm run test:unit -- --run

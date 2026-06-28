@@ -15,20 +15,18 @@ const countryEntryArb = fc.record({
 
 // Generate arrays with at least 1 country entry and unique names
 const geoRawArb = (minLength: number, maxLength: number): fc.Arbitrary<CfGeoRaw> =>
-	fc
-		.array(countryEntryArb, { minLength, maxLength })
-		.map((entries) => {
-			// Deduplicate by name to avoid ambiguous sort behavior
-			const seen = new Set<string>();
-			const unique = entries.filter((e) => {
-				if (seen.has(e.clientCountryName)) return false;
-				seen.add(e.clientCountryName);
-				return true;
-			});
-			// Need at least 1 entry
-			if (unique.length === 0) unique.push({ clientCountryName: 'Test', requests: 1 });
-			return { clientCountryMap: unique };
+	fc.array(countryEntryArb, { minLength, maxLength }).map((entries) => {
+		// Deduplicate by name to avoid ambiguous sort behavior
+		const seen = new Set<string>();
+		const unique = entries.filter((e) => {
+			if (seen.has(e.clientCountryName)) return false;
+			seen.add(e.clientCountryName);
+			return true;
 		});
+		// Need at least 1 entry
+		if (unique.length === 0) unique.push({ clientCountryName: 'Test', requests: 1 });
+		return { clientCountryMap: unique };
+	});
 
 describe('Property 7: Geographic Distribution Aggregation', () => {
 	it('returns empty array for empty input', () => {

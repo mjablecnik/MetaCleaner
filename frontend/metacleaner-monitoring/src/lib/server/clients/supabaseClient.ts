@@ -70,7 +70,12 @@ export async function getTableStats(
 	config: SupabaseClientConfig
 ): Promise<SupabaseTableStatsRaw[]> {
 	if (!config.serviceKey?.trim()) {
-		throw new ClientError('supabase', null, 'unauthorized', 'SUPABASE_SERVICE_KEY is missing or empty');
+		throw new ClientError(
+			'supabase',
+			null,
+			'unauthorized',
+			'SUPABASE_SERVICE_KEY is missing or empty'
+		);
 	}
 	if (!config.url?.trim()) {
 		throw new ClientError('supabase', null, 'request_error', 'SUPABASE_URL is missing or empty');
@@ -85,7 +90,12 @@ export async function getUsers(
 	perPage: number = 50
 ): Promise<{ users: SupabaseUserRaw[]; total: number }> {
 	if (!config.serviceKey?.trim()) {
-		throw new ClientError('supabase', null, 'unauthorized', 'SUPABASE_SERVICE_KEY is missing or empty');
+		throw new ClientError(
+			'supabase',
+			null,
+			'unauthorized',
+			'SUPABASE_SERVICE_KEY is missing or empty'
+		);
 	}
 	if (!config.url?.trim()) {
 		throw new ClientError('supabase', null, 'request_error', 'SUPABASE_URL is missing or empty');
@@ -133,7 +143,12 @@ export async function queryTable<T>(
 	params?: Record<string, string>
 ): Promise<T[]> {
 	if (!config.serviceKey?.trim()) {
-		throw new ClientError('supabase', null, 'unauthorized', 'SUPABASE_SERVICE_KEY is missing or empty');
+		throw new ClientError(
+			'supabase',
+			null,
+			'unauthorized',
+			'SUPABASE_SERVICE_KEY is missing or empty'
+		);
 	}
 	if (!config.url?.trim()) {
 		throw new ClientError('supabase', null, 'request_error', 'SUPABASE_URL is missing or empty');

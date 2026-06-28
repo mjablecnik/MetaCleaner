@@ -5,7 +5,10 @@
 	import type { ConversionFunnelStep, PlanRevenue } from '$lib/repositories/businessRepository';
 	import FunnelStep from '../components/FunnelStep.svelte';
 
-	let { conversionFunnel, planRevenue }: { conversionFunnel: ConversionFunnelStep[]; planRevenue: PlanRevenue[] } = $props();
+	let {
+		conversionFunnel,
+		planRevenue
+	}: { conversionFunnel: ConversionFunnelStep[]; planRevenue: PlanRevenue[] } = $props();
 
 	onMount(() => {
 		const P = window.Plotly;

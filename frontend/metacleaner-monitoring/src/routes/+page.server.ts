@@ -66,8 +66,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 				avgCleanValue = totalJobs === 0 ? 'N/A' : '0.0s';
 			}
 
-			failedValue =
-				totalJobs > 0 ? `${((failedCount / totalJobs) * 100).toFixed(1)}%` : '0';
+			failedValue = totalJobs > 0 ? `${((failedCount / totalJobs) * 100).toFixed(1)}%` : '0';
 		}
 
 		return [
@@ -110,10 +109,8 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
 	// Alerts section: recent Sentry issues + Fly machine events
 	const alerts = await callSection(async () => {
-		const sentryIssues =
-			sentrySettled.status === 'fulfilled' ? sentrySettled.value : null;
-		const flyMachines =
-			flySettled.status === 'fulfilled' ? flySettled.value : null;
+		const sentryIssues = sentrySettled.status === 'fulfilled' ? sentrySettled.value : null;
+		const flyMachines = flySettled.status === 'fulfilled' ? flySettled.value : null;
 		return mergeAndSortAlerts(sentryIssues, flyMachines, Date.now());
 	});
 

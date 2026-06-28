@@ -132,7 +132,13 @@
 	{#if data.slaGoals.status === 'ok' && data.incidents.status === 'ok'}
 		<AvailabilitySlaSection slaGoals={data.slaGoals.data} incidents={data.incidents.data} />
 	{:else if data.slaGoals.status === 'not-configured' || data.incidents.status === 'not-configured'}
-		<NotConfiguredCard missingVars={data.slaGoals.status === 'not-configured' ? data.slaGoals.missingVars : (data.incidents.status === 'not-configured' ? data.incidents.missingVars : [])} />
+		<NotConfiguredCard
+			missingVars={data.slaGoals.status === 'not-configured'
+				? data.slaGoals.missingVars
+				: data.incidents.status === 'not-configured'
+					? data.incidents.missingVars
+					: []}
+		/>
 	{:else if data.slaGoals.status === 'error'}
 		<SectionErrorCard
 			category={data.slaGoals.error.category}

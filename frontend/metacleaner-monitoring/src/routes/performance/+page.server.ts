@@ -31,15 +31,9 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 
 	// Fetch all relevant data concurrently
 	const [cfSettled, flySettled, sentrySettled] = await Promise.allSettled([
-		configs.cloudflare.configured
-			? getAnalytics(configs.cloudflare.config)
-			: Promise.resolve(null),
-		configs.fly.configured
-			? getMachinesForAllApps(configs.fly.config)
-			: Promise.resolve(null),
-		configs.sentry.configured
-			? getRecentIssues(configs.sentry.config, 25)
-			: Promise.resolve(null)
+		configs.cloudflare.configured ? getAnalytics(configs.cloudflare.config) : Promise.resolve(null),
+		configs.fly.configured ? getMachinesForAllApps(configs.fly.config) : Promise.resolve(null),
+		configs.sentry.configured ? getRecentIssues(configs.sentry.config, 25) : Promise.resolve(null)
 	]);
 
 	const kpis = await callSection(async () => {

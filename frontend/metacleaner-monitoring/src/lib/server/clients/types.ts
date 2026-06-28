@@ -8,11 +8,7 @@ export class ClientError extends Error {
 	constructor(
 		public readonly service: string,
 		public readonly statusCode: number | null,
-		public readonly category:
-			| 'timeout'
-			| 'unauthorized'
-			| 'service_unavailable'
-			| 'request_error',
+		public readonly category: 'timeout' | 'unauthorized' | 'service_unavailable' | 'request_error',
 		message: string
 	) {
 		super(message);
@@ -25,9 +21,7 @@ export type SectionResult<T> =
 	| { status: 'not-configured'; missingVars: string[] }
 	| { status: 'error'; error: { category: ClientError['category']; message: string } };
 
-export function categorizeStatus(
-	statusCode: number
-): ClientError['category'] {
+export function categorizeStatus(statusCode: number): ClientError['category'] {
 	if (statusCode === 401 || statusCode === 403) return 'unauthorized';
 	if (statusCode >= 500) return 'service_unavailable';
 	return 'request_error';

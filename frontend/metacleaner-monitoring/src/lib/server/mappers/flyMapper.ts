@@ -1,4 +1,13 @@
-import type { MachineInstance, DeployEntry, ServiceCard, RuntimeStat, RuntimeErrorEntry, HealthCheck, Incident, SlaGoal } from '$lib/repositories/index.js';
+import type {
+	MachineInstance,
+	DeployEntry,
+	ServiceCard,
+	RuntimeStat,
+	RuntimeErrorEntry,
+	HealthCheck,
+	Incident,
+	SlaGoal
+} from '$lib/repositories/index.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
 
 const REGION_NAMES: Record<string, string> = {
@@ -104,9 +113,10 @@ export function mapToMachineInstances(raw: Map<string, FlyMachineRaw[]>): Machin
 			const startEvents = (machine.events ?? [])
 				.filter((e) => e.type === 'start')
 				.sort((a, b) => b.timestamp - a.timestamp);
-			const lastStartMs = startEvents.length > 0
-				? flyTimestampToMs(startEvents[0].timestamp)
-				: new Date(machine.created_at).getTime();
+			const lastStartMs =
+				startEvents.length > 0
+					? flyTimestampToMs(startEvents[0].timestamp)
+					: new Date(machine.created_at).getTime();
 			const uptime = status === 'running' ? formatUptime(lastStartMs) : '—';
 
 			const regionCode = machine.region ?? '';
@@ -114,9 +124,8 @@ export function mapToMachineInstances(raw: Map<string, FlyMachineRaw[]>): Machin
 			const regionDisplay = city ? `${regionCode} (${city})` : regionCode;
 
 			const ramTotalGb = memoryMb / 1024;
-			const ramTotalDisplay = ramTotalGb < 1
-				? ramTotalGb.toFixed(2)
-				: String(Math.round(ramTotalGb * 10) / 10);
+			const ramTotalDisplay =
+				ramTotalGb < 1 ? ramTotalGb.toFixed(2) : String(Math.round(ramTotalGb * 10) / 10);
 
 			// Fly Machines API does not expose real-time CPU metrics
 			const cpuPercent = 0;
@@ -170,8 +179,7 @@ export function mapToDeployEntries(machines: FlyMachineRaw[]): DeployEntry[] {
 				status: deployStatus,
 				statusClass:
 					deployStatus === 'success' ? 'bg-success/15 text-success' : 'bg-error/15 text-error',
-				statusKey:
-					deployStatus === 'success' ? 'common_status_ok' : 'runtime_deploy_failed',
+				statusKey: deployStatus === 'success' ? 'common_status_ok' : 'runtime_deploy_failed',
 				icon: deployStatus === 'success' ? 'fa-check' : 'fa-xmark',
 				iconClass:
 					deployStatus === 'success' ? 'bg-success/15 text-success' : 'bg-error/15 text-error',
@@ -413,8 +421,7 @@ export function mapToSlaGoals(raw: Map<string, FlyMachineRaw[]>): SlaGoal[] {
 
 		const target = 99.9;
 		const met = uptimePercent >= target;
-		const barClass =
-			met ? 'bg-success' : status === 'degraded' ? 'bg-secondary' : 'bg-error';
+		const barClass = met ? 'bg-success' : status === 'degraded' ? 'bg-secondary' : 'bg-error';
 
 		goals.push({
 			service: app,
@@ -455,8 +462,7 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 
 	const uptimeClass =
 		uptimePercent >= 99 ? 'text-success' : uptimePercent >= 95 ? 'text-secondary' : 'text-error';
-	const uptimeBadgeKey =
-		uptimePercent >= 99 ? 'common_status_ok' : 'common_status_warning';
+	const uptimeBadgeKey = uptimePercent >= 99 ? 'common_status_ok' : 'common_status_warning';
 	const uptimeBadgeClass =
 		uptimePercent >= 99 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary';
 
@@ -505,12 +511,10 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 			value: String(restartCount),
 			valueClass: restartCount > 0 ? 'text-error' : undefined,
 			icon: 'fa-rotate-right',
-			iconClass:
-				restartCount > 0 ? 'bg-secondary/15 text-secondary' : 'bg-success/15 text-success',
+			iconClass: restartCount > 0 ? 'bg-secondary/15 text-secondary' : 'bg-success/15 text-success',
 			subtext: `${totalMachines} machines total`,
 			badgeKey: restartCount > 0 ? 'common_status_warning' : 'common_status_ok',
-			badgeClass:
-				restartCount > 0 ? 'bg-secondary/10 text-secondary' : 'bg-success/10 text-success'
+			badgeClass: restartCount > 0 ? 'bg-secondary/10 text-secondary' : 'bg-success/10 text-success'
 		}
 	];
 }

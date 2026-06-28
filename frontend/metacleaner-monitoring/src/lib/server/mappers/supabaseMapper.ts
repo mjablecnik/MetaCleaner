@@ -1,4 +1,11 @@
-import type { DbKpi, TableSize, UserStat, User, UserRole, UserStatus } from '$lib/repositories/index.js';
+import type {
+	DbKpi,
+	TableSize,
+	UserStat,
+	User,
+	UserRole,
+	UserStatus
+} from '$lib/repositories/index.js';
 import type { SupabaseTableStatsRaw, SupabaseUserRaw } from '../clients/supabaseClient.js';
 
 const TABLE_BAR_COLORS = [
@@ -115,9 +122,7 @@ function getUserStatus(lastSignInAt: string | null): UserStatus {
 
 function nameFromEmail(email: string): string {
 	const local = email.split('@')[0];
-	return local
-		.replace(/[._-]/g, ' ')
-		.replace(/\b\w/g, (c) => c.toUpperCase());
+	return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function formatRegistered(isoDate: string): string {
@@ -146,9 +151,7 @@ export function mapToUserStats(users: SupabaseUserRaw[], total?: number): UserSt
 		if (!u.last_sign_in_at) return false;
 		return now - new Date(u.last_sign_in_at).getTime() < 15 * 60 * 1000;
 	}).length;
-	const newCount = users.filter(
-		(u) => new Date(u.created_at).getTime() > thirtyDaysAgo
-	).length;
+	const newCount = users.filter((u) => new Date(u.created_at).getTime() > thirtyDaysAgo).length;
 
 	return [
 		{

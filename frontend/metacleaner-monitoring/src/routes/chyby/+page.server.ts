@@ -2,7 +2,11 @@ import type { PageServerLoad } from './$types.js';
 import type { ErrorsPageData } from '$lib/types/pageData.js';
 import { getServiceConfigs } from '$lib/server/config.js';
 import { getRecentIssues } from '$lib/server/clients/sentryClient.js';
-import { mapToErrorLog, mapToErrorKpis, mapToTopEndpoints } from '$lib/server/mappers/sentryMapper.js';
+import {
+	mapToErrorLog,
+	mapToErrorKpis,
+	mapToTopEndpoints
+} from '$lib/server/mappers/sentryMapper.js';
 import { callSection, notConfigured } from '$lib/server/clients/types.js';
 
 export const load: PageServerLoad = async ({ setHeaders }) => {

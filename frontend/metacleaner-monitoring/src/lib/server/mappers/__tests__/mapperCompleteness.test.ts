@@ -6,12 +6,26 @@
 import { describe, it, expect } from 'vitest';
 import fc from 'fast-check';
 import type { FlyMachineRaw } from '../../clients/flyClient.js';
-import type { CfAnalyticsRaw, CfGeoRaw, CfFirewallEventRaw } from '../../clients/cloudflareClient.js';
+import type {
+	CfAnalyticsRaw,
+	CfGeoRaw,
+	CfFirewallEventRaw
+} from '../../clients/cloudflareClient.js';
 import type { StripeSubscriptionRaw, StripePriceRaw } from '../../clients/stripeClient.js';
 import type { SupabaseTableStatsRaw, SupabaseUserRaw } from '../../clients/supabaseClient.js';
 import type { SentryIssueRaw } from '../../clients/sentryClient.js';
-import { mapToMachineInstances, mapToDeployEntries, mapToServiceCards, mapToRuntimeStats } from '../flyMapper.js';
-import { mapToEdgeKpiStats, mapToGeoDistribution, mapToWafLog, mapToHttpStatusDistribution } from '../cloudflareMapper.js';
+import {
+	mapToMachineInstances,
+	mapToDeployEntries,
+	mapToServiceCards,
+	mapToRuntimeStats
+} from '../flyMapper.js';
+import {
+	mapToEdgeKpiStats,
+	mapToGeoDistribution,
+	mapToWafLog,
+	mapToHttpStatusDistribution
+} from '../cloudflareMapper.js';
 import { mapToBusinessKpiStats, mapToPlanRevenue } from '../stripeMapper.js';
 import { mapToTableSizes, mapToDbKpis, mapToUserStats, mapToUsers } from '../supabaseMapper.js';
 import { mapToErrorLog, mapToErrorKpis } from '../sentryMapper.js';
@@ -111,7 +125,9 @@ const cfGroupArb = fc.record({
 		threats: fc.nat()
 	}),
 	dimensions: fc.record({
-		date: fc.integer({ min: 1_640_000_000_000, max: 1_780_000_000_000 }).map((ms) => new Date(ms).toISOString().slice(0, 10))
+		date: fc
+			.integer({ min: 1_640_000_000_000, max: 1_780_000_000_000 })
+			.map((ms) => new Date(ms).toISOString().slice(0, 10))
 	})
 });
 
@@ -223,9 +239,20 @@ describe('Property 5: Mapper Completeness', () => {
 	describe('flyMapper', () => {
 		it('mapToMachineInstances: all required MachineInstance fields are present', () => {
 			const requiredFields = [
-				'id', 'name', 'displayId', 'app', 'region', 'status',
-				'cpuPercent', 'cpuClass', 'cpuDisplay', 'cpuWarning',
-				'ramDisplay', 'ramTotalDisplay', 'ramBarWidth', 'uptime'
+				'id',
+				'name',
+				'displayId',
+				'app',
+				'region',
+				'status',
+				'cpuPercent',
+				'cpuClass',
+				'cpuDisplay',
+				'cpuWarning',
+				'ramDisplay',
+				'ramTotalDisplay',
+				'ramBarWidth',
+				'uptime'
 			] as const;
 
 			fc.assert(
@@ -239,28 +266,46 @@ describe('Property 5: Mapper Completeness', () => {
 
 		it('mapToDeployEntries: all required DeployEntry fields are present', () => {
 			const requiredFields = [
-				'id', 'version', 'app', 'author', 'commitMessage',
-				'timestamp', 'duration', 'status', 'statusClass', 'statusKey',
-				'icon', 'iconClass', 'subtext'
+				'id',
+				'version',
+				'app',
+				'author',
+				'commitMessage',
+				'timestamp',
+				'duration',
+				'status',
+				'statusClass',
+				'statusKey',
+				'icon',
+				'iconClass',
+				'subtext'
 			] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(flyDeployMachineArb, { minLength: 1, maxLength: 5 }),
-					(machines) => {
-						const result = mapToDeployEntries(machines);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(flyDeployMachineArb, { minLength: 1, maxLength: 5 }), (machines) => {
+					const result = mapToDeployEntries(machines);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
 
 		it('mapToServiceCards: all required ServiceCard fields are present', () => {
 			const requiredFields = [
-				'key', 'name', 'icon', 'provider', 'status',
-				'uptimePercent', 'uptimeDisplay', 'outageCount', 'outageLabel',
-				'trend', 'trendPositive', 'barClass', 'downDays', 'degradedDays'
+				'key',
+				'name',
+				'icon',
+				'provider',
+				'status',
+				'uptimePercent',
+				'uptimeDisplay',
+				'outageCount',
+				'outageLabel',
+				'trend',
+				'trendPositive',
+				'barClass',
+				'downDays',
+				'degradedDays'
 			] as const;
 
 			fc.assert(
@@ -273,9 +318,7 @@ describe('Property 5: Mapper Completeness', () => {
 		});
 
 		it('mapToRuntimeStats: all required RuntimeStat fields are present (always 4 items)', () => {
-			const requiredFields = [
-				'key', 'labelKey', 'value', 'icon', 'iconClass', 'subtext'
-			] as const;
+			const requiredFields = ['key', 'labelKey', 'value', 'icon', 'iconClass', 'subtext'] as const;
 
 			fc.assert(
 				fc.property(flyMachineMapArb, (machineMap) => {
@@ -291,7 +334,12 @@ describe('Property 5: Mapper Completeness', () => {
 	describe('cloudflareMapper', () => {
 		it('mapToEdgeKpiStats: all required EdgeKpiStat fields are present (always 4 items)', () => {
 			const requiredFields = [
-				'key', 'labelKey', 'value', 'badgeKey', 'badgeClass', 'subtext'
+				'key',
+				'labelKey',
+				'value',
+				'badgeKey',
+				'badgeClass',
+				'subtext'
 			] as const;
 
 			fc.assert(
@@ -305,9 +353,7 @@ describe('Property 5: Mapper Completeness', () => {
 		});
 
 		it('mapToGeoDistribution: all required GeoDistribution fields are present', () => {
-			const requiredFields = [
-				'country', 'code', 'flag', 'percent', 'color'
-			] as const;
+			const requiredFields = ['country', 'code', 'flag', 'percent', 'color'] as const;
 
 			fc.assert(
 				fc.property(cfGeoArb, (raw) => {
@@ -320,18 +366,25 @@ describe('Property 5: Mapper Completeness', () => {
 
 		it('mapToWafLog: all required WafLogEntry fields are present', () => {
 			const requiredFields = [
-				'id', 'time', 'type', 'typeClass', 'ip', 'country', 'countryFlag',
-				'message', 'actionKey', 'actionClass', 'statusKey', 'statusClass'
+				'id',
+				'time',
+				'type',
+				'typeClass',
+				'ip',
+				'country',
+				'countryFlag',
+				'message',
+				'actionKey',
+				'actionClass',
+				'statusKey',
+				'statusClass'
 			] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(cfFirewallEventArb, { minLength: 1, maxLength: 20 }),
-					(events) => {
-						const result = mapToWafLog(events);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(cfFirewallEventArb, { minLength: 1, maxLength: 20 }), (events) => {
+					const result = mapToWafLog(events);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -353,19 +406,20 @@ describe('Property 5: Mapper Completeness', () => {
 	describe('stripeMapper', () => {
 		it('mapToBusinessKpiStats: all required BusinessKpiStat fields are present (always 4 items)', () => {
 			const requiredFields = [
-				'key', 'labelKey', 'value', 'badgeLabel', 'badgeClass', 'subtext'
+				'key',
+				'labelKey',
+				'value',
+				'badgeLabel',
+				'badgeClass',
+				'subtext'
 			] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(stripeSubArb),
-					fc.array(stripeSubArb),
-					(activeSubs, canceledSubs) => {
-						const result = mapToBusinessKpiStats(activeSubs, canceledSubs);
-						expect(result).toHaveLength(4);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(stripeSubArb), fc.array(stripeSubArb), (activeSubs, canceledSubs) => {
+					const result = mapToBusinessKpiStats(activeSubs, canceledSubs);
+					expect(result).toHaveLength(4);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -392,20 +446,22 @@ describe('Property 5: Mapper Completeness', () => {
 			const requiredFields = ['name', 'sizeLabel', 'barWidth', 'barClass'] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(supabaseTableStatsArb, { minLength: 1, maxLength: 10 }),
-					(raw) => {
-						const result = mapToTableSizes(raw);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(supabaseTableStatsArb, { minLength: 1, maxLength: 10 }), (raw) => {
+					const result = mapToTableSizes(raw);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
 
 		it('mapToDbKpis: all required DbKpi fields are present (always 4 items)', () => {
 			const requiredFields = [
-				'key', 'labelKey', 'value', 'badgeKey', 'badgeClass', 'subtext'
+				'key',
+				'labelKey',
+				'value',
+				'badgeKey',
+				'badgeClass',
+				'subtext'
 			] as const;
 
 			fc.assert(
@@ -420,9 +476,15 @@ describe('Property 5: Mapper Completeness', () => {
 
 		it('mapToUserStats: all required UserStat fields are present (always 4 items)', () => {
 			const requiredFields = [
-				'key', 'labelKey', 'value',
-				'trendKey', 'trendValue', 'trendPositive',
-				'icon', 'iconColor', 'iconBg'
+				'key',
+				'labelKey',
+				'value',
+				'trendKey',
+				'trendValue',
+				'trendPositive',
+				'icon',
+				'iconColor',
+				'iconBg'
 			] as const;
 
 			fc.assert(
@@ -441,18 +503,23 @@ describe('Property 5: Mapper Completeness', () => {
 
 		it('mapToUsers: all required User fields are present', () => {
 			const requiredFields = [
-				'id', 'name', 'email', 'avatar', 'status',
-				'registered', 'lastLogin', 'sessions', 'location', 'role'
+				'id',
+				'name',
+				'email',
+				'avatar',
+				'status',
+				'registered',
+				'lastLogin',
+				'sessions',
+				'location',
+				'role'
 			] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(supabaseUserArb, { minLength: 1, maxLength: 10 }),
-					(users) => {
-						const result = mapToUsers(users);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(supabaseUserArb, { minLength: 1, maxLength: 10 }), (users) => {
+					const result = mapToUsers(users);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -461,28 +528,39 @@ describe('Property 5: Mapper Completeness', () => {
 	describe('sentryMapper', () => {
 		it('mapToErrorLog: all required ErrorLogEntry fields are present', () => {
 			const requiredFields = [
-				'id', 'time', 'type', 'typeClass', 'message', 'source', 'statusKey', 'statusClass'
+				'id',
+				'time',
+				'type',
+				'typeClass',
+				'message',
+				'source',
+				'statusKey',
+				'statusClass'
 			] as const;
 
 			fc.assert(
-				fc.property(
-					fc.array(sentryIssueArb, { minLength: 1, maxLength: 25 }),
-					(issues) => {
-						const result = mapToErrorLog(issues);
-						assertRequiredFields(result, requiredFields);
-					}
-				),
+				fc.property(fc.array(sentryIssueArb, { minLength: 1, maxLength: 25 }), (issues) => {
+					const result = mapToErrorLog(issues);
+					assertRequiredFields(result, requiredFields);
+				}),
 				{ numRuns: 100 }
 			);
 		});
 
 		it('mapToErrorKpis: all required ErrorKpi fields are present (always 4 items)', () => {
 			const requiredFields = [
-				'key', 'labelKey', 'labelKeyMobile',
-				'value', 'trend', 'trendUp',
-				'valueClass', 'trendClass',
-				'severityKey', 'severityClass',
-				'subtextKey', 'subtextKeyMobile'
+				'key',
+				'labelKey',
+				'labelKeyMobile',
+				'value',
+				'trend',
+				'trendUp',
+				'valueClass',
+				'trendClass',
+				'severityKey',
+				'severityClass',
+				'subtextKey',
+				'subtextKeyMobile'
 			] as const;
 
 			fc.assert(

@@ -72,26 +72,20 @@ describe('Property 10: Health Status Mapping', () => {
 
 		it('all non-started machines → offline', () => {
 			fc.assert(
-				fc.property(
-					fc.array(stoppedMachineArb, { minLength: 1, maxLength: 5 }),
-					(machines) => {
-						const result = mapToServiceCards(singleAppMap(machines));
-						expect(result[0].status).toBe('offline');
-					}
-				),
+				fc.property(fc.array(stoppedMachineArb, { minLength: 1, maxLength: 5 }), (machines) => {
+					const result = mapToServiceCards(singleAppMap(machines));
+					expect(result[0].status).toBe('offline');
+				}),
 				{ numRuns: 100 }
 			);
 		});
 
 		it('started machines + all checks passing → online', () => {
 			fc.assert(
-				fc.property(
-					fc.array(startedPassingArb, { minLength: 1, maxLength: 5 }),
-					(machines) => {
-						const result = mapToServiceCards(singleAppMap(machines));
-						expect(result[0].status).toBe('online');
-					}
-				),
+				fc.property(fc.array(startedPassingArb, { minLength: 1, maxLength: 5 }), (machines) => {
+					const result = mapToServiceCards(singleAppMap(machines));
+					expect(result[0].status).toBe('online');
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -147,15 +141,12 @@ describe('Property 10: Health Status Mapping', () => {
 	describe('mapToMachineInstances: per-machine status derivation', () => {
 		it('"started" state → running status', () => {
 			fc.assert(
-				fc.property(
-					fc.array(startedPassingArb, { minLength: 1, maxLength: 5 }),
-					(machines) => {
-						const result = mapToMachineInstances(singleAppMap(machines));
-						for (const instance of result) {
-							expect(instance.status).toBe('running');
-						}
+				fc.property(fc.array(startedPassingArb, { minLength: 1, maxLength: 5 }), (machines) => {
+					const result = mapToMachineInstances(singleAppMap(machines));
+					for (const instance of result) {
+						expect(instance.status).toBe('running');
 					}
-				),
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -206,15 +197,12 @@ describe('Property 10: Health Status Mapping', () => {
 			);
 
 			fc.assert(
-				fc.property(
-					fc.array(anyMachineArb, { minLength: 1, maxLength: 6 }),
-					(machines) => {
-						const result = mapToMachineInstances(singleAppMap(machines));
-						for (const instance of result) {
-							expect(['running', 'stopped', 'error']).toContain(instance.status);
-						}
+				fc.property(fc.array(anyMachineArb, { minLength: 1, maxLength: 6 }), (machines) => {
+					const result = mapToMachineInstances(singleAppMap(machines));
+					for (const instance of result) {
+						expect(['running', 'stopped', 'error']).toContain(instance.status);
 					}
-				),
+				}),
 				{ numRuns: 100 }
 			);
 		});

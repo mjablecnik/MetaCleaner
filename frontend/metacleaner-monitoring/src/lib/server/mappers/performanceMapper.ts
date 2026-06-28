@@ -126,9 +126,7 @@ export function mapSentryIssuesToSlowEndpoints(issues: SentryIssueRaw[]): SlowEn
 		const { method, path } = parseCulprit(culprit);
 		const avgMs = estimateAvgMs(group);
 		const totalCount = group.reduce((sum, i) => sum + (parseInt(i.count, 10) || 1), 0);
-		const errorIssues = group.filter(
-			(i) => i.level === 'error' || i.level === 'critical'
-		).length;
+		const errorIssues = group.filter((i) => i.level === 'error' || i.level === 'critical').length;
 		const errorRate =
 			group.length > 0 ? `${Math.round((errorIssues / group.length) * 100)}%` : '0%';
 
@@ -173,17 +171,12 @@ export function mapToPerformanceKpiStats(
 	}
 
 	const throughputRpm = totalRequests > 0 ? Math.round(totalRequests / 1440) : 0;
-	const cfErrorRatePct =
-		totalRequests > 0 ? (totalThreats / totalRequests) * 100 : 0;
+	const cfErrorRatePct = totalRequests > 0 ? (totalThreats / totalRequests) * 100 : 0;
 
-	const criticalCount = issues.filter(
-		(i) => i.level === 'critical' || i.level === 'error'
-	).length;
+	const criticalCount = issues.filter((i) => i.level === 'critical' || i.level === 'error').length;
 	const sentryErrorRatePct = Math.min(100, criticalCount * 0.5);
 	const errorRatePct =
-		totalRequests > 1000
-			? Math.max(cfErrorRatePct, sentryErrorRatePct)
-			: sentryErrorRatePct;
+		totalRequests > 1000 ? Math.max(cfErrorRatePct, sentryErrorRatePct) : sentryErrorRatePct;
 
 	let uptimePct = 100;
 	let machineCount = 0;
@@ -284,15 +277,12 @@ export function mapToPerformanceEvents(
 	// Sentry critical/error issues → performance events (req 14.3)
 	const highPriorityIssues = issues.filter(
 		(i) =>
-			i.level === 'critical' ||
-			i.level === 'error' ||
-			i.title.toLowerCase().includes('timeout')
+			i.level === 'critical' || i.level === 'error' || i.title.toLowerCase().includes('timeout')
 	);
 
 	for (const issue of highPriorityIssues) {
 		const tsMs = new Date(issue.lastSeen).getTime();
-		const isCritical =
-			issue.level === 'critical' || issue.title.toLowerCase().includes('timeout');
+		const isCritical = issue.level === 'critical' || issue.title.toLowerCase().includes('timeout');
 		const level: 'critical' | 'warning' | 'info' = isCritical ? 'critical' : 'warning';
 
 		events.push({
@@ -301,20 +291,14 @@ export function mapToPerformanceEvents(
 			time: formatTimeHms(tsMs),
 			level,
 			levelKey: isCritical ? 'performance_filters_critical' : 'performance_filters_warning',
-			levelClass: isCritical
-				? 'bg-error/15 text-error'
-				: 'bg-secondary/15 text-secondary',
+			levelClass: isCritical ? 'bg-error/15 text-error' : 'bg-secondary/15 text-secondary',
 			type: issue.title.toLowerCase().includes('timeout') ? 'Timeout' : 'Error',
 			message: issue.title,
 			endpoint: issue.culprit || undefined,
 			statusKey:
-				issue.status === 'resolved'
-					? 'common_status_resolved'
-					: 'performance_status_active',
+				issue.status === 'resolved' ? 'common_status_resolved' : 'performance_status_active',
 			statusClass:
-				issue.status === 'resolved'
-					? 'bg-success/10 text-success'
-					: 'bg-error/10 text-error'
+				issue.status === 'resolved' ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
 		});
 	}
 
@@ -334,18 +318,9 @@ export function mapToPerformanceEvents(
 						id: `fly-${machine.id}-${event.timestamp}`,
 						time: formatTimeHms(tsMs),
 						level: isCritical ? 'critical' : 'warning',
-						levelKey: isCritical
-							? 'performance_filters_critical'
-							: 'performance_filters_warning',
-						levelClass: isCritical
-							? 'bg-error/15 text-error'
-							: 'bg-secondary/15 text-secondary',
-						type:
-							event.type === 'kill'
-								? 'OOM Kill'
-								: event.type === 'crash'
-									? 'Crash'
-									: 'Restart',
+						levelKey: isCritical ? 'performance_filters_critical' : 'performance_filters_warning',
+						levelClass: isCritical ? 'bg-error/15 text-error' : 'bg-secondary/15 text-secondary',
+						type: event.type === 'kill' ? 'OOM Kill' : event.type === 'crash' ? 'Crash' : 'Restart',
 						message: `Machine ${machine.name} ${event.type} in ${machine.region}`,
 						endpoint: machine.name,
 						statusKey: 'common_status_restarted',

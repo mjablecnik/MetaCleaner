@@ -1,7 +1,11 @@
 import type { PageServerLoad } from './$types.js';
 import type { EdgePageData } from '$lib/types/pageData.js';
 import { getServiceConfigs } from '$lib/server/config.js';
-import { getAnalytics, getGeoDistribution, getFirewallEvents } from '$lib/server/clients/cloudflareClient.js';
+import {
+	getAnalytics,
+	getGeoDistribution,
+	getFirewallEvents
+} from '$lib/server/clients/cloudflareClient.js';
 import {
 	mapToEdgeKpiStats,
 	mapToGeoDistribution,
