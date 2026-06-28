@@ -129,14 +129,14 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Format bytes to human-readable sizes, compute bar widths relative to largest table
     - _Requirements: 3.2, 9.1, 9.2, 11.1, 11.4_
 
-  - [ ] 4.5 Create the Sentry mapper (`src/lib/server/mappers/sentryMapper.ts`)
+  - [x] 4.5 Create the Sentry mapper (`src/lib/server/mappers/sentryMapper.ts`)
     - Implement `mapToErrorLog(issues)` → `ErrorLogEntry[]`
     - Implement `mapToErrorKpis(issues, stats)` → `ErrorKpi[]`
     - Map `lastSeen` to `HH:mm:ss` time format, `metadata.type` to short codes (EXC, TMT, ERR)
     - Map `status`: "unresolved" → active, "resolved" → resolved
     - _Requirements: 3.2, 10.1, 10.2, 10.3, 11.1, 11.4_
 
-  - [ ]* 4.6 Write property test for mapper completeness (Property 5)
+  - [x]* 4.6 Write property test for mapper completeness (Property 5)
     - **Property 5: Mapper Completeness**
     - For any valid raw API response, the mapper returns objects where every required field in the target repository interface is present and non-undefined
     - **Validates: Requirements 3.2, 11.1, 11.4**
