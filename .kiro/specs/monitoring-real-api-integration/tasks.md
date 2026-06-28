@@ -194,7 +194,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Map to `ErrorLogEntry[]`, `ErrorKpi[]`, `TopEndpoint[]`
     - _Requirements: 3.1, 3.3, 10.1, 10.2, 10.3, 10.5, 12.1, 12.4_
 
-  - [ ] 6.5 Create database load function (`src/routes/databaze/+page.server.ts`)
+  - [x] 6.5 Create database load function (`src/routes/databaze/+page.server.ts`)
     - Check Supabase config (always configured since required)
     - Fetch table stats from Supabase
     - Map to `TableSize[]`, `DbKpi[]`
