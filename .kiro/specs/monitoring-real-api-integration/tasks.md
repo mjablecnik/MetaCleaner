@@ -6,15 +6,15 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
 
 ## Tasks
 
-- [ ] 1. Set up shared types, config module, and project infrastructure
-  - [ ] 1.1 Create the shared client types module (`src/lib/server/clients/types.ts`)
+- [x] 1. Set up shared types, config module, and project infrastructure
+  - [x] 1.1 Create the shared client types module (`src/lib/server/clients/types.ts`)
     - Define `ClientConfig` interface, `ClientError` class, and `SectionResult<T>` discriminated union type
     - Implement the `fetchWithTimeout` helper using `AbortController`
     - Implement the `callSection<T>` helper that wraps async calls and catches `ClientError`
     - Export `categorizeStatus` function mapping HTTP status codes to error categories
     - _Requirements: 2.5, 2.6, 5.1, 5.2_
 
-  - [ ] 1.2 Create the configuration module (`src/lib/server/config.ts`)
+  - [x] 1.2 Create the configuration module (`src/lib/server/config.ts`)
     - Import from `$env/dynamic/private`
     - Define `ServiceConfigs` type with discriminated union per service (`configured: true` with config or `configured: false` with `missingVars`)
     - Implement `getServiceConfigs()` that checks presence and non-emptiness of all env vars
@@ -22,17 +22,17 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Validate optional service vars (`FLY_API_TOKEN`, `CLOUDFLARE_API_TOKEN`, `SENTRY_AUTH_TOKEN`, `STRIPE_SECRET_KEY`) returning `configured: false` if missing
     - _Requirements: 1.1, 1.2, 1.5, 1.6, 4.1, 4.5_
 
-  - [ ]* 1.3 Write property test for configuration detection (Property 1)
+  - [x]* 1.3 Write property test for configuration detection (Property 1)
     - **Property 1: Configuration Detection**
     - For any subset of environment variables where one or more required variables are missing or empty, `getServiceConfigs()` returns `{ configured: false, missingVars: [...] }` with exactly the missing variable names
     - **Validates: Requirements 1.6, 4.1, 4.2, 4.3**
 
-  - [ ] 1.4 Create page data types (`src/lib/types/pageData.ts`)
+  - [x] 1.4 Create page data types (`src/lib/types/pageData.ts`)
     - Define typed interfaces for each route's load function return value using `SectionResult<T>` wrapping existing repository types
     - Include: `DashboardPageData`, `RuntimePageData`, `AvailabilityPageData`, `ErrorsPageData`, `DatabasePageData`, `EdgePageData`, `PerformancePageData`, `BusinessPageData`, `UsersPageData`
     - _Requirements: 3.2, 3.4, 11.1_
 
-  - [ ] 1.5 Update `.env.example` with all service variables
+  - [x] 1.5 Update `.env.example` with all service variables
     - Ensure all env vars from the design are listed with descriptive placeholders
     - _Requirements: 1.4_
 
