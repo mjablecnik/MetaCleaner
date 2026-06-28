@@ -36,7 +36,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Ensure all env vars from the design are listed with descriptive placeholders
     - _Requirements: 1.4_
 
-- [ ] 2. Implement API client modules
+- [x] 2. Implement API client modules
   - [x] 2.1 Create the Fly.io client (`src/lib/server/clients/flyClient.ts`)
     - Define `FlyClientConfig` extending `ClientConfig` with `org`, `apps` fields
     - Define raw response types (`FlyMachineRaw`, etc.)
@@ -81,21 +81,21 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Use Bearer token auth, 10s timeout
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 10.4_
 
-  - [ ]* 2.6 Write property test for client configuration validation (Property 2)
+  - [x]* 2.6 Write property test for client configuration validation (Property 2)
     - **Property 2: Client Configuration Validation**
     - For any client config with missing/empty/whitespace-only required fields, the client throws `ClientError` before making HTTP requests
     - **Validates: Requirements 2.3**
 
-  - [ ]* 2.7 Write property test for HTTP error categorization (Property 3)
+  - [x]* 2.7 Write property test for HTTP error categorization (Property 3)
     - **Property 3: HTTP Error Categorization**
     - For any non-2xx HTTP response, verify: 401/403 → `unauthorized`, 5xx → `service_unavailable`, AbortError → `timeout`, other → `request_error`
     - **Validates: Requirements 2.6, 5.2**
 
-- [ ] 3. Checkpoint - Ensure all tests pass
+- [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 4. Implement mapper modules
-  - [ ] 4.1 Create the Fly.io mapper (`src/lib/server/mappers/flyMapper.ts`)
+  - [x] 4.1 Create the Fly.io mapper (`src/lib/server/mappers/flyMapper.ts`)
     - Implement `mapToMachineInstances(raw)` → `MachineInstance[]`
     - Implement `mapToDeployEntries(raw)` → `DeployEntry[]`
     - Implement `mapToServiceCards(raw)` → `ServiceCard[]`
