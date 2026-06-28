@@ -619,6 +619,18 @@
 - Solution: Move `authMW := NewAuthMiddleware(cfg)` to the top of `NewRouter` (just after the rate limiters), before any `mux.Handle()` registrations. The line at the bottom becomes just `return cors(authMW.Middleware(mux))`.
 - Source: code-review-fix, 2026-06-15
 
+## svelte/no-navigation-without-resolve with paraglide-js: use ignoreLinks:true
+- Project: metacleaner-monitoring
+- Problem: `svelte/no-navigation-without-resolve` rule flags `href` attributes in navigation components because they don't call `resolve()` from `$app/paths`. The project uses paraglide-js `localizeHref()` for i18n link resolution, not SvelteKit's `resolve()`.
+- Solution: Configure the rule with `ignoreLinks: true` in eslint.config.js: `'svelte/no-navigation-without-resolve': ['error', { ignoreLinks: true }]`. This disables href checking while still enforcing `goto()` calls to use `resolve()`.
+- Source: check-build, 2026-06-28
+
+## TypeScript: removing `any` from layout objects — don't use Record<string, unknown>
+- Project: metacleaner-monitoring
+- Problem: Changing `const layout: any = { font: {...}, ... }` to `const layout: Record<string, unknown> = {...}` causes TypeScript spread error "Spread types may only be created from object types" wherever sub-properties are spread (e.g., `{ ...layout.font }`). Sub-property type becomes `unknown`, which cannot be spread.
+- Solution: Remove the explicit type annotation entirely (`const layout = {...}`) and let TypeScript infer the concrete type from the object literal. TypeScript correctly infers the full shape and sub-properties remain spreadable.
+- Source: check-build, 2026-06-28
+
 ## Playwright browser path mismatch in metacleaner-app and metacleaner-web
 - Project: metacleaner-app, metacleaner-web
 - Problem: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` is set in the environment, but `/opt/playwright-browsers` is owned by root (not writable). The project's playwright version may need a different revision than what's installed there (e.g., metacleaner-app needs rev 1223, metacleaner-web needs rev 1228). Running `npx playwright install chromium` fails with EACCES. The CDN download (playwright.azureedge.net → playwright.download.prss.microsoft.com) also returns "GatewayExceptionResponse" (blocked in this sandbox).
