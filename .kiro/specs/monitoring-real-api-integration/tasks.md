@@ -46,7 +46,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Throw `ClientError` on non-2xx responses with correct category
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 6.1, 6.4_
 
-  - [ ] 2.2 Create the Cloudflare client (`src/lib/server/clients/cloudflareClient.ts`)
+  - [x] 2.2 Create the Cloudflare client (`src/lib/server/clients/cloudflareClient.ts`)
     - Define `CloudflareClientConfig` extending `ClientConfig` with `zoneId`
     - Define raw response types (`CfAnalyticsRaw`, `CfGeoRaw`, `CfFirewallEventRaw`)
     - Implement `getAnalytics(config)` — GraphQL query for 24h zone analytics
