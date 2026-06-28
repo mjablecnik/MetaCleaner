@@ -141,12 +141,12 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - For any valid raw API response, the mapper returns objects where every required field in the target repository interface is present and non-undefined
     - **Validates: Requirements 3.2, 11.1, 11.4**
 
-  - [ ]* 4.7 Write property test for MRR normalization (Property 6)
+  - [x]* 4.7 Write property test for MRR normalization (Property 6)
     - **Property 6: MRR Normalization**
     - For any set of subscriptions with varying intervals (monthly, yearly, weekly), MRR equals sum of normalized monthly amounts; ARPU equals MRR / active count; plan revenue percentages sum to 100% (±1%)
     - **Validates: Requirements 8.1, 8.2, 8.3**
 
-  - [ ]* 4.8 Write property test for geographic distribution aggregation (Property 7)
+  - [x]* 4.8 Write property test for geographic distribution aggregation (Property 7)
     - **Property 7: Geographic Distribution Aggregation**
     - For any array of country traffic records (N ≥ 1), result has at most 6 entries (top 5 + "Other"), percentages sum to 100% (±1%), sorted by traffic desc. If N ≤ 5, no "Other" entry.
     - **Validates: Requirements 7.3**
