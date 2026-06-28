@@ -41,14 +41,6 @@ export interface PlanRevenue {
 	percent: string;
 }
 
-export interface GeoRevenue {
-	id: string;
-	labelKey: string;
-	value: number;
-	color: string;
-	percent: string;
-}
-
 export interface ConversionFunnelStep {
 	id: string;
 	labelKey: string;
@@ -68,14 +60,6 @@ export function getBusinessKpiStats(): BusinessKpiStat[] {
 			subtext: 'business_kpi_mrrSubtext'
 		},
 		{
-			key: 'arr',
-			labelKey: 'business_kpi_arr',
-			value: '$579,840',
-			badgeLabel: '+12.4%',
-			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
-			subtext: 'business_kpi_arrSubtext'
-		},
-		{
 			key: 'activeUsers',
 			labelKey: 'business_kpi_activeUsers',
 			value: '12,842',
@@ -92,6 +76,14 @@ export function getBusinessKpiStats(): BusinessKpiStat[] {
 			subtext: 'business_kpi_churnRateSubtext',
 			valueClass: 'text-[#ef4444]',
 			borderClass: 'border-[#ef4444]/20'
+		},
+		{
+			key: 'newSubscriptions',
+			labelKey: 'business_kpi_newSubscriptions',
+			value: '1,204',
+			badgeLabel: '+142',
+			badgeClass: 'bg-[#22c55e]/10 text-[#22c55e]',
+			subtext: 'business_kpi_newSubscriptionsSubtext'
 		}
 	];
 }
@@ -110,17 +102,6 @@ export function getBusinessSecondaryKpis(): BusinessSecondaryKpi[] {
 			iconBg: 'bg-[#22c55e]/15'
 		},
 		{
-			key: 'avgOrderValue',
-			labelKey: 'business_kpi_avgOrderValue',
-			value: '$40.13',
-			subtextKey: 'business_kpi_avgOrderValueSubtext',
-			subtextHighlight: '+$2.40',
-			subtextHighlightClass: 'text-[#22c55e] font-medium',
-			icon: 'fa-dollar-sign',
-			iconColor: 'text-[#3b82f6]',
-			iconBg: 'bg-[#3b82f6]/15'
-		},
-		{
 			key: 'newCustomers',
 			labelKey: 'business_kpi_newCustomers',
 			value: '318',
@@ -130,15 +111,6 @@ export function getBusinessSecondaryKpis(): BusinessSecondaryKpi[] {
 			icon: 'fa-user-plus',
 			iconColor: 'text-[#8b5cf6]',
 			iconBg: 'bg-[#8b5cf6]/15'
-		},
-		{
-			key: 'npsScore',
-			labelKey: 'business_kpi_npsScore',
-			value: '68',
-			subtextKey: 'business_kpi_npsScoreSubtext',
-			icon: 'fa-star',
-			iconColor: 'text-[#f59e0b]',
-			iconBg: 'bg-[#f59e0b]/15'
 		}
 	];
 }
@@ -190,15 +162,6 @@ export function getPlanRevenue(): PlanRevenue[] {
 	];
 }
 
-export function getGeoRevenue(): GeoRevenue[] {
-	return [
-		{ id: 'europe', labelKey: 'business_geo_europe', value: 23194, color: '#3b82f6', percent: '48%' },
-		{ id: 'northAmerica', labelKey: 'business_geo_northAmerica', value: 15462, color: '#3ecf8e', percent: '32%' },
-		{ id: 'asia', labelKey: 'business_geo_asia', value: 6282, color: '#8b5cf6', percent: '13%' },
-		{ id: 'other', labelKey: 'business_geo_other', value: 3382, color: '#f97316', percent: '7%' }
-	];
-}
-
 export function getConversionFunnel(): ConversionFunnelStep[] {
 	return [
 		{ id: 'visitors', labelKey: 'business_funnel_visitors', value: 84210, color: '#3b82f6' },
@@ -207,22 +170,4 @@ export function getConversionFunnel(): ConversionFunnelStep[] {
 		{ id: 'trialConversion', labelKey: 'business_funnel_trialConversion', value: 2104, conversionPercent: '30.8%', color: '#3ecf8e' },
 		{ id: 'activePaying', labelKey: 'business_funnel_activePaying', value: 1840, conversionPercent: '87.5%', color: '#f97316' }
 	];
-}
-
-export interface LtvCacMetrics {
-	ltv: number;
-	cac: number;
-	ltvCacRatio: number;
-	paybackMonths: number;
-	arpu: number;
-}
-
-export function getLtvCacMetrics(): LtvCacMetrics {
-	return {
-		ltv: 1840,
-		cac: 438,
-		ltvCacRatio: 4.2,
-		paybackMonths: 12,
-		arpu: 37.62
-	};
 }

@@ -7,7 +7,6 @@
 	import BusinessRevenueChartsSection from './sections/BusinessRevenueChartsSection.svelte';
 	import BusinessFunnelSection from './sections/BusinessFunnelSection.svelte';
 	import BusinessCohortSection from './sections/BusinessCohortSection.svelte';
-	import BusinessGoalsSection from './sections/BusinessGoalsSection.svelte';
 	import BusinessTopCustomersSection from './sections/BusinessTopCustomersSection.svelte';
 
 	const navItems = [
@@ -100,7 +99,6 @@
 	<BusinessRevenueChartsSection />
 	<BusinessFunnelSection />
 	<BusinessCohortSection />
-	<BusinessGoalsSection />
 	<BusinessTopCustomersSection />
 </div>
 
