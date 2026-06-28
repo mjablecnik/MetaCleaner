@@ -5,18 +5,20 @@ SvelteKit 2 monitoring dashboard with Svelte 5 runes, Tailwind CSS v4, paraglide
 ## Prerequisites
 
 - Node.js 22+
-- [Bun](https://bun.sh/) (primary package manager)
+- [Bun](https://bun.sh/) (primary package manager) or npm
 
 ## Install dependencies
 
 ```sh
 bun install
+# or: npm install
 ```
 
 ## Development
 
 ```sh
 bun run dev
+# or: npm run dev
 
 # or start the server and open the app in a new browser tab
 bun run dev -- --open
@@ -26,12 +28,14 @@ bun run dev -- --open
 
 ```sh
 bun run build
+# or: npm run build
 ```
 
 Preview the production build locally:
 
 ```sh
 bun run preview
+# or: npm run preview
 ```
 
 Start the production server (after build):
@@ -51,13 +55,25 @@ docker run -p 3000:3000 metacleaner-monitoring
 
 ```sh
 bun run lint
+# or: npm run lint
+
 bun run check
+# or: npm run check
 ```
 
 ## Tests
 
 ```sh
 bun run test
+# or: npm run test
 ```
 
-Unit tests use Vitest; E2E tests use Playwright. The first run of `bun run test` (or `bun run test:e2e`) will automatically download required browser binaries.
+Unit tests use Vitest with Playwright browser provider; E2E tests use Playwright. The first run
+will automatically download required browser binaries.
+
+> **Note:** If `PLAYWRIGHT_BROWSERS_PATH` is set to a read-only directory, install browsers to
+> a writable path instead:
+> ```sh
+> PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npx playwright install chromium
+> PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npm run test:unit -- --run
+> ```

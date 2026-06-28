@@ -708,3 +708,15 @@
 - Problem: `page.getByRole('button', { name: /pattern/i })` cannot find buttons wrapped in `lg:hidden` containers when Playwright runs at default desktop viewport (1280x720). Tailwind's responsive `hidden lg:flex` / `lg:hidden` classes apply `display:none` at the evaluated viewport, removing elements from the accessibility tree.
 - Solution: For tests that need to find "mobile-only" UI, either: (a) change the button to use a label visible at desktop viewport size, or (b) use `container.querySelector()` which ignores CSS visibility. When both mobile and desktop variants exist, use `.first()` / `.last()` to target the correct one by DOM order.
 - Source: create-code, 2026-06-23
+
+## metacleaner-monitoring: DashboardKpiSection crash after repository key rename
+- Project: metacleaner-monitoring
+- Problem: `DashboardKpiSection.svelte` used `stats.find((s) => s.key === 'uptimeFrontend')` etc., but the dashboardRepository was updated to MetaCleaner-specific keys (`uptimeServer`, `jobsProcessed`, `avgCleaningTime`, `failedJobs`). The `.find()` returned `undefined` and accessing `.labelKey` threw a 500 at runtime.
+- Solution: Update the find calls in `DashboardKpiSection.svelte` to match the new repository keys. Also restructured the 4th card from a hardcoded DB health card to a `StatCard` for `failedJobs` (which has `trend`/`trendPositive`).
+- Source: check-build, 2026-06-28
+
+## metacleaner-monitoring: PLAYWRIGHT_BROWSERS_PATH read-only, install to writable path
+- Project: metacleaner-monitoring
+- Problem: The environment has `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` set system-wide, but that directory is read-only (EACCES on mkdir). Vitest uses `@vitest/browser-playwright` which calls `playwright install` at the same path, so unit tests fail with "Executable doesn't exist".
+- Solution: Install playwright browsers to a writable path: `PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers node_modules/.bin/playwright install chromium`, then run tests with the same env var override.
+- Source: check-build, 2026-06-28
