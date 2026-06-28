@@ -15,7 +15,7 @@
 		data,
 		layout,
 		mobileLayout,
-		height = '250px',
+		height,
 		class: extraClass = ''
 	}: Props = $props();
 
@@ -45,4 +45,4 @@
 	});
 </script>
 
-<div {id} class="w-full {extraClass}" style="height:{height}"></div>
+<div {id} class="w-full {extraClass}" style={height ? `height:${height}` : undefined}></div>

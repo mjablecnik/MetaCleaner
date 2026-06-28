@@ -39,16 +39,16 @@
 - [x] 29. [HIGH] Create `PlotlyChart.stories.svelte` — states: LineChart, BarChart, PieChart
 - [x] 30. [HIGH] Create `EventLogTable` component in `src/lib/shared/components/EventLogTable.svelte` — filterable event log with severity badges, time column, optional filters; used by 7 pages
 - [x] 31. [HIGH] Create `EventLogTable.stories.svelte` — states: Default, WithFilters, Empty
-- [ ] 32. [MEDIUM] Create `TabSwitcher` component in `src/lib/shared/components/TabSwitcher.svelte` — horizontal tab bar for mobile chart switching; used by 5 pages
-- [ ] 33. [MEDIUM] Create `TabSwitcher.stories.svelte` — states: Default, ThreeTabs, FourTabs
+- [x] 32. [MEDIUM] Create `TabSwitcher` component in `src/lib/shared/components/TabSwitcher.svelte` — horizontal tab bar for mobile chart switching; used by 5 pages
+- [x] 33. [MEDIUM] Create `TabSwitcher.stories.svelte` — states: Default, ThreeTabs, FourTabs
 
 ## Phase 3 — Page-Specific Components and Sections
 
 ### Dashboard
 
-- [ ] 34. [HIGH] Create `AlertItem` component in `src/routes/components/AlertItem.svelte` + story — single alert row with severity styling
-- [ ] 35. [HIGH] Create `DashboardKpiSection` in `src/routes/sections/DashboardKpiSection.svelte` — 4 stat cards section
-- [ ] 36. [HIGH] Create `DashboardChartsRow1Section` in `src/routes/sections/DashboardChartsRow1Section.svelte` — response time + errors charts
+- [x] 34. [HIGH] Create `AlertItem` component in `src/routes/components/AlertItem.svelte` + story — single alert row with severity styling
+- [x] 35. [HIGH] Create `DashboardKpiSection` in `src/routes/sections/DashboardKpiSection.svelte` — 4 stat cards section
+- [x] 36. [HIGH] Create `DashboardChartsRow1Section` in `src/routes/sections/DashboardChartsRow1Section.svelte` — response time + errors charts
 - [ ] 37. [HIGH] Create `DashboardChartsRow2Section` in `src/routes/sections/DashboardChartsRow2Section.svelte` — server resources + DB latency charts
 - [ ] 38. [HIGH] Create `DashboardAlertsSection` in `src/routes/sections/DashboardAlertsSection.svelte` — alerts list composing AlertItem
 
