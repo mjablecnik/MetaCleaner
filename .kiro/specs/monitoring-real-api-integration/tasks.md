@@ -151,7 +151,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - For any array of country traffic records (N ≥ 1), result has at most 6 entries (top 5 + "Other"), percentages sum to 100% (±1%), sorted by traffic desc. If N ≤ 5, no "Other" entry.
     - **Validates: Requirements 7.3**
 
-  - [ ]* 4.9 Write property test for health status mapping (Property 10)
+  - [x]* 4.9 Write property test for health status mapping (Property 10)
     - **Property 10: Health Status Mapping**
     - Machine state "started" + all checks passing → `online`; "started" + any check failing → `degraded`; "stopped"/"destroyed"/unreachable → `offline`
     - **Validates: Requirements 6.5**
