@@ -529,5 +529,14 @@
 	"language_switcher_label": "Language",
 	"common_notConfigured_title": "Service Not Connected",
 	"common_notConfigured_description": "This section requires environment variables that are not configured.",
-	"common_notConfigured_missingLabel": "Missing variables:"
+	"common_notConfigured_missingLabel": "Missing variables:",
+	"common_sectionError_timeout_title": "Request Timed Out",
+	"common_sectionError_timeout_description": "The service did not respond within the allowed time.",
+	"common_sectionError_unauthorized_title": "Authentication Failed",
+	"common_sectionError_unauthorized_description": "The API token is invalid or has expired.",
+	"common_sectionError_service_unavailable_title": "Service Unavailable",
+	"common_sectionError_service_unavailable_description": "The service is temporarily unavailable.",
+	"common_sectionError_request_error_title": "Request Failed",
+	"common_sectionError_request_error_description": "An unexpected error occurred while fetching data.",
+	"common_sectionError_retry": "Retry"
 }

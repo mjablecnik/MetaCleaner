@@ -244,13 +244,13 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Create error state UI components and wire pages to load data
-  - [ ] 8.1 Create `NotConfiguredCard.svelte` component (`src/lib/shared/components/NotConfiguredCard.svelte`)
+  - [x] 8.1 Create `NotConfiguredCard.svelte` component (`src/lib/shared/components/NotConfiguredCard.svelte`)
     - Accept `missingVars: string[]` prop
     - Display a card with "not connected" indicator and list of missing env var names
     - Match existing design system (dark navy theme, text-muted colors)
     - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ] 8.2 Create `SectionErrorCard.svelte` component (`src/lib/shared/components/SectionErrorCard.svelte`)
+  - [x] 8.2 Create `SectionErrorCard.svelte` component (`src/lib/shared/components/SectionErrorCard.svelte`)
     - Accept `category: string` and `message: string` props, plus `onretry` callback
     - Display error category with appropriate icon/color: timeout (clock icon), unauthorized (lock icon, distinct style), service_unavailable (cloud-off icon), request_error (alert icon)
     - Include a retry button that calls the `onretry` handler

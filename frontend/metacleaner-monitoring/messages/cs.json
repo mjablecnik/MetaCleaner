@@ -529,5 +529,14 @@
 	"language_switcher_label": "Jazyk",
 	"common_notConfigured_title": "Služba není připojena",
 	"common_notConfigured_description": "Tato sekce vyžaduje proměnné prostředí, které nejsou nakonfigurované.",
-	"common_notConfigured_missingLabel": "Chybějící proměnné:"
+	"common_notConfigured_missingLabel": "Chybějící proměnné:",
+	"common_sectionError_timeout_title": "Požadavek vypršel",
+	"common_sectionError_timeout_description": "Služba neodpověděla v povoleném čase.",
+	"common_sectionError_unauthorized_title": "Ověření selhalo",
+	"common_sectionError_unauthorized_description": "API token je neplatný nebo vypršela jeho platnost.",
+	"common_sectionError_service_unavailable_title": "Služba nedostupná",
+	"common_sectionError_service_unavailable_description": "Služba je dočasně nedostupná.",
+	"common_sectionError_request_error_title": "Požadavek selhal",
+	"common_sectionError_request_error_description": "Při načítání dat došlo k neočekávané chybě.",
+	"common_sectionError_retry": "Zkusit znovu"
 }
