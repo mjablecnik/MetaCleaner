@@ -7,6 +7,14 @@ import type { CfAnalyticsRaw } from '../clients/cloudflareClient.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
 import type { SentryIssueRaw } from '../clients/sentryClient.js';
 
+// Implements the Apdex formula: (satisfied + tolerating * 0.5) / total
+// satisfied: ≤ 500ms, tolerating: 500ms–2000ms, frustrated: > 2000ms
+// Returns 1.0 when total is 0 (no data).
+export function computeApdex(satisfied: number, tolerating: number, total: number): number {
+	if (total <= 0) return 1.0;
+	return Math.max(0, Math.min(1, (satisfied + tolerating * 0.5) / total));
+}
+
 export interface RawEndpointRecord {
 	id: string;
 	method: string;

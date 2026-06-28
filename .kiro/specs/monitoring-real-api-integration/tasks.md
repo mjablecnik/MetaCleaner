@@ -235,7 +235,7 @@ Replace all hardcoded repository data in the MetaCleaner monitoring dashboard wi
     - Merged alerts sorted by timestamp desc, at most 10 entries, severity correctly derived from source
     - **Validates: Requirements 13.3**
 
-  - [ ]* 6.12 Write property test for Apdex and performance metrics (Property 9)
+  - [x]* 6.12 Write property test for Apdex and performance metrics (Property 9)
     - **Property 9: Apdex and Performance Metrics**
     - Apdex = (satisfied + tolerating * 0.5) / total with 500ms/2000ms thresholds; error rate = (5xx count / total) * 100
     - **Validates: Requirements 14.2**
