@@ -61,6 +61,22 @@
 		}))
 	);
 
+	const currentMobileNavItem = $derived(
+		mobileNavItems.find((item) => item.id === activeId) ?? mobileNavItems[0]
+	);
+
+	let mobileNavOpen = $state(false);
+
+	function handleMobileNavSelect() {
+		mobileNavOpen = false;
+	}
+
+	function handleMobileNavKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			mobileNavOpen = false;
+		}
+	}
+
 	const isBillingReady = $derived(
 		!billingStore.isLoading && (billingStore.credits !== null || billingStore.hasError)
 	);
@@ -77,8 +93,8 @@
 </script>
 
 <div class="mx-auto w-full max-w-[1100px] px-4 lg:px-6">
-	<!-- Page header: API badge + version -->
-	<div class="flex items-center gap-3 py-4 lg:py-6">
+	<!-- Page header: API badge + version (desktop only) -->
+	<div class="hidden items-center gap-3 py-6 lg:flex">
 		<div
 			class="flex items-center gap-1.5 rounded-lg border border-brand-blue/30 bg-brand-blue/10 px-2.5 py-1 text-xs font-bold tracking-wider text-brand-blue uppercase"
 		>
@@ -103,21 +119,64 @@
 			</div>
 		</div>
 	{:else}
-		<!-- Mobile navigation tabs (visible only on mobile/tablet) -->
-		<div class="mb-4 flex gap-1 overflow-x-auto lg:hidden">
-			{#each mobileNavItems as item (item.id)}
-				<a
-					href={resolve(item.href as Pathname)}
-					class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors duration-200
-						{activeId === item.id
-						? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue'
-						: 'border border-transparent text-text-muted hover:text-white'}"
+		<!-- Mobile navigation dropdown (fixed below navbar, visible only on mobile/tablet) -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			class="fixed top-[72px] right-0 left-0 z-30 border-b border-gray-700/50 bg-navy-main px-4 pt-3 pb-2 lg:hidden"
+			onkeydown={handleMobileNavKeydown}
+		>
+			<button
+				type="button"
+				onclick={() => (mobileNavOpen = !mobileNavOpen)}
+				aria-expanded={mobileNavOpen}
+				aria-haspopup="listbox"
+				class="flex w-full cursor-pointer items-center justify-between rounded-lg border border-brand-blue/30 bg-navy-card px-4 py-3 text-sm font-medium text-white transition-colors duration-200 hover:border-brand-blue/50"
+			>
+				<span class="flex items-center gap-2.5">
+					<i class="fa-solid {currentMobileNavItem.icon} text-xs text-brand-blue"></i>
+					<span>{tx(currentMobileNavItem.labelKey)}</span>
+				</span>
+				<i
+					class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200 {mobileNavOpen ? 'rotate-180' : ''}"
+				></i>
+			</button>
+
+			{#if mobileNavOpen}
+				<div
+					class="absolute left-4 right-4 z-20 mt-1 rounded-lg border border-gray-700 bg-navy-card shadow-dropdown"
+					role="listbox"
 				>
-					<i class="fa-solid {item.icon} text-[10px]"></i>
-					<span>{tx(item.labelKey)}</span>
-				</a>
-			{/each}
+					{#each mobileNavItems as item (item.id)}
+						<a
+							href={resolve(item.href as Pathname)}
+							onclick={handleMobileNavSelect}
+							role="option"
+							aria-selected={activeId === item.id}
+							class="flex cursor-pointer items-center gap-2.5 px-4 py-3 text-sm transition-colors duration-200
+								{activeId === item.id
+								? 'bg-brand-blue/5 font-semibold text-brand-blue'
+								: 'text-text-muted hover:bg-navy-lighter hover:text-white'}"
+						>
+							<i class="fa-solid {item.icon} w-4 text-center text-xs"></i>
+							<span>{tx(item.labelKey)}</span>
+						</a>
+					{/each}
+				</div>
+			{/if}
 		</div>
+
+		{#if mobileNavOpen}
+			<!-- Backdrop to close dropdown when clicking outside -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="fixed inset-0 z-10 lg:hidden"
+				onclick={() => (mobileNavOpen = false)}
+				onkeydown={handleMobileNavKeydown}
+			></div>
+		{/if}
+
+		<!-- Spacer for fixed mobile nav (height matches the fixed dropdown) -->
+		<div class="h-[76px] lg:hidden"></div>
 
 		<!-- Desktop layout: sidebar + scrollable content -->
 		<div class="flex gap-8">
