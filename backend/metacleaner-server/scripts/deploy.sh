@@ -22,7 +22,7 @@ if [[ -n "${DPLOY_ENV_FILE:-}" ]]; then
   ENV_FILE="$DPLOY_ENV_FILE"
 fi
 
-APP_NAME=$(grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*"\(.*\)"/\1/' | tr -d '\r')
+APP_NAME=$(grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*["\x27]\(.*\)["\x27]/\1/' | tr -d '\r')
 
 echo "Deploying $APP_NAME using env file: $ENV_FILE"
 
