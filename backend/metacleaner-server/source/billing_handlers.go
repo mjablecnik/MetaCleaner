@@ -117,8 +117,8 @@ func HandleCreateCheckout(cfg Config, db *SupabaseClient, authClient *SupabaseAu
 					Quantity: stripe.Int64(1),
 				},
 			},
-			SuccessURL: stripe.String(frontendURL + "/pricing/success?session_id={CHECKOUT_SESSION_ID}"),
-			CancelURL:  stripe.String(frontendURL + "/pricing"),
+			SuccessURL: stripe.String(frontendURL + "/subscription/success?session_id={CHECKOUT_SESSION_ID}"),
+			CancelURL:  stripe.String(frontendURL + "/subscription"),
 			Metadata: map[string]string{
 				"user_id":        userID,
 				"plan_id":        req.PlanID,
