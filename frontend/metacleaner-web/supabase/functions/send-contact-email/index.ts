@@ -5,33 +5,31 @@ const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 // Rate limiting: max 5 requests per IP per 10 minutes
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
-const ipRequestMap = new Map<string, { count: number; resetAt: number }>();
 
-function isRateLimited(ip: string): boolean {
-	const now = Date.now();
-	const entry = ipRequestMap.get(ip);
+// Deno KV provides durable, shared state across all function instances
+const kv = await Deno.openKv();
 
-	if (!entry || now > entry.resetAt) {
-		ipRequestMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-		return false;
+async function isRateLimited(ip: string): Promise<boolean> {
+	const windowKey = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS);
+	const key: Deno.KvKey = ['rl', ip, windowKey];
+
+	// Atomic compare-and-swap with retries to safely increment the counter
+	for (let attempt = 0; attempt < 3; attempt++) {
+		const entry = await kv.get<number>(key);
+		const newCount = (entry.value ?? 0) + 1;
+
+		if (newCount > RATE_LIMIT_MAX_REQUESTS) return true;
+
+		const result = await kv.atomic()
+			.check(entry)
+			.set(key, newCount, { expireIn: RATE_LIMIT_WINDOW_MS * 2 })
+			.commit();
+
+		if (result.ok) return false;
 	}
-
-	entry.count++;
-	return entry.count > RATE_LIMIT_MAX_REQUESTS;
+	// Fail open if all atomic attempts lost the race
+	return false;
 }
-
-// Periodically clean up expired entries (every 5 minutes)
-setInterval(
-	() => {
-		const now = Date.now();
-		for (const [ip, entry] of ipRequestMap) {
-			if (now > entry.resetAt) {
-				ipRequestMap.delete(ip);
-			}
-		}
-	},
-	5 * 60 * 1000
-);
 
 function getAllowedOrigins(): string[] {
 	const originsEnv = Deno.env.get('ALLOWED_ORIGINS');
@@ -49,8 +47,11 @@ function getAllowedOrigins(): string[] {
 }
 
 function isProduction(): boolean {
-	const env = Deno.env.get('ENVIRONMENT') ?? 'development';
-	return env === 'production';
+	// Fail-closed: treat missing ENVIRONMENT as production so CORS does not
+	// silently widen if the secret is accidentally omitted from a live deploy.
+	// Dev permissiveness must be explicitly opted in with ENVIRONMENT=development.
+	const env = Deno.env.get('ENVIRONMENT') ?? 'production';
+	return env !== 'development';
 }
 
 function isAllowedOrigin(origin: string): boolean {
@@ -164,13 +165,18 @@ Deno.serve(async (req) => {
 		});
 	}
 
-	// Rate limiting
+	// Rate limiting — prefer platform-injected IPs over client-supplied headers.
+	// cf-connecting-ip is set by Cloudflare to the real connecting IP and cannot be spoofed.
+	// Falling back to the LAST (rightmost) x-forwarded-for entry uses the proxy-appended hop,
+	// not the leftmost client-controlled value.
+	const xffValues = req.headers.get('x-forwarded-for')?.split(',') ?? [];
+	const lastXff = xffValues[xffValues.length - 1]?.trim() ?? '';
 	const clientIp =
-		req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
 		req.headers.get('cf-connecting-ip') ??
+		(lastXff !== '' ? lastXff : null) ??
 		'unknown';
 
-	if (isRateLimited(clientIp)) {
+	if (await isRateLimited(clientIp)) {
 		return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
 			status: 429,
 			headers: {
