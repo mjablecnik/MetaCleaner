@@ -38,7 +38,7 @@
 	<title>{m.meta_pricing_title()}</title>
 </svelte:head>
 
-<div class="flex flex-col items-center w-full min-h-screen">
+<div class="flex flex-col items-center w-full">
 	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-8 md:py-16">
 		<PricingHeaderSection value={currentBilling} onChange={onBillingChange} translate={t} />
 		<PricingPlansSection

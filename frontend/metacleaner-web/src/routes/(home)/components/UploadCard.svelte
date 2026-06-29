@@ -38,6 +38,7 @@
 			</p>
 		</div>
 	</div>
+	<p class="text-xs text-text-muted text-center mt-3 z-10">{m.home_upload_local_note()}</p>
 </div>
 
 <style>

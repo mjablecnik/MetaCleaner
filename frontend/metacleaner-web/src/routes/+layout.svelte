@@ -67,7 +67,7 @@
 	onClose={closeMobileMenu}
 />
 
-<div class="flex flex-col items-center w-full">
+<div class="flex flex-col items-center w-full min-h-screen">
 	<SiteNavbar active={activePage} />
 	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
 	{@render children()}

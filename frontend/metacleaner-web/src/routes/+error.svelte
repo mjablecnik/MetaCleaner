@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-	<title>{is404 ? m.error_404_title() : 'Error | MetaCleaner'}</title>
+	<title>{is404 ? m.error_404_title() : m.error_generic_title()}</title>
 </svelte:head>
 
 <main class="w-full max-w-site mx-auto px-6 py-12 md:py-20">
@@ -64,8 +64,8 @@
 			<p class="text-9xl font-black leading-none">
 				<GradientText>{$page.status}</GradientText>
 			</p>
-			<h1 class="text-2xl font-semibold text-white">Something went wrong.</h1>
-			<CtaButton href="/" label="Back to Home" variant="primary" icon="fa-solid fa-house" />
+			<h1 class="text-2xl font-semibold text-white">{m.error_generic_heading()}</h1>
+			<CtaButton href="/" label={m.error_generic_back_home()} variant="primary" icon="fa-solid fa-house" />
 		</div>
 	{/if}
 </main>

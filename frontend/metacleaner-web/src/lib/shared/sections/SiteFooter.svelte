@@ -8,7 +8,7 @@
 	const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="w-full bg-navy-card border-t border-border mt-8">
+<footer class="w-full bg-navy-card border-t border-border mt-auto">
 	<!-- Desktop layout -->
 	<div class="hidden md:block max-w-site mx-auto px-6 py-16">
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">

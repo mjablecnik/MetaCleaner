@@ -1,6 +1,5 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
 	"nav_how_it_works": "How it Works",
 	"nav_features": "Features",
 	"nav_pricing": "Pricing",
@@ -13,9 +12,7 @@
 	"nav_for_who": "For Who",
 	"nav_language": "Language",
 	"nav_close_menu": "Close menu",
-
 	"cta_try_free": "Try for Free",
-
 	"meta_home_title": "MetaCleaner — Protect Your Privacy",
 	"meta_features_title": "MetaCleaner — Features",
 	"meta_pricing_title": "MetaCleaner — Pricing",
@@ -26,16 +23,10 @@
 	"meta_terms_title": "Terms of Use | MetaCleaner",
 	"meta_terms_description": "Read the terms and conditions for using MetaCleaner's metadata removal service.",
 	"error_404_title": "Page Not Found | MetaCleaner",
-
 	"cookie_banner_text": "We use cookies to improve your experience. By continuing, you agree to our use of cookies.",
 	"cookie_banner_accept": "Accept",
 	"cookie_banner_reject": "Reject",
 	"cookie_banner_privacy_link": "Privacy Policy",
-
-	"about_heading": "About Us",
-	"about_description_p1": "MetaCleaner is a privacy-first tool designed to help individuals and organizations protect their personal data by removing hidden metadata from files before sharing them online.",
-	"about_description_p2": "We believe privacy is a fundamental right. Our team is dedicated to building simple, powerful tools that put you in control of your digital footprint — without requiring technical expertise.",
-
 	"about_hero_label": "About company",
 	"about_hero_title_line1": "Privacy is",
 	"about_hero_title_line2": "a fundamental right",
@@ -46,13 +37,11 @@
 	"about_hero_stat_files": "Files cleaned",
 	"about_hero_stat_local": "Local processing",
 	"about_hero_stat_rating": "User rating",
-
 	"about_story_label": "Our story",
 	"about_story_heading": "How it started",
 	"about_story_p1": "MetaCleaner was born in 2022 from a simple frustration: every time we shared a photo, we were unknowingly broadcasting our location, device, and habits to anyone who received it. We wanted a tool that made privacy effortless — no settings to configure, no data to hand over.",
 	"about_story_p2": "We started as a small team of developers in Prague, united by a belief that privacy shouldn't require technical expertise. Over two years, we've grown from a weekend side project to a tool trusted by over 50,000 users across 40 countries.",
 	"about_story_p3": "Today, MetaCleaner processes millions of files each month. Our metadata scanning runs entirely in your browser, and files are deleted from our servers immediately after cleaning. Privacy isn't a feature for us — it's the foundation.",
-
 	"about_values_label": "What drives us",
 	"about_values_heading": "Our values",
 	"about_values_subtitle": "Every decision we make is guided by these core principles.",
@@ -68,7 +57,6 @@
 	"about_values_security_desc": "We apply security best practices at every layer, from local scanning to server-side processing.",
 	"about_values_innovation_title": "Innovation",
 	"about_values_innovation_desc": "We continuously improve our detection and cleaning algorithms to stay ahead of emerging metadata risks.",
-
 	"about_contact_label": "Contact",
 	"about_contact_heading": "Write to us",
 	"about_contact_subtitle": "Have a question, a security report, or just want to say hello? We read every message.",
@@ -95,9 +83,6 @@
 	"about_contact_form_error_required": "This field is required.",
 	"about_contact_form_error_email": "Please enter a valid email address.",
 	"about_contact_form_error_max_length": "This field exceeds the maximum allowed length.",
-
-	"about_contact_email": "hello@metacleaner.app",
-
 	"privacy_heading": "Privacy Policy",
 	"privacy_intro": "This Privacy Policy explains how MetaCleaner collects, uses, and protects your personal data when you use our service. We are committed to protecting your privacy and handling your data transparently.",
 	"privacy_section1_title": "Information We Collect",
@@ -110,7 +95,6 @@
 	"privacy_section4_content": "Under the GDPR and applicable data protection laws, you have the right to access your personal data, request correction or deletion, object to processing, request data portability, and lodge a complaint with a supervisory authority. To exercise any of these rights, please contact us at the email address below.",
 	"privacy_section5_title": "Contact Us",
 	"privacy_section5_content": "If you have questions about this Privacy Policy or how we handle your data, please contact us at: hello@metacleaner.app. We will respond to your inquiry within 30 days.",
-
 	"terms_heading": "Terms of Use",
 	"terms_intro": "These Terms of Use govern your access to and use of the MetaCleaner service. By using MetaCleaner, you agree to be bound by these terms. Please read them carefully before using our service.",
 	"terms_section1_title": "Acceptance of Terms",
@@ -123,11 +107,6 @@
 	"terms_section4_content": "MetaCleaner is provided on an 'as is' basis. We make no warranties, express or implied, regarding the service's fitness for a particular purpose or uninterrupted availability. To the maximum extent permitted by law, MetaCleaner shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service. Our total liability for any claim shall not exceed the amount you paid for the service in the preceding 12 months.",
 	"terms_section5_title": "Changes to Terms",
 	"terms_section5_content": "We may update these Terms of Use from time to time. We will notify you of significant changes via email or a prominent notice on our website at least 14 days before the changes take effect. Your continued use of MetaCleaner after the effective date constitutes acceptance of the updated terms. If you do not agree to the updated terms, you may terminate your account before the changes take effect.",
-
-	"error_404_heading": "404",
-	"error_404_message": "Oops! The page you're looking for doesn't exist.",
-	"error_404_cta": "Back to Home",
-
 	"error_404_badge": "Error 404 — Page Not Found",
 	"error_404_page_heading": "This page doesn't exist",
 	"error_404_description": "The page you're looking for has moved or doesn't exist. Your privacy is safe — we don't track where you've been.",
@@ -146,11 +125,9 @@
 	"error_404_terminal_suggestion": "Navigate to homepage",
 	"error_404_terminal_secure": "Secure",
 	"error_404_terminal_server_ok": "Server OK",
-
 	"footer_tagline": "Protect your privacy by removing hidden metadata from your files. Scanning is local, cleaning is server-side.",
 	"footer_col_product": "Product",
 	"footer_col_company": "Company",
-	"footer_col_features": "Features",
 	"footer_col_legal": "Legal",
 	"footer_link_features": "Features",
 	"footer_link_how": "How it works",
@@ -167,19 +144,16 @@
 	"footer_short_about": "About",
 	"footer_made_with_1": "Made with",
 	"footer_made_with_2": "for your privacy",
-
 	"home_hero_title_line1": "Protect Your Privacy",
 	"home_hero_title_line2": "Remove Metadata",
 	"home_hero_subtitle": "Protect your privacy by removing hidden EXIF data, GPS coordinates, and device information from your photos and videos before sharing online.",
 	"home_hero_badge": "Local scanning · Server-side cleaning",
-
 	"home_upload_title": "Clean Files",
 	"home_upload_drop": "Drop files here",
 	"home_upload_hint": "or click to select from device",
 	"home_upload_drop_mobile": "Tap to select files",
 	"home_upload_hint_mobile": "or drag files here",
 	"home_upload_local_note": "Scanning is local. Cleaning requires upload — files are deleted after processing.",
-
 	"home_why_eyebrow": "Importance",
 	"home_why_title": "Why does it matter?",
 	"home_why_subtitle": "Every file you share may contain more information than you think.",
@@ -190,17 +164,14 @@
 	"home_why_after_caption": "Photo is safe to share",
 	"home_why_removed": "Removed",
 	"home_why_after_note": "File contains no sensitive metadata.",
-
 	"meta_field_gps": "GPS coordinates",
 	"meta_field_device": "Device",
 	"meta_field_datetime": "Date and time",
 	"meta_field_author": "Author",
 	"meta_field_camera": "Camera settings",
-
 	"home_stat_gps_label": "of photos shared online contain GPS metadata",
 	"home_stat_fields_label": "different data fields can be hidden in one file",
 	"home_stat_unaware_label": "of users don't know their photos contain personal data",
-
 	"home_steps_eyebrow": "Process",
 	"home_steps_title": "How does it work?",
 	"home_steps_subtitle": "Three simple steps to protect your privacy.",
@@ -212,7 +183,6 @@
 	"home_step2_desc_mobile": "The app automatically removes EXIF data, GPS coordinates, and device information.",
 	"home_step3_title": "Download files",
 	"home_step3_desc": "Files are automatically downloaded to your computer or phone. All files are safely stored.",
-
 	"home_audience_eyebrow": "For Who",
 	"home_audience_title": "Who is MetaCleaner for?",
 	"home_audience_subtitle": "Whether you're a journalist, photographer, or business user – MetaCleaner protects your privacy.",
@@ -240,7 +210,6 @@
 	"home_audience_it_desc": "Integrate into business processes. Batch cleaning, PDF audit logs, and local processing without cloud risks.",
 	"home_audience_it_bullet1": "Local processing",
 	"home_audience_it_bullet2": "API integration",
-
 	"home_faq_eyebrow": "Frequently Asked Questions",
 	"home_faq_title": "Have Questions?",
 	"home_faq_subtitle": "Answers to the most common questions about MetaCleaner.",
@@ -258,7 +227,6 @@
 	"home_faq_6_answer": "Basic features are free. For advanced features like batch processing, we offer a premium plan.",
 	"home_faq_8_question": "Will image quality be reduced?",
 	"home_faq_8_answer": "No. We only remove metadata, the image itself remains unchanged in full quality.",
-
 	"feature_label": "Feature",
 	"features_eyebrow": "Features",
 	"features_title_line1": "Complete toolkit",
@@ -266,7 +234,6 @@
 	"features_subtitle": "Six powerful tools in one app. Remove metadata, detect AI content, and gain full control over your files.",
 	"features_cta_title": "Get started for free",
 	"features_cta_subtitle": "Try all features without registration.",
-
 	"feature_exif_desc": "Automatically removes all hidden metadata from your files. No data is left behind — your privacy is fully protected before sharing.",
 	"feature_exif_fmt_gps": "GPS coordinates",
 	"feature_exif_fmt_device": "Device info",
@@ -274,44 +241,37 @@
 	"feature_exif_fmt_datetime": "Date and time",
 	"feature_exif_fmt_software": "Software info",
 	"feature_exif_fmt_camera": "Camera settings",
-
 	"feature_ai_desc": "Advanced detection of content created with AI tools. Identify the origin of an image and find out if it was generated by artificial intelligence.",
 	"feature_ai_bullet1": "Detection of Midjourney, DALL·E, Stable Diffusion",
 	"feature_ai_bullet2": "Adobe Firefly and other AI generators",
 	"feature_ai_bullet3": "Percentage probability for each tool",
 	"feature_ai_bullet4": "Local analysis without data upload",
 	"feature_ai_img_alt": "robot face with magnifying glass scanning an image",
-
 	"feature_c2pa_desc": "Remove digital signatures and content certificates from your files. The C2PA standard is used to mark AI-generated content.",
 	"feature_c2pa_bullet1": "Removal of C2PA digital signatures",
 	"feature_c2pa_bullet2": "Erasure of Content Credentials certificates",
 	"feature_c2pa_bullet3": "Compatible with Adobe, Microsoft, Google standards",
-
 	"feature_risk_desc": "Automatically evaluates the risk level of each file. Get a clear score and detailed analysis of potential threats to your privacy.",
 	"feature_risk_bullet1": "Overall risk score 0–100",
 	"feature_risk_bullet2": "Risk categorization (GPS, identity, personal data)",
 	"feature_risk_bullet3": "Comparison of state before and after cleaning",
 	"feature_risk_bullet4": "Recommendations for improving security",
 	"feature_risk_img_alt": "shield with risk score gauge meter",
-
 	"feature_batch_desc": "Process hundreds of files at once. Batch metadata cleaning, AI detection, and risk scanning for entire folders with one click.",
 	"feature_batch_fmt_pdf": "PDF documents",
 	"feature_batch_fmt_video": "Video files",
 	"feature_batch_fmt_folders": "Entire folders",
 	"feature_batch_img_alt": "multiple stacked file documents being processed simultaneously",
-
 	"feature_pdf_desc": "Generate detailed PDF reports about all activities. Get a complete overview of cleaning, AI detection, and risk analysis for each file.",
 	"feature_pdf_bullet1": "All detections and cleanings",
 	"feature_pdf_bullet2": "Risk analysis and recommendations",
 	"feature_pdf_bullet3": "Batch processing results",
 	"feature_pdf_bullet4": "Final review and conclusions",
 	"feature_pdf_img_alt": "PDF document report with charts and checkmarks",
-
 	"pricing_title": "Pricing",
 	"pricing_subtitle": "Simple pricing. Credits never expire.",
 	"pricing_billing_monthly": "Monthly",
 	"pricing_billing_yearly": "Yearly",
-
 	"pricing_plan_free_name": "Free",
 	"pricing_plan_free_subtitle": "For starters",
 	"pricing_feat_free_1": "3 free photos",
@@ -319,7 +279,6 @@
 	"pricing_feat_free_3": "Remove EXIF + C2PA",
 	"pricing_feat_free_4": "No credit card required",
 	"pricing_cta_start_free": "Start for free",
-
 	"pricing_plan_pack_name": "50 photos",
 	"pricing_plan_pack_subtitle": "Credits never expire",
 	"pricing_per_50": "/ 50 photos",
@@ -329,7 +288,6 @@
 	"pricing_feat_pack_4": "All formats",
 	"pricing_feat_pack_5": "PDF report — €1.99 / report",
 	"pricing_cta_buy": "Buy →",
-
 	"pricing_plan_pro_subtitle": "100 photos / month",
 	"pricing_badge_popular": "Most Popular",
 	"pricing_save": "Save {amount}",
@@ -341,7 +299,6 @@
 	"pricing_feat_pro_6": "Batch processing",
 	"pricing_cta_activate_pro": "Activate Pro →",
 	"pricing_per_month_short": "/ mo",
-
 	"pricing_plan_proplus_subtitle": "300 photos / month",
 	"pricing_feat_proplus_1": "300 photos monthly",
 	"pricing_feat_proplus_2": "Everything in Pro plan",
@@ -349,8 +306,11 @@
 	"pricing_feat_proplus_4": "Priority support",
 	"pricing_cta_coming_soon": "Coming soon",
 	"pricing_cta_activate_proplus": "Activate Pro+ →",
-
 	"pricing_enterprise_title": "Enterprise — custom",
 	"pricing_enterprise_desc": "High volume photos, API integration, invoicing, corporate account. We'll agree on a price and activate credits directly to your account.",
-	"pricing_cta_contact": "Contact us →"
+	"pricing_cta_contact": "Contact us →",
+	"error_generic_title": "Error | MetaCleaner",
+	"error_generic_heading": "Something went wrong.",
+	"error_generic_back_home": "Back to Home",
+	"cookie_banner_aria_label": "Cookie consent"
 }

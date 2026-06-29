@@ -40,7 +40,7 @@
 	<div
 		class="fixed bottom-0 left-0 right-0 z-50 bg-navy-card border-t border-border px-4 py-4 transition-all duration-300"
 		role="region"
-		aria-label="Cookie consent"
+		aria-label={m.cookie_banner_aria_label()}
 	>
 		<div class="max-w-site mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
 			<p class="text-sm text-text-muted text-center sm:text-left">

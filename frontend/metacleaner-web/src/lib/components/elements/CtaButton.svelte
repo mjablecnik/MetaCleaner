@@ -7,6 +7,7 @@
 		href?: string;
 		disabled?: boolean;
 		fullWidth?: boolean;
+		class?: string;
 		onclick?: () => void;
 	}
 
@@ -18,6 +19,7 @@
 		href,
 		disabled = false,
 		fullWidth = false,
+		class: extraClass = '',
 		onclick
 	}: Props = $props();
 
@@ -39,6 +41,7 @@
 			sizeClasses[size],
 			'font-semibold inline-flex items-center justify-center gap-2',
 			fullWidth ? 'w-full' : '',
+			extraClass,
 			disabled
 				? 'border border-border-strong text-text-muted cursor-not-allowed'
 				: (variantClasses[variant] ?? variantClasses.primary)

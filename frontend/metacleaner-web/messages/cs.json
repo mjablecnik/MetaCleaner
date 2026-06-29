@@ -1,6 +1,5 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-
 	"nav_how_it_works": "Jak to funguje",
 	"nav_features": "Funkce",
 	"nav_pricing": "Ceník",
@@ -13,9 +12,7 @@
 	"nav_for_who": "Pro koho",
 	"nav_language": "Jazyk",
 	"nav_close_menu": "Zavřít menu",
-
 	"cta_try_free": "Vyzkoušet zdarma",
-
 	"meta_home_title": "MetaCleaner — Chraňte své soukromí",
 	"meta_features_title": "MetaCleaner — Funkce",
 	"meta_pricing_title": "MetaCleaner — Ceník",
@@ -26,16 +23,10 @@
 	"meta_terms_title": "Podmínky použití | MetaCleaner",
 	"meta_terms_description": "Přečtěte si podmínky a ustanovení pro používání služby MetaCleaner.",
 	"error_404_title": "Stránka nenalezena | MetaCleaner",
-
 	"cookie_banner_text": "Používáme cookies pro zlepšení vašeho zážitku. Pokračováním souhlasíte s jejich použitím.",
 	"cookie_banner_accept": "Přijmout",
 	"cookie_banner_reject": "Odmítnout",
 	"cookie_banner_privacy_link": "Zásady ochrany soukromí",
-
-	"about_heading": "O nás",
-	"about_description_p1": "MetaCleaner je nástroj zaměřený na ochranu soukromí, který pomáhá jednotlivcům i organizacím chránit jejich osobní data odstraněním skrytých metadat ze souborů před jejich sdílením online.",
-	"about_description_p2": "Věříme, že soukromí je základním právem. Náš tým se věnuje vytváření jednoduchých a výkonných nástrojů, které vám dávají kontrolu nad vaší digitální stopou — bez nutnosti technických znalostí.",
-
 	"about_hero_label": "O společnosti",
 	"about_hero_title_line1": "Soukromí je",
 	"about_hero_title_line2": "základní právo",
@@ -46,13 +37,11 @@
 	"about_hero_stat_files": "Vyčištěných souborů",
 	"about_hero_stat_local": "Lokální zpracování",
 	"about_hero_stat_rating": "Hodnocení uživatelů",
-
 	"about_story_label": "Náš příběh",
 	"about_story_heading": "Jak to začalo",
 	"about_story_p1": "MetaCleaner vznikl v roce 2022 z jednoduché frustrace: pokaždé, když jsme sdíleli fotku, jsme nevědomky prozrazovali svou polohu, zařízení a návyky každému, kdo ji obdržel. Chtěli jsme nástroj, který ochranu soukromí usnadní — bez nutnosti nastavování a bez předávání dat.",
 	"about_story_p2": "Začínali jsme jako malý tým vývojářů v Praze, spojeni přesvědčením, že soukromí by nemělo vyžadovat technické znalosti. Za dva roky jsme vyrostli z víkendového projektu na nástroj, kterému důvěřuje přes 50 000 uživatelů ve 40 zemích.",
 	"about_story_p3": "Dnes MetaCleaner zpracovává miliony souborů měsíčně. Skenování metadat probíhá zcela ve vašem prohlížeči a soubory jsou z našich serverů smazány ihned po vyčištění. Soukromí pro nás není funkce — je to základ.",
-
 	"about_values_label": "Co nás pohání",
 	"about_values_heading": "Naše hodnoty",
 	"about_values_subtitle": "Každé rozhodnutí, které děláme, se řídí těmito základními principy.",
@@ -68,7 +57,6 @@
 	"about_values_security_desc": "Uplatňujeme osvědčené bezpečnostní postupy na každé vrstvě, od lokálního skenování po zpracování na serveru.",
 	"about_values_innovation_title": "Inovace",
 	"about_values_innovation_desc": "Neustále zlepšujeme naše algoritmy pro detekci a čištění, abychom byli napřed před novými hrozbami v metadatech.",
-
 	"about_contact_label": "Kontakt",
 	"about_contact_heading": "Napište nám",
 	"about_contact_subtitle": "Máte dotaz, hlášení o bezpečnostní chybě, nebo chcete jen pozdravit? Přečteme každou zprávu.",
@@ -95,9 +83,6 @@
 	"about_contact_form_error_required": "Toto pole je povinné.",
 	"about_contact_form_error_email": "Zadejte prosím platnou e-mailovou adresu.",
 	"about_contact_form_error_max_length": "Toto pole překračuje maximální povolenou délku.",
-
-	"about_contact_email": "hello@metacleaner.app",
-
 	"privacy_heading": "Zásady ochrany soukromí",
 	"privacy_intro": "Tyto zásady ochrany soukromí vysvětlují, jak MetaCleaner shromažďuje, používá a chrání vaše osobní údaje při používání naší služby. Zavazujeme se chránit vaše soukromí a nakládat s vašimi daty transparentně.",
 	"privacy_section1_title": "Informace, které shromažďujeme",
@@ -110,7 +95,6 @@
 	"privacy_section4_content": "Podle nařízení GDPR a platných zákonů o ochraně dat máte právo na přístup k vašim osobním údajům, požadovat jejich opravu nebo výmaz, vznést námitku proti zpracování, požadovat přenositelnost dat a podat stížnost u dozorového úřadu. Pro uplatnění těchto práv nás prosím kontaktujte na níže uvedené e-mailové adrese.",
 	"privacy_section5_title": "Kontaktujte nás",
 	"privacy_section5_content": "Máte-li otázky ohledně těchto zásad ochrany soukromí nebo způsobu, jakým nakládáme s vašimi daty, kontaktujte nás na: hello@metacleaner.app. Na váš dotaz odpovíme do 30 dnů.",
-
 	"terms_heading": "Podmínky použití",
 	"terms_intro": "Tyto podmínky použití upravují váš přístup ke službě MetaCleaner a její používání. Používáním MetaCleaner souhlasíte s tím, že jste vázáni těmito podmínkami. Před použitím naší služby si je prosím pečlivě přečtěte.",
 	"terms_section1_title": "Přijetí podmínek",
@@ -123,11 +107,6 @@
 	"terms_section4_content": "MetaCleaner je poskytován „tak jak je“. Neposkytujeme žádné záruky, výslovné ani předpokládané, ohledně vhodnosti služby pro konkrétní účel nebo nepřerušenou dostupnost. V maximálním rozsahu povoleném zákonem nenese MetaCleaner odpovědnost za žádné nepřímé, náhodné nebo následné škody vzniklé v důsledku vašeho používání služby. Naše celková odpovědnost za jakýkoli nárok nepřekročí částku, kterou jste za službu zaplatili v předchozích 12 měsících.",
 	"terms_section5_title": "Změny podmínek",
 	"terms_section5_content": "Tyto podmínky použití můžeme čas od času aktualizovat. O významných změnách vás budeme informovat e-mailem nebo výrazným upozorněním na našich webových stránkách nejméně 14 dní před nabytím účinnosti změn. Vaše další používání MetaCleaner po datu účinnosti představuje přijetí aktualizovaných podmínek. Pokud s aktualizovanými podmínkami nesouhlasíte, můžete svůj účet zrušit před nabytím jejich účinnosti.",
-
-	"error_404_heading": "404",
-	"error_404_message": "Jejda! Stránka, kterou hledáte, neexistuje.",
-	"error_404_cta": "Zpět na hlavní stránku",
-
 	"error_404_badge": "Chyba 404 — Stránka nenalezena",
 	"error_404_page_heading": "Tato stránka neexistuje",
 	"error_404_description": "Stránka, kterou hledáte, byla přesunuta nebo neexistuje. Vaše soukromí je v bezpečí — nesledujeme, kde jste byli.",
@@ -146,11 +125,9 @@
 	"error_404_terminal_suggestion": "Přejít na hlavní stránku",
 	"error_404_terminal_secure": "Zabezpečeno",
 	"error_404_terminal_server_ok": "Server OK",
-
 	"footer_tagline": "Chraňte své soukromí odstraněním skrytých metadat z vašich souborů. Skenování je lokální, čištění probíhá na serveru.",
 	"footer_col_product": "Produkt",
 	"footer_col_company": "Společnost",
-	"footer_col_features": "Funkce",
 	"footer_col_legal": "Právní",
 	"footer_link_features": "Funkce",
 	"footer_link_how": "Jak to funguje",
@@ -167,19 +144,16 @@
 	"footer_short_about": "O nás",
 	"footer_made_with_1": "Vyrobeno s",
 	"footer_made_with_2": "pro ochranu vašeho soukromí",
-
 	"home_hero_title_line1": "Chraňte své soukromí",
 	"home_hero_title_line2": "Odstraňte metadata",
 	"home_hero_subtitle": "Chraňte své soukromí odstraněním skrytých EXIF dat, GPS souřadnic a informací o zařízení z vašich fotek a videí před jejich sdílením online.",
 	"home_hero_badge": "Lokální skenování · Čištění na serveru",
-
 	"home_upload_title": "Vyčistit soubory",
 	"home_upload_drop": "Přetáhněte soubory sem",
 	"home_upload_hint": "nebo klikněte pro výběr ze zařízení",
 	"home_upload_drop_mobile": "Klepněte pro výběr souborů",
 	"home_upload_hint_mobile": "nebo přetáhněte soubory sem",
 	"home_upload_local_note": "Skenování je lokální. Čištění vyžaduje nahrání — soubory jsou po zpracování smazány.",
-
 	"home_why_eyebrow": "Důležitost",
 	"home_why_title": "Proč je to důležité?",
 	"home_why_subtitle": "Každý soubor, který sdílíte, může obsahovat více informací, než si myslíte.",
@@ -190,17 +164,14 @@
 	"home_why_after_caption": "Fotka je bezpečná ke sdílení",
 	"home_why_removed": "Odstraněno",
 	"home_why_after_note": "Soubor neobsahuje žádná citlivá metadata.",
-
 	"meta_field_gps": "GPS souřadnice",
 	"meta_field_device": "Zařízení",
 	"meta_field_datetime": "Datum a čas",
 	"meta_field_author": "Autor",
 	"meta_field_camera": "Nastavení fotoaparátu",
-
 	"home_stat_gps_label": "fotek sdílených online obsahuje GPS metadata",
 	"home_stat_fields_label": "různých datových polí může být skryto v jednom souboru",
 	"home_stat_unaware_label": "uživatelů neví, že jejich fotky obsahují osobní data",
-
 	"home_steps_eyebrow": "Postup",
 	"home_steps_title": "Jak to funguje?",
 	"home_steps_subtitle": "Tři jednoduché kroky k ochraně vašeho soukromí.",
@@ -212,7 +183,6 @@
 	"home_step2_desc_mobile": "Aplikace automaticky odstraňuje EXIF data, GPS souřadnice a informace o zařízení.",
 	"home_step3_title": "Stáhni soubory",
 	"home_step3_desc": "Soubory se automaticky stáhnou do vašeho počítače nebo telefonu. Všechny soubory jsou bezpečně uloženy.",
-
 	"home_audience_eyebrow": "Pro koho",
 	"home_audience_title": "Pro koho je MetaCleaner určen?",
 	"home_audience_subtitle": "Ať jste novinář, fotograf nebo firemní uživatel – MetaCleaner chrání vaše soukromí.",
@@ -240,7 +210,6 @@
 	"home_audience_it_desc": "Integrujte do firemních procesů. Hromadné čištění, PDF audit logy a lokální zpracování bez cloudových rizik.",
 	"home_audience_it_bullet1": "Lokální zpracování",
 	"home_audience_it_bullet2": "API integrace",
-
 	"home_faq_eyebrow": "Časté dotazy",
 	"home_faq_title": "Máte otázky?",
 	"home_faq_subtitle": "Odpovědi na nejčastěji kladené otázky o MetaCleaner.",
@@ -258,7 +227,6 @@
 	"home_faq_6_answer": "Základní funkce jsou zdarma. Pro pokročilé funkce jako hromadné zpracování nabízíme prémiový plán.",
 	"home_faq_8_question": "Sníží se kvalita obrázků?",
 	"home_faq_8_answer": "Ne. Odstraňujeme pouze metadata, samotný obraz zůstává beze změny v plné kvalitě.",
-
 	"feature_label": "Funkce",
 	"features_eyebrow": "Funkce",
 	"features_title_line1": "Kompletní sada nástrojů",
@@ -266,7 +234,6 @@
 	"features_subtitle": "Šest výkonných nástrojů v jedné aplikaci. Odstraňte metadata, detekujte AI obsah a získejte plnou kontrolu nad svými soubory.",
 	"features_cta_title": "Začněte zdarma",
 	"features_cta_subtitle": "Vyzkoušejte všechny funkce bez registrace.",
-
 	"feature_exif_desc": "Automaticky odstraní všechna skrytá metadata z vašich souborů. Žádná data nezůstanou — vaše soukromí je plně chráněno před sdílením.",
 	"feature_exif_fmt_gps": "GPS souřadnice",
 	"feature_exif_fmt_device": "Info o zařízení",
@@ -274,44 +241,37 @@
 	"feature_exif_fmt_datetime": "Datum a čas",
 	"feature_exif_fmt_software": "Software info",
 	"feature_exif_fmt_camera": "Nastavení kamery",
-
 	"feature_ai_desc": "Pokročilá detekce obsahu vytvořeného pomocí AI nástrojů. Identifikujte původ obrázku a zjistěte, zda byl generován umělou inteligencí.",
 	"feature_ai_bullet1": "Detekce Midjourney, DALL·E, Stable Diffusion",
 	"feature_ai_bullet2": "Adobe Firefly a další AI generátory",
 	"feature_ai_bullet3": "Procentuální pravděpodobnost pro každý nástroj",
 	"feature_ai_bullet4": "Lokální analýza bez odesílání dat",
 	"feature_ai_img_alt": "robot s lupou skenující obrázek",
-
 	"feature_c2pa_desc": "Odstraňte digitální podpisy a certifikáty obsahu z vašich souborů. C2PA standard je používán k označení AI-generovaného obsahu.",
 	"feature_c2pa_bullet1": "Odstranění C2PA digitálních podpisů",
 	"feature_c2pa_bullet2": "Vymazání Content Credentials certifikátů",
 	"feature_c2pa_bullet3": "Kompatibilní s Adobe, Microsoft, Google standardy",
-
 	"feature_risk_desc": "Automaticky vyhodnotí míru rizika každého souboru. Získejte přehledné skóre a detailní analýzu potenciálních hrozeb pro vaše soukromí.",
 	"feature_risk_bullet1": "Celkové rizikové skóre 0–100",
 	"feature_risk_bullet2": "Kategorizace rizik (GPS, identita, osobní data)",
 	"feature_risk_bullet3": "Porovnání stavu před a po čištění",
 	"feature_risk_bullet4": "Doporučení pro zvýšení bezpečnosti",
 	"feature_risk_img_alt": "štít s ukazatelem rizikového skóre",
-
 	"feature_batch_desc": "Zpracujte stovky souborů najednou. Hromadné čištění metadat, AI detekce a skenování rizik pro celé složky souborů jediným kliknutím.",
 	"feature_batch_fmt_pdf": "PDF dokumenty",
 	"feature_batch_fmt_video": "Video soubory",
 	"feature_batch_fmt_folders": "Celé složky",
 	"feature_batch_img_alt": "více skládaných souborů zpracovávaných současně",
-
 	"feature_pdf_desc": "Generujte detailní PDF zprávy o všech činnostech. Získejte kompletní přehled o čištění, detekci AI a analýze rizik pro každý soubor.",
 	"feature_pdf_bullet1": "Všechny detekce a čištění",
 	"feature_pdf_bullet2": "Analýza rizik a doporučení",
 	"feature_pdf_bullet3": "Hromadné zpracování výsledků",
 	"feature_pdf_bullet4": "Závěrečná kontrola a závěry",
 	"feature_pdf_img_alt": "PDF dokument se zprávou, grafy a zaškrtnutími",
-
 	"pricing_title": "Ceník",
 	"pricing_subtitle": "Jednoduché ceny. Kredity nevyprší.",
 	"pricing_billing_monthly": "Měsíčně",
 	"pricing_billing_yearly": "Ročně",
-
 	"pricing_plan_free_name": "Zdarma",
 	"pricing_plan_free_subtitle": "Pro začátek",
 	"pricing_feat_free_1": "3 fotky zdarma",
@@ -319,7 +279,6 @@
 	"pricing_feat_free_3": "Odstranění EXIF + C2PA",
 	"pricing_feat_free_4": "Bez platební karty",
 	"pricing_cta_start_free": "Začít zdarma",
-
 	"pricing_plan_pack_name": "50 fotek",
 	"pricing_plan_pack_subtitle": "Kredity nevyprší",
 	"pricing_per_50": "/ 50 fotek",
@@ -329,7 +288,6 @@
 	"pricing_feat_pack_4": "Všechny formáty",
 	"pricing_feat_pack_5": "PDF report — €1,99 / report",
 	"pricing_cta_buy": "Koupit →",
-
 	"pricing_plan_pro_subtitle": "100 fotek / měsíc",
 	"pricing_badge_popular": "Nejoblíbenější",
 	"pricing_save": "Ušetříte {amount}",
@@ -341,7 +299,6 @@
 	"pricing_feat_pro_6": "Hromadné zpracování",
 	"pricing_cta_activate_pro": "Aktivovat Pro →",
 	"pricing_per_month_short": "/ měs",
-
 	"pricing_plan_proplus_subtitle": "300 fotek / měsíc",
 	"pricing_feat_proplus_1": "300 fotek měsíčně",
 	"pricing_feat_proplus_2": "Vše z Pro plánu",
@@ -349,8 +306,11 @@
 	"pricing_feat_proplus_4": "Prioritní podpora",
 	"pricing_cta_coming_soon": "Připravujeme",
 	"pricing_cta_activate_proplus": "Aktivovat Pro+ →",
-
 	"pricing_enterprise_title": "Enterprise — na míru",
 	"pricing_enterprise_desc": "Velký objem fotek, API integrace, faktura, firemní účet. Domluvíme cenu a aktivujeme kredity přímo na váš účet.",
-	"pricing_cta_contact": "Kontaktujte nás →"
+	"pricing_cta_contact": "Kontaktujte nás →",
+	"error_generic_title": "Chyba | MetaCleaner",
+	"error_generic_heading": "Něco se pokazilo.",
+	"error_generic_back_home": "Zpět na hlavní stránku",
+	"cookie_banner_aria_label": "Souhlas s cookies"
 }

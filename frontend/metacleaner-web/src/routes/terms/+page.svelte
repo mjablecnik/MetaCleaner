@@ -7,7 +7,7 @@
 	<meta name="description" content={m.meta_terms_description()} />
 </svelte:head>
 
-<div class="flex flex-col items-center w-full min-h-screen">
+<div class="flex flex-col items-center w-full">
 	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-12 md:py-20">
 		<div class="w-full max-w-3xl">
 			<h1 class="text-4xl font-bold text-text-main mb-6">{m.terms_heading()}</h1>
