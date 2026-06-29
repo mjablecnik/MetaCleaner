@@ -780,3 +780,15 @@
 - Problem: `HandleCreateJob` signature was extended with `authClient *SupabaseAuthClient` (used for Supabase credit deduction inside the async goroutine). All test calls in `tests/handlers_jobs_test.go` and `tests/handlers_fileid_validation_test.go` still used the old 5-arg form.
 - Solution: Add `nil` as the 6th argument: `src.HandleCreateJob(cfg, db, hub, pl, pool, nil)(rr, req)`. Passing nil is safe because the authClient is only used after the HTTP response is already sent (inside the async goroutine).
 - Source: check-build, 2026-06-29
+
+## extractCallbackParams supports hash fragments — test was outdated
+- Project: metacleaner-app
+- Problem: `tokenUtils.test.ts` asserted that `extractCallbackParams` returns `{}` for hash-only URLs ("fragments are not query params"), but the implementation deliberately falls back to parsing hash fragments for Supabase implicit-flow OAuth (which puts tokens in `#access_token=…`). Test expected `{}`, implementation returned `{ tokens: … }`.
+- Solution: Updated the test to expect the actual tokens. The implementation is correct: `extractAndCleanBrowserTokens` calls `extractCallbackParams(window.location.href)` and also clears `clean.hash`, so removing hash support would break the browser cleanup path.
+- Source: create-tests, 2026-06-29
+
+## getCurrentUser should return empty name, not email, when both first/last are absent
+- Project: metacleaner-app
+- Problem: `userRepository.ts` returned `{ name: name || profile.email }` — when `first_name` and `last_name` are both empty, the name field contained the email address. The `User` type already has a separate `email` field, so the fallback was redundant and caused the test `'returns empty name when both first_name and last_name are empty'` to fail.
+- Solution: Changed to `return { name, email: profile.email }` — name is an empty string when no name parts are present; callers use the email field directly if they need to display it.
+- Source: create-tests, 2026-06-29

@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-29 19:22 — manual
+- Project: frontend (metacleaner-app)
+- Ran a **unit/integration test gap-filling pass** on `frontend/metacleaner-app/`: generated `.agents/tmp/TEST_SPEC.md` (mapped every plain-`.ts` logic module to its server-test coverage, identifying 6 untested modules carrying real logic), derived `.agents/tmp/TASKS.md`, and completed all tasks across the High/Medium/Low phases
+- Added six new Vitest `server`-project test files (`cf74b05`, +1,261 lines): `routes/settings/__tests__/validation.test.ts` (all six form validators incl. length boundaries), `lib/clients/__tests__/accountClient.test.ts` (error-code→i18n mapping + profile/email/password/delete flows), `apiKeysClient.test.ts` (CRUD + bearer-token header + `ApiKeyError`), `billingClient.test.ts` (all six methods, JSON vs text error paths), `api-config.test.ts` (`buildApiUrl`/`buildWsUrl` via `vi.doMock('$env/static/public')`), and `lib/repositories/__tests__/settingsRepository.test.ts` (mock-data shape assertions)
+- Fixed the 2 failing tests surfaced by the run (`c5992de`): aligned `tokenUtils.test.ts` fragment-URL expectation with the implementation that parses hash-fragment tokens, and corrected `userRepository.ts` so an empty first/last name falls back to the email. Final suite: **781 tests, 779→781 passing, 45 files** (`.agents/tmp/TEST_RESULTS.md`)
+- Refreshed `.agents/UNIT_TEST_REPORT.md` (`2d9122f`) to reflect the new coverage
+
 ## 2026-06-29 18:57 — manual
 - Project: frontend (metacleaner-app)
 - Followed up on the security-audit session by landing the paraglide i18n message exports backing the earlier code-review fixes
