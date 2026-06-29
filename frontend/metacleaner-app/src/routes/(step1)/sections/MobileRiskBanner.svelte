@@ -2,7 +2,6 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import {
 		ringColorMap,
-		severityBadgeClass,
 		dotColorClass,
 		severityTextClass,
 		severityLabelKey,
@@ -18,6 +17,32 @@
 	const severity = $derived(risk.severity);
 	const categories = $derived(risk.categories);
 
+	const sortedBars = $derived(
+		[
+			{
+				icon: 'fa-solid fa-location-dot',
+				labelKey: 'step2.risk.gpsCoordinates',
+				value: categories.gps
+			},
+			{
+				icon: 'fa-solid fa-mobile-screen',
+				labelKey: 'step2.risk.deviceIdentity',
+				value: categories.deviceIdentity
+			},
+			{
+				icon: 'fa-solid fa-user',
+				labelKey: 'step2.risk.personalData',
+				value: categories.personalData
+			},
+			{
+				icon: 'fa-solid fa-clock',
+				labelKey: 'step2.risk.timestamp',
+				value: categories.timestamps
+			},
+			{ icon: 'fa-solid fa-robot', labelKey: 'step2.risk.aiOrigin', value: categories.aiOrigin }
+		].toSorted((a, b) => b.value - a.value)
+	);
+
 	let accordionOpen = $state(false);
 </script>
 
@@ -25,7 +50,7 @@
 	{tx('step2.risk.srAnnouncement', { score, severity: tx(severityLabelKey[severity]) })}
 </div>
 <div
-	class="overflow-hidden rounded-2xl border shadow-card lg:hidden {severityBadgeClass[severity]}"
+	class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card lg:hidden"
 >
 	<button
 		type="button"
@@ -85,34 +110,15 @@
 				<p class="text-[10px] font-bold tracking-widest text-text-muted uppercase">
 					{tx('step2.risk.analysisTitle')}
 				</p>
-				<RiskBreakdownBar
-					icon="fa-solid fa-location-dot"
-					label={tx('step2.risk.gpsCoordinates')}
-					severity={barSeverity(categories.gps)}
-					severityLabel={tx(severityLabelKey[barSeverity(categories.gps)])}
-					value={categories.gps}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-mobile-screen"
-					label={tx('step2.risk.deviceIdentity')}
-					severity={barSeverity(categories.deviceIdentity)}
-					severityLabel={tx(severityLabelKey[barSeverity(categories.deviceIdentity)])}
-					value={categories.deviceIdentity}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-user"
-					label={tx('step2.risk.personalData')}
-					severity={barSeverity(categories.personalData)}
-					severityLabel={tx(severityLabelKey[barSeverity(categories.personalData)])}
-					value={categories.personalData}
-				/>
-				<RiskBreakdownBar
-					icon="fa-solid fa-clock"
-					label={tx('step2.risk.timestamp')}
-					severity={barSeverity(categories.timestamps)}
-					severityLabel={tx(severityLabelKey[barSeverity(categories.timestamps)])}
-					value={categories.timestamps}
-				/>
+				{#each sortedBars as bar (bar.labelKey)}
+					<RiskBreakdownBar
+						icon={bar.icon}
+						label={tx(bar.labelKey)}
+						severity={barSeverity(bar.value)}
+						severityLabel={tx(severityLabelKey[barSeverity(bar.value)])}
+						value={bar.value}
+					/>
+				{/each}
 			</div>
 			<BeforeAfterScore beforeScore={score} afterScore={0} />
 		</div>
