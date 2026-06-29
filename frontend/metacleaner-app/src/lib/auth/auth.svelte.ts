@@ -130,6 +130,43 @@ function _restore(): void {
 		_isAuthReady = true;
 		return;
 	}
+
+	// Check if URL contains auth callback tokens (magic link / OAuth redirect).
+	// Process them before checking localStorage so auth guard sees the session immediately.
+	const href = window.location.href;
+	const hasCallbackTokens =
+		href.includes('access_token') && href.includes('refresh_token');
+	const hasHashTokens =
+		window.location.hash.includes('access_token') &&
+		window.location.hash.includes('refresh_token');
+
+	if (hasCallbackTokens || hasHashTokens) {
+		let params: URLSearchParams;
+		if (window.location.search.includes('access_token')) {
+			params = new URLSearchParams(window.location.search);
+		} else {
+			params = new URLSearchParams(window.location.hash.slice(1));
+		}
+
+		const accessToken = params.get('access_token');
+		const refreshToken = params.get('refresh_token');
+		const expiresIn = Number(params.get('expires_in') ?? '3600');
+
+		if (accessToken && refreshToken) {
+			_persist(accessToken, refreshToken, expiresIn);
+			// Clean URL (remove tokens from address bar)
+			const clean = new URL(window.location.href);
+			clean.searchParams.delete('access_token');
+			clean.searchParams.delete('refresh_token');
+			clean.searchParams.delete('expires_in');
+			clean.hash = '';
+			history.replaceState(null, '', clean.toString());
+			_isAuthReady = true;
+			_fetchSubscription(accessToken);
+			return;
+		}
+	}
+
 	const token = localStorage.getItem(TOKEN_KEY);
 	const storedRefresh = localStorage.getItem(REFRESH_KEY);
 	const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');

@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class="pointer-events-auto absolute inset-0 flex flex-col items-center justify-end rounded-2xl bg-gradient-to-b from-transparent via-navy-main/60 to-navy-main/95 pt-8 pb-6"
+	class="pointer-events-auto absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-transparent via-navy-main/60 to-navy-main/95 px-6"
 >
 	<div class="flex flex-col items-center gap-4 px-6 text-center">
 		<!-- Lock icon with Pro badge -->

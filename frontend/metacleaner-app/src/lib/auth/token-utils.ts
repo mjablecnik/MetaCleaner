@@ -18,19 +18,31 @@ export interface CallbackResult {
 /**
  * Parses auth callback query parameters from any URL string.
  * Handles both web browser (window.location.href) and Capacitor deep link URLs.
+ * Checks both query params (?key=value) and hash fragments (#key=value) since
+ * Supabase may redirect with tokens in either location depending on flow type.
  * Returns tokens if present, error string if an error param is present, or an empty object.
  */
 export function extractCallbackParams(url: string): CallbackResult {
 	let search: string;
+	let hash: string;
 	try {
 		// Works for both full URLs and bare query strings like "?access_token=..."
-		const u = url.includes('?') ? new URL(url, 'https://x') : new URL(`https://x${url}`);
+		const u = url.includes('?') || url.includes('#')
+			? new URL(url, 'https://x')
+			: new URL(`https://x${url}`);
 		search = u.search;
+		hash = u.hash;
 	} catch {
 		return {};
 	}
 
-	const params = new URLSearchParams(search);
+	// Try query params first, then fall back to hash fragment
+	let params = new URLSearchParams(search);
+
+	if (!params.get('access_token') && hash) {
+		// Supabase sometimes returns tokens in hash fragment (e.g. #access_token=...&refresh_token=...)
+		params = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
+	}
 
 	const error = params.get('error');
 	if (error) return { error };
@@ -58,7 +70,10 @@ export function extractAndCleanBrowserTokens(): CallbackResult {
 	const hasTokenParams =
 		window.location.search.includes('access_token') ||
 		window.location.search.includes('refresh_token') ||
-		window.location.search.includes('error');
+		window.location.search.includes('error') ||
+		window.location.hash.includes('access_token') ||
+		window.location.hash.includes('refresh_token') ||
+		window.location.hash.includes('error');
 
 	if (hasTokenParams) {
 		const clean = new URL(window.location.href);
@@ -66,6 +81,7 @@ export function extractAndCleanBrowserTokens(): CallbackResult {
 		clean.searchParams.delete('refresh_token');
 		clean.searchParams.delete('expires_in');
 		clean.searchParams.delete('error');
+		clean.hash = '';
 		history.replaceState(null, '', clean.toString());
 	}
 

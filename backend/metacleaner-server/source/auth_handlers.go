@@ -230,7 +230,7 @@ func HandleRefresh(authClient *SupabaseAuthClient) http.HandlerFunc {
 // HandleMe handles GET /api/auth/me.
 // Requires a valid Bearer token (enforced by AuthMiddleware on non-exempt paths).
 // Returns the authenticated user's profile from the profiles table.
-func HandleMe(authClient *SupabaseAuthClient) http.HandlerFunc {
+func HandleMe(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 		if userID == "" {
@@ -244,8 +244,32 @@ func HandleMe(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 		if profile == nil {
-			WriteError(w, http.StatusNotFound, ErrAuthInvalidRequest, "user profile not found")
-			return
+			// Auto-provision profile for magic link users who bypassed backend callback.
+			// Get email from the auth token user info.
+			authHeader := r.Header.Get("Authorization")
+			email := ""
+			if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+				accessToken := strings.TrimPrefix(authHeader, "Bearer ")
+				if authUser, uErr := authClient.GetUser(r.Context(), accessToken); uErr == nil && authUser != nil {
+					email = authUser.Email
+				}
+			}
+			newProfile := UserProfile{
+				ID:        userID,
+				FirstName: "",
+				LastName:  "",
+				Email:     email,
+			}
+			if createErr := authClient.CreateProfile(r.Context(), newProfile); createErr != nil {
+				LoggerFromContext(r.Context()).Warn("me: auto-provision profile failed", "userId", userID, "error", createErr)
+				WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
+				return
+			}
+			// Provision trial credits
+			if err := db.CreateCreditBalance(r.Context(), userID, 3, 0); err != nil {
+				LoggerFromContext(r.Context()).Warn("me: auto-provision credits failed", "userId", userID, "error", err)
+			}
+			profile = &newProfile
 		}
 
 		// Lazy sync: if the user confirmed an email change via Supabase Auth,
@@ -466,6 +490,7 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 
 		session, err := authClient.VerifyTokenHash(r.Context(), tokenHash, tokenType)
 		if err != nil {
+			LoggerFromContext(r.Context()).Error("magic link callback: token verification failed", "tokenType", tokenType, "error", err)
 			if authErr, ok := err.(*SupabaseAuthError); ok && authErr.StatusCode >= 500 {
 				http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape("Authentication service temporarily unavailable"), http.StatusFound)
 				return

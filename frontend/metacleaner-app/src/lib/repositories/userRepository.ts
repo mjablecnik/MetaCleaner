@@ -25,5 +25,5 @@ export async function getCurrentUser(): Promise<User> {
 	}
 	const profile: ProfileResponse = await res.json();
 	const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
-	return { name, email: profile.email };
+	return { name: name || profile.email, email: profile.email };
 }

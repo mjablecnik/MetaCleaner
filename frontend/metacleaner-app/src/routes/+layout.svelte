@@ -12,6 +12,7 @@
 	import { appState } from '$lib/stores/appState.svelte';
 	import { authStore } from '$lib/auth/auth.svelte.js';
 	import { billingStore } from '$lib/stores/billingStore.svelte.js';
+	import { handleAuthCallback } from '$lib/auth/token-utils.js';
 
 	let { children } = $props();
 
@@ -92,6 +93,9 @@
 		getLanguages().then((langs) => {
 			langOptions = langs;
 		});
+
+		// Handle auth callback tokens in URL (magic link or OAuth redirect to any page)
+		handleAuthCallback(window.location.href, true);
 
 		// Handle Android hardware back button
 		App.addListener('backButton', ({ canGoBack }) => {

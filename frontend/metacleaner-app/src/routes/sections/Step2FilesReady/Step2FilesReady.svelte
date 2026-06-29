@@ -85,11 +85,61 @@
 
 	<!-- Right: risk scanner panel (desktop only) -->
 	<div class="relative hidden flex-col lg:flex">
-		<div class={showProOverlay ? 'pointer-events-none blur-[4px]' : ''}>
-			<RiskScannerCard />
-		</div>
 		{#if showProOverlay}
+			<!-- Fake placeholder — no real data rendered, cannot be bypassed via DevTools -->
+			<div class="pointer-events-none select-none blur-[8px]" aria-hidden="true">
+				<div
+					class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-5"
+				>
+					<div class="flex items-center justify-between">
+						<div class="h-5 w-28 rounded bg-gray-700"></div>
+						<div class="h-5 w-20 rounded bg-orange-900/40"></div>
+					</div>
+					<div class="flex items-center gap-4">
+						<div class="h-20 w-20 rounded-full border-4 border-brand-orange bg-navy-lighter flex items-center justify-center">
+							<span class="text-2xl font-black text-brand-orange">00</span>
+						</div>
+						<div class="flex flex-col gap-2">
+							<div class="h-4 w-44 rounded bg-gray-700"></div>
+							<div class="h-3 w-56 rounded bg-gray-800"></div>
+							<div class="flex gap-2">
+								<div class="h-5 w-10 rounded bg-red-900/30"></div>
+								<div class="h-5 w-14 rounded bg-yellow-900/30"></div>
+							</div>
+						</div>
+					</div>
+					<div class="h-px bg-gray-800"></div>
+					<div class="flex flex-col gap-3">
+						<div class="h-3 w-24 rounded bg-gray-700"></div>
+						{#each Array(5) as _}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2">
+									<div class="h-3 w-3 rounded-full bg-blue-900/40"></div>
+									<div class="h-3 w-32 rounded bg-gray-700"></div>
+								</div>
+								<div class="h-3 w-16 rounded bg-gray-800"></div>
+							</div>
+							<div class="h-2 w-full rounded-full bg-gray-800">
+								<div class="h-2 rounded-full bg-yellow-700/40" style="width: {30 + Math.random() * 50}%"></div>
+							</div>
+						{/each}
+					</div>
+					<div class="h-px bg-gray-800"></div>
+					<div class="grid grid-cols-2 gap-3">
+						<div class="flex flex-col items-center gap-1 rounded-xl bg-navy-lighter p-3">
+							<div class="h-6 w-12 rounded bg-gray-700"></div>
+							<div class="h-3 w-16 rounded bg-gray-800"></div>
+						</div>
+						<div class="flex flex-col items-center gap-1 rounded-xl bg-navy-lighter p-3">
+							<div class="h-6 w-12 rounded bg-gray-700"></div>
+							<div class="h-3 w-16 rounded bg-gray-800"></div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<ProOverlay />
+		{:else}
+			<RiskScannerCard />
 		{/if}
 	</div>
 </div>

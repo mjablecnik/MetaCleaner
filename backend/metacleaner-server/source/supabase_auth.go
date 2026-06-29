@@ -236,7 +236,7 @@ func (c *SupabaseAuthClient) SignInWithOtp(ctx context.Context, email string) er
 	payload := map[string]interface{}{
 		"email": email,
 		"options": map[string]string{
-			"email_redirect_to": c.magicCallback,
+			"email_redirect_to": c.frontendURL + "/login",
 		},
 	}
 	data, _ := json.Marshal(payload)
