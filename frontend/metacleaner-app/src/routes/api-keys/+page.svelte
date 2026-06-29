@@ -18,11 +18,14 @@
 	let loadError = $state<string | null>(null);
 	let showCreateModal = $state(false);
 	let keyToDelete = $state<ApiKey | null>(null);
+	/** Full plaintext values for newly created keys (one-time reveal) */
+	let newKeyValues = $state(new Map<string, string>());
 
 	const activeKeysCount = $derived(keys.filter((k) => k.status === 'active').length);
 
-	function handleKeyCreated(newKey: ApiKey) {
+	function handleKeyCreated(newKey: ApiKey, fullKey: string) {
 		keys = [newKey, ...keys];
+		newKeyValues = new Map(newKeyValues).set(newKey.id, fullKey);
 		showCreateModal = false;
 	}
 
@@ -83,6 +86,7 @@
 		<SecurityInfoSection />
 		<KeysListSection
 			{keys}
+			{newKeyValues}
 			onCreateKey={() => (showCreateModal = true)}
 			onDelete={(key) => (keyToDelete = key)}
 			onRevoke={handleKeyUpdated}

@@ -117,7 +117,6 @@
 				</div>
 			{/if}
 
-			<!-- Credit section (temporarily disabled — info moved to header pill)
 			{#if billingStore.credits !== null}
 				{@const credits = billingStore.credits}
 				{@const isWarning = getCreditColorScheme(credits) === 'warning'}
@@ -154,7 +153,6 @@
 					</div>
 				</div>
 			{/if}
-			-->
 
 			<!-- Language section -->
 			<p class="mb-2 px-2 text-[10px] font-bold tracking-widest text-text-muted uppercase">

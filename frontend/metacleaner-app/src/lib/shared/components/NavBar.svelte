@@ -172,6 +172,14 @@
 					isLoading={billingStore.isLoading}
 					hasError={billingStore.hasError}
 				/>
+				<a
+					href={resolve('/docs' as Pathname)}
+					class="text-sm font-medium transition-colors {page.url.pathname.startsWith('/docs')
+						? 'text-brand-blue'
+						: 'text-text-muted hover:text-white'}"
+				>
+					{tx('docs.nav.docs')}
+				</a>
 			{/if}
 			{#if showLangDropdown}
 				<LanguageDropdown

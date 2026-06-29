@@ -33,7 +33,7 @@ The API Documentation feature adds a responsive, authenticated page to the MetaC
 
 1. THE Frontend SHALL serve the Docs_Page at the `/docs` route path
 2. WHEN an unauthenticated user navigates to `/docs`, THE Auth_Guard SHALL redirect the user to the `/login` page with a `returnTo` query parameter set to `/docs`
-3. WHEN an authenticated user navigates to `/docs`, THE Frontend SHALL render the Docs_Page with full documentation content
+3. WHEN an authenticated user with a Pro+ subscription navigates to `/docs`, THE Frontend SHALL render the Docs_Page with full documentation content. WHEN an authenticated user without a Pro+ subscription navigates to `/docs`, THE Frontend SHALL display an upgrade prompt (UpgradeModal with variant="docs") in place of the documentation content. **Note:** This requirement was updated post-implementation — the original spec allowed all authenticated users; the product decision to gate behind Pro+ was made during implementation and reflected in the dedicated `upgradeModal.docs.*` i18n keys.
 4. THE Docs_Page SHALL set a localized `<title>` meta tag that contains the application name and a term identifying the page as API documentation
 
 ---

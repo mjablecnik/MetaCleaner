@@ -46,7 +46,7 @@
 				logoHref: '/' as string | undefined,
 				compact: true,
 				showLangDropdown: true,
-				showBackButton: false,
+				showBackButton: true,
 				backHref: '/',
 				backLabel: tx('docs.nav.back')
 			};

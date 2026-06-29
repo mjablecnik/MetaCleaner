@@ -17,7 +17,7 @@
 	</div>
 	<div>
 		<p class="text-sm font-semibold text-white">{tx('apiKeys.emptyState.title')}</p>
-		<p class="mt-1 text-xs text-text-muted">Create an API key to start using the API.</p>
+		<p class="mt-1 text-xs text-text-muted">{tx('apiKeys.emptyState.description')}</p>
 	</div>
 	<Button variant="primary" onclick={onCreateKey}>
 		<i class="fa-solid fa-plus text-xs"></i>

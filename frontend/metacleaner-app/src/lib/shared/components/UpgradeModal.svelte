@@ -67,15 +67,15 @@
 		{:else}
 			<div class="flex items-center gap-2 text-sm text-text-muted">
 				<i class="fa-solid fa-check text-xs text-brand-green"></i>
-				<span>30-day cleaning history</span>
+				<span>{tx('upgradeModal.reports.feat1')}</span>
 			</div>
 			<div class="flex items-center gap-2 text-sm text-text-muted">
 				<i class="fa-solid fa-check text-xs text-brand-green"></i>
-				<span>Detailed file metadata reports</span>
+				<span>{tx('upgradeModal.reports.feat2')}</span>
 			</div>
 			<div class="flex items-center gap-2 text-sm text-text-muted">
 				<i class="fa-solid fa-check text-xs text-brand-green"></i>
-				<span>Downloadable PDF reports</span>
+				<span>{tx('upgradeModal.reports.feat3')}</span>
 			</div>
 		{/if}
 	</div>

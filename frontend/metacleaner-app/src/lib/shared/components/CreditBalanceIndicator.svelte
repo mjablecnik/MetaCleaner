@@ -56,7 +56,7 @@
 			<span class="text-[10px] font-medium {textClass}">{label}</span>
 		{/if}
 		{#if hasError}
-			<i class="fa-solid fa-exclamation-triangle text-[9px] text-orange-400" title="Stale data"></i>
+			<i class="fa-solid fa-exclamation-triangle text-[9px] text-orange-400" title={tx('credits.indicator.staleTitle')}></i>
 		{/if}
 	</div>
 {/if}

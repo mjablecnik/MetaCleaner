@@ -7,12 +7,13 @@
 
 	interface Props {
 		keys: ApiKey[];
+		newKeyValues?: Map<string, string>;
 		onCreateKey: () => void;
 		onDelete: (key: ApiKey) => void;
 		onRevoke: (key: ApiKey) => void;
 	}
 
-	const { keys, onCreateKey, onDelete, onRevoke }: Props = $props();
+	const { keys, newKeyValues = new Map(), onCreateKey, onDelete, onRevoke }: Props = $props();
 </script>
 
 <Card padding="p-0">
@@ -29,7 +30,12 @@
 	{:else}
 		<div class="divide-y divide-gray-800/60">
 			{#each keys as apiKey (apiKey.id)}
-				<KeyRow {apiKey} {onDelete} {onRevoke} />
+				<KeyRow
+					{apiKey}
+					fullKey={newKeyValues.get(apiKey.id)}
+					{onDelete}
+					{onRevoke}
+				/>
 			{/each}
 		</div>
 	{/if}

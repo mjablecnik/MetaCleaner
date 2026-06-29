@@ -7,7 +7,7 @@
 	interface Props {
 		open: boolean;
 		onClose: () => void;
-		onCreated: (key: ApiKey) => void;
+		onCreated: (key: ApiKey, fullKey: string) => void;
 	}
 
 	const { open, onClose, onCreated }: Props = $props();
@@ -37,8 +37,9 @@
 	function handleClose() {
 		if (isSuccess && createdApiKey) {
 			const key = createdApiKey;
+			const fullKey = createdKey;
 			resetForm();
-			onCreated(key);
+			onCreated(key, fullKey);
 		} else {
 			resetForm();
 			onClose();
@@ -48,11 +49,11 @@
 	function validateName(): boolean {
 		const trimmed = name.trim();
 		if (!trimmed) {
-			nameError = 'Key name is required';
+			nameError = tx('settings.validation.apiKeyNameRequired');
 			return false;
 		}
 		if (trimmed.length > 100) {
-			nameError = 'Key name must be 100 characters or fewer';
+			nameError = tx('settings.validation.apiKeyNameTooLong');
 			return false;
 		}
 		nameError = '';
@@ -146,13 +147,13 @@
 					</div>
 					<div>
 						<p class="text-base font-bold text-white">{tx('apiKeys.createModal.title')}</p>
-						<p class="text-xs text-text-muted">New API key for your account</p>
+						<p class="text-xs text-text-muted">{tx('apiKeys.createModal.subtitle')}</p>
 					</div>
 				</div>
 				<button
 					onclick={handleClose}
 					class="text-text-muted transition-colors hover:text-white"
-					aria-label="Close"
+					aria-label={tx('common.dismiss')}
 				>
 					<i class="fa-solid fa-xmark text-lg"></i>
 				</button>
@@ -173,7 +174,7 @@
 				</div>
 				<div>
 					<p class="mb-2 text-xs font-semibold tracking-wider text-text-muted uppercase">
-						Your new API key
+						{tx('apiKeys.createModal.keyValueLabel')}
 					</p>
 					<div
 						class="flex items-center justify-between gap-3 rounded-xl border border-brand-green/30 bg-navy-main p-4"
@@ -185,15 +186,15 @@
 						>
 							{#if copySuccess}
 								<i class="fa-solid fa-check text-[10px]"></i>
-								Copied!
+								{tx('apiKeys.action.copied')}
 							{:else}
 								<i class="fa-solid fa-copy text-[10px]"></i>
-								Copy
+								{tx('apiKeys.action.copyKey')}
 							{/if}
 						</button>
 					</div>
 				</div>
-				<Button variant="secondary" fullWidth onclick={handleClose}>Close</Button>
+				<Button variant="secondary" fullWidth onclick={handleClose}>{tx('apiKeys.createModal.done')}</Button>
 			{:else}
 				<!-- Create form -->
 				<div class="flex flex-col gap-4">
@@ -209,7 +210,7 @@
 							id="create-key-name"
 							type="text"
 							bind:value={name}
-							placeholder="e.g. Production server, CI/CD..."
+							placeholder={tx('apiKeys.createModal.namePlaceholder')}
 							maxlength="100"
 							class="w-full rounded-xl border bg-navy-main px-4 py-3 text-sm text-white transition-colors placeholder:text-text-muted focus:outline-none {nameError
 								? 'border-brand-red focus:border-brand-red'
@@ -231,7 +232,7 @@
 						<textarea
 							id="create-key-note"
 							bind:value={note}
-							placeholder="Description of the key's purpose..."
+							placeholder={tx('apiKeys.createModal.notePlaceholder')}
 							rows={2}
 							maxlength="500"
 							class="w-full resize-none rounded-xl border border-gray-700 bg-navy-main px-4 py-3 text-sm text-white transition-colors placeholder:text-text-muted focus:border-brand-green focus:outline-none"
@@ -244,14 +245,14 @@
 					{/if}
 				</div>
 				<div class="flex gap-3">
-					<Button variant="secondary" fullWidth onclick={handleClose}>Cancel</Button>
+					<Button variant="secondary" fullWidth onclick={handleClose}>{tx('apiKeys.createModal.cancel')}</Button>
 					<Button variant="primary" fullWidth onclick={handleSubmit} disabled={isSubmitting}>
 						{#if isSubmitting}
 							<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>
 						{:else}
 							<i class="fa-solid fa-key text-xs"></i>
 						{/if}
-						Create key
+						{tx('apiKeys.createModal.submit')}
 					</Button>
 				</div>
 			{/if}

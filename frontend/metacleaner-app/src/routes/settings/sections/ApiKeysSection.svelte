@@ -6,7 +6,6 @@
 	import {
 		listApiKeys,
 		revokeApiKey,
-		activateApiKey,
 		deleteApiKey,
 		type ApiKey
 	} from '$lib/clients/apiKeysClient.js';
@@ -15,7 +14,7 @@
 	interface Props {
 		showCreateModal?: boolean;
 		/** Called by parent when a key is created via the page-level modal */
-		addKey?: { key: ApiKey } | null;
+		addKey?: { key: ApiKey; fullKey: string } | null;
 		/** Show create button at bottom of key list (for mobile) */
 		showCreateButton?: boolean;
 	}
@@ -24,12 +23,24 @@
 	let { showCreateModal = $bindable(false), addKey = null, showCreateButton = false }: Props = $props();
 
 	let lastAddedKeyId = $state<string | null>(null);
+	/** Full plaintext values for newly created keys (one-time reveal) */
+	let newKeyValues = $state(new Map<string, string>());
+	/** Which keys are currently revealing their value */
+	let revealedKeys = $state(new Set<string>());
+	/** Copy-success state per key */
+	let copiedKeys = $state(new Set<string>());
+	let copyTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 	// React to parent passing a newly created key
 	$effect(() => {
 		if (addKey && addKey.key.id !== lastAddedKeyId) {
 			lastAddedKeyId = addKey.key.id;
 			keys = [...keys, addKey.key];
+			if (addKey.fullKey) {
+				newKeyValues = new Map(newKeyValues).set(addKey.key.id, addKey.fullKey);
+				// Auto-reveal new keys so users see their value immediately
+				revealedKeys = new Set(revealedKeys).add(addKey.key.id);
+			}
 		}
 	});
 
@@ -42,7 +53,6 @@
 
 	let operationError = $state('');
 	let revokingId = $state<string | null>(null);
-	let activatingId = $state<string | null>(null);
 	let deletingId = $state<string | null>(null);
 
 	async function loadKeys() {
@@ -78,19 +88,6 @@
 		}
 	}
 
-	async function handleActivate(key: ApiKey) {
-		operationError = '';
-		activatingId = key.id;
-		try {
-			const updated = await activateApiKey(key.id);
-			keys = keys.map((k) => (k.id === key.id ? updated : k));
-		} catch {
-			operationError = tx('apiKeys.error.activateFailed');
-		} finally {
-			activatingId = null;
-		}
-	}
-
 	function handleDeleteClick(key: ApiKey) {
 		keyToDelete = key;
 		showDeleteModal = true;
@@ -103,6 +100,10 @@
 		try {
 			await deleteApiKey(keyToDelete.id);
 			keys = keys.filter((k) => k.id !== keyToDelete!.id);
+			// Clean up reveal/copy state for deleted key
+			newKeyValues = new Map(newKeyValues);
+			newKeyValues.delete(keyToDelete.id);
+			revealedKeys = new Set([...revealedKeys].filter((id) => id !== keyToDelete!.id));
 			showDeleteModal = false;
 			keyToDelete = null;
 		} catch {
@@ -116,8 +117,69 @@
 		return new Date(dateStr).toLocaleDateString();
 	}
 
-	function getDisplayValue(key: ApiKey): string {
+	function getMaskedValue(key: ApiKey): string {
 		return `${key.key_prefix}${'•'.repeat(18)}${key.key_suffix}`;
+	}
+
+	function getDisplayValue(key: ApiKey): string {
+		if (revealedKeys.has(key.id)) {
+			return newKeyValues.get(key.id) ?? getMaskedValue(key);
+		}
+		return getMaskedValue(key);
+	}
+
+	function toggleReveal(keyId: string) {
+		const next = new Set(revealedKeys);
+		if (next.has(keyId)) {
+			next.delete(keyId);
+		} else {
+			next.add(keyId);
+		}
+		revealedKeys = next;
+	}
+
+	async function handleCopy(key: ApiKey) {
+		const text = newKeyValues.get(key.id) ?? getMaskedValue(key);
+		let success = false;
+
+		if (navigator.clipboard && window.isSecureContext) {
+			try {
+				await navigator.clipboard.writeText(text);
+				success = true;
+			} catch {
+				success = false;
+			}
+		}
+
+		if (!success) {
+			try {
+				const textarea = document.createElement('textarea');
+				textarea.value = text;
+				textarea.style.position = 'fixed';
+				textarea.style.left = '-9999px';
+				textarea.style.opacity = '0';
+				document.body.appendChild(textarea);
+				textarea.select();
+				success = document.execCommand('copy');
+				document.body.removeChild(textarea);
+			} catch {
+				success = false;
+			}
+		}
+
+		if (success) {
+			const next = new Set(copiedKeys).add(key.id);
+			copiedKeys = next;
+			const existing = copyTimers.get(key.id);
+			if (existing) clearTimeout(existing);
+			copyTimers.set(
+				key.id,
+				setTimeout(() => {
+					copiedKeys = new Set([...copiedKeys].filter((id) => id !== key.id));
+					copyTimers.delete(key.id);
+				}, 2000)
+			);
+		}
 	}
 </script>
 
@@ -161,6 +223,9 @@
 	{:else}
 		<div class="flex flex-col gap-3">
 			{#each keys as key (key.id)}
+				{@const isRevealed = revealedKeys.has(key.id)}
+				{@const hasFullKey = newKeyValues.has(key.id)}
+				{@const isCopied = copiedKeys.has(key.id)}
 				<div class="flex flex-col gap-3 rounded-xl border border-gray-800 bg-navy-main p-4">
 					<!-- Header row: dot + name + status badge -->
 					<div class="flex items-center justify-between">
@@ -195,6 +260,26 @@
 								{getDisplayValue(key)}
 							</span>
 						</div>
+						<!-- Eye toggle: only useful when full key is available -->
+						{#if hasFullKey}
+							<button
+								aria-label={isRevealed ? tx('apiKeys.action.hideKey') : tx('apiKeys.action.showKey')}
+								onclick={() => toggleReveal(key.id)}
+								class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-navy-card text-text-muted transition-all hover:bg-navy-lighter hover:text-white lg:min-h-0 lg:min-w-0"
+							>
+								<i class="fa-solid {isRevealed ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i>
+							</button>
+						{/if}
+						<!-- Copy button -->
+						<button
+							aria-label={tx('apiKeys.action.copyKey')}
+							onclick={() => handleCopy(key)}
+							class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border {isCopied
+								? 'border-brand-green/40 bg-brand-green/10 text-brand-green'
+								: 'border-gray-700 bg-navy-card text-text-muted hover:bg-navy-lighter hover:text-white'} transition-all lg:min-h-0 lg:min-w-0"
+						>
+							<i class="fa-solid {isCopied ? 'fa-check' : 'fa-copy'} text-xs"></i>
+						</button>
 						{#if key.status === 'active'}
 							<button
 								aria-label={tx('apiKeys.action.revoke')}
@@ -206,19 +291,6 @@
 									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
 								{:else}
 									<i class="fa-solid fa-ban text-xs"></i>
-								{/if}
-							</button>
-						{:else}
-							<button
-								aria-label={tx('apiKeys.action.activate')}
-								disabled={activatingId === key.id}
-								onclick={() => handleActivate(key)}
-								class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-brand-green/25 bg-brand-green/10 text-brand-green transition-all hover:bg-brand-green/20 disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-0 lg:min-w-0"
-							>
-								{#if activatingId === key.id}
-									<i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
-								{:else}
-									<i class="fa-solid fa-rotate-left text-xs"></i>
 								{/if}
 							</button>
 						{/if}

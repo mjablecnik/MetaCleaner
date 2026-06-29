@@ -383,13 +383,13 @@ describe('billingStore', () => {
 		expect(billingStore.monthlyAllowance).toBe(100);
 	});
 
-	it('monthlyAllowance is 300 for proplus plan', async () => {
+	it('monthlyAllowance is 100 for proplus plan', async () => {
 		mockGetSubscription.mockResolvedValue(
 			makeSubResponse({ plan_id: 'proplus', status: 'active' })
 		);
 		mockGetCredits.mockResolvedValue(makeCredResponse());
 		await billingStore.refresh();
 
-		expect(billingStore.monthlyAllowance).toBe(300);
+		expect(billingStore.monthlyAllowance).toBe(100);
 	});
 });

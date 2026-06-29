@@ -127,6 +127,7 @@
 
 	async function handlePlanSelect(planId: string, billing: 'monthly' | 'yearly') {
 		if (isCheckingOut) return;
+		if (planId === 'free') return;
 		checkoutError = null;
 		isCheckingOut = true;
 		try {

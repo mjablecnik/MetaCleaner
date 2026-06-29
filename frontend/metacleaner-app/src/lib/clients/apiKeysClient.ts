@@ -79,11 +79,3 @@ export async function revokeApiKey(id: string): Promise<ApiKey> {
 	return res.json() as Promise<ApiKey>;
 }
 
-export async function activateApiKey(id: string): Promise<ApiKey> {
-	const res = await fetch(buildApiUrl(`/api/keys/${id}/activate`), {
-		method: 'PATCH',
-		headers: { Authorization: `Bearer ${authStore.accessToken}` }
-	});
-	if (!res.ok) throw await parseErrorResponse(res);
-	return res.json() as Promise<ApiKey>;
-}

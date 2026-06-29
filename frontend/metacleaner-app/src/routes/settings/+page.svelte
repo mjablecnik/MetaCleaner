@@ -20,15 +20,15 @@
 	let toastTimer: ReturnType<typeof setTimeout>;
 
 	let showCreateKeyModal = $state(false);
-	let newlyCreatedKey = $state<{ key: ApiKey } | null>(null);
+	let newlyCreatedKey = $state<{ key: ApiKey; fullKey: string } | null>(null);
 
 	const planStyle = $derived(getPlanStyle(billingStore.planId, billingStore.planStatus));
 	const planBadgeColor = $derived<'blue' | 'green' | 'orange' | 'gray'>(
 		billingStore.planId === 'proplus' ? 'orange' : billingStore.planId === 'pro' ? 'blue' : 'gray'
 	);
 
-	function handleKeyCreated(key: ApiKey, _fullKey: string) {
-		newlyCreatedKey = { key };
+	function handleKeyCreated(key: ApiKey, fullKey: string) {
+		newlyCreatedKey = { key, fullKey };
 		showCreateKeyModal = false;
 	}
 

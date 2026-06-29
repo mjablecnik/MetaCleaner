@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { tx } from '$lib/shared/utils/i18n';
+
 	interface Props {
 		text: string;
 		class?: string;
@@ -58,7 +60,7 @@
 	type="button"
 	onclick={handleClick}
 	class="inline-flex items-center justify-center rounded p-1 transition-colors {extraClass}"
-	aria-label="Copy to clipboard"
+	aria-label={tx('common.copyToClipboard')}
 >
 	{#if confirmed}
 		<i class="fa-solid fa-check text-xs text-brand-green"></i>

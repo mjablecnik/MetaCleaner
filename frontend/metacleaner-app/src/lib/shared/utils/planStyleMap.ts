@@ -11,7 +11,7 @@ export interface PlanStyle {
 export const PLAN_CONFIG: Record<string, { monthlyAllowance: number }> = {
 	free: { monthlyAllowance: 3 },
 	pro: { monthlyAllowance: 100 },
-	proplus: { monthlyAllowance: 300 }
+	proplus: { monthlyAllowance: 100 }
 };
 
 const FREE_STYLE: PlanStyle = {

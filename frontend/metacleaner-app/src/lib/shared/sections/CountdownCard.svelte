@@ -5,9 +5,10 @@
 
 	interface Props {
 		periodEndDate: string;
+		billingPeriod?: 'monthly' | 'yearly' | null;
 	}
 
-	const { periodEndDate }: Props = $props();
+	const { periodEndDate, billingPeriod = null }: Props = $props();
 
 	const formattedDate = $derived(() => {
 		void locale.current;
@@ -26,8 +27,8 @@
 
 	function getProgress() {
 		const end = new Date(periodEndDate).getTime();
-		// Assume 30-day billing cycle to compute elapsed proportion
-		const start = end - 30 * 24 * 60 * 60 * 1000;
+		const cycleDays = billingPeriod === 'yearly' ? 365 : 30;
+		const start = end - cycleDays * 24 * 60 * 60 * 1000;
 		const now = Date.now();
 		return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
 	}

@@ -114,7 +114,7 @@
 
 <!-- CountdownCard: mobile only — shown above grid to match mobile design order -->
 <div class="mb-4 lg:hidden">
-	<CountdownCard {periodEndDate} />
+	<CountdownCard {periodEndDate} billingPeriod={billingPeriod as 'monthly' | 'yearly' | null} />
 </div>
 
 <!-- Two-column grid -->
@@ -140,7 +140,7 @@
 	<div class="flex flex-col gap-4 lg:col-span-2 lg:gap-5">
 		<!-- Desktop only — mobile duplicate rendered above grid -->
 		<div class="hidden lg:block">
-			<CountdownCard {periodEndDate} />
+			<CountdownCard {periodEndDate} billingPeriod={billingPeriod as 'monthly' | 'yearly' | null} />
 		</div>
 
 		<ReactivateCard {planId} {price} {billingPeriod} {periodEndDate} onReactivate={openModal} />
