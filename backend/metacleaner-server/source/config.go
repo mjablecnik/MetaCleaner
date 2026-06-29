@@ -58,7 +58,7 @@ func LoadConfig() (Config, error) {
 		RetentionPeriod:   time.Hour,
 		TempStoragePath:   "/tmp/metacleaner",
 		RateLimitRPM:      10,
-		SupabaseTimeout:   10 * time.Second,
+		SupabaseTimeout:   30 * time.Second,
 		MaxConcurrentJobs: 3,
 	}
 

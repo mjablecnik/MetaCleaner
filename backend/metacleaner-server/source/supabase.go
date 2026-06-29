@@ -48,8 +48,21 @@ func NewSupabaseClient(cfg Config) *SupabaseClient {
 
 func (c *SupabaseClient) doWithTimeout(ctx context.Context, req *http.Request) (*http.Response, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
-	defer cancel()
-	return c.httpClient.Do(req.WithContext(timeoutCtx))
+	resp, err := c.httpClient.Do(req.WithContext(timeoutCtx))
+	if err != nil {
+		cancel()
+		return nil, err
+	}
+	// Read the full body within the timeout context to avoid truncation
+	// caused by defer cancel() killing the context before callers read the body.
+	body, readErr := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	cancel()
+	if readErr != nil {
+		return nil, fmt.Errorf("read response body: %w", readErr)
+	}
+	resp.Body = io.NopCloser(bytes.NewReader(body))
+	return resp, nil
 }
 
 // --- DB record types (snake_case for PostgREST serialization) ---
@@ -695,6 +708,23 @@ func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID
 	return report, detail, nil
 }
 
+// GetReportMetaByHumanID fetches only the report metadata (no file records) by human-readable ID.
+// Use this when you only need PDFPath/PDFStatus and don't need the full ReportDetail.
+func (c *SupabaseClient) GetReportMetaByHumanID(ctx context.Context, humanID, userID string) (*Report, error) {
+	var rows []dbReport
+	url := c.restURL("cleaning_reports?report_id=eq." + humanID + "&select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_seconds,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at")
+	if userID != "" {
+		url += "&user_id=eq." + userID
+	}
+	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil
+	}
+	return dbRowToReport(rows[0]), nil
+}
+
 // ListReports returns all reports ordered by date descending, optionally filtered by user ID.
 func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]ReportSummary, error) {
 	var rows []dbReport
@@ -774,12 +804,11 @@ func (c *SupabaseClient) GetPDFSignedURL(ctx context.Context, path string) (stri
 	var result struct {
 		SignedURL string `json:"signedURL"`
 	}
-	req, err := c.newRequest(ctx, http.MethodPost, url, nil)
+	data, _ := json.Marshal(payload)
+	req, err := c.newRequest(ctx, http.MethodPost, url, bytes.NewReader(data))
 	if err != nil {
 		return "", err
 	}
-	data, _ := json.Marshal(payload)
-	req.Body = io.NopCloser(bytes.NewReader(data))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.doWithTimeout(ctx, req)

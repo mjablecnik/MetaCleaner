@@ -316,7 +316,7 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 
 		// Include the PDF report in the ZIP if available.
 		if reportID, err := db.GetReportIDByJobID(r.Context(), jobID); err == nil && reportID != "" {
-			if report, _, err := db.GetReportByHumanID(r.Context(), reportID, ""); err == nil && report != nil {
+			if report, err := db.GetReportMetaByHumanID(r.Context(), reportID, ""); err == nil && report != nil {
 				if report.PDFStatus == "uploaded" && report.PDFPath != "" {
 					if pdfData, err := db.DownloadPDF(r.Context(), report.PDFPath); err == nil && len(pdfData) > 0 {
 						pdfName := fmt.Sprintf("MetaCleaner_Report_%s.pdf", reportID)

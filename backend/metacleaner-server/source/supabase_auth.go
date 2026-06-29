@@ -103,8 +103,19 @@ func NewSupabaseAuthClient(cfg Config) *SupabaseAuthClient {
 
 func (c *SupabaseAuthClient) doWithTimeout(req *http.Request) (*http.Response, error) {
 	ctx, cancel := context.WithTimeout(req.Context(), c.timeout)
-	defer cancel()
-	return c.httpClient.Do(req.WithContext(ctx))
+	resp, err := c.httpClient.Do(req.WithContext(ctx))
+	if err != nil {
+		cancel()
+		return nil, err
+	}
+	body, readErr := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	cancel()
+	if readErr != nil {
+		return nil, fmt.Errorf("read response body: %w", readErr)
+	}
+	resp.Body = io.NopCloser(bytes.NewReader(body))
+	return resp, nil
 }
 
 // --- URL helpers ---

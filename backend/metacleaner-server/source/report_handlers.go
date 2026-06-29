@@ -252,7 +252,7 @@ func HandleGetPublicReportPDF(db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 		// No userID filter — public access
-		report, _, err := db.GetReportByHumanID(r.Context(), reportID, "")
+		report, err := db.GetReportMetaByHumanID(r.Context(), reportID, "")
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
 			return
@@ -283,7 +283,7 @@ func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 		userID := UserIDFromContext(r.Context())
-		report, _, err := db.GetReportByHumanID(r.Context(), reportID, userID)
+		report, err := db.GetReportMetaByHumanID(r.Context(), reportID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
 			return
