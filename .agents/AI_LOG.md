@@ -1,5 +1,11 @@
 # AI Log
 
+## 2026-06-29 23:52 — manual
+- Project: frontend (metacleaner-web — marketing/landing site)
+- Ran a full **security audit** of `frontend/metacleaner-web/` (`.agents/tmp/SECURITY_AUDIT.md` — overall MEDIUM risk skewing LOW, 0 critical/high, 4 MEDIUM + 4 LOW findings) and remediated all 8 items (`.agents/tmp/TASKS.md`). Verified-clean areas: no XSS sinks/`{@html}`, no hardcoded secrets, server-side input re-validation, linear (ReDoS-safe) email regex
+- **MEDIUM fixes**: added a strict `Content-Security-Policy` header in `nginx.conf` (`c26c691`); added `Strict-Transport-Security` (HSTS) header in `nginx.conf` (`415d1a3`); added a Subresource Integrity (`integrity`) hash to the Font Awesome cdnjs `<link>` in `src/routes/+layout.svelte` (`4a6aca8`); required JWT authentication on the publicly-invocable `send-contact-email` edge function to curb spam-relay abuse (`32e425b`)
+- **LOW fixes**: replaced the in-memory rate limiter with durable **Deno KV** shared storage and removed the `setInterval` cleanup in `supabase/functions/send-contact-email/index.ts` (`f381b88`); switched rate-limit IP from the spoofable `x-forwarded-for` to the platform-injected IP (`aac4af0`); made `isProduction()` fail-closed (defaults to production when `ENVIRONMENT` is unset) so dev CORS can't silently widen (`ece91b9`); made `scripts/deploy-functions.sh` refuse `--env prod` while `PROD_PROJECT_REF` still equals the dev ref (`4d959c5`)
+
 ## 2026-06-29 23:40 — manual
 - Project: frontend (metacleaner-web — marketing/landing site)
 - Ran a **spec-compliance code review** of `frontend/metacleaner-web/` against the three Kiro specs targeting it (`web-content-overhaul`, `responsive-web-refactor`, `about-and-404-pages`); recorded findings in `.agents/tmp/CODE_REVIEW.md` (0 CRITICAL, 1 HIGH, 6 MEDIUM, 7 LOW) and derived `.agents/tmp/TASKS.md`. Build health was already clean (prettier/eslint/svelte-check 0 errors, 317/317 en↔cs key parity)

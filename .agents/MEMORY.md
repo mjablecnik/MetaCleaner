@@ -804,3 +804,15 @@
 - Problem: `userRepository.ts` returned `{ name: name || profile.email }` — when `first_name` and `last_name` are both empty, the name field contained the email address. The `User` type already has a separate `email` field, so the fallback was redundant and caused the test `'returns empty name when both first_name and last_name are empty'` to fail.
 - Solution: Changed to `return { name, email: profile.email }` — name is an empty string when no name parts are present; callers use the email field directly if they need to display it.
 - Source: create-tests, 2026-06-29
+
+## metacleaner-web: brevoClient already sends anon key — --no-verify-jwt removal works without client changes
+- Project: metacleaner-web
+- Problem: The edge function was deployed with --no-verify-jwt, making it publicly invocable. Removing it would break clients that don't send an Authorization header.
+- Solution: brevoClient.ts already includes `Authorization: Bearer ${SUPABASE_ANON_KEY}` on every request, so dropping --no-verify-jwt from the deploy script requires zero client-side changes. The anon key is public by design (baked into the client bundle as VITE_SUPABASE_ANON_KEY).
+- Source: security-audit, 2026-06-29
+
+## metacleaner-web: Deno KV available in Supabase Edge Functions for durable rate limiting
+- Project: metacleaner-web
+- Problem: The in-memory rate limiter (Map + setInterval) is reset on every cold start and not shared across isolates, making it ineffective in a serverless environment.
+- Solution: Use `await Deno.openKv()` at module level (top-level await works in Deno). Key structure: ['rl', ip, windowNumber] with expireIn for TTL-based cleanup. Use atomic compare-and-swap with 3-attempt retry loop for race-condition-safe increments. Makes isRateLimited async — update all call sites to `await isRateLimited(...)`.
+- Source: security-audit, 2026-06-29
