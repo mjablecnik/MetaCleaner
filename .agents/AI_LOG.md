@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-29 18:57 — manual
+- Project: frontend (metacleaner-app)
+- Followed up on the security-audit session by landing the paraglide i18n message exports backing the earlier code-review fixes
+- Registered four new Paraglide message types in `src/lib/paraglide/messages/_index.js` (`ca7b566`): `apiKeys.action.copyToClipboard`, `auth.common.validation.passwordMax72`, `auth.common.error.unknown`, and the scanner `staleTitle` key; same commit also refreshed `AI_LOG.md`/`MEMORY.md` (auth-store window guard + silent-refresh mock notes)
+- Regenerated the compiled `_index.js` message bundle: replaced the ~15,700-line single inlined module (eager `getLocale` imports + per-message typedefs) with a thin barrel that `export *`s from per-message files (`common_brandname1.js`, `step1_*`, `step2_*`, etc.), shrinking the file by ~14,700 lines for tree-shakeable message imports
+- Security work from the same day was committed in its final form as `99e2179` (auth hardening — memory-only tokens, open-redirect guard, hash-fragment token delivery) and `9ceae9e` (CSP/HSTS headers, Font Awesome SRI integrity, removal of secret-shaped dead `getApiKeys()` mock); see the 18:44 entry for details
+
 ## 2026-06-29 18:44 — manual
 - Project: frontend (metacleaner-app)
 - Ran a full **security audit** of `frontend/metacleaner-app/` (`.agents/tmp/SECURITY_AUDIT.md` — overall MEDIUM risk, 0 critical/high, 3 MEDIUM + 3 LOW findings) and remediated all 6 items (`.agents/tmp/TASKS.md`)
