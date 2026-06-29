@@ -244,10 +244,14 @@ func (c *SupabaseAuthClient) SignInWithPassword(ctx context.Context, email, pass
 // SignInWithOtp sends a magic link to the given email address. The link redirects
 // to the configured MagicLinkCallbackURL.
 func (c *SupabaseAuthClient) SignInWithOtp(ctx context.Context, email string) error {
+	redirectTo := c.frontendURL + "/login"
+	if c.magicCallback != "" {
+		redirectTo = c.magicCallback
+	}
 	payload := map[string]interface{}{
 		"email": email,
 		"options": map[string]string{
-			"email_redirect_to": c.frontendURL + "/login",
+			"email_redirect_to": redirectTo,
 		},
 	}
 	data, _ := json.Marshal(payload)
@@ -288,9 +292,6 @@ func (c *SupabaseAuthClient) SignOut(ctx context.Context, accessToken string) er
 func (c *SupabaseAuthClient) ResetPasswordForEmail(ctx context.Context, email string) error {
 	payload := map[string]interface{}{
 		"email": email,
-		"options": map[string]string{
-			"email_redirect_to": c.frontendURL + "/forgot-password",
-		},
 	}
 	data, _ := json.Marshal(payload)
 	req, err := c.newAnonRequest(ctx, http.MethodPost, c.authURL("recover"), bytes.NewReader(data))

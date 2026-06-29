@@ -31,6 +31,9 @@
 	let countdownKey = $state(0);
 	let resetToken = $state('');
 	let otpRef = $state<OtpInput | undefined>(undefined);
+	let resendCooldown = $state(false);
+	let resendSuccess = $state(false);
+	let resendCooldownTimer: ReturnType<typeof setTimeout> | undefined;
 
 	// Step 3
 	let newPassword = $state('');
@@ -117,9 +120,12 @@
 	}
 
 	async function resendCode() {
+		if (resendCooldown) return;
 		otpValues = ['', '', '', '', '', ''];
 		otpApiError = '';
 		countdownKey++;
+		resendCooldown = true;
+		resendSuccess = true;
 		try {
 			await fetch(buildApiUrl('/api/auth/forgot-password'), {
 				method: 'POST',
@@ -132,6 +138,15 @@
 		setTimeout(() => {
 			otpRef?.focus();
 		}, 100);
+		// Hide success message after 4s
+		setTimeout(() => {
+			resendSuccess = false;
+		}, 4000);
+		// Cooldown 30s
+		clearTimeout(resendCooldownTimer);
+		resendCooldownTimer = setTimeout(() => {
+			resendCooldown = false;
+		}, 30000);
 	}
 
 	async function handlePasswordSubmit(e: SubmitEvent) {
@@ -335,12 +350,27 @@
 				<button
 					type="button"
 					onclick={resendCode}
-					class="flex items-center gap-1.5 text-xs font-semibold text-brand-blue transition-colors hover:text-blue-400"
+					disabled={resendCooldown}
+					class="flex items-center gap-1.5 text-xs font-semibold transition-colors {resendCooldown ? 'cursor-not-allowed text-text-muted/50' : 'text-brand-blue hover:text-blue-400'}"
 				>
-					<i class="fa-solid fa-rotate-right text-xs"></i>
-					{tx('auth.common.action.resend')}
+					{#if resendCooldown}
+						<i class="fa-solid fa-check text-xs text-brand-green"></i>
+						{tx('auth.common.action.sent')}
+					{:else}
+						<i class="fa-solid fa-rotate-right text-xs"></i>
+						{tx('auth.common.action.resend')}
+					{/if}
 				</button>
 			</div>
+
+			{#if resendSuccess}
+				<p
+					class="flex items-center gap-2 rounded-lg bg-brand-green/10 px-3 py-2 text-xs text-brand-green"
+				>
+					<i class="fa-solid fa-circle-check"></i>
+					{tx('auth.checkCode.resendSuccess')}
+				</p>
+			{/if}
 
 			{#if otpApiError}
 				<p class="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">

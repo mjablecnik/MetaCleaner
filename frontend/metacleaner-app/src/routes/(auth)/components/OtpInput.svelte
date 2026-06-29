@@ -29,7 +29,7 @@
 		const next = [...values];
 		next[idx] = digit;
 		values = next;
-		if (digit && idx < 5) {
+		if (digit && idx < values.length - 1) {
 			inputEls[idx + 1]?.focus();
 		}
 	}
@@ -44,14 +44,14 @@
 		const text = e.clipboardData?.getData('text') ?? '';
 		const digits = text
 			.replace(/[^0-9]/g, '')
-			.slice(0, 6)
+			.slice(0, values.length)
 			.split('');
 		const next = [...values];
 		digits.forEach((d, i) => {
 			next[i] = d;
 		});
 		values = next;
-		const focusIdx = Math.min(digits.length, 5);
+		const focusIdx = Math.min(digits.length, values.length - 1);
 		inputEls[focusIdx]?.focus();
 		e.preventDefault();
 	}
