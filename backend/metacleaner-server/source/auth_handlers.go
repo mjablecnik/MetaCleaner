@@ -515,6 +515,13 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
 				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}
+		} else if existing.DeactivatedAt != nil {
+			// Auto-reactivate if the account was deactivated (pending deletion).
+			if err := authClient.ReactivateProfile(r.Context(), session.User.ID); err != nil {
+				LoggerFromContext(r.Context()).Warn("magic link callback: failed to reactivate profile", "userId", session.User.ID, "error", err)
+			} else {
+				LoggerFromContext(r.Context()).Info("magic link callback: account reactivated", "userId", session.User.ID)
+			}
 		}
 
 		params := url.Values{}
@@ -672,6 +679,13 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) htt
 			// Provision initial trial credits in credit_balances table.
 			if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create credit balance", "userId", session.User.ID, "error", err)
+			}
+		} else if existing.DeactivatedAt != nil {
+			// Auto-reactivate if the account was deactivated (pending deletion).
+			if err := authClient.ReactivateProfile(r.Context(), session.User.ID); err != nil {
+				LoggerFromContext(r.Context()).Warn("oauth callback: failed to reactivate profile", "userId", session.User.ID, "error", err)
+			} else {
+				LoggerFromContext(r.Context()).Info("oauth callback: account reactivated", "userId", session.User.ID)
 			}
 		}
 
