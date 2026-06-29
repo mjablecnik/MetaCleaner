@@ -1,5 +1,17 @@
 # Memory
 
+## auth.svelte.ts _restore() uses window.location without typeof guard — causes 37 test failures
+- Project: metacleaner-app
+- Problem: `_restore()` accessed `window.location.href` / `.hash` / `.search` directly inside a `if (!browser) return` guard. Tests mock `browser: true` but run in `environment: 'node'`, so `window` is undefined. All 33 authStore tests and 2 antiEnumeration tests failed with `ReferenceError: window is not defined`.
+- Solution: Replace `window.location.href` with `typeof window !== 'undefined' ? window.location.href : ''` and add `typeof window !== 'undefined' &&` guards before `.hash` checks. The `login()` function already had this guard (see earlier MEMORY entry); `_restore()` did not.
+- Source: security-audit, 2026-06-29
+
+## authStore silent-refresh on page load: _fetchSubscription consumes mockResolvedValueOnce
+- Project: metacleaner-app
+- Problem: After removing the access token from localStorage, `_restore()` always calls `refresh()` to get a new token. In tests that mock `fetch` with `mockResolvedValueOnce`, the silent restore refresh consumes mock #1 and the subsequent `_fetchSubscription()` call (inside refresh().then()) consumes mock #2. Any explicit `authStore.refresh()` call after that gets undefined from `vi.fn()`, causing `TypeError: Cannot read properties of undefined (reading 'ok')`.
+- Solution: For tests that need to call `authStore.refresh()` explicitly, import fresh with empty storage (so `_restore()` returns synchronously with no network call), then call `setTokensFromCallback()` to prime the in-memory state. Only then set up the single `mockResolvedValueOnce` for the explicit refresh.
+- Source: security-audit, 2026-06-29
+
 ## Hardcoded English strings persist even when i18n keys already exist
 - Project: metacleaner-app
 - Problem: Components hardcode user-facing English while the matching `tx()` keys are already defined in `messages/en.json`/`cs.json` (so the keys become dead and Czech users see English). Confirmed in both `CreateKeyModal.svelte` copies (`apiKeys.createModal.cancel/submit/done/keyValueLabel/namePlaceholder/notePlaceholder` exist but unused), `UpgradeModal.svelte` reports branch, `KeyRow.svelte` `title="Delete"`, and attribute text (`CopyButton.svelte` `aria-label`, placeholders, `title` tooltips). A plain `tx('...')` grep misses these because they are raw literals, and a key-parity check passes because the keys exist — they're just not referenced.

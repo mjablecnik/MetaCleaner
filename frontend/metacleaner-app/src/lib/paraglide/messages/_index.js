@@ -234,6 +234,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Common_Downloadzip1Inputs */
 /** @typedef {{}} Common_Viewreport1Inputs */
 /** @typedef {{}} Common_DismissInputs */
+/** @typedef {{}} Common_Copytoclipboard2Inputs */
 /** @typedef {{}} Common_Removefile1Inputs */
 /** @typedef {{}} Common_Openmenu1Inputs */
 /** @typedef {{}} Common_Closemenu1Inputs */
@@ -257,6 +258,8 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Auth_Common_Validation_Emailinvalid1Inputs */
 /** @typedef {{}} Auth_Common_Validation_Passwordmin81Inputs */
 /** @typedef {{}} Auth_Common_Validation_Passwordsmismatch1Inputs */
+/** @typedef {{}} Auth_Common_Validation_Passwordmax721Inputs */
+/** @typedef {{}} Auth_Common_Error_UnknownInputs */
 /** @typedef {{}} Auth_Common_Validation_Passwordsmatch1Inputs */
 /** @typedef {{}} Auth_Common_Validation_Otpincomplete1Inputs */
 /** @typedef {{}} Auth_Common_Strength_WeakInputs */
@@ -688,6 +691,7 @@ import { getLocale, experimentalStaticLocale } from "../runtime.js"
 /** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Joberror_Desc2Inputs */
 /** @typedef {{}} Docs_Endpoint_Jobprogress_Ws_Reportready_Desc2Inputs */
 /** @typedef {{}} Credits_Indicator_CreditsInputs */
+/** @typedef {{}} Credits_Indicator_Staletitle1Inputs */
 /** @typedef {{}} Credits_Banner_TitleInputs */
 /** @typedef {{}} Credits_Banner_RemainingInputs */
 /** @typedef {{}} Credits_Banner_OfInputs */
@@ -4465,6 +4469,21 @@ export { common_dismiss as "common.dismiss" }
 /**
 * | output |
 * | --- |
+* | "Copy to clipboard" |
+*
+* @param {Common_Copytoclipboard2Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const common_copytoclipboard2 = /** @type {((inputs?: Common_Copytoclipboard2Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Common_Copytoclipboard2Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.common_copytoclipboard2(inputs)
+	return __cs.common_copytoclipboard2(inputs)
+});
+export { common_copytoclipboard2 as "common.copyToClipboard" }
+/**
+* | output |
+* | --- |
 * | "Remove file" |
 *
 * @param {Common_Removefile1Inputs} inputs
@@ -4807,6 +4826,36 @@ const auth_common_validation_passwordsmismatch1 = /** @type {((inputs?: Auth_Com
 	return __cs.auth_common_validation_passwordsmismatch1(inputs)
 });
 export { auth_common_validation_passwordsmismatch1 as "auth.common.validation.passwordsMismatch" }
+/**
+* | output |
+* | --- |
+* | "Password must be at most 72 characters." |
+*
+* @param {Auth_Common_Validation_Passwordmax721Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_common_validation_passwordmax721 = /** @type {((inputs?: Auth_Common_Validation_Passwordmax721Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Validation_Passwordmax721Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_common_validation_passwordmax721(inputs)
+	return __cs.auth_common_validation_passwordmax721(inputs)
+});
+export { auth_common_validation_passwordmax721 as "auth.common.validation.passwordMax72" }
+/**
+* | output |
+* | --- |
+* | "An unexpected error occurred. Please try again." |
+*
+* @param {Auth_Common_Error_UnknownInputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const auth_common_error_unknown = /** @type {((inputs?: Auth_Common_Error_UnknownInputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Auth_Common_Error_UnknownInputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.auth_common_error_unknown(inputs)
+	return __cs.auth_common_error_unknown(inputs)
+});
+export { auth_common_error_unknown as "auth.common.error.unknown" }
 /**
 * | output |
 * | --- |
@@ -11230,6 +11279,21 @@ const credits_indicator_credits = /** @type {((inputs?: Credits_Indicator_Credit
 	return __cs.credits_indicator_credits(inputs)
 });
 export { credits_indicator_credits as "credits.indicator.credits" }
+/**
+* | output |
+* | --- |
+* | "Stale data" |
+*
+* @param {Credits_Indicator_Staletitle1Inputs} inputs
+* @param {{ locale?: "en" | "cs" }} options
+* @returns {LocalizedString}
+*/
+const credits_indicator_staletitle1 = /** @type {((inputs?: Credits_Indicator_Staletitle1Inputs, options?: { locale?: "en" | "cs" }) => LocalizedString) & import('../runtime.js').MessageMetadata<Credits_Indicator_Staletitle1Inputs, { locale?: "en" | "cs" }, {}>} */ ((inputs = {}, options = {}) => {
+	const locale = experimentalStaticLocale ?? options.locale ?? getLocale()
+	if (locale === "en") return __en.credits_indicator_staletitle1(inputs)
+	return __cs.credits_indicator_staletitle1(inputs)
+});
+export { credits_indicator_staletitle1 as "credits.indicator.staleTitle" }
 /**
 * | output |
 * | --- |

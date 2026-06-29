@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-29 18:44 — manual
+- Project: frontend (metacleaner-app)
+- Ran a full **security audit** of `frontend/metacleaner-app/` (`.agents/tmp/SECURITY_AUDIT.md` — overall MEDIUM risk, 0 critical/high, 3 MEDIUM + 3 LOW findings) and remediated all 6 items (`.agents/tmp/TASKS.md`)
+- **MEDIUM fixes**: fixed open redirect by validating the post-login `returnTo` is a same-origin relative path before `goto()` (`f187e75`, `auth.svelte.ts`); added `Content-Security-Policy` and HSTS (`Strict-Transport-Security`) response headers in `nginx.conf` (`42b388a`); stopped persisting tokens in `localStorage`, keeping the access token in memory only (`05e9a0c`, `auth.svelte.ts`)
+- **LOW fixes**: removed the dead `getApiKeys()` mock containing `sk_live_`/`sk_test_`-shaped strings from `settingsRepository.ts` (`0fa9bba`); preferred the URL hash fragment over the query string for auth-callback token delivery to keep tokens out of server logs/Referer (`a592432`, `auth.svelte.ts`); added a Subresource Integrity (`integrity`) hash to the Font Awesome CDN `<link>` in `app.html` (`bb79067`)
+- Earlier same-day commits also present: implemented code-review findings and a temp-file/agent-log cleanup (`46dc568`, `bce0b36`)
+
 ## 2026-06-29 18:12 — manual
 - Project: frontend (metacleaner-app), plus monorepo-wide shell scripts
 - Ran a full **MetaCleaner frontend code review** against `.kiro/specs/` (`.agents/tmp/CODE_REVIEW.md` — 1 CRITICAL, 4 HIGH, 8 MEDIUM, 14 LOW findings) and implemented the top 13 (`.agents/tmp/TASKS.md` items 1–13); LOW items 14–27 left open as backlog
