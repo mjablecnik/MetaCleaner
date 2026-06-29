@@ -13,7 +13,7 @@
 
 	let email = $state('');
 	let password = $state('');
-	let rememberMe = $state(false);
+	let rememberMe = $state(true);
 	let passwordVisible = $state(false);
 	let emailError = $state('');
 	let passwordError = $state('');
