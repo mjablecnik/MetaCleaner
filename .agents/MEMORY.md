@@ -1,5 +1,29 @@
 # Memory
 
+## Hardcoded English strings persist even when i18n keys already exist
+- Project: metacleaner-app
+- Problem: Components hardcode user-facing English while the matching `tx()` keys are already defined in `messages/en.json`/`cs.json` (so the keys become dead and Czech users see English). Confirmed in both `CreateKeyModal.svelte` copies (`apiKeys.createModal.cancel/submit/done/keyValueLabel/namePlaceholder/notePlaceholder` exist but unused), `UpgradeModal.svelte` reports branch, `KeyRow.svelte` `title="Delete"`, and attribute text (`CopyButton.svelte` `aria-label`, placeholders, `title` tooltips). A plain `tx('...')` grep misses these because they are raw literals, and a key-parity check passes because the keys exist — they're just not referenced.
+- Solution: When reviewing i18n, grep `.svelte` files for raw quoted text in element bodies AND in `aria-label`/`title`/`placeholder` attributes, not just `tx()` calls. Also diff defined keys against referenced keys to surface defined-but-unused keys (a strong signal a component hardcoded what should have been a `tx()` call).
+- Source: code-review, 2026-06-29
+
+## "tasks.md marked [x]" does not mean the feature was implemented
+- Project: metacleaner-app
+- Problem: Spec tasks marked complete were not actually shipped. The api-keys reveal/copy redesign (copy button, eye-toggle, masked-by-default) is absent from `KeyRow.svelte`/`ApiKeysSection.svelte` though tasks are `[x]`; the created key's plaintext is dropped in `settings/+page.svelte` `handleKeyCreated` (ignores `_fullKey`) so reveal could never work; the mobile credit card (`MobileHamburgerMenu.svelte:120-157`) is entirely HTML-commented-out though credits Req 10 tasks are done; `docs-sidebar-highlight` is the inverse (fully implemented but all tasks still `[ ]`).
+- Solution: Never trust task checkboxes during review — verify each claimed-done requirement against the actual rendered component. Watch for whole blocks wrapped in `<!-- ... -->` and for callback params prefixed `_` (intentionally-ignored values that silently drop spec-required data).
+- Source: code-review, 2026-06-29
+
+## Spec values silently diverge from constants (allowances, weights, blur, routes)
+- Project: metacleaner-app
+- Problem: Numeric/string constants drift from the spec without the spec being updated: `planStyleMap.ts` Pro+ `monthlyAllowance` is 300 (spec 100); scanner `CATEGORY_WEIGHTS` use gps 0.30 (design says 0.40) plus an undocumented `aiOrigin:0.65`; Step2 risk blur is `blur-[8px]` (spec 4px); CTAs go to `/subscription` (spec `/pricing`) and API keys moved into `/settings` (leaving `common.nav.apiKeys` orphaned). Some are intentional later decisions, but the source-of-truth spec was never reconciled.
+- Solution: Grep specs for explicit numbers/paths and compare against the corresponding constants files (`planStyleMap.ts`, `scanner/constants.ts`, route literals). Flag each as either a bug or a stale spec needing update — don't assume the newest code is correct.
+- Source: code-review, 2026-06-29
+
+## Many .kiro/specs target sibling packages, not metacleaner-app
+- Project: metacleaner-app
+- Problem: When reviewing `frontend/metacleaner-app/` against `.kiro/specs/`, several spec folders describe OTHER packages and produce false "missing feature" findings if assumed in-scope: `responsive-web-refactor`, `web-content-overhaul`, `about-and-404-pages`/`about-and-error-pages` → `frontend/metacleaner-web/`; `monitoring-real-api-integration` → `frontend/metacleaner-monitoring/`; `steering-compliance-refactor` → CLI + Go backend; `metacleaner-backend`/`metadata-inspect-cli` → backend/CLI. (E.g. there is correctly NO `/about` route in metacleaner-app.)
+- Solution: Read each spec's intro/requirements for the target directory before reviewing; skip specs that name a different package. Confirm the file paths a spec references actually exist in the app under review.
+- Source: code-review, 2026-06-29
+
 ## docsRepository tests fail after WS endpoint added (baseUrl, method, success-response assertions)
 - Project: metacleaner-app
 - Problem: After adding the WebSocket endpoint (`method: 'WS'`) and removing `/v1` from `baseUrl`, 10 tests broke: (1) `baseUrl` assertion still expected `/v1`, (2) method-validity checks only allowed `['GET','POST','DEL']` not `'WS'`, (3) "full endpoints have at least one success response" included WS (which legitimately has only error responses), (4) i18n placeholder regex `/\$\{.*\}/` false-positived on JS template literals in WS curl examples (`${data.fileId}`).

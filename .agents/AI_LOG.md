@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-29 18:12 — manual
+- Project: frontend (metacleaner-app), plus monorepo-wide shell scripts
+- Ran a full **MetaCleaner frontend code review** against `.kiro/specs/` (`.agents/tmp/CODE_REVIEW.md` — 1 CRITICAL, 4 HIGH, 8 MEDIUM, 14 LOW findings) and implemented the top 13 (`.agents/tmp/TASKS.md` items 1–13); LOW items 14–27 left open as backlog
+- **Critical/high fixes** (`9c40e4a`): re-enabled the commented-out mobile drawer credit section in `MobileHamburgerMenu.svelte`; added copy button + eye-toggle + masked-by-default reveal to API key rows (`KeyRow.svelte`, `ApiKeysSection.svelte`) wiring the unused `apiKeys.action.showKey/hideKey/copyKey` keys; threaded the new key plaintext (`_fullKey`) through `handleKeyCreated` into a `newKeyValues` map so created keys stay revealable; fixed Pro+ `monthlyAllowance` 300→100 in `planStyleMap.ts`; replaced hardcoded English with `tx()` in `CreateKeyModal`, `UpgradeModal` reports branch, `KeyRow`, and `EmptyState`
+- **Medium fixes** (`321f6b3`): added missing i18n keys `auth.common.validation.passwordMax72` and `auth.common.error.unknown` to `en.json`/`cs.json`; resolved docs Pro+ gate; reconciled risk-scoring weights in `scanner/constants.ts`; guarded the free plan in checkout (`subscription/+page.svelte`); fixed `CountdownCard.getProgress()` to use the real billing period; removed the non-spec `PATCH /api/keys/{id}/activate` activate flow; added an inline desktop "Docs" nav link + enabled the docs back button (`NavBar.svelte`); routed hardcoded `aria-label`/`title`/`placeholder` text through `tx()`
+- Earlier same-day work also captured by git log: **steering-compliant script migration** across the monorepo (`890e2ee`, `842a0d3` — moved scripts into per-project `scripts/` dirs per `.agents/tmp/SPEC.md`), Stripe checkout/webhook + customer-deletion plumbing, billing cancel-downgrade flow, mobile navigation dropdown, settings page billing/danger-zone enhancements, and auth improvements (remember-me default, code resend cooldown, account auto-reactivation)
+
 ## 2026-06-28 08:27 — manual
 - Project: frontend (metacleaner-monitoring)
 - Completed the **full UI decomposition refactor** of the Monitorly monitoring app (`.agents/tmp/REFACTORING.md` / `TASKS.md`, all 67 tasks done), breaking the 10 monolithic page files (~8,200 lines) into a Theme → Elements → Components → Sections → Page hierarchy with no visual change; net removed ~7,800 lines of duplicated markup
