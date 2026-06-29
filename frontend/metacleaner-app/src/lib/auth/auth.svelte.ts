@@ -69,6 +69,26 @@ async function callAuthApi<T>(
 	return res.json() as Promise<T>;
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────
+
+/**
+ * Validates that a `returnTo` redirect target is a same-origin relative path.
+ * Rejects protocol-relative URLs (//evil.tld), backslash tricks (/\evil),
+ * and anything containing a scheme (https://), preventing open-redirect phishing.
+ */
+function _safeReturnTo(raw: string | null): string {
+	if (!raw) return '/';
+	let p: string;
+	try {
+		p = decodeURIComponent(raw);
+	} catch {
+		return '/';
+	}
+	// Must start with exactly one '/' and not be '//' or '/\'
+	if (!p.startsWith('/') || p.startsWith('//') || p.startsWith('/\\')) return '/';
+	return p;
+}
+
 // ─── Reactive state ──────────────────────────────────────────────
 
 let _accessToken = $state<string | null>(null);
@@ -93,7 +113,9 @@ function _persist(access: string, refresh: string, expiresIn: number): void {
 			? expiresIn * 1000
 			: Math.min(expiresIn * 1000, SHORT_SESSION_MS);
 
-		localStorage.setItem(TOKEN_KEY, access);
+		// Access token is kept in memory only (not in localStorage) to prevent
+		// exfiltration by XSS or a compromised dependency. The refresh token persists
+		// the session across page loads via a silent refresh on restore.
 		localStorage.setItem(REFRESH_KEY, refresh);
 		localStorage.setItem(EXPIRES_KEY, String(Date.now() + effectiveExpiresMs));
 	}
@@ -133,19 +155,26 @@ function _restore(): void {
 
 	// Check if URL contains auth callback tokens (magic link / OAuth redirect).
 	// Process them before checking localStorage so auth guard sees the session immediately.
-	const href = window.location.href;
+	// Guard with typeof window to avoid ReferenceError in SSR/node test environments where
+	// browser is mocked as true but window is not available.
+	const href = typeof window !== 'undefined' ? window.location.href : '';
 	const hasCallbackTokens =
 		href.includes('access_token') && href.includes('refresh_token');
 	const hasHashTokens =
+		typeof window !== 'undefined' &&
 		window.location.hash.includes('access_token') &&
 		window.location.hash.includes('refresh_token');
 
 	if (hasCallbackTokens || hasHashTokens) {
 		let params: URLSearchParams;
-		if (window.location.search.includes('access_token')) {
-			params = new URLSearchParams(window.location.search);
-		} else {
+		// Prefer the hash fragment: tokens in the fragment are NOT sent to the server and
+		// do not appear in access logs or the Referer header. Query-string tokens may be
+		// recorded in reverse-proxy logs before this cleanup runs.
+		if (hasHashTokens) {
 			params = new URLSearchParams(window.location.hash.slice(1));
+		} else {
+			// Query-string fallback (backend should be configured to use hash fragment instead)
+			params = new URLSearchParams(window.location.search);
 		}
 
 		const accessToken = params.get('access_token');
@@ -167,27 +196,21 @@ function _restore(): void {
 		}
 	}
 
-	const token = localStorage.getItem(TOKEN_KEY);
+	// Access token is never persisted to localStorage — purge any value left by older code.
+	localStorage.removeItem(TOKEN_KEY);
+
 	const storedRefresh = localStorage.getItem(REFRESH_KEY);
 	const expiresAt = Number(localStorage.getItem(EXPIRES_KEY) ?? '0');
 
-	if (token && expiresAt > Date.now()) {
-		_accessToken = token;
-		_refreshToken = storedRefresh;
-		_isAuthReady = true;
-		// Fetch subscription data in background (non-blocking)
-		_fetchSubscription(token);
-	} else if (storedRefresh) {
-		// Access token expired but refresh token exists — attempt silent refresh.
-		// If remember me is OFF and token expired, don't refresh — session is over.
+	if (storedRefresh) {
 		const rememberMe = localStorage.getItem(REMEMBER_KEY) !== 'false';
-		if (!rememberMe) {
+		if (!rememberMe && expiresAt > 0 && expiresAt <= Date.now()) {
+			// Short session (remember-me off) has expired — require re-login.
 			_clear();
 			_isAuthReady = true;
 			return;
 		}
-		localStorage.removeItem(TOKEN_KEY);
-		localStorage.removeItem(EXPIRES_KEY);
+		// Silently exchange the refresh token for a fresh access token.
 		_refreshToken = storedRefresh;
 		refresh()
 			.then(() => {
@@ -242,8 +265,7 @@ async function login(email: string, password: string, rememberMe = true): Promis
 			typeof window !== 'undefined'
 				? new URLSearchParams(window.location.search).get('returnTo')
 				: null;
-		const destination = returnTo ? decodeURIComponent(returnTo) : resolve('/' as Pathname);
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		const destination = resolve(_safeReturnTo(returnTo) as Pathname);
 		await goto(destination);
 	} finally {
 		_isLoading = false;

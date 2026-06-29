@@ -59,14 +59,30 @@ describe('authStore — token storage and retrieval', () => {
 		expect(authStore.user).toBeNull();
 	});
 
-	it('restores valid tokens from localStorage on module init', async () => {
-		mockStorage.setItem(TOKEN_KEY, 'stored-access');
+	it('restores session via silent refresh on module init when refresh token exists', async () => {
+		// Access token is no longer stored in localStorage — only the refresh token persists.
+		// _restore() always calls refresh() to get a new in-memory access token.
 		mockStorage.setItem(REFRESH_KEY, 'stored-refresh');
 		mockStorage.setItem(EXPIRES_KEY, String(Date.now() + 3_600_000));
 
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockResolvedValueOnce(
+				new Response(
+					JSON.stringify({
+						access_token: 'refreshed-access',
+						refresh_token: 'stored-refresh',
+						expires_in: 3600
+					}),
+					{ status: 200 }
+				)
+			)
+		);
+
 		const { authStore } = await importFresh();
+		await vi.waitFor(() => expect(authStore.isAuthReady).toBe(true));
 		expect(authStore.isAuthenticated).toBe(true);
-		expect(authStore.accessToken).toBe('stored-access');
+		expect(authStore.accessToken).toBe('refreshed-access');
 		expect(authStore.refreshToken).toBe('stored-refresh');
 	});
 
@@ -153,14 +169,15 @@ describe('authStore — token storage and retrieval', () => {
 		expect(authStore.accessToken).toBeNull();
 	});
 
-	it('setTokensFromCallback stores tokens in state and localStorage', async () => {
+	it('setTokensFromCallback stores tokens in state (access in memory, refresh in localStorage)', async () => {
 		const { authStore } = await importFresh();
 		authStore.setTokensFromCallback('tok-access', 'tok-refresh', 3600);
 
 		expect(authStore.isAuthenticated).toBe(true);
 		expect(authStore.accessToken).toBe('tok-access');
 		expect(authStore.refreshToken).toBe('tok-refresh');
-		expect(mockStorage.getItem(TOKEN_KEY)).toBe('tok-access');
+		// Access token must NOT be stored in localStorage (XSS exfiltration risk)
+		expect(mockStorage.getItem(TOKEN_KEY)).toBeNull();
 		expect(mockStorage.getItem(REFRESH_KEY)).toBe('tok-refresh');
 	});
 
@@ -244,7 +261,8 @@ describe('authStore — login state transition', () => {
 
 		expect(authStore.isAuthenticated).toBe(true);
 		expect(authStore.accessToken).toBe('access-123');
-		expect(mockStorage.getItem(TOKEN_KEY)).toBe('access-123');
+		// Access token must NOT be in localStorage (XSS exfiltration risk); only refresh token persists
+		expect(mockStorage.getItem(TOKEN_KEY)).toBeNull();
 		expect(mockStorage.getItem(REFRESH_KEY)).toBe('refresh-456');
 	});
 
@@ -427,7 +445,8 @@ describe('authStore — refresh state transition', () => {
 
 		expect(authStore.accessToken).toBe('new-access');
 		expect(authStore.refreshToken).toBe('new-refresh');
-		expect(mockStorage.getItem(TOKEN_KEY)).toBe('new-access');
+		// Access token must NOT be in localStorage; only refresh token persists
+		expect(mockStorage.getItem(TOKEN_KEY)).toBeNull();
 		expect(mockStorage.getItem(REFRESH_KEY)).toBe('new-refresh');
 	});
 
@@ -450,24 +469,26 @@ describe('authStore — refresh state transition', () => {
 		);
 	});
 
-	it('refresh() falls back to localStorage refresh token when in-memory is null', async () => {
-		// Pre-populate localStorage with valid tokens (simulates tokens from previous session)
-		mockStorage.setItem(TOKEN_KEY, 'old-access');
-		mockStorage.setItem(REFRESH_KEY, 'ls-refresh-token');
-		mockStorage.setItem(EXPIRES_KEY, String(Date.now() + 3_600_000));
-
-		const { authStore } = await importFresh(); // _restore() picks up ls tokens
+	it('refresh() uses in-memory refresh token to exchange for new tokens', async () => {
+		// Import with empty storage so _restore() returns synchronously without a network call.
+		const { authStore } = await importFresh();
+		// Establish auth state in memory (access token in-memory, refresh token in localStorage)
+		authStore.setTokensFromCallback('old-access', 'old-refresh', 3600);
 
 		mockFetch.mockResolvedValueOnce(
 			new Response(
-				JSON.stringify({ access_token: 'new', refresh_token: 'new-ref', expires_in: 3600 }),
+				JSON.stringify({ access_token: 'new-access', refresh_token: 'new-ref', expires_in: 3600 }),
 				{ status: 200 }
 			)
 		);
 
 		await authStore.refresh();
 
-		expect(authStore.accessToken).toBe('new');
+		expect(authStore.accessToken).toBe('new-access');
+		expect(authStore.refreshToken).toBe('new-ref');
+		// Access token must NOT be stored in localStorage
+		expect(mockStorage.getItem(TOKEN_KEY)).toBeNull();
+		expect(mockStorage.getItem(REFRESH_KEY)).toBe('new-ref');
 	});
 
 	it('refresh() throws when no refresh token exists anywhere', async () => {
