@@ -816,7 +816,7 @@
 	"settings.affiliate.commissionRate": "20% provizi",
 	"settings.affiliate.commissionInfoPost": "po dobu 12 měsíců. Výplata probíhá každý měsíc.",
 	"settings.apiKeys.title": "API klíče",
-	"settings.apiKeys.subtitle": "Přístup k Settiq REST API endpointům",
+	"settings.apiKeys.subtitle": "Správa klíčů pro REST API",
 	"settings.apiKeys.productionLabel": "Production Key",
 	"settings.apiKeys.activeBadge": "Aktivní",
 	"settings.apiKeys.keyCopied": "API klíč zkopírován",

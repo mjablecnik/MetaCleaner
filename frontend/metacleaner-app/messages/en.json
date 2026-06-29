@@ -816,7 +816,7 @@
 	"settings.affiliate.commissionRate": "20% commission",
 	"settings.affiliate.commissionInfoPost": "for 12 months. Payouts are monthly.",
 	"settings.apiKeys.title": "API Keys",
-	"settings.apiKeys.subtitle": "Access Settiq REST API endpoints",
+	"settings.apiKeys.subtitle": "Manage your REST API keys",
 	"settings.apiKeys.productionLabel": "Production Key",
 	"settings.apiKeys.activeBadge": "Active",
 	"settings.apiKeys.keyCopied": "API key copied",
