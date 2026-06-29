@@ -7,7 +7,7 @@
 	import AccountInfoSection from './sections/AccountInfoSection.svelte';
 	import ChangePasswordSection from './sections/ChangePasswordSection.svelte';
 	import ApiKeysSection from './sections/ApiKeysSection.svelte';
-	// import DangerZoneSection from './sections/DangerZoneSection.svelte';
+	import DangerZoneSection from './sections/DangerZoneSection.svelte';
 	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
 	import AffiliateProgramSection from './sections/AffiliateProgramSection.svelte';
 	import CreateKeyModal from './components/CreateKeyModal.svelte';
@@ -69,8 +69,7 @@
 				<ChangePasswordSection onSave={() => triggerToast(tx('settings.password.saveSuccess'))} />
 			</SettingsAccordionCard>
 
-			<!-- DangerZoneSection — temporarily hidden, will be used later -->
-			<!-- <DangerZoneSection /> -->
+			<DangerZoneSection />
 		</div>
 
 		<!-- RIGHT COLUMN -->

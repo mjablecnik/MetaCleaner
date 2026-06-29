@@ -306,6 +306,13 @@ func handleInvoicePaid(ctx context.Context, db *SupabaseClient, inv *stripe.Invo
 		return nil
 	}
 
+	// Skip proration invoices from plan upgrades — credits are already adjusted
+	// by changePlanUpgrade with proper consumed-credit accounting.
+	if inv.BillingReason == stripe.InvoiceBillingReasonSubscriptionUpdate {
+		slog.Info("webhook: invoice.paid is subscription update (proration), skipping credit reset", "invoiceID", inv.ID)
+		return nil
+	}
+
 	var stripeSubID string
 	if inv.Parent != nil && inv.Parent.SubscriptionDetails != nil && inv.Parent.SubscriptionDetails.Subscription != nil {
 		stripeSubID = inv.Parent.SubscriptionDetails.Subscription.ID

@@ -79,6 +79,28 @@ func (c *SupabaseClient) CreateStripeCustomer(ctx context.Context, userID, strip
 	return c.doJSON(ctx, http.MethodPost, c.restURL("stripe_customers"), rec, &rows)
 }
 
+// DeleteStripeCustomer removes the Stripe customer mapping for a user.
+// Used when a stored customer ID is no longer valid in Stripe.
+func (c *SupabaseClient) DeleteStripeCustomer(ctx context.Context, userID string) error {
+	url := c.restURL("stripe_customers?user_id=eq." + userID)
+	req, err := c.newRequest(ctx, http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Prefer", "return=minimal")
+
+	resp, err := c.doWithTimeout(ctx, req)
+	if err != nil {
+		return fmt.Errorf("delete stripe customer: %w", err)
+	}
+	resp.Body.Close()
+
+	if resp.StatusCode >= 300 {
+		return fmt.Errorf("delete stripe customer: status %d", resp.StatusCode)
+	}
+	return nil
+}
+
 // --- Subscription operations ---
 
 // GetSubscriptionByUserID returns the most recent subscription for a user, or nil if none exists.

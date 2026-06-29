@@ -784,7 +784,23 @@ func getOrCreateStripeCustomer(ctx context.Context, db *SupabaseClient, userID, 
 		return "", fmt.Errorf("lookup customer: %w", err)
 	}
 	if existing != "" {
-		return existing, nil
+		// Validate that the customer still exists in Stripe.
+		cust, err := stripecustomer.Get(existing, nil)
+		if err != nil {
+			// Any error from Stripe means the customer is not usable — recreate.
+			slog.Warn("billing: stale Stripe customer (API error), recreating", "userID", userID, "oldCustomerID", existing, "error", err)
+			if delErr := db.DeleteStripeCustomer(ctx, userID); delErr != nil {
+				return "", fmt.Errorf("remove stale customer mapping: %w", delErr)
+			}
+		} else if cust.Deleted {
+			// Customer exists but was soft-deleted in Stripe.
+			slog.Warn("billing: stale Stripe customer (deleted), recreating", "userID", userID, "oldCustomerID", existing)
+			if delErr := db.DeleteStripeCustomer(ctx, userID); delErr != nil {
+				return "", fmt.Errorf("remove stale customer mapping: %w", delErr)
+			}
+		} else {
+			return existing, nil
+		}
 	}
 
 	params := &stripe.CustomerParams{
