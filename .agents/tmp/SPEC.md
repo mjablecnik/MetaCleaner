@@ -1,105 +1,90 @@
-# SPEC — MetaCleaner Monitoring: Mock Data Alignment
+# Shell Scripts — Steering Compliance Specification
 
-## 1. Overview & Goals
+## Goal
 
-The MetaCleaner Monitoring dashboard (`frontend/metacleaner-monitoring/`) is a
-SvelteKit UI-only mockup. All data is hardcoded in repository factory functions
-under `src/lib/repositories/`. No real API calls are made.
+Bring all shell scripts across the MetaCleaner monorepo into compliance with steering rules. This means:
 
-**Problem:** the mock data uses generic placeholder content (fictional
-e-commerce endpoints, generic errors, unnamed machines) that does not reflect
-the real MetaCleaner product.
+1. All operational scripts live in `scripts/` within their project
+2. Every script starts with the portability pattern (`#!/bin/bash`, `set -euo pipefail`, `SCRIPT_DIR`, `PROJECT_DIR`, `cd "$PROJECT_DIR"`)
+3. `fly-setup.sh` is replaced by `scripts/deploy.sh` with `--env` flag, `DPLOY_ENV_FILE` support, and `.env-prod` default
+4. Each deployable project gets `scripts/build.sh`, `scripts/stop-docker.sh`
+5. `start-docker.sh` moves to `scripts/start-docker.sh` with portability pattern
+6. Old root-level scripts are deleted
+7. App name parsing uses the standardized `grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*"\(.*\)"/\1/' | tr -d '\r'`
 
-**Goal:** replace all generic mock data with realistic MetaCleaner-specific
-values (real services, endpoints, error scenarios, business model, Czech-focused
-geo) so the dashboard works as a credible visual prototype and design reference,
-and so the data layer is shaped for eventual real API integration.
+## Projects Affected
 
-MetaCleaner = SaaS that strips privacy metadata (GPS/EXIF/XMP) from photos and
-videos. Services run on Fly.io (Frankfurt): `metacleaner-server` (Go backend +
-ExifTool/FFmpeg pipeline), `metacleaner-web` (nginx landing), `metacleaner-app`
-(nginx SPA), `metacleaner-monitoring` (this app). External: Supabase
-(Postgres/Auth/Storage), Cloudflare (CDN), Stripe (billing), Sentry (errors).
+| Project | Path | Has fly.toml |
+|---------|------|:---:|
+| Backend Server | `backend/metacleaner-server/` | Yes |
+| Frontend Web | `frontend/metacleaner-web/` | Yes |
+| Frontend App | `frontend/metacleaner-app/` | Yes |
+| Frontend Monitoring | `frontend/metacleaner-monitoring/` | Yes |
+| CLI | `terminal/metacleaner-cli/` | No |
+| Architecture | `architecture/` | No |
 
-## 2. Technical Approach & Architecture
+## Script Templates
 
-- **Data layer:** each file in `src/lib/repositories/` exports factory functions
-  returning typed arrays/objects of hardcoded data. UI components consume them
-  directly. Keep data static — no randomization or date math.
-- **Two change categories:**
-  - **A — Mock data replacement:** edit returned values only. Do NOT change
-    TypeScript interfaces or function signatures (except where B requires it).
-  - **B — Frontend code changes:** add `app` field to two interfaces and surface
-    it in components; update `.env.example` and i18n.
-- **No files deleted, no new files created.**
-- **No layout/styling changes** beyond minimal field additions in B1/B2.
-- Validate with `bun run check` (and visually confirm the availability grid
-  handles 7 cards).
+### Portability Header (all scripts)
 
-## 3. Key Components & Responsibilities
+```bash
+#!/bin/bash
+set -euo pipefail
 
-| Repository | Functions to update | Content |
-|---|---|---|
-| `dashboardRepository.ts` | `getDashboardStats`, `getDashboardAlerts` | Overview KPIs (server uptime, jobs/24h, avg clean time, failed jobs) + 3 alerts |
-| `availabilityRepository.ts` | `getServiceCards`, `getHealthChecks`, `getIncidents`, `getSlaGoals` | 7 services, 6 health checks, 4 incidents, 5 SLA goals |
-| `runtimeRepository.ts` | `getMachineInstances`, `getDeployHistory`, `getRuntimeErrorLog`, `getRuntimeStats`, `getRuntimeSummary` + interfaces `MachineInstance`, `DeployEntry` | 5 machines, 5 deploys, 8 error-log entries, KPIs, summary; add `app` field |
-| `performanceRepository.ts` | `getSlowEndpoints`, `getPerformanceEvents`, `getPerformanceKpiStats` | 6 real endpoints, 5 events, adjusted KPIs |
-| `errorsRepository.ts` | error entries | 8 Sentry-style MetaCleaner errors |
-| `databaseRepository.ts` | table + query metrics | 7 Supabase tables, pool/query/storage metrics |
-| `businessRepository.ts` | business KPIs | MRR, subscribers, credits, plan breakdown |
-| `usersRepository.ts` | user metrics | registrations, activity, auth-method split |
-| `edgeRepository.ts` | Cloudflare metrics | cache ratio, threats, Czech-focused geo |
-
-**UI components (Category B):**
-- `src/routes/runtime/components/DeployItem.svelte` — render colored app badge
-  (server=blue, web=green, app=purple, monitoring=gray).
-- `src/routes/runtime/components/InstanceCard.svelte` — render app name as
-  secondary label under machine name.
-
-**Config / i18n:**
-- `.env.example` — ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_*`, `STRIPE_SECRET_KEY`.
-- `messages/en.json`, `messages/cs.json` — i18n keys for any new labels (badge,
-  app subtitle, KPI labels), following existing patterns (`dashboard_stats_*`,
-  `runtime_kpi_*`).
-
-## 4. File Structure (existing — modify in place)
-
-```
-frontend/metacleaner-monitoring/
-├── .env.example
-├── messages/{en,cs}.json
-└── src/
-    ├── lib/repositories/
-    │   ├── dashboardRepository.ts
-    │   ├── availabilityRepository.ts
-    │   ├── runtimeRepository.ts
-    │   ├── performanceRepository.ts
-    │   ├── errorsRepository.ts
-    │   ├── databaseRepository.ts
-    │   ├── businessRepository.ts
-    │   ├── usersRepository.ts
-    │   └── edgeRepository.ts
-    └── routes/runtime/components/
-        ├── DeployItem.svelte
-        └── InstanceCard.svelte
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_DIR"
 ```
 
-## 5. Exact Data Values
+### `scripts/build.sh` (all deployable projects)
 
-All concrete values (service tables, endpoint lists, error rows, KPI numbers,
-geo splits, plan breakdown) are specified in `BRIEF.md` sections A1–A9 and
-B1–B4. Use those tables verbatim as the source of truth.
+Builds the Docker image. For projects with workspace dependencies (metacleaner-web, metacleaner-app), uses the frontend root as build context with `-f` pointing to the project Dockerfile. For standalone projects (backend, monitoring), uses `PROJECT_DIR` as context.
 
-## 6. Constraints, Edge Cases & Considerations
+### `scripts/start-docker.sh` (all deployable projects)
 
-- **Interfaces are frozen** except the explicit `app: string` additions to
-  `MachineInstance` and `DeployEntry`.
-- **Keep all existing i18n keys working;** if a key is renamed, update both
-  `en.json` and `cs.json`.
-- **Availability grid** currently renders 4 cards; with 7 it must still look
-  good (responsive grid — verify visually).
-- **Static data only** — no `Date.now()`, no randomization.
-- **Adding the `app` field to runtime data depends on the interface change** —
-  do the interface edits (B1/B2) before/with the runtime data updates.
-- Czech-market focus for edge geo (CZ 62%, SK 8%, DE 7%, US 5%, Other 18%).
-- Final gate: `bun run check` passes; no TypeScript/lint regressions.
+Calls `scripts/build.sh`, stops/removes existing container, runs new container with `--env-file .env` (or build args for frontend SPAs). Derived from existing root-level `start-docker.sh` logic.
+
+### `scripts/stop-docker.sh` (all deployable projects)
+
+Parses app name from `fly.toml`, stops and removes the container.
+
+### `scripts/deploy.sh` (all deployable projects)
+
+Full deployment flow:
+1. Resolve env file: `DPLOY_ENV_FILE` → `--env <name>` → `.env-prod` default
+2. Parse app name from `fly.toml`
+3. Create Fly.io app if not exists
+4. Set secrets from env file (skip keys in `fly.toml [env]`)
+5. Run `fly deploy`
+
+### CLI Scripts
+
+- `scripts/build.sh` — moved from root `build.sh`, add portability pattern using `PROJECT_DIR`
+- `scripts/install.sh` — moved from root `install.sh`, calls `scripts/build.sh` first, add portability pattern
+
+### Architecture
+
+- `start-structurizr.sh` — stays at root (not a backend service), just add `SCRIPT_DIR`/`PROJECT_DIR` portability pattern
+
+## Key Constraints
+
+- Backend `start-docker.sh` uses `--env-file .env` (runtime env vars)
+- Frontend web/app `start-docker.sh` use build args (`--build-arg PUBLIC_API_URL=...`) because the SPA bakes env at build time
+- Frontend web/app need workspace root as Docker build context (for `metacleaner-shared`)
+- Monitoring uses `--env-file .env` (Vite dev server reads env at runtime inside container)
+- The `shebang` must be `#!/bin/bash` (not `#!/usr/bin/env bash`)
+- App name parsing: `grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*"\(.*\)"/\1/' | tr -d '\r'`
+- `DPLOY_ENV_FILE` (note the typo in the brief — preserve it as-is since that's the steering spec)
+- CLI has no `fly.toml` — uses project name from `package.json` for build output naming
+- `scripts/parallel_clean.sh` and `scripts/deploy-functions.sh` are already compliant — don't touch them
+
+## File Changes Summary
+
+| Project | Create | Move/Rewrite | Delete |
+|---------|--------|--------------|--------|
+| backend/metacleaner-server | build.sh, stop-docker.sh, deploy.sh | start-docker.sh → scripts/ | root start-docker.sh, fly-setup.sh |
+| frontend/metacleaner-web | build.sh, stop-docker.sh, deploy.sh | start-docker.sh → scripts/ | root start-docker.sh, fly-setup.sh |
+| frontend/metacleaner-app | build.sh, stop-docker.sh, deploy.sh | start-docker.sh → scripts/, sync-android.sh → scripts/ | root start-docker.sh, fly-setup.sh, sync-android.sh |
+| frontend/metacleaner-monitoring | build.sh, stop-docker.sh, deploy.sh | start-docker.sh → scripts/ | root start-docker.sh, fly-setup.sh |
+| terminal/metacleaner-cli | — | build.sh → scripts/, install.sh → scripts/ | root build.sh, install.sh |
+| architecture | — | start-structurizr.sh (update in place) | — |

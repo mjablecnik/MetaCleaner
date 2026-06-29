@@ -632,10 +632,10 @@
 - Source: check-build, 2026-06-28
 
 ## Playwright browser path mismatch in metacleaner-app and metacleaner-web
-- Project: metacleaner-app, metacleaner-web
-- Problem: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers` is set in the environment, but `/opt/playwright-browsers` is owned by root (not writable). The project's playwright version may need a different revision than what's installed there (e.g., metacleaner-app needs rev 1223, metacleaner-web needs rev 1228). Running `npx playwright install chromium` fails with EACCES. The CDN download (playwright.azureedge.net → playwright.download.prss.microsoft.com) also returns "GatewayExceptionResponse" (blocked in this sandbox).
-- Solution: Copy the existing installed browser directory to the expected revision path in a writable location: `mkdir -p /home/agent/.playwright-browsers/chromium_headless_shell-1228/chrome-headless-shell-linux64 && cp -r /opt/playwright-browsers/chromium_headless_shell-1223/. /home/agent/.playwright-browsers/chromium_headless_shell-1228/` (some files will fail with EPERM but the main binary copies fine). Then run tests with `PLAYWRIGHT_BROWSERS_PATH=/home/agent/.playwright-browsers npx playwright test`.
-- Source: check-build, 2026-06-19
+- Project: metacleaner-app, metacleaner-web, metacleaner-monitoring
+- Problem: vitest-browser-playwright and `@vitest/browser-playwright` default `PLAYWRIGHT_BROWSERS_PATH` to `/home/agent/.playwright-browsers`, but the actual browsers are installed at `/opt/playwright-browsers` (already has rev 1228).
+- Solution: Run tests with `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run test:unit -- --run`. Both chromium-1228 and chromium_headless_shell-1228 are already present at that path.
+- Source: check-build, 2026-06-29
 
 ## Storybook browser tests have 68 pre-existing unhandled errors (metacleaner-app)
 - Project: metacleaner-app
@@ -732,3 +732,15 @@
 - Problem: Destructuring patterns like `{ _sortMs: _ts, ...entry }` where `_ts` is intentionally unused (to strip the sort key from output) trigger `@typescript-eslint/no-unused-vars` errors. The recommended config only sets `argsIgnorePattern`/`caughtErrorsIgnorePattern`, not `varsIgnorePattern`.
 - Solution: Add `{ varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }` to the `@typescript-eslint/no-unused-vars` rule override in eslint.config.js.
 - Source: check-build, 2026-06-28
+
+## CLI install.sh moved to scripts/ — test path update required
+- Project: metacleaner-cli
+- Problem: `tests/signals.test.ts` expected `install.sh` at project root (`join(PROJECT_ROOT, 'install.sh')`), but steering compliance commit moved it to `scripts/install.sh`. Tests failed with "expected false to be true" on existsSync check.
+- Solution: Update test path to `join(PROJECT_ROOT, 'scripts', 'install.sh')`.
+- Source: check-build, 2026-06-29
+
+## Go backend: HandleCreateJob added authClient param — update test calls
+- Project: metacleaner-server
+- Problem: `HandleCreateJob` signature was extended with `authClient *SupabaseAuthClient` (used for Supabase credit deduction inside the async goroutine). All test calls in `tests/handlers_jobs_test.go` and `tests/handlers_fileid_validation_test.go` still used the old 5-arg form.
+- Solution: Add `nil` as the 6th argument: `src.HandleCreateJob(cfg, db, hub, pl, pool, nil)(rr, req)`. Passing nil is safe because the authClient is only used after the HTTP response is already sent (inside the async goroutine).
+- Source: check-build, 2026-06-29

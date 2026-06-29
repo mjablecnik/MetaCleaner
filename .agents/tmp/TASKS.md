@@ -1,31 +1,44 @@
-# Tasks — MetaCleaner Monitoring: Mock Data Alignment
+# Tasks — Shell Scripts Steering Compliance
 
-- [x] 1. [HIGH] Replace `getDashboardStats()` in `dashboardRepository.ts` with the 4 MetaCleaner overview KPIs (Server Uptime 99.92%, Jobs/24h 847, Avg Clean Time 4.2s, Failed Jobs 0.8%) per BRIEF A2
-- [x] 2. [HIGH] Replace `getDashboardAlerts()` in `dashboardRepository.ts` with the 3 MetaCleaner alerts (ExifTool timeout / high memory / Stripe retry storm) per BRIEF A2
-- [x] 3. [HIGH] Replace `getServiceCards()` in `availabilityRepository.ts` with the 7 MetaCleaner services (server/web/app/monitoring/database/auth/edge) per BRIEF A1
-- [x] 4. [HIGH] Replace `getHealthChecks()` in `availabilityRepository.ts` with the 6 MetaCleaner health checks per BRIEF A1
-- [x] 5. [HIGH] Replace `getIncidents()` in `availabilityRepository.ts` with the 4 MetaCleaner incidents per BRIEF A1
-- [x] 6. [HIGH] Replace `getSlaGoals()` in `availabilityRepository.ts` with the 5 MetaCleaner SLA goals per BRIEF A1
-- [x] 7. [HIGH] Add `app: string` field to the `MachineInstance` interface in `runtimeRepository.ts` (B2)
-- [x] 8. [HIGH] Add `app: string` field to the `DeployEntry` interface in `runtimeRepository.ts` (B1)
-- [x] 9. [HIGH] Replace `getMachineInstances()` in `runtimeRepository.ts` with the 5 real machines (server-01/02, web-01, app-01, mon-01) including the `app` field per BRIEF A4
-- [x] 10. [HIGH] Replace `getDeployHistory()` in `runtimeRepository.ts` with the 5 real deploys including the `app` field per BRIEF A4
-- [x] 11. [HIGH] Replace `getRuntimeErrorLog()` in `runtimeRepository.ts` with the 8 MetaCleaner runtime error entries per BRIEF A4
-- [x] 12. [HIGH] Update `getRuntimeStats()` in `runtimeRepository.ts` (CPU 72%, RAM 1.1/2GB, uptime 99.92%, restarts 3) per BRIEF A4
-- [x] 13. [HIGH] Update `getRuntimeSummary()` in `runtimeRepository.ts` (machinesOnline 5, machinesTotal 5, region "fra (Frankfurt)") per BRIEF A4
-- [x] 14. [HIGH] In `runtime/components/DeployItem.svelte`, render a colored app badge from the `app` field (server=blue, web=green, app=purple, monitoring=gray) (B1)
-- [x] 15. [HIGH] In `runtime/components/InstanceCard.svelte`, render the `app` name as a secondary label under the machine name (B2)
-- [x] 16. [HIGH] Replace `getSlowEndpoints()` in `performanceRepository.ts` with the 6 real MetaCleaner endpoints per BRIEF A3
-- [x] 17. [HIGH] Replace `getPerformanceEvents()` in `performanceRepository.ts` with the 5 MetaCleaner performance events per BRIEF A3
-- [x] 18. [MEDIUM] Update `getPerformanceKpiStats()` in `performanceRepository.ts` (Apdex 0.91, avg 340ms, throughput 890 req/min, error 1.2%) per BRIEF A3
-- [x] 19. [HIGH] Replace error entries in `errorsRepository.ts` with the 8 MetaCleaner Sentry errors per BRIEF A5
-- [x] 20. [MEDIUM] Replace table stats in `databaseRepository.ts` with the 7 Supabase tables (jobs/reports/files/users/api_keys/subscriptions/credits) per BRIEF A6
-- [x] 21. [MEDIUM] Update DB key metrics in `databaseRepository.ts` (total ~30MB, pool 42/100, avg query 12ms, slowest query, storage 2.4GB) per BRIEF A6
-- [x] 22. [MEDIUM] Replace business KPIs in `businessRepository.ts` (MRR $1,240, subscribers 89, free 1,840, churn 3.2%, ARPU $13.93, etc.) per BRIEF A7
-- [x] 23. [MEDIUM] Update subscription plan breakdown in `businessRepository.ts` (Free 1,840, Pro 62→$558, Business 27→$783) per BRIEF A7
-- [x] 24. [MEDIUM] Replace user metrics in `usersRepository.ts` (registered 2,100, new 34, active 210, power 18, auth-method split) per BRIEF A8
-- [x] 25. [MEDIUM] Replace Cloudflare metrics in `edgeRepository.ts` (cache 94.2%, 48,200 req, threats, Czech-focused geo split) per BRIEF A9
-- [x] 26. [MEDIUM] Update `.env.example` to ensure `FLY_ORG`, `FLY_APPS`, `SENTRY_ORG`, `SENTRY_PROJECT`, `STRIPE_SECRET_KEY` are present per BRIEF B3
-- [x] 27. [MEDIUM] Add/update i18n keys in `messages/en.json` for any new labels (app badge, machine app subtitle, new KPI labels) following existing key patterns (B4)
-- [x] 28. [MEDIUM] Add/update matching i18n keys in `messages/cs.json` (same keys as en.json) (B4)
-- [x] 29. [MEDIUM] Run `bun run check` and fix any TypeScript/lint regressions; visually verify the 7-card availability grid still looks good
+## Backend (`backend/metacleaner-server/`)
+
+- [x] 1. [HIGH] Create `scripts/build.sh` — portability header, parses app name from fly.toml, runs `docker build -t "$APP_NAME" .`
+- [x] 2. [HIGH] Create `scripts/start-docker.sh` — portability header, calls `./scripts/build.sh`, stops/removes existing container, runs with `--env-file .env` on port 8080
+- [x] 3. [HIGH] Create `scripts/stop-docker.sh` — portability header, parses app name, stops and removes container
+- [x] 4. [HIGH] Create `scripts/deploy.sh` — portability header, resolves env file (DPLOY_ENV_FILE / --env flag / .env-prod default), creates app if needed, sets secrets skipping fly.toml [env] keys, runs `fly deploy`
+- [x] 5. [HIGH] Delete root-level `start-docker.sh` and `fly-setup.sh`
+
+## Frontend Web (`frontend/metacleaner-web/`)
+
+- [x] 6. [HIGH] Create `scripts/build.sh` — portability header, loads build args from .env (PUBLIC_APP_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY), builds with workspace root as context and `-f Dockerfile`
+- [x] 7. [HIGH] Create `scripts/start-docker.sh` — portability header, calls `./scripts/build.sh`, stops/removes container, runs on port 3001
+- [x] 8. [HIGH] Create `scripts/stop-docker.sh` — portability header, parses app name, stops and removes container
+- [x] 9. [HIGH] Create `scripts/deploy.sh` — portability header, resolves env file, creates app if needed, sets secrets, runs `fly deploy`
+- [x] 10. [HIGH] Delete root-level `start-docker.sh` and `fly-setup.sh`
+
+## Frontend App (`frontend/metacleaner-app/`)
+
+- [x] 11. [HIGH] Create `scripts/build.sh` — portability header, loads PUBLIC_API_URL from .env, builds with workspace root as context and `-f Dockerfile`
+- [x] 12. [HIGH] Create `scripts/start-docker.sh` — portability header, calls `./scripts/build.sh`, stops/removes container, runs on port 3000
+- [x] 13. [HIGH] Create `scripts/stop-docker.sh` — portability header, parses app name, stops and removes container
+- [x] 14. [HIGH] Create `scripts/deploy.sh` — portability header, resolves env file, creates app if needed, sets secrets, runs `fly deploy`
+- [x] 15. [MEDIUM] Create `scripts/sync-android.sh` — portability header, builds SvelteKit app, runs `cap sync android` (moved from root sync-android.sh)
+- [x] 16. [HIGH] Delete root-level `start-docker.sh`, `fly-setup.sh`, and `sync-android.sh`
+
+## Frontend Monitoring (`frontend/metacleaner-monitoring/`)
+
+- [x] 17. [HIGH] Create `scripts/build.sh` — portability header, parses app name, runs `docker build -t "$APP_NAME" .`
+- [x] 18. [HIGH] Create `scripts/start-docker.sh` — portability header, calls `./scripts/build.sh`, stops/removes container, runs with `--env-file .env` on port 3002
+- [x] 19. [HIGH] Create `scripts/stop-docker.sh` — portability header, parses app name, stops and removes container
+- [x] 20. [HIGH] Create `scripts/deploy.sh` — portability header, resolves env file, creates app if needed, sets secrets (staged with `--stage` + `secrets deploy`), runs `fly deploy`
+- [x] 21. [HIGH] Delete root-level `start-docker.sh` and `fly-setup.sh`
+
+## CLI (`terminal/metacleaner-cli/`)
+
+- [x] 22. [HIGH] Create `scripts/build.sh` — portability header (SCRIPT_DIR/PROJECT_DIR/cd), moves existing build logic (bun build --compile) into it
+- [x] 23. [HIGH] Create `scripts/install.sh` — portability header, calls `./scripts/build.sh` first, then copies binary + completions (moved from root install.sh)
+- [x] 24. [HIGH] Delete root-level `build.sh` and `install.sh`
+
+## Architecture (`architecture/`)
+
+- [x] 25. [LOW] Update `start-structurizr.sh` in place — add full portability pattern (SCRIPT_DIR as PROJECT_DIR since script is at project root, keeping existing logic intact)
