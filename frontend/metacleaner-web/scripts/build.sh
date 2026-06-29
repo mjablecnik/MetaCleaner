@@ -1,9 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_DIR"
+
 APP_NAME=$(grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*"\(.*\)"/\1/' | tr -d '\r')
 
-# Load env vars from .env if available
+# Load build args from .env (SPA bakes env at build time)
 if [ -f .env ]; then
   export $(grep '^PUBLIC_APP_URL=' .env | xargs) 2>/dev/null || true
   export $(grep '^VITE_SUPABASE_URL=' .env | xargs) 2>/dev/null || true
@@ -12,22 +16,9 @@ fi
 PUBLIC_APP_URL="${PUBLIC_APP_URL:-https://app.metacleaner.com}"
 
 echo "Building Docker image: $APP_NAME (PUBLIC_APP_URL=$PUBLIC_APP_URL)"
-# Build context is the workspace root so metacleaner-shared is available
-WORKSPACE_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+WORKSPACE_ROOT="$(dirname "$(dirname "$PROJECT_DIR")")"
 docker build -t "$APP_NAME" \
   --build-arg "PUBLIC_APP_URL=$PUBLIC_APP_URL" \
   --build-arg "VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-}" \
   --build-arg "VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY:-}" \
-  -f "$(dirname "$0")/Dockerfile" "$WORKSPACE_ROOT"
-
-echo "Stopping existing container (if any)..."
-docker stop "$APP_NAME" 2>/dev/null || true
-docker rm "$APP_NAME" 2>/dev/null || true
-
-echo "Starting container: $APP_NAME on port 3001"
-docker run -d \
-  --name "$APP_NAME" \
-  -p 3001:8080 \
-  "$APP_NAME"
-
-echo "Running at http://localhost:3001"
+  -f "$PROJECT_DIR/Dockerfile" "$WORKSPACE_ROOT"

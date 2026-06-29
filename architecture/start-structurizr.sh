@@ -17,10 +17,14 @@ set -euo pipefail
 # Access from other devices:   http://<your-ip>:8081
 # ============================================================================
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$SCRIPT_DIR"
+cd "$PROJECT_DIR"
+
 CONTAINER_NAME="structurizr"
 IMAGE_NAME="structurizr-local"
 PORT=8081
-WORKSPACE_DIR="$(cd "$(dirname "$0")" && pwd)"
+WORKSPACE_DIR="$PROJECT_DIR"
 
 echo "🏗️  Structurizr — Architecture Diagrams"
 echo "   Workspace: $WORKSPACE_DIR/workspace.dsl"

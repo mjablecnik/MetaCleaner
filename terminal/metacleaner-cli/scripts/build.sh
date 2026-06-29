@@ -1,17 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-BIN_DIR="$SCRIPT_DIR/bin"
-ENTRY="$SCRIPT_DIR/src/index.ts"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_DIR"
+
+BIN_DIR="$PROJECT_DIR/bin"
+ENTRY="$PROJECT_DIR/src/index.ts"
 OUTPUT="$BIN_DIR/metacleaner"
 
 echo "Building MetaCleaner CLI..."
 
-# Create bin directory
 mkdir -p "$BIN_DIR"
-
-# Build standalone binary
 bun build "$ENTRY" --compile --outfile "$OUTPUT"
 
 echo ""

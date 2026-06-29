@@ -2,15 +2,19 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_DIR"
 
-BINARY_SRC="${SCRIPT_DIR}/bin/metacleaner"
+"$SCRIPT_DIR/build.sh"
+
+BINARY_SRC="$PROJECT_DIR/bin/metacleaner"
 BINARY_DST="${HOME}/.local/bin/metacleaner"
 
-COMPLETION_SRC="${SCRIPT_DIR}/completions/_metacleaner"
+COMPLETION_SRC="$PROJECT_DIR/completions/_metacleaner"
 COMPLETION_DST="${HOME}/.zsh/completions/_metacleaner"
 
 if [[ ! -f "${BINARY_SRC}" ]]; then
-  echo "Error: binary not found at ${BINARY_SRC}. Run build.sh first." >&2
+  echo "Error: binary not found at ${BINARY_SRC}." >&2
   exit 2
 fi
 
