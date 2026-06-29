@@ -26,7 +26,7 @@
 		billingPeriod,
 		price,
 		monthlyAllowance,
-		creditsUsed,
+		creditsUsed: _creditsUsed,
 		creditsRemaining,
 		renewalDate,
 		features,

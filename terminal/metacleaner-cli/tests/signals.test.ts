@@ -109,7 +109,7 @@ describe('signals – SIGINT behavior', () => {
 // --- install.sh validation ---
 
 describe('install.sh – script content validation', () => {
-  const installShPath = join(PROJECT_ROOT, 'install.sh');
+  const installShPath = join(PROJECT_ROOT, 'scripts', 'install.sh');
 
   it('install.sh exists', () => {
     expect(existsSync(installShPath)).toBe(true);

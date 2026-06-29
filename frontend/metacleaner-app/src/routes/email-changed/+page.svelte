@@ -9,16 +9,8 @@
 	const isSuccess = $derived(!error);
 	const isLoggedIn = $derived(authStore.isAuthenticated);
 
-	function goToSettings() {
-		goto(resolve('/settings' as import('$app/types').Pathname));
-	}
-
 	function goHome() {
 		goto(resolve('/' as import('$app/types').Pathname));
-	}
-
-	function goToLogin() {
-		goto(resolve('/login' as import('$app/types').Pathname));
 	}
 </script>
 
@@ -31,7 +23,9 @@
 	style="background-image: radial-gradient(ellipse at 20% 50%, var(--color-page-gradient-blue) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, var(--color-page-gradient-green) 0%, transparent 50%);"
 >
 	<!-- Minimal header -->
-	<nav class="flex w-full items-center justify-between px-5 py-4 lg:mx-auto lg:max-w-[1100px] lg:px-6 lg:py-5">
+	<nav
+		class="flex w-full items-center justify-between px-5 py-4 lg:mx-auto lg:max-w-[1100px] lg:px-6 lg:py-5"
+	>
 		<div class="flex items-center gap-2.5 lg:gap-3">
 			<div
 				class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white shadow-glow-blue lg:h-10 lg:w-10"
@@ -166,8 +160,12 @@
 				<!-- Info cards -->
 				{#if isSuccess}
 					<div class="flex flex-col gap-3">
-						<div class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3">
-							<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-green/10">
+						<div
+							class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+						>
+							<div
+								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-green/10"
+							>
 								<i class="fa-solid fa-envelope-circle-check text-brand-green"></i>
 							</div>
 							<div>
@@ -175,12 +173,18 @@
 								<p class="text-xs text-text-muted">{tx('emailChanged.info.loginDesc')}</p>
 							</div>
 						</div>
-						<div class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3">
-							<div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10">
+						<div
+							class="flex items-center gap-3 rounded-xl border border-gray-800 bg-navy-card px-4 py-3"
+						>
+							<div
+								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10"
+							>
 								<i class="fa-solid fa-shield-halved text-brand-blue"></i>
 							</div>
 							<div>
-								<p class="text-sm font-semibold text-white">{tx('emailChanged.info.securityTitle')}</p>
+								<p class="text-sm font-semibold text-white">
+									{tx('emailChanged.info.securityTitle')}
+								</p>
 								<p class="text-xs text-text-muted">{tx('emailChanged.info.securityDesc')}</p>
 							</div>
 						</div>

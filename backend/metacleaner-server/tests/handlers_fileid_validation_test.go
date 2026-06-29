@@ -42,7 +42,7 @@ func TestHandleCreateJob_InvalidFileIDFormats(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			rr := httptest.NewRecorder()
 
-			src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
+			src.HandleCreateJob(cfg, db, hub, pl, pool, nil)(rr, req)
 
 			if rr.Code != http.StatusBadRequest {
 				t.Errorf("fileID %v: expected 400, got %d: %s", tc.fileIDs, rr.Code, rr.Body.String())
@@ -79,7 +79,7 @@ func TestHandleCreateJob_ValidFileIDFormat(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			rr := httptest.NewRecorder()
 
-			src.HandleCreateJob(cfg, db, hub, pl, pool)(rr, req)
+			src.HandleCreateJob(cfg, db, hub, pl, pool, nil)(rr, req)
 
 			// Format validation passed; file does not exist on disk → 404
 			if rr.Code == http.StatusBadRequest {

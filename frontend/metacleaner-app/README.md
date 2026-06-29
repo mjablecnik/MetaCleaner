@@ -39,14 +39,14 @@ bun run storybook      # Storybook dev (port 6006)
 ## Local Docker
 
 ```bash
-./start-docker.sh      # Build image & run container on port 3000
-docker stop metacleaner-app   # Stop container
+scripts/start-docker.sh      # Build image & run container on port 3000
+scripts/stop-docker.sh       # Stop container
 ```
 
 ## Android (Capacitor)
 
 ```bash
-./sync-android.sh                    # Build app + sync web assets to Android project
+scripts/sync-android.sh              # Build app + sync web assets to Android project
 bunx cap open android                # Open in Android Studio
 bunx cap run android                 # Run on device/emulator
 ```
@@ -62,7 +62,7 @@ bunx cap run android --livereload --external
 ## Fly.io Deployment
 
 ```bash
-./fly-setup.sh         # Create app & set secrets from .env
+scripts/deploy.sh      # Deploy to Fly.io
 fly deploy             # Deploy
 fly logs --app metacleaner-app   # View logs
 fly status --app metacleaner-app # Check status

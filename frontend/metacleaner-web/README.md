@@ -91,7 +91,7 @@ The root layout sets `export const ssr = false` and `export const prerender = fa
 ### Docker (recommended)
 
 ```sh
-./start-docker.sh
+scripts/start-docker.sh
 ```
 
 Builds a production image and starts an nginx container serving the static site.

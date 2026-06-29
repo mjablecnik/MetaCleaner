@@ -71,13 +71,13 @@ go test ./tests/ -v
 Build the image and start a container:
 
 ```bash
-./start-docker.sh
+scripts/start-docker.sh
 ```
 
 Stop the container:
 
 ```bash
-docker stop metacleaner-server
+scripts/stop-docker.sh
 ```
 
 Verify the server is healthy:
@@ -96,10 +96,10 @@ curl http://localhost:8080/api/health
 flyctl auth login
 ```
 
-2. Run the setup script to create the app and push secrets:
+2. Run the deployment script:
 
 ```bash
-./fly-setup.sh
+scripts/deploy.sh
 ```
 
 3. Deploy:

@@ -17,7 +17,7 @@
 		planId,
 		price,
 		monthlyAllowance,
-		creditsUsed,
+		creditsUsed: _creditsUsed,
 		creditsRemaining,
 		periodEndDate,
 		features

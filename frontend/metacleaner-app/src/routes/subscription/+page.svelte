@@ -403,8 +403,9 @@
 										<p class="text-xs text-text-muted">
 											{tx('subscription.downgrade.scheduled.subtitle', {
 												plan:
-													plans.find((p) => p.id === billingStore.scheduledPlanId)
-														?.nameText ?? billingStore.scheduledPlanId ?? '',
+													plans.find((p) => p.id === billingStore.scheduledPlanId)?.nameText ??
+													billingStore.scheduledPlanId ??
+													'',
 												date: billingStore.scheduledChangeDate
 													? formatDate(
 															billingStore.scheduledChangeDate,
