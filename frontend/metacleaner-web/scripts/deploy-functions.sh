@@ -36,6 +36,15 @@ done
 
 # Select project ref based on environment
 if [ "$DEPLOY_ENV" = "production" ]; then
+  # Refuse to deploy to production while PROD_PROJECT_REF is still the
+  # placeholder dev ref — this prevents dev and prod from sharing the same
+  # backend, which would conflate secrets, data, and CORS configuration.
+  if [ "$PROD_PROJECT_REF" = "$DEV_PROJECT_REF" ]; then
+    echo "Error: PROD_PROJECT_REF is still set to the dev project ref."
+    echo "  Set a real, separate production project ref in this script before deploying."
+    echo "  Current value: $PROD_PROJECT_REF"
+    exit 1
+  fi
   PROJECT_REF="$PROD_PROJECT_REF"
   ENV_FILE="$PROJECT_DIR/.env.production"
 else
@@ -86,8 +95,7 @@ fi
 # Deploy the send-contact-email function
 echo "Deploying send-contact-email..."
 supabase functions deploy send-contact-email \
-  --project-ref "$PROJECT_REF" \
-  --no-verify-jwt
+  --project-ref "$PROJECT_REF"
 
 echo ""
 echo "✓ Deployment complete! ($DEPLOY_ENV)"
