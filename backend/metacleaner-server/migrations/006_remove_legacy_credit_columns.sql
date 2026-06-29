@@ -4,11 +4,11 @@
 -- Subscription status is tracked in the subscriptions table.
 -- This script is idempotent: safe to run multiple times without errors.
 --
--- Prerequisites: migration004.sql must have been applied first (credit_balances and subscriptions tables exist).
+-- Prerequisites: 004_add_stripe_billing.sql must have been applied first (credit_balances and subscriptions tables exist).
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration006.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/006_remove_legacy_credit_columns.sql
 
 ALTER TABLE profiles DROP COLUMN IF EXISTS credits;
 ALTER TABLE profiles DROP COLUMN IF EXISTS subscription_type;

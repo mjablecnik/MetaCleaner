@@ -4,7 +4,7 @@
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/001_init.sql
 
 -- Enable the pgcrypto extension for gen_random_uuid() if not already enabled.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;

@@ -3,11 +3,11 @@
 -- When a user downgrades, the change takes effect at the end of the current billing period.
 -- These columns track the pending plan change so the UI can display it.
 --
--- Prerequisites: migration009.sql must have been applied first.
+-- Prerequisites: 009_add_account_lifecycle.sql must have been applied first.
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration010.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/010_add_scheduled_downgrade.sql
 
 -- ============================================================
 -- 1. Add scheduled change columns to subscriptions

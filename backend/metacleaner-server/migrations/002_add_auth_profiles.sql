@@ -2,11 +2,11 @@
 -- Adds user authentication support: profiles table, user_id columns, and RLS policies.
 -- This script is idempotent: safe to run multiple times without errors.
 --
--- Prerequisites: migration.sql (migration001) must have been applied first.
+-- Prerequisites: 001_init.sql must have been applied first.
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration002.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/002_add_auth_profiles.sql
 
 -- ============================================================
 -- profiles table

@@ -2,11 +2,11 @@
 -- Adds API key management support: per-user API keys with hashed storage,
 -- status tracking (active/revoked), and fast lookup by hash during authentication.
 --
--- Prerequisites: migration.sql, migration002.sql, migration003.sql, migration004.sql must have been applied first.
+-- Prerequisites: 001_init.sql through 004_add_stripe_billing.sql must have been applied first.
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration005.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/005_add_api_keys.sql
 
 CREATE TABLE IF NOT EXISTS api_keys (
     id           UUID        PRIMARY KEY DEFAULT gen_random_uuid(),

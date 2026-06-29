@@ -2,11 +2,11 @@
 -- Adds Stripe subscription support: customer mapping, subscriptions, and credit tracking.
 -- This script is idempotent: safe to run multiple times without errors.
 --
--- Prerequisites: migration.sql, migration002.sql, migration003.sql must have been applied first.
+-- Prerequisites: 001_init.sql, 002_add_auth_profiles.sql, 003_add_file_hash_columns.sql must have been applied first.
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration004.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/004_add_stripe_billing.sql
 
 -- ============================================================
 -- stripe_customers: Maps Supabase user IDs to Stripe customer IDs.

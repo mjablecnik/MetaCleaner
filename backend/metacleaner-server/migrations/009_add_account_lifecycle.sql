@@ -7,11 +7,11 @@
 --   3. Change ON DELETE CASCADE to ON DELETE SET NULL on cleaning_jobs, job_files,
 --      and cleaning_reports user_id FK (preserve reports/jobs after hard delete)
 --
--- Prerequisites: migration008.sql must have been applied first.
+-- Prerequisites: 008_add_email_change_tokens.sql must have been applied first.
 --
 -- Usage:
 --   In the Supabase dashboard: SQL Editor → paste this script → Run
---   Via psql: psql "$DATABASE_URL" -f scripts/migration009.sql
+--   Via psql: psql "$DATABASE_URL" -f migrations/009_add_account_lifecycle.sql
 
 -- ============================================================
 -- 1. Soft delete support on profiles
