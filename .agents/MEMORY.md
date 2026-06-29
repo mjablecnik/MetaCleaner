@@ -1,5 +1,17 @@
 # Memory
 
+## metacleaner-web: defined-but-unrendered i18n keys signal forgotten spec content
+- Project: metacleaner-web
+- Problem: A key can exist in BOTH en.json and cs.json (so key-parity checks pass) yet be referenced nowhere — meaning either dead leftover content OR a spec requirement that was never wired up. Confirmed: `home_upload_local_note` (Req 6.8 corrected privacy note) was added to both locales but `UploadCard.svelte` never renders it, so the requirement is silently unmet AND the key looks "dead". Conversely, `pricing_*` keys appear unreferenced in `metacleaner-web/src` but are LIVE — consumed by the `metacleaner-shared` package via dynamic `translate('pricing_title')`.
+- Solution: For each defined-but-unreferenced key, grep `src/` AND `../metacleaner-shared/src` before declaring it dead. If the key maps to a spec requirement, the bug is the missing render, not the key — wire it up rather than delete. Genuinely dead set found this pass: about_heading, about_description_p1/p2, about_contact_email, error_404_heading/message/cta, footer_col_features.
+- Source: code-review, 2026-06-29
+
+## metacleaner-web: design.md "REMOVED" prop notes diverge from actual components
+- Project: metacleaner-web
+- Problem: responsive-web-refactor design.md documents props as REMOVED (e.g. SectionHeading `size`), but the component still ships the prop with a `sizeMap` that swaps whole class strings by breakpoint — the exact conditional-class-set anti-pattern the refactor was meant to delete. Also: design `CtaButton` interface lists `class?: string` but the component lacks it, so HeroSection silently dropped `fullWidth`/`class` and its secondary CTA. Hardcoded English also hides in non-rendered spots: `+error.svelte` non-404 fallback (title/h1/button) and `CookieConsentBanner` `aria-label="Cookie consent"`.
+- Solution: When a design says a prop was removed, open the component and confirm it. Grep `.svelte` for raw quoted text in `aria-label`/`title`/`placeholder` and in the non-primary branches of `{#if}` (error fallbacks), not just element bodies.
+- Source: code-review, 2026-06-29
+
 ## auth.svelte.ts _restore() uses window.location without typeof guard — causes 37 test failures
 - Project: metacleaner-app
 - Problem: `_restore()` accessed `window.location.href` / `.hash` / `.search` directly inside a `if (!browser) return` guard. Tests mock `browser: true` but run in `environment: 'node'`, so `window` is undefined. All 33 authStore tests and 2 antiEnumeration tests failed with `ReferenceError: window is not defined`.

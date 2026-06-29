@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-29 23:40 — manual
+- Project: frontend (metacleaner-web — marketing/landing site)
+- Ran a **spec-compliance code review** of `frontend/metacleaner-web/` against the three Kiro specs targeting it (`web-content-overhaul`, `responsive-web-refactor`, `about-and-404-pages`); recorded findings in `.agents/tmp/CODE_REVIEW.md` (0 CRITICAL, 1 HIGH, 6 MEDIUM, 7 LOW) and derived `.agents/tmp/TASKS.md`. Build health was already clean (prettier/eslint/svelte-check 0 errors, 317/317 en↔cs key parity)
+- **HIGH fix** (`6f97c79`): rendered `m.home_upload_local_note()` in `UploadCard.svelte` so Req 6.8's corrected privacy note ("Scanning is local. Cleaning requires upload — files are deleted after processing.") actually appears instead of leaving the key dead
+- **MEDIUM fixes** (`20fa9f6`): removed the `size` prop + `sizeMap` from `SectionHeading.svelte` in favor of Tailwind breakpoint utilities; restored the sticky footer (`min-h-screen` on the `+layout.svelte` wrapper, `mt-8`→`mt-auto` in `SiteFooter.svelte`, dropped redundant per-page `min-h-screen` on pricing/privacy/terms); added a `class?: string` prop to `CtaButton.svelte`; localized the non-404 `+error.svelte` fallback via new `error_generic_*` keys; replaced the hardcoded `aria-label="Cookie consent"` in `CookieConsentBanner.svelte` with a `cookie_banner_aria_label` key; deleted 8 orphaned i18n keys (`about_heading`, `about_description_p1/p2`, `about_contact_email`, `error_404_heading/message/cta`, `footer_col_features`) from `en.json`/`cs.json`
+- Left LOW items 8–14 (About hero stat wording, contact-info i18n, flag asset renames, 404 icon, MobileMenu dropdown icon, Storybook stale keys, FAQ id renumber) as open backlog
+
 ## 2026-06-29 19:22 — manual
 - Project: frontend (metacleaner-app)
 - Ran a **unit/integration test gap-filling pass** on `frontend/metacleaner-app/`: generated `.agents/tmp/TEST_SPEC.md` (mapped every plain-`.ts` logic module to its server-test coverage, identifying 6 untested modules carrying real logic), derived `.agents/tmp/TASKS.md`, and completed all tasks across the High/Medium/Low phases
