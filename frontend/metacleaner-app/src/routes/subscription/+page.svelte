@@ -200,6 +200,22 @@
 		}
 	}
 
+	let isCancellingDowngrade = $state(false);
+
+	async function handleCancelDowngrade() {
+		if (isCancellingDowngrade) return;
+		isCancellingDowngrade = true;
+		try {
+			await billingClient.cancelDowngrade();
+			await billingStore.refresh();
+		} catch (err: unknown) {
+			// Silently fail — user can retry
+			console.error('Failed to cancel downgrade:', (err as Error).message);
+		} finally {
+			isCancellingDowngrade = false;
+		}
+	}
+
 	onMount(() => {
 		if (billingStore.credits === null && !billingStore.isLoading) {
 			billingStore.refresh();
@@ -369,10 +385,12 @@
 						hasError={billingStore.hasError}
 					/>
 					{#if billingStore.isPaidPlan}
-						<CancelSection
-							periodEndDate={billingStore.currentPeriodEnd ?? ''}
-							onCancel={() => openModal('cancel')}
-						/>
+						<div class="hidden lg:block">
+							<CancelSection
+								periodEndDate={billingStore.currentPeriodEnd ?? ''}
+								onCancel={() => openModal('cancel')}
+							/>
+						</div>
 					{/if}
 				</div>
 
@@ -390,31 +408,86 @@
 					{#if targetDowngradePlanData && billingStore.isPaidPlan}
 						{#if billingStore.isDowngradeScheduled}
 							<div class="rounded-2xl border border-brand-orange/30 bg-brand-orange/5 p-5">
-								<div class="mb-2 flex items-center gap-3">
-									<div
-										class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
+								<!-- Desktop: vertical layout (same as mobile) -->
+								<div class="hidden flex-col lg:flex">
+									<div class="mb-3 flex items-start gap-3">
+										<div
+											class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
+										>
+											<i class="fa-solid fa-clock text-brand-orange"></i>
+										</div>
+										<div>
+											<h3 class="text-sm font-bold text-white">
+												{tx('subscription.downgrade.scheduled.title')}
+											</h3>
+											<p class="mt-0.5 text-xs leading-relaxed text-text-muted">
+												{tx('subscription.downgrade.scheduled.subtitle', {
+													plan:
+														plans.find((p) => p.id === billingStore.scheduledPlanId)
+															?.nameText ??
+														billingStore.scheduledPlanId ??
+														'',
+													date: billingStore.scheduledChangeDate
+														? formatDate(
+																billingStore.scheduledChangeDate,
+																locale.current as 'en' | 'cs'
+															)
+														: ''
+												})}
+											</p>
+										</div>
+									</div>
+									<button
+										onclick={handleCancelDowngrade}
+										disabled={isCancellingDowngrade}
+										class="w-full cursor-pointer rounded-xl border border-brand-orange/50 py-3 text-sm font-semibold text-brand-orange transition-colors hover:bg-orange-950 disabled:cursor-not-allowed disabled:opacity-50"
 									>
-										<i class="fa-solid fa-clock text-brand-orange"></i>
+										{#if isCancellingDowngrade}
+											<i class="fa-solid fa-spinner fa-spin mr-1"></i>
+										{/if}
+										{tx('subscription.downgrade.scheduled.cancelButton')}
+									</button>
+								</div>
+
+								<!-- Mobile: vertical layout -->
+								<div class="flex flex-col lg:hidden">
+									<div class="mb-3 flex items-start gap-3">
+										<div
+											class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-orange/20"
+										>
+											<i class="fa-solid fa-clock text-brand-orange"></i>
+										</div>
+										<div>
+											<h3 class="text-sm font-bold text-white">
+												{tx('subscription.downgrade.scheduled.title')}
+											</h3>
+											<p class="mt-0.5 text-xs leading-relaxed text-text-muted">
+												{tx('subscription.downgrade.scheduled.subtitle', {
+													plan:
+														plans.find((p) => p.id === billingStore.scheduledPlanId)
+															?.nameText ??
+														billingStore.scheduledPlanId ??
+														'',
+													date: billingStore.scheduledChangeDate
+														? formatDate(
+																billingStore.scheduledChangeDate,
+																locale.current as 'en' | 'cs'
+															)
+														: ''
+												})}
+											</p>
+										</div>
 									</div>
-									<div>
-										<h3 class="text-sm font-bold text-white">
-											{tx('subscription.downgrade.scheduled.title')}
-										</h3>
-										<p class="text-xs text-text-muted">
-											{tx('subscription.downgrade.scheduled.subtitle', {
-												plan:
-													plans.find((p) => p.id === billingStore.scheduledPlanId)?.nameText ??
-													billingStore.scheduledPlanId ??
-													'',
-												date: billingStore.scheduledChangeDate
-													? formatDate(
-															billingStore.scheduledChangeDate,
-															locale.current as 'en' | 'cs'
-														)
-													: ''
-											})}
-										</p>
-									</div>
+									<button
+										onclick={handleCancelDowngrade}
+										disabled={isCancellingDowngrade}
+										class="w-full cursor-pointer rounded-xl border border-brand-orange/50 py-3 text-sm font-semibold text-brand-orange transition-colors hover:bg-orange-950 disabled:cursor-not-allowed disabled:opacity-50"
+									>
+										{#if isCancellingDowngrade}
+											<i class="fa-solid fa-spinner fa-spin mr-1"></i>
+										{/if}
+										{tx('subscription.downgrade.scheduled.cancelButton')}
+									</button>
 								</div>
 							</div>
 						{:else}
@@ -437,6 +510,16 @@
 					/>
 				</div>
 			</div>
+
+			<!-- Mobile-only: Cancel at the very bottom -->
+			{#if billingStore.isPaidPlan}
+				<div class="mt-4 lg:hidden">
+					<CancelSection
+						periodEndDate={billingStore.currentPeriodEnd ?? ''}
+						onCancel={() => openModal('cancel')}
+					/>
+				</div>
+			{/if}
 		{:else}
 			<!-- Non-subscriber: existing pricing grid -->
 			<div class="flex w-full flex-col items-center">

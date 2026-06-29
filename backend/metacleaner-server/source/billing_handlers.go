@@ -23,6 +23,7 @@ const (
 	ErrNoActiveSubscription      = "NO_ACTIVE_SUBSCRIPTION"
 	ErrAlreadyCancelled          = "ALREADY_CANCELLED"
 	ErrNoCancellingSubscription  = "NO_CANCELLING_SUBSCRIPTION"
+	ErrNoScheduledDowngrade      = "NO_SCHEDULED_DOWNGRADE"
 )
 
 // planHierarchy defines the upgrade/downgrade ordering for paid plans.
@@ -773,6 +774,84 @@ func HandleReactivateSubscription(cfg Config, db *SupabaseClient) http.HandlerFu
 			PlanID:           existing.PlanID,
 			Status:           "active",
 			CurrentPeriodEnd: periodEndStr,
+		})
+	}
+}
+
+// CancelDowngradeResponse is the response body for POST /api/billing/cancel-downgrade.
+type CancelDowngradeResponse struct {
+	PlanID string `json:"plan_id"`
+	Status string `json:"status"`
+}
+
+// HandleCancelDowngrade handles POST /api/billing/cancel-downgrade.
+// It releases the Stripe SubscriptionSchedule and clears the scheduled downgrade from the DB.
+func HandleCancelDowngrade(cfg Config, db *SupabaseClient) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
+
+		existing, err := db.GetSubscriptionByUserID(r.Context(), userID)
+		if err != nil {
+			slog.Error("billing: cancel-downgrade: failed to get subscription", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to retrieve subscription")
+			return
+		}
+
+		if existing == nil || (existing.Status != "active" && existing.Status != "trialing") {
+			WriteError(w, http.StatusBadRequest, ErrNoActiveSubscription, "no active subscription found")
+			return
+		}
+		if existing.ScheduledPlanID == nil {
+			WriteError(w, http.StatusBadRequest, ErrNoScheduledDowngrade, "no scheduled downgrade to cancel")
+			return
+		}
+		if existing.StripeSubscriptionID == "" {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "subscription has no Stripe ID")
+			return
+		}
+
+		if cfg.StripeSecretKey == "" {
+			WriteError(w, http.StatusServiceUnavailable, ErrBillingConfigError, "billing is not configured")
+			return
+		}
+		stripe.Key = cfg.StripeSecretKey
+
+		// Fetch the Stripe subscription to get the attached schedule.
+		getParams := &stripe.SubscriptionParams{}
+		getParams.AddExpand("schedule")
+		stripeSub, err := stripesubscription.Get(existing.StripeSubscriptionID, getParams)
+		if err != nil {
+			slog.Error("billing: cancel-downgrade: failed to fetch stripe subscription", "userID", userID, "subID", existing.StripeSubscriptionID, "error", err)
+			WriteError(w, http.StatusBadGateway, ErrBillingStripeError, "failed to retrieve subscription from Stripe")
+			return
+		}
+
+		// Release the schedule if one is attached.
+		if stripeSub.Schedule != nil && stripeSub.Schedule.ID != "" {
+			releaseParams := &stripe.SubscriptionScheduleReleaseParams{}
+			if _, err := stripesubschedule.Release(stripeSub.Schedule.ID, releaseParams); err != nil {
+				slog.Error("billing: cancel-downgrade: failed to release schedule", "userID", userID, "scheduleID", stripeSub.Schedule.ID, "error", err)
+				WriteError(w, http.StatusBadGateway, ErrBillingStripeError, "failed to cancel the scheduled downgrade")
+				return
+			}
+		}
+
+		// Clear the scheduled downgrade fields in the DB.
+		if err := db.ClearScheduledDowngrade(r.Context(), existing.StripeSubscriptionID); err != nil {
+			slog.Error("billing: cancel-downgrade: failed to clear scheduled downgrade", "userID", userID, "error", err)
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to update subscription")
+			return
+		}
+
+		slog.Info("billing: scheduled downgrade cancelled", "userID", userID, "subID", existing.StripeSubscriptionID)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(CancelDowngradeResponse{
+			PlanID: existing.PlanID,
+			Status: existing.Status,
 		})
 	}
 }

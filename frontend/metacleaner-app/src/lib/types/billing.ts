@@ -32,3 +32,8 @@ export interface ReactivateResponse {
 	status: string;
 	current_period_end: string;
 }
+
+export interface CancelDowngradeResponse {
+	plan_id: string;
+	status: string;
+}

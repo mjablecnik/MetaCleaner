@@ -2,7 +2,6 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
-	import { page } from '$app/state';
 	import { locale } from '$lib/locale.svelte';
 	import type { Language } from '$lib/repositories/languageRepository';
 	import type { User } from '$lib/repositories/userRepository';
@@ -77,27 +76,35 @@
 				</div>
 				<span class="text-lg font-bold tracking-tight text-white">{tx('common.brandName')}</span>
 			</div>
-			<button
-				onclick={handleClose}
-				aria-label={tx('common.closeMenu')}
-				class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
-			>
-				<i class="fa-solid fa-xmark text-sm"></i>
-			</button>
+			<div class="flex items-center gap-2.5">
+				{#if user}
+					{@const headerPlanStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
+					<span
+						class="inline-flex items-center gap-1.5 rounded-full border bg-gradient-to-r px-2.5 py-1
+							{headerPlanStyle.bgGradient} {headerPlanStyle.borderColor}"
+					>
+						<span class="h-1.5 w-1.5 flex-shrink-0 rounded-full {headerPlanStyle.dotColor} shadow {headerPlanStyle.glowColor}"></span>
+						<i class="fa-solid fa-{headerPlanStyle.icon} text-[9px] {headerPlanStyle.textColor}"></i>
+						<span class="text-xs font-bold {headerPlanStyle.textColor}">{headerPlanStyle.label}</span>
+					</span>
+				{/if}
+				<button
+					onclick={handleClose}
+					aria-label={tx('common.closeMenu')}
+					class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
+				>
+					<i class="fa-solid fa-xmark text-sm"></i>
+				</button>
+			</div>
 		</div>
 
 		<!-- Content -->
 		<div class="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4">
 			<!-- User info -->
 			{#if user}
-				{@const planStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
 				<div class="mb-3 rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3">
 					<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 					<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
-					<p class="mt-1.5 flex items-center gap-1 text-xs font-medium {planStyle.textColor}">
-						<i class="fa-solid {planStyle.icon === 'lock' ? 'fa-lock' : 'fa-star'} text-[9px]"></i>
-						{planStyle.label}
-					</p>
 				</div>
 			{/if}
 
@@ -124,21 +131,18 @@
 						</span>
 						<i class="fa-solid fa-bolt text-[9px] {textClass}"></i>
 						<span class="text-sm font-bold {textClass}">{formatCreditCount(credits)}</span>
+						<span class="text-xs text-text-muted">/</span>
+						<span class="text-xs {textClass}">{billingStore.monthlyAllowance}</span>
 						<span class="text-xs {textClass}"
-							>{creditLabel(credits, locale.current as 'en' | 'cs')}
-							{tx('credits.banner.remaining')}</span
+							>{creditLabel(credits, locale.current as 'en' | 'cs')}</span
 						>
 					</div>
-					<div class="mb-1 h-1 w-full overflow-hidden rounded-full bg-navy-lighter">
+					<div class="h-1 w-full overflow-hidden rounded-full bg-navy-lighter">
 						<div
 							class="h-full rounded-full transition-all {barClass}"
 							style="width: {Math.round(progressRatio * 100)}%"
 						></div>
 					</div>
-					<p class="text-[10px] text-text-muted">
-						{tx('credits.banner.of')}
-						{billingStore.monthlyAllowance}
-					</p>
 				</div>
 			{/if}
 
@@ -171,9 +175,9 @@
 				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
 			>
 				<div
-					class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-blue/10 text-sm text-brand-blue"
+					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
 				>
-					<i class="fa-solid fa-file-lines"></i>
+					<i class="fa-solid fa-clock-rotate-left"></i>
 				</div>
 				<span class="text-sm font-medium">{tx('common.nav.reportHistory')}</span>
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
@@ -183,20 +187,14 @@
 			<a
 				href={resolve('/docs' as Pathname)}
 				onclick={handleClose}
-				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 transition-all hover:bg-navy-lighter
-					{page.url.pathname === '/docs' ? 'text-brand-blue' : 'text-text-muted hover:text-white'}"
+				class="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-text-muted transition-all hover:bg-navy-lighter hover:text-white"
 			>
 				<div
-					class="flex h-9 w-9 items-center justify-center rounded-lg text-sm
-						{page.url.pathname === '/docs'
-						? 'bg-brand-blue/10 text-brand-blue'
-						: 'bg-navy-lighter text-text-muted'}"
+					class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-lighter text-sm text-text-muted"
 				>
 					<i class="fa-solid fa-book"></i>
 				</div>
-				<span class="text-sm font-medium {page.url.pathname === '/docs' ? 'font-semibold' : ''}"
-					>{tx('docs.nav.docs')}</span
-				>
+				<span class="text-sm font-medium">{tx('docs.nav.docs')}</span>
 				<i class="fa-solid fa-chevron-right ml-auto text-[10px] opacity-40"></i>
 			</a>
 

@@ -1,6 +1,7 @@
 import { buildApiUrl } from './api-config.js';
 import { authStore } from '$lib/auth/auth.svelte.js';
 import type {
+	CancelDowngradeResponse,
 	CancelResponse,
 	ChangePlanResponse,
 	CheckoutResponse,
@@ -83,5 +84,20 @@ export const billingClient = {
 			throw new Error((body as { message?: string }).message || res.statusText);
 		}
 		return res.json() as Promise<ReactivateResponse>;
+	},
+
+	async cancelDowngrade(): Promise<CancelDowngradeResponse> {
+		const res = await fetch(buildApiUrl('/api/billing/cancel-downgrade'), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authStore.accessToken}`
+			}
+		});
+		if (!res.ok) {
+			const body = await res.json().catch(() => ({ message: res.statusText }));
+			throw new Error((body as { message?: string }).message || res.statusText);
+		}
+		return res.json() as Promise<CancelDowngradeResponse>;
 	}
 };
