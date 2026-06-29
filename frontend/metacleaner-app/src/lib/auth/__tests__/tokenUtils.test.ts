@@ -78,12 +78,14 @@ describe('extractCallbackParams', () => {
 	});
 
 	describe('fragment (hash) URLs', () => {
-		it('returns empty object for fragment-only URLs (fragments are not query params)', () => {
-			// Browsers do not send fragments to the server; OAuth providers that use
-			// fragments require client-side parsing via window.location.hash.
-			// extractCallbackParams only parses query params, so hash-only URLs return {}.
+		it('extracts tokens from fragment-only URLs (Supabase implicit flow uses hash fragments)', () => {
+			// Supabase may redirect with tokens in the hash fragment depending on flow type.
+			// extractCallbackParams falls back to hash parsing when no access_token is in
+			// query params, so extractAndCleanBrowserTokens works correctly for both flows.
 			const url = 'https://app.metacleaner.com/callback#access_token=tok&refresh_token=ref';
-			expect(extractCallbackParams(url)).toEqual({});
+			expect(extractCallbackParams(url)).toEqual({
+				tokens: { accessToken: 'tok', refreshToken: 'ref', expiresIn: 3600 }
+			});
 		});
 
 		it('handles URLs with both query params and a fragment — uses query params', () => {
