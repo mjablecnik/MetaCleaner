@@ -6,9 +6,20 @@
 
 	interface Props {
 		onDismiss: () => void;
+		variant?: 'reports' | 'docs';
 	}
 
-	const { onDismiss }: Props = $props();
+	const { onDismiss, variant = 'reports' }: Props = $props();
+
+	const titleKey = $derived(
+		variant === 'docs' ? 'upgradeModal.docs.title' : 'upgradeModal.title'
+	);
+	const descriptionKey = $derived(
+		variant === 'docs' ? 'upgradeModal.docs.description' : 'upgradeModal.description'
+	);
+	const ctaKey = $derived(
+		variant === 'docs' ? 'upgradeModal.docs.cta' : 'upgradeModal.cta'
+	);
 
 	function handleUpgrade() {
 		goto(resolve('/subscription' as Pathname));
@@ -32,26 +43,41 @@
 
 	<!-- Title -->
 	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-bold text-white">{tx('upgradeModal.title')}</h2>
+		<h2 class="text-xl font-bold text-white">{tx(titleKey)}</h2>
 		<p class="max-w-sm text-sm text-text-muted">
-			{tx('upgradeModal.description')}
+			{tx(descriptionKey)}
 		</p>
 	</div>
 
 	<!-- Feature highlights -->
 	<div class="flex flex-col gap-2 text-left">
-		<div class="flex items-center gap-2 text-sm text-text-muted">
-			<i class="fa-solid fa-check text-xs text-brand-green"></i>
-			<span>30-day cleaning history</span>
-		</div>
-		<div class="flex items-center gap-2 text-sm text-text-muted">
-			<i class="fa-solid fa-check text-xs text-brand-green"></i>
-			<span>Detailed file metadata reports</span>
-		</div>
-		<div class="flex items-center gap-2 text-sm text-text-muted">
-			<i class="fa-solid fa-check text-xs text-brand-green"></i>
-			<span>Downloadable PDF reports</span>
-		</div>
+		{#if variant === 'docs'}
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>{tx('upgradeModal.docs.feat1')}</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>{tx('upgradeModal.docs.feat2')}</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>{tx('upgradeModal.docs.feat3')}</span>
+			</div>
+		{:else}
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>30-day cleaning history</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>Detailed file metadata reports</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-text-muted">
+				<i class="fa-solid fa-check text-xs text-brand-green"></i>
+				<span>Downloadable PDF reports</span>
+			</div>
+		{/if}
 	</div>
 
 	<!-- CTA button -->
@@ -60,7 +86,7 @@
 			onclick={handleUpgrade}
 			class="w-full rounded-xl bg-gradient-to-r from-brand-orange to-orange-500 py-3.5 text-sm font-bold text-white shadow-glow-orange transition-all hover:from-orange-500 hover:to-orange-400 active:scale-95"
 		>
-			{tx('upgradeModal.cta')}
+			{tx(ctaKey)}
 		</button>
 		<button
 			onclick={onDismiss}

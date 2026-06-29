@@ -25,6 +25,10 @@ function createBillingStore() {
 		(planStatus === 'active' || planStatus === 'trialing') &&
 			(planId === 'pro' || planId === 'proplus')
 	);
+	const isProPlusUser = $derived(
+		planId === 'proplus' &&
+			(planStatus === 'active' || planStatus === 'trialing' || planStatus === 'cancelling')
+	);
 	const monthlyAllowance = $derived(
 		(PLAN_CONFIG[planId as keyof typeof PLAN_CONFIG] ?? PLAN_CONFIG.free).monthlyAllowance
 	);
@@ -160,6 +164,9 @@ function createBillingStore() {
 		},
 		get isPaidPlan() {
 			return isPaidPlan;
+		},
+		get isProPlusUser() {
+			return isProPlusUser;
 		},
 		get monthlyAllowance() {
 			return monthlyAllowance;

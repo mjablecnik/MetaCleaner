@@ -2,7 +2,8 @@
 	import { tx } from '$lib/shared/utils/i18n';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { setContext } from 'svelte';
+	import { setContext, onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import type { Pathname } from '$app/types';
 	import MethodBadge from '$lib/shared/elements/MethodBadge.svelte';
 	import {
@@ -10,6 +11,8 @@
 		getSidebarSections,
 		getSidebarEndpoints
 	} from '$lib/repositories/docsRepository';
+	import { billingStore } from '$lib/stores/billingStore.svelte';
+	import UpgradeModal from '$lib/shared/components/UpgradeModal.svelte';
 
 	let { children } = $props();
 
@@ -57,6 +60,20 @@
 			href: sectionRouteMap[s.id] ?? '/docs'
 		}))
 	);
+
+	const isBillingReady = $derived(
+		!billingStore.isLoading && (billingStore.credits !== null || billingStore.hasError)
+	);
+
+	function handleUpgradeModalDismiss() {
+		goto(resolve('/' as Pathname));
+	}
+
+	onMount(() => {
+		if (billingStore.credits === null && !billingStore.isLoading) {
+			billingStore.refresh();
+		}
+	});
 </script>
 
 <div class="mx-auto w-full max-w-[1100px] px-4 lg:px-6">
@@ -75,65 +92,77 @@
 		</span>
 	</div>
 
-	<!-- Mobile navigation tabs (visible only on mobile/tablet) -->
-	<div class="mb-4 flex gap-1 overflow-x-auto lg:hidden">
-		{#each mobileNavItems as item (item.id)}
-			<a
-				href={resolve(item.href as Pathname)}
-				class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors duration-200
-					{activeId === item.id
-					? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue'
-					: 'border border-transparent text-text-muted hover:text-white'}"
-			>
-				<i class="fa-solid {item.icon} text-[10px]"></i>
-				<span>{tx(item.labelKey)}</span>
-			</a>
-		{/each}
-	</div>
+	{#if !isBillingReady}
+		<div class="flex items-center justify-center py-20">
+			<i class="fa-solid fa-circle-notch spin-slow text-2xl text-brand-blue"></i>
+		</div>
+	{:else if !billingStore.isProPlusUser}
+		<div class="flex items-center justify-center py-20">
+			<div class="w-full max-w-sm rounded-2xl border border-gray-700 bg-navy-card shadow-2xl">
+				<UpgradeModal onDismiss={handleUpgradeModalDismiss} variant="docs" />
+			</div>
+		</div>
+	{:else}
+		<!-- Mobile navigation tabs (visible only on mobile/tablet) -->
+		<div class="mb-4 flex gap-1 overflow-x-auto lg:hidden">
+			{#each mobileNavItems as item (item.id)}
+				<a
+					href={resolve(item.href as Pathname)}
+					class="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors duration-200
+						{activeId === item.id
+						? 'border border-brand-blue/30 bg-brand-blue/10 text-brand-blue'
+						: 'border border-transparent text-text-muted hover:text-white'}"
+				>
+					<i class="fa-solid {item.icon} text-[10px]"></i>
+					<span>{tx(item.labelKey)}</span>
+				</a>
+			{/each}
+		</div>
 
-	<!-- Desktop layout: sidebar + scrollable content -->
-	<div class="flex gap-8">
-		<!-- Sidebar (desktop only) — sticky so it stays visible during scroll -->
-		<aside class="hidden lg:block">
-			<nav class="sticky top-[88px] w-56 shrink-0">
-				<ul class="flex flex-col gap-0.5">
-					{#each sidebarSections as section (section.id)}
-						<li>
-							<a
-								href={resolve((sectionRouteMap[section.id] ?? '/docs') as Pathname)}
-								class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200
-									{activeId === section.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
-							>
-								<i class="fa-solid {section.icon} w-4 text-center text-xs"></i>
-								<span>{tx(section.labelKey)}</span>
-							</a>
-						</li>
-					{/each}
-
-					<li class="mt-2">
-						<p class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase">
-							{tx('docs.sidebar.endpointsHeading')}
-						</p>
-						{#each sidebarEndpoints as ep (ep.id)}
-							<!-- eslint-disable svelte/no-navigation-without-resolve -->
-							<a
-								href={resolve('/docs/endpoints') + '#' + ep.id}
-								class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
-									{openEndpointIds.has(ep.id) ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
-							>
-								<MethodBadge method={ep.method} size="sm" />
-								<span class="truncate">{ep.label}</span>
-							</a>
-							<!-- eslint-enable svelte/no-navigation-without-resolve -->
+		<!-- Desktop layout: sidebar + scrollable content -->
+		<div class="flex gap-8">
+			<!-- Sidebar (desktop only) — sticky so it stays visible during scroll -->
+			<aside class="hidden lg:block">
+				<nav class="sticky top-[88px] w-56 shrink-0">
+					<ul class="flex flex-col gap-0.5">
+						{#each sidebarSections as section (section.id)}
+							<li>
+								<a
+									href={resolve((sectionRouteMap[section.id] ?? '/docs') as Pathname)}
+									class="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200
+										{activeId === section.id ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
+								>
+									<i class="fa-solid {section.icon} w-4 text-center text-xs"></i>
+									<span>{tx(section.labelKey)}</span>
+								</a>
+							</li>
 						{/each}
-					</li>
-				</ul>
-			</nav>
-		</aside>
 
-		<!-- Main content area — this scrolls while sidebar stays fixed -->
-		<main class="min-w-0 flex-1 pb-20">
-			{@render children()}
-		</main>
-	</div>
+						<li class="mt-2">
+							<p class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase">
+								{tx('docs.sidebar.endpointsHeading')}
+							</p>
+							{#each sidebarEndpoints as ep (ep.id)}
+								<!-- eslint-disable svelte/no-navigation-without-resolve -->
+								<a
+									href={resolve('/docs/endpoints') + '#' + ep.id}
+									class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
+										{openEndpointIds.has(ep.id) ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
+								>
+									<MethodBadge method={ep.method} size="sm" />
+									<span class="truncate">{ep.label}</span>
+								</a>
+								<!-- eslint-enable svelte/no-navigation-without-resolve -->
+							{/each}
+						</li>
+					</ul>
+				</nav>
+			</aside>
+
+			<!-- Main content area — this scrolls while sidebar stays fixed -->
+			<main class="min-w-0 flex-1 pb-20">
+				{@render children()}
+			</main>
+		</div>
+	{/if}
 </div>
