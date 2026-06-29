@@ -276,6 +276,8 @@
 	"auth.common.divider.orEmail": "or with email",
 	"auth.common.action.resend": "Resend",
 	"auth.common.action.sent": "Sent",
+	"auth.common.submit.sending": "Sending...",
+	"auth.common.submit.verifying": "Verifying...",
 	"auth.common.submit.saving": "Saving...",
 	"auth.common.submit.setNewPassword": "Set new password",
 	"auth.common.success.passwordChanged": "Password changed!",

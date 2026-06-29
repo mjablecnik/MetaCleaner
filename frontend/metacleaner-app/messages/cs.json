@@ -276,6 +276,8 @@
 	"auth.common.divider.orEmail": "nebo emailem",
 	"auth.common.action.resend": "Odeslat znovu",
 	"auth.common.action.sent": "Odesláno",
+	"auth.common.submit.sending": "Odesílám...",
+	"auth.common.submit.verifying": "Ověřuji...",
 	"auth.common.submit.saving": "Ukládám...",
 	"auth.common.submit.setNewPassword": "Nastavit nové heslo",
 	"auth.common.success.passwordChanged": "Heslo změněno!",

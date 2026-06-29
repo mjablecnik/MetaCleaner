@@ -142,11 +142,11 @@
 		setTimeout(() => {
 			resendSuccess = false;
 		}, 4000);
-		// Cooldown 30s
+		// Cooldown 10s
 		clearTimeout(resendCooldownTimer);
 		resendCooldownTimer = setTimeout(() => {
 			resendCooldown = false;
-		}, 30000);
+		}, 10000);
 	}
 
 	async function handlePasswordSubmit(e: SubmitEvent) {
