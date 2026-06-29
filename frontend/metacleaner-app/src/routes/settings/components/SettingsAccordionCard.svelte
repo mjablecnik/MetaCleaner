@@ -13,6 +13,7 @@
 		animationDelay?: string;
 		disabled?: boolean;
 		headerExtra?: Snippet;
+		headerExtraMobile?: Snippet;
 		children: Snippet;
 	}
 
@@ -26,6 +27,7 @@
 		animationDelay,
 		disabled = false,
 		headerExtra,
+		headerExtraMobile,
 		children
 	}: Props = $props();
 
@@ -79,9 +81,14 @@
 					]}">{badge}</span
 				>
 			{:else if headerExtra}
-				<div class="pointer-events-auto mr-1 flex items-center gap-1.5 lg:mr-0">
+				<div class="pointer-events-auto mr-1 hidden items-center gap-1.5 lg:mr-0 lg:flex">
 					{@render headerExtra()}
 				</div>
+				{#if headerExtraMobile}
+					<div class="pointer-events-auto mr-1 flex items-center gap-1 lg:hidden">
+						{@render headerExtraMobile()}
+					</div>
+				{/if}
 			{/if}
 			<i
 				class="acc-chevron fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200"

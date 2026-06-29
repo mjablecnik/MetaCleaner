@@ -11,6 +11,8 @@
 	import SettingsHeaderSection from './sections/SettingsHeaderSection.svelte';
 	import AffiliateProgramSection from './sections/AffiliateProgramSection.svelte';
 	import CreateKeyModal from './components/CreateKeyModal.svelte';
+	import { billingStore } from '$lib/stores/billingStore.svelte.js';
+	import { getPlanStyle } from '$lib/shared/utils/planStyleMap.js';
 	import type { ApiKey } from '$lib/clients/apiKeysClient.js';
 
 	let showToast = $state(false);
@@ -19,6 +21,11 @@
 
 	let showCreateKeyModal = $state(false);
 	let newlyCreatedKey = $state<{ key: ApiKey } | null>(null);
+
+	const planStyle = $derived(getPlanStyle(billingStore.planId, billingStore.planStatus));
+	const planBadgeColor = $derived<'blue' | 'green' | 'orange' | 'gray'>(
+		billingStore.planId === 'proplus' ? 'orange' : billingStore.planId === 'pro' ? 'blue' : 'gray'
+	);
 
 	function handleKeyCreated(key: ApiKey, _fullKey: string) {
 		newlyCreatedKey = { key };
@@ -53,8 +60,12 @@
 				animationDelay="delay-2"
 			>
 				{#snippet headerExtra()}
-					<Badge color="green" label={tx('settings.account.proBadge')} />
+					<Badge color={planBadgeColor} label={planStyle.label} />
 					<Badge color="blue" label={tx('settings.account.verifiedBadge')} />
+				{/snippet}
+				{#snippet headerExtraMobile()}
+					<Badge color={planBadgeColor} label={planStyle.label} class="px-2! py-0.5! text-[9px]!" />
+					<Badge color="blue" label={tx('settings.account.verifiedBadge')} class="px-2! py-0.5! text-[9px]!" />
 				{/snippet}
 				<AccountInfoSection onSave={() => triggerToast(tx('settings.account.saveSuccess'))} />
 			</SettingsAccordionCard>
@@ -69,7 +80,10 @@
 				<ChangePasswordSection onSave={() => triggerToast(tx('settings.password.saveSuccess'))} />
 			</SettingsAccordionCard>
 
-			<DangerZoneSection />
+			<!-- Danger Zone: visible on desktop in left column -->
+			<div class="hidden lg:block">
+				<DangerZoneSection />
+			</div>
 		</div>
 
 		<!-- RIGHT COLUMN -->
@@ -87,7 +101,11 @@
 						{tx('apiKeys.createButton')}
 					</Button>
 				{/snippet}
-				<ApiKeysSection bind:showCreateModal={showCreateKeyModal} addKey={newlyCreatedKey} />
+				<ApiKeysSection
+					bind:showCreateModal={showCreateKeyModal}
+					addKey={newlyCreatedKey}
+					showCreateButton={true}
+				/>
 			</SettingsAccordionCard>
 
 			<SettingsAccordionCard
@@ -102,6 +120,11 @@
 				<AffiliateProgramSection />
 			</SettingsAccordionCard>
 		</div>
+	</div>
+
+	<!-- Danger Zone: visible on mobile at the bottom -->
+	<div class="mt-4 lg:hidden">
+		<DangerZoneSection collapsible={true} />
 	</div>
 </main>
 

@@ -16,10 +16,12 @@
 		showCreateModal?: boolean;
 		/** Called by parent when a key is created via the page-level modal */
 		addKey?: { key: ApiKey } | null;
+		/** Show create button at bottom of key list (for mobile) */
+		showCreateButton?: boolean;
 	}
 
 	// eslint-disable-next-line no-useless-assignment
-	let { showCreateModal = $bindable(false), addKey = null }: Props = $props();
+	let { showCreateModal = $bindable(false), addKey = null, showCreateButton = false }: Props = $props();
 
 	let lastAddedKeyId = $state<string | null>(null);
 
@@ -241,6 +243,15 @@
 					</p>
 				</div>
 			{/each}
+
+			{#if showCreateButton}
+				<div class="mt-1 lg:hidden">
+					<Button variant="primary" size="sm" onclick={() => (showCreateModal = true)} class="w-full">
+						<i class="fa-solid fa-plus"></i>
+						{tx('apiKeys.createButton')}
+					</Button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 {/if}
