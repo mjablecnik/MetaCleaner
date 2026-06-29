@@ -10,6 +10,7 @@
 	import { formatCreditCount, getCreditColorScheme } from '$lib/shared/utils/formatCredits';
 	import { computeProgressRatio } from '$lib/shared/utils/creditCost';
 	import { creditLabel } from '$lib/shared/utils/creditPlural';
+	import CreditBalanceIndicator from './CreditBalanceIndicator.svelte';
 
 	interface Props {
 		user: User | null;
@@ -76,24 +77,21 @@
 				</div>
 				<span class="text-lg font-bold tracking-tight text-white">{tx('common.brandName')}</span>
 			</div>
-			<div class="flex items-center gap-2.5">
+			<div class="flex items-center gap-4">
 				{#if user}
-					{@const headerPlanStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
-					<span
-						class="inline-flex items-center gap-1.5 rounded-full border bg-gradient-to-r px-2.5 py-1
-							{headerPlanStyle.bgGradient} {headerPlanStyle.borderColor}"
-					>
-						<span class="h-1.5 w-1.5 flex-shrink-0 rounded-full {headerPlanStyle.dotColor} shadow {headerPlanStyle.glowColor}"></span>
-						<i class="fa-solid fa-{headerPlanStyle.icon} text-[9px] {headerPlanStyle.textColor}"></i>
-						<span class="text-xs font-bold {headerPlanStyle.textColor}">{headerPlanStyle.label}</span>
-					</span>
+					<CreditBalanceIndicator
+						credits={billingStore.credits}
+						isLoading={billingStore.isLoading}
+						hasError={billingStore.hasError}
+						compact={true}
+					/>
 				{/if}
 				<button
 					onclick={handleClose}
 					aria-label={tx('common.closeMenu')}
-					class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
+					class="flex h-11 w-11 items-center justify-center rounded-lg border border-gray-700 bg-navy-lighter text-white"
 				>
-					<i class="fa-solid fa-xmark text-sm"></i>
+					<i class="fa-solid fa-xmark text-lg"></i>
 				</button>
 			</div>
 		</div>
@@ -102,13 +100,24 @@
 		<div class="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4">
 			<!-- User info -->
 			{#if user}
-				<div class="mb-3 rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3">
-					<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
-					<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
+				{@const planStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
+				<div class="mb-3 flex items-center justify-between rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3">
+					<div class="min-w-0">
+						<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
+						<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
+					</div>
+					<span
+						class="ml-3 inline-flex shrink-0 items-center gap-1.5 rounded-full border bg-gradient-to-r px-2.5 py-1
+							{planStyle.bgGradient} {planStyle.borderColor}"
+					>
+						<span class="h-1.5 w-1.5 shrink-0 rounded-full {planStyle.dotColor} shadow {planStyle.glowColor}"></span>
+						<i class="fa-solid fa-{planStyle.icon} text-[9px] {planStyle.textColor}"></i>
+						<span class="text-xs font-bold {planStyle.textColor}">{planStyle.label}</span>
+					</span>
 				</div>
 			{/if}
 
-			<!-- Credit section -->
+			<!-- Credit section (temporarily disabled — info moved to header pill)
 			{#if billingStore.credits !== null}
 				{@const credits = billingStore.credits}
 				{@const isWarning = getCreditColorScheme(credits) === 'warning'}
@@ -145,6 +154,7 @@
 					</div>
 				</div>
 			{/if}
+			-->
 
 			<!-- Language section -->
 			<p class="mb-2 px-2 text-[10px] font-bold tracking-widest text-text-muted uppercase">
