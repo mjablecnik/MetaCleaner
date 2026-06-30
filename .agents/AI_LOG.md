@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 00:28 — manual
+- Project: frontend (metacleaner-web — marketing/landing site)
+- Ran a full **technical SEO audit** of `frontend/metacleaner-web/` (`.agents/tmp/SEO_AUDIT.md` — overall readiness POOR, root cause: no-SSR/no-prerender SPA serving a blank shell to crawlers; 3 CRITICAL, 6 HIGH, 6 MEDIUM, 3 LOW findings), derived 23 tasks (`.agents/tmp/TASKS.md`), and completed all of them across 5 commits
+- **CRITICAL fixes** (`db36a96`): switched `src/routes/+layout.ts` to `prerender = true` (removed `ssr = false`) so every route renders to static HTML; added a prerendered `src/routes/sitemap.xml/+server.ts` endpoint listing all public routes; added `meta description` to Home, Features, and Pricing pages with new `meta_*_description` keys in `messages/en.json`/`cs.json`
+- **HIGH fixes** (`52f6baf`, `e8037bf`, `bafa79a`): created a reusable `src/lib/components/shared/SeoHead.svelte` emitting canonical + Open Graph + Twitter Card tags, applied to every page; linked the favicon and added apple-touch-icon/web manifest/theme-color in `src/app.html`; added `hreflang` en/cs/x-default alternates; added site-wide Organization + WebSite JSON-LD in `+layout.svelte`, FAQPage JSON-LD on Home, and Product/Offer JSON-LD on Pricing
+- **MEDIUM/LOW fixes** (`bafa79a`, `bcdd9b1`): added explicit `width`/`height` (+ `loading="lazy"`) to feature and flag images (`FeatureRow.svelte`, `LanguageSwitcher.svelte`); added a `Sitemap:` directive to `static/robots.txt`; added a 1200×630 `static/og-default.png`; added fallback `meta description` + `meta robots` to `app.html`; added a skip-to-content link in `+layout.svelte`; made Font Awesome load non-blocking; added `preconnect`/`dns-prefetch` for the Supabase API and app origins; verified decorative flag images keep `alt=""` alongside visible language labels
+
 ## 2026-06-29 23:52 — manual
 - Project: frontend (metacleaner-web — marketing/landing site)
 - Ran a full **security audit** of `frontend/metacleaner-web/` (`.agents/tmp/SECURITY_AUDIT.md` — overall MEDIUM risk skewing LOW, 0 critical/high, 4 MEDIUM + 4 LOW findings) and remediated all 8 items (`.agents/tmp/TASKS.md`). Verified-clean areas: no XSS sinks/`{@html}`, no hardcoded secrets, server-side input re-validation, linear (ReDoS-safe) email regex
