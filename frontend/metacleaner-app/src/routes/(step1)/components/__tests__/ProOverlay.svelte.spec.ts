@@ -58,7 +58,7 @@ describe('ProOverlay', () => {
 
 	it('renders price hint text', async () => {
 		render(ProOverlay, {});
-		await expect.element(page.getByText(/From €2\.99\/month/)).toBeInTheDocument();
+		await expect.element(page.getByText(/From €5\.99\/month/)).toBeInTheDocument();
 	});
 
 	it('renders gradient background (from transparent to navy)', async () => {

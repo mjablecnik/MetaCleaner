@@ -108,10 +108,11 @@ describe('CopyButton', () => {
 			configurable: true,
 			writable: true
 		});
+		vi.spyOn(document, 'execCommand').mockReturnValue(false);
 		const { container } = render(CopyButton, { text: 'fail silently' });
 		const btn = page.getByRole('button', { name: 'Copy to clipboard' });
 		await btn.click();
-		// Write failed → copy icon remains visible (confirmed state not set)
+		// Both clipboard API and execCommand failed → copy icon remains visible (confirmed state not set)
 		const copyIcon = container.querySelector('.fa-copy');
 		expect(copyIcon).not.toBeNull();
 	});
