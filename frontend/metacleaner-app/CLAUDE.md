@@ -124,6 +124,8 @@ frontend/metacleaner-app/
 
 ## Reference
 
+Cross-project testing gotchas, review checklist (i18n, runtime Tailwind classes, SSR `window` guards) and process notes: **[../../.agents/AGENT_NOTES.md](../../.agents/AGENT_NOTES.md)** — read before writing tests, touching i18n, or doing code review.
+
 For environment variables, deployment, testing, and troubleshooting: **[DOCS.md](./DOCS.md)**
 
 For full architecture, component patterns, and coding standards: **[.kiro/steering/metacleaner-frontend.md](../../.kiro/steering/metacleaner-frontend.md)**

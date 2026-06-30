@@ -82,4 +82,6 @@ Dockerfile               — multi-stage: Bun build → Node 22 runtime
 
 ## Reference
 
+Cross-project testing gotchas, review checklist (i18n, runtime Tailwind classes, SSR `window` guards) and process notes: **[../../.agents/AGENT_NOTES.md](../../.agents/AGENT_NOTES.md)** — read before writing tests, touching i18n, or doing code review.
+
 See [DOCS.md](DOCS.md) for environment variable details, deployment instructions, and troubleshooting.

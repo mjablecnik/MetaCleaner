@@ -110,4 +110,6 @@ scripts/               # Shell scripts for build, deploy, Docker, Stripe
 
 ## Reference
 
+Cross-project agent notes (env setup, Go test gotchas — `rapid`, ES256-only auth middleware in tests — and process notes): **[../../.agents/AGENT_NOTES.md](../../.agents/AGENT_NOTES.md)**.
+
 For full API docs, environment variables, deployment steps, and troubleshooting see [DOCS.md](./DOCS.md).
