@@ -74,13 +74,14 @@ The Client-Side Risk Scanner feature merges the file upload (step1) and risk ana
 
 #### Acceptance Criteria
 
-1. THE Risk_Scanner SHALL compute a per-file risk score (0–100) based on the detected metadata fields across all four Risk_Categories.
+1. THE Risk_Scanner SHALL compute a per-file risk score (0–100) based on the detected metadata fields across the four primary Risk_Categories, plus an optional AI-origin detection modifier.
 2. THE Risk_Scanner SHALL compute a category score (0–100) for GPS coordinates based on the presence of GPS latitude, GPS longitude, and GPS altitude fields.
 3. THE Risk_Scanner SHALL compute a category score (0–100) for device identity based on the presence of camera make, camera model, serial number, and software version fields.
 4. THE Risk_Scanner SHALL compute a category score (0–100) for personal data based on the presence of author name, copyright, IPTC contact info, and XMP creator fields.
 5. THE Risk_Scanner SHALL compute a category score (0–100) for timestamps based on the presence of original date/time, digitized date/time, and GPS timestamp fields.
 6. THE Risk_Scanner SHALL compute an overall aggregated Risk_Score across all files in the File_Queue by combining individual file scores using a weighted maximum strategy (the overall score reflects the highest-risk file).
 7. THE Risk_Scanner SHALL classify the overall Risk_Score into severity levels: critical (75–100), high (50–74), medium (25–49), low (0–24).
+8. WHEN AI-origin indicators are detected in a file's metadata (e.g., specific XMP creator tools or model identifiers), THE Risk_Scanner SHALL apply an additive aiOrigin modifier (weight 0.65) to the per-file score to reflect the elevated privacy risk of AI-generated content containing embedded provenance data. The final per-file score is clamped to 0–100.
 
 ### Requirement 5: Incremental Updates on File Changes
 

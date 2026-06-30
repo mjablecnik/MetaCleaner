@@ -213,10 +213,14 @@ The scoring system uses a weighted field-presence model:
 
 **Per-File Score:**
 ```
-fileScore = (gps * 0.40) + (deviceIdentity * 0.25) + (personalData * 0.20) + (timestamps * 0.15)
+fileScore = clamp(
+  (gps * 0.40) + (deviceIdentity * 0.25) + (personalData * 0.20) + (timestamps * 0.15)
+  + (aiOriginDetected ? aiOrigin * 0.65 : 0),
+  0, 100
+)
 ```
 
-GPS is weighted highest because geolocation is the most significant privacy risk.
+GPS is weighted highest because geolocation is the most significant privacy risk. The `aiOrigin` additive term (weight 0.65) is applied when AI-origin metadata is detected — it reflects the elevated privacy risk of AI-generated content embedding provenance data. `aiOrigin` is a binary detector (detected = category score of 100, otherwise 0), making the effective additive score either +65 or 0.
 
 **Aggregated Score (across all files):**
 Uses weighted maximum strategy — the overall score reflects the highest-risk file:

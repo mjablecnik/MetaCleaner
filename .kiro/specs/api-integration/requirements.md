@@ -127,10 +127,10 @@ Connect the MetaCleaner frontend (SvelteKit 5) to the MetaCleaner backend (Go) b
 #### Acceptance Criteria
 
 1. WHEN the Backend returns a `ReportSummary` without a separate `time` field, THE ApiCleaningService SHALL derive the `time` value from the `date` field if it contains time information, or default to an empty string
-2. WHEN the Backend returns a `ReportSummary` without an `iconColor` field, THE ApiCleaningService SHALL compute `iconColor` as `green` for type `image` and `orange` for type `video`
+2. WHEN the Backend returns a `ReportSummary` without an `iconColor` field, THE ApiCleaningService SHALL compute `iconColor` as `blue` for type `image` and `orange` for type `video` _(updated from `green` by metacleaner-ux-fixes Bug 6)_
 3. WHEN the Backend returns a `ReportSummary` without a `fieldsColor` field, THE ApiCleaningService SHALL default `fieldsColor` to `white`
 4. WHEN the Backend returns a `ReportFileDetail` without `barWidthPercent`, THE ApiCleaningService SHALL compute `barWidthPercent` as the percentage of the file's `fieldsRemoved` relative to the total `fieldsRemoved` across all files in the report
-5. WHEN the Backend returns a `ReportFileDetail` without `iconColor`, THE ApiCleaningService SHALL assign `iconColor` as `green` for type `image` and `orange` for type `video`
+5. WHEN the Backend returns a `ReportFileDetail` without `iconColor`, THE ApiCleaningService SHALL assign `iconColor` as `blue` for type `image` and `orange` for type `video` _(updated from `green` by metacleaner-ux-fixes Bug 6)_
 6. WHEN the Backend returns a `ReportFileDetail` without `barGradientFrom` and `barGradientTo`, THE ApiCleaningService SHALL assign gradient colors based on file type: `image` types use green gradient values and `video` types use orange gradient values
 7. WHEN the Backend returns a `ReportsSummaryStats`, THE ApiCleaningService SHALL pass the fields directly to the frontend `ReportSummaryStats` type without transformation
 8. WHEN the Backend returns a `MetadataDetail` with `MetadataField` entries containing `label` and `value`, THE ApiCleaningService SHALL map those directly to the frontend `MetadataField` type, defaulting `moreCount` to undefined

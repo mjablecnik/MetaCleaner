@@ -125,17 +125,17 @@ Full-stack implementation of API key management for MetaCleaner. The plan covers
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 7. Frontend navigation update
-  - [x] 7.1 Update UserDropdown to replace Settings with API Keys link
-    - Remove `onSettings` prop from the interface
-    - Replace Settings `<a>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon
-    - Use i18n key `common.nav.apiKeys`
-    - _Requirements: 7.1, 7.3, 7.4, 7.5_
+  - [x] 7.1 ~~Update UserDropdown to replace Settings with API Keys link~~ **[SUPERSEDED by `settings-page-integration` Req 4.6]** — `settings-page-integration` keeps the `/settings` nav link and moves API key management into the settings page; the standalone `/api-keys` route and nav link are no longer shipped. Nav correctly shows `/settings` (`fa-gear`, `common.nav.settings`).
+    - ~~Remove `onSettings` prop from the interface~~
+    - ~~Replace Settings `<a>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon~~
+    - ~~Use i18n key `common.nav.apiKeys`~~
+    - _Requirements: 7.1, 7.3, 7.4, 7.5 (superseded)_
 
-  - [x] 7.2 Update MobileHamburgerMenu to replace Settings with API Keys link
-    - Remove `onSettings` prop from the interface
-    - Replace Settings `<button>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon
-    - Use i18n key `common.nav.apiKeys`
-    - _Requirements: 7.2, 7.3, 7.4, 7.5_
+  - [x] 7.2 ~~Update MobileHamburgerMenu to replace Settings with API Keys link~~ **[SUPERSEDED by `settings-page-integration` Req 4.6]** — same rationale as 7.1.
+    - ~~Remove `onSettings` prop from the interface~~
+    - ~~Replace Settings `<button>` with API Keys `<a>` using `resolve('/api-keys')` and `fa-key` icon~~
+    - ~~Use i18n key `common.nav.apiKeys`~~
+    - _Requirements: 7.2, 7.3, 7.4, 7.5 (superseded)_
 
   - [x] 7.3 Add i18n keys to `messages/en.json` and `messages/cs.json`
     - Add all API keys i18n keys as defined in the design document

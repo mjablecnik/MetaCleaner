@@ -220,14 +220,16 @@ User Authentication for MetaCleaner implements registration, login, and password
 
 **User Story:** As a user, I want my login session to persist across page reloads and browser tabs, so that I am not logged out unexpectedly.
 
+> **Implementation note (XSS hardening):** The Access_Token is intentionally kept **in-memory only** (not stored in localStorage) to reduce XSS exfiltration risk. Only the Refresh_Token and its expiry are persisted in localStorage under `mc_refresh_token` / `mc_token_expires_at`. On page reload, `_restore()` silently calls `/api/auth/refresh` to obtain a new in-memory Access_Token from the persisted Refresh_Token. This satisfies Reqs 12.2–12.7 without violating them; Req 12.1 below reflects this corrected model.
+
 #### Acceptance Criteria
 
-1. THE Frontend SHALL store the Access_Token and Refresh_Token in localStorage, keyed by a constant prefix (e.g., `mc_access_token`, `mc_refresh_token`), so that tokens persist across page reloads and are accessible across browser tabs on the same origin
+1. THE Frontend SHALL store the Refresh_Token in localStorage under `mc_refresh_token` so that sessions survive page reloads. The Access_Token SHALL be kept in-memory only (not written to `mc_access_token` in localStorage) to limit XSS exposure; any previously stored `mc_access_token` value is actively purged on startup.
 2. THE Frontend SHALL include the Access_Token in the Authorization header (Bearer scheme) for all API requests to protected Backend endpoints (all endpoints except `/api/auth/*` and `/api/health`)
-3. WHEN the stored Access_Token's JWT `exp` claim indicates the token will expire within 60 seconds and a Refresh_Token exists in localStorage, THE Frontend SHALL call the `/api/auth/refresh` endpoint to obtain new tokens before making the API request
+3. WHEN the in-memory Access_Token's JWT `exp` claim indicates the token will expire within 60 seconds and a Refresh_Token exists in localStorage, THE Frontend SHALL call the `/api/auth/refresh` endpoint to obtain a new in-memory Access_Token before making the API request
 4. IF the token refresh request fails (HTTP 401 or network error), THEN THE Frontend SHALL clear all stored tokens from localStorage and redirect the user to the login page
-5. WHEN both the Access_Token and Refresh_Token are missing from localStorage or the Access_Token is expired and no Refresh_Token exists, THE Frontend SHALL redirect the user to the login page
-6. WHEN the user triggers logout, THE Frontend SHALL remove the Access_Token and Refresh_Token from localStorage before redirecting to the login page
+5. WHEN both the in-memory Access_Token and the localStorage Refresh_Token are absent or the Access_Token is expired and no Refresh_Token exists, THE Frontend SHALL redirect the user to the login page
+6. WHEN the user triggers logout, THE Frontend SHALL clear the in-memory Access_Token and remove the Refresh_Token from localStorage before redirecting to the login page
 7. WHILE a token refresh request is in progress, THE Frontend SHALL queue any concurrent API requests and resolve them with the new Access_Token once the refresh completes, rather than triggering multiple simultaneous refresh calls
 
 ---

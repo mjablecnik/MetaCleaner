@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 22:56 — manual
+- Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
+- Performed a full code review of `frontend/metacleaner-app/` against `.kiro/specs/` (`.agents/tmp/CODE_REVIEW.md`: 2 HIGH, 7 MEDIUM, 11 LOW — mostly spec-vs-implementation gaps where a later spec silently reversed an earlier one), derived a 20-item severity-sorted backlog (`.agents/tmp/TASKS.md`), and resolved every item across 11 commits (`b8339b0`…`79a4e9b`)
+- **HIGH** (`b8339b0`): made the report-detail "back to results" button render (`showBackButton: true` in the `/report/` branch of `+layout.svelte`, un-deadening the existing `history.back()` handler); expanded the upload allowlist in `UploadZoneCard.svelte`/`DropZone.svelte` to drive `ALLOWED_EXTENSIONS`/`ALLOWED_MIMES`/`accept` from `scanner/constants.ts` (`IMAGE_EXTENSIONS` + `VIDEO_EXTENSIONS`) so all ~30 supported formats (WebP, GIF, AVIF, TIFF, DNG, extended video set) reach the scanner; updated advertised format chips
+- **MEDIUM** (`3d0aedd`, `3b18288`): fixed `CountdownCard` progress bar to use the real `current_period_start` instead of assuming a full billing cycle; replaced hardcoded `Loading...` with `tx('common.loading')` in `AccountInfoSection.svelte`; deleted the orphaned `src/routes/api-keys/` route; reconciled the `aiOrigin` risk category, the in-memory access-token decision, and docs sidebar group headers with their specs; reconciled image `iconColor` to `blue` per ux-fixes Bug 6
+- **LOW** (`3a7f59b`, `42fc6ef`, `0736c00`, `83ada29`, `a095c27`, `f4fcc40`, `99ed540`, `79a4e9b`): deleted the orphaned `DocsSidebar.svelte` + stale tests; hid `StatusCardIdle` in the idle state (risk-scanner Req 1.1); changed the Step2 risk-scanner teaser blur from 8px to 4px; reordered NavBar so `CreditBalanceIndicator` sits directly before `UserDropdown`; made `userRepository.getCurrentUser` throw on transient errors instead of returning an empty user; added an explicit short-unit i18n key for the cancellation countdown; removed the stale mobile-PDF-button test from `ReportDetailHeader` spec; marked `frontend-code-quality-refactor` Req 6.5 (`onSettings`) superseded by metacleaner-ux-fixes
+
 ## 2026-06-30 22:13 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Synced documentation with the current codebase (`507924d`); `.agents/tmp/` did not exist, so this entry is derived from git history
