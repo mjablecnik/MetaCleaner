@@ -44,16 +44,16 @@ Run stories with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run tes
 ### Shared billing/subscription sections
 - [x] Create story for **CurrentPlanCard** — states: billingPeriod monthly / yearly / null; pro vs proplus.
 - [x] Create story for **UpgradeCard** — states: default; loading.
-- [ ] Create story for **DowngradeCard** — states: default; loading.
-- [ ] Create story for **ReactivateCard** — states: default; loading.
-- [ ] Create story for **CancelSection** — state: default.
-- [ ] Create story for **CancellationBanner** — states: with / without planId.
-- [ ] Create story for **CancellingPlanCard** — states: early / mid / late in billing period (progress bar width).
-- [ ] Create story for **CancellingView** — states: monthly / yearly.
-- [ ] Create story for **ConfirmationModal** — states: confirmStyle primary / danger / secondary; loading.
-- [ ] Create story for **CountdownCard** — states: monthly / yearly; start-of-period vs near-end.
-- [ ] Create story for **ReactivateModal** — states: open; loading.
-- [ ] Create story for **UsageStatsCard** — states: low usage; high (near-limit) usage.
+- [x] Create story for **DowngradeCard** — states: default; loading.
+- [x] Create story for **ReactivateCard** — states: default; loading.
+- [x] Create story for **CancelSection** — state: default.
+- [x] Create story for **CancellationBanner** — states: with / without planId.
+- [x] Create story for **CancellingPlanCard** — states: early / mid / late in billing period (progress bar width).
+- [x] Create story for **CancellingView** — states: monthly / yearly.
+- [x] Create story for **ConfirmationModal** — states: confirmStyle primary / danger / secondary; loading.
+- [x] Create story for **CountdownCard** — states: monthly / yearly; start-of-period vs near-end.
+- [x] Create story for **ReactivateModal** — states: open; loading.
+- [x] Create story for **UsageStatsCard** — states: low usage; high (near-limit) usage.
 - [ ] Create story for **WhatHappensAfterCard** — states: creditsRemaining = 0; creditsRemaining > 0.
 
 ### Settings
