@@ -35,7 +35,7 @@
 		}
 	};
 
-	const v = $derived(variantMap[variant]);
+	const v = $derived(variantMap[variant] ?? variantMap.blue);
 </script>
 
 <div class="flex gap-3 rounded-[10px] border p-4 {v.bg} {v.border} {extraClass}">

@@ -17,10 +17,11 @@
 	let { affiliateStats = defaultStats, onCopy }: Props = $props();
 
 	function handleCopyLink() {
+		const link = affiliateStats?.affiliateLink ?? '';
 		if (onCopy) {
-			onCopy(affiliateStats.affiliateLink, tx('settings.affiliate.linkCopied'));
+			onCopy(link, tx('settings.affiliate.linkCopied'));
 		} else {
-			navigator.clipboard.writeText(affiliateStats.affiliateLink).catch(() => {});
+			navigator.clipboard.writeText(link).catch(() => {});
 		}
 	}
 </script>
@@ -28,15 +29,15 @@
 <!-- Stats grid -->
 <div class="grid grid-cols-3 gap-2 lg:gap-3">
 	<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-		<p class="text-2xl font-black text-brand-orange">{affiliateStats.referrals}</p>
+		<p class="text-2xl font-black text-brand-orange">{affiliateStats?.referrals ?? 0}</p>
 		<p class="mt-0.5 text-[10px] text-text-muted">{tx('settings.affiliate.referralsLabel')}</p>
 	</div>
 	<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-		<p class="text-2xl font-black text-brand-green">{affiliateStats.conversions}</p>
+		<p class="text-2xl font-black text-brand-green">{affiliateStats?.conversions ?? 0}</p>
 		<p class="mt-0.5 text-[10px] text-text-muted">{tx('settings.affiliate.conversionsLabel')}</p>
 	</div>
 	<div class="rounded-xl border border-gray-800 bg-navy-main p-3 text-center">
-		<p class="text-2xl font-black text-white">{affiliateStats.earnings}</p>
+		<p class="text-2xl font-black text-white">{affiliateStats?.earnings ?? '€0'}</p>
 		<p class="mt-0.5 text-[10px] text-text-muted">{tx('settings.affiliate.earningsLabel')}</p>
 	</div>
 </div>
@@ -50,7 +51,7 @@
 		<input
 			type="text"
 			readonly
-			value={affiliateStats.affiliateLink}
+			value={affiliateStats?.affiliateLink ?? ''}
 			class="min-w-0 flex-1 rounded-xl border border-gray-700 bg-navy-main px-3 py-2.5 font-mono text-sm text-text-muted focus:outline-none lg:px-4"
 		/>
 		<button

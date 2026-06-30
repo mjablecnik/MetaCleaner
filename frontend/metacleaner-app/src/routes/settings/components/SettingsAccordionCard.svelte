@@ -102,7 +102,7 @@
 		class="acc-content gap-4 border-t border-gray-800 px-5 pt-4 pb-5 lg:px-6 lg:py-5"
 		class:open={isOpen}
 	>
-		{@render children()}
+		{#if children}{@render children()}{/if}
 	</div>
 </div>
 

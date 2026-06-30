@@ -12,7 +12,7 @@
 	let accordionOpen = $state<boolean[]>([]);
 
 	$effect(() => {
-		if (files.length > 0 && accordionOpen.length === 0) {
+		if ((files?.length ?? 0) > 0 && accordionOpen.length === 0) {
 			accordionOpen = files.map(() => false);
 		}
 	});

@@ -28,15 +28,15 @@ Run stories with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run tes
 - [x] Fix **MetadataCategoryCard** story — `sections/Step5Success/components/MetadataCategoryCard.svelte:55`: guard the category prop before reading `exifFields`.
 - [x] Fix **AuthStatsRow** story — `(auth)/components/AuthStatsRow.svelte:16`: use `(stats ?? []).map(...)` / guard `stats?.length`.
 - [x] Fix **LanguageDropdown** story — `lib/shared/components/LanguageDropdown.svelte:21,31`: guard the `languages` array before `.find(...)`.
-- [ ] Fix **SettingsAccordionCard** story — `settings/components/SettingsAccordionCard.svelte`: guard the prop field read during teardown (optional chaining).
-- [ ] Fix **AffiliateProgramSection** story — `settings/sections/AffiliateProgramSection.svelte`: guard the prop field read during teardown.
-- [ ] Re-run the storybook project and confirm `Errors  0` and exit code 0.
+- [x] Fix **SettingsAccordionCard** story — `settings/components/SettingsAccordionCard.svelte`: guard the prop field read during teardown (optional chaining).
+- [x] Fix **AffiliateProgramSection** story — `settings/sections/AffiliateProgramSection.svelte`: guard the prop field read during teardown.
+- [x] Re-run the storybook project and confirm `Errors  0` and exit code 0.
 
 ## Phase 2 — Create missing stories
 
 ### Shared elements
-- [ ] Create story for **MethodBadge** (`lib/shared/elements/MethodBadge.svelte`) — states: each method (GET, POST, DEL, PATCH, PUT, WS) × size sm/md.
-- [ ] Create story for **InfoBox** (`lib/shared/elements/InfoBox.svelte`) — states: variant blue / green / orange / red, each with an icon and slotted body text.
+- [x] Create story for **MethodBadge** (`lib/shared/elements/MethodBadge.svelte`) — states: each method (GET, POST, DEL, PATCH, PUT, WS) × size sm/md.
+- [x] Create story for **InfoBox** (`lib/shared/elements/InfoBox.svelte`) — states: variant blue / green / orange / red, each with an icon and slotted body text.
 - [ ] Create story for **FeatureCard** (`lib/shared/elements/FeatureCard.svelte`) — states: 2–3 icon + iconColor combinations.
 - [ ] Create story for **CopyButton** (`lib/shared/elements/CopyButton.svelte`) — states: idle; copied (play function: click → assert "Copied" label). Mock `navigator.clipboard`/`document.execCommand` as in existing CopyButton/CodeBlock specs.
 - [ ] Create story for **CodeBlock** (`lib/shared/elements/CodeBlock.svelte`) — states: single-line code; multi-line code (embedded CopyButton).
