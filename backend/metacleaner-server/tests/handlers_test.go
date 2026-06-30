@@ -284,3 +284,36 @@ func TestUploadMultipleFilesHaveUniqueIDs(t *testing.T) {
 		seen[f.ID] = true
 	}
 }
+
+// TestHandleUploadBodyTooLarge verifies that a request body exceeding
+// 10*MaxFileSize+4096 is rejected with 413 before being spooled to disk.
+func TestHandleUploadBodyTooLarge(t *testing.T) {
+	cfg := newTestConfig(t)
+	cfg.MaxFileSize = 10 // 10 bytes → cap = 10*10+4096 = 4196 bytes
+
+	// Build a multipart body that exceeds the cap by wrapping content larger than
+	// 10*MaxFileSize+4096 = 4196 bytes.
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+	fw, err := mw.CreateFormFile("files", "big.jpg")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Write 5000 bytes of content — total multipart body will exceed 4196.
+	fw.Write(bytes.Repeat([]byte("x"), 5000))
+	mw.Close()
+
+	req := httptest.NewRequest(http.MethodPost, "/api/upload", &buf)
+	req.Header.Set("Content-Type", mw.FormDataContentType())
+	rr := httptest.NewRecorder()
+	src.HandleUpload(cfg)(rr, req)
+
+	if rr.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("expected 413, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp src.ErrorResponse
+	json.NewDecoder(rr.Body).Decode(&resp)
+	if resp.Error != src.ErrFileTooLarge {
+		t.Errorf("expected error %q, got %q", src.ErrFileTooLarge, resp.Error)
+	}
+}

@@ -209,9 +209,7 @@ func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			cleanedPath := cleanedMatches[0]
 			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
 
-			// Look up the original upload name for a meaningful download filename.
-			originalMatches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
-			downloadName := buildCleanedFileName(fileID, ext, originalMatches)
+			downloadName := buildCleanedFileName(fileID, ext)
 
 			w.Header().Set("Content-Type", contentTypeForExt(ext))
 			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, downloadName))
@@ -285,7 +283,7 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			}
 			cleanedPath := matches[0]
 			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
-			downloadName := buildCleanedFileName(localID, ext, nil)
+			downloadName := buildCleanedFileName(localID, ext)
 			entries = append(entries, zipEntry{path: cleanedPath, fileName: downloadName})
 		}
 
@@ -366,9 +364,8 @@ func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 
 // buildCleanedFileName generates a download filename with IMG_/VID_ prefix to neutralize
 // AI-revealing filenames. Format: IMG_<fileID>_cleaned.<ext> or VID_<fileID>_cleaned.<ext>
-func buildCleanedFileName(fileID, ext string, originalMatches []string) string {
+func buildCleanedFileName(fileID, ext string) string {
 	baseName := fileID
-	_ = originalMatches
 
 	prefix := "IMG_"
 	if videoFormats[strings.ToLower(ext)] {

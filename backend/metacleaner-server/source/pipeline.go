@@ -102,7 +102,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		f.Device = result.Device
 		f.MetadataBreakdown = result.MetadataBreakdown
 		f.SHA256Hash = fileHash
-		f.CleanedName = buildCleanedFileName(f.LocalID, strings.TrimPrefix(f.FileExtension, "."), nil)
+		f.CleanedName = buildCleanedFileName(f.LocalID, strings.TrimPrefix(f.FileExtension, "."))
 
 		job.FilesCompleted++
 		job.FieldsRemoved += result.FieldsRemoved

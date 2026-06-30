@@ -61,6 +61,9 @@ func canonicalFormat(ext string) string {
 // HandleUpload handles POST /api/upload — validates, saves, and returns file metadata.
 func HandleUpload(cfg Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Reject oversized request bodies before multipart parsing spools them to disk.
+		// Allow up to 10 files at max size plus multipart overhead.
+		r.Body = http.MaxBytesReader(w, r.Body, 10*cfg.MaxFileSize+4096)
 		if err := r.ParseMultipartForm(32 * 1024 * 1024); err != nil {
 			WriteError(w, http.StatusRequestEntityTooLarge, ErrFileTooLarge,
 				fmt.Sprintf("File exceeds maximum allowed size of %d MB", cfg.MaxFileSize/(1024*1024)))

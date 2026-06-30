@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS cleaning_jobs (
     files_completed       INTEGER     NOT NULL DEFAULT 0,
     fields_removed        INTEGER     NOT NULL DEFAULT 0,
     gps_locations_removed INTEGER     NOT NULL DEFAULT 0,
-    total_time_seconds    INTEGER,
+    total_time_ms         INTEGER,
     created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at          TIMESTAMPTZ
 );
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS cleaning_reports (
     files_processed       INTEGER     NOT NULL DEFAULT 0,
     fields_removed        INTEGER     NOT NULL DEFAULT 0,
     gps_locations_removed INTEGER     NOT NULL DEFAULT 0,
-    total_time_seconds    INTEGER     NOT NULL DEFAULT 0,
+    total_time_ms         INTEGER     NOT NULL DEFAULT 0,
     file_types            TEXT        NOT NULL DEFAULT '',
     dominant_type         TEXT        NOT NULL DEFAULT '',
     has_gps               BOOLEAN     NOT NULL DEFAULT FALSE,

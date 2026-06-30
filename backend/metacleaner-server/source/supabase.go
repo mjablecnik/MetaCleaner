@@ -75,7 +75,7 @@ type dbJob struct {
 	FilesCompleted      int        `json:"files_completed"`
 	FieldsRemoved       int        `json:"fields_removed"`
 	GPSLocationsRemoved int        `json:"gps_locations_removed"`
-	TotalTimeMs    *int       `json:"total_time_seconds,omitempty"`
+	TotalTimeMs    *int       `json:"total_time_ms,omitempty"`
 	CreatedAt           *time.Time `json:"created_at,omitempty"`
 	CompletedAt         *time.Time `json:"completed_at,omitempty"`
 }
@@ -112,7 +112,7 @@ type dbReport struct {
 	FilesProcessed      int             `json:"files_processed"`
 	FieldsRemoved       int             `json:"fields_removed"`
 	GPSLocationsRemoved int             `json:"gps_locations_removed"`
-	TotalTimeMs    int             `json:"total_time_seconds"`
+	TotalTimeMs    int             `json:"total_time_ms"`
 	FileTypes           string          `json:"file_types"`
 	DominantType        string          `json:"dominant_type"`
 	HasGPS              bool            `json:"has_gps"`
@@ -183,9 +183,14 @@ func (c *SupabaseClient) doJSON(ctx context.Context, method, url string, payload
 		resp, err := c.doWithTimeout(ctx, req)
 		if err != nil {
 			lastErr = err
-			// Retry on timeout/network errors
 			if ctx.Err() != nil {
 				return ctx.Err()
+			}
+			// Don't retry non-idempotent methods on transport errors — the insert may
+			// have succeeded on the server but the response was lost; retrying would
+			// create a duplicate row.
+			if method == http.MethodPost {
+				return err
 			}
 			continue
 		}
@@ -204,7 +209,12 @@ func (c *SupabaseClient) doJSON(ctx context.Context, method, url string, payload
 
 		if result != nil && len(respBody) > 0 {
 			if err := json.Unmarshal(respBody, result); err != nil {
-				lastErr = fmt.Errorf("unmarshal response: %w (body=%d bytes, status=%d)", err, len(respBody), resp.StatusCode)
+				unmarshalErr := fmt.Errorf("unmarshal response: %w (body=%d bytes, status=%d)", err, len(respBody), resp.StatusCode)
+				// Don't retry POST on unmarshal failure — the insert already committed.
+				if method == http.MethodPost {
+					return unmarshalErr
+				}
+				lastErr = unmarshalErr
 				slog.Warn("supabase: unmarshal failed, retrying", "method", method, "url", url, "bodyLen", len(respBody), "status", resp.StatusCode, "attempt", attempt)
 				continue
 			}
@@ -712,7 +722,7 @@ func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID
 // Use this when you only need PDFPath/PDFStatus and don't need the full ReportDetail.
 func (c *SupabaseClient) GetReportMetaByHumanID(ctx context.Context, humanID, userID string) (*Report, error) {
 	var rows []dbReport
-	url := c.restURL("cleaning_reports?report_id=eq." + humanID + "&select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_seconds,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at")
+	url := c.restURL("cleaning_reports?report_id=eq." + humanID + "&select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at")
 	if userID != "" {
 		url += "&user_id=eq." + userID
 	}
@@ -730,7 +740,7 @@ func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]Repo
 	var rows []dbReport
 	// Select only the columns needed for the summary list (avoid fetching large chart_data JSONB).
 	// Limit to 50 most recent reports to prevent oversized responses from Supabase free tier.
-	url := c.restURL("cleaning_reports?select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_seconds,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at&order=date.desc&limit=50")
+	url := c.restURL("cleaning_reports?select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at&order=date.desc&limit=50")
 	if userID != "" {
 		url += "&user_id=eq." + userID
 	}

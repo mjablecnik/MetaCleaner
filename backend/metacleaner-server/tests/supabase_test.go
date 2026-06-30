@@ -167,7 +167,7 @@ func TestSupabaseClient_GetReport_Found(t *testing.T) {
 
 		switch {
 		case strings.HasSuffix(r.URL.Path, "/cleaning_reports") && strings.Contains(r.URL.RawQuery, "id=eq.report-uuid"):
-			fmt.Fprintf(w, `[{"id":"report-uuid","job_id":"job-1","report_id":"MC-2025-001","date":%q,"files_processed":2,"fields_removed":20,"gps_locations_removed":1,"total_time_seconds":10,"file_types":"jpeg","dominant_type":"image","has_gps":true,"tags":[],"pdf_status":"done","chart_data":[]}]`,
+			fmt.Fprintf(w, `[{"id":"report-uuid","job_id":"job-1","report_id":"MC-2025-001","date":%q,"files_processed":2,"fields_removed":20,"gps_locations_removed":1,"total_time_ms":10,"file_types":"jpeg","dominant_type":"image","has_gps":true,"tags":[],"pdf_status":"done","chart_data":[]}]`,
 				reportDate.Format(time.RFC3339))
 		case strings.HasSuffix(r.URL.Path, "/job_files"):
 			filesCalled = true
@@ -228,8 +228,8 @@ func TestSupabaseClient_ListReports_ReturnsAll(t *testing.T) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `[
-			{"id":"r1","report_id":"MC-001","date":%q,"files_processed":2,"fields_removed":5,"total_time_seconds":3,"file_types":"jpeg","dominant_type":"image","has_gps":false,"tags":[],"pdf_status":"done","gps_locations_removed":0,"chart_data":[]},
-			{"id":"r2","report_id":"MC-002","date":%q,"files_processed":1,"fields_removed":3,"total_time_seconds":2,"file_types":"png","dominant_type":"image","has_gps":true,"tags":[],"pdf_status":"pending","gps_locations_removed":1,"chart_data":[]}
+			{"id":"r1","report_id":"MC-001","date":%q,"files_processed":2,"fields_removed":5,"total_time_ms":3,"file_types":"jpeg","dominant_type":"image","has_gps":false,"tags":[],"pdf_status":"done","gps_locations_removed":0,"chart_data":[]},
+			{"id":"r2","report_id":"MC-002","date":%q,"files_processed":1,"fields_removed":3,"total_time_ms":2,"file_types":"png","dominant_type":"image","has_gps":true,"tags":[],"pdf_status":"pending","gps_locations_removed":1,"chart_data":[]}
 		]`, reportDate.Format(time.RFC3339), reportDate.Format(time.RFC3339))
 	}))
 	defer srv.Close()
@@ -433,5 +433,71 @@ func TestSupabaseClient_UpdateJob_SendsCorrectVerbAndPath(t *testing.T) {
 	}
 	if err := client.UpdateJob(context.Background(), job); err != nil {
 		t.Fatalf("UpdateJob returned error: %v", err)
+	}
+}
+
+// ─── POST idempotency: no retry on transport errors ───────────────────────────
+
+// TestSupabaseClient_CreateJob_NoRetryOnTransportError verifies that CreateJob
+// does NOT retry when a transport error occurs. Retrying a POST insert could
+// produce duplicate rows if the first request succeeded but the response was lost.
+func TestSupabaseClient_CreateJob_NoRetryOnTransportError(t *testing.T) {
+	callCount := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		callCount++
+		// Close the connection immediately to simulate a transport error.
+		hj, ok := w.(http.Hijacker)
+		if !ok {
+			t.Error("ResponseWriter does not implement http.Hijacker")
+			return
+		}
+		conn, _, _ := hj.Hijack()
+		conn.Close()
+	}))
+	defer srv.Close()
+
+	client := src.NewSupabaseClient(newSupabaseConfig(srv.URL))
+	job := &src.Job{Status: "processing", TotalFiles: 1}
+	err := client.CreateJob(context.Background(), job)
+	if err == nil {
+		t.Fatal("expected error on transport failure, got nil")
+	}
+	if callCount != 1 {
+		t.Errorf("CreateJob should not retry on transport error: expected 1 call, got %d", callCount)
+	}
+}
+
+// TestSupabaseClient_CreateFileRecords_NoRetryOnTransportError verifies that
+// CreateFileRecords does NOT retry on transport errors for the same reason.
+func TestSupabaseClient_CreateFileRecords_NoRetryOnTransportError(t *testing.T) {
+	callCount := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		callCount++
+		hj, ok := w.(http.Hijacker)
+		if !ok {
+			t.Error("ResponseWriter does not implement http.Hijacker")
+			return
+		}
+		conn, _, _ := hj.Hijack()
+		conn.Close()
+	}))
+	defer srv.Close()
+
+	client := src.NewSupabaseClient(newSupabaseConfig(srv.URL))
+	files := []src.FileRecord{{
+		JobID:         "job-1",
+		FileName:      "photo.jpg",
+		FileExtension: ".jpg",
+		FileSizeBytes: 1024,
+		FileType:      "image",
+		Format:        "jpeg",
+		Status:        "pending",
+	}}
+	err := client.CreateFileRecords(context.Background(), files)
+	if err == nil {
+		t.Fatal("expected error on transport failure, got nil")
+	}
+	if callCount != 1 {
+		t.Errorf("CreateFileRecords should not retry on transport error: expected 1 call, got %d", callCount)
 	}
 }
