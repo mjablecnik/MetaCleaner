@@ -4,19 +4,57 @@
 	import DropZone from '../components/DropZone.svelte';
 	import Toast from '$lib/shared/components/Toast.svelte';
 	import { scannerStore } from '$lib/scanner/scannerStore.svelte';
+	import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from '$lib/scanner/constants';
 
-	const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.heic', '.heif', '.mp4', '.mov']);
+	const ALLOWED_EXTENSIONS = new Set([
+		...Object.keys(IMAGE_EXTENSIONS),
+		...Object.keys(VIDEO_EXTENSIONS)
+	]);
+
 	const ALLOWED_MIMES = new Set([
 		'image/jpeg',
 		'image/png',
 		'image/heic',
 		'image/heif',
+		'image/avif',
+		'image/tiff',
+		'image/x-adobe-dng',
+		'image/webp',
+		'image/gif',
 		'video/mp4',
-		'video/quicktime'
+		'video/quicktime',
+		'video/x-msvideo',
+		'video/avi',
+		'video/x-matroska',
+		'video/webm',
+		'video/x-ms-wmv',
+		'video/x-flv',
+		'video/3gpp',
+		'video/mpeg',
+		'video/ogg',
+		'video/mp2t'
 	]);
+
+	const ACCEPT = [...ALLOWED_EXTENSIONS].join(',');
+
 	const MAX_FILE_SIZE = 500 * 1024 * 1024;
 
-	const FILE_FORMATS = ['JPG', 'PNG', 'HEIC', 'MP4', 'MOV'];
+	function uniqueFormatChips(extensions: Record<string, string>): string[] {
+		const seen = new Set<string>();
+		const result: string[] = [];
+		for (const [ext, fmt] of Object.entries(extensions)) {
+			if (!seen.has(fmt)) {
+				seen.add(fmt);
+				result.push(ext.slice(1).toUpperCase());
+			}
+		}
+		return result;
+	}
+
+	const FILE_FORMATS = [
+		...uniqueFormatChips(IMAGE_EXTENSIONS),
+		...uniqueFormatChips(VIDEO_EXTENSIONS)
+	];
 
 	const hasFiles = $derived(scannerStore.hasFiles);
 	const isScanning = $derived(scannerStore.isScanning);
@@ -86,7 +124,7 @@
 		</div>
 	</div>
 
-	<DropZone compact={hasFiles} onFiles={handleFiles} />
+	<DropZone compact={hasFiles} onFiles={handleFiles} accept={ACCEPT} />
 
 	{#if isScanning}
 		<div class="flex items-center gap-2 rounded-lg bg-navy-lighter px-3 py-2">

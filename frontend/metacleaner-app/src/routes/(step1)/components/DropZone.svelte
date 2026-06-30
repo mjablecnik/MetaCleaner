@@ -5,9 +5,11 @@
 		onFiles: (files: FileList) => void;
 		/** Compact "add more" mode — shows plus icon with short label instead of full upload prompt. */
 		compact?: boolean;
+		/** Comma-separated list of accepted file extensions/MIME types for the file input. */
+		accept?: string;
 	}
 
-	let { onFiles, compact = false }: Props = $props();
+	let { onFiles, compact = false, accept = '' }: Props = $props();
 
 	let isDragOver = $state(false);
 	let fileInputId = 'dropzone-file-input';
@@ -105,7 +107,7 @@
 		type="file"
 		id={fileInputId}
 		multiple
-		accept=".jpg,.jpeg,.png,.heic,.heif,.mp4,.mov"
+		accept={accept}
 		onchange={handleFileInput}
 		class="hidden"
 	/>

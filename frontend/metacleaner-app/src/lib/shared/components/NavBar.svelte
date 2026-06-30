@@ -167,11 +167,6 @@
 			{/if}
 			{#if user}
 				<PlanPill planId={billingStore.planId} planStatus={billingStore.planStatus} />
-				<CreditBalanceIndicator
-					credits={billingStore.credits}
-					isLoading={billingStore.isLoading}
-					hasError={billingStore.hasError}
-				/>
 				<a
 					href={resolve('/docs' as Pathname)}
 					class="text-sm font-medium transition-colors {page.url.pathname.startsWith('/docs')
@@ -188,6 +183,13 @@
 					bind:open={langDropdownOpen}
 					onSelect={handleLangSelect}
 					wrapperId="nav-langDropdown"
+				/>
+			{/if}
+			{#if user}
+				<CreditBalanceIndicator
+					credits={billingStore.credits}
+					isLoading={billingStore.isLoading}
+					hasError={billingStore.hasError}
 				/>
 			{/if}
 			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" {onLogout} />

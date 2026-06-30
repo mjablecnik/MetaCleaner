@@ -87,7 +87,7 @@
 	<div class="relative hidden flex-col lg:flex">
 		{#if showProOverlay}
 			<!-- Fake placeholder — no real data rendered, cannot be bypassed via DevTools -->
-			<div class="pointer-events-none blur-[8px] select-none" aria-hidden="true">
+			<div class="pointer-events-none blur-[4px] select-none" aria-hidden="true">
 				<div class="flex flex-col gap-4 rounded-2xl border border-gray-800 bg-navy-card p-5">
 					<div class="flex items-center justify-between">
 						<div class="h-5 w-28 rounded bg-gray-700"></div>
