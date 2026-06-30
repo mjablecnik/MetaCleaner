@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 09:59 — manual
+- Project: frontend (metacleaner-monitoring — internal monitoring dashboard)
+- Conducted a **code review** of the real-API-integration feature against `.kiro/specs/monitoring-real-api-integration/` (`.agents/tmp/CODE_REVIEW.md`: 2 HIGH, 5 MEDIUM, 5 LOW findings; architecture overall sound — three-layer config→clients→mappers→load flow, `SectionResult<T>` unions, per-section `callSection` isolation, server-only secrets), derived a 12-item backlog (`.agents/tmp/TASKS.md`), and fixed the 7 highest-severity items across 2 commits
+- **HIGH** (`80bfb6c`): made retry functional by adding `depends('app:<route>')` to every `+page.server.ts` load (the `invalidate()` keys previously matched no `depends()`, so retry silently no-oped — Req 5.5); stopped the Performance page fabricating Apdex/response-time/slow-endpoint numbers and wired up the dead, property-tested `computeApdex`/`mapToSlowEndpoints` so tests validate shipped code (Req 14.1/14.2)
+- **MEDIUM** (`7a7cd96`): fixed the dashboard uptime bar (emit a bare percent rendered via `style="width:{barWidth}"` instead of the runtime `w-[x%]` class Tailwind never compiles, in `+page.server.ts` + `StatCard.svelte`); replaced hardcoded Czech/English literals in `cloudflareMapper`/`flyMapper` with i18n keys; stopped fabricating `HttpStatusDistribution` from hardcoded 3xx/5xx rates; removed the mock business conversion funnel (`getConversionFunnel()`) served as live data; added eager startup validation of `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` so the server fails fast
+- **Deferred**: 5 LOW findings (churn formula vs Req 8.2, Sentry 5xx `status_code` tag + dead `getIssueStats`, rolling-24h Cloudflare window, retry skeleton state, Brevo spec inconsistency) left as a documented backlog
+
 ## 2026-06-30 01:26 — manual
 - Project: frontend (metacleaner-web — marketing/landing site)
 - Authored a **unit/integration test spec** (`.agents/tmp/TEST_SPEC.md`) for the previously-untested logic in `frontend/metacleaner-web/` (0 test files existed; flagged the stale `.agents/UNIT_TEST_REPORT.md` describing 781 fictional tests as inaccurate), derived a 12-item backlog (`.agents/tmp/TASKS.md`), and implemented every task across 3 commits — **130 unit tests in 11 files, all passing** (Vitest `server` project, ~2.43s)
