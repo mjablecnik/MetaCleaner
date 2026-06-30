@@ -1,6 +1,20 @@
 # MetaCleaner App
 
-MetaCleaner helps users protect their privacy by removing hidden metadata (EXIF, GPS, camera info, timestamps) from photos and videos before sharing them online. Users upload files, review identified privacy risks, choose what to clean, and download safe copies — all through a guided step-by-step wizard.
+Remove hidden metadata from photos and videos to protect privacy before sharing online.
+
+## Description
+
+MetaCleaner helps users protect their privacy by stripping hidden metadata (EXIF, GPS, camera info, timestamps) from photos and videos. Files are analyzed client-side for privacy risks, cleaned by the backend, and returned as safe copies.
+
+**Key features:**
+- Step-by-step wizard: upload → scan → clean → download
+- Client-side metadata scanning with privacy risk scoring
+- Real-time cleaning progress via WebSocket
+- Report history with detailed per-field breakdown
+- Multi-language support (English, Czech)
+- User authentication (email/password, OAuth, magic link)
+- Subscription and API key management
+- Android app via Capacitor
 
 ## Tech Stack
 
@@ -18,7 +32,7 @@ MetaCleaner helps users protect their privacy by removing hidden metadata (EXIF,
 - [Node.js](https://nodejs.org/) 22+
 - [Bun](https://bun.sh/) — `curl -fsSL https://bun.sh/install | bash`
 
-## Setup
+## Installation / Setup
 
 ```bash
 bun install            # Install dependencies
@@ -117,22 +131,30 @@ The app uses `ApiCleaningService` which communicates with the real backend over 
 ```
 src/
 ├── lib/
-│   ├── clients/           # HTTP/WebSocket API client (metaCleanerApi.ts)
-│   ├── services/          # CleaningService implementations (apiCleaningService.ts)
+│   ├── auth/              # Auth store, API client, route guards
+│   ├── clients/           # HTTP/WebSocket API clients
+│   ├── services/          # CleaningService (upload → WS → results)
+│   ├── scanner/           # Client-side metadata parsing + risk analysis
+│   ├── stores/            # Global reactive state (appState, billingStore, etc.)
+│   ├── repositories/      # Static UI config (languages, settings data, etc.)
 │   ├── shared/
 │   │   ├── elements/      # Low-level UI primitives (Button, Card, Badge…)
 │   │   ├── components/    # Composed UI (NavBar, Toast, FileListItem…)
-│   │   └── sections/      # Shared page sections
-│   ├── repositories/      # Static UI config (languages, user placeholder)
-│   └── paraglide/         # Generated i18n
+│   │   ├── sections/      # Shared page sections
+│   │   └── utils/         # Utility functions (tx, format, planStyleMap, etc.)
+│   ├── types/             # Shared TypeScript types (billing, processing, report)
+│   └── paraglide/         # Generated i18n runtime (auto-generated)
 ├── routes/
-│   ├── (step1)/           # File upload
-│   ├── step2/             # Risk analysis
-│   ├── step3/             # Processing
-│   ├── step4/             # Error handling
-│   ├── step5/             # Results
-│   ├── reports/           # Report history
-│   └── report/            # Single report detail
+│   ├── (step1)/           # File upload + scan (wizard step 1)
+│   ├── (auth)/            # Login, register, forgot-password, email-verified
+│   ├── api-keys/          # API key management
+│   ├── docs/              # API documentation (auth, endpoints, errors)
+│   ├── report/[id]/       # Report detail page
+│   ├── reports/           # Report history list
+│   ├── settings/          # User settings
+│   ├── subscription/      # Subscription plans
+│   ├── sections/          # Wizard step sections (Step1Idle–Step5Success)
+│   └── +page.svelte       # Root page — wizard step router (steps 1–5)
 messages/                  # i18n message files (en.json, cs.json)
 ```
 

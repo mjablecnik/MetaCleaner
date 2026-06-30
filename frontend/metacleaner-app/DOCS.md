@@ -16,9 +16,10 @@
 
 All variables are loaded at **build time** via SvelteKit's `$env/static/public`. They are baked into the JS bundle and cannot be changed at runtime.
 
-| Variable         | Default                 | Description                              |
-| ---------------- | ----------------------- | ---------------------------------------- |
-| `PUBLIC_API_URL` | `http://localhost:8080` | Backend API base URL (no trailing slash) |
+| Variable                    | Default                 | Required | Description                                           |
+| --------------------------- | ----------------------- | -------- | ----------------------------------------------------- |
+| `PUBLIC_API_URL`            | `http://localhost:8080` | Yes      | Backend API base URL (no trailing slash)              |
+| `PUBLIC_PRIVACY_POLICY_URL` | —                       | No       | Privacy policy URL shown in registration consent text |
 
 Reference: `.env.example`
 
@@ -55,19 +56,22 @@ frontend/metacleaner-app/
 │   │   ├── assets/                  # Static assets (SVGs, images)
 │   │   ├── paraglide/               # Generated i18n runtime (auto-generated)
 │   │   └── locale.svelte.ts         # Locale state + initLocale()
-│   ├── routes/
-│   │   ├── (step1)/                 # File upload + scan (wizard step 1)
-│   │   ├── (auth)/                  # Auth pages (login, register, forgot-password)
-│   │   ├── report/                  # Report detail page
-│   │   ├── reports/                 # Report history list
-│   │   ├── +page.svelte             # Root page (step router)
-│   │   └── +layout.svelte           # Global layout (NavBar, Toast, auth guard)
-│   └── messages/
-│       ├── en.json                  # English translations
-│       └── cs.json                  # Czech translations
+│   └── routes/
+│       ├── (step1)/                 # File upload + scan (wizard step 1)
+│       ├── (auth)/                  # Login, register, forgot-password, email-verified
+│       ├── api-keys/                # API key management
+│       ├── docs/                    # API documentation (auth, endpoints, errors)
+│       ├── report/[id]/             # Report detail page
+│       ├── reports/                 # Report history list
+│       ├── settings/                # User settings
+│       ├── subscription/            # Subscription plans
+│       ├── sections/                # Wizard step sections (Step1Idle–Step5Success)
+│       ├── +page.svelte             # Root page — wizard step router (steps 1–5)
+│       └── +layout.svelte           # Global layout (NavBar, auth guard, billing sync)
+├── messages/                        # i18n message files (en.json, cs.json)
 ├── static/                          # Static assets served as-is
 ├── e2e/                             # Playwright E2E tests
-├── android/                         # Capacitor Android project
+├── scripts/                         # Shell scripts (build, deploy, docker, android)
 ├── package.json
 ├── svelte.config.js
 ├── vite.config.ts
@@ -75,8 +79,6 @@ frontend/metacleaner-app/
 ├── Dockerfile
 ├── nginx.conf                       # Production nginx config (SPA fallback)
 ├── fly.toml                         # Fly.io deployment config
-├── fly-setup.sh                     # Idempotent Fly.io app creation
-├── start-docker.sh                  # Local Docker build + run
 └── .env.example                     # Environment variable template
 ```
 
@@ -101,17 +103,14 @@ bun run preview        # Preview production build locally
 ### Local Docker
 
 ```bash
-./start-docker.sh      # Build image + run on port 3000
-docker stop metacleaner-app
+scripts/start-docker.sh      # Build image + run on port 3000 (reads PUBLIC_API_URL from .env)
+scripts/stop-docker.sh       # Stop container
 ```
-
-The script reads `PUBLIC_API_URL` from `.env` and passes it as a Docker build arg.
 
 ### Fly.io Deployment
 
 ```bash
-./fly-setup.sh                                    # Create app (idempotent)
-fly deploy --build-arg PUBLIC_API_URL=https://...  # Deploy with API URL
+scripts/deploy.sh                                  # Deploy (creates app if missing, reads .env-prod)
 fly logs --app metacleaner-app                     # View logs
 fly status --app metacleaner-app                   # Check status
 ```
@@ -184,12 +183,12 @@ The app runs as an Android app via Capacitor.
 ### Setup
 
 ```bash
-./sync-android.sh                    # Build + sync web assets to Android
+scripts/sync-android.sh              # Build + sync web assets to Android
 bunx cap open android                # Open in Android Studio
 bunx cap run android                 # Run on device/emulator
 ```
 
-### Live Reload
+### Live Reload (during development)
 
 ```bash
 bunx cap run android --livereload --external
@@ -247,7 +246,7 @@ bun install
 Then rebuild:
 
 ```bash
-./start-docker.sh
+scripts/start-docker.sh
 ```
 
 ### API calls fail in dev (CORS)
