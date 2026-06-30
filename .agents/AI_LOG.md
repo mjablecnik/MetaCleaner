@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 10:19 — manual
+- Project: frontend (metacleaner-monitoring — internal monitoring dashboard)
+- Performed a **security audit** of `frontend/metacleaner-monitoring/` (`.agents/tmp/SECURITY_AUDIT.md`: overall risk CRITICAL — 1 CRITICAL, 2 MEDIUM, 3 LOW; dominant risk is broken access control since the SvelteKit dashboard exposes Supabase admin emails, Stripe revenue, Sentry/Cloudflare logs with no auth; verified non-findings: no injection/SSRF/path-traversal, no hardcoded prod secrets, no `{@html}` XSS sink, `npm audit` clean), derived a 6-item backlog (`.agents/tmp/TASKS.md`), and remediated all 6 findings across 6 commits
+- **CRITICAL** (`2d04e03`): added a `requireAuth` handle to `src/hooks.server.ts` (via `sequence(...)`) so every route requires a valid session before any `load`/data is served — previously zero auth existed on any route
+- **MEDIUM** (`2230aa4`, `aca3c11`): set HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) on all responses in `hooks.server.ts`; added per-IP rate limiting to prevent unauthenticated upstream-quota/cost amplification across the paid Supabase/Stripe/Sentry/Fly/Cloudflare fan-out
+- **LOW** (`e84e80d`, `f3abd27`, `e2c0d9c`): stopped reflecting raw upstream error messages to the client (`src/lib/server/clients/types.ts` now logs detail server-side; `SectionErrorCard.svelte` renders only category-based copy); changed `static/robots.txt` to `Disallow: /` to block crawler indexing; masked customer email addresses in the user listing (`src/lib/server/mappers/supabaseMapper.ts`)
+
 ## 2026-06-30 09:59 — manual
 - Project: frontend (metacleaner-monitoring — internal monitoring dashboard)
 - Conducted a **code review** of the real-API-integration feature against `.kiro/specs/monitoring-real-api-integration/` (`.agents/tmp/CODE_REVIEW.md`: 2 HIGH, 5 MEDIUM, 5 LOW findings; architecture overall sound — three-layer config→clients→mappers→load flow, `SectionResult<T>` unions, per-section `callSection` isolation, server-only secrets), derived a 12-item backlog (`.agents/tmp/TASKS.md`), and fixed the 7 highest-severity items across 2 commits
