@@ -816,3 +816,9 @@
 - Problem: The in-memory rate limiter (Map + setInterval) is reset on every cold start and not shared across isolates, making it ineffective in a serverless environment.
 - Solution: Use `await Deno.openKv()` at module level (top-level await works in Deno). Key structure: ['rl', ip, windowNumber] with expireIn for TTL-based cleanup. Use atomic compare-and-swap with 3-attempt retry loop for race-condition-safe increments. Makes isRateLimited async — update all call sites to `await isRateLimited(...)`.
 - Source: security-audit, 2026-06-29
+
+## metacleaner-web: {@html} with `<script>` literal causes ESLint Svelte parse error
+- Project: metacleaner-web
+- Problem: `JsonLd.svelte` uses `{@html \`<script type="application/ld+json">...\`}` inside `<svelte:head>`. The ESLint `eslint-plugin-svelte` parser sees the literal `<script type="application/ld+json">` string as an opening HTML script element and tries to parse its content as JavaScript. This causes "Unexpected keyword or identifier" at the `>` character closing the opening tag. Additionally, the `svelte/no-at-html-tags` rule fires because `{@html}` is flagged by default.
+- Solution: Break the `<script` string with a template expression so the parser doesn't see a literal script tag: `{@html \`<${'script'} type="application/ld+json">${JSON.stringify(data)}</${'script'}>\`}`. Also add `<!-- eslint-disable-next-line svelte/no-at-html-tags -->` directly above the `{@html}` line since this usage is intentional (JSON-LD structured data injection).
+- Source: check-build, 2026-06-30
