@@ -37,13 +37,13 @@ Run stories with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run tes
 ### Shared elements
 - [x] Create story for **MethodBadge** (`lib/shared/elements/MethodBadge.svelte`) — states: each method (GET, POST, DEL, PATCH, PUT, WS) × size sm/md.
 - [x] Create story for **InfoBox** (`lib/shared/elements/InfoBox.svelte`) — states: variant blue / green / orange / red, each with an icon and slotted body text.
-- [ ] Create story for **FeatureCard** (`lib/shared/elements/FeatureCard.svelte`) — states: 2–3 icon + iconColor combinations.
-- [ ] Create story for **CopyButton** (`lib/shared/elements/CopyButton.svelte`) — states: idle; copied (play function: click → assert "Copied" label). Mock `navigator.clipboard`/`document.execCommand` as in existing CopyButton/CodeBlock specs.
-- [ ] Create story for **CodeBlock** (`lib/shared/elements/CodeBlock.svelte`) — states: single-line code; multi-line code (embedded CopyButton).
+- [x] Create story for **FeatureCard** (`lib/shared/elements/FeatureCard.svelte`) — states: 2–3 icon + iconColor combinations.
+- [x] Create story for **CopyButton** (`lib/shared/elements/CopyButton.svelte`) — states: idle; copied (play function: click → assert "Copied" label). Mock `navigator.clipboard`/`document.execCommand` as in existing CopyButton/CodeBlock specs.
+- [x] Create story for **CodeBlock** (`lib/shared/elements/CodeBlock.svelte`) — states: single-line code; multi-line code (embedded CopyButton).
 
 ### Shared billing/subscription sections
-- [ ] Create story for **CurrentPlanCard** — states: billingPeriod monthly / yearly / null; pro vs proplus.
-- [ ] Create story for **UpgradeCard** — states: default; loading.
+- [x] Create story for **CurrentPlanCard** — states: billingPeriod monthly / yearly / null; pro vs proplus.
+- [x] Create story for **UpgradeCard** — states: default; loading.
 - [ ] Create story for **DowngradeCard** — states: default; loading.
 - [ ] Create story for **ReactivateCard** — states: default; loading.
 - [ ] Create story for **CancelSection** — state: default.
