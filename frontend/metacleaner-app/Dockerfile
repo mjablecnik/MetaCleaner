@@ -1,6 +1,8 @@
 # Build stage — must be built from the workspace root:
 #   docker build -f frontend/metacleaner-app/Dockerfile -t <name> .
-FROM oven/bun:1 AS build
+# Pinned to the exact bun version that generated the committed bun.lock.
+# Keep this tag in sync with bun.lock when bumping bun (frozen install fails otherwise).
+FROM oven/bun:1.3.14 AS build
 WORKDIR /app
 
 ARG PUBLIC_API_URL=http://localhost:8080

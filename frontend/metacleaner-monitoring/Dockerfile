@@ -1,10 +1,12 @@
 # Build stage
-FROM oven/bun:1 AS build
+# Pinned to the exact bun version that generated the committed bun.lock.
+# Keep this tag in sync with bun.lock when bumping bun (frozen install fails otherwise).
+FROM oven/bun:1.3.14 AS build
 WORKDIR /app
 
 # Install dependencies first (layer caching)
 COPY package.json bun.lock ./
-RUN bun install
+RUN bun install --frozen-lockfile
 
 # Copy config files (change less frequently)
 COPY vite.config.ts tsconfig.json eslint.config.js ./
