@@ -43,45 +43,45 @@
 
 <div
 	class="flex cursor-default items-center gap-3 rounded-xl border px-3 py-2.5 lg:py-3 {rowBorderClass(
-		state.status
+		state?.status
 	)} {className}"
 >
 	<!-- File icon -->
 	<div
 		class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border {iconContainerClass(
-			state.status,
-			file.type
+			state?.status,
+			file?.type
 		)}"
 	>
 		<i
-			class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} text-sm {iconColorClass(
-				state.status,
-				file.type
+			class="fa-solid {file?.type === 'video' ? 'fa-video' : 'fa-image'} text-sm {iconColorClass(
+				state?.status,
+				file?.type
 			)}"
 		></i>
 	</div>
 
 	<!-- File info -->
 	<div class="min-w-0 flex-1">
-		<p class="truncate text-sm font-medium text-white">{file.name}</p>
+		<p class="truncate text-sm font-medium text-white">{file?.name}</p>
 
-		{#if state.status === 'done'}
+		{#if state?.status === 'done'}
 			<div class="mt-0.5 flex flex-wrap items-center gap-1.5">
-				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file?.size)}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span
 					class="flex items-center gap-1 text-[10px] font-medium text-brand-green lg:text-[11px]"
 				>
 					<i class="fa-solid fa-circle-check text-[8px] lg:text-[9px]"></i>
-					{#if state.gpsRemoved}
-						{tx('step3.files.gpsAndFieldsRemovedMobile', { count: state.fieldsRemoved })}
+					{#if state?.gpsRemoved}
+						{tx('step3.files.gpsAndFieldsRemovedMobile', { count: state?.fieldsRemoved })}
 					{:else}
-						{state.fieldsRemoved}
+						{state?.fieldsRemoved}
 						{tx('step3.files.fieldsRemoved')}
 					{/if}
 				</span>
 			</div>
-		{:else if state.status === 'in_progress'}
+		{:else if state?.status === 'in_progress'}
 			<div class="mt-1 flex flex-col gap-1">
 				<div class="flex items-center justify-between">
 					<span
@@ -90,19 +90,19 @@
 						<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
 						{tx('step3.files.processing')}
 					</span>
-					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state.progress}%</span
+					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state?.progress}%</span
 					>
 				</div>
 				<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-lighter">
 					<div
 						class="h-full rounded-full bg-gradient-to-r from-brand-blue to-blue-400 transition-all duration-200"
-						style="width: {state.progress}%"
+						style="width: {state?.progress}%"
 					></div>
 				</div>
 			</div>
-		{:else if state.status === 'error'}
+		{:else if state?.status === 'error'}
 			<div class="mt-0.5 flex items-center gap-1.5">
-				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file?.size)}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span class="text-[10px] text-brand-red lg:text-[11px]"
 					>{tx('step4.error.processingFailed')}</span
@@ -111,7 +111,7 @@
 		{:else}
 			<!-- waiting -->
 			<div class="mt-0.5 flex items-center gap-1.5">
-				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file.size)}</span>
+				<span class="text-[10px] text-text-muted lg:text-[11px]">{formatSize(file?.size)}</span>
 				<span class="h-1 w-1 rounded-full bg-gray-600"></span>
 				<span class="flex items-center gap-1 text-[10px] text-text-muted lg:text-[11px]">
 					<i class="fa-solid fa-clock text-[8px] lg:text-[9px]"></i>
@@ -126,15 +126,15 @@
 		<span
 			class="rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase lg:px-2 lg:text-[10px]"
 		>
-			{file.extension.replace('.', '').toUpperCase() || 'FILE'}
+			{file?.extension?.replace('.', '').toUpperCase() || 'FILE'}
 		</span>
-		{#if state.status === 'done'}
+		{#if state?.status === 'done'}
 			<div
 				class="flex h-6 w-6 items-center justify-center rounded-full border border-brand-green/30 bg-brand-green/10"
 			>
 				<i class="fa-solid fa-check text-[10px] text-brand-green"></i>
 			</div>
-		{:else if state.status === 'in_progress'}
+		{:else if state?.status === 'in_progress'}
 			<i class="fa-solid fa-circle-notch spin-slow text-sm text-brand-blue"></i>
 		{/if}
 	</div>

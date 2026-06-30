@@ -19,7 +19,7 @@
 			<span
 				class="rounded border border-brand-red/25 bg-brand-red/15 px-2 py-0.5 text-[10px] font-bold tracking-wider text-brand-red uppercase"
 			>
-				{error.code}
+				{error?.code}
 			</span>
 		</div>
 		<i
@@ -40,20 +40,20 @@
 					<span class="text-[10px] tracking-wider text-text-muted uppercase"
 						>{tx('step4.detail.errorCode')}</span
 					>
-					<span class="font-mono text-xs font-semibold text-white">{error.hexCode}</span>
+					<span class="font-mono text-xs font-semibold text-white">{error?.hexCode}</span>
 				</div>
 				<div class="flex flex-col gap-0.5">
 					<span class="text-[10px] tracking-wider text-text-muted uppercase"
 						>{tx('step4.detail.errorTime')}</span
 					>
-					<span class="font-mono text-xs font-semibold text-white">{error.timestamp}</span>
+					<span class="font-mono text-xs font-semibold text-white">{error?.timestamp}</span>
 				</div>
-				{#if error.fileName}
+				{#if error?.fileName}
 					<div class="flex flex-col gap-0.5">
 						<span class="text-[10px] tracking-wider text-text-muted uppercase"
 							>{tx('step4.detail.file')}</span
 						>
-						<span class="truncate font-mono text-xs font-semibold text-white">{error.fileName}</span
+						<span class="truncate font-mono text-xs font-semibold text-white">{error?.fileName}</span
 						>
 					</div>
 				{/if}
@@ -61,7 +61,7 @@
 					<span class="text-[10px] tracking-wider text-text-muted uppercase"
 						>{tx('step4.detail.phase')}</span
 					>
-					<span class="font-mono text-xs font-semibold text-white">{error.phase}</span>
+					<span class="font-mono text-xs font-semibold text-white">{error?.phase}</span>
 				</div>
 			</div>
 		</div>

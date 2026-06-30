@@ -20,7 +20,7 @@
 		green: { text: 'text-brand-green', bar: 'bg-brand-green' }
 	};
 
-	const classes = $derived(colorMap[color]);
+	const classes = $derived(colorMap[color] ?? colorMap.blue);
 </script>
 
 <div>

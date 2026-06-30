@@ -19,7 +19,7 @@
 	}
 
 	const fieldsTextClass = $derived(
-		report.fieldsColor === 'orange' ? 'text-brand-orange font-bold' : 'text-text-muted'
+		report?.fieldsColor === 'orange' ? 'text-brand-orange font-bold' : 'text-text-muted'
 	);
 </script>
 
@@ -28,42 +28,42 @@
 		<div class="flex min-w-0 flex-1 items-start gap-3">
 			<div
 				class="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl {iconStyle(
-					report.iconColor
+					report?.iconColor
 				)} border"
 			>
-				<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-image'} text-sm"></i>
+				<i class="fa-solid {report?.type === 'video' ? 'fa-video' : 'fa-image'} text-sm"></i>
 			</div>
 			<div class="min-w-0 flex-1">
 				<div class="flex flex-wrap items-center gap-2">
-					<span class="text-sm font-bold text-white">{report.date}</span>
-					<span class="font-mono text-[10px] text-text-muted">{report.id}</span>
+					<span class="text-sm font-bold text-white">{report?.date}</span>
+					<span class="font-mono text-[10px] text-text-muted">{report?.id}</span>
 					<div class="h-2 w-2 flex-shrink-0 rounded-full bg-brand-green"></div>
 				</div>
 				<p class="mt-0.5 text-xs text-text-muted">
-					{report.time} · {report.duration} · {fileCountLabel(report.fileCount)} · {report.fileTypes}
+					{report?.time} · {report?.duration} · {fileCountLabel(report?.fileCount)} · {report?.fileTypes}
 				</p>
 				<div class="mt-2 flex flex-wrap items-center gap-1.5">
-					{#each report.tags as tag (tag)}
+					{#each (report?.tags ?? []) as tag (tag)}
 						<span class="rounded border px-1.5 py-0.5 text-[10px] font-semibold {tagStyle(tag)}"
 							>{tag}</span
 						>
 					{/each}
 					<span class="ml-1 text-[10px] {fieldsTextClass}"
-						>{report.fields} {tx('reports.table.fieldsMobile')}</span
+						>{report?.fields} {tx('reports.table.fieldsMobile')}</span
 					>
 				</div>
 			</div>
 		</div>
 		<div class="flex flex-shrink-0 flex-col gap-1.5">
 			<a
-				href={resolve(`/report/${report.reportId}` as Pathname)}
+				href={resolve(`/report/${report?.reportId}` as Pathname)}
 				title={tx('reports.table.viewReport')}
 				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10"
 			>
 				<i class="fa-solid fa-eye text-xs text-brand-blue"></i>
 			</a>
 			<button
-				onclick={() => onDownload(report.reportId)}
+				onclick={() => onDownload(report?.reportId)}
 				title={tx('reports.table.downloadPdf')}
 				class="flex h-9 w-9 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10"
 			>
