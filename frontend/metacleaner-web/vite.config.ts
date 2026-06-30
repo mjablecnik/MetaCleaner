@@ -9,18 +9,29 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit({
+			prerender: {
+				entries: [
+					'*',
+					'/cs',
+					'/cs/features',
+					'/cs/pricing',
+					'/cs/about',
+					'/cs/terms',
+					'/cs/privacy'
+				]
+			},
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			adapter: adapter({ fallback: 'index.html' })
+			adapter: adapter({ fallback: '200.html' })
 		}),
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
-			strategy: ['localStorage', 'cookie', 'preferredLanguage', 'baseLocale']
+			strategy: ['url', 'cookie', 'preferredLanguage', 'baseLocale']
 		})
 	],
 	test: {

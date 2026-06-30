@@ -1,0 +1,16 @@
+{
+  "name": "MetaCleaner",
+  "short_name": "MetaCleaner",
+  "description": "Remove hidden metadata from your files instantly",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#0b1120",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
