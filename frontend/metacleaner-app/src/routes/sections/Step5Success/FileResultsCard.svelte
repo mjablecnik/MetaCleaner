@@ -42,7 +42,7 @@
 	}
 
 	const displayData = $derived<FileDisplayData[]>(
-		files.map((file, i) => ({
+		(files ?? []).map((file, i) => ({
 			file,
 			result: fileResults[i] ?? null
 		}))

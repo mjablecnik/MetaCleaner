@@ -15,54 +15,56 @@
 	const removedLabel = $derived(tx('step5.metadata.removed'));
 </script>
 
-<div class="flex flex-col gap-2">
-	<MetadataCategoryCard
-		icon="fa-location-dot"
-		label={tx('step5.metadata.gps')}
-		variant={mode}
-		valueText={mode === 'before'
-			? tx('step5.metadata.filesCount', { count: gpsCount })
-			: removedLabel}
-		{compact}
-	/>
-	<MetadataCategoryCard
-		icon="fa-camera"
-		label={tx('step5.metadata.exif')}
-		variant={mode}
-		valueText={mode === 'before'
-			? tx('step5.metadata.fieldsCount', { count: breakdown.exifFields })
-			: removedLabel}
-		{compact}
-	/>
-	<MetadataCategoryCard
-		icon="fa-tag"
-		label={tx('step5.metadata.xmp')}
-		variant={mode}
-		valueText={mode === 'before'
-			? tx('step5.metadata.fieldsCount', { count: breakdown.xmpFields })
-			: removedLabel}
-		{compact}
-	/>
-	{#if breakdown.id3mp4Fields > 0}
+{#if breakdown}
+	<div class="flex flex-col gap-2">
 		<MetadataCategoryCard
-			icon="fa-film"
-			label={tx('step5.metadata.id3mp4')}
+			icon="fa-location-dot"
+			label={tx('step5.metadata.gps')}
 			variant={mode}
 			valueText={mode === 'before'
-				? tx('step5.metadata.fieldsCount', { count: breakdown.id3mp4Fields })
+				? tx('step5.metadata.filesCount', { count: gpsCount })
 				: removedLabel}
 			{compact}
 		/>
-	{/if}
-	{#if breakdown.otherFields > 0}
 		<MetadataCategoryCard
-			icon="fa-ellipsis"
-			label={tx('step5.metadata.other')}
+			icon="fa-camera"
+			label={tx('step5.metadata.exif')}
 			variant={mode}
 			valueText={mode === 'before'
-				? tx('step5.metadata.fieldsCount', { count: breakdown.otherFields })
+				? tx('step5.metadata.fieldsCount', { count: breakdown.exifFields })
 				: removedLabel}
 			{compact}
 		/>
-	{/if}
-</div>
+		<MetadataCategoryCard
+			icon="fa-tag"
+			label={tx('step5.metadata.xmp')}
+			variant={mode}
+			valueText={mode === 'before'
+				? tx('step5.metadata.fieldsCount', { count: breakdown.xmpFields })
+				: removedLabel}
+			{compact}
+		/>
+		{#if breakdown.id3mp4Fields > 0}
+			<MetadataCategoryCard
+				icon="fa-film"
+				label={tx('step5.metadata.id3mp4')}
+				variant={mode}
+				valueText={mode === 'before'
+					? tx('step5.metadata.fieldsCount', { count: breakdown.id3mp4Fields })
+					: removedLabel}
+				{compact}
+			/>
+		{/if}
+		{#if breakdown.otherFields > 0}
+			<MetadataCategoryCard
+				icon="fa-ellipsis"
+				label={tx('step5.metadata.other')}
+				variant={mode}
+				valueText={mode === 'before'
+					? tx('step5.metadata.fieldsCount', { count: breakdown.otherFields })
+					: removedLabel}
+				{compact}
+			/>
+		{/if}
+	</div>
+{/if}

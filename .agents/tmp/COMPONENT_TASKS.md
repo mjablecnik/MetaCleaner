@@ -23,11 +23,11 @@ Run stories with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run tes
 - [x] Fix **ReportsTable** story — `reports/sections/ReportsTable.svelte:63,138`: guard `reports?.length` / default `[]`.
 - [x] Fix **FileAccordionItem** story — `report/components/FileAccordionItem.svelte:109,181`: guard `file?.hasGps` and nested metadata access.
 - [x] Fix **FileListItemRisk** story — `(step1)/components/FileListItemRisk.svelte:15,121`: guard `file?.scanResult`.
-- [ ] Fix **FileResultsCard** story — `sections/Step5Success/FileResultsCard.svelte:45`: use `(files ?? []).map(...)`.
-- [ ] Fix **MetadataFieldList** story — `sections/Step5Success/components/MetadataFieldList.svelte:33`: guard the category/metadata prop before reading `exifFields`.
-- [ ] Fix **MetadataCategoryCard** story — `sections/Step5Success/components/MetadataCategoryCard.svelte:55`: guard the category prop before reading `exifFields`.
-- [ ] Fix **AuthStatsRow** story — `(auth)/components/AuthStatsRow.svelte:16`: use `(stats ?? []).map(...)` / guard `stats?.length`.
-- [ ] Fix **LanguageDropdown** story — `lib/shared/components/LanguageDropdown.svelte:21,31`: guard the `languages` array before `.find(...)`.
+- [x] Fix **FileResultsCard** story — `sections/Step5Success/FileResultsCard.svelte:45`: use `(files ?? []).map(...)`.
+- [x] Fix **MetadataFieldList** story — `sections/Step5Success/components/MetadataFieldList.svelte:33`: guard the category/metadata prop before reading `exifFields`.
+- [x] Fix **MetadataCategoryCard** story — `sections/Step5Success/components/MetadataCategoryCard.svelte:55`: guard the category prop before reading `exifFields`.
+- [x] Fix **AuthStatsRow** story — `(auth)/components/AuthStatsRow.svelte:16`: use `(stats ?? []).map(...)` / guard `stats?.length`.
+- [x] Fix **LanguageDropdown** story — `lib/shared/components/LanguageDropdown.svelte:21,31`: guard the `languages` array before `.find(...)`.
 - [ ] Fix **SettingsAccordionCard** story — `settings/components/SettingsAccordionCard.svelte`: guard the prop field read during teardown (optional chaining).
 - [ ] Fix **AffiliateProgramSection** story — `settings/sections/AffiliateProgramSection.svelte`: guard the prop field read during teardown.
 - [ ] Re-run the storybook project and confirm `Errors  0` and exit code 0.
