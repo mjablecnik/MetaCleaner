@@ -53,7 +53,7 @@ describe('Property 4: Section Error Isolation', () => {
 		);
 	});
 
-	it('error sections preserve ClientError category and message', async () => {
+	it('error sections preserve ClientError category and sanitize message to empty string', async () => {
 		await fc.assert(
 			fc.asyncProperty(clientErrorArb, async (err) => {
 				const result = await callSection(async () => {
@@ -63,7 +63,7 @@ describe('Property 4: Section Error Isolation', () => {
 				expect(result.status).toBe('error');
 				if (result.status === 'error') {
 					expect(result.error.category).toBe(err.category);
-					expect(result.error.message).toBe(err.message);
+					expect(result.error.message).toBe('');
 				}
 			}),
 			{ numRuns: 100 }
@@ -84,7 +84,7 @@ describe('Property 4: Section Error Isolation', () => {
 		);
 	});
 
-	it('non-ClientError exceptions also produce error status (not crashing the section)', async () => {
+	it('non-ClientError exceptions produce error status with category request_error and sanitized empty message', async () => {
 		await fc.assert(
 			fc.asyncProperty(fc.string({ minLength: 1, maxLength: 50 }), async (message) => {
 				const result = await callSection(async () => {
@@ -94,7 +94,7 @@ describe('Property 4: Section Error Isolation', () => {
 				expect(result.status).toBe('error');
 				if (result.status === 'error') {
 					expect(result.error.category).toBe('request_error');
-					expect(result.error.message).toBe(message);
+					expect(result.error.message).toBe('');
 				}
 			}),
 			{ numRuns: 100 }
