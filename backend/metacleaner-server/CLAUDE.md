@@ -83,7 +83,8 @@ source/
 
 tests/                 # External test package — integration tests, property tests
 migrations/
-  001_full_schema.sql  # Idempotent schema — run once in Supabase SQL Editor
+  001_full_schema.sql           # Idempotent schema — run once for a new Supabase project
+  002_rename_total_time_ms.sql  # Run once on existing databases (renames column)
 scripts/               # Shell scripts for build, deploy, Docker, Stripe
 ```
 

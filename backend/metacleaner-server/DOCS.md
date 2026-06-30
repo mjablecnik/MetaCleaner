@@ -302,7 +302,8 @@ backend/metacleaner-server/
 │   ├── models_test.go                 # Property tests: file size, format, progress, summary
 │   └── errors_test.go                 # Property tests: error response format
 ├── migrations/
-│   └── 001_full_schema.sql      # Idempotent SQL schema for Supabase
+│   ├── 001_full_schema.sql      # Idempotent schema — run once for a new Supabase project
+│   └── 002_rename_total_time_ms.sql  # Run once on existing databases (renames column)
 ├── scripts/
 │   ├── build.sh                 # Build binary
 │   ├── deploy.sh                # Deploy to Fly.io (reads .env-prod by default)
@@ -339,6 +340,14 @@ Run `migrations/001_full_schema.sql` once against your Supabase project. The scr
 | `cleaning_reports` | Summary report per completed job; PDF path, chart data, tags |
 
 **Also create manually:** A Storage bucket named `cleaning-reports` in Supabase Dashboard → Storage → New Bucket.
+
+**Existing databases — run migration 002:**
+
+`migrations/002_rename_total_time_ms.sql` renames `total_time_seconds` to `total_time_ms` in `cleaning_jobs` and `cleaning_reports`. Run this once against any database set up before this migration was added:
+
+1. Open your Supabase project → SQL Editor
+2. Paste contents of `migrations/002_rename_total_time_ms.sql`
+3. Click **Run**
 
 ---
 
@@ -606,7 +615,9 @@ Download a cleaned file.
 
 Create a cleaning job for uploaded files.
 
-**Request:** `{ "fileIds": ["f-a1b2c3d4", "f-e5f6g7h8"] }`
+**Request:** `{ "fileIds": ["f-a1b2c3d4", "f-e5f6g7h8"], "fileNames": { "f-a1b2c3d4": "vacation.jpg" } }`
+
+`fileNames` is optional — maps file IDs to the original upload filenames for display in reports.
 
 **Response 201:**
 ```json
@@ -633,7 +644,7 @@ Get job status.
   "filesCompleted": 4,
   "fieldsRemoved": 87,
   "gpsLocationsRemoved": 3,
-  "totalTimeSeconds": 28,
+  "totalTimeMs": 28000,
   "createdAt": "2025-06-02T10:22:00Z",
   "completedAt": "2025-06-02T10:22:28Z"
 }
@@ -862,11 +873,11 @@ Connect to `ws://host/api/jobs/{jobId}/progress` after creating a job.
 
 | Type | Key fields | When sent |
 |---|---|---|
-| `file_progress` | `fileId`, `status: "in_progress"`, `progress` | File starts processing |
-| `file_complete` | `fileId`, `status: "done"`, `fieldsRemoved`, `gpsRemoved` | File finished |
-| `file_error` | `fileId`, `status: "error"`, `errorCode`, `message` | File failed |
-| `job_progress` | `overallProgress`, `filesCompleted`, `totalFiles`, `timeRemainingSeconds` | After each file |
-| `job_complete` | `jobId`, `filesProcessed`, `fieldsRemoved`, `totalTimeSeconds`, `reportId` | All done |
+| `file_progress` | `fileId`, `status: "in_progress"`, `overallProgress`, `filesCompleted`, `totalFiles` | File starts processing |
+| `file_complete` | `fileId`, `status: "done"`, `fieldsRemoved`, `gpsRemoved`, `overallProgress`, `filesCompleted` | File finished |
+| `file_error` | `fileId`, `status: "error"`, `errorCode`, `message`, `overallProgress` | File failed |
+| `job_complete` | `jobId`, `filesCompleted`, `totalFiles`, `fieldsRemoved`, `gpsLocationsRemoved`, `totalTimeMs` | All files processed |
+| `report_ready` | `reportId` | Report generated (arrives after `job_complete`) |
 
 ### Lifecycle
 
@@ -899,12 +910,24 @@ Connect to `ws://host/api/jobs/{jobId}/progress` after creating a job.
 | `INVALID_REQUEST` | 400 | Malformed request |
 | `DATABASE_ERROR` | 503 | Supabase query failed |
 | `RATE_LIMIT_EXCEEDED` | 429 | Upload rate limit exceeded |
+| `JOB_NOT_READY` | 409 | Job is still processing (ZIP download not yet available) |
+| `FILES_EXPIRED` | 404 | Cleaned files have expired and are no longer available |
+| `INSUFFICIENT_CREDITS` | 402 | Not enough credits to start the job |
+| `VALIDATION_ERROR` | 400 | Input validation failure (name length, required fields, etc.) |
+| `API_KEY_NOT_FOUND` | 404 | API key not found |
+| `API_KEY_ALREADY_REVOKED` | 409 | API key is already revoked |
+| `API_KEY_ALREADY_ACTIVE` | 409 | API key is already active |
+| `API_KEY_FORBIDDEN` | 403 | API key lacks permission for this endpoint |
 | `AUTH_UNAUTHORIZED` | 401 | Missing or invalid auth token |
 | `AUTH_TOKEN_EXPIRED` | 401 | JWT has expired |
 | `AUTH_TOKEN_INVALID` | 401 | JWT is malformed or signature invalid |
 | `AUTH_INVALID_CREDENTIALS` | 401 | Wrong email or password |
+| `AUTH_SESSION_EXPIRED` | 401 | Refresh token has expired — re-login required |
 | `AUTH_EMAIL_EXISTS` | 409 | Email already registered |
 | `AUTH_EMAIL_NOT_CONFIRMED` | 403 | Email confirmation required before login |
+| `AUTH_INVALID_CODE` | 400 | Invalid or expired OTP code |
+| `AUTH_RESET_TOKEN_INVALID` | 401 | Password reset token is invalid or expired |
+| `AUTH_PROVIDER_UNAVAILABLE` | 503 | Auth provider or email service temporarily unavailable |
 | `BILLING_INVALID_PLAN` | 400 | Unknown plan or billing period |
 | `BILLING_CONFLICT` | 409 | Already subscribed to this plan |
 | `BILLING_STRIPE_ERROR` | 502 | Stripe API error |

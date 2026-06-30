@@ -48,9 +48,10 @@ At minimum, set `SUPABASE_URL`, `SUPABASE_API_KEY`, and `SUPABASE_SERVICE_ROLE_K
 go mod download
 ```
 
-4. Apply the database migration against your Supabase project (run once):
+4. Apply the database migrations against your Supabase project:
 
-Open your Supabase project → SQL Editor → paste contents of `migrations/001_full_schema.sql` → Run.
+- **New database:** Open your Supabase project → SQL Editor → paste contents of `migrations/001_full_schema.sql` → Run.
+- **Existing database:** Also run `migrations/002_rename_total_time_ms.sql` (renames a column added before the unit was corrected to milliseconds).
 
 See [DOCS.md — Database Migration](DOCS.md#database-migration) for details.
 
