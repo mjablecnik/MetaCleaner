@@ -54,7 +54,7 @@
 		value: '99.95%',
 		icon: 'fa-server',
 		iconClass: 'text-textSec',
-		barWidth: 'w-[99.95%]',
+		barWidth: '99.95%',
 		barClass: 'bg-success'
 	}}
 />

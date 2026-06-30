@@ -8,6 +8,7 @@ export interface EdgeKpiStat {
 	badgeKey: string;
 	badgeClass: string;
 	subtext: string;
+	subtextIsKey?: boolean;
 	barWidth?: string;
 	barClass?: string;
 }

@@ -82,9 +82,9 @@ function formatTimestamp(dateMs: number): string {
 	const hh = String(date.getHours()).padStart(2, '0');
 	const mm = String(date.getMinutes()).padStart(2, '0');
 
-	if (diffDays === 0) return `Dnes ${hh}:${mm}`;
-	if (diffDays === 1) return `Včera ${hh}:${mm}`;
-	return `${diffDays} dní ${hh}:${mm}`;
+	if (diffDays === 0) return `Today ${hh}:${mm}`;
+	if (diffDays === 1) return `Yesterday ${hh}:${mm}`;
+	return `${diffDays} days ago ${hh}:${mm}`;
 }
 
 function getMachineStatus(machine: FlyMachineRaw): 'running' | 'stopped' | 'error' {

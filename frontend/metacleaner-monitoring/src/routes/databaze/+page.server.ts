@@ -5,7 +5,8 @@ import { getTableStats } from '$lib/server/clients/supabaseClient.js';
 import { mapToTableSizes, mapToDbKpis } from '$lib/server/mappers/supabaseMapper.js';
 import { callSection, notConfigured } from '$lib/server/clients/types.js';
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:databaze');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 

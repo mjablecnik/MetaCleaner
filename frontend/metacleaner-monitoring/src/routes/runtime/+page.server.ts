@@ -10,7 +10,8 @@ import {
 } from '$lib/server/mappers/flyMapper.js';
 import { callSection, notConfigured } from '$lib/server/clients/types.js';
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:runtime');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 

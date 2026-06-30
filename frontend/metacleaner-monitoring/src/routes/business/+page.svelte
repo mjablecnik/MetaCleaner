@@ -115,29 +115,17 @@
 		/>
 	{/if}
 	<BusinessRevenueChartsSection />
-	{#if data.planRevenue.status === 'ok' && data.conversionFunnel.status === 'ok'}
+	{#if data.planRevenue.status === 'ok'}
 		<BusinessFunnelSection
 			planRevenue={data.planRevenue.data}
-			conversionFunnel={data.conversionFunnel.data}
+			conversionFunnel={data.conversionFunnel.status === 'ok' ? data.conversionFunnel.data : null}
 		/>
-	{:else if data.planRevenue.status === 'not-configured' || data.conversionFunnel.status === 'not-configured'}
-		<NotConfiguredCard
-			missingVars={data.planRevenue.status === 'not-configured'
-				? data.planRevenue.missingVars
-				: data.conversionFunnel.status === 'not-configured'
-					? data.conversionFunnel.missingVars
-					: []}
-		/>
-	{:else if data.planRevenue.status === 'error'}
+	{:else if data.planRevenue.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.planRevenue.missingVars} />
+	{:else}
 		<SectionErrorCard
 			category={data.planRevenue.error.category}
 			message={data.planRevenue.error.message}
-			onretry={() => invalidate('app:business')}
-		/>
-	{:else if data.conversionFunnel.status === 'error'}
-		<SectionErrorCard
-			category={data.conversionFunnel.error.category}
-			message={data.conversionFunnel.error.message}
 			onretry={() => invalidate('app:business')}
 		/>
 	{/if}

@@ -118,7 +118,7 @@ function codeToFlag(code: string): string {
 }
 
 function formatNumber(n: number): string {
-	return n.toLocaleString('cs-CZ');
+	return n.toLocaleString();
 }
 
 export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
@@ -162,7 +162,8 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			trendPositive: true,
 			badgeKey: cacheBadgeKey,
 			badgeClass: cacheBadgeClass,
-			subtext: cacheHitRate >= 90 ? 'Cíl: ≥ 90% · Splněno' : 'Cíl: ≥ 90%',
+			subtext: cacheHitRate >= 90 ? 'edge_kpi_cacheHitGoalMet' : 'edge_kpi_cacheHitGoal',
+			subtextIsKey: true,
 			barWidth: `${cacheHitRateStr}%`,
 			barClass: cacheClass
 		},
@@ -173,7 +174,10 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			badgeKey: '',
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
 			subtext:
-				totalCachedRequests > 0 ? `${formatNumber(totalCachedRequests)} z cache` : 'Žádná data'
+				totalCachedRequests > 0
+					? `${formatNumber(totalCachedRequests)} from cache`
+					: 'common_labels_noData',
+			subtextIsKey: totalCachedRequests === 0
 		},
 		{
 			key: 'savedBandwidth',
@@ -182,7 +186,7 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			unit: 'GB',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: `${totalBandwidthGb.toFixed(1)} GB celkem · ${bandwidthSavePct}% z cache`,
+			subtext: `${totalBandwidthGb.toFixed(1)} GB total · ${bandwidthSavePct}% cached`,
 			barWidth: `${bandwidthSavePct}%`,
 			barClass: 'bg-[#3b82f6]'
 		},
@@ -194,7 +198,8 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			badgeKey: totalThreats > 0 ? 'common_status_caution' : 'common_status_ok',
 			badgeClass:
 				totalThreats > 0 ? 'bg-secondary/10 text-secondary' : 'bg-success/10 text-success',
-			subtext: 'DDoS, bots, bad IPs'
+			subtext: 'edge_kpi_blockedThreatsSubtext',
+			subtextIsKey: true
 		}
 	];
 }
@@ -223,7 +228,7 @@ export function mapToGeoDistribution(raw: CfGeoRaw): GeoDistribution[] {
 	if (rest.length > 0) {
 		const topPctSum = result.reduce((sum, c) => sum + c.percent, 0);
 		result.push({
-			country: 'Ostatní',
+			country: 'Other',
 			code: 'XX',
 			flag: '🌍',
 			percent: Math.max(0, 100 - topPctSum),
@@ -298,38 +303,13 @@ export function mapToWafLog(raw: CfFirewallEventRaw[]): WafLogEntry[] {
 	});
 }
 
-export function mapToHttpStatusDistribution(raw: CfAnalyticsRaw): HttpStatusDistribution[] {
-	let totalRequests = 0;
-	let totalThreats = 0;
-
-	for (const group of raw.httpRequests1dGroups) {
-		totalRequests += group.sum.requests;
-		totalThreats += group.sum.threats;
-	}
-
-	if (totalRequests === 0) {
-		return [
-			{ code: '2xx', labelKey: 'edge_http_2xx', percent: '—', color: '#3ecf8e' },
-			{ code: '3xx', labelKey: 'edge_http_3xx', percent: '—', color: '#3b82f6' },
-			{ code: '4xx', labelKey: 'edge_http_4xx', percent: '—', color: '#f97316' },
-			{ code: '5xx', labelKey: 'edge_http_5xx', percent: '—', color: '#ef4444' }
-		];
-	}
-
-	// Estimate from available data: threats ≈ blocked (4xx), assume typical 0.5% 5xx, 2.5% 3xx
-	const blocked4xxRate = Math.min(totalThreats / totalRequests, 0.3);
-	const error5xxRate = 0.005;
-	const redirect3xxRate = 0.025;
-	const success2xxRate = Math.max(0, 1 - blocked4xxRate - error5xxRate - redirect3xxRate);
-
-	function pct(rate: number): string {
-		return `${(rate * 100).toFixed(1)}%`;
-	}
-
+// Cloudflare httpRequests1dGroups does not expose per-status-code counts.
+// Showing '—' instead of fabricated estimates derived from threat counts.
+export function mapToHttpStatusDistribution(_raw: CfAnalyticsRaw): HttpStatusDistribution[] {
 	return [
-		{ code: '2xx', labelKey: 'edge_http_2xx', percent: pct(success2xxRate), color: '#3ecf8e' },
-		{ code: '3xx', labelKey: 'edge_http_3xx', percent: pct(redirect3xxRate), color: '#3b82f6' },
-		{ code: '4xx', labelKey: 'edge_http_4xx', percent: pct(blocked4xxRate), color: '#f97316' },
-		{ code: '5xx', labelKey: 'edge_http_5xx', percent: pct(error5xxRate), color: '#ef4444' }
+		{ code: '2xx', labelKey: 'edge_http_2xx', percent: '—', color: '#3ecf8e' },
+		{ code: '3xx', labelKey: 'edge_http_3xx', percent: '—', color: '#3b82f6' },
+		{ code: '4xx', labelKey: 'edge_http_4xx', percent: '—', color: '#f97316' },
+		{ code: '5xx', labelKey: 'edge_http_5xx', percent: '—', color: '#ef4444' }
 	];
 }

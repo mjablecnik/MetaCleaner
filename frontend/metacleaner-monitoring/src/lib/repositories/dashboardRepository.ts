@@ -31,7 +31,7 @@ export function getDashboardStats(): DashboardStat[] {
 			value: '99.92%',
 			icon: 'fa-server',
 			iconClass: 'text-textSec',
-			barWidth: 'w-[99.92%]',
+			barWidth: '99.92%',
 			barClass: 'bg-success'
 		},
 		{

@@ -56,7 +56,7 @@
 	</div>
 	{#if barWidth !== undefined}
 		<div class="mt-3 lg:mt-2 h-1.5 lg:h-1 w-full bg-surface rounded-full overflow-hidden">
-			<div class="h-full {barClass ?? ''} {barWidth} rounded-full"></div>
+			<div class="h-full {barClass ?? ''} rounded-full" style="width: {barWidth}"></div>
 		</div>
 	{/if}
 	{#if subtext || subtextKey}

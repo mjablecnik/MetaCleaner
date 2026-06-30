@@ -193,8 +193,10 @@ export function mapToPerformanceKpiStats(
 		if (total > 0) uptimePct = (online / total) * 100;
 	}
 
-	// Apdex estimated from error rate (rough heuristic: 0% error → 1.00, 50% error → 0.00)
-	const apdex = Math.max(0, Math.min(1, 1 - errorRatePct / 50));
+	// No per-request latency buckets are available from Fly Machines API or Cloudflare Analytics.
+	// computeApdex(0, 0, 0) returns 1.0 — the spec-defined no-data sentinel — rather than a heuristic.
+	// Wire in real satisfied/tolerating/total counts here once a latency source is integrated.
+	const apdex = computeApdex(0, 0, 0);
 	const apdexStr = apdex.toFixed(2);
 	const apdexBadgeKey =
 		apdex >= 0.94
@@ -232,7 +234,7 @@ export function mapToPerformanceKpiStats(
 			value: apdexStr,
 			badgeKey: apdexBadgeKey,
 			badgeClass: apdexBadgeClass,
-			subtext: 'Goal: ≥ 0.90 · Threshold: 500ms',
+			subtext: 'No latency data · Goal: ≥ 0.90 · Threshold: 500ms',
 			barWidth: `${(apdex * 100).toFixed(0)}%`,
 			barClass: apdexBarClass
 		},

@@ -47,7 +47,7 @@
 					<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 				</div>
 			{/if}
-			<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
+			<p class="text-xs text-textSec mt-2">{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}</p>
 		</div>
 	{/each}
 </section>
@@ -105,7 +105,7 @@
 							<div class="h-full {kpi.barClass} rounded-full" style="width:{kpi.barWidth}"></div>
 						</div>
 					{/if}
-					<p class="text-xs text-textSec mt-2">{kpi.subtext}</p>
+					<p class="text-xs text-textSec mt-2">{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}</p>
 				</div>
 			{:else if kpi.key === 'totalRequests'}
 				<div class="bg-card border border-surface rounded-xl p-4">
@@ -114,7 +114,7 @@
 						<span class="px-1.5 py-0.5 {kpi.badgeClass} text-xs rounded-full font-medium">24h</span>
 					</div>
 					<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
-					<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
+					<p class="text-xs text-textSec mt-1">{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}</p>
 				</div>
 			{:else if kpi.key === 'savedBandwidth'}
 				<div class="bg-card border border-surface rounded-xl p-4">

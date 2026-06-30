@@ -6,12 +6,13 @@ import { getMachinesForAllApps } from '$lib/server/clients/flyClient.js';
 import { getRecentIssues } from '$lib/server/clients/sentryClient.js';
 import {
 	mapToPerformanceKpiStats,
-	mapSentryIssuesToSlowEndpoints,
+	mapToSlowEndpoints,
 	mapToPerformanceEvents
 } from '$lib/server/mappers/performanceMapper.js';
 import { callSection, notConfigured } from '$lib/server/clients/types.js';
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:performance');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 
@@ -58,13 +59,10 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		return mapToPerformanceKpiStats(cfData, flyData, sentryData);
 	});
 
-	// Slow endpoints sourced from Sentry issues; unavailable if Sentry is not configured
-	const slowEndpoints = configs.sentry.configured
-		? await callSection(async () => {
-				if (sentrySettled.status === 'rejected') throw sentrySettled.reason;
-				return mapSentryIssuesToSlowEndpoints(sentrySettled.value ?? []);
-			})
-		: notConfigured(configs.sentry.missingVars);
+	// Real per-endpoint latency data is not available from Fly Machines API or Cloudflare Analytics.
+	// mapToSlowEndpoints([]) returns [] honestly rather than estimating avgMs from Sentry issue severity.
+	// Integrate a real latency source (e.g. Cloudflare httpRequestsAdaptiveGroups) to populate this.
+	const slowEndpoints = await callSection(async () => mapToSlowEndpoints([]));
 
 	// Events from Sentry issues + Fly machine events (use whatever is available)
 	const events = await callSection(async () => {

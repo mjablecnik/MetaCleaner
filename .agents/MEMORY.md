@@ -1,5 +1,29 @@
 # Memory
 
+## dashboardAlerts: duplicate Sentry issue IDs cause sort test failure
+- Project: metacleaner-monitoring
+- Problem: `mergeAndSortAlerts` allows duplicate alert IDs when Sentry issues have the same `id`. The property test reconstructs timestamps via ID lookup, overwriting the map for duplicate IDs, then seeing a wrong timestamp for the second occurrence — causing a false "not sorted descending" assertion failure.
+- Solution: After sorting `list` by `_ms` descending, deduplicate by `id` (keep first/most-recent). Added `const seen = new Set<string>()` dedup filter before `slice(0, 10)` in `dashboardAlerts.ts`.
+- Source: code-review-fix, 2026-06-30
+
+## monitoring: invalidate('app:x') retry no-ops without a matching depends('app:x')
+- Project: metacleaner-monitoring
+- Problem: All 9 pages wire the section retry button to `invalidate('app:<route>')`, but NO `+page.server.ts` load function calls `depends('app:<route>')` (and there is no `+layout.server.ts`). In SvelteKit a custom `invalidate(key)` only re-runs loads that registered that key via `depends(key)` — so every retry button silently does nothing (Req 5.5 unmet) even though task 8.3 is marked [x] and the button looks wired.
+- Solution: Add `depends('app:<route>')` at the top of each load (the `LoadEvent` exposes `depends`), or change pages to `invalidateAll()`. When reviewing retry/refresh, always grep for `depends(` and confirm each `invalidate('custom:key')` has a matching `depends('custom:key')`.
+- Source: code-review, 2026-06-30
+
+## monitoring: real-API mappers fabricate metrics; spec-correct functions left as dead code
+- Project: metacleaner-monitoring
+- Problem: The Performance page presents invented numbers — Apdex computed as `1 - errorRate/50` (not the 500/2000ms formula), slow-endpoint `avgMs` guessed from Sentry issue severity (estimateAvgMs: 8000/3000/1500/600/250), and HttpStatusDistribution hardcoded (5xx=0.5%, 3xx=2.5%). Meanwhile the correct, property-tested `computeApdex` (Property 9) and `mapToSlowEndpoints` (Property 11) are NEVER called by any load function — so green property tests validate unused code and hide that Req 14.1/14.2 are unmet. Root cause: the chosen sources (Fly Machines API, CF analytics) don't expose per-request latency. Note: the DB/Users mappers handle the same gap honestly with `'—'` + "not available", which is the pattern the others should follow.
+- Solution: When property tests pass, confirm the tested function is actually imported by a `+page.server.ts`/route — `grep` the function name outside `__tests__`. Treat severity-based or constant "estimates" rendered as live metrics as fabrication findings. Prefer the honest `'—'` pattern already present in the same codebase.
+- Source: code-review, 2026-06-30
+
+## Runtime-generated Tailwind arbitrary classes (w-[x%]) never render
+- Project: metacleaner-monitoring
+- Problem: dashboard `+page.server.ts` builds `barWidth = \`w-[${pct}%]\`` and StatCard applies it as a CLASS (`class="... {barWidth}"`). Tailwind only compiles arbitrary-value utilities it sees literally in source at build time; a runtime value like `w-[87.50%]` isn't in the stylesheet, so the bar has zero width. The mock's literal `w-[99.92%]` worked only because it was static source. Every OTHER component correctly uses inline `style="width:{barWidth}"` with a bare percent.
+- Solution: For computed widths, emit a bare percent and use `style="width:{x}"`, never a `w-[..]` class string. Flag any data-layer value of the form `w-[${...}]` / `h-[${...}]` etc.
+- Source: code-review, 2026-06-30
+
 ## metacleaner-web: defined-but-unrendered i18n keys signal forgotten spec content
 - Project: metacleaner-web
 - Problem: A key can exist in BOTH en.json and cs.json (so key-parity checks pass) yet be referenced nowhere — meaning either dead leftover content OR a spec requirement that was never wired up. Confirmed: `home_upload_local_note` (Req 6.8 corrected privacy note) was added to both locales but `UploadCard.svelte` never renders it, so the requirement is silently unmet AND the key looks "dead". Conversely, `pricing_*` keys appear unreferenced in `metacleaner-web/src` but are LIVE — consumed by the `metacleaner-shared` package via dynamic `translate('pricing_title')`.

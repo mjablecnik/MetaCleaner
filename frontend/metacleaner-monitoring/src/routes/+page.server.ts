@@ -14,7 +14,8 @@ interface JobRow {
 	created_at: string;
 }
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:dashboard');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 
@@ -35,7 +36,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	// Stats section: uptime (Fly) + job metrics (Supabase)
 	const stats = await callSection<DashboardStat[]>(async () => {
 		let uptimeValue = 'N/A';
-		let uptimeBarWidth = 'w-0';
+		let uptimeBarWidth = '0%';
 
 		if (flySettled.status === 'fulfilled' && flySettled.value !== null) {
 			let total = 0;
@@ -46,7 +47,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 			}
 			const pct = total > 0 ? Math.round((online / total) * 10000) / 100 : 0;
 			uptimeValue = `${pct.toFixed(2)}%`;
-			uptimeBarWidth = `w-[${pct.toFixed(2)}%]`;
+			uptimeBarWidth = `${pct.toFixed(2)}%`;
 		}
 
 		let totalJobs = 0;

@@ -49,7 +49,7 @@ describe('Property 7: Geographic Distribution Aggregation', () => {
 		fc.assert(
 			fc.property(geoRawArb(1, 5), (raw) => {
 				const result = mapToGeoDistribution(raw);
-				const hasOther = result.some((e) => e.country === 'Ostatní');
+				const hasOther = result.some((e) => e.country === 'Other');
 				expect(hasOther).toBe(false);
 			}),
 			{ numRuns: 100 }
@@ -64,7 +64,7 @@ describe('Property 7: Geographic Distribution Aggregation', () => {
 				if (unique.length <= 5) return;
 
 				const result = mapToGeoDistribution(raw);
-				const hasOther = result.some((e) => e.country === 'Ostatní');
+				const hasOther = result.some((e) => e.country === 'Other');
 				expect(hasOther).toBe(true);
 			}),
 			{ numRuns: 100 }
@@ -94,7 +94,7 @@ describe('Property 7: Geographic Distribution Aggregation', () => {
 				if (!allPositive) return;
 
 				const result = mapToGeoDistribution(raw);
-				const topEntries = result.filter((e) => e.country !== 'Ostatní');
+				const topEntries = result.filter((e) => e.country !== 'Other');
 
 				for (let i = 1; i < topEntries.length; i++) {
 					expect(topEntries[i].percent).toBeLessThanOrEqual(topEntries[i - 1].percent);
@@ -128,7 +128,7 @@ describe('Property 7: Geographic Distribution Aggregation', () => {
 				if (raw.clientCountryMap.length <= 5) return;
 
 				const result = mapToGeoDistribution(raw);
-				const other = result.find((e) => e.country === 'Ostatní');
+				const other = result.find((e) => e.country === 'Other');
 				if (!other) return;
 
 				expect(other.code).toBe('XX');

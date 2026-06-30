@@ -5,7 +5,8 @@ import { getUsers } from '$lib/server/clients/supabaseClient.js';
 import { mapToUserStats, mapToUsers } from '$lib/server/mappers/supabaseMapper.js';
 import { callSection } from '$lib/server/clients/types.js';
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:uzivatele');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 

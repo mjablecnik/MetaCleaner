@@ -8,7 +8,7 @@
 	let {
 		conversionFunnel,
 		planRevenue
-	}: { conversionFunnel: ConversionFunnelStep[]; planRevenue: PlanRevenue[] } = $props();
+	}: { conversionFunnel: ConversionFunnelStep[] | null; planRevenue: PlanRevenue[] } = $props();
 
 	onMount(() => {
 		const P = window.Plotly;
@@ -82,26 +82,30 @@
 	<div class="bg-card border border-surface rounded-xl p-5 col-span-1">
 		<h3 class="text-lg font-semibold text-textMain mb-1">{t('business_funnel_title')}</h3>
 		<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
-		<div class="space-y-3">
-			{#each conversionFunnel as step (step.labelKey)}
-				<FunnelStep
-					labelKey={step.labelKey}
-					value={step.value}
-					conversionPercent={step.conversionPercent}
-					color={step.color}
-				/>
-			{/each}
-		</div>
-		<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
-			<div>
-				<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
-				<div class="text-textMain font-semibold">0.72%</div>
+		{#if conversionFunnel !== null}
+			<div class="space-y-3">
+				{#each conversionFunnel as step (step.labelKey)}
+					<FunnelStep
+						labelKey={step.labelKey}
+						value={step.value}
+						conversionPercent={step.conversionPercent}
+						color={step.color}
+					/>
+				{/each}
 			</div>
-			<div>
-				<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
-				<div class="text-textMain font-semibold">4.84%</div>
+			<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
+				<div>
+					<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
+					<div class="text-textMain font-semibold">0.72%</div>
+				</div>
+				<div>
+					<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
+					<div class="text-textMain font-semibold">4.84%</div>
+				</div>
 			</div>
-		</div>
+		{:else}
+			<p class="text-sm text-textSec">{t('common_labels_noData')}</p>
+		{/if}
 	</div>
 	<div class="bg-card border border-surface rounded-xl p-5 col-span-2">
 		<div class="flex justify-between items-center mb-4">
@@ -134,26 +138,30 @@
 	<section class="bg-card border border-surface rounded-xl p-4">
 		<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_funnel_title')}</h3>
 		<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
-		<div class="space-y-3">
-			{#each conversionFunnel as step (step.labelKey)}
-				<FunnelStep
-					labelKey={step.labelKey}
-					value={step.value}
-					conversionPercent={step.conversionPercent}
-					color={step.color}
-				/>
-			{/each}
-		</div>
-		<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
-			<div>
-				<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
-				<div class="text-textMain font-semibold">0.72%</div>
+		{#if conversionFunnel !== null}
+			<div class="space-y-3">
+				{#each conversionFunnel as step (step.labelKey)}
+					<FunnelStep
+						labelKey={step.labelKey}
+						value={step.value}
+						conversionPercent={step.conversionPercent}
+						color={step.color}
+					/>
+				{/each}
 			</div>
-			<div>
-				<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
-				<div class="text-textMain font-semibold">4.84%</div>
+			<div class="mt-4 pt-3 border-t border-surface grid grid-cols-2 gap-2 text-xs">
+				<div>
+					<span class="text-textSec">{t('business_funnel_totalConversion')}</span>
+					<div class="text-textMain font-semibold">0.72%</div>
+				</div>
+				<div>
+					<span class="text-textSec">{t('business_funnel_trialToPaid')}</span>
+					<div class="text-textMain font-semibold">4.84%</div>
+				</div>
 			</div>
-		</div>
+		{:else}
+			<p class="text-sm text-textSec">{t('common_labels_noData')}</p>
+		{/if}
 	</section>
 
 	<!-- Příjem podle plánu -->

@@ -80,5 +80,14 @@ export function mergeAndSortAlerts(
 	}
 
 	list.sort((a, b) => b._ms - a._ms);
-	return list.slice(0, 10).map(({ _ms: _sortKey, ...alert }) => alert);
+
+	// Deduplicate by id: when two sources produce the same alert id, keep only the first (most recent after sort).
+	const seen = new Set<string>();
+	const deduped = list.filter(({ id }) => {
+		if (seen.has(id)) return false;
+		seen.add(id);
+		return true;
+	});
+
+	return deduped.slice(0, 10).map(({ _ms: _sortKey, ...alert }) => alert);
 }

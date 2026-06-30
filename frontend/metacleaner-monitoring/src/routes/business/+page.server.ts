@@ -7,12 +7,12 @@ import {
 	getPrices
 } from '$lib/server/clients/stripeClient.js';
 import { mapToBusinessKpiStats, mapToPlanRevenue } from '$lib/server/mappers/stripeMapper.js';
-import { getConversionFunnel } from '$lib/repositories/businessRepository.js';
 import { callSection, notConfigured } from '$lib/server/clients/types.js';
 
 const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ setHeaders, depends }) => {
+	depends('app:business');
 	setHeaders({ 'Cache-Control': 'no-store' });
 	const configs = getServiceConfigs();
 
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		return mapToPlanRevenue(activeSettled.value, pricesSettled.value);
 	});
 
-	const conversionFunnel = await callSection(async () => getConversionFunnel());
+	const conversionFunnel = notConfigured([]);
 
 	return { kpis, planRevenue, conversionFunnel } satisfies BusinessPageData;
 };
