@@ -7,6 +7,7 @@ Internal monitoring dashboard for MetaCleaner services — aggregates real-time 
 A SvelteKit 2 server-rendered dashboard that pulls live data from multiple third-party APIs and displays it across nine monitoring sections.
 
 Key features:
+
 - Nine monitoring sections: dashboard overview, business metrics, errors, database, availability, edge/CDN, performance, runtime infrastructure, and users
 - Password-protected access via cookie-based session auth (`DASHBOARD_SESSION_SECRET`)
 - Graceful degradation — sections without configured credentials show a placeholder instead of crashing
@@ -37,23 +38,27 @@ See [DOCS.md](DOCS.md) for the full environment variable reference.
 ## Usage / Running
 
 **Development:**
+
 ```sh
 bun run dev
 # or: npm run dev
 ```
 
 **Production build and start:**
+
 ```sh
 bun run build
 node build/index.js
 ```
 
 **Preview production build locally:**
+
 ```sh
 bun run preview
 ```
 
 **Docker (local production test — runs on port 3002):**
+
 ```sh
 ./scripts/start-docker.sh   # builds image and starts container
 ./scripts/stop-docker.sh    # stops and removes container
@@ -66,6 +71,7 @@ See [DOCS.md](DOCS.md) for environment variables, project structure, deployment,
 ## Author
 
 **Martin Jablečník**
+
 - Website: [www.jablecnik.com](https://www.jablecnik.com)
 - GitHub: [@mjablecnik](https://github.com/mjablecnik)
 

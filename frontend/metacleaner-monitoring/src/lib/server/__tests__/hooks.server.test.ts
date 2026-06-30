@@ -27,7 +27,9 @@ vi.mock('$lib/server/config.js', () => ({
 // Replace real sequence (which requires SvelteKit request-store context) with a simple chainer
 vi.mock('@sveltejs/kit/hooks', () => ({
 	sequence:
-		(...handlers: Array<(input: { event: unknown; resolve: (e: unknown) => unknown }) => unknown>) =>
+		(
+			...handlers: Array<(input: { event: unknown; resolve: (e: unknown) => unknown }) => unknown>
+		) =>
 		({ event, resolve }: { event: unknown; resolve: (e: unknown) => unknown }) => {
 			function applyHandle(i: number, evt: unknown): unknown {
 				if (i >= handlers.length) return resolve(evt);
@@ -54,14 +56,10 @@ import { handle } from '../../../hooks.server.js';
 // Unique IPs prevent rlMap state from bleeding between tests
 let _ipCounter = 0;
 function uniqueIp(): string {
-	return `10.0.${((_ipCounter++ % 254) + 1)}.1`;
+	return `10.0.${(_ipCounter++ % 254) + 1}.1`;
 }
 
-function makeEvent(opts: {
-	pathname: string;
-	ip?: string;
-	cookies?: Record<string, string>;
-}) {
+function makeEvent(opts: { pathname: string; ip?: string; cookies?: Record<string, string> }) {
 	const { pathname, ip = uniqueIp(), cookies = {} } = opts;
 	return {
 		url: new URL(`http://localhost${pathname}`),

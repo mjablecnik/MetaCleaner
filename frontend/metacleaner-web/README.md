@@ -7,6 +7,7 @@ Marketing website for the MetaCleaner service — a SvelteKit static site with T
 MetaCleaner Web is the public-facing marketing site for MetaCleaner, a tool that strips metadata from files to protect user privacy. It explains what MetaCleaner does, showcases its features, and drives users to the app.
 
 Key features:
+
 - Fully pre-rendered static site (SSG) via `@sveltejs/adapter-static`
 - Bilingual: English and Czech, with URL-based locale switching
 - Pages: Home, Features, Pricing, About/Contact, Privacy, Terms
@@ -69,6 +70,7 @@ See [DOCS.md](DOCS.md) for environment variables, project structure, deployment,
 ## Author
 
 **Martin Jablečník**
+
 - Website: [www.jablecnik.com](https://www.jablecnik.com)
 - GitHub: [@mjablecnik](https://github.com/mjablecnik)
 

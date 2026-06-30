@@ -6,9 +6,17 @@ import {
 	mapToHttpStatusDistribution
 } from '../cloudflareMapper.js';
 
-function makeAnalyticsGroup(overrides: Partial<CfAnalyticsRaw['httpRequests1dGroups'][0]> = {}): CfAnalyticsRaw['httpRequests1dGroups'][0] {
+function makeAnalyticsGroup(
+	overrides: Partial<CfAnalyticsRaw['httpRequests1dGroups'][0]> = {}
+): CfAnalyticsRaw['httpRequests1dGroups'][0] {
 	return {
-		sum: { requests: 1000, cachedRequests: 900, bytes: 1024 ** 3, cachedBytes: 900 * 1024 ** 3 / 1000, threats: 0 },
+		sum: {
+			requests: 1000,
+			cachedRequests: 900,
+			bytes: 1024 ** 3,
+			cachedBytes: (900 * 1024 ** 3) / 1000,
+			threats: 0
+		},
 		dimensions: { date: '2024-01-15' },
 		...overrides
 	};
@@ -50,8 +58,14 @@ describe('mapToEdgeKpiStats — structure', () => {
 describe('mapToEdgeKpiStats — aggregation across groups', () => {
 	it('sums requests across multiple groups', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 300, cachedRequests: 270, bytes: 0, cachedBytes: 0, threats: 0 } },
-			{ ...makeAnalyticsGroup(), sum: { requests: 700, cachedRequests: 630, bytes: 0, cachedBytes: 0, threats: 0 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 300, cachedRequests: 270, bytes: 0, cachedBytes: 0, threats: 0 }
+			},
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 700, cachedRequests: 630, bytes: 0, cachedBytes: 0, threats: 0 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const totalReq = result.find((k) => k.key === 'totalRequests')!;
@@ -61,8 +75,14 @@ describe('mapToEdgeKpiStats — aggregation across groups', () => {
 
 	it('sums threats across multiple groups', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 5 } },
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 3 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 5 }
+			},
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 3 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const threats = result.find((k) => k.key === 'blockedThreats')!;
@@ -79,7 +99,10 @@ describe('mapToEdgeKpiStats — cache hit rate and badge thresholds', () => {
 
 	it('cacheHitRate ≥ 90%: badgeKey=common_status_excellent, barClass=bg-success', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 95, bytes: 0, cachedBytes: 0, threats: 0 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 95, bytes: 0, cachedBytes: 0, threats: 0 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const kpi = result.find((k) => k.key === 'cacheHitRate')!;
@@ -89,7 +112,10 @@ describe('mapToEdgeKpiStats — cache hit rate and badge thresholds', () => {
 
 	it('cacheHitRate ≥ 70% but < 90%: badgeKey=common_status_ok, barClass=bg-secondary', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 75, bytes: 0, cachedBytes: 0, threats: 0 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 75, bytes: 0, cachedBytes: 0, threats: 0 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const kpi = result.find((k) => k.key === 'cacheHitRate')!;
@@ -99,7 +125,10 @@ describe('mapToEdgeKpiStats — cache hit rate and badge thresholds', () => {
 
 	it('cacheHitRate < 70%: badgeKey=common_status_warning, barClass=bg-error', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 50, bytes: 0, cachedBytes: 0, threats: 0 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 50, bytes: 0, cachedBytes: 0, threats: 0 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const kpi = result.find((k) => k.key === 'cacheHitRate')!;
@@ -111,7 +140,10 @@ describe('mapToEdgeKpiStats — cache hit rate and badge thresholds', () => {
 describe('mapToEdgeKpiStats — blockedThreats badge', () => {
 	it('blockedThreats > 0: badgeKey=common_status_caution', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 1 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 1 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const kpi = result.find((k) => k.key === 'blockedThreats')!;
@@ -121,7 +153,10 @@ describe('mapToEdgeKpiStats — blockedThreats badge', () => {
 
 	it('blockedThreats = 0: badgeKey=common_status_ok', () => {
 		const raw = makeAnalytics([
-			{ ...makeAnalyticsGroup(), sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 0 } }
+			{
+				...makeAnalyticsGroup(),
+				sum: { requests: 100, cachedRequests: 90, bytes: 0, cachedBytes: 0, threats: 0 }
+			}
 		]);
 		const result = mapToEdgeKpiStats(raw);
 		const kpi = result.find((k) => k.key === 'blockedThreats')!;
@@ -279,7 +314,8 @@ describe('mapToWafLog — country flag and status', () => {
 	});
 
 	it('userAgent is truncated to 60 characters', () => {
-		const longUA = 'Mozilla/5.0 (very long user agent string that exceeds sixty characters limit for sure)';
+		const longUA =
+			'Mozilla/5.0 (very long user agent string that exceeds sixty characters limit for sure)';
 		const result = mapToWafLog([makeFirewallEvent({ userAgent: longUA })]);
 		expect(result[0].message).toContain(longUA.slice(0, 60));
 		expect(result[0].message.length).toBeLessThan(longUA.length + 50); // message has prefix

@@ -94,9 +94,7 @@ describe('getMachines', () => {
 
 		await expect(getMachines(BASE_CONFIG, 'app1')).rejects.toSatisfy(
 			(e: unknown) =>
-				e instanceof ClientError &&
-				e.statusCode === 500 &&
-				e.category === 'service_unavailable'
+				e instanceof ClientError && e.statusCode === 500 && e.category === 'service_unavailable'
 		);
 	});
 
@@ -104,8 +102,7 @@ describe('getMachines', () => {
 		vi.stubGlobal('fetch', vi.fn().mockRejectedValue(abortError()));
 
 		await expect(getMachines(BASE_CONFIG, 'app1')).rejects.toSatisfy(
-			(e: unknown) =>
-				e instanceof ClientError && e.category === 'timeout' && e.service === 'fly'
+			(e: unknown) => e instanceof ClientError && e.category === 'timeout' && e.service === 'fly'
 		);
 	});
 
@@ -139,13 +136,13 @@ describe('getMachinesForAllApps', () => {
 		const app1Machines = [{ id: 'm1', state: 'started' }];
 		const app2Machines = [{ id: 'm2', state: 'stopped' }];
 
-		const mockFetch = vi
-			.fn()
-			.mockImplementation((url: string) => {
-				if (url.includes('/apps/app1/')) return Promise.resolve(makeFetchResponse(true, 200, app1Machines));
-				if (url.includes('/apps/app2/')) return Promise.resolve(makeFetchResponse(true, 200, app2Machines));
-				return Promise.reject(new Error('unexpected url'));
-			});
+		const mockFetch = vi.fn().mockImplementation((url: string) => {
+			if (url.includes('/apps/app1/'))
+				return Promise.resolve(makeFetchResponse(true, 200, app1Machines));
+			if (url.includes('/apps/app2/'))
+				return Promise.resolve(makeFetchResponse(true, 200, app2Machines));
+			return Promise.reject(new Error('unexpected url'));
+		});
 		vi.stubGlobal('fetch', mockFetch);
 
 		const result = await getMachinesForAllApps(BASE_CONFIG);

@@ -6,51 +6,51 @@ Copy `.env.example` to `.env` and set the values below.
 
 ### Required
 
-| Variable | Description |
-|---|---|
-| `SUPABASE_URL` | Supabase project URL (`https://<project>.supabase.co`) |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key (server-side only) |
+| Variable                   | Description                                                         |
+| -------------------------- | ------------------------------------------------------------------- |
+| `SUPABASE_URL`             | Supabase project URL (`https://<project>.supabase.co`)              |
+| `SUPABASE_SERVICE_KEY`     | Supabase service role key (server-side only)                        |
 | `DASHBOARD_SESSION_SECRET` | Password for dashboard login; also used as the session cookie value |
 
 The server calls `getServiceConfigs()` at startup and exits immediately (`process.exit(1)`) if either Supabase variable is missing. `DASHBOARD_SESSION_SECRET` is not validated at startup — omitting it disables login and locks every user out.
 
 ### Optional — Fly.io (runtime section)
 
-| Variable | Description |
-|---|---|
-| `FLY_API_TOKEN` | Fly.io personal access token |
-| `FLY_ORG` | Fly.io organisation slug |
-| `FLY_APPS` | Comma-separated list of app names to monitor (e.g. `metacleaner-server,metacleaner-web`) |
+| Variable        | Description                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| `FLY_API_TOKEN` | Fly.io personal access token                                                             |
+| `FLY_ORG`       | Fly.io organisation slug                                                                 |
+| `FLY_APPS`      | Comma-separated list of app names to monitor (e.g. `metacleaner-server,metacleaner-web`) |
 
 All three must be set together; a partial set disables the Fly.io integration.
 
 ### Optional — Cloudflare (edge section)
 
-| Variable | Description |
-|---|---|
+| Variable               | Description                                              |
+| ---------------------- | -------------------------------------------------------- |
 | `CLOUDFLARE_API_TOKEN` | Cloudflare API token with Zone Analytics read permission |
-| `CLOUDFLARE_ZONE_ID` | Zone ID of the domain to monitor |
+| `CLOUDFLARE_ZONE_ID`   | Zone ID of the domain to monitor                         |
 
 ### Optional — Sentry (errors section)
 
-| Variable | Description |
-|---|---|
+| Variable            | Description                            |
+| ------------------- | -------------------------------------- |
 | `SENTRY_AUTH_TOKEN` | Sentry internal integration auth token |
-| `SENTRY_ORG` | Sentry organisation slug |
-| `SENTRY_PROJECT` | Sentry project slug |
+| `SENTRY_ORG`        | Sentry organisation slug               |
+| `SENTRY_PROJECT`    | Sentry project slug                    |
 
 ### Optional — Stripe (business section)
 
-| Variable | Description |
-|---|---|
+| Variable            | Description                                    |
+| ------------------- | ---------------------------------------------- |
 | `STRIPE_SECRET_KEY` | Stripe secret key (`sk_live_…` or `sk_test_…`) |
 
 ### Server (set in fly.toml for production)
 
-| Variable | Default | Description |
-|---|---|---|
-| `NODE_ENV` | `production` | Node environment |
-| `PORT` | `3000` | HTTP port the server listens on |
+| Variable   | Default      | Description                     |
+| ---------- | ------------ | ------------------------------- |
+| `NODE_ENV` | `production` | Node environment                |
+| `PORT`     | `3000`       | HTTP port the server listens on |
 
 ---
 
@@ -118,6 +118,7 @@ DPLOY_ENV_FILE=.env-custom ./scripts/deploy.sh
 ```
 
 The script:
+
 1. Creates the Fly.io app if it does not exist yet.
 2. Sets all secrets from the env file (skips variables already hardcoded in `fly.toml [env]`).
 3. Runs `fly deploy` (builds the Docker image on Fly's remote builder).
@@ -150,6 +151,7 @@ bun run test:unit
 ```
 
 Two Vitest projects run in parallel:
+
 - **server** — Node.js environment; covers `src/lib/server/**` (clients, mappers, config, dashboardAlerts).
 - **client** — Chromium via Playwright browser provider; covers `*.svelte.{test,spec}.{ts,js}`.
 
@@ -193,6 +195,7 @@ The section's required env vars are missing or empty. Empty/whitespace values ar
 
 **Playwright browsers not found**
 If `PLAYWRIGHT_BROWSERS_PATH` points to a read-only directory, install to a writable path:
+
 ```sh
 PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npx playwright install chromium
 ```

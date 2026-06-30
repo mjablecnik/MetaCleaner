@@ -1,10 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ClientError } from '../types.js';
-import {
-	getActiveSubscriptions,
-	getCanceledSubscriptions,
-	getPrices
-} from '../stripeClient.js';
+import { getActiveSubscriptions, getCanceledSubscriptions, getPrices } from '../stripeClient.js';
 import type { StripeClientConfig } from '../../config.js';
 
 const BASE_CONFIG: StripeClientConfig = {
@@ -44,7 +40,8 @@ describe('getActiveSubscriptions', () => {
 		const config: StripeClientConfig = { ...BASE_CONFIG, token: '' };
 
 		await expect(getActiveSubscriptions(config)).rejects.toSatisfy(
-			(e: unknown) => e instanceof ClientError && e.category === 'unauthorized' && e.service === 'stripe'
+			(e: unknown) =>
+				e instanceof ClientError && e.category === 'unauthorized' && e.service === 'stripe'
 		);
 		expect(fetch).not.toHaveBeenCalled();
 	});

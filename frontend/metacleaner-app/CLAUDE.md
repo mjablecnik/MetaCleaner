@@ -80,32 +80,38 @@ frontend/metacleaner-app/
 ## Conventions
 
 ### Component hierarchy
+
 - `elements/` → single-responsibility primitives (no state, no business logic)
 - `components/` → composed UI from elements (may have local state)
 - `sections/` → page-level sections (may connect to stores)
 - Route-local components go in `routes/<route>/components/` or `routes/<route>/sections/`
 
 ### Svelte 5 runes
+
 - Always use runes: `$state`, `$derived`, `$effect`, `$props`
 - Never use `$:` reactive declarations — runes only
 - For reactive date values: `$state<number | null>` + `Date.now()`, not `$state<Date>` (ESLint bans it)
 - Don't wrap inline children in `{#snippet children()}` — triggers `svelte/no-useless-children-snippet`
 
 ### i18n
+
 - All user-facing text — including `aria-label`, `title`, `placeholder` — goes through `tx()` from `$lib/shared/utils/i18n`
 - `void locale.current;` (not bare expression) — ESLint `no-unused-expressions` enforces this
 - Never `tx('key') || 'fallback'` — missing keys return the key name visibly
 
 ### Navigation
+
 - Wrap `goto()` and `href` with `resolve()` from `$app/paths` and cast to `Pathname` from `$app/types`
 - Use `$app/state` (not deprecated `$app/stores`) for page state
 
 ### Styling
+
 - Tailwind utility classes only — no custom component classes
 - Computed widths: use `style="width:{pct}%"` not `class="w-[{pct}%]"` — dynamic arbitrary classes are never compiled
 - Icons: Font Awesome (`fa-solid fa-*`)
 
 ### Testing
+
 - `vi.mock` path must match the import path exactly — no `.js` extension for `.svelte.ts` files
 - `vi.hoisted()` required for mock functions referenced in `vi.mock()` factories
 - `vi.fn<() => Promise<void>>()` — single function-type arg (Vitest 4.x)

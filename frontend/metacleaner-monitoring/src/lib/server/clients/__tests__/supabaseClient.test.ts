@@ -128,9 +128,7 @@ describe('getUsers', () => {
 	});
 
 	it('includes page and per_page query params in URL', async () => {
-		const mockFetch = vi
-			.fn()
-			.mockResolvedValue(okResponse({ users: [], total: 0 }));
+		const mockFetch = vi.fn().mockResolvedValue(okResponse({ users: [], total: 0 }));
 		vi.stubGlobal('fetch', mockFetch);
 
 		await getUsers(BASE_CONFIG, 2, 25);
@@ -152,10 +150,7 @@ describe('getUsers', () => {
 	});
 
 	it('null-coalesces users to [] when response has no users', async () => {
-		vi.stubGlobal(
-			'fetch',
-			vi.fn().mockResolvedValue(okResponse({ total: 5 }))
-		);
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse({ total: 5 })));
 
 		const result = await getUsers(BASE_CONFIG);
 		expect(result.users).toEqual([]);
@@ -164,10 +159,7 @@ describe('getUsers', () => {
 
 	it('null-coalesces total to 0 when response has no total', async () => {
 		const user = { id: 'u1', email: 'test@example.com' };
-		vi.stubGlobal(
-			'fetch',
-			vi.fn().mockResolvedValue(okResponse({ users: [user] }))
-		);
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse({ users: [user] })));
 
 		const result = await getUsers(BASE_CONFIG);
 		expect(result.total).toBe(0);
@@ -176,10 +168,7 @@ describe('getUsers', () => {
 
 	it('returns users and total from response', async () => {
 		const users = [{ id: 'u1', email: 'a@b.com' }];
-		vi.stubGlobal(
-			'fetch',
-			vi.fn().mockResolvedValue(okResponse({ users, total: 1 }))
-		);
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse({ users, total: 1 })));
 
 		const result = await getUsers(BASE_CONFIG);
 		expect(result.users).toEqual(users);
@@ -204,9 +193,7 @@ describe('getUsers', () => {
 	});
 
 	it('uses default page=1 and per_page=50 when not specified', async () => {
-		const mockFetch = vi
-			.fn()
-			.mockResolvedValue(okResponse({ users: [], total: 0 }));
+		const mockFetch = vi.fn().mockResolvedValue(okResponse({ users: [], total: 0 }));
 		vi.stubGlobal('fetch', mockFetch);
 
 		await getUsers(BASE_CONFIG);

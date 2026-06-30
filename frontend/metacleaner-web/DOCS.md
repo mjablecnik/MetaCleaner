@@ -4,11 +4,11 @@
 
 Copy `.env.example` to `.env` before running locally. Environment variables are baked into the static build at compile time.
 
-| Variable                 | Required         | Description                                                          |
-| ------------------------ | ---------------- | -------------------------------------------------------------------- |
-| `PUBLIC_APP_URL`         | Yes              | URL of the MetaCleaner web app (e.g. `https://app.metacleaner.com`) |
-| `VITE_SUPABASE_URL`      | For contact form | Supabase project URL                                                 |
-| `VITE_SUPABASE_ANON_KEY` | For contact form | Supabase anonymous (public) key                                      |
+| Variable                 | Required         | Description                                                                     |
+| ------------------------ | ---------------- | ------------------------------------------------------------------------------- |
+| `PUBLIC_APP_URL`         | Yes              | URL of the MetaCleaner web app (e.g. `https://app.metacleaner.com`)             |
+| `VITE_SUPABASE_URL`      | For contact form | Supabase project URL                                                            |
+| `VITE_SUPABASE_ANON_KEY` | For contact form | Supabase anonymous (public) key                                                 |
 | `BREVO_API_KEY`          | For contact form | Brevo API key set as a Supabase Edge Function secret (not in the browser build) |
 
 `PUBLIC_APP_URL` must be set before `bun run build` — the build fails without it. The `.env.example` value (`https://app.metacleaner.com`) works for local development.
@@ -138,6 +138,7 @@ bun run test:e2e           # install Playwright browsers then run all e2e tests
 E2E tests use Playwright against a built preview server (`npm run build && npm run preview` on port 4173). Test files live in `e2e/` and match `*.e2e.ts`.
 
 On Linux, first-time setup may require:
+
 ```sh
 npx playwright install-deps chromium   # requires sudo
 ```

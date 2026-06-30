@@ -21,9 +21,7 @@
 		</div>
 
 		{#if form?.error}
-			<div
-				class="mb-4 px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-sm text-error"
-			>
+			<div class="mb-4 px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-sm text-error">
 				Invalid password. Please try again.
 			</div>
 		{/if}

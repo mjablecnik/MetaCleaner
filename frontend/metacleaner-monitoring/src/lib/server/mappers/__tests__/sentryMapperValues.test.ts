@@ -22,7 +22,9 @@ function makeIssue(overrides: Partial<SentryIssueRaw> = {}): SentryIssueRaw {
 
 describe('mapToErrorLog — mapTypeCode precedence', () => {
 	it('returns TMT when title contains "timeout" (case-insensitive)', () => {
-		const log = mapToErrorLog([makeIssue({ title: 'Request Timeout error', metadata: { type: '' } })]);
+		const log = mapToErrorLog([
+			makeIssue({ title: 'Request Timeout error', metadata: { type: '' } })
+		]);
 		expect(log[0].type).toBe('TMT');
 	});
 

@@ -87,7 +87,10 @@ describe('getAnalytics', () => {
 		await getAnalytics(BASE_CONFIG);
 
 		const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
-		const body = JSON.parse(init.body as string) as { query: string; variables: Record<string, unknown> };
+		const body = JSON.parse(init.body as string) as {
+			query: string;
+			variables: Record<string, unknown>;
+		};
 		expect(typeof body.query).toBe('string');
 		expect(body.variables.zoneId).toBe(BASE_CONFIG.zoneId);
 	});
@@ -153,15 +156,23 @@ describe('getAnalytics', () => {
 	it('returns httpRequests1dGroups array from the successful response', async () => {
 		const groups = [
 			{
-				sum: { requests: 1000, cachedRequests: 700, bytes: 50_000, cachedBytes: 35_000, threats: 3 },
+				sum: {
+					requests: 1000,
+					cachedRequests: 700,
+					bytes: 50_000,
+					cachedBytes: 35_000,
+					threats: 3
+				},
 				dimensions: { date: '2024-01-14' }
 			}
 		];
 		vi.stubGlobal(
 			'fetch',
-			vi.fn().mockResolvedValue(
-				graphqlOkResponse({ viewer: { zones: [{ httpRequests1dGroups: groups }] } })
-			)
+			vi
+				.fn()
+				.mockResolvedValue(
+					graphqlOkResponse({ viewer: { zones: [{ httpRequests1dGroups: groups }] } })
+				)
 		);
 
 		const result = await getAnalytics(BASE_CONFIG);
@@ -169,10 +180,7 @@ describe('getAnalytics', () => {
 	});
 
 	it('returns empty httpRequests1dGroups when zones array is empty', async () => {
-		vi.stubGlobal(
-			'fetch',
-			vi.fn().mockResolvedValue(graphqlOkResponse({ viewer: { zones: [] } }))
-		);
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(graphqlOkResponse({ viewer: { zones: [] } })));
 
 		const result = await getAnalytics(BASE_CONFIG);
 		expect(result.httpRequests1dGroups).toEqual([]);
@@ -228,10 +236,7 @@ describe('getGeoDistribution', () => {
 	});
 
 	it('returns empty clientCountryMap when zones have no groups', async () => {
-		vi.stubGlobal(
-			'fetch',
-			vi.fn().mockResolvedValue(graphqlOkResponse({ viewer: { zones: [] } }))
-		);
+		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(graphqlOkResponse({ viewer: { zones: [] } })));
 
 		const result = await getGeoDistribution(BASE_CONFIG);
 		expect(result.clientCountryMap).toEqual([]);
@@ -285,9 +290,11 @@ describe('getFirewallEvents', () => {
 		];
 		vi.stubGlobal(
 			'fetch',
-			vi.fn().mockResolvedValue(
-				graphqlOkResponse({ viewer: { zones: [{ firewallEventsAdaptive: rawEvents }] } })
-			)
+			vi
+				.fn()
+				.mockResolvedValue(
+					graphqlOkResponse({ viewer: { zones: [{ firewallEventsAdaptive: rawEvents }] } })
+				)
 		);
 
 		const result = await getFirewallEvents(BASE_CONFIG);

@@ -7,6 +7,7 @@ Remove hidden metadata from photos and videos to protect privacy before sharing 
 MetaCleaner helps users protect their privacy by stripping hidden metadata (EXIF, GPS, camera info, timestamps) from photos and videos. Files are analyzed client-side for privacy risks, cleaned by the backend, and returned as safe copies.
 
 **Key features:**
+
 - Step-by-step wizard: upload → scan → clean → download
 - Client-side metadata scanning with privacy risk scoring
 - Real-time cleaning progress via WebSocket
