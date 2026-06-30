@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-06-30 21:29 — manual
+- Project: backend (metacleaner-server — Go API server)
+- Performed a full code review of `backend/metacleaner-server/` (`.agents/tmp/CODE_REVIEW.md`: 2 CRITICAL/HIGH, 3 MEDIUM, 4 LOW, plus a doc-drift section), derived a 10-item severity-sorted backlog (`.agents/tmp/TASKS.md`), and remediated every finding across 6 commits
+- **CRITICAL/HIGH** (`81ee5f0`): eliminated report-ID enumeration and metadata PII exposure — replaced the single-random-byte `generateReportID` with a high-entropy lookup key (removing both the 256-IDs/day guessable space and the `cleaning_reports.report_id` UNIQUE-collision failure), and stopped the unauthenticated `/api/public/reports/{id}` + `/pdf` endpoints from returning raw stripped metadata values (GPS, serials, XMP) — public responses now expose only verification counts/hashes, with raw values kept behind authenticated `/api/reports/{id}`
+- **MEDIUM** (`f6f27f3`): wrapped the upload body in `http.MaxBytesReader` before `ParseMultipartForm` so oversized requests get 413 without being spooled to disk; stopped retrying non-idempotent POST inserts on transport timeouts in `doJSON`; and fixed the `total_time_seconds` unit lie (column actually stores ms)
+- **LOW** (`77ae2d2`, `2076d2c`, `ff0ed39`): verified `job.UserID == sub` job ownership before registering a WebSocket progress subscriber (`source/websocket.go`); removed the unused `originalMatches` parameter and misleading comment from `buildCleanedFileName` (`source/job_handlers.go`); aligned `ValidateFileSize`'s zero-byte rejection between code and spec (`source/models.go`)
+- **Doc drift** (`6db9321`): updated stale `.kiro/specs/*` to match the shipped contract — `totalTimeMs`, upload `fileErrors[]` 200 shape, DB-error 500, WS-stays-open-after-complete, missing progress %/ETA, `migrations/001_full_schema.sql` path, `scripts/deploy.sh` name, and the authenticated-PDF `{"url"}` vs `302` inconsistency
+
 ## 2026-06-30 14:54 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Synced documentation with the current codebase (`f5b5462`) — `.agents/tmp/` did not exist, so this entry is derived from git history

@@ -149,7 +149,7 @@ MetaCleaner Backend is a Go-based REST API server that strips hidden metadata (E
 1. THE Backend SHALL include a multi-stage Dockerfile that produces a minimal production image containing the Go binary, ExifTool, and FFmpeg
 2. THE Backend SHALL include a start-docker.sh script that builds the Docker image and runs the container locally with environment variables from .env
 3. THE Backend SHALL include a fly.toml configuration file defining the Fly.io app settings, port mapping, and non-sensitive environment variables
-4. THE Backend SHALL include a fly-setup.sh script that creates the Fly.io app (if needed) and sets secrets from .env, skipping keys already defined in fly.toml [env]
+4. THE Backend SHALL include a scripts/deploy.sh script that creates the Fly.io app (if needed) and sets secrets from .env, skipping keys already defined in fly.toml [env]
 
 ---
 
@@ -175,7 +175,7 @@ MetaCleaner Backend is a Go-based REST API server that strips hidden metadata (E
 
 #### Acceptance Criteria
 
-1. THE Backend SHALL include a SQL migration script (`scripts/migration.sql`) that creates all required tables (cleaning_jobs, job_files, cleaning_reports) with correct column types, constraints, and indexes
+1. THE Backend SHALL include a SQL migration script (`migrations/001_full_schema.sql`) that creates all required tables (cleaning_jobs, job_files, cleaning_reports) with correct column types, constraints, and indexes
 2. THE migration script SHALL be idempotent (safe to run multiple times without errors, using `CREATE TABLE IF NOT EXISTS` or equivalent)
 3. THE migration script SHALL include comments describing each table's purpose
 4. THE Backend documentation SHALL include instructions for running the migration against a Supabase project

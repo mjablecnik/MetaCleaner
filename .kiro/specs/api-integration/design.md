@@ -129,7 +129,7 @@ export interface JobStatusResponse {
   filesCompleted: number;
   fieldsRemoved: number;
   gpsLocationsRemoved: number;
-  totalTimeSeconds: number;
+  totalTimeMs: number;
   createdAt: string;
   completedAt?: string;
 }
@@ -505,7 +505,7 @@ interface BackendReportDetail {
   filesProcessed: number;
   fieldsRemoved: number;
   gpsLocationsRemoved: number;
-  totalTimeSeconds: number;
+  totalTimeMs: number;
   chartData: { label: string; fields: number; percentage: number }[];
   files: BackendReportFileDetail[];
 }
@@ -620,7 +620,7 @@ function mapReportDetail(data: BackendReportDetail): ReportDetail {
     filesProcessed: data.filesProcessed,
     fieldsRemoved: data.fieldsRemoved,
     gpsLocationsRemoved: data.gpsLocationsRemoved,
-    totalTimeSeconds: data.totalTimeSeconds,
+    totalTimeMs: data.totalTimeMs,
     chartData: data.chartData,
     files: mapReportFileDetails(data.files)
   };
@@ -724,7 +724,7 @@ function buildProcessingResults(
   const filesProcessed = (msg.filesProcessed as number) ?? accumulatedResults.length;
   const fieldsRemoved = msg.fieldsRemoved as number;
   const gpsLocationsRemoved = (msg.gpsLocationsRemoved as number) ?? 0;
-  const totalTimeSeconds = (msg.totalTimeSeconds as number) ?? 0;
+  const totalTimeMs = (msg.totalTimeMs as number) ?? 0;
 
   // Construct fileResults from accumulated file_complete events (Req 11.3)
   const fileResults: FileMetadataResult[] = accumulatedResults.map((r) => ({
@@ -755,7 +755,7 @@ function buildProcessingResults(
     filesProcessed,
     fieldsRemoved,
     gpsLocationsRemoved,
-    totalTimeSeconds,
+    totalTimeMs,
     fileResults,
     beforeBreakdown
   };
@@ -1029,7 +1029,7 @@ interface WsJobComplete {
   filesProcessed: number;
   fieldsRemoved: number;
   gpsLocationsRemoved: number;
-  totalTimeSeconds: number;
+  totalTimeMs: number;
   reportId: string;
   // Note: no fileResults array — constructed from accumulated file_complete events
 }

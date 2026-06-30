@@ -130,11 +130,13 @@ backend/
 ├── Dockerfile
 ├── start-docker.sh
 ├── fly.toml
-├── fly-setup.sh
 ├── README.md
 ├── DOCS.md
 ├── scripts/
-│   └── migration.sql        # Idempotent SQL schema for Supabase (CREATE TABLE IF NOT EXISTS)
+│   ├── deploy.sh            # Fly.io deploy: creates app if missing, sets secrets, runs fly deploy
+│   └── build.sh
+├── migrations/
+│   └── 001_full_schema.sql  # Idempotent SQL schema for Supabase (CREATE TABLE IF NOT EXISTS)
 └── tests/
     ├── pipeline_test.go
     ├── handlers_test.go
@@ -266,7 +268,7 @@ Get current job status.
   "totalFiles": 4,
   "filesCompleted": 4,
   "fieldsRemoved": 87,
-  "totalTimeSeconds": 28,
+  "totalTimeMs": 28,
   "createdAt": "2025-06-02T10:22:00Z",
   "completedAt": "2025-06-02T10:22:28Z"
 }
@@ -327,7 +329,7 @@ Get detailed report information.
   "filesProcessed": 4,
   "fieldsRemoved": 87,
   "gpsLocationsRemoved": 3,
-  "totalTimeSeconds": 28,
+  "totalTimeMs": 28,
   "chartData": [
     { "label": "GPS", "fields": 9, "percentage": 10 },
     { "label": "EXIF", "fields": 51, "percentage": 59 },
@@ -462,7 +464,7 @@ Client connects to `ws://host/api/jobs/{jobId}/progress` after creating a job.
   "filesProcessed": 4,
   "fieldsRemoved": 87,
   "gpsLocationsRemoved": 3,
-  "totalTimeSeconds": 28,
+  "totalTimeMs": 28,
   "reportId": "rpt-001"
 }
 ```
@@ -488,7 +490,7 @@ CREATE TABLE cleaning_jobs (
     files_completed INT NOT NULL DEFAULT 0,
     fields_removed INT NOT NULL DEFAULT 0,
     gps_locations_removed INT NOT NULL DEFAULT 0,
-    total_time_seconds INT,
+    total_time_ms INT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     completed_at TIMESTAMPTZ
 );
@@ -522,7 +524,7 @@ CREATE TABLE cleaning_reports (
     files_processed INT NOT NULL,
     fields_removed INT NOT NULL,
     gps_locations_removed INT NOT NULL,
-    total_time_seconds INT NOT NULL,
+    total_time_ms INT NOT NULL,
     file_types TEXT NOT NULL,         -- "JPG, HEIC, MP4"
     dominant_type TEXT NOT NULL,      -- image or video
     has_gps BOOLEAN NOT NULL,
@@ -551,7 +553,7 @@ type Job struct {
     FilesCompleted      int       `json:"filesCompleted"`
     FieldsRemoved       int       `json:"fieldsRemoved"`
     GPSLocationsRemoved int       `json:"gpsLocationsRemoved"`
-    TotalTimeSeconds    int       `json:"totalTimeSeconds,omitempty"`
+    TotalTimeMs    int       `json:"totalTimeMs,omitempty"`
     CreatedAt           time.Time `json:"createdAt"`
     CompletedAt         *time.Time `json:"completedAt,omitempty"`
 }
@@ -617,7 +619,7 @@ type ProgressEvent struct {
     CurrentFileID       string `json:"currentFileId,omitempty"`
     JobID               string `json:"jobId,omitempty"`
     ReportID            string `json:"reportId,omitempty"`
-    TotalTimeSeconds    int    `json:"totalTimeSeconds,omitempty"`
+    TotalTimeMs    int    `json:"totalTimeMs,omitempty"`
     GPSLocationsRemoved int    `json:"gpsLocationsRemoved,omitempty"`
 }
 
@@ -643,7 +645,7 @@ type ReportDetail struct {
     FilesProcessed      int               `json:"filesProcessed"`
     FieldsRemoved       int               `json:"fieldsRemoved"`
     GPSLocationsRemoved int               `json:"gpsLocationsRemoved"`
-    TotalTimeSeconds    int               `json:"totalTimeSeconds"`
+    TotalTimeMs    int               `json:"totalTimeMs"`
     ChartData           []ChartDataPoint  `json:"chartData"`
     Files               []ReportFileDetail `json:"files"`
 }
@@ -765,7 +767,7 @@ The PDF is generated in-memory (bytes buffer), then uploaded to Supabase Storage
 
 ### Property 1: File size validation
 
-*For any* file size value, the validation function SHALL accept the file if and only if its size is less than or equal to the configured maximum (500 MB default), and reject it otherwise.
+*For any* file size value, the validation function SHALL accept the file if and only if its size is strictly positive and less than or equal to the configured maximum (500 MB default), and reject it otherwise. Zero-byte files are rejected as they are never valid media inputs.
 
 **Validates: Requirements 1.1, 1.3**
 
@@ -825,7 +827,7 @@ The PDF is generated in-memory (bytes buffer), then uploaded to Supabase Storage
 | `JOB_NOT_FOUND` | 404 | Referenced job ID doesn't exist |
 | `REPORT_NOT_FOUND` | 404 | Referenced report ID doesn't exist |
 | `INVALID_REQUEST` | 400 | Malformed or missing request parameters |
-| `DATABASE_ERROR` | 503 | Supabase DB query failure |
+| `DATABASE_ERROR` | 500 | Supabase DB query failure |
 | `TOOL_EXECUTION_FAILED` | — | ExifTool/FFmpeg non-zero exit (internal, per-file) |
 | `PDF_GENERATION_FAILED` | — | PDF creation or upload failure (internal) |
 | `RATE_LIMIT_EXCEEDED` | 429 | Client exceeded upload rate limit |
@@ -876,7 +878,7 @@ Each property test runs a minimum of **100 iterations** with randomly generated 
 | Download: expired file → 404 | `tests/handlers_test.go` | Req 4.3 |
 | Report: non-existent ID → 404 | `tests/handlers_test.go` | Req 5.6 |
 | Report: PDF upload failure → pdf_status "failed" | `tests/handlers_test.go` | Req 5.7 |
-| Supabase: DB failure → 503 | `tests/handlers_test.go` | Req 10.5 |
+| Supabase: DB failure → 500 | `tests/handlers_test.go` | Req 10.5 |
 | Supabase: Storage upload retry logic | `tests/handlers_test.go` | Req 10.6 |
 
 ### Integration Tests

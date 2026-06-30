@@ -209,7 +209,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
   - [x] 11.1 Implement report creation after job completion
     - After pipeline finishes all files: create report record in Supabase DB
     - Generate human-readable report ID (MCR-YYYY-MMDD-XX format)
-    - Populate: job_id, date, files_processed, fields_removed, gps_locations_removed, total_time_seconds, file_types, dominant_type, has_gps, tags, icon_color, chart_data
+    - Populate: job_id, date, files_processed, fields_removed, gps_locations_removed, total_time_ms, file_types, dominant_type, has_gps, tags, icon_color, chart_data
     - Set pdf_status to "pending"
     - _Requirements: 5.1_
 
@@ -312,7 +312,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 16. Create database migration script
-  - [x] 16.1 Create SQL migration script (`scripts/migration.sql`)
+  - [x] 16.1 Create SQL migration script (`migrations/001_full_schema.sql`)
     - Create `cleaning_jobs` table with UUID PK, status, file counts, timestamps
     - Create `job_files` table with UUID PK, FK to cleaning_jobs, file metadata, status, metadata_breakdown JSONB
     - Create `cleaning_reports` table with UUID PK, FK to cleaning_jobs, report_id (unique human-readable), PDF path/status, chart_data JSONB, tags array
@@ -344,7 +344,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Configure health check on /api/health
     - _Requirements: 9.3_
 
-  - [x] 17.4 Create fly-setup.sh
+  - [x] 17.4 Create scripts/deploy.sh
     - Parse APP_NAME from fly.toml
     - Check if app exists (fly apps list), create only if missing
     - Read .env, skip comments/empty lines/empty values
@@ -358,7 +358,7 @@ A Go HTTP server that strips metadata from uploaded media files using ExifTool a
     - Prerequisites (Go 1.22+, Docker, ExifTool, FFmpeg, Fly.io CLI)
     - Installation/setup instructions
     - Local Docker usage via start-docker.sh
-    - Fly.io deployment via fly-setup.sh + fly deploy
+    - Fly.io deployment via scripts/deploy.sh + fly deploy
     - Link to DOCS.md
     - Author section, support section, license
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
