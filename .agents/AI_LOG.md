@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 01:26 — manual
+- Project: frontend (metacleaner-web — marketing/landing site)
+- Authored a **unit/integration test spec** (`.agents/tmp/TEST_SPEC.md`) for the previously-untested logic in `frontend/metacleaner-web/` (0 test files existed; flagged the stale `.agents/UNIT_TEST_REPORT.md` describing 781 fictional tests as inaccurate), derived a 12-item backlog (`.agents/tmp/TASKS.md`), and implemented every task across 3 commits — **130 unit tests in 11 files, all passing** (Vitest `server` project, ~2.43s)
+- **HIGH** (`1bea665`): `contactFormValidation.test.ts` (per-field required/max_length boundary + email-regex cases, multi-error aggregation, required-over-email precedence) and `brevoClient.test.ts` (`sendContactEmail` — missing-env branch, happy-path URL/method/auth/body asserts, 429 → `rate_limit`, error-body fallbacks, fetch-throws Error vs non-Error)
+- **MEDIUM** (`1bea665`): `i18n.test.ts` (`t()` known-key resolution vs unknown-key verbatim fallback + one `console.warn`), `sitemap.xml/server.test.ts` (`GET()` — `application/xml`, 12 `<loc>` entries for 6 paths × en/cs, hreflang alternates, balanced tags), `pricing.test.ts` (`getPlanPrice` yearly/monthly + repository integrity), `metadataDemo.test.ts` (`getCleanedFields`/`getMetadataFields`)
+- **LOW** (`3142a18`, `b5e2d8f`): data-integrity tests for `features`/`audience`/`faq`/`steps`/`stats` repos + `index.ts` barrel re-export resolution; `hooks.test.ts` (`reroute` de-localization); `hooks.server.test.ts` (`handle` — `%paraglide.lang%`/`%paraglide.dir%` chunk replacement with mocked middleware/`getTextDirection`/`resolve`)
+
 ## 2026-06-30 01:06 — manual
 - Project: frontend (metacleaner-web — marketing/landing site)
 - Re-ran the **Playwright E2E suite** and fully refreshed `.agents/UI_TEST_REPORT.md` to match the current source tree (`e1d813a`); `.agents/tmp/` was already empty, so this entry is derived from git history
