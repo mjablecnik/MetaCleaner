@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 01:06 — manual
+- Project: frontend (metacleaner-web — marketing/landing site)
+- Re-ran the **Playwright E2E suite** and fully refreshed `.agents/UI_TEST_REPORT.md` to match the current source tree (`e1d813a`); `.agents/tmp/` was already empty, so this entry is derived from git history
+- **E2E results**: 59/60 passing (was 54/60). The mobile-menu (drawer variant, 9/9) and responsive (16/16) suites now pass; the lone remaining failure is `pricing.e2e.ts:49` "Pro+ plan has Coming soon CTA" — a stale `.hidden.md:flex` "Coming soon" selector (authored-test bug, not an app/build break). Browsers ran from the default `/opt/playwright-browsers` (`chromium-1228`), no manual install needed this run
+- **Coverage tables rewound to reality**: documented 53 components (35 with `*.stories.svelte`, 112 `<Story>` states); flagged 18 components with no story file (the whole `about/` and `error/` sets, plus `SeoHead`/`JsonLd`/`CookieConsentBanner`); flagged `/about`, `/privacy`, `/terms`, the `+error.svelte` page, and the `sitemap.xml` route as having no E2E coverage; removed now-deleted entries (`SocialIconLink`, the old pricing sub-component stories)
+- **Notes**: no component-catalog runner is installed (35 Storybook CSF stories remain runtime-uncovered); 0 `*.svelte.{test,spec}.ts` files so the vitest unit layer is a `passWithNoTests` no-op; recommended fixing the stale pricing selector, adding E2E for the uncovered routes, and standing up a story runner
+
 ## 2026-06-30 00:28 — manual
 - Project: frontend (metacleaner-web — marketing/landing site)
 - Ran a full **technical SEO audit** of `frontend/metacleaner-web/` (`.agents/tmp/SEO_AUDIT.md` — overall readiness POOR, root cause: no-SSR/no-prerender SPA serving a blank shell to crawlers; 3 CRITICAL, 6 HIGH, 6 MEDIUM, 3 LOW findings), derived 23 tasks (`.agents/tmp/TASKS.md`), and completed all of them across 5 commits
