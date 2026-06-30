@@ -897,3 +897,9 @@
 - Solution: Change `fallback: 'index.html'` to `fallback: '200.html'` in `vite.config.ts` (adapter config), and update `nginx.conf` to use `try_files $uri $uri/ $uri.html /200.html` instead of `/index.html`.
 - Source: seo-audit, 2026-06-30
 
+## Go goroutine gate test: buffer-1 channel causes deadlock when multiple goroutines signal after gate closed
+- Project: metacleaner-server
+- Problem: In `TestJobWorkerPool_PendingCount_PositiveWhileJobsQueued`, a channel `started := make(chan struct{}, 1)` was used to signal when the first goroutine started running. After `close(gate)`, subsequent goroutines (that were waiting for the semaphore) would eventually run and try `started <- struct{}{}`, but the buffer was already full (main consumed once; the second running goroutine refilled it; nobody consumed again), causing those goroutines to block forever on `started <- struct{}{}`, deadlocking the test.
+- Solution: Use a non-blocking send with `select { case started <- struct{}{}: default: }`. The first goroutine signals successfully; subsequent goroutines skip sending if the buffer is already full and proceed directly to `<-gate`. This prevents the deadlock while still correctly detecting when the first job starts.
+- Source: create-tests, 2026-06-30
+

@@ -1,0 +1,7 @@
+# 2026/06/30 13:56:27.382546 [TestProperty12_SupabaseTimeoutParsing] [rapid] draw timeout_seconds: 0
+# 2026/06/30 13:56:27.382633 [TestProperty12_SupabaseTimeoutParsing] SUPABASE_TIMEOUT=0 (non-positive): got 30s, want 10s
+# 
+v0.4.8#18258489125878041712
+0x0
+0x0
+0x0
