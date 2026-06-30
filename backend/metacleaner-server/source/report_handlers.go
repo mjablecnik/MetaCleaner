@@ -12,11 +12,12 @@ import (
 	"time"
 )
 
-// generateReportID returns a human-readable report ID in MCR-YYYY-MMDD-XX format.
+// generateReportID returns a human-readable report ID with 16 random bytes (128 bits) of
+// entropy appended as hex, making enumeration computationally infeasible.
 func generateReportID(now time.Time) string {
-	b := make([]byte, 1)
+	b := make([]byte, 16)
 	rand.Read(b) //nolint:errcheck
-	return fmt.Sprintf("MCR-%04d-%02d%02d-%02X", now.Year(), int(now.Month()), now.Day(), b[0])
+	return fmt.Sprintf("MCR-%04d-%02d%02d-%X", now.Year(), int(now.Month()), now.Day(), b)
 }
 
 // BuildReport constructs a Report record from completed job and file data.
@@ -117,8 +118,23 @@ func createJobReport(ctx context.Context, cfg Config, db *SupabaseClient, hub *W
 		}
 	}
 
-	if err := db.CreateReport(ctx, report); err != nil {
-		slog.Error("job: CreateReport failed", "jobId", job.ID, "userID", job.UserID, "error", err)
+	// Retry with a freshly generated ID on a 409 UNIQUE violation as defense-in-depth.
+	// Task 1's high-entropy IDs make collisions astronomically unlikely, but we handle them
+	// explicitly so a completed job always produces a report even in adversarial conditions.
+	const maxReportIDAttempts = 3
+	var createErr error
+	for attempt := 0; attempt < maxReportIDAttempts; attempt++ {
+		if attempt > 0 {
+			report.ReportID = generateReportID(time.Now().UTC())
+			slog.Warn("job: CreateReport ID collision, retrying", "jobId", job.ID, "attempt", attempt)
+		}
+		createErr = db.CreateReport(ctx, report)
+		if createErr == nil || !strings.Contains(createErr.Error(), "status 409") {
+			break
+		}
+	}
+	if createErr != nil {
+		slog.Error("job: CreateReport failed", "jobId", job.ID, "userID", job.UserID, "error", createErr)
 		return
 	}
 
@@ -217,8 +233,36 @@ func HandleGetReport(db *SupabaseClient) http.HandlerFunc {
 	}
 }
 
-// HandleGetPublicReport handles GET /api/public/reports/{id} — returns report detail
-// without authentication. Used for QR code verification by third parties.
+// toPublicReportDetail converts a full ReportDetail to its redacted public form,
+// omitting raw metadata field values (GPS coordinates, serial numbers, etc.) that
+// are personal data — keeping only aggregate counts and per-file verification data.
+func toPublicReportDetail(d *ReportDetail) *PublicReportDetail {
+	files := make([]PublicReportFileDetail, 0, len(d.Files))
+	for _, f := range d.Files {
+		files = append(files, PublicReportFileDetail{
+			Extension:     f.Extension,
+			Type:          f.Type,
+			HasGPS:        f.HasGPS,
+			FieldsRemoved: f.FieldsRemoved,
+			SHA256Hash:    f.SHA256Hash,
+		})
+	}
+	return &PublicReportDetail{
+		ReportID:            d.ReportID,
+		Date:                d.Date,
+		FilesProcessed:      d.FilesProcessed,
+		FieldsRemoved:       d.FieldsRemoved,
+		GPSLocationsRemoved: d.GPSLocationsRemoved,
+		TotalTimeMs:         d.TotalTimeMs,
+		ChartData:           d.ChartData,
+		Files:               files,
+	}
+}
+
+// HandleGetPublicReport handles GET /api/public/reports/{id} — returns a redacted
+// report for unauthenticated QR-code verification by third parties. Raw metadata
+// field values (GPS coordinates, camera serial numbers, XMP creator, etc.) are
+// excluded; only aggregate counts and per-file verification hashes are returned.
 func HandleGetPublicReport(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		reportID := r.PathValue("id")
@@ -237,7 +281,7 @@ func HandleGetPublicReport(db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(detail)
+		json.NewEncoder(w).Encode(toPublicReportDetail(detail))
 	}
 }
 

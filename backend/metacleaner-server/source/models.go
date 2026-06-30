@@ -137,6 +137,31 @@ type ChartDataPoint struct {
 	Percentage int    `json:"percentage"`
 }
 
+// PublicReportFileDetail is the per-file view returned by unauthenticated public
+// report endpoints. It omits raw metadata field values (GPS coordinates, serial
+// numbers, XMP fields, file/device names) and exposes only verification data.
+type PublicReportFileDetail struct {
+	Extension     string `json:"extension"`
+	Type          string `json:"type"`
+	HasGPS        bool   `json:"hasGps"`
+	FieldsRemoved int    `json:"fieldsRemoved"`
+	SHA256Hash    string `json:"sha256Hash,omitempty"`
+}
+
+// PublicReportDetail is the report view returned by the unauthenticated
+// /api/public/reports/* endpoints — aggregate counts, chart data, and
+// per-file verification hashes only; no raw metadata values.
+type PublicReportDetail struct {
+	ReportID            string                   `json:"reportId"`
+	Date                string                   `json:"date"`
+	FilesProcessed      int                      `json:"filesProcessed"`
+	FieldsRemoved       int                      `json:"fieldsRemoved"`
+	GPSLocationsRemoved int                      `json:"gpsLocationsRemoved"`
+	TotalTimeMs         int                      `json:"totalTimeMs"`
+	ChartData           []ChartDataPoint         `json:"chartData"`
+	Files               []PublicReportFileDetail `json:"files"`
+}
+
 // ReportFileDetail is a per-file breakdown in report detail
 type ReportFileDetail struct {
 	Name          string          `json:"name"`
@@ -194,7 +219,8 @@ type ReportsSummaryStats struct {
 	GPSRemoved     int `json:"gpsRemoved"`
 }
 
-// ValidateFileSize returns true if size does not exceed maxSize
+// ValidateFileSize returns true if size is positive and does not exceed maxSize.
+// Zero-byte files are rejected because they are never valid media files to process.
 func ValidateFileSize(size int64, maxSize int64) bool {
 	return size > 0 && size <= maxSize
 }

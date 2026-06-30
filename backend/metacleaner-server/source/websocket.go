@@ -163,7 +163,7 @@ func (h *WebSocketHub) Broadcast(jobID string, event ProgressEvent) {
 // HandleJobProgress upgrades the connection to WebSocket and streams events
 // for the job identified by the {id} path parameter. The JWT must be passed
 // as a ?token= query parameter (browsers cannot set custom headers on WebSocket).
-func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, frontendOrigin string) http.HandlerFunc {
+func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, db *SupabaseClient, frontendOrigin string) http.HandlerFunc {
 	upgrader := websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			origin := r.Header.Get("Origin")
@@ -176,7 +176,8 @@ func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, frontendOrigin s
 			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "missing token")
 			return
 		}
-		if _, err := auth.validateJWT(token); err != nil {
+		sub, err := auth.validateJWT(token)
+		if err != nil {
 			if ae, ok := err.(*authError); ok {
 				WriteError(w, http.StatusUnauthorized, ae.code, ae.message)
 			} else {
@@ -188,6 +189,16 @@ func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, frontendOrigin s
 		jobID := r.PathValue("id")
 		if jobID == "" {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+			return
+		}
+
+		job, err := db.GetJob(r.Context(), jobID, sub)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "failed to look up job")
+			return
+		}
+		if job == nil {
+			WriteError(w, http.StatusNotFound, ErrJobNotFound, "job not found or access denied")
 			return
 		}
 
