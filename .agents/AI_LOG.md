@@ -1,5 +1,11 @@
 # AI Log
 
+## 2026-06-30 14:54 — manual
+- Project: backend (metacleaner-server — Go API server)
+- Synced documentation with the current codebase (`f5b5462`) — `.agents/tmp/` did not exist, so this entry is derived from git history
+- Created `backend/metacleaner-server/CLAUDE.md` (new agent guide — 113 lines): key commands (`go run ./cmd/`, `go test ./tests/` & `./source/`, `-race`, build/Docker/deploy/Stripe scripts), full `source/` project-structure map, conventions (no global mutable state, `Handle<Name>(deps) http.HandlerFunc` pattern, `WriteError` over `http.Error`, `UserIDFromContext`/`KeyIDFromContext`, `rapid` property tests, `slog` logging, `f-<8hex>` file IDs), and important notes (anon vs service-role keys, ExifTool/FFmpeg PATH requirement, global auth middleware, `JobWorkerPool` concurrency cap, 30-day `AccountCleanupScheduler`, HMAC-verified Stripe webhook)
+- Substantially rewrote `DOCS.md` (+778/-160) and refreshed `README.md` (44 lines) to match the actual server behaviour and project tree
+
 ## 2026-06-30 14:47 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Corrected stale documentation in `backend/metacleaner-server/DOCS.md` and `README.md` (`7b69aaf`) — `.agents/tmp/` was empty, so this entry is derived from git history
