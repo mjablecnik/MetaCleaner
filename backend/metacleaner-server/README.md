@@ -46,7 +46,7 @@ go mod download
 
 4. Apply the database migration against your Supabase project (run once):
 
-Open your Supabase project → SQL Editor → paste contents of `scripts/migration.sql` → Run.
+Open your Supabase project → SQL Editor → paste contents of `migrations/001_full_schema.sql` → Run.
 
 See [DOCS.md — Database Migration](DOCS.md#database-migration) for details.
 

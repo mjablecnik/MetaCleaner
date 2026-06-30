@@ -137,7 +137,7 @@ All variables are read at startup. `SUPABASE_URL` and `SUPABASE_API_KEY` are req
 | `RETENTION_PERIOD` | `1h` | How long files are kept before deletion. Go duration format: `30m`, `2h`, `24h` |
 | `TEMP_STORAGE_PATH` | `/tmp/metacleaner` | Root directory for temporary file storage |
 | `SUPABASE_URL` | _(required)_ | Supabase project URL, e.g. `https://abc.supabase.co` |
-| `SUPABASE_API_KEY` | _(required)_ | Supabase service role key (not the anon key) |
+| `SUPABASE_API_KEY` | _(required)_ | Supabase anon (public) key |
 | `RATE_LIMIT_RPM` | `60` | Maximum upload requests per minute per IP |
 
 ---
@@ -170,29 +170,33 @@ backend/metacleaner-server/
 │   ├── models_test.go            # Property tests: validation, progress, summary
 │   ├── pipeline_test.go          # Property tests: tool selection, categorization
 │   └── errors_test.go            # Property tests: error format
+├── migrations/
+│   └── 001_full_schema.sql  # Idempotent SQL schema for Supabase
 ├── scripts/
-│   └── migration.sql        # Idempotent SQL schema for Supabase
+│   ├── build.sh             # Build script
+│   ├── deploy.sh            # Deploy to Fly.io
+│   ├── start-docker.sh      # Build + run Docker container locally
+│   ├── stop-docker.sh       # Stop local Docker container
+│   └── stripe-webhook.sh    # Start Stripe webhook listener for local dev
 ├── go.mod                   # Go module (metacleaner-server)
 ├── go.sum                   # Dependency checksums
 ├── .env.example             # Environment variable template
 ├── .dockerignore            # Docker build exclusions
 ├── Dockerfile               # Multi-stage: golang:1.23 builder + debian-slim runtime
-├── start-docker.sh          # Build + run Docker container locally
-├── fly.toml                 # Fly.io configuration (port, env, health check, volume)
-└── fly-setup.sh             # Create Fly.io app + push secrets
+└── fly.toml                 # Fly.io configuration (port, env, health check, volume)
 ```
 
 ---
 
 ## Database Migration
 
-Run `scripts/migration.sql` once against your Supabase project. The script is idempotent (`CREATE TABLE IF NOT EXISTS`).
+Run `migrations/001_full_schema.sql` once against your Supabase project. The script is idempotent (`CREATE TABLE IF NOT EXISTS`).
 
 **Via Supabase Dashboard:**
 
 1. Open [supabase.com/dashboard](https://supabase.com/dashboard) → your project
 2. Navigate to **SQL Editor**
-3. Paste contents of `scripts/migration.sql`
+3. Paste contents of `migrations/001_full_schema.sql`
 4. Click **Run**
 
 **Tables created:**
@@ -468,7 +472,7 @@ Check:
 1. `SUPABASE_URL` is correct (e.g. `https://abc.supabase.co`)
 2. `SUPABASE_API_KEY` is the **service role** key
 3. Project is not paused (free-tier pauses after inactivity)
-4. Migration has been applied (`scripts/migration.sql`)
+4. Migration has been applied (`migrations/001_full_schema.sql`)
 
 ### PDF stuck in "pending" status
 
