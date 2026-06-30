@@ -6,7 +6,11 @@
 	import FeaturesCtaSection from './sections/FeaturesCtaSection.svelte';
 </script>
 
-<SeoHead title={m.meta_features_title()} description={m.meta_features_description()} path="/features" />
+<SeoHead
+	title={m.meta_features_title()}
+	description={m.meta_features_description()}
+	path="/features"
+/>
 
 <FeaturesHeaderSection />
 <FeaturesShowcaseSection />

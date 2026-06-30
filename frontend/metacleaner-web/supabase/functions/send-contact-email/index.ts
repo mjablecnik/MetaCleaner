@@ -20,7 +20,8 @@ async function isRateLimited(ip: string): Promise<boolean> {
 
 		if (newCount > RATE_LIMIT_MAX_REQUESTS) return true;
 
-		const result = await kv.atomic()
+		const result = await kv
+			.atomic()
 			.check(entry)
 			.set(key, newCount, { expireIn: RATE_LIMIT_WINDOW_MS * 2 })
 			.commit();
@@ -172,9 +173,7 @@ Deno.serve(async (req) => {
 	const xffValues = req.headers.get('x-forwarded-for')?.split(',') ?? [];
 	const lastXff = xffValues[xffValues.length - 1]?.trim() ?? '';
 	const clientIp =
-		req.headers.get('cf-connecting-ip') ??
-		(lastXff !== '' ? lastXff : null) ??
-		'unknown';
+		req.headers.get('cf-connecting-ip') ?? (lastXff !== '' ? lastXff : null) ?? 'unknown';
 
 	if (await isRateLimited(clientIp)) {
 		return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {

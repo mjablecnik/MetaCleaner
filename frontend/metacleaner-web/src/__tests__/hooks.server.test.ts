@@ -37,10 +37,12 @@ describe('handle (hooks.server.ts)', () => {
 
 		mockGetTextDirection.mockImplementation((l: string) => (l === 'cs' ? 'ltr' : 'ltr'));
 
-		const resolve = vi.fn().mockImplementation(
-			(_event: unknown, opts: { transformPageChunk: (chunk: { html: string }) => string }) =>
-				opts.transformPageChunk({ html })
-		);
+		const resolve = vi
+			.fn()
+			.mockImplementation(
+				(_event: unknown, opts: { transformPageChunk: (chunk: { html: string }) => string }) =>
+					opts.transformPageChunk({ html })
+			);
 
 		const event = buildEvent(new Request('https://metacleaner.app/'));
 		return { result: handle({ event, resolve }), resolve };
@@ -65,10 +67,7 @@ describe('handle (hooks.server.ts)', () => {
 
 	it('replaces both placeholders in the same html string', () => {
 		mockGetTextDirection.mockReturnValue('ltr');
-		const { result } = callHandle(
-			'<html lang="%paraglide.lang%" dir="%paraglide.dir%">',
-			'cs'
-		);
+		const { result } = callHandle('<html lang="%paraglide.lang%" dir="%paraglide.dir%">', 'cs');
 		expect(result).toBe('<html lang="cs" dir="ltr">');
 	});
 

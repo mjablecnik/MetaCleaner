@@ -101,7 +101,11 @@ describe('sendContactEmail', () => {
 			vi.stubEnv('VITE_SUPABASE_URL', TEST_URL);
 			vi.stubEnv('VITE_SUPABASE_ANON_KEY', TEST_ANON_KEY);
 			fetchMock.mockResolvedValueOnce(
-				makeResponse({ ok: false, status: 429, json: () => Promise.resolve({ error: 'Too many requests' }) })
+				makeResponse({
+					ok: false,
+					status: 429,
+					json: () => Promise.resolve({ error: 'Too many requests' })
+				})
 			);
 			const sendContactEmail = await importSendContactEmail();
 
@@ -114,7 +118,11 @@ describe('sendContactEmail', () => {
 			vi.stubEnv('VITE_SUPABASE_URL', TEST_URL);
 			vi.stubEnv('VITE_SUPABASE_ANON_KEY', TEST_ANON_KEY);
 			fetchMock.mockResolvedValueOnce(
-				makeResponse({ ok: false, status: 400, json: () => Promise.resolve({ error: 'Invalid request' }) })
+				makeResponse({
+					ok: false,
+					status: 400,
+					json: () => Promise.resolve({ error: 'Invalid request' })
+				})
 			);
 			const sendContactEmail = await importSendContactEmail();
 
@@ -140,7 +148,11 @@ describe('sendContactEmail', () => {
 			vi.stubEnv('VITE_SUPABASE_URL', TEST_URL);
 			vi.stubEnv('VITE_SUPABASE_ANON_KEY', TEST_ANON_KEY);
 			fetchMock.mockResolvedValueOnce(
-				makeResponse({ ok: false, status: 503, json: () => Promise.reject(new Error('parse error')) })
+				makeResponse({
+					ok: false,
+					status: 503,
+					json: () => Promise.reject(new Error('parse error'))
+				})
 			);
 			const sendContactEmail = await importSendContactEmail();
 

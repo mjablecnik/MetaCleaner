@@ -65,7 +65,12 @@
 				<GradientText>{$page.status}</GradientText>
 			</p>
 			<h1 class="text-2xl font-semibold text-white">{m.error_generic_heading()}</h1>
-			<CtaButton href="/" label={m.error_generic_back_home()} variant="primary" icon="fa-solid fa-house" />
+			<CtaButton
+				href="/"
+				label={m.error_generic_back_home()}
+				variant="primary"
+				icon="fa-solid fa-house"
+			/>
 		</div>
 	{/if}
 </main>

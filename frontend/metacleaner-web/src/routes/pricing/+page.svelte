@@ -57,7 +57,11 @@
 	};
 </script>
 
-<SeoHead title={m.meta_pricing_title()} description={m.meta_pricing_description()} path="/pricing" />
+<SeoHead
+	title={m.meta_pricing_title()}
+	description={m.meta_pricing_description()}
+	path="/pricing"
+/>
 <JsonLd data={pricingJsonLd} />
 
 <div class="flex flex-col items-center w-full">

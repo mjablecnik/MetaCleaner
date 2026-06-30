@@ -3,7 +3,11 @@
 	import SeoHead from '$lib/components/shared/SeoHead.svelte';
 </script>
 
-<SeoHead title={m.meta_privacy_title()} description={m.meta_privacy_description()} path="/privacy" />
+<SeoHead
+	title={m.meta_privacy_title()}
+	description={m.meta_privacy_description()}
+	path="/privacy"
+/>
 
 <div class="flex flex-col items-center w-full">
 	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-12 md:py-20">

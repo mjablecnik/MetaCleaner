@@ -12,13 +12,41 @@
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		mainEntity: [
-			{ '@type': 'Question', name: m.home_faq_1_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_1_answer() } },
-			{ '@type': 'Question', name: m.home_faq_2_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_2_answer() } },
-			{ '@type': 'Question', name: m.home_faq_3_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_3_answer() } },
-			{ '@type': 'Question', name: m.home_faq_4_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_4_answer() } },
-			{ '@type': 'Question', name: m.home_faq_5_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_5_answer() } },
-			{ '@type': 'Question', name: m.home_faq_6_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_6_answer() } },
-			{ '@type': 'Question', name: m.home_faq_8_question(), acceptedAnswer: { '@type': 'Answer', text: m.home_faq_8_answer() } }
+			{
+				'@type': 'Question',
+				name: m.home_faq_1_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_1_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_2_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_2_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_3_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_3_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_4_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_4_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_5_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_5_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_6_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_6_answer() }
+			},
+			{
+				'@type': 'Question',
+				name: m.home_faq_8_question(),
+				acceptedAnswer: { '@type': 'Answer', text: m.home_faq_8_answer() }
+			}
 		]
 	};
 </script>
