@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 21:55 — manual
+- Project: backend (metacleaner-server) and frontend (metacleaner-app)
+- Repaired the test suites left broken by the earlier backend security refactor (`.agents/tmp/TASKS.md`)
+- **Backend** (`acc3e77`): updated `tests/websocket_test.go` for the new `*SupabaseClient` parameter `HandleJobProgress` gained (it now calls `db.GetJob` before the WS upgrade) — tests that return before `db` is used pass `nil`, and tests that complete the upgrade use a new `newWSMockSupabase` helper returning valid job JSON
+- **Frontend** (`791bb6e`): fixed two failing Vitest browser tests in `metacleaner-app` — updated the `ProOverlay` price-hint assertion from €2.99 to €5.99/month to match the actual i18n value, and mocked `document.execCommand` to return `false` in the `CopyButton`/`CodeBlock` "silently fails" test so it exercises the true clipboard→execCommand fallback failure path
+- **Reporting** (`260757b`): refreshed `.agents/UNIT_TEST_REPORT.md` to reflect the now-passing suites
+
 ## 2026-06-30 21:29 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Performed a full code review of `backend/metacleaner-server/` (`.agents/tmp/CODE_REVIEW.md`: 2 CRITICAL/HIGH, 3 MEDIUM, 4 LOW, plus a doc-drift section), derived a 10-item severity-sorted backlog (`.agents/tmp/TASKS.md`), and remediated every finding across 6 commits

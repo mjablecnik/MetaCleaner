@@ -866,6 +866,18 @@
 - Source: create-tests, 2026-06-30
 
 
+## websocket_test.go broke after HandleJobProgress gained *SupabaseClient param
+- Project: metacleaner-server
+- Problem: `HandleJobProgress` signature was changed from `(hub, auth, frontendOrigin)` to `(hub, auth, db *SupabaseClient, frontendOrigin)` (needed to call `db.GetJob()` before upgrading the WS connection). The existing `websocket_test.go` still called it with 3 args → build failure.
+- Solution: For tests that return before `db.GetJob()` is reached (missing/invalid token → 401), pass `nil` as db. For tests that complete the WS upgrade (origin checks), add a `newWSMockSupabase` helper that returns a valid job JSON for any `GET /rest/v1/cleaning_jobs` request, point `cfg.SupabaseURL` at it, and create a real `NewSupabaseClient(cfg)` from that config.
+- Source: create-tests, 2026-06-30
+
+## CopyButton execCommand fallback causes "silently fails" test to pass wrong state
+- Project: metacleaner-app
+- Problem: `CopyButton.svelte` has a two-step copy strategy: (1) `navigator.clipboard.writeText`, (2) `document.execCommand('copy')` fallback. A test mocking only `clipboard.writeText` to reject still gets `confirmed = true` because Chromium's `execCommand('copy')` succeeds on a selected textarea — making the test assertion that the copy icon remains visible fail.
+- Solution: Also mock `document.execCommand` to return false when testing the "silently fails" scenario: `vi.spyOn(document, 'execCommand').mockReturnValue(false)`. The `afterEach(() => vi.restoreAllMocks())` cleans it up. Without this, the fallback path masks the clipboard failure.
+- Source: create-tests, 2026-06-30
+
 ## Weak report IDs (MCR-YYYY-MMDD-XX) enable enumeration + UNIQUE collisions
 - Project: metacleaner-server
 - Problem: `generateReportID()` in `source/report_handlers.go` uses ONE random byte (`make([]byte, 1)`), giving only 256 distinct `MCR-YYYY-MMDD-XX` IDs per day. Two impacts: (1) Privacy — the unauthenticated public endpoints `GET /api/public/reports/{id}` and `/pdf` return the full `ReportDetail` including the actual stripped metadata *values* (GPS coordinates, device, XMP creator, etc.); with only 256 IDs/day + a known date an attacker can brute-force every report for a day and read the PII the user paid to remove. (2) Reliability — `cleaning_reports.report_id` is `UNIQUE`; birthday-paradox collisions start after a few dozen reports/day (hard cap 256/day). On collision PostgREST returns 409, which `isRetryableStatus` does NOT retry, so `CreateReport` errors, `createJobReport` bails, no `report_ready` WS event fires, and the user's completed job has no report ("View Report" broken).

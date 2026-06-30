@@ -1,74 +1,70 @@
 # Test Report
-Created: 2026-06-15 21:16:10 UTC
-Updated: 2026-06-29 19:18 UTC
+Created: 2026-06-30 21:53:56 UTC
+Updated: 2026-06-30 21:53:56 UTC
 
 ## Summary
-- Total tests: 781
-- Passing: 781
+- Total tests: 391
+- Passing: 391
 - Failing: 0
-- Coverage: 41.95% statements (4500/10726), 44.97% lines, 14.73% branches, 12.63% functions — v8 provider, `server` project only
+- Coverage: 57.8% of statements (across `./...`, measured from the `tests` package)
 
 ## Test Results
 | Test File | Tests | Pass | Fail | Status |
 |---|---|---|---|---|
-| src/lib/__tests__/locale.test.ts | 11 | 11 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/antiEnumeration.test.ts | 4 | 4 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/apiClient.test.ts | 18 | 18 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/authGuard.test.ts | 6 | 6 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/authStore.test.ts | 33 | 33 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/concurrentRefreshProperty.test.ts | 2 | 2 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/deepLink.test.ts | 8 | 8 | 0 | ✅ Pass |
-| src/lib/auth/__tests__/tokenUtils.test.ts | 15 | 15 | 0 | ✅ Pass |
-| src/lib/clients/__tests__/accountClient.test.ts | 25 | 25 | 0 | ✅ Pass |
-| src/lib/clients/__tests__/api-config.test.ts | 10 | 10 | 0 | ✅ Pass |
-| src/lib/clients/__tests__/apiKeysClient.test.ts | 20 | 20 | 0 | ✅ Pass |
-| src/lib/clients/__tests__/billingClient.test.ts | 23 | 23 | 0 | ✅ Pass |
-| src/lib/clients/__tests__/metaCleanerApi.test.ts | 6 | 6 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/authRepository.test.ts | 14 | 14 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/docsRepository.property.test.ts | 9 | 9 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/docsRepository.test.ts | 48 | 48 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/languageRepository.test.ts | 8 | 8 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/settingsRepository.test.ts | 14 | 14 | 0 | ✅ Pass |
-| src/lib/repositories/__tests__/userRepository.test.ts | 10 | 10 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/aiDetector.test.ts | 39 | 39 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/extraction.test.ts | 11 | 11 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/formatDetector.test.ts | 47 | 47 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/metadataParser.test.ts | 6 | 6 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/riskAnalyzer.test.ts | 23 | 23 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/scanPipeline.test.ts | 12 | 12 | 0 | ✅ Pass |
-| src/lib/scanner/__tests__/scannerStore.test.ts | 10 | 10 | 0 | ✅ Pass |
-| src/lib/scanner/parsers/__tests__/imageParser.test.ts | 21 | 21 | 0 | ✅ Pass |
-| src/lib/scanner/parsers/__tests__/videoParser.test.ts | 3 | 3 | 0 | ✅ Pass |
-| src/lib/services/__tests__/apiCleaningService.test.ts | 60 | 60 | 0 | ✅ Pass |
-| src/lib/services/__tests__/preservation.property.test.ts | 15 | 15 | 0 | ✅ Pass |
-| src/lib/shared/components/__tests__/UserDropdown.test.ts | 5 | 5 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/creditUtils.property.test.ts | 28 | 28 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/format.test.ts | 8 | 8 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/i18n.test.ts | 7 | 7 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/planHierarchy.property.test.ts | 19 | 19 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/reportStyles.test.ts | 9 | 9 | 0 | ✅ Pass |
-| src/lib/shared/utils/__tests__/riskStyles.test.ts | 13 | 13 | 0 | ✅ Pass |
-| src/lib/stores/__tests__/appState.test.ts | 13 | 13 | 0 | ✅ Pass |
-| src/lib/stores/__tests__/billingStore.test.ts | 38 | 38 | 0 | ✅ Pass |
-| src/lib/stores/__tests__/cleaningResultsStore.test.ts | 14 | 14 | 0 | ✅ Pass |
-| src/lib/vitest-examples/greet.spec.ts | 1 | 1 | 0 | ✅ Pass |
-| src/routes/__tests__/layout.navProps.test.ts | 19 | 19 | 0 | ✅ Pass |
-| src/routes/docs/__tests__/docs.property.test.ts | 33 | 33 | 0 | ✅ Pass |
-| src/routes/sections/Step5Success/__tests__/Step5Success.download.property.test.ts | 6 | 6 | 0 | ✅ Pass |
-| src/routes/settings/__tests__/validation.test.ts | 37 | 37 | 0 | ✅ Pass |
+| source/email_change_test.go | 15 | 15 | 0 | ✅ Pass |
+| source/format_helpers_test.go | 7 | 7 | 0 | ✅ Pass |
+| source/supabase_auth_url_test.go | 17 | 17 | 0 | ✅ Pass |
+| tests/account_cleanup_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/account_handlers_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/account_property_test.go | 1 | 1 | 0 | ✅ Pass |
+| tests/apikey_handlers_test.go | 19 | 19 | 0 | ✅ Pass |
+| tests/apikey_rate_limiter_test.go | 7 | 7 | 0 | ✅ Pass |
+| tests/auth_handlers_test.go | 57 | 57 | 0 | ✅ Pass |
+| tests/auth_middleware_test.go | 15 | 15 | 0 | ✅ Pass |
+| tests/auth_property_credits_test.go | 4 | 4 | 0 | ✅ Pass |
+| tests/auth_property_error_format_test.go | 8 | 8 | 0 | ✅ Pass |
+| tests/auth_property_input_validation_test.go | 6 | 6 | 0 | ✅ Pass |
+| tests/auth_property_middleware_test.go | 4 | 4 | 0 | ✅ Pass |
+| tests/auth_rate_limiter_test.go | 14 | 14 | 0 | ✅ Pass |
+| tests/billing_handlers_test.go | 21 | 21 | 0 | ✅ Pass |
+| tests/billing_webhook_test.go | 8 | 8 | 0 | ✅ Pass |
+| tests/cleanup_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/config_test.go | 12 | 12 | 0 | ✅ Pass |
+| tests/cors_test.go | 6 | 6 | 0 | ✅ Pass |
+| tests/errors_test.go | 1 | 1 | 0 | ✅ Pass |
+| tests/handlers_download_test.go | 7 | 7 | 0 | ✅ Pass |
+| tests/handlers_fileid_validation_test.go | 4 | 4 | 0 | ✅ Pass |
+| tests/handlers_jobs_test.go | 7 | 7 | 0 | ✅ Pass |
+| tests/handlers_reports_test.go | 9 | 9 | 0 | ✅ Pass |
+| tests/handlers_test.go | 9 | 9 | 0 | ✅ Pass |
+| tests/health_handlers_test.go | 4 | 4 | 0 | ✅ Pass |
+| tests/job_worker_test.go | 7 | 7 | 0 | ✅ Pass |
+| tests/logger_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/models_test.go | 12 | 12 | 0 | ✅ Pass |
+| tests/pdf_test.go | 7 | 7 | 0 | ✅ Pass |
+| tests/pipeline_integration_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/pipeline_test.go | 3 | 3 | 0 | ✅ Pass |
+| tests/rate_limiter_test.go | 4 | 4 | 0 | ✅ Pass |
+| tests/request_id_test.go | 6 | 6 | 0 | ✅ Pass |
+| tests/security_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/supabase_apikeys_test.go | 12 | 12 | 0 | ✅ Pass |
+| tests/supabase_billing_test.go | 19 | 19 | 0 | ✅ Pass |
+| tests/supabase_test.go | 18 | 18 | 0 | ✅ Pass |
+| tests/websocket_test.go | 5 | 5 | 0 | ✅ Pass |
+| tests/well_known_test.go | 6 | 6 | 0 | ✅ Pass |
+
+> Counts reflect top-level `Test*` functions (391 total). Many of these run additional table-driven and
+> property-based (`pgregory.net/rapid`) subtests, so the effective assertion count is substantially higher.
 
 ## Failures (if any)
-- None. All 781 tests across 45 files pass.
+- None. All 391 tests pass.
 
 ## Uncovered (no tests)
-The reported coverage (~42% statements) is low because the `server` Vitest project only exercises logic modules (auth, clients, repositories, scanner, services, stores, utils). The following categories of source are not covered by this unit run:
-- **Svelte UI components** (`*.svelte` in `src/routes/**` and `src/lib/**/components`) — these are exercised by the `client` and `storybook` browser projects (`npm run test:browser`) and Playwright E2E (`npm run test:e2e`), which are not part of this suite.
-- **Paraglide i18n generated messages** (`src/lib/paraglide/**`) — generated code, not unit tested.
-- Various route `+page.svelte` / `+layout.svelte` files whose extracted logic is tested (e.g. `layout.navProps`, `docs.property`) but whose markup is covered only by browser/E2E projects.
+- `source/main.go` — process entrypoint (flag parsing / server bootstrap); 0% statement coverage, conventionally not unit-tested.
+- `cmd` package — reports `[no test files]` (thin binary wrapper).
 
 ## Notes
-- Test runner: Vitest 4.1.8, run via `npm test` (`vitest --run --project=server`).
-- A non-fatal warning is emitted: the `vi.mock("mediainfo.js")` call in `src/lib/scanner/parsers/__tests__/videoParser.test.ts` is not at the top level of the module. It is hoisted correctly today but will become an error in a future Vitest version — recommend moving it to the top level.
-- The two failures noted in earlier runs (hash-fragment token parsing in `tokenUtils.test.ts` and empty-name fallback in `userRepository.test.ts`) were fixed in commit `c5992de` and now pass.
-- This run covers only the `server` unit project. The `client`/`storybook` browser projects and Playwright E2E were not executed.
-- Coverage was measured with the v8 provider (`@vitest/coverage-v8`).
+- Full suite run with `go test ./... -count=1` (cache disabled). Result: `ok metacleaner-server/source` and `ok metacleaner-server/tests`; `cmd` has no test files.
+- Coverage measured with `-coverpkg=./...`: 57.8% of all module statements are exercised by the `tests` package. The `source` package's own in-package tests report 4.1% locally because most production code is covered cross-package from `tests/` rather than in-package.
+- The `tests/` package run takes ~21s (integration + property tests); allow extra time on slower machines.
+- First run downloads module dependencies (gorilla/websocket, stripe-go/v82, rapid, godotenv, gopdf, go-qrcode, golang.org/x/time, gofpdi, pkg/errors). Ensure network access or a warm module cache for a clean offline run.
