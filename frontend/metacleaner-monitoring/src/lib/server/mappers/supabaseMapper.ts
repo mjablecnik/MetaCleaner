@@ -125,6 +125,15 @@ function nameFromEmail(email: string): string {
 	return local.replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+function maskEmail(email: string): string {
+	const atIdx = email.indexOf('@');
+	if (atIdx < 0) return '***';
+	const local = email.slice(0, atIdx);
+	const domain = email.slice(atIdx);
+	if (local.length <= 2) return `${local[0]}*${domain}`;
+	return `${local[0]}${'*'.repeat(local.length - 2)}${local[local.length - 1]}${domain}`;
+}
+
 function formatRegistered(isoDate: string): string {
 	const d = new Date(isoDate);
 	return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()}`;
@@ -208,7 +217,7 @@ export function mapToUsers(raw: SupabaseUserRaw[]): User[] {
 	return raw.map((user, idx) => ({
 		id: idx + 1,
 		name: nameFromEmail(user.email),
-		email: user.email,
+		email: maskEmail(user.email),
 		avatar: '',
 		status: getUserStatus(user.last_sign_in_at),
 		registered: formatRegistered(user.created_at),

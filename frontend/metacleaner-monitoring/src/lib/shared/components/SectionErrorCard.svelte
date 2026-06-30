@@ -5,11 +5,11 @@
 
 	interface Props {
 		category: ErrorCategory;
-		message: string;
+		message?: string;
 		onretry: () => void;
 	}
 
-	let { category, message, onretry }: Props = $props();
+	let { category, onretry }: Props = $props();
 
 	const categoryConfig: Record<
 		ErrorCategory,
@@ -58,9 +58,6 @@
 		<div class="flex-1 min-w-0">
 			<h3 class="text-sm font-semibold text-textMain">{t(config.titleKey)}</h3>
 			<p class="text-xs text-textSec mt-1">{t(config.descriptionKey)}</p>
-			{#if message}
-				<p class="text-xs text-textSec mt-1 font-mono truncate" title={message}>{message}</p>
-			{/if}
 			<button
 				onclick={onretry}
 				class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface hover:bg-surface-hover text-xs font-medium text-textMain transition-colors"

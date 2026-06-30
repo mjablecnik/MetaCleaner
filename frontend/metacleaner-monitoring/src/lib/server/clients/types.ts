@@ -49,10 +49,12 @@ export async function callSection<T>(fn: () => Promise<T>): Promise<SectionResul
 		return { status: 'ok', data };
 	} catch (e) {
 		if (e instanceof ClientError) {
-			return { status: 'error', error: { category: e.category, message: e.message } };
+			console.error(`[${e.service}] upstream failure (${e.category}):`, e.message);
+			return { status: 'error', error: { category: e.category, message: '' } };
 		}
-		const message = e instanceof Error ? e.message : 'Unknown error';
-		return { status: 'error', error: { category: 'request_error', message } };
+		const detail = e instanceof Error ? e.message : String(e);
+		console.error('[section] upstream failure:', detail);
+		return { status: 'error', error: { category: 'request_error', message: '' } };
 	}
 }
 
