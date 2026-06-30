@@ -1,5 +1,11 @@
 # AI Log
 
+## 2026-06-30 22:13 — manual
+- Project: backend (metacleaner-server — Go API server)
+- Synced documentation with the current codebase (`507924d`); `.agents/tmp/` did not exist, so this entry is derived from git history
+- Documented the new `migrations/002_rename_total_time_ms.sql` migration across `CLAUDE.md`, `DOCS.md`, and `README.md` — distinguishing the one-time `001_full_schema.sql` run for a new Supabase project from the additional `002_rename_total_time_ms.sql` step required on existing databases (renames the column added before the unit was corrected to milliseconds)
+- Updated `README.md` step 4 and the `CLAUDE.md` project-structure listing to reflect both migration files
+
 ## 2026-06-30 22:07 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Removed a stale `rapid` replay file left over from an earlier timeout-default change (`3b7ca42`); `.agents/tmp/` did not exist, so this entry is derived from git history
