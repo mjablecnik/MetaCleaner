@@ -1,5 +1,10 @@
 # AI Log
 
+## 2026-06-30 22:07 — manual
+- Project: backend (metacleaner-server — Go API server)
+- Removed a stale `rapid` replay file left over from an earlier timeout-default change (`3b7ca42`); `.agents/tmp/` did not exist, so this entry is derived from git history
+- Deleted `tests/testdata/rapid/TestProperty12_SupabaseTimeoutParsing/TestProperty12_SupabaseTimeoutParsing-20260630135627-2857.fail` — the captured failing case (expecting a non-positive `SUPABASE_TIMEOUT` to fall back to 10s) became invalid after `config.go` raised the default to 30s; `rapid` itself flagged it as "no longer valid" on the next test run, so the dead replay file was pruned
+
 ## 2026-06-30 21:55 — manual
 - Project: backend (metacleaner-server) and frontend (metacleaner-app)
 - Repaired the test suites left broken by the earlier backend security refactor (`.agents/tmp/TASKS.md`)
