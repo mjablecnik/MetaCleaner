@@ -18,16 +18,17 @@ vi.mock('$lib/auth/auth.svelte.js', () => ({
 
 vi.stubGlobal('fetch', mockFetch);
 
-import { createApiKey, listApiKeys, deleteApiKey, revokeApiKey, ApiKeyError } from '../apiKeysClient.js';
+import {
+	createApiKey,
+	listApiKeys,
+	deleteApiKey,
+	revokeApiKey,
+	ApiKeyError
+} from '../apiKeysClient.js';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function makeResponse(
-	ok: boolean,
-	status: number,
-	body: unknown,
-	statusText = 'Error'
-): Response {
+function makeResponse(ok: boolean, status: number, body: unknown, statusText = 'Error'): Response {
 	return {
 		ok,
 		status,
@@ -257,7 +258,11 @@ describe('revokeApiKey', () => {
 	});
 
 	it('returns updated ApiKey on success', async () => {
-		const revokedKey = { ...MOCK_KEY, status: 'revoked' as const, revoked_at: '2026-01-02T00:00:00Z' };
+		const revokedKey = {
+			...MOCK_KEY,
+			status: 'revoked' as const,
+			revoked_at: '2026-01-02T00:00:00Z'
+		};
 		mockFetch.mockResolvedValue(makeResponse(true, 200, revokedKey));
 
 		const result = await revokeApiKey('key-1');

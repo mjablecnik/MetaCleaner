@@ -11,15 +11,11 @@
 
 	const { onDismiss, variant = 'reports' }: Props = $props();
 
-	const titleKey = $derived(
-		variant === 'docs' ? 'upgradeModal.docs.title' : 'upgradeModal.title'
-	);
+	const titleKey = $derived(variant === 'docs' ? 'upgradeModal.docs.title' : 'upgradeModal.title');
 	const descriptionKey = $derived(
 		variant === 'docs' ? 'upgradeModal.docs.description' : 'upgradeModal.description'
 	);
-	const ctaKey = $derived(
-		variant === 'docs' ? 'upgradeModal.docs.cta' : 'upgradeModal.cta'
-	);
+	const ctaKey = $derived(variant === 'docs' ? 'upgradeModal.docs.cta' : 'upgradeModal.cta');
 
 	function handleUpgrade() {
 		goto(resolve('/subscription' as Pathname));

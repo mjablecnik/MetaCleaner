@@ -173,22 +173,47 @@ describe('validateApiKeyNote', () => {
 
 describe('isFormUnchanged', () => {
 	it('returns true when first_name and last_name are identical', () => {
-		expect(isFormUnchanged({ first_name: 'Jana', last_name: 'Nová' }, { first_name: 'Jana', last_name: 'Nová' })).toBe(true);
+		expect(
+			isFormUnchanged(
+				{ first_name: 'Jana', last_name: 'Nová' },
+				{ first_name: 'Jana', last_name: 'Nová' }
+			)
+		).toBe(true);
 	});
 
 	it('returns false when first_name differs', () => {
-		expect(isFormUnchanged({ first_name: 'Jana', last_name: 'Nová' }, { first_name: 'Petra', last_name: 'Nová' })).toBe(false);
+		expect(
+			isFormUnchanged(
+				{ first_name: 'Jana', last_name: 'Nová' },
+				{ first_name: 'Petra', last_name: 'Nová' }
+			)
+		).toBe(false);
 	});
 
 	it('returns false when last_name differs', () => {
-		expect(isFormUnchanged({ first_name: 'Jana', last_name: 'Nová' }, { first_name: 'Jana', last_name: 'Nováková' })).toBe(false);
+		expect(
+			isFormUnchanged(
+				{ first_name: 'Jana', last_name: 'Nová' },
+				{ first_name: 'Jana', last_name: 'Nováková' }
+			)
+		).toBe(false);
 	});
 
 	it('returns true when differences are whitespace only (both trimmed to same value)', () => {
-		expect(isFormUnchanged({ first_name: 'Jana', last_name: 'Nová' }, { first_name: ' Jana ', last_name: ' Nová ' })).toBe(true);
+		expect(
+			isFormUnchanged(
+				{ first_name: 'Jana', last_name: 'Nová' },
+				{ first_name: ' Jana ', last_name: ' Nová ' }
+			)
+		).toBe(true);
 	});
 
 	it('returns false when current has extra meaningful chars beyond whitespace', () => {
-		expect(isFormUnchanged({ first_name: 'Jana', last_name: 'Nová' }, { first_name: 'Jana2', last_name: 'Nová' })).toBe(false);
+		expect(
+			isFormUnchanged(
+				{ first_name: 'Jana', last_name: 'Nová' },
+				{ first_name: 'Jana2', last_name: 'Nová' }
+			)
+		).toBe(false);
 	});
 });

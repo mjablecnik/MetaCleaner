@@ -194,7 +194,9 @@
 						</button>
 					</div>
 				</div>
-				<Button variant="secondary" fullWidth onclick={handleClose}>{tx('apiKeys.createModal.done')}</Button>
+				<Button variant="secondary" fullWidth onclick={handleClose}
+					>{tx('apiKeys.createModal.done')}</Button
+				>
 			{:else}
 				<!-- Create form -->
 				<div class="flex flex-col gap-4">
@@ -245,7 +247,9 @@
 					{/if}
 				</div>
 				<div class="flex gap-3">
-					<Button variant="secondary" fullWidth onclick={handleClose}>{tx('apiKeys.createModal.cancel')}</Button>
+					<Button variant="secondary" fullWidth onclick={handleClose}
+						>{tx('apiKeys.createModal.cancel')}</Button
+					>
 					<Button variant="primary" fullWidth onclick={handleSubmit} disabled={isSubmitting}>
 						{#if isSubmitting}
 							<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>

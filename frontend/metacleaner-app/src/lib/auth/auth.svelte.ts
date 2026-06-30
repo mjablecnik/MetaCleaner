@@ -4,6 +4,7 @@ import { resolve } from '$app/paths';
 import type { Pathname } from '$app/types';
 import { buildApiUrl } from '$lib/clients/api-config.js';
 import type { SubscriptionStatus } from '$lib/types/billing.js';
+import { SvelteURL } from 'svelte/reactivity';
 
 const TOKEN_KEY = 'mc_access_token';
 const REFRESH_KEY = 'mc_refresh_token';
@@ -158,8 +159,7 @@ function _restore(): void {
 	// Guard with typeof window to avoid ReferenceError in SSR/node test environments where
 	// browser is mocked as true but window is not available.
 	const href = typeof window !== 'undefined' ? window.location.href : '';
-	const hasCallbackTokens =
-		href.includes('access_token') && href.includes('refresh_token');
+	const hasCallbackTokens = href.includes('access_token') && href.includes('refresh_token');
 	const hasHashTokens =
 		typeof window !== 'undefined' &&
 		window.location.hash.includes('access_token') &&
@@ -184,7 +184,7 @@ function _restore(): void {
 		if (accessToken && refreshToken) {
 			_persist(accessToken, refreshToken, expiresIn);
 			// Clean URL (remove tokens from address bar)
-			const clean = new URL(window.location.href);
+			const clean = new SvelteURL(window.location.href);
 			clean.searchParams.delete('access_token');
 			clean.searchParams.delete('refresh_token');
 			clean.searchParams.delete('expires_in');

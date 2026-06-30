@@ -65,7 +65,11 @@
 				{/snippet}
 				{#snippet headerExtraMobile()}
 					<Badge color={planBadgeColor} label={planStyle.label} class="px-2! py-0.5! text-[9px]!" />
-					<Badge color="blue" label={tx('settings.account.verifiedBadge')} class="px-2! py-0.5! text-[9px]!" />
+					<Badge
+						color="blue"
+						label={tx('settings.account.verifiedBadge')}
+						class="px-2! py-0.5! text-[9px]!"
+					/>
 				{/snippet}
 				<AccountInfoSection onSave={() => triggerToast(tx('settings.account.saveSuccess'))} />
 			</SettingsAccordionCard>

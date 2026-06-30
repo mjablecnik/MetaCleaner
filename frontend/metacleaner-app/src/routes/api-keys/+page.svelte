@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import { onMount } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { listApiKeys } from '$lib/clients/apiKeysClient';
 	import type { ApiKey } from '$lib/clients/apiKeysClient';
 	import PageHeaderSection from './sections/PageHeaderSection.svelte';
@@ -19,13 +20,13 @@
 	let showCreateModal = $state(false);
 	let keyToDelete = $state<ApiKey | null>(null);
 	/** Full plaintext values for newly created keys (one-time reveal) */
-	let newKeyValues = $state(new Map<string, string>());
+	let newKeyValues = new SvelteMap<string, string>();
 
 	const activeKeysCount = $derived(keys.filter((k) => k.status === 'active').length);
 
 	function handleKeyCreated(newKey: ApiKey, fullKey: string) {
 		keys = [newKey, ...keys];
-		newKeyValues = new Map(newKeyValues).set(newKey.id, fullKey);
+		newKeyValues.set(newKey.id, fullKey);
 		showCreateModal = false;
 	}
 

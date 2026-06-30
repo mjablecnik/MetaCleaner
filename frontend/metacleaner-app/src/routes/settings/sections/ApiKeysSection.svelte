@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import { tx } from '$lib/shared/utils/i18n';
 	import Badge from '$lib/shared/elements/Badge.svelte';
 	import Button from '$lib/shared/elements/Button.svelte';
@@ -19,16 +20,22 @@
 		showCreateButton?: boolean;
 	}
 
-	// eslint-disable-next-line no-useless-assignment
-	let { showCreateModal = $bindable(false), addKey = null, showCreateButton = false }: Props = $props();
+	/* eslint-disable no-useless-assignment */
+	let {
+		showCreateModal = $bindable(false),
+		addKey = null,
+		showCreateButton = false
+	}: Props = $props();
+	/* eslint-enable no-useless-assignment */
 
 	let lastAddedKeyId = $state<string | null>(null);
 	/** Full plaintext values for newly created keys (one-time reveal) */
-	let newKeyValues = $state(new Map<string, string>());
+	let newKeyValues = new SvelteMap<string, string>();
 	/** Which keys are currently revealing their value */
-	let revealedKeys = $state(new Set<string>());
+	let revealedKeys = new SvelteSet<string>();
 	/** Copy-success state per key */
-	let copiedKeys = $state(new Set<string>());
+	let copiedKeys = new SvelteSet<string>();
+	// eslint-disable-next-line svelte/prefer-svelte-reactivity
 	let copyTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
 	// React to parent passing a newly created key
@@ -37,9 +44,9 @@
 			lastAddedKeyId = addKey.key.id;
 			keys = [...keys, addKey.key];
 			if (addKey.fullKey) {
-				newKeyValues = new Map(newKeyValues).set(addKey.key.id, addKey.fullKey);
+				newKeyValues.set(addKey.key.id, addKey.fullKey);
 				// Auto-reveal new keys so users see their value immediately
-				revealedKeys = new Set(revealedKeys).add(addKey.key.id);
+				revealedKeys.add(addKey.key.id);
 			}
 		}
 	});
@@ -101,9 +108,8 @@
 			await deleteApiKey(keyToDelete.id);
 			keys = keys.filter((k) => k.id !== keyToDelete!.id);
 			// Clean up reveal/copy state for deleted key
-			newKeyValues = new Map(newKeyValues);
 			newKeyValues.delete(keyToDelete.id);
-			revealedKeys = new Set([...revealedKeys].filter((id) => id !== keyToDelete!.id));
+			revealedKeys.delete(keyToDelete!.id);
 			showDeleteModal = false;
 			keyToDelete = null;
 		} catch {
@@ -129,13 +135,11 @@
 	}
 
 	function toggleReveal(keyId: string) {
-		const next = new Set(revealedKeys);
-		if (next.has(keyId)) {
-			next.delete(keyId);
+		if (revealedKeys.has(keyId)) {
+			revealedKeys.delete(keyId);
 		} else {
-			next.add(keyId);
+			revealedKeys.add(keyId);
 		}
-		revealedKeys = next;
 	}
 
 	async function handleCopy(key: ApiKey) {
@@ -168,14 +172,13 @@
 		}
 
 		if (success) {
-			const next = new Set(copiedKeys).add(key.id);
-			copiedKeys = next;
+			copiedKeys.add(key.id);
 			const existing = copyTimers.get(key.id);
 			if (existing) clearTimeout(existing);
 			copyTimers.set(
 				key.id,
 				setTimeout(() => {
-					copiedKeys = new Set([...copiedKeys].filter((id) => id !== key.id));
+					copiedKeys.delete(key.id);
 					copyTimers.delete(key.id);
 				}, 2000)
 			);
@@ -263,7 +266,9 @@
 						<!-- Eye toggle: only useful when full key is available -->
 						{#if hasFullKey}
 							<button
-								aria-label={isRevealed ? tx('apiKeys.action.hideKey') : tx('apiKeys.action.showKey')}
+								aria-label={isRevealed
+									? tx('apiKeys.action.hideKey')
+									: tx('apiKeys.action.showKey')}
 								onclick={() => toggleReveal(key.id)}
 								class="flex h-9 min-h-[44px] w-9 min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-navy-card text-text-muted transition-all hover:bg-navy-lighter hover:text-white lg:min-h-0 lg:min-w-0"
 							>
@@ -318,7 +323,12 @@
 
 			{#if showCreateButton}
 				<div class="mt-1 lg:hidden">
-					<Button variant="primary" size="sm" onclick={() => (showCreateModal = true)} class="w-full">
+					<Button
+						variant="primary"
+						size="sm"
+						onclick={() => (showCreateModal = true)}
+						class="w-full"
+					>
 						<i class="fa-solid fa-plus"></i>
 						{tx('apiKeys.createButton')}
 					</Button>

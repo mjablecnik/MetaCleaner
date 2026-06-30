@@ -117,7 +117,8 @@
 				{/if}
 			</div>
 			<p class="mt-0.5 text-xs text-text-muted">
-				{tx('apiKeys.createdAt')} {formatDate(apiKey.created_at)}
+				{tx('apiKeys.createdAt')}
+				{formatDate(apiKey.created_at)}
 				{#if isActive && apiKey.last_used_at}
 					· {tx('apiKeys.lastUsedAt')} {formatDate(apiKey.last_used_at)}
 				{:else if !isActive && apiKey.revoked_at}

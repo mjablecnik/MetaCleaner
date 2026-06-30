@@ -424,8 +424,7 @@
 											<p class="mt-0.5 text-xs leading-relaxed text-text-muted">
 												{tx('subscription.downgrade.scheduled.subtitle', {
 													plan:
-														plans.find((p) => p.id === billingStore.scheduledPlanId)
-															?.nameText ??
+														plans.find((p) => p.id === billingStore.scheduledPlanId)?.nameText ??
 														billingStore.scheduledPlanId ??
 														'',
 													date: billingStore.scheduledChangeDate
@@ -465,8 +464,7 @@
 											<p class="mt-0.5 text-xs leading-relaxed text-text-muted">
 												{tx('subscription.downgrade.scheduled.subtitle', {
 													plan:
-														plans.find((p) => p.id === billingStore.scheduledPlanId)
-															?.nameText ??
+														plans.find((p) => p.id === billingStore.scheduledPlanId)?.nameText ??
 														billingStore.scheduledPlanId ??
 														'',
 													date: billingStore.scheduledChangeDate

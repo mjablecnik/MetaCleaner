@@ -351,7 +351,9 @@
 					type="button"
 					onclick={resendCode}
 					disabled={resendCooldown}
-					class="flex items-center gap-1.5 text-xs font-semibold transition-colors {resendCooldown ? 'cursor-not-allowed text-text-muted/50' : 'text-brand-blue hover:text-blue-400'}"
+					class="flex items-center gap-1.5 text-xs font-semibold transition-colors {resendCooldown
+						? 'cursor-not-allowed text-text-muted/50'
+						: 'text-brand-blue hover:text-blue-400'}"
 				>
 					{#if resendCooldown}
 						<i class="fa-solid fa-check text-xs text-brand-green"></i>

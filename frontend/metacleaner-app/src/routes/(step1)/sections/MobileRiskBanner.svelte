@@ -49,9 +49,7 @@
 <div aria-live="polite" aria-atomic="true" class="sr-only">
 	{tx('step2.risk.srAnnouncement', { score, severity: tx(severityLabelKey[severity]) })}
 </div>
-<div
-	class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card lg:hidden"
->
+<div class="overflow-hidden rounded-2xl border border-gray-800 bg-navy-card shadow-card lg:hidden">
 	<button
 		type="button"
 		onclick={() => (accordionOpen = !accordionOpen)}

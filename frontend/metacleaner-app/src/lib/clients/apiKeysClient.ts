@@ -78,4 +78,3 @@ export async function revokeApiKey(id: string): Promise<ApiKey> {
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json() as Promise<ApiKey>;
 }
-

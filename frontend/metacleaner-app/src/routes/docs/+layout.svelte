@@ -137,13 +137,15 @@
 					<span>{tx(currentMobileNavItem.labelKey)}</span>
 				</span>
 				<i
-					class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200 {mobileNavOpen ? 'rotate-180' : ''}"
+					class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform duration-200 {mobileNavOpen
+						? 'rotate-180'
+						: ''}"
 				></i>
 			</button>
 
 			{#if mobileNavOpen}
 				<div
-					class="absolute left-4 right-4 z-20 mt-1 rounded-lg border border-gray-700 bg-navy-card shadow-dropdown"
+					class="absolute right-4 left-4 z-20 mt-1 rounded-lg border border-gray-700 bg-navy-card shadow-dropdown"
 					role="listbox"
 				>
 					{#each mobileNavItems as item (item.id)}
@@ -198,7 +200,9 @@
 						{/each}
 
 						<li class="mt-2">
-							<p class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase">
+							<p
+								class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase"
+							>
 								{tx('docs.sidebar.endpointsHeading')}
 							</p>
 							{#each sidebarEndpoints as ep (ep.id)}

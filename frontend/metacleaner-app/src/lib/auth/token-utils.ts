@@ -27,9 +27,10 @@ export function extractCallbackParams(url: string): CallbackResult {
 	let hash: string;
 	try {
 		// Works for both full URLs and bare query strings like "?access_token=..."
-		const u = url.includes('?') || url.includes('#')
-			? new URL(url, 'https://x')
-			: new URL(`https://x${url}`);
+		const u =
+			url.includes('?') || url.includes('#')
+				? new URL(url, 'https://x')
+				: new URL(`https://x${url}`);
 		search = u.search;
 		hash = u.hash;
 	} catch {

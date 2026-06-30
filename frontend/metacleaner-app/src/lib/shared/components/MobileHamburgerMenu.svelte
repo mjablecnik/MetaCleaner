@@ -101,7 +101,9 @@
 			<!-- User info -->
 			{#if user}
 				{@const planStyle = getPlanStyle(billingStore.planId, billingStore.planStatus)}
-				<div class="mb-3 flex items-center justify-between rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3">
+				<div
+					class="mb-3 flex items-center justify-between rounded-xl border border-gray-800 bg-navy-main/60 px-4 py-3"
+				>
 					<div class="min-w-0">
 						<p class="text-xs text-text-muted">{tx('common.nav.loggedInAs')}</p>
 						<p class="mt-0.5 truncate text-sm font-semibold text-white">{user.email}</p>
@@ -110,7 +112,9 @@
 						class="ml-3 inline-flex shrink-0 items-center gap-1.5 rounded-full border bg-gradient-to-r px-2.5 py-1
 							{planStyle.bgGradient} {planStyle.borderColor}"
 					>
-						<span class="h-1.5 w-1.5 shrink-0 rounded-full {planStyle.dotColor} shadow {planStyle.glowColor}"></span>
+						<span
+							class="h-1.5 w-1.5 shrink-0 rounded-full {planStyle.dotColor} shadow {planStyle.glowColor}"
+						></span>
 						<i class="fa-solid fa-{planStyle.icon} text-[9px] {planStyle.textColor}"></i>
 						<span class="text-xs font-bold {planStyle.textColor}">{planStyle.label}</span>
 					</span>

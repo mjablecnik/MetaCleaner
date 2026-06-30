@@ -21,12 +21,7 @@ import {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function makeResponse(
-	ok: boolean,
-	status: number,
-	body: unknown,
-	statusText = 'Error'
-): Response {
+function makeResponse(ok: boolean, status: number, body: unknown, statusText = 'Error'): Response {
 	return {
 		ok,
 		status,
