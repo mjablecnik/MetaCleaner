@@ -1,92 +1,78 @@
 # metacleaner-monitoring
 
-SvelteKit 2 monitoring dashboard with Svelte 5 runes, Tailwind CSS v4, paraglide-js i18n, and Plotly charts.
+Internal monitoring dashboard for MetaCleaner services — aggregates real-time metrics from Supabase, Fly.io, Cloudflare, Sentry, and Stripe into a single view.
+
+## Description
+
+A SvelteKit 2 server-rendered dashboard that pulls live data from multiple third-party APIs and displays it across nine monitoring sections.
+
+Key features:
+- Nine monitoring sections: dashboard overview, business metrics, errors, database, availability, edge/CDN, performance, runtime infrastructure, and users
+- Password-protected access via cookie-based session auth (`DASHBOARD_SESSION_SECRET`)
+- Graceful degradation — sections without configured credentials show a placeholder instead of crashing
+- Czech/English i18n via Paraglide.js
+- Rate limiting (60 req/60 s per IP) and security headers (CSP, HSTS, X-Frame-Options)
+- Responsive design with Tailwind CSS v4
+- Deployed to Fly.io; Docker workflow available for local production testing
 
 ## Prerequisites
 
 - Node.js 22+
-- [Bun](https://bun.sh/) (primary package manager) or npm
+- [Bun](https://bun.sh/) (recommended) or npm
+- [flyctl](https://fly.io/docs/flyctl/install/) — required for deployment only
 
-## Install dependencies
-
-```sh
-bun install
-# or: npm install
-```
-
-## Environment setup
-
-Copy `.env.example` to `.env` and fill in your service credentials before running the app:
+## Installation / Setup
 
 ```sh
+git clone <repo-url>
+cd metacleaner-monitoring
+bun install        # or: npm install
 cp .env.example .env
 ```
 
-The app requires at minimum `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. Other variables
-(`FLY_API_TOKEN`, `CLOUDFLARE_API_TOKEN`, `SENTRY_DSN`, `STRIPE_SECRET_KEY`, etc.) enable
-the corresponding dashboard sections.
+Edit `.env` and fill in your credentials. `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, and `DASHBOARD_SESSION_SECRET` are required — the server exits at startup without Supabase credentials. All other service variables are optional; missing sections display a "not configured" state.
 
-## Development
+See [DOCS.md](DOCS.md) for the full environment variable reference.
 
+## Usage / Running
+
+**Development:**
 ```sh
 bun run dev
 # or: npm run dev
-
-# or start the server and open the app in a new browser tab
-bun run dev -- --open
 ```
 
-## Build
-
+**Production build and start:**
 ```sh
 bun run build
-# or: npm run build
-```
-
-Preview the production build locally:
-
-```sh
-bun run preview
-# or: npm run preview
-```
-
-Start the production server (after build):
-
-```sh
 node build/index.js
 ```
 
-## Docker
-
+**Preview production build locally:**
 ```sh
-docker build -t metacleaner-monitoring .
-docker run -p 3000:3000 metacleaner-monitoring
+bun run preview
 ```
 
-## Lint & type-check
-
+**Docker (local production test — runs on port 3002):**
 ```sh
-bun run lint
-# or: npm run lint
-
-bun run check
-# or: npm run check
+./scripts/start-docker.sh   # builds image and starts container
+./scripts/stop-docker.sh    # stops and removes container
 ```
 
-## Tests
+## Documentation
 
-```sh
-bun run test
-# or: npm run test
-```
+See [DOCS.md](DOCS.md) for environment variables, project structure, deployment, testing, and troubleshooting.
 
-Unit tests use Vitest with Playwright browser provider; E2E tests use Playwright. The first run
-will automatically download required browser binaries.
+## Author
 
-> **Note:** If `PLAYWRIGHT_BROWSERS_PATH` is set to a read-only directory, install browsers to
-> a writable path instead:
->
-> ```sh
-> PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npx playwright install chromium
-> PLAYWRIGHT_BROWSERS_PATH=~/.playwright-browsers npm run test:unit -- --run
-> ```
+**Martin Jablečník**
+- Website: [www.jablecnik.com](https://www.jablecnik.com)
+- GitHub: [@mjablecnik](https://github.com/mjablecnik)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## License
+
+Copyright © 2024 Martin Jablečník. Licensed under the [MIT License](https://opensource.org/licenses/MIT).
