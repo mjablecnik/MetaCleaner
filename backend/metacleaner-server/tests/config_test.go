@@ -197,7 +197,7 @@ func TestErrConfigMessage(t *testing.T) {
 	}
 }
 
-// TestSupabaseTimeoutDefault verifies that an empty SUPABASE_TIMEOUT produces the 10s default.
+// TestSupabaseTimeoutDefault verifies that an empty SUPABASE_TIMEOUT produces the 30s default.
 func TestSupabaseTimeoutDefault(t *testing.T) {
 	setRequiredConfigEnv(t)
 	// SUPABASE_TIMEOUT already cleared by setRequiredConfigEnv
@@ -206,8 +206,8 @@ func TestSupabaseTimeoutDefault(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if cfg.SupabaseTimeout != 10*time.Second {
-		t.Errorf("SupabaseTimeout default = %v, want 10s", cfg.SupabaseTimeout)
+	if cfg.SupabaseTimeout != 30*time.Second {
+		t.Errorf("SupabaseTimeout default = %v, want 30s", cfg.SupabaseTimeout)
 	}
 }
 
@@ -226,7 +226,7 @@ func TestSupabaseTimeoutExplicit(t *testing.T) {
 }
 
 // TestSupabaseTimeoutInvalidFallsBackToDefault verifies that non-numeric, zero, or
-// negative values for SUPABASE_TIMEOUT fall back to the 10s default.
+// negative values for SUPABASE_TIMEOUT fall back to the 30s default.
 func TestSupabaseTimeoutInvalidFallsBackToDefault(t *testing.T) {
 	cases := []string{"abc", "0", "-5", "1.5", " "}
 	for _, v := range cases {
@@ -238,14 +238,14 @@ func TestSupabaseTimeoutInvalidFallsBackToDefault(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if cfg.SupabaseTimeout != 10*time.Second {
-				t.Errorf("SUPABASE_TIMEOUT=%q: got %v, want 10s", v, cfg.SupabaseTimeout)
+			if cfg.SupabaseTimeout != 30*time.Second {
+				t.Errorf("SUPABASE_TIMEOUT=%q: got %v, want 30s", v, cfg.SupabaseTimeout)
 			}
 		})
 	}
 }
 
-// Property 12: Supabase timeout parsing — positive integer N → N seconds, else default 10s.
+// Property 12: Supabase timeout parsing — positive integer N → N seconds, else default 30s.
 // Feature: steering-compliance-refactor, Property 12: Supabase timeout parsing
 func TestProperty12_SupabaseTimeoutParsing(t *testing.T) {
 	rapid.Check(t, func(rt *rapid.T) {
@@ -265,8 +265,8 @@ func TestProperty12_SupabaseTimeoutParsing(t *testing.T) {
 				rt.Fatalf("SUPABASE_TIMEOUT=%d: got %v, want %v", n, cfg.SupabaseTimeout, expected)
 			}
 		} else {
-			if cfg.SupabaseTimeout != 10*time.Second {
-				rt.Fatalf("SUPABASE_TIMEOUT=%d (non-positive): got %v, want 10s", n, cfg.SupabaseTimeout)
+			if cfg.SupabaseTimeout != 30*time.Second {
+				rt.Fatalf("SUPABASE_TIMEOUT=%d (non-positive): got %v, want 30s", n, cfg.SupabaseTimeout)
 			}
 		}
 	})
@@ -283,8 +283,8 @@ func TestProperty12_SupabaseTimeoutParsing(t *testing.T) {
 		if err != nil {
 			rt.Fatal(err)
 		}
-		if cfg.SupabaseTimeout != 10*time.Second {
-			rt.Fatalf("SUPABASE_TIMEOUT=%q (non-numeric): got %v, want 10s", s, cfg.SupabaseTimeout)
+		if cfg.SupabaseTimeout != 30*time.Second {
+			rt.Fatalf("SUPABASE_TIMEOUT=%q (non-numeric): got %v, want 30s", s, cfg.SupabaseTimeout)
 		}
 	})
 }

@@ -489,7 +489,7 @@ func TestHandleMe_Success(t *testing.T) {
 	}))
 
 	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret}, nil, nil)
-	handler := mw.Middleware(src.HandleMe(authClient))
+	handler := mw.Middleware(src.HandleMe(authClient, nullDB(t)))
 
 	token := buildJWT(testJWTSecret, map[string]any{
 		"sub": "user-001",
@@ -508,7 +508,7 @@ func TestHandleMe_Success(t *testing.T) {
 
 func TestHandleMe_MissingUserID(t *testing.T) {
 	authClient := newFakeAuthClient(t, http.NotFoundHandler())
-	handler := src.HandleMe(authClient)
+	handler := src.HandleMe(authClient, nullDB(t))
 	// Call without user ID in context (no middleware)
 	req := httptest.NewRequest(http.MethodGet, "/api/auth/me", nil)
 	rr := httptest.NewRecorder()
@@ -518,14 +518,30 @@ func TestHandleMe_MissingUserID(t *testing.T) {
 	}
 }
 
+// TestHandleMe_ProfileNotFound verifies that when a profile is missing, HandleMe
+// auto-provisions a profile and trial credits, then returns 200 with the new profile.
 func TestHandleMe_ProfileNotFound(t *testing.T) {
-	authClient := newFakeAuthClient(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/rest/v1/profiles") {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/rest/v1/profiles"):
+			// Profile not found
 			writeJSONResp(w, http.StatusOK, []interface{}{})
+		case r.URL.Path == "/auth/v1/user":
+			// Return user for email provisioning and lazy email sync
+			writeJSONResp(w, http.StatusOK, map[string]interface{}{
+				"id":    "user-999",
+				"email": "user999@example.com",
+			})
+		case r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/rest/v1/profiles"):
+			// CreateProfile succeeds
+			w.WriteHeader(http.StatusCreated)
+		case r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/rest/v1/credit_balances"):
+			// CreateCreditBalance succeeds
+			w.WriteHeader(http.StatusCreated)
 		}
 	}))
 	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret}, nil, nil)
-	handler := mw.Middleware(src.HandleMe(authClient))
+	handler := mw.Middleware(src.HandleMe(authClient, db))
 	token := buildJWT(testJWTSecret, map[string]any{
 		"sub": "user-999",
 		"exp": time.Now().Add(time.Hour).Unix(),
@@ -534,8 +550,15 @@ func TestHandleMe_ProfileNotFound(t *testing.T) {
 	req.Header.Set("Authorization", "Bearer "+token)
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
-	if rr.Code != http.StatusNotFound {
-		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200 (auto-provisioned profile), got %d: %s", rr.Code, rr.Body.String())
+	}
+	var profile src.UserProfile
+	if err := json.NewDecoder(rr.Body).Decode(&profile); err != nil {
+		t.Fatalf("decode profile response: %v", err)
+	}
+	if profile.ID != "user-999" {
+		t.Errorf("profile.ID = %q, want %q", profile.ID, "user-999")
 	}
 }
 
