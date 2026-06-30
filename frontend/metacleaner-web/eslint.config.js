@@ -38,7 +38,12 @@ export default defineConfig(
 		// 'svelte/button-has-type': 'error'
 		rules: {
 			// Static marketing site with no base path — resolve() not needed
-			'svelte/no-navigation-without-resolve': 'off'
+			'svelte/no-navigation-without-resolve': 'off',
+			// Allow intentionally-unused vars/args/caught errors when prefixed with _
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }
+			]
 		}
 	}
 );
