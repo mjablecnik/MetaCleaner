@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-06-30 14:47 — manual
+- Project: backend (metacleaner-server — Go API server)
+- Corrected stale documentation in `backend/metacleaner-server/DOCS.md` and `README.md` (`7b69aaf`) — `.agents/tmp/` was empty, so this entry is derived from git history
+- Fixed the migration SQL path everywhere it appeared (DB-migration section, README setup step, and the troubleshooting checklist) from the non-existent `scripts/migration.sql` to the real `migrations/001_full_schema.sql`
+- Corrected the `SUPABASE_API_KEY` env-var description in the config table to "Supabase anon (public) key" (was wrongly "service role key")
+- Refreshed the project-structure listing in DOCS.md to match the actual tree: added the `migrations/` directory, expanded `scripts/` to list its real contents (`build.sh`, `deploy.sh`, `start-docker.sh`, `stop-docker.sh`, `stripe-webhook.sh`), and removed the obsolete top-level `start-docker.sh`/`fly-setup.sh` entries
+
 ## 2026-06-30 14:35 — manual
 - Project: backend (metacleaner-server — Go API server)
 - Authored a **unit/integration test spec** (`.agents/tmp/TEST_SPEC.md`) for the untested logic in `backend/metacleaner-server/`, derived a 4-phase backlog (`.agents/tmp/TASKS.md`), and implemented every task across 7 commits — final suite **385 tests passing**, 0 failing (`go test ./...`, `source` 0.029s + `tests` 19.138s; `.agents/tmp/TEST_RESULTS.md`)
