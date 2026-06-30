@@ -927,6 +927,7 @@
 	"subscription.cancelling.planCard.features.title": "Features available until {date}",
 	"subscription.cancelling.countdown.title": "Time remaining until access ends",
 	"subscription.cancelling.countdown.days": "days",
+	"subscription.cancelling.countdown.days.abbr": "d",
 	"subscription.cancelling.countdown.hours": "hours",
 	"subscription.cancelling.countdown.minutes": "minutes",
 	"subscription.cancelling.countdown.accessUntil": "Valid access until {date}",

@@ -6,9 +6,10 @@
 	interface Props {
 		periodEndDate: string;
 		billingPeriod?: 'monthly' | 'yearly' | null;
+		currentPeriodStart?: string | null;
 	}
 
-	const { periodEndDate, billingPeriod = null }: Props = $props();
+	const { periodEndDate, billingPeriod = null, currentPeriodStart = null }: Props = $props();
 
 	const formattedDate = $derived(() => {
 		void locale.current;
@@ -28,7 +29,9 @@
 	function getProgress() {
 		const end = new Date(periodEndDate).getTime();
 		const cycleDays = billingPeriod === 'yearly' ? 365 : 30;
-		const start = end - cycleDays * 24 * 60 * 60 * 1000;
+		const start = currentPeriodStart
+			? new Date(currentPeriodStart).getTime()
+			: end - cycleDays * 24 * 60 * 60 * 1000;
 		const now = Date.now();
 		return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
 	}

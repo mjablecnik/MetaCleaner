@@ -181,6 +181,7 @@ export interface SubscriptionResponse {
 	plan_id: string;
 	status: string;
 	billing_period?: string;
+	current_period_start?: string;
 	current_period_end?: string;
 	subscription_credits: number;
 	purchased_credits: number;

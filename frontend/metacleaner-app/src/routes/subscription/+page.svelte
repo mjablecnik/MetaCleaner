@@ -322,6 +322,7 @@
 				price={currentPlanPrice()}
 				billingPeriod={billingStore.billingPeriod ?? 'monthly'}
 				periodEndDate={billingStore.currentPeriodEnd ?? ''}
+				currentPeriodStart={billingStore.currentPeriodStart}
 				monthlyAllowance={billingStore.monthlyAllowance}
 				{creditsUsed}
 				{creditsRemaining}

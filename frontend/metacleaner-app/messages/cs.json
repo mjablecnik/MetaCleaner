@@ -927,6 +927,7 @@
 	"subscription.cancelling.planCard.features.title": "Funkce dostupné do {date}",
 	"subscription.cancelling.countdown.title": "Zbývá do konce přístupu",
 	"subscription.cancelling.countdown.days": "dní",
+	"subscription.cancelling.countdown.days.abbr": "d",
 	"subscription.cancelling.countdown.hours": "hodin",
 	"subscription.cancelling.countdown.minutes": "minut",
 	"subscription.cancelling.countdown.accessUntil": "Platný přístup do {date}",

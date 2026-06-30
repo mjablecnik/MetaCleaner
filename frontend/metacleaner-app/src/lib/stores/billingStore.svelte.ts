@@ -8,6 +8,7 @@ function createBillingStore() {
 	let planId = $state('free');
 	let planStatus = $state('free');
 	let billingPeriod = $state<'monthly' | 'yearly' | null>(null);
+	let currentPeriodStart = $state<string | null>(null);
 	let currentPeriodEnd = $state<string | null>(null);
 	let scheduledPlanId = $state<string | null>(null);
 	let scheduledBillingPeriod = $state<string | null>(null);
@@ -45,6 +46,7 @@ function createBillingStore() {
 			planId = sub.plan_id ?? 'free';
 			planStatus = sub.status ?? 'free';
 			billingPeriod = (sub.billing_period as 'monthly' | 'yearly') ?? null;
+			currentPeriodStart = sub.current_period_start ?? null;
 			currentPeriodEnd = sub.current_period_end ?? null;
 			scheduledPlanId = sub.scheduled_plan_id ?? null;
 			scheduledBillingPeriod = sub.scheduled_billing_period ?? null;
@@ -94,6 +96,7 @@ function createBillingStore() {
 		planId = 'free';
 		planStatus = 'free';
 		billingPeriod = null;
+		currentPeriodStart = null;
 		currentPeriodEnd = null;
 		scheduledPlanId = null;
 		scheduledBillingPeriod = null;
@@ -134,6 +137,9 @@ function createBillingStore() {
 		},
 		get billingPeriod() {
 			return billingPeriod;
+		},
+		get currentPeriodStart() {
+			return currentPeriodStart;
 		},
 		get currentPeriodEnd() {
 			return currentPeriodEnd;

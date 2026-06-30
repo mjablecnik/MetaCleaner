@@ -132,7 +132,7 @@
 {#if fetchLoading}
 	<div class="flex items-center gap-2 text-sm text-text-muted">
 		<i class="fa-solid fa-circle-notch animate-spin"></i>
-		<span>Loading...</span>
+		<span>{tx('common.loading')}</span>
 	</div>
 {:else if fetchError}
 	<div

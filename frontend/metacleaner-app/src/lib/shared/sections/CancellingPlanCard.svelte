@@ -126,7 +126,7 @@
 					class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-navy-lighter px-1 lg:px-2"
 				>
 					<span class="text-xs font-medium text-brand-orange">
-						{daysRemaining()}{tx('subscription.cancelling.countdown.days').charAt(0)}
+						{daysRemaining()}{tx('subscription.cancelling.countdown.days.abbr')}
 					</span>
 				</div>
 			</div>
