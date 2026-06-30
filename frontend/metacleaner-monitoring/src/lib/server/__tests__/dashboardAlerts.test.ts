@@ -143,11 +143,15 @@ describe('Property 8: Dashboard Alert Merge and Sort', () => {
 				const sentryAlerts = alerts.filter((a) => a.id.startsWith('sentry-'));
 				expect(sentryAlerts.length).toBeLessThanOrEqual(5);
 
-				const resolvedIds = new Set(
-					sentryIssues.filter((i) => i.status !== 'unresolved').map((i) => `sentry-${i.id}`)
+				// Positive assertion: alert ID must come from an unresolved issue.
+				// A negative check against resolvedIds is unreliable when fast-check generates two issues
+				// with the same id (one unresolved, one resolved) — the unresolved issue produces a
+				// legitimate alert whose id also appears in resolvedIds, causing a false failure.
+				const unresolvedIds = new Set(
+					sentryIssues.filter((i) => i.status === 'unresolved').map((i) => `sentry-${i.id}`)
 				);
 				for (const alert of sentryAlerts) {
-					expect(resolvedIds.has(alert.id)).toBe(false);
+					expect(unresolvedIds.has(alert.id)).toBe(true);
 				}
 			}),
 			{ numRuns: 200 }

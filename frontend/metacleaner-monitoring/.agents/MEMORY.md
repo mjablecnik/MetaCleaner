@@ -1,5 +1,11 @@
 # Memory
 
+## dashboardAlerts: negative resolvedIds check fails with duplicate issue IDs
+- Project: metacleaner-monitoring
+- Problem: Property test `'only unresolved Sentry issues appear'` used `expect(resolvedIds.has(alert.id)).toBe(false)` to verify resolved issues don't appear. When fast-check generates two issues with the same `id` (one `unresolved`, one `resolved`), the unresolved issue's alert appears in `resolvedIds`, causing a false failure.
+- Solution: Replace with a positive assertion: build `unresolvedIds` from issues with `status === 'unresolved'` and check `expect(unresolvedIds.has(alert.id)).toBe(true)`. Unambiguous even with duplicate IDs.
+- Source: create-tests, 2026-06-30
+
 ## Auth guard: redirect() in SvelteKit 2 does not require throw
 - Project: metacleaner-monitoring
 - Problem: In SvelteKit 2, `redirect()` is called without `throw` — calling `throw redirect(...)` still works but is deprecated; the function itself throws internally. Both forms work in practice but the non-throw form is preferred.
