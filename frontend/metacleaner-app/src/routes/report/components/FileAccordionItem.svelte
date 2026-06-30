@@ -55,14 +55,14 @@
 	];
 
 	function getMetaFields(key: 'gps' | 'exif' | 'xmp' | 'id3' | 'mp4') {
-		if (key === 'gps') return file.metadata.gpsFields;
-		if (key === 'exif') return file.metadata.exifFields;
-		if (key === 'xmp') return file.metadata.xmpFields;
-		if (key === 'id3') return file.metadata.id3Fields;
-		return file.metadata.mp4AtomFields;
+		if (key === 'gps') return file?.metadata?.gpsFields ?? [];
+		if (key === 'exif') return file?.metadata?.exifFields ?? [];
+		if (key === 'xmp') return file?.metadata?.xmpFields ?? [];
+		if (key === 'id3') return file?.metadata?.id3Fields ?? [];
+		return file?.metadata?.mp4AtomFields ?? [];
 	}
 
-	const colors = $derived(iconColors[file.iconColor]);
+	const colors = $derived(iconColors[file?.iconColor] ?? iconColors.green);
 </script>
 
 <div
@@ -75,28 +75,28 @@
 		<div
 			class="h-9 w-9 rounded-lg {colors.bg} {colors.border} flex flex-shrink-0 items-center justify-center"
 		>
-			<i class="fa-solid {file.type === 'video' ? 'fa-video' : 'fa-image'} {colors.text} text-sm"
+			<i class="fa-solid {file?.type === 'video' ? 'fa-video' : 'fa-image'} {colors.text} text-sm"
 			></i>
 		</div>
 		<div class="min-w-0 flex-1">
 			<!-- Mobile layout -->
 			<div class="mb-0.5 flex items-center gap-2 lg:hidden">
-				<p class="truncate text-sm font-semibold text-white">{file.name}</p>
+				<p class="truncate text-sm font-semibold text-white">{file?.name}</p>
 				<span
 					class="flex-shrink-0 rounded bg-navy-lighter px-1.5 py-0.5 text-[9px] font-bold text-text-muted uppercase"
-					>{file.extension}</span
+					>{file?.extension}</span
 				>
 			</div>
 			<p class="text-[10px] text-text-muted lg:hidden">
-				{file.sizeMB} MB · {file.device} ·
+				{file?.sizeMB} MB · {file?.device} ·
 				<span class="font-semibold text-white"
-					>{file.fieldsRemoved} {tx('report.chart.fields')}</span
+					>{file?.fieldsRemoved} {tx('report.chart.fields')}</span
 				>
 			</p>
 			<!-- Desktop layout -->
-			<p class="hidden truncate text-sm font-semibold text-white lg:block">{file.name}</p>
+			<p class="hidden truncate text-sm font-semibold text-white lg:block">{file?.name}</p>
 			<p class="hidden text-[11px] text-text-muted lg:block">
-				{file.sizeMB} MB · {file.format} · {file.device} · {file.fieldsRemoved}
+				{file?.sizeMB} MB · {file?.format} · {file?.device} · {file?.fieldsRemoved}
 				{tx('report.chart.fields')}
 				{tx('report.files.removed')}
 			</p>
@@ -104,9 +104,9 @@
 		<div class="hidden flex-shrink-0 items-center gap-2 lg:flex">
 			<span
 				class="rounded bg-navy-lighter px-2 py-0.5 text-[10px] font-bold text-text-muted uppercase"
-				>{file.extension}</span
+				>{file?.extension}</span
 			>
-			{#if file.hasGps}
+			{#if file?.hasGps}
 				<span
 					class="rounded-full border border-brand-red/20 bg-brand-red/10 px-2 py-0.5 text-[10px] font-medium text-brand-red"
 					>GPS</span
@@ -120,7 +120,7 @@
 		</div>
 		<!-- Mobile: GPS + check -->
 		<div class="flex flex-shrink-0 items-center gap-2 lg:hidden">
-			{#if file.hasGps}
+			{#if file?.hasGps}
 				<span
 					class="rounded-full border border-brand-red/20 bg-brand-red/10 px-1.5 py-0.5 text-[9px] font-medium text-brand-red"
 					>GPS</span
@@ -166,7 +166,7 @@
 					<i class="fa-solid fa-circle-check text-sm text-brand-green"></i>
 					<p class="text-xs font-medium text-brand-green">
 						{tx('report.chart.totalRemoved')}:
-						<strong>{file.fieldsRemoved} {tx('report.files.metadataFields')}</strong>
+						<strong>{file?.fieldsRemoved} {tx('report.files.metadataFields')}</strong>
 						· {tx('report.files.safeToShare')}
 					</p>
 				</div>

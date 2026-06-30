@@ -19,7 +19,7 @@
 	}
 
 	const fieldsTextClass = $derived(
-		report.fieldsColor === 'orange' ? 'text-brand-orange' : 'text-white'
+		report?.fieldsColor === 'orange' ? 'text-brand-orange' : 'text-white'
 	);
 </script>
 
@@ -27,35 +27,35 @@
 	class="report-row grid grid-cols-12 items-center gap-2 border-b border-gray-800/40 px-6 py-4 last:border-0"
 >
 	<div class="col-span-1">
-		<span class="font-mono text-[10px] text-text-muted">{report.id}</span>
+		<span class="font-mono text-[10px] text-text-muted">{report?.id}</span>
 	</div>
 
 	<div class="col-span-3">
-		<p class="text-sm font-semibold text-white">{report.date}</p>
-		<p class="text-[10px] text-text-muted">{report.time} · {report.duration}</p>
+		<p class="text-sm font-semibold text-white">{report?.date}</p>
+		<p class="text-[10px] text-text-muted">{report?.time} · {report?.duration}</p>
 	</div>
 
 	<div class="col-span-2 flex items-center gap-2">
 		<div
 			class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg {iconStyle(
-				report.iconColor
+				report?.iconColor
 			)}"
 		>
-			<i class="fa-solid {report.type === 'video' ? 'fa-video' : 'fa-image'} text-[10px]"></i>
+			<i class="fa-solid {report?.type === 'video' ? 'fa-video' : 'fa-image'} text-[10px]"></i>
 		</div>
 		<div>
-			<p class="text-xs font-semibold text-white">{fileCountLabel(report.fileCount)}</p>
-			<p class="text-[10px] text-text-muted">{report.fileTypes}</p>
+			<p class="text-xs font-semibold text-white">{fileCountLabel(report?.fileCount)}</p>
+			<p class="text-[10px] text-text-muted">{report?.fileTypes}</p>
 		</div>
 	</div>
 
 	<div class="col-span-2">
-		<p class="text-sm font-bold {fieldsTextClass}">{report.fields}</p>
+		<p class="text-sm font-bold {fieldsTextClass}">{report?.fields}</p>
 		<p class="text-[10px] text-text-muted">{tx('reports.table.fieldsRemoved')}</p>
 	</div>
 
 	<div class="col-span-2 flex flex-wrap gap-1">
-		{#each report.tags as tag (tag)}
+		{#each (report?.tags ?? []) as tag (tag)}
 			<span class="rounded border px-1.5 py-0.5 text-[9px] font-semibold {tagStyle(tag)}"
 				>{tag}</span
 			>
@@ -71,14 +71,14 @@
 
 	<div class="col-span-1 flex items-center justify-end gap-1">
 		<a
-			href={resolve(`/report/${report.reportId}` as Pathname)}
+			href={resolve(`/report/${report?.reportId}` as Pathname)}
 			title={tx('reports.table.viewReport')}
 			class="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-blue/20 bg-brand-blue/10 transition-colors hover:bg-brand-blue/20"
 		>
 			<i class="fa-solid fa-eye text-[10px] text-brand-blue"></i>
 		</a>
 		<button
-			onclick={() => onDownload(report.reportId)}
+			onclick={() => onDownload(report?.reportId)}
 			title={tx('reports.table.downloadPdf')}
 			class="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-green/20 bg-brand-green/10 transition-colors hover:bg-brand-green/20"
 		>

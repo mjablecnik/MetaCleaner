@@ -12,15 +12,15 @@
 
 	const { file, onRemove }: Props = $props();
 
-	const status = $derived(file.scanResult?.status ?? 'pending');
-	const isUnknown = $derived(file.type === 'unknown');
-	const hasGps = $derived(file.scanResult?.hasGps ?? false);
-	const fieldCount = $derived(file.scanResult?.fieldCount ?? 0);
-	const device = $derived(file.scanResult?.device);
-	const isAIGenerated = $derived(file.scanResult?.aiDetection?.isAIGenerated ?? false);
-	const isVideo = $derived(file.type === 'video');
-	const sizeLabel = $derived(formatSize(file.size));
-	const ext = $derived(file.extension.replace('.', '').toUpperCase() || 'FILE');
+	const status = $derived(file?.scanResult?.status ?? 'pending');
+	const isUnknown = $derived(file?.type === 'unknown');
+	const hasGps = $derived(file?.scanResult?.hasGps ?? false);
+	const fieldCount = $derived(file?.scanResult?.fieldCount ?? 0);
+	const device = $derived(file?.scanResult?.device);
+	const isAIGenerated = $derived(file?.scanResult?.aiDetection?.isAIGenerated ?? false);
+	const isVideo = $derived(file?.type === 'video');
+	const sizeLabel = $derived(formatSize(file?.size));
+	const ext = $derived(file?.extension?.replace('.', '').toUpperCase() || 'FILE');
 
 	// Row border class based on state
 	const rowBorderClass = $derived((): string => {
@@ -69,7 +69,7 @@
 		{/if}
 	</div>
 	<div class="min-w-0 flex-1">
-		<p class="truncate text-sm font-medium text-white">{file.name}</p>
+		<p class="truncate text-sm font-medium text-white">{file?.name}</p>
 		<div class="mt-0.5 flex items-center gap-2">
 			<span class="text-[11px] text-text-muted">{sizeLabel}</span>
 			{#if isUnknown}

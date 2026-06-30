@@ -18,14 +18,14 @@
 	<div class="flex items-center justify-between border-b border-gray-800 px-4 py-3">
 		<h3 class="text-sm font-semibold text-white">{tx('reports.table.title')}</h3>
 		<span class="text-xs text-text-muted">
-			{tx('reports.table.shown', { filtered: reports.length, total: totalCount })}
+			{tx('reports.table.shown', { filtered: reports?.length ?? 0, total: totalCount })}
 		</span>
 	</div>
 	<div>
-		{#each reports as report (report.id)}
+		{#each (reports ?? []) as report (report.id)}
 			<ReportCard {report} {onDownload} />
 		{/each}
-		{#if reports.length === 0}
+		{#if !reports?.length}
 			<div class="px-4 py-10 text-center">
 				<i class="fa-solid fa-search mb-3 text-xl text-text-muted"></i>
 				<p class="text-sm text-text-muted">{tx('reports.table.noResults')}</p>
