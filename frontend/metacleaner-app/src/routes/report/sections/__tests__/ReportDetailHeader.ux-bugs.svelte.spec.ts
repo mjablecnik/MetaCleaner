@@ -1,6 +1,6 @@
-// Bug Condition 3: PDF download button must call getReportPdf on click.
-// Bug Condition 4: Back button must call history.back() not navigate to /reports.
-// EXPECTED OUTCOME: FAILS on unfixed code (buttons have no click handlers).
+// Bug Condition 3: PDF download button must call onDownloadPdf on click.
+// The mobile PDF button was moved to MobileBottomCta in [id]/+page.svelte;
+// only the desktop button and the print button remain in ReportDetailHeader.
 // Requires browser/Playwright to run (vitest --project=client).
 import { page } from 'vitest/browser';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
@@ -18,40 +18,23 @@ const mockReportDetail = {
 	files: []
 };
 
-describe('Bug Condition 3: ReportDetailHeader PDF download button', () => {
+describe('ReportDetailHeader PDF download button', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	// EXPECTED OUTCOME: FAILS on unfixed code (PDF button has no onclick handler)
-	it('clicking mobile PDF button triggers a download action (EXPECTED BEHAVIOR)', async () => {
+	it('clicking desktop PDF button triggers onDownloadPdf callback', async () => {
 		const onDownloadPdf = vi.fn();
 		render(ReportDetailHeader, {
 			reportDetail: mockReportDetail,
 			userEmail: 'user@test.com',
 			onDownloadPdf
 		});
-		// Bug 3: mobile PDF button has no onclick handler
-		const mobileBtn = page.getByRole('button', { name: /download pdf report/i });
-		await mobileBtn.click();
-		expect(onDownloadPdf).toHaveBeenCalledOnce();
-	});
-
-	// EXPECTED OUTCOME: FAILS on unfixed code (desktop PDF button has no onclick handler)
-	it('clicking desktop PDF button triggers a download action (EXPECTED BEHAVIOR)', async () => {
-		const onDownloadPdf = vi.fn();
-		render(ReportDetailHeader, {
-			reportDetail: mockReportDetail,
-			userEmail: 'user@test.com',
-			onDownloadPdf
-		});
-		// Bug 3: desktop PDF button has no onclick handler
-		const desktopBtn = page.getByRole('button', { name: /stáhnout pdf|download pdf/i }).last();
+		const desktopBtn = page.getByRole('button', { name: /stáhnout pdf|download pdf/i }).first();
 		await desktopBtn.click();
 		expect(onDownloadPdf).toHaveBeenCalledOnce();
 	});
 
-	// Preservation: Print button still works (EXPECTED OUTCOME: PASSES)
 	it('print button triggers window.print()', async () => {
 		const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {});
 		render(ReportDetailHeader, {

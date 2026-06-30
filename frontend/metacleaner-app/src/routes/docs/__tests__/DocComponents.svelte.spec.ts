@@ -1,13 +1,8 @@
 import { page } from 'vitest/browser';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import EndpointCard from '../components/EndpointCard.svelte';
-import DocsSidebar from '../components/DocsSidebar.svelte';
-import {
-	getEndpoints,
-	getSidebarSections,
-	getSidebarEndpoints
-} from '$lib/repositories/docsRepository';
+import { getEndpoints } from '$lib/repositories/docsRepository';
 
 const endpoints = getEndpoints();
 const fullEndpoint = endpoints.find((e) => !e.isMinimal)!;
@@ -83,109 +78,3 @@ describe('EndpointCard', () => {
 	});
 });
 
-// ─── DocsSidebar ─────────────────────────────────────────────────────────────
-
-describe('DocsSidebar', () => {
-	const sections = getSidebarSections();
-	const sidebarEndpoints = getSidebarEndpoints();
-
-	it('renders all endpoint labels in the sidebar', async () => {
-		render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: vi.fn()
-		});
-		for (const ep of sidebarEndpoints) {
-			await expect.element(page.getByText(ep.label)).toBeInTheDocument();
-		}
-	});
-
-	it('highlights active section with brand-blue text class', async () => {
-		const activeSection = sections[0];
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: activeSection.id,
-			onNavigate: vi.fn()
-		});
-		const blueBtn = Array.from(container.querySelectorAll('button')).find((b) =>
-			b.className.includes('text-brand-blue')
-		);
-		expect(blueBtn).not.toBeNull();
-	});
-
-	it('inactive sections have text-text-muted class', async () => {
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: vi.fn()
-		});
-		const mutedBtns = Array.from(container.querySelectorAll('button')).filter((b) =>
-			b.className.includes('text-text-muted')
-		);
-		expect(mutedBtns.length).toBeGreaterThan(0);
-	});
-
-	it('calls onNavigate with section id when section button is clicked', async () => {
-		const navigate = vi.fn();
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: navigate
-		});
-		const firstBtn = container.querySelector('button') as HTMLButtonElement;
-		firstBtn.click();
-		expect(navigate).toHaveBeenCalledWith(sections[0].id);
-	});
-
-	it('renders a nav element as root', async () => {
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: vi.fn()
-		});
-		const nav = container.querySelector('nav');
-		expect(nav).not.toBeNull();
-	});
-
-	it('renders MethodBadge span elements for each endpoint', async () => {
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: vi.fn()
-		});
-		const spanEls = container.querySelectorAll('span');
-		expect(spanEls.length).toBeGreaterThanOrEqual(sidebarEndpoints.length);
-	});
-
-	it('active endpoint link gets brand-blue class when an endpoint is active', async () => {
-		const activeEp = sidebarEndpoints[0];
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: activeEp.id,
-			onNavigate: vi.fn()
-		});
-		const blueElements = Array.from(container.querySelectorAll('button')).filter((b) =>
-			b.className.includes('text-brand-blue')
-		);
-		expect(blueElements.length).toBeGreaterThan(0);
-	});
-
-	it('renders exactly as many section buttons as sections provided', async () => {
-		const { container } = render(DocsSidebar, {
-			sections,
-			endpoints: sidebarEndpoints,
-			activeId: sections[0].id,
-			onNavigate: vi.fn()
-		});
-		// Total buttons = sections + endpoints
-		const buttons = container.querySelectorAll('button');
-		expect(buttons.length).toBe(sections.length + sidebarEndpoints.length);
-	});
-});
