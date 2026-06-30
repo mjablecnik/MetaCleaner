@@ -70,6 +70,9 @@
 					class="w-full h-full object-contain"
 					src={feature.image.src}
 					alt={t(feature.image.altKey)}
+					width="288"
+					height="256"
+					loading="lazy"
 				/>
 			{:else if feature.id === 'exif'}
 				<ExifIllustration />

@@ -54,7 +54,7 @@
 			onclick={toggleDropdown}
 			class="flex items-center gap-2 px-3 py-2 rounded-lg bg-navy-lighter border border-gray-700 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
 		>
-			<img src={localeMap[currentLocale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
+			<img src={localeMap[currentLocale]?.flag} alt="" width="20" height="16" class="w-5 h-4 rounded-sm object-cover" />
 			<span>{localeMap[currentLocale]?.label ?? currentLocale.toUpperCase()}</span>
 			<i
 				class="fa-solid fa-chevron-down text-text-muted text-xs ml-1 {dropdownOpen
@@ -78,7 +78,7 @@
 					tabindex="0"
 					onkeydown={(e) => e.key === 'Enter' && chooseLocale(locale)}
 				>
-					<img src={localeMap[locale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
+					<img src={localeMap[locale]?.flag} alt="" width="20" height="16" class="w-5 h-4 rounded-sm object-cover" />
 					{localeMap[locale]?.name}
 					<span class="ml-auto text-brand-blue {currentLocale === locale ? '' : 'hidden'}">
 						<i class="fa-solid fa-check text-xs"></i>
@@ -101,6 +101,8 @@
 					<img
 						src={localeMap[currentLocale]?.flag}
 						alt=""
+						width="20"
+						height="16"
 						class="w-5 h-4 rounded-sm object-cover"
 					/>
 					<span class="text-sm font-semibold"
@@ -126,7 +128,7 @@
 							? 'border-t border-gray-800'
 							: ''} {currentLocale === locale ? 'text-white bg-navy-lighter' : 'text-text-muted'}"
 					>
-						<img src={localeMap[locale]?.flag} alt="" class="w-5 h-4 rounded-sm object-cover" />
+						<img src={localeMap[locale]?.flag} alt="" width="20" height="16" class="w-5 h-4 rounded-sm object-cover" />
 						<span class="flex-1 text-left">{localeMap[locale]?.name}</span>
 						<i
 							class="fa-solid fa-check text-brand-blue text-xs {currentLocale === locale

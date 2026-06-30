@@ -7,6 +7,32 @@
 	import MobileMenu from '$lib/components/shared/MobileMenu.svelte';
 	import SiteFooter from '$lib/shared/sections/SiteFooter.svelte';
 	import CookieConsentBanner from '$lib/components/shared/CookieConsentBanner.svelte';
+	import JsonLd from '$lib/components/shared/JsonLd.svelte';
+
+	const supabaseOrigin = (() => {
+		try {
+			return new URL(import.meta.env.VITE_SUPABASE_URL ?? '').origin;
+		} catch {
+			return null;
+		}
+	})();
+
+	const siteJsonLd = {
+		'@context': 'https://schema.org',
+		'@graph': [
+			{
+				'@type': 'Organization',
+				name: 'MetaCleaner',
+				url: 'https://metacleaner.app',
+				logo: 'https://metacleaner.app/og-default.png'
+			},
+			{
+				'@type': 'WebSite',
+				name: 'MetaCleaner',
+				url: 'https://metacleaner.app'
+			}
+		]
+	};
 
 	let { children } = $props();
 
@@ -49,18 +75,24 @@
 <svelte:head>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link rel="dns-prefetch" href="https://app.metacleaner.com" />
+	{#if supabaseOrigin}
+		<link rel="preconnect" href={supabaseOrigin} crossorigin="anonymous" />
+	{/if}
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
 		rel="stylesheet"
 	/>
-	<link
-		rel="stylesheet"
-		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-		integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-		crossorigin="anonymous"
-		referrerpolicy="no-referrer"
-	/>
 </svelte:head>
+
+<a
+	href="#main-content"
+	class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-brand-blue focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold"
+>
+	Skip to main content
+</a>
+
+<JsonLd data={siteJsonLd} />
 
 <MobileMenu
 	variant={menuVariant}
@@ -72,7 +104,9 @@
 <div class="flex flex-col items-center w-full min-h-screen">
 	<SiteNavbar active={activePage} />
 	<MobileNavbar open={mobileMenuOpen} onToggle={toggleMobileMenu} />
-	{@render children()}
+	<div id="main-content" tabindex="-1" class="contents">
+		{@render children()}
+	</div>
 	<SiteFooter />
 	<CookieConsentBanner />
 </div>

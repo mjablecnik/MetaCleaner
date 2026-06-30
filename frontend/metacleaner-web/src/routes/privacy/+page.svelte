@@ -1,11 +1,9 @@
 <script lang="ts">
 	import * as m from '$lib/paraglide/messages';
+	import SeoHead from '$lib/components/shared/SeoHead.svelte';
 </script>
 
-<svelte:head>
-	<title>{m.meta_privacy_title()}</title>
-	<meta name="description" content={m.meta_privacy_description()} />
-</svelte:head>
+<SeoHead title={m.meta_privacy_title()} description={m.meta_privacy_description()} path="/privacy" />
 
 <div class="flex flex-col items-center w-full">
 	<main class="flex flex-col items-center flex-1 w-full max-w-site mx-auto px-6 py-12 md:py-20">
