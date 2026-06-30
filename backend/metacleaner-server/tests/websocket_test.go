@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -12,6 +13,21 @@ import (
 	src "metacleaner-server/source"
 )
 
+// newWSMockSupabase creates a mock Supabase HTTP server that returns a valid job
+// for any cleaning_jobs GET request. Used by WebSocket tests that reach db.GetJob().
+func newWSMockSupabase(t *testing.T) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(r.URL.Path, "/cleaning_jobs") && r.Method == http.MethodGet {
+			now := time.Now().UTC().Format(time.RFC3339)
+			fmt.Fprintf(w, `[{"id":"test-job-id","status":"processing","total_files":1,"files_completed":0,"fields_removed":0,"gps_locations_removed":0,"created_at":%q}]`, now)
+			return
+		}
+		w.Write([]byte(`[]`))
+	}))
+}
+
 // newTestWSServer creates an httptest.Server that serves HandleJobProgress.
 // The wrapper sets the {id} path value so the handler can proceed to the WebSocket upgrade.
 func newTestWSServer(t *testing.T, frontendOrigin string) *httptest.Server {
@@ -20,10 +36,15 @@ func newTestWSServer(t *testing.T, frontendOrigin string) *httptest.Server {
 	cfg.SupabaseJWTSecret = testJWTSecret
 	cfg.FrontendOrigin = frontendOrigin
 
+	mockDB := newWSMockSupabase(t)
+	t.Cleanup(mockDB.Close)
+	cfg.SupabaseURL = mockDB.URL
+
 	authMW := src.NewAuthMiddleware(cfg, nil, nil)
 	hub := src.NewWebSocketHub()
+	db := src.NewSupabaseClient(cfg)
 
-	handler := src.HandleJobProgress(hub, authMW, frontendOrigin)
+	handler := src.HandleJobProgress(hub, authMW, db, frontendOrigin)
 
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		r.SetPathValue("id", "test-job-id")
@@ -53,7 +74,8 @@ func TestHandleJobProgress_MissingToken_Returns401(t *testing.T) {
 	req.SetPathValue("id", "job1")
 	rr := httptest.NewRecorder()
 
-	src.HandleJobProgress(hub, authMW, "https://app.example.com")(rr, req)
+	// db is nil: the handler returns before reaching db.GetJob() (missing token returns 401 early).
+	src.HandleJobProgress(hub, authMW, nil, "https://app.example.com")(rr, req)
 
 	if rr.Code != http.StatusUnauthorized {
 		t.Fatalf("expected 401 for missing token, got %d: %s", rr.Code, rr.Body.String())
@@ -72,7 +94,8 @@ func TestHandleJobProgress_InvalidToken_Returns401(t *testing.T) {
 	req.SetPathValue("id", "job1")
 	rr := httptest.NewRecorder()
 
-	src.HandleJobProgress(hub, authMW, "https://app.example.com")(rr, req)
+	// db is nil: the handler returns before reaching db.GetJob() (invalid token returns 401 early).
+	src.HandleJobProgress(hub, authMW, nil, "https://app.example.com")(rr, req)
 
 	if rr.Code != http.StatusUnauthorized {
 		t.Fatalf("expected 401 for invalid token, got %d: %s", rr.Code, rr.Body.String())
