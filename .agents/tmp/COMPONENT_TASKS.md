@@ -54,13 +54,13 @@ Run stories with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npm run tes
 - [x] Create story for **CountdownCard** — states: monthly / yearly; start-of-period vs near-end.
 - [x] Create story for **ReactivateModal** — states: open; loading.
 - [x] Create story for **UsageStatsCard** — states: low usage; high (near-limit) usage.
-- [ ] Create story for **WhatHappensAfterCard** — states: creditsRemaining = 0; creditsRemaining > 0.
+- [x] Create story for **WhatHappensAfterCard** — states: creditsRemaining = 0; creditsRemaining > 0.
 
 ### Settings
-- [ ] Create story for **DangerZoneSection** (`settings/sections/DangerZoneSection.svelte`) — state: default.
-- [ ] Create story for **CreateKeyModal** (`settings/components/CreateKeyModal.svelte`) — states: open (form); submitting; created (full key shown once).
-- [ ] Create story for **DeleteKeyModal** (`settings/components/DeleteKeyModal.svelte`) — states: open; deleting.
-- [ ] Create story for **AccountDeletionModal** (`settings/components/AccountDeletionModal.svelte`) — states: open (confirm disabled); confirm enabled; deleting.
+- [x] Create story for **DangerZoneSection** (`settings/sections/DangerZoneSection.svelte`) — state: default.
+- [x] Create story for **CreateKeyModal** (`settings/components/CreateKeyModal.svelte`) — states: open (form); submitting; created (full key shown once).
+- [x] Create story for **DeleteKeyModal** (`settings/components/DeleteKeyModal.svelte`) — states: open; deleting.
+- [x] Create story for **AccountDeletionModal** (`settings/components/AccountDeletionModal.svelte`) — states: open (confirm disabled); confirm enabled; deleting.
 
 > Notes for new stories:
 > - Stories default to **English** (Paraglide default locale) — assert against English text.
