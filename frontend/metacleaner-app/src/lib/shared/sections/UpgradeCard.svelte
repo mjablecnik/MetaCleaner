@@ -6,7 +6,7 @@
 		targetPlanId: string;
 		targetPlanName: string;
 		targetPrice: string;
-		differentialFeatures: string[];
+		differentialFeatures?: string[];
 		onUpgrade: () => void;
 	}
 
@@ -14,7 +14,7 @@
 		targetPlanId: _targetPlanId,
 		targetPlanName,
 		targetPrice,
-		differentialFeatures,
+		differentialFeatures = [],
 		onUpgrade
 	}: Props = $props();
 

@@ -2,11 +2,11 @@
 	import CopyButton from './CopyButton.svelte';
 
 	interface Props {
-		code: string;
+		code?: string;
 		class?: string;
 	}
 
-	const { code, class: extraClass = '' }: Props = $props();
+	const { code = '', class: extraClass = '' }: Props = $props();
 
 	/**
 	 * Simple syntax highlighter for JSON and cURL/shell snippets.

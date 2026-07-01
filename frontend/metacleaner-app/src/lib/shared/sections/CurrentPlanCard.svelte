@@ -13,7 +13,7 @@
 		creditsUsed: number;
 		creditsRemaining: number;
 		renewalDate: string | null;
-		features: string[];
+		features?: string[];
 		paymentMethod?: string | null;
 		nextPaymentDate?: string | null;
 		isLoading?: boolean;
@@ -29,7 +29,7 @@
 		creditsUsed: _creditsUsed,
 		creditsRemaining,
 		renewalDate,
-		features,
+		features = [],
 		paymentMethod = null,
 		nextPaymentDate = null,
 		isLoading = false,

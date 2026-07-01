@@ -6,7 +6,7 @@
 		targetPlanId: string;
 		targetPlanName: string;
 		targetPrice: string;
-		featuresLost: string[];
+		featuresLost?: string[];
 		onDowngrade: () => void;
 	}
 
@@ -14,7 +14,7 @@
 		targetPlanId: _targetPlanId,
 		targetPlanName,
 		targetPrice,
-		featuresLost,
+		featuresLost = [],
 		onDowngrade
 	}: Props = $props();
 

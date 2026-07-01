@@ -10,7 +10,7 @@
 		creditsUsed: number;
 		creditsRemaining: number;
 		periodEndDate: string;
-		features: string[];
+		features?: string[];
 	}
 
 	const {
@@ -20,7 +20,7 @@
 		creditsUsed: _creditsUsed,
 		creditsRemaining,
 		periodEndDate,
-		features
+		features = []
 	}: Props = $props();
 
 	const PLAN_LABELS: Record<string, string> = { pro: 'Pro', proplus: 'Pro+', free: 'Free' };

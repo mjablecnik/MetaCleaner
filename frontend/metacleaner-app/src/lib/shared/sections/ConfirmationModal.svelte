@@ -4,15 +4,15 @@
 	import Button from '$lib/shared/elements/Button.svelte';
 
 	interface Props {
-		title: string;
-		content: Snippet;
+		title?: string;
+		content?: Snippet;
 		confirmLabel?: string;
 		cancelLabel?: string;
 		confirmStyle?: 'primary' | 'danger' | 'secondary';
 		isLoading?: boolean;
 		error?: string | null;
-		onConfirm: () => void;
-		onCancel: () => void;
+		onConfirm?: () => void;
+		onCancel?: () => void;
 	}
 
 	const {
@@ -40,7 +40,7 @@
 
 	function handleBackdropClick(e: MouseEvent) {
 		if (e.target === e.currentTarget) {
-			onCancel();
+			onCancel?.();
 		}
 	}
 </script>
@@ -68,7 +68,7 @@
 		</div>
 
 		<div class="mb-5">
-			{@render content()}
+			{@render content?.()}
 		</div>
 
 		{#if error}
@@ -124,7 +124,7 @@
 		</div>
 
 		<div class="mb-4">
-			{@render content()}
+			{@render content?.()}
 		</div>
 
 		{#if error}

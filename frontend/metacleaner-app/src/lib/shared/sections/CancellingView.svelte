@@ -20,7 +20,7 @@
 		monthlyAllowance: number;
 		creditsUsed: number;
 		creditsRemaining: number;
-		features: string[];
+		features?: string[];
 	}
 
 	const {
@@ -32,7 +32,7 @@
 		monthlyAllowance,
 		creditsUsed,
 		creditsRemaining,
-		features
+		features = []
 	}: Props = $props();
 
 	let showModal = $state(false);

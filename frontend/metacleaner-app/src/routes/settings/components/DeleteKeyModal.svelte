@@ -3,9 +3,9 @@
 	import Button from '$lib/shared/elements/Button.svelte';
 
 	interface Props {
-		keyName: string;
-		onClose: () => void;
-		onConfirm: () => void | Promise<void>;
+		keyName?: string;
+		onClose?: () => void;
+		onConfirm?: () => void | Promise<void>;
 	}
 
 	let { keyName, onClose, onConfirm }: Props = $props();
@@ -15,7 +15,7 @@
 	async function handleConfirm() {
 		isConfirming = true;
 		try {
-			await onConfirm();
+			await onConfirm?.();
 		} finally {
 			isConfirming = false;
 		}
