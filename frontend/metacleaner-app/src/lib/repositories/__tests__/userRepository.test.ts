@@ -34,11 +34,12 @@ describe('getCurrentUser', () => {
 		expect(user).toEqual({ name: '', email: '' });
 	});
 
-	it('returns empty user when apiFetch responds with 500', async () => {
+	// Current behavior: 500 throws (only 401/403 silently return empty user).
+	// If the intent is to swallow all non-ok errors, the source should check !res.ok first.
+	it('throws when apiFetch responds with 500', async () => {
 		mockAuthState.isAuthenticated = true;
 		mockApiFetch.mockResolvedValue(new Response('', { status: 500 }));
-		const user = await getCurrentUser();
-		expect(user).toEqual({ name: '', email: '' });
+		await expect(getCurrentUser()).rejects.toThrow('Failed to fetch user profile: 500');
 	});
 
 	it('returns empty user when apiFetch responds with 403', async () => {
