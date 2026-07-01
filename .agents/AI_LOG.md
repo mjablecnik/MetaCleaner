@@ -1,5 +1,11 @@
 # AI Log
 
+## 2026-07-01 15:48 — manual
+- Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
+- Synced the app docs with the current codebase (`395ad9e`); `.agents/tmp/` did not exist, so this entry is derived from git history
+- Updated the project-structure trees in `CLAUDE.md`, `DOCS.md`, and `README.md` to replace the removed `api-keys/` route with the new `email-changed/` route (email-change confirmation callback), keeping all three listings consistent
+- Corrected the i18n message-file paths in `DOCS.md` from `src/messages/{en,cs}.json` to `messages/{en,cs}.json`
+
 ## 2026-07-01 15:42 — manual
 - Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
 - Finalized the UI/unit test pipeline follow-ups across 4 commits (`fd3e15f`…`0607f62`); `.agents/tmp/` did not exist (already consumed by `f8e8385`), so this entry is derived from git history
