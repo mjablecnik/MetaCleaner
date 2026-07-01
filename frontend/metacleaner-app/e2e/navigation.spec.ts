@@ -261,3 +261,92 @@ test.describe('Navigation — mobile SPA state transitions', () => {
 		await expect(page).toHaveURL(/\/$/);
 	});
 });
+
+test.describe('Navigation — authenticated UserDropdown links', () => {
+	test.use({ viewport: { width: 1280, height: 800 } });
+
+	async function openDropdown(page: import('playwright/test').Page) {
+		await page.goto('/');
+		// Open the UserDropdown by clicking the user button (contains a fa-user icon)
+		const userBtn = page.locator('#userDropdown button').first();
+		await expect(userBtn).toBeVisible({ timeout: 8000 });
+		await userBtn.click();
+		// Dropdown is open when the menu links are visible
+		await expect(
+			page.locator('.lang-dropdown-menu.open').getByRole('link').first()
+		).toBeVisible({ timeout: 5000 });
+	}
+
+	test('UserDropdown opens on button click', async ({ page }) => {
+		await openDropdown(page);
+		await expect(page.locator('.lang-dropdown-menu.open')).toBeVisible();
+	});
+
+	test('UserDropdown shows Report history link', async ({ page }) => {
+		await openDropdown(page);
+		await expect(
+			page.locator('.lang-dropdown-menu.open').getByRole('link', { name: /report history/i })
+		).toBeVisible();
+	});
+
+	test('UserDropdown shows Docs link', async ({ page }) => {
+		await openDropdown(page);
+		await expect(
+			page.locator('.lang-dropdown-menu.open').getByRole('link', { name: /docs/i })
+		).toBeVisible();
+	});
+
+	test('UserDropdown shows Subscription link', async ({ page }) => {
+		await openDropdown(page);
+		await expect(
+			page.locator('.lang-dropdown-menu.open').getByRole('link', { name: /subscription/i })
+		).toBeVisible();
+	});
+
+	test('UserDropdown shows Settings link', async ({ page }) => {
+		await openDropdown(page);
+		await expect(
+			page.locator('.lang-dropdown-menu.open').getByRole('link', { name: /settings/i })
+		).toBeVisible();
+	});
+
+	test('UserDropdown Report history link navigates to /reports', async ({ page }) => {
+		await openDropdown(page);
+		await page
+			.locator('.lang-dropdown-menu.open')
+			.getByRole('link', { name: /report history/i })
+			.click();
+		await page.waitForURL('**/reports');
+		await expect(page).toHaveURL(/\/reports/);
+	});
+
+	test('UserDropdown Docs link navigates to /docs', async ({ page }) => {
+		await openDropdown(page);
+		await page
+			.locator('.lang-dropdown-menu.open')
+			.getByRole('link', { name: /docs/i })
+			.click();
+		await page.waitForURL('**/docs');
+		await expect(page).toHaveURL(/\/docs/);
+	});
+
+	test('UserDropdown Settings link navigates to /settings', async ({ page }) => {
+		await openDropdown(page);
+		await page
+			.locator('.lang-dropdown-menu.open')
+			.getByRole('link', { name: /settings/i })
+			.click();
+		await page.waitForURL('**/settings');
+		await expect(page).toHaveURL(/\/settings/);
+	});
+
+	test('UserDropdown Subscription link navigates to /subscription', async ({ page }) => {
+		await openDropdown(page);
+		await page
+			.locator('.lang-dropdown-menu.open')
+			.getByRole('link', { name: /subscription/i })
+			.click();
+		await page.waitForURL('**/subscription');
+		await expect(page).toHaveURL(/\/subscription/);
+	});
+});

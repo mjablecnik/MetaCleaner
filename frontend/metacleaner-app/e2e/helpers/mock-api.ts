@@ -247,3 +247,102 @@ export async function mockAllApis(page: Page) {
 	await mockReportsApi(page);
 	await mockDownloadApi(page);
 }
+
+export const mockSubscriptionFree = {
+	plan_id: 'free',
+	status: 'free',
+	billing_period: null,
+	current_period_start: null,
+	current_period_end: null,
+	scheduled_plan_id: null,
+	scheduled_billing_period: null,
+	scheduled_change_date: null
+};
+
+export const mockSubscriptionPro = {
+	plan_id: 'pro',
+	status: 'active',
+	billing_period: 'monthly',
+	current_period_start: '2026-01-01',
+	current_period_end: '2026-02-01',
+	scheduled_plan_id: null,
+	scheduled_billing_period: null,
+	scheduled_change_date: null
+};
+
+export const mockCredits = {
+	total_credits: 3,
+	subscription_credits: 3,
+	purchased_credits: 0
+};
+
+export const mockCreditsPro = {
+	total_credits: 100,
+	subscription_credits: 100,
+	purchased_credits: 0
+};
+
+export const mockApiKey = {
+	id: 'key-1',
+	name: 'My Test Key',
+	key_prefix: 'mc_live_',
+	key_suffix: 'abc123',
+	status: 'active' as const,
+	note: 'Used for integration tests',
+	created_at: '2026-01-15T10:00:00Z',
+	last_used_at: null,
+	revoked_at: null
+};
+
+export async function mockBillingApi(
+	page: Page,
+	subscription = mockSubscriptionFree,
+	credits = mockCredits
+) {
+	await page.route('**/api/billing/subscription', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(subscription)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+
+	await page.route('**/api/billing/credits', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify(credits)
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}
+
+export async function mockApiKeysListApi(page: Page) {
+	await page.route('**/api/keys', async (route) => {
+		if (route.request().method() === 'GET') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify([mockApiKey])
+			});
+		} else if (route.request().method() === 'POST') {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({
+					key: 'mc_live_full_key_value_shown_once',
+					api_key: { ...mockApiKey, id: 'key-new', name: 'New Key' }
+				})
+			});
+		} else {
+			await route.continue();
+		}
+	});
+}

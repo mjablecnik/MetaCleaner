@@ -45,11 +45,11 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
       scope with `getByRole('heading'|'paragraph', { name })` or `.first()`; re-verify stepper steps & stats text.
 - [x] Fix `auth-navigation.spec.ts` — re-derive the login submit button's accessible name
       (now icon + `tx('auth.login.submit.idle')`); verify "Sign up"/"Sign in" navbar + footer link labels.
-- [ ] Fix `auth-responsive.spec.ts` — re-check `#email-input`, `#password-input`, submit-button role-name,
+- [x] Fix `auth-responsive.spec.ts` — re-check `#email-input`, `#password-input`, submit-button role-name,
       branding-panel / mobile-hero visibility selectors at 375 px and 1280 px.
-- [ ] Fix `login.spec.ts` — re-check submit/loading text keys and any changed field/button selectors.
-- [ ] Fix `register.spec.ts` — same drift review (submit button, check-email content, step progress).
-- [ ] Fix `forgot-password.spec.ts` — re-check step-progress cards and submit button selectors.
+- [x] Fix `login.spec.ts` — re-check submit/loading text keys and any changed field/button selectors.
+- [x] Fix `register.spec.ts` — same drift review (submit button, check-email content, step progress).
+- [x] Fix `forgot-password.spec.ts` — re-check step-progress cards and submit button selectors.
 
 - [ ] Before each Group-B fix, open the page (build + preview) to confirm the failure is selector
       drift, **not** a real regression. Do **not** remove the route guards — they are intended behaviour.
@@ -57,22 +57,22 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
 
 ## Phase 2 — Create missing E2E tests
 
-- [ ] Create E2E test for **`/settings`** — `injectAuth` + mock `**/api/auth/me`, billing/plan, and
+- [x] Create E2E test for **`/settings`** — `injectAuth` + mock `**/api/auth/me`, billing/plan, and
       `**/api/keys` (list/create/delete). Assert: header + plan badge, AccountInfo, ChangePassword,
       ApiKeys section (open CreateKeyModal → full key shown once; DeleteKeyModal), AffiliateProgram,
       DangerZone (AccountDeletionModal confirm gate), Toast on save. Mock: `/api/auth/refresh`,
       `/api/auth/me`, billing, `/api/keys`.
-- [ ] Create E2E test for **`/subscription`** — `injectAuth` + mock billing/checkout. Assert: pricing
+- [x] Create E2E test for **`/subscription`** — `injectAuth` + mock billing/checkout. Assert: pricing
       header, plans section, monthly/yearly toggle (`?billing=yearly`), CurrentPlanCard, Upgrade/Downgrade/
       Cancel flows opening ConfirmationModal, checkout error path. Mock: billing endpoints + checkout session.
-- [ ] Create E2E test for **`/subscription/success`** — `injectAuth`; assert success icon, title,
+- [x] Create E2E test for **`/subscription/success`** — `injectAuth`; assert success icon, title,
       "back to cleaning" link → `/`; mock the `fetchSubscription` + `billingStore.refresh` calls fired onMount.
-- [ ] Create E2E test for **`/email-changed`** — public; assert success state and the `?error=...`
+- [x] Create E2E test for **`/email-changed`** — public; assert success state and the `?error=...`
       state, and the CTA ("go home" when logged in / login link when logged out).
-- [ ] Create a **docs content/navigation** test (or extend `navigation.spec.ts`) — with `injectAuth`,
+- [x] Create a **docs content/navigation** test (or extend `navigation.spec.ts`) — with `injectAuth`,
       assert each docs page renders (`/docs`, `/docs/auth`, `/docs/endpoints`, `/docs/errors`) and the
       sidebar links navigate between them.
-- [ ] Extend the **navigation test** — authenticated UserDropdown links to `/reports`, `/docs`,
+- [x] Extend the **navigation test** — authenticated UserDropdown links to `/reports`, `/docs`,
       `/subscription`, `/settings`, and logout.
 - [ ] Create **responsive** assertions for each new page (`/settings`, `/subscription`,
       `/subscription/success`, `/email-changed`) at mobile 375 px and desktop 1280 px.
