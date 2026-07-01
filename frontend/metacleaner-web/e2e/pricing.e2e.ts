@@ -46,11 +46,11 @@ test.describe('Pricing page — static content', () => {
 		await expect(page.getByText('Most Popular', { exact: true }).first()).toBeVisible();
 	});
 
-	test('Pro+ plan has Coming soon CTA', async ({ page }) => {
+	test('Pro+ plan has Activate Pro+ CTA', async ({ page }) => {
 		await page.goto('/pricing');
 		// Scope to the desktop plans container to avoid strict-mode violation from dual mobile/desktop markup
 		const desktopPlans = page.locator('.hidden.md\\:flex');
-		await expect(desktopPlans.getByText('Coming soon', { exact: true })).toBeVisible();
+		await expect(desktopPlans.getByText('Activate Pro+ →', { exact: true })).toBeVisible();
 	});
 
 	test('enterprise banner is present', async ({ page }) => {

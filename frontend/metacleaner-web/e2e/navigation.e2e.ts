@@ -108,3 +108,37 @@ test.describe('Footer navigation links', () => {
 		await expect(desktopFooter.getByRole('link', { name: 'Contact', exact: true })).toBeVisible();
 	});
 });
+
+test.describe('Footer legal/company links navigate', () => {
+	test('Privacy Policy link navigates to /privacy', async ({ page }) => {
+		await page.goto('/');
+		const desktopFooter = page.locator('footer').locator('div.hidden.md\\:block');
+		await desktopFooter.getByRole('link', { name: 'Privacy Policy', exact: true }).click();
+		await page.waitForURL(/\/privacy$/);
+		await expect(page.getByRole('heading', { name: 'Privacy Policy', exact: true })).toBeVisible();
+	});
+
+	test('Terms of Service link navigates to /terms', async ({ page }) => {
+		await page.goto('/');
+		const desktopFooter = page.locator('footer').locator('div.hidden.md\\:block');
+		await desktopFooter.getByRole('link', { name: 'Terms of Service', exact: true }).click();
+		await page.waitForURL(/\/terms$/);
+		await expect(page.getByRole('heading', { name: 'Terms of Use', exact: true })).toBeVisible();
+	});
+
+	test('About us link navigates to /about', async ({ page }) => {
+		await page.goto('/');
+		const desktopFooter = page.locator('footer').locator('div.hidden.md\\:block');
+		await desktopFooter.getByRole('link', { name: 'About us', exact: true }).click();
+		await page.waitForURL(/\/about/);
+		await expect(page.locator('#contact')).toBeVisible();
+	});
+
+	test('Contact link navigates to /about#contact', async ({ page }) => {
+		await page.goto('/');
+		const desktopFooter = page.locator('footer').locator('div.hidden.md\\:block');
+		await desktopFooter.getByRole('link', { name: 'Contact', exact: true }).click();
+		await expect(page).toHaveURL(/#contact/);
+		await expect(page.locator('#contact')).toBeVisible();
+	});
+});
