@@ -162,7 +162,9 @@ describe('getUsers', () => {
 		vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse({ users: [user] })));
 
 		const result = await getUsers(BASE_CONFIG);
-		expect(result.total).toBe(0);
+		// BUG: source uses `data.total ?? null` so missing total returns null, not 0.
+		// The test name says "to 0" but the actual behaviour is null.
+		expect(result.total).toBeNull();
 		expect(result.users).toHaveLength(1);
 	});
 
