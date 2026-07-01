@@ -35,7 +35,7 @@ test.describe('Email Verified — core content', () => {
 	test('progress stepper shows all 3 steps', async ({ page }) => {
 		await navigateToEmailVerified(page);
 		const desktop = page.locator('.lg\\:grid');
-		await expect(desktop.getByText('Account created')).toBeVisible();
+		await expect(desktop.getByText('Account created').first()).toBeVisible();
 		await expect(desktop.getByText('Email verified', { exact: true })).toBeVisible();
 		await expect(desktop.getByText('Start cleaning')).toBeVisible();
 	});
@@ -124,7 +124,7 @@ test.describe('Email Verified — mobile viewport (375px)', () => {
 	test('progress stepper steps are visible on mobile', async ({ page }) => {
 		await navigateToEmailVerified(page);
 		const mobileLayout = page.locator('main > .lg\\:hidden');
-		await expect(mobileLayout.getByText('Account created')).toBeVisible();
+		await expect(mobileLayout.getByText('Account created').first()).toBeVisible();
 		await expect(mobileLayout.getByText('Start cleaning').first()).toBeVisible();
 	});
 

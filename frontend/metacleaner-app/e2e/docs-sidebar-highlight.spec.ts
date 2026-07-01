@@ -1,18 +1,8 @@
-import { test, expect, type Page } from 'playwright/test';
+import { test, expect } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
 
 // All tests use desktop viewport so the sidebar is visible (hidden lg:block)
 test.use({ viewport: { width: 1280, height: 800 } });
-
-// Inject a fake auth token so the docs auth guard lets us through.
-// Must be called before the first page.goto().
-async function injectAuth(page: Page) {
-	await page.addInitScript(() => {
-		const farFuture = String(Date.now() + 3600 * 1000);
-		localStorage.setItem('mc_access_token', 'fake-test-token-for-e2e');
-		localStorage.setItem('mc_refresh_token', 'fake-refresh-token');
-		localStorage.setItem('mc_token_expires_at', farFuture);
-	});
-}
 
 async function goToDocs(page: Page, path = '/docs/endpoints') {
 	await injectAuth(page);

@@ -35,15 +35,15 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
 - [x] Fix `responsive.spec.ts` — `injectAuth` for the `/` and protected-route cases.
 - [x] Fix `navigation.spec.ts` — `injectAuth`; re-verify wizard→report and report→reports links.
 - [x] Fix `reports.spec.ts` — `injectAuth` before `goto('/reports')` (redirects to `/login` otherwise).
-- [ ] Fix `report-detail.spec.ts` — `injectAuth` before `goto('/report/rpt-001')`.
-- [ ] Fix `hamburger-menu.spec.ts` — `injectAuth` (authenticated NavBar/menu on `/`).
-- [ ] Fix `docs-sidebar-highlight.spec.ts` — **replace** its `injectAuth` (sets `mc_access_token`,
+- [x] Fix `report-detail.spec.ts` — `injectAuth` before `goto('/report/rpt-001')`.
+- [x] Fix `hamburger-menu.spec.ts` — `injectAuth` (authenticated NavBar/menu on `/`).
+- [x] Fix `docs-sidebar-highlight.spec.ts` — **replace** its `injectAuth` (sets `mc_access_token`,
       now purged, no refresh mock) with the new helper so `aside` renders; all 17 tests are failing.
 
 ### 1c — Group B: public auth-page specs (selector/text drift from the UI refactor)
-- [ ] Fix `email-verified.spec.ts` — `'Account created'` now matches 2 elements (strict-mode violation);
+- [x] Fix `email-verified.spec.ts` — `'Account created'` now matches 2 elements (strict-mode violation);
       scope with `getByRole('heading'|'paragraph', { name })` or `.first()`; re-verify stepper steps & stats text.
-- [ ] Fix `auth-navigation.spec.ts` — re-derive the login submit button's accessible name
+- [x] Fix `auth-navigation.spec.ts` — re-derive the login submit button's accessible name
       (now icon + `tx('auth.login.submit.idle')`); verify "Sign up"/"Sign in" navbar + footer link labels.
 - [ ] Fix `auth-responsive.spec.ts` — re-check `#email-input`, `#password-input`, submit-button role-name,
       branding-panel / mobile-hero visibility selectors at 375 px and 1280 px.

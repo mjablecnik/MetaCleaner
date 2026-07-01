@@ -1,5 +1,6 @@
 import { test, expect, type Page } from 'playwright/test';
 import { mockReportsApi, mockReportDetail } from './helpers/mock-api';
+import { injectAuth } from './helpers/auth.js';
 
 async function navigateToReportDetail(page: Page) {
 	await mockReportsApi(page);
@@ -10,6 +11,10 @@ async function navigateToReportDetail(page: Page) {
 test.describe('Report Detail page', () => {
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
+
+		test.beforeEach(async ({ page }) => {
+			await injectAuth(page);
+		});
 
 		test('renders report detail heading', async ({ page }) => {
 			await navigateToReportDetail(page);
@@ -143,6 +148,10 @@ test.describe('Report Detail page', () => {
 	test.describe('mobile viewport (375px)', () => {
 		test.use({ viewport: { width: 375, height: 812 } });
 
+		test.beforeEach(async ({ page }) => {
+			await injectAuth(page);
+		});
+
 		test('renders report heading on mobile', async ({ page }) => {
 			await navigateToReportDetail(page);
 			await expect(
@@ -207,6 +216,7 @@ test.describe('Report Detail page', () => {
 
 	test.describe('route guard', () => {
 		test('navigating to /report (no id) redirects to /reports', async ({ page }) => {
+			await injectAuth(page);
 			await page.goto('/report');
 			await page.waitForURL('**/reports');
 			await expect(page).toHaveURL(/\/reports/);
