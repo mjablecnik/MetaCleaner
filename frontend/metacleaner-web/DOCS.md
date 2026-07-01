@@ -25,32 +25,32 @@ frontend/metacleaner-web/
 │   ├── app.html                 HTML shell
 │   ├── hooks.server.ts          SvelteKit server hooks (CSP, locale redirect)
 │   ├── hooks.ts                 SvelteKit client hooks (i18n rerouting)
-│   └── lib/
-│       ├── assets/
-│       │   ├── favicon.svg
-│       │   └── flags/           SVG flag icons (en.svg, cs.svg)
-│       ├── components/
-│       │   ├── LanguageSwitcher.svelte
-│       │   ├── elements/        Atomic UI components (BrandLogo, CtaButton, …)
-│       │   └── shared/          Layout-level components (SiteNavbar, MobileNavbar, MobileMenu, SeoHead, …)
-│       ├── i18n.ts              Paraglide i18n helpers
-│       ├── paraglide/           Generated i18n runtime (do not edit manually)
-│       ├── repositories/        Data factories (audience, faq, features, pricing, stats, steps, …)
-│       ├── shared/sections/     SiteFooter.svelte
-│       └── utils/               brevoClient.ts, contactFormValidation.ts
-├── src/routes/
-│   ├── (home)/                  Home page sections and components
-│   ├── about/                   About & Contact page
-│   ├── error/                   Error page components
-│   ├── features/                Features page
-│   ├── pricing/                 Pricing page
-│   ├── privacy/                 Privacy policy page
-│   ├── terms/                   Terms of service page
-│   ├── sitemap.xml/             Sitemap endpoint (prerendered)
-│   ├── +error.svelte            Global error page
-│   ├── +layout.svelte           Root layout (navbar, footer, cookie banner)
-│   ├── +layout.ts               Sets prerender = true
-│   └── layout.css               Global CSS (Tailwind base styles)
+│   ├── lib/
+│   │   ├── assets/
+│   │   │   ├── favicon.svg
+│   │   │   └── flags/           SVG flag icons (en.svg, cs.svg)
+│   │   ├── components/
+│   │   │   ├── LanguageSwitcher.svelte
+│   │   │   ├── elements/        Atomic UI components (BrandLogo, CtaButton, …)
+│   │   │   └── shared/          Layout-level components (SiteNavbar, MobileNavbar, MobileMenu, SeoHead, …)
+│   │   ├── i18n.ts              Paraglide i18n helpers
+│   │   ├── paraglide/           Generated i18n runtime (do not edit manually)
+│   │   ├── repositories/        Data factories (audience, faq, features, pricing, stats, steps, …)
+│   │   ├── shared/sections/     SiteFooter.svelte
+│   │   └── utils/               brevoClient.ts, contactFormValidation.ts
+│   └── routes/
+│       ├── (home)/              Home page sections and components
+│       ├── about/               About & Contact page
+│       ├── error/               Error page components
+│       ├── features/            Features page
+│       ├── pricing/             Pricing page
+│       ├── privacy/             Privacy policy page
+│       ├── terms/               Terms of service page
+│       ├── sitemap.xml/         Sitemap endpoint (prerendered)
+│       ├── +error.svelte        Global error page
+│       ├── +layout.svelte       Root layout (navbar, footer, cookie banner)
+│       ├── +layout.ts           Sets prerender = true
+│       └── layout.css           Global CSS (Tailwind base styles)
 ├── messages/
 │   ├── en.json                  English i18n strings
 │   └── cs.json                  Czech i18n strings
@@ -62,7 +62,9 @@ frontend/metacleaner-web/
 │   ├── start-docker.sh          Build image and run nginx container locally
 │   └── stop-docker.sh           Stop and remove the local container
 ├── supabase/
-│   └── config.toml              Supabase project config
+│   ├── config.toml              Supabase project config
+│   └── functions/
+│       └── send-contact-email/  Contact form email handler (Edge Function)
 ├── static/                      Static assets (og-default.png, robots.txt, site.webmanifest)
 ├── Dockerfile                   Multi-stage: bun build → nginx serve
 ├── fly.toml                     Fly.io deployment config
