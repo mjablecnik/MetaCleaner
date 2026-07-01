@@ -103,12 +103,5 @@
 			</span>
 		</div>
 	{/if}
-	<input
-		type="file"
-		id={fileInputId}
-		multiple
-		accept={accept}
-		onchange={handleFileInput}
-		class="hidden"
-	/>
+	<input type="file" id={fileInputId} multiple {accept} onchange={handleFileInput} class="hidden" />
 </div>

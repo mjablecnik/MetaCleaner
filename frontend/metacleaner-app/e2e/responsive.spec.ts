@@ -429,9 +429,9 @@ test.describe('Responsive — Settings', () => {
 
 		test('Danger Zone at bottom (lg:hidden) is visible on mobile', async ({ page }) => {
 			await page.goto('/settings');
-			await expect(
-				page.getByRole('heading', { level: 1, name: /account settings/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /account settings/i })).toBeVisible({
+				timeout: 8000
+			});
 			// The bottom DangerZone wrapper (.mt-4.lg:hidden) is visible on mobile
 			await expect(page.locator('.mt-4.lg\\:hidden').first()).toBeVisible();
 		});
@@ -440,9 +440,9 @@ test.describe('Responsive — Settings', () => {
 			page
 		}) => {
 			await page.goto('/settings');
-			await expect(
-				page.getByRole('heading', { level: 1, name: /account settings/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /account settings/i })).toBeVisible({
+				timeout: 8000
+			});
 			// The in-grid DangerZone (.hidden.lg:block) is hidden on mobile
 			const gridDangerZone = page.locator('.hidden.lg\\:block').first();
 			await expect(gridDangerZone).not.toBeVisible();
@@ -456,9 +456,9 @@ test.describe('Responsive — Settings', () => {
 			page
 		}) => {
 			await page.goto('/settings');
-			await expect(
-				page.getByRole('heading', { level: 1, name: /account settings/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /account settings/i })).toBeVisible({
+				timeout: 8000
+			});
 			// The in-grid DangerZone (.hidden.lg:block) is visible on desktop
 			const gridDangerZone = page.locator('.hidden.lg\\:block').first();
 			await expect(gridDangerZone).toBeVisible();
@@ -466,9 +466,9 @@ test.describe('Responsive — Settings', () => {
 
 		test('Danger Zone at bottom (lg:hidden) is not visible on desktop', async ({ page }) => {
 			await page.goto('/settings');
-			await expect(
-				page.getByRole('heading', { level: 1, name: /account settings/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /account settings/i })).toBeVisible({
+				timeout: 8000
+			});
 			// The bottom DangerZone wrapper is hidden on desktop
 			await expect(page.locator('.mt-4.lg\\:hidden').first()).not.toBeVisible();
 		});
@@ -491,9 +491,7 @@ test.describe('Responsive — Subscription management UI', () => {
 				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
 				.catch(() => {});
 			// Mobile header: mb-6 w-full text-center lg:hidden
-			await expect(
-				page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()
-			).toBeVisible();
+			await expect(page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()).toBeVisible();
 		});
 
 		test('desktop header (hidden lg:flex) is not visible on mobile', async ({ page }) => {
@@ -517,9 +515,7 @@ test.describe('Responsive — Subscription management UI', () => {
 				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
 				.catch(() => {});
 			// Desktop header: mb-8 hidden items-center gap-4 lg:flex
-			await expect(
-				page.locator('.mb-8.hidden.items-center.gap-4.lg\\:flex').first()
-			).toBeVisible();
+			await expect(page.locator('.mb-8.hidden.items-center.gap-4.lg\\:flex').first()).toBeVisible();
 		});
 
 		test('mobile header (lg:hidden) is not visible on desktop', async ({ page }) => {
@@ -528,9 +524,7 @@ test.describe('Responsive — Subscription management UI', () => {
 				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
 				.catch(() => {});
 			// Mobile header: mb-6 w-full text-center lg:hidden
-			await expect(
-				page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()
-			).not.toBeVisible();
+			await expect(page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()).not.toBeVisible();
 		});
 	});
 });

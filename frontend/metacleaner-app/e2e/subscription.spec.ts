@@ -18,7 +18,9 @@ test.beforeEach(async ({ page }) => {
 async function goToSubscription(page: import('playwright/test').Page) {
 	await page.goto('/subscription');
 	// Wait for the skeleton to disappear and content to render
-	await page.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 }).catch(() => {});
+	await page
+		.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
+		.catch(() => {});
 }
 
 test.describe('Subscription page — free user (pricing grid)', () => {
@@ -44,14 +46,20 @@ test.describe('Subscription page — free user (pricing grid)', () => {
 		test('shows billing toggle with Monthly option', async ({ page }) => {
 			await goToSubscription(page);
 			await expect(
-				page.locator('button').filter({ hasText: /monthly/i }).first()
+				page
+					.locator('button')
+					.filter({ hasText: /monthly/i })
+					.first()
 			).toBeVisible({ timeout: 8000 });
 		});
 
 		test('shows billing toggle with Yearly option', async ({ page }) => {
 			await goToSubscription(page);
 			await expect(
-				page.locator('button').filter({ hasText: /yearly/i }).first()
+				page
+					.locator('button')
+					.filter({ hasText: /yearly/i })
+					.first()
 			).toBeVisible({ timeout: 8000 });
 		});
 
@@ -65,7 +73,10 @@ test.describe('Subscription page — free user (pricing grid)', () => {
 
 		test('switching to yearly billing updates URL param', async ({ page }) => {
 			await goToSubscription(page);
-			const yearlyBtn = page.locator('button').filter({ hasText: /yearly/i }).first();
+			const yearlyBtn = page
+				.locator('button')
+				.filter({ hasText: /yearly/i })
+				.first();
 			await yearlyBtn.click();
 			// BillingToggle updates currentBilling state; the URL query param may or may not update
 			// (depends on implementation) — just assert the button is still reachable
@@ -86,7 +97,10 @@ test.describe('Subscription page — free user (pricing grid)', () => {
 		test('billing toggle visible on mobile', async ({ page }) => {
 			await goToSubscription(page);
 			await expect(
-				page.locator('button').filter({ hasText: /monthly/i }).first()
+				page
+					.locator('button')
+					.filter({ hasText: /monthly/i })
+					.first()
 			).toBeVisible({ timeout: 8000 });
 		});
 	});
@@ -102,9 +116,9 @@ test.describe('Subscription page — paid user (management UI)', () => {
 
 		test('renders subscription management heading', async ({ page }) => {
 			await goToSubscription(page);
-			await expect(
-				page.getByRole('heading', { level: 1, name: /your subscription/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /your subscription/i })).toBeVisible(
+				{ timeout: 8000 }
+			);
 		});
 
 		test('shows active plan indicator with plan name', async ({ page }) => {
@@ -123,9 +137,9 @@ test.describe('Subscription page — paid user (management UI)', () => {
 
 		test('renders subscription management heading on mobile', async ({ page }) => {
 			await goToSubscription(page);
-			await expect(
-				page.getByRole('heading', { level: 1, name: /your subscription/i })
-			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('heading', { level: 1, name: /your subscription/i })).toBeVisible(
+				{ timeout: 8000 }
+			);
 		});
 	});
 });

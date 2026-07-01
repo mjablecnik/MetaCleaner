@@ -20,18 +20,12 @@ test.describe('Email Changed — success state (logged out)', () => {
 
 		test('shows success title on desktop', async ({ page }) => {
 			await page.goto('/email-changed');
-			await expect(
-				page.getByText('Email changed successfully!').first()
-			).toBeVisible();
+			await expect(page.getByText('Email changed successfully!').first()).toBeVisible();
 		});
 
 		test('shows success description on desktop', async ({ page }) => {
 			await page.goto('/email-changed');
-			await expect(
-				page
-					.getByText('Your email address has been updated')
-					.first()
-			).toBeVisible();
+			await expect(page.getByText('Your email address has been updated').first()).toBeVisible();
 		});
 
 		test('shows desktop headline on desktop', async ({ page }) => {
@@ -108,9 +102,7 @@ test.describe('Email Changed — success state (logged in)', () => {
 		test('shows Go to settings link when logged in', async ({ page }) => {
 			await page.goto('/email-changed');
 			// Font Awesome icon in link — use filter
-			await expect(
-				page.locator('a').filter({ hasText: 'Go to settings' }).first()
-			).toBeVisible();
+			await expect(page.locator('a').filter({ hasText: 'Go to settings' }).first()).toBeVisible();
 		});
 
 		test('Go to settings link points to /settings', async ({ page }) => {
@@ -123,17 +115,13 @@ test.describe('Email Changed — success state (logged in)', () => {
 		test('shows Go to home button when logged in', async ({ page }) => {
 			await page.goto('/email-changed');
 			// Font Awesome icon in button — use filter
-			await expect(
-				page.locator('button').filter({ hasText: 'Go to home' }).first()
-			).toBeVisible();
+			await expect(page.locator('button').filter({ hasText: 'Go to home' }).first()).toBeVisible();
 		});
 
 		test('does not show sign in link in navbar when logged in', async ({ page }) => {
 			await page.goto('/email-changed');
 			// Navbar sign-in link is conditional on !isLoggedIn
-			await expect(
-				page.locator('nav a').filter({ hasText: 'Sign in' })
-			).toHaveCount(0);
+			await expect(page.locator('nav a').filter({ hasText: 'Sign in' })).toHaveCount(0);
 		});
 	});
 
@@ -147,17 +135,13 @@ test.describe('Email Changed — success state (logged in)', () => {
 		test('shows Go to home button on mobile when logged in', async ({ page }) => {
 			await page.goto('/email-changed');
 			const mobileSection = page.locator('.flex.flex-col.items-center.lg\\:hidden');
-			await expect(
-				mobileSection.locator('button').filter({ hasText: 'Go to home' })
-			).toBeVisible();
+			await expect(mobileSection.locator('button').filter({ hasText: 'Go to home' })).toBeVisible();
 		});
 
 		test('shows Go to settings link on mobile when logged in', async ({ page }) => {
 			await page.goto('/email-changed');
 			const mobileSection = page.locator('.flex.flex-col.items-center.lg\\:hidden');
-			await expect(
-				mobileSection.locator('a').filter({ hasText: 'Go to settings' })
-			).toBeVisible();
+			await expect(mobileSection.locator('a').filter({ hasText: 'Go to settings' })).toBeVisible();
 		});
 	});
 });
@@ -176,9 +160,7 @@ test.describe('Email Changed — error state', () => {
 		test('shows expired error message', async ({ page }) => {
 			await page.goto('/email-changed?error=invalid_or_expired_token');
 			await expect(
-				page
-					.getByText('The verification link has expired or is invalid')
-					.first()
+				page.getByText('The verification link has expired or is invalid').first()
 			).toBeVisible();
 		});
 
@@ -190,9 +172,7 @@ test.describe('Email Changed — error state', () => {
 		test('shows generic error message with unknown error param', async ({ page }) => {
 			await page.goto('/email-changed?error=unknown_error');
 			await expect(
-				page
-					.getByText('An error occurred while changing your email')
-					.first()
+				page.getByText('An error occurred while changing your email').first()
 			).toBeVisible();
 		});
 
@@ -214,9 +194,7 @@ test.describe('Email Changed — error state', () => {
 		test('shows expired error message on mobile', async ({ page }) => {
 			await page.goto('/email-changed?error=invalid_or_expired_token');
 			await expect(
-				page
-					.getByText('The verification link has expired or is invalid')
-					.first()
+				page.getByText('The verification link has expired or is invalid').first()
 			).toBeVisible();
 		});
 	});

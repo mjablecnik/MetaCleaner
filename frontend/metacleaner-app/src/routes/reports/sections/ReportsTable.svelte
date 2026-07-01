@@ -57,7 +57,7 @@
 	</div>
 
 	<div>
-		{#each (reports ?? []) as report (report.id)}
+		{#each reports ?? [] as report (report.id)}
 			<ReportTableRow {report} {onDownload} />
 		{/each}
 		{#if !reports?.length}

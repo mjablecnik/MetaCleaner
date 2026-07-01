@@ -93,7 +93,10 @@ test.describe('Docs page content — /docs/endpoints', () => {
 test.describe('Docs sidebar navigation', () => {
 	test('clicking Authentication in sidebar navigates to /docs/auth', async ({ page }) => {
 		await goToDocs(page, '/docs');
-		await page.locator('aside').getByRole('link', { name: /authentication/i }).click();
+		await page
+			.locator('aside')
+			.getByRole('link', { name: /authentication/i })
+			.click();
 		await page.waitForURL('**/docs/auth');
 		await expect(page).toHaveURL(/\/docs\/auth/);
 		await expect(page.getByRole('heading', { name: /authentication/i }).first()).toBeVisible();
@@ -101,7 +104,10 @@ test.describe('Docs sidebar navigation', () => {
 
 	test('clicking Error Codes in sidebar navigates to /docs/errors', async ({ page }) => {
 		await goToDocs(page, '/docs');
-		await page.locator('aside').getByRole('link', { name: /error codes/i }).click();
+		await page
+			.locator('aside')
+			.getByRole('link', { name: /error codes/i })
+			.click();
 		await page.waitForURL('**/docs/errors');
 		await expect(page).toHaveURL(/\/docs\/errors/);
 		await expect(page.getByRole('heading', { name: /error codes/i }).first()).toBeVisible();
@@ -109,7 +115,10 @@ test.describe('Docs sidebar navigation', () => {
 
 	test('clicking Introduction in sidebar navigates to /docs', async ({ page }) => {
 		await goToDocs(page, '/docs/auth');
-		await page.locator('aside').getByRole('link', { name: /introduction/i }).click();
+		await page
+			.locator('aside')
+			.getByRole('link', { name: /introduction/i })
+			.click();
 		await page.waitForURL('**/docs');
 		await expect(page).toHaveURL(/\/docs$/);
 		await expect(page.getByRole('heading', { name: /introduction/i }).first()).toBeVisible();
@@ -117,7 +126,10 @@ test.describe('Docs sidebar navigation', () => {
 
 	test('clicking API Endpoints in sidebar navigates to /docs/endpoints', async ({ page }) => {
 		await goToDocs(page, '/docs');
-		await page.locator('aside').getByRole('link', { name: /api endpoints/i }).click();
+		await page
+			.locator('aside')
+			.getByRole('link', { name: /api endpoints/i })
+			.click();
 		await page.waitForURL('**/docs/endpoints');
 		await expect(page).toHaveURL(/\/docs\/endpoints/);
 	});

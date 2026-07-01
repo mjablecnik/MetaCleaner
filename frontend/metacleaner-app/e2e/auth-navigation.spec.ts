@@ -86,7 +86,10 @@ test.describe('Auth navigation — inter-page links', () => {
 	test('/forgot-password → /login via "Back to sign in" link', async ({ page }) => {
 		await navigateToForgotPassword(page);
 		// The "Back to sign in" link contains a Font Awesome icon — use filter instead of name match
-		await page.locator('a').filter({ hasText: /back to sign in/i }).click();
+		await page
+			.locator('a')
+			.filter({ hasText: /back to sign in/i })
+			.click();
 		await page.waitForURL('**/login');
 		await expect(page).toHaveURL(/\/login/);
 		await expect(page.getByRole('heading', { level: 2, name: /sign in/i })).toBeVisible({
@@ -147,7 +150,10 @@ test.describe('Auth navigation — mobile viewport (375px)', () => {
 	test('/forgot-password → /login on mobile via "Back to sign in" link', async ({ page }) => {
 		await navigateToForgotPassword(page);
 		// The "Back to sign in" link contains a Font Awesome icon — use filter instead of name match
-		await page.locator('a').filter({ hasText: /back to sign in/i }).click();
+		await page
+			.locator('a')
+			.filter({ hasText: /back to sign in/i })
+			.click();
 		await page.waitForURL('**/login');
 		await expect(page).toHaveURL(/\/login/);
 		await expect(page.getByRole('heading', { level: 2, name: /sign in/i })).toBeVisible({

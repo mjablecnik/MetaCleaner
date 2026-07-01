@@ -51,7 +51,9 @@ describe('subscription +page load()', () => {
 		it('URL-encodes special characters in plan and billing', async () => {
 			const plan = 'pro+ultra/max&v=1';
 			const billing = 'monthly?foo=bar';
-			const result = await load(makeEvent(`?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing)}`));
+			const result = await load(
+				makeEvent(`?plan=${encodeURIComponent(plan)}&billing=${encodeURIComponent(billing)}`)
+			);
 			expect(result.plan).toBe(plan);
 			expect(result.billing).toBe(billing);
 			expect(mockGuardProtectedRoute).toHaveBeenCalledWith(

@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="col-span-2 flex flex-wrap gap-1">
-		{#each (report?.tags ?? []) as tag (tag)}
+		{#each report?.tags ?? [] as tag (tag)}
 			<span class="rounded border px-1.5 py-0.5 text-[9px] font-semibold {tagStyle(tag)}"
 				>{tag}</span
 			>

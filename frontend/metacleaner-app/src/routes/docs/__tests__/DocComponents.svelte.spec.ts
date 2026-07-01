@@ -77,4 +77,3 @@ describe('EndpointCard', () => {
 		expect(copyBtns.length).toBeGreaterThan(0);
 	});
 });
-

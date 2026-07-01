@@ -17,12 +17,7 @@
 </script>
 
 <Story name="Primary Confirm">
-	<ConfirmationModal
-		title="Confirm Action"
-		confirmStyle="primary"
-		onConfirm={fn()}
-		onCancel={fn()}
-	>
+	<ConfirmationModal title="Confirm Action" confirmStyle="primary" onConfirm={fn()} onCancel={fn()}>
 		{#snippet content()}
 			<p class="text-sm text-text-muted">Are you sure you want to proceed with this action?</p>
 		{/snippet}

@@ -47,7 +47,7 @@
 
 <Story name="Green with Rich Content">
 	<InfoBox variant="green" icon="fa-circle-check">
-		<strong class="text-text-main">Cleaning complete!</strong> All EXIF metadata, GPS
-		coordinates, and author information have been removed.
+		<strong class="text-text-main">Cleaning complete!</strong> All EXIF metadata, GPS coordinates, and
+		author information have been removed.
 	</InfoBox>
 </Story>

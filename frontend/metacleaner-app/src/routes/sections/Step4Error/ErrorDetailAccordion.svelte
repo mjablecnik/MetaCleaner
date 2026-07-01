@@ -53,7 +53,8 @@
 						<span class="text-[10px] tracking-wider text-text-muted uppercase"
 							>{tx('step4.detail.file')}</span
 						>
-						<span class="truncate font-mono text-xs font-semibold text-white">{error?.fileName}</span
+						<span class="truncate font-mono text-xs font-semibold text-white"
+							>{error?.fileName}</span
 						>
 					</div>
 				{/if}

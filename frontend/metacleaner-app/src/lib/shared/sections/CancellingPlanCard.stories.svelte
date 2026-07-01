@@ -77,7 +77,14 @@
 			creditsUsed={200}
 			creditsRemaining={300}
 			periodEndDate="2026-07-20"
-			features={['Unlimited photos', 'Priority processing', 'EXIF cleaning', 'GPS removal', 'Webhooks', 'API access']}
+			features={[
+				'Unlimited photos',
+				'Priority processing',
+				'EXIF cleaning',
+				'GPS removal',
+				'Webhooks',
+				'API access'
+			]}
 		/>
 	</div>
 </Story>

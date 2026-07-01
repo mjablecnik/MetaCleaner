@@ -115,7 +115,8 @@
 						<span class="text-[10px] tracking-wider text-text-muted uppercase"
 							>{tx('step4.detail.file')}</span
 						>
-						<span class="truncate font-mono text-xs font-semibold text-white">{error?.fileName}</span
+						<span class="truncate font-mono text-xs font-semibold text-white"
+							>{error?.fileName}</span
 						>
 					</div>
 				{/if}
@@ -178,7 +179,7 @@
 		<div
 			class="flex max-h-[130px] flex-col gap-1.5 overflow-y-auto rounded-xl border border-gray-800 bg-navy-main/80 p-3 font-mono"
 		>
-			{#each (logEntries ?? []) as entry, i (i)}
+			{#each logEntries ?? [] as entry, i (i)}
 				<div class="flex items-start gap-2">
 					<span class="mt-0.5 flex-shrink-0 text-[10px] text-text-muted">—</span>
 					<span class="text-[11px] {entry.isError ? 'text-brand-red' : 'text-brand-green'}">

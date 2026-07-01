@@ -28,9 +28,7 @@ test.describe('Settings page', () => {
 
 		test('renders subtitle', async ({ page }) => {
 			await goToSettings(page);
-			await expect(
-				page.getByText(/manage your profile, security, and api access/i)
-			).toBeVisible();
+			await expect(page.getByText(/manage your profile, security, and api access/i)).toBeVisible();
 		});
 
 		test('renders Account Info section', async ({ page }) => {
@@ -61,7 +59,10 @@ test.describe('Settings page', () => {
 		test('shows Create new key button in API Keys section', async ({ page }) => {
 			await goToSettings(page);
 			await expect(
-				page.locator('button').filter({ hasText: /create new key/i }).first()
+				page
+					.locator('button')
+					.filter({ hasText: /create new key/i })
+					.first()
 			).toBeVisible();
 		});
 
@@ -87,7 +88,10 @@ test.describe('Settings page', () => {
 		test('shows Delete Account button in Danger Zone', async ({ page }) => {
 			await goToSettings(page);
 			await expect(
-				page.locator('button').filter({ hasText: /delete account/i }).first()
+				page
+					.locator('button')
+					.filter({ hasText: /delete account/i })
+					.first()
 			).toBeVisible();
 		});
 	});

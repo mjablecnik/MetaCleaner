@@ -90,7 +90,8 @@
 						<i class="fa-solid fa-circle-notch spin-slow text-[9px]"></i>
 						{tx('step3.files.processing')}
 					</span>
-					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]">{state?.progress}%</span
+					<span class="text-[10px] font-bold text-brand-blue lg:text-[11px]"
+						>{state?.progress}%</span
 					>
 				</div>
 				<div class="h-1.5 w-full overflow-hidden rounded-full bg-navy-lighter">

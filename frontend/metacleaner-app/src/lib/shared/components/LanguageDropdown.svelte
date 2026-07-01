@@ -41,7 +41,7 @@
 		></i>
 	</button>
 	<div class="lang-dropdown-menu" class:open style="min-width:160px">
-		{#each (langOptions ?? []) as lang (lang.code)}
+		{#each langOptions ?? [] as lang (lang.code)}
 			<div
 				class="lang-option"
 				class:active={currentLocale === lang.code}

@@ -21,29 +21,18 @@
 
 <Story name="With Plan ID (Pro)">
 	<div class="w-full max-w-3xl">
-		<CancellationBanner
-			periodEndDate="2026-07-30"
-			planId="pro"
-			onReactivate={fn()}
-		/>
+		<CancellationBanner periodEndDate="2026-07-30" planId="pro" onReactivate={fn()} />
 	</div>
 </Story>
 
 <Story name="Without Plan ID">
 	<div class="w-full max-w-3xl">
-		<CancellationBanner
-			periodEndDate="2026-07-30"
-			onReactivate={fn()}
-		/>
+		<CancellationBanner periodEndDate="2026-07-30" onReactivate={fn()} />
 	</div>
 </Story>
 
 <Story name="Pro Plus">
 	<div class="w-full max-w-3xl">
-		<CancellationBanner
-			periodEndDate="2027-06-30"
-			planId="proplus"
-			onReactivate={fn()}
-		/>
+		<CancellationBanner periodEndDate="2027-06-30" planId="proplus" onReactivate={fn()} />
 	</div>
 </Story>

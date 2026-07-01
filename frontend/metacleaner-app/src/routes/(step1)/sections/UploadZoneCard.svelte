@@ -40,11 +40,11 @@
 	const MAX_FILE_SIZE = 500 * 1024 * 1024;
 
 	function uniqueFormatChips(extensions: Record<string, string>): string[] {
-		const seen = new Set<string>();
+		const seenFormats: string[] = [];
 		const result: string[] = [];
 		for (const [ext, fmt] of Object.entries(extensions)) {
-			if (!seen.has(fmt)) {
-				seen.add(fmt);
+			if (!seenFormats.includes(fmt)) {
+				seenFormats.push(fmt);
 				result.push(ext.slice(1).toUpperCase());
 			}
 		}

@@ -272,9 +272,9 @@ test.describe('Navigation — authenticated UserDropdown links', () => {
 		await expect(userBtn).toBeVisible({ timeout: 8000 });
 		await userBtn.click();
 		// Dropdown is open when the menu links are visible
-		await expect(
-			page.locator('.lang-dropdown-menu.open').getByRole('link').first()
-		).toBeVisible({ timeout: 5000 });
+		await expect(page.locator('.lang-dropdown-menu.open').getByRole('link').first()).toBeVisible({
+			timeout: 5000
+		});
 	}
 
 	test('UserDropdown opens on button click', async ({ page }) => {
@@ -322,10 +322,7 @@ test.describe('Navigation — authenticated UserDropdown links', () => {
 
 	test('UserDropdown Docs link navigates to /docs', async ({ page }) => {
 		await openDropdown(page);
-		await page
-			.locator('.lang-dropdown-menu.open')
-			.getByRole('link', { name: /docs/i })
-			.click();
+		await page.locator('.lang-dropdown-menu.open').getByRole('link', { name: /docs/i }).click();
 		await page.waitForURL('**/docs');
 		await expect(page).toHaveURL(/\/docs/);
 	});

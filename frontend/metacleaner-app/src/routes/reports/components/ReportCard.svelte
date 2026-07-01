@@ -43,7 +43,7 @@
 					{report?.time} · {report?.duration} · {fileCountLabel(report?.fileCount)} · {report?.fileTypes}
 				</p>
 				<div class="mt-2 flex flex-wrap items-center gap-1.5">
-					{#each (report?.tags ?? []) as tag (tag)}
+					{#each report?.tags ?? [] as tag (tag)}
 						<span class="rounded border px-1.5 py-0.5 text-[10px] font-semibold {tagStyle(tag)}"
 							>{tag}</span
 						>

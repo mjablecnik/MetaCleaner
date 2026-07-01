@@ -13,9 +13,9 @@ test.beforeEach(async ({ page }) => {
 
 async function goToSuccess(page: import('playwright/test').Page) {
 	await page.goto('/subscription/success');
-	await expect(
-		page.getByRole('heading', { level: 1, name: /payment successful/i })
-	).toBeVisible({ timeout: 8000 });
+	await expect(page.getByRole('heading', { level: 1, name: /payment successful/i })).toBeVisible({
+		timeout: 8000
+	});
 }
 
 test.describe('Subscription success page', () => {
