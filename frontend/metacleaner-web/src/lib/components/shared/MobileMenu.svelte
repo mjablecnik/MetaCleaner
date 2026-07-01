@@ -202,7 +202,9 @@
 				? 'text-white'
 				: 'text-text-muted'} py-3 border-b border-border flex items-center justify-between"
 		>
-			<span class="flex items-center gap-2"><i class="fa-solid fa-circle-info text-xs"></i>{m.nav_about()}</span> <i class="fa-solid fa-chevron-right text-xs"></i>
+			<span class="flex items-center gap-2"
+				><i class="fa-solid fa-circle-info text-xs"></i>{m.nav_about()}</span
+			> <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
 			href="{resolve('/' as Pathname)}#faq"

@@ -14,9 +14,7 @@ test.describe('404 / error page', () => {
 
 	test('shows 404 badge', async ({ page }) => {
 		await page.goto('/this-page-does-not-exist');
-		await expect(
-			page.getByText('Error 404 — Page Not Found', { exact: true })
-		).toBeVisible();
+		await expect(page.getByText('Error 404 — Page Not Found', { exact: true })).toBeVisible();
 	});
 
 	test('shows h1 "This page doesn\'t exist"', async ({ page }) => {

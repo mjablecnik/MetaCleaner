@@ -111,10 +111,9 @@ test.describe('About page — contact form submission', () => {
 		await page.getByRole('button', { name: 'Send message', exact: true }).click();
 
 		await expect(
-			page.getByText(
-				"You've sent too many messages. Please wait a few minutes and try again.",
-				{ exact: true }
-			)
+			page.getByText("You've sent too many messages. Please wait a few minutes and try again.", {
+				exact: true
+			})
 		).toBeVisible();
 	});
 

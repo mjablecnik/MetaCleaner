@@ -13,3 +13,9 @@ bun.lockb
 
 # Design reference files
 /.design/
+
+# Test coverage output — auto-generated
+/coverage/
+
+# Build output
+/build/
