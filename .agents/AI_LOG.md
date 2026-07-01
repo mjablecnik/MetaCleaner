@@ -1,5 +1,10 @@
 # AI Log
 
+## 2026-07-01 17:35 — manual
+- Project: frontend (metacleaner-web — prerendered marketing site)
+- Synced project documentation with the current codebase (`82ae928`); `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit after the previous log entry)
+- **Docs** (`82ae928`): corrected the project-structure tree in `frontend/metacleaner-web/DOCS.md` — re-nested `lib/` and `routes/` under `src/` (they were previously drawn as siblings of `src/`), and documented the Supabase Edge Function by adding `supabase/functions/send-contact-email/` (contact-form email handler) alongside `config.toml`; despite the commit message naming README.md and CLAUDE.md, only DOCS.md required changes
+
 ## 2026-07-01 17:29 — manual
 - Project: frontend (metacleaner-web — prerendered marketing site)
 - Cleaned up linting/formatting for the newly added test suite; `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit `13f5f06` after the previous log entry)
