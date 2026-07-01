@@ -1,5 +1,10 @@
 # AI Log
 
+## 2026-07-01 17:29 — manual
+- Project: frontend (metacleaner-web — prerendered marketing site)
+- Cleaned up linting/formatting for the newly added test suite; `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit `13f5f06` after the previous log entry)
+- **Chore** (`13f5f06`): fixed ESLint/Prettier warnings and excluded generated output — added `/coverage` and `/build` to `.prettierignore` so generated files aren't format-checked, added `/coverage` to `.gitignore` so ESLint's gitignore-based ignore list skips the coverage directory (removes the spurious ESLint warning), and ran `prettier --write` to reformat the new E2E specs (`about`, `error`, `privacy`, `terms`) and `MobileMenu.svelte`
+
 ## 2026-07-01 17:19 — manual
 - Project: frontend (metacleaner-web — prerendered marketing site)
 - Ran the unit/integration and E2E test pipeline against `frontend/metacleaner-web` from four `.agents/tmp/` specs (`TEST_SPEC.md`, `TASKS.md`, `E2E_TASKS.md`, `TEST_RESULTS.md`), closing every task across 6 commits (`906e815`…`b764624`); final state 137/137 unit pass and 97 E2E (all strict-mode failures resolved)
