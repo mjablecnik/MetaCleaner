@@ -93,6 +93,20 @@ describe('validateContactForm', () => {
 			const result = validateContactForm({ ...valid, email: '' });
 			expect(result.errors.email).toBe('required');
 		});
+
+		describe('branch precedence edge cases', () => {
+			it('returns max_length (not email) when email is both >254 chars and malformed', () => {
+				// length check runs before regex — a 300-char string with no @ triggers max_length
+				const result = validateContactForm({ ...valid, email: 'a'.repeat(300) });
+				expect(result.errors.email).toBe('max_length');
+			});
+
+			it('returns email (not required) for whitespace-padded valid-looking email', () => {
+				// .trim() passes the empty check, but regex tests the untrimmed value which starts with a space
+				const result = validateContactForm({ ...valid, email: ' a@b.co ' });
+				expect(result.errors.email).toBe('email');
+			});
+		});
 	});
 
 	describe('subject field', () => {
