@@ -1,4 +1,9 @@
 import { test, expect } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+
+test.beforeEach(async ({ page }) => {
+	await injectAuth(page);
+});
 
 // Two minimal valid JPEGs used across all test cases.
 const FILE_A = {

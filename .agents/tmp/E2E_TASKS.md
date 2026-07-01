@@ -30,11 +30,11 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
 - [x] Fix `step4-error.spec.ts` — `injectAuth` + `mockWebSocketProgress(page,'error')`.
 - [x] Fix `step5-results.spec.ts` — `injectAuth` + `mockAllApis` (success WS).
 - [x] Fix `step5-report-navigation.spec.ts` — `injectAuth` + report mocks.
-- [ ] Fix `file-removal.spec.ts` — `injectAuth` before `goto('/')`.
-- [ ] Fix `file-validation.spec.ts` — `injectAuth`; then re-assert the toast/reject behaviour.
-- [ ] Fix `responsive.spec.ts` — `injectAuth` for the `/` and protected-route cases.
-- [ ] Fix `navigation.spec.ts` — `injectAuth`; re-verify wizard→report and report→reports links.
-- [ ] Fix `reports.spec.ts` — `injectAuth` before `goto('/reports')` (redirects to `/login` otherwise).
+- [x] Fix `file-removal.spec.ts` — `injectAuth` before `goto('/')`.
+- [x] Fix `file-validation.spec.ts` — `injectAuth`; then re-assert the toast/reject behaviour.
+- [x] Fix `responsive.spec.ts` — `injectAuth` for the `/` and protected-route cases.
+- [x] Fix `navigation.spec.ts` — `injectAuth`; re-verify wizard→report and report→reports links.
+- [x] Fix `reports.spec.ts` — `injectAuth` before `goto('/reports')` (redirects to `/login` otherwise).
 - [ ] Fix `report-detail.spec.ts` — `injectAuth` before `goto('/report/rpt-001')`.
 - [ ] Fix `hamburger-menu.spec.ts` — `injectAuth` (authenticated NavBar/menu on `/`).
 - [ ] Fix `docs-sidebar-highlight.spec.ts` — **replace** its `injectAuth` (sets `mc_access_token`,

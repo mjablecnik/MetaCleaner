@@ -1,5 +1,10 @@
 import { test, expect, type Page } from 'playwright/test';
 import { mockReportsApi } from './helpers/mock-api';
+import { injectAuth } from './helpers/auth.js';
+
+test.beforeEach(async ({ page }) => {
+	await injectAuth(page);
+});
 
 const TEST_FILE = {
 	name: 'photo.jpg',

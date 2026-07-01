@@ -1,4 +1,9 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+
+test.beforeEach(async ({ page }) => {
+	await injectAuth(page);
+});
 
 // Reports page uses mockCleaningService.getReports() directly (not HTTP API).
 // Mock service dates: '2025-06-04', '2025-06-03', etc.

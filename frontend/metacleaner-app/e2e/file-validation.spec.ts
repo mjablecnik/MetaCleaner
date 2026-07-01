@@ -1,4 +1,9 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+
+test.beforeEach(async ({ page }) => {
+	await injectAuth(page);
+});
 
 // Minimal JPEG (SOI + EOI) — valid file accepted by all checks.
 const VALID_JPEG = {
