@@ -67,7 +67,7 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 				avgCleanValue = totalJobs === 0 ? 'N/A' : '0.0s';
 			}
 
-			failedValue = totalJobs > 0 ? `${((failedCount / totalJobs) * 100).toFixed(1)}%` : '0';
+			failedValue = totalJobs > 0 ? `${((failedCount / totalJobs) * 100).toFixed(1)}%` : 'N/A';
 		}
 
 		return [

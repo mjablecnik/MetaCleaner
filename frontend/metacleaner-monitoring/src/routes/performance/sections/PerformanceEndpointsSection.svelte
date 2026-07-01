@@ -18,9 +18,13 @@
 		>
 	</div>
 	<div class="space-y-3">
-		{#each slowEndpoints as ep (ep.id)}
-			<SlowEndpointRow endpoint={ep} variant="desktop" />
-		{/each}
+		{#if slowEndpoints.length === 0}
+			<p class="text-sm text-textSec py-4 text-center">{t('performance_endpoints_notAvailable')}</p>
+		{:else}
+			{#each slowEndpoints as ep (ep.id)}
+				<SlowEndpointRow endpoint={ep} variant="desktop" />
+			{/each}
+		{/if}
 	</div>
 </div>
 
@@ -36,8 +40,12 @@
 		>
 	</div>
 	<div class="divide-y divide-surface/60">
-		{#each slowEndpoints as ep (ep.id)}
-			<SlowEndpointRow endpoint={ep} variant="mobile" />
-		{/each}
+		{#if slowEndpoints.length === 0}
+			<p class="text-sm text-textSec p-4 text-center">{t('performance_endpoints_notAvailable')}</p>
+		{:else}
+			{#each slowEndpoints as ep (ep.id)}
+				<SlowEndpointRow endpoint={ep} variant="mobile" />
+			{/each}
+		{/if}
 	</div>
 </section>

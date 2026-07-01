@@ -88,7 +88,7 @@ export async function getUsers(
 	config: SupabaseClientConfig,
 	page: number = 1,
 	perPage: number = 50
-): Promise<{ users: SupabaseUserRaw[]; total: number }> {
+): Promise<{ users: SupabaseUserRaw[]; total: number | null }> {
 	if (!config.serviceKey?.trim()) {
 		throw new ClientError(
 			'supabase',
@@ -133,8 +133,8 @@ export async function getUsers(
 		);
 	}
 
-	const data = (await response.json()) as { users: SupabaseUserRaw[]; total: number };
-	return { users: data.users ?? [], total: data.total ?? 0 };
+	const data = (await response.json()) as { users: SupabaseUserRaw[]; total?: number };
+	return { users: data.users ?? [], total: data.total ?? null };
 }
 
 export async function queryTable<T>(

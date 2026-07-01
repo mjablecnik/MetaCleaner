@@ -541,5 +541,62 @@
 	"common_sectionError_service_unavailable_description": "Služba je dočasně nedostupná.",
 	"common_sectionError_request_error_title": "Požadavek selhal",
 	"common_sectionError_request_error_description": "Při načítání dat došlo k neočekávané chybě.",
-	"common_sectionError_retry": "Zkusit znovu"
+	"common_sectionError_retry": "Zkusit znovu",
+
+	"performance_kpi_apdexNoData": "Žádná data o latenci · Cíl: ≥ 0,90 · Práh: 500 ms",
+	"performance_kpi_noCloudflareData": "Žádná data Cloudflare",
+	"performance_kpi_noFlyData": "Žádná data Fly.io",
+	"performance_kpi_errorRateGoal": "Cíl: < 1 %",
+
+	"database_kpi_postgrestNoLive": "Živá statistika není přes PostgREST dostupná",
+	"database_kpi_postgrestNoQuery": "Metriky dotazů nejsou přes PostgREST dostupné",
+
+	"availability_outages_none": "0 výpadků",
+
+	"edge_geo_other": "Ostatní",
+
+	"users_lastLogin_justNow": "Právě teď",
+	"users_lastLogin_minAgo": "před {count} min",
+	"users_lastLogin_hoursAgo": "před {count} h",
+	"users_lastLogin_daysAgo": "před {count} dny",
+
+	"common_labels_todayAt": "Dnes {time}",
+	"common_labels_yesterdayAt": "Včera {time}",
+	"common_labels_daysAgoAt": "před {days} dny {time}",
+
+	"users_stats_newRegistrations7d": "Nové registrace (7d)",
+	"users_stats_authProvider": "Distribuce způsobu přihlášení",
+	"business_funnel_dataNotAvailable": "Data konverzního trychtýře nejsou k dispozici",
+
+	"performance_endpoints_notAvailable": "Data o latenci jednotlivých endpointů nejsou k dispozici",
+
+	"runtime_kpi_cpuSubtext": "{cpus} CPU celkem · {machines} strojů",
+	"runtime_kpi_ramSubtext": "{gb} GB celkem alokováno",
+	"runtime_kpi_uptimeSubtext": "{online} / {total} strojů online",
+	"runtime_kpi_restartsSubtext": "celkem {total} strojů",
+	"runtime_event_oomKill": "OOM Kill",
+	"runtime_event_crash": "Pád",
+	"runtime_event_restart": "Restart",
+	"runtime_event_health": "Zdraví",
+	"runtime_event_killedMessage": "Stroj {name} zabit v {region}",
+	"runtime_event_crashedMessage": "Stroj {name} selhal v {region}",
+	"runtime_event_exitedMessage": "Stroj {name} ukončen se stavem: {status}",
+	"runtime_event_restartedMessage": "Stroj {name} restartován v {region}",
+	"runtime_event_healthFailMessage": "Health checks selhávají na {name}: {checks}",
+	"runtime_deploy_machineEvent": "Stroj {name} {eventType}",
+
+	"performance_kpi_requestsTotal": "{count} požadavků / 24h",
+	"performance_kpi_machinesMonitored": "monitorováno {count} strojů",
+	"performance_event_type_timeout": "Timeout",
+	"performance_event_type_error": "Chyba",
+	"performance_event_type_oomKill": "OOM Kill",
+	"performance_event_type_crash": "Pád",
+	"performance_event_type_restart": "Restart",
+	"performance_event_machineMessage": "Stroj {name} {eventType} v {region}",
+
+	"database_kpi_storageUsed": "{pct}% využito",
+	"database_kpi_totalRows": "celkem {count} řádků",
+
+	"edge_kpi_cachedRequests": "{count} z cache",
+	"edge_kpi_bandwidthDetail": "{gb} GB · {pct}% cachováno"
 }

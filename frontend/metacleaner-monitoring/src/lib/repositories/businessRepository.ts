@@ -160,37 +160,3 @@ export function getPlanRevenue(): PlanRevenue[] {
 		{ id: 'business', label: 'Business (27)', value: 783, color: '#8b5cf6', percent: '58.4%' }
 	];
 }
-
-export function getConversionFunnel(): ConversionFunnelStep[] {
-	return [
-		{ id: 'visitors', labelKey: 'business_funnel_visitors', value: 12400, color: '#3b82f6' },
-		{
-			id: 'registrations',
-			labelKey: 'business_funnel_registrations',
-			value: 2100,
-			conversionPercent: '16.9%',
-			color: '#8b5cf6'
-		},
-		{
-			id: 'trialActivation',
-			labelKey: 'business_funnel_trialActivation',
-			value: 1840,
-			conversionPercent: '87.6%',
-			color: '#22c55e'
-		},
-		{
-			id: 'trialConversion',
-			labelKey: 'business_funnel_trialConversion',
-			value: 89,
-			conversionPercent: '4.8%',
-			color: '#3ecf8e'
-		},
-		{
-			id: 'activePaying',
-			labelKey: 'business_funnel_activePaying',
-			value: 89,
-			conversionPercent: '100%',
-			color: '#f97316'
-		}
-	];
-}

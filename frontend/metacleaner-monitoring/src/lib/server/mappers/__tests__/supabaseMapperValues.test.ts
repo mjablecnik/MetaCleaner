@@ -385,8 +385,8 @@ describe('mapToUserStats', () => {
 		expect(loggedIn.value).toBe('2');
 	});
 
-	it('newRegistrations counts users created in the last 30 days', () => {
-		const recentCreated = new Date(FIXED_NOW_MS - 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days ago
+	it('newRegistrations counts users created in the last 7 days', () => {
+		const recentCreated = new Date(FIXED_NOW_MS - 6 * 24 * 60 * 60 * 1000).toISOString(); // 6 days ago (within 7d window)
 		const oldCreated = new Date(FIXED_NOW_MS - 40 * 24 * 60 * 60 * 1000).toISOString(); // 40 days ago
 		const users = [
 			makeUser({ created_at: recentCreated }),

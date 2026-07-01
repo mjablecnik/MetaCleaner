@@ -6,6 +6,7 @@ export interface DbKpi {
 	badgeKey: string;
 	badgeClass: string;
 	subtext: string;
+	subtextIsKey?: boolean;
 	trend?: string;
 	trendClass?: string;
 	unit?: string;

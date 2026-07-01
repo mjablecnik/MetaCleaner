@@ -9,6 +9,7 @@ import type {
 	SlaGoal
 } from '$lib/repositories/index.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
+import * as m from '$lib/paraglide/messages.js';
 
 const REGION_NAMES: Record<string, string> = {
 	ams: 'Amsterdam',
@@ -79,12 +80,11 @@ function formatTimestamp(dateMs: number): string {
 	const date = new Date(dateMs);
 	const now = new Date();
 	const diffDays = Math.floor((now.getTime() - dateMs) / (1000 * 60 * 60 * 24));
-	const hh = String(date.getHours()).padStart(2, '0');
-	const mm = String(date.getMinutes()).padStart(2, '0');
+	const time = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
-	if (diffDays === 0) return `Today ${hh}:${mm}`;
-	if (diffDays === 1) return `Yesterday ${hh}:${mm}`;
-	return `${diffDays} days ago ${hh}:${mm}`;
+	if (diffDays === 0) return m.common_labels_todayAt({ time });
+	if (diffDays === 1) return m.common_labels_yesterdayAt({ time });
+	return m.common_labels_daysAgoAt({ days: diffDays, time });
 }
 
 function getMachineStatus(machine: FlyMachineRaw): 'running' | 'stopped' | 'error' {
@@ -173,13 +173,13 @@ export function mapToDeployEntries(machines: FlyMachineRaw[]): DeployEntry[] {
 				version: '—',
 				app: machine.name,
 				author: '—',
-				commitMessage: `Machine ${machine.name} ${event.type}`,
+				commitMessage: m.runtime_deploy_machineEvent({ name: machine.name, eventType: event.type }),
 				timestamp: formatTimestamp(tsMs),
 				duration: '—',
 				status: deployStatus,
 				statusClass:
 					deployStatus === 'success' ? 'bg-success/15 text-success' : 'bg-error/15 text-error',
-				statusKey: deployStatus === 'success' ? 'common_status_ok' : 'runtime_deploy_failed',
+				statusKey: deployStatus === 'success' ? 'common_status_ok' : 'common_status_warning',
 				icon: deployStatus === 'success' ? 'fa-check' : 'fa-xmark',
 				iconClass:
 					deployStatus === 'success' ? 'bg-success/15 text-success' : 'bg-error/15 text-error',
@@ -214,7 +214,7 @@ export function mapToServiceCards(raw: Map<string, FlyMachineRaw[]>): ServiceCar
 			uptimePercent,
 			uptimeDisplay: uptimePercent.toFixed(2),
 			outageCount: 0,
-			outageLabel: '0 outages',
+			outageLabel: m.availability_outages_none(),
 			trend: '—',
 			trendPositive: true,
 			barClass,
@@ -246,42 +246,42 @@ type ErrorEventConfig = {
 function classifyEvent(type: string, status: string): ErrorEventConfig | null {
 	if (type === 'kill') {
 		return {
-			level: 'OOM Kill',
+			level: m.runtime_event_oomKill(),
 			levelClass: 'bg-error/15 text-error',
 			borderClass: 'border-error/20',
-			statusKey: 'common_status_restarted',
-			statusClass: 'bg-success/10 text-success',
-			message: (m) => `Machine ${m.name} killed in ${m.region}`
+			statusKey: 'common_status_critical',
+			statusClass: 'bg-error/10 text-error',
+			message: (mac) => m.runtime_event_killedMessage({ name: mac.name, region: mac.region })
 		};
 	}
 	if (type === 'crash') {
 		return {
-			level: 'Crash',
+			level: m.runtime_event_crash(),
 			levelClass: 'bg-secondary/15 text-secondary',
 			borderClass: 'border-secondary/20',
-			statusKey: 'common_status_restarted',
-			statusClass: 'bg-success/10 text-success',
-			message: (m) => `Machine ${m.name} crashed in ${m.region}`
+			statusKey: 'common_status_warning',
+			statusClass: 'bg-secondary/10 text-secondary',
+			message: (mac) => m.runtime_event_crashedMessage({ name: mac.name, region: mac.region })
 		};
 	}
 	if (type === 'exit' && status !== 'success') {
 		return {
-			level: 'Crash',
+			level: m.runtime_event_crash(),
 			levelClass: 'bg-secondary/15 text-secondary',
 			borderClass: 'border-secondary/20',
-			statusKey: 'common_status_restarted',
-			statusClass: 'bg-success/10 text-success',
-			message: (m) => `Machine ${m.name} exited with status: ${status}`
+			statusKey: 'common_status_warning',
+			statusClass: 'bg-secondary/10 text-secondary',
+			message: (mac) => m.runtime_event_exitedMessage({ name: mac.name, status })
 		};
 	}
 	if (type === 'restart') {
 		return {
-			level: 'Restart',
+			level: m.runtime_event_restart(),
 			levelClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
 			borderClass: 'border-[#8b5cf6]/20',
 			statusKey: 'common_status_restarted',
 			statusClass: 'bg-success/10 text-success',
-			message: (m) => `Machine ${m.name} restarted in ${m.region}`
+			message: (mac) => m.runtime_event_restartedMessage({ name: mac.name, region: mac.region })
 		};
 	}
 	return null;
@@ -300,10 +300,13 @@ export function mapToRuntimeErrors(machines: FlyMachineRaw[]): RuntimeErrorEntry
 				_sortMs: tsMs,
 				id: `health-${machine.id}`,
 				time: formatTimeHms(tsMs),
-				level: 'Health',
+				level: m.runtime_event_health(),
 				levelClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
 				borderClass: 'border-[#334155]/40',
-				message: `Health checks failing on ${machine.name}: ${failingChecks.map((c) => c.name).join(', ')}`,
+				message: m.runtime_event_healthFailMessage({
+					name: machine.name,
+					checks: failingChecks.map((c) => c.name).join(', ')
+				}),
 				machine: machine.name,
 				statusKey: 'common_status_resolved',
 				statusClass: 'bg-success/10 text-success'
@@ -384,10 +387,13 @@ export function mapToIncidents(raw: Map<string, FlyMachineRaw[]>): Incident[] {
 				const hh = String(date.getHours()).padStart(2, '0');
 				const mm = String(date.getMinutes()).padStart(2, '0');
 
-				let timestampDisplay: string;
-				if (diffDays === 0) timestampDisplay = `Today, ${hh}:${mm}`;
-				else if (diffDays === 1) timestampDisplay = `Yesterday, ${hh}:${mm}`;
-				else timestampDisplay = `${diffDays} days ago, ${hh}:${mm}`;
+				const time = `${hh}:${mm}`;
+				const timestampDisplay =
+					diffDays === 0
+						? m.common_labels_todayAt({ time })
+						: diffDays === 1
+							? m.common_labels_yesterdayAt({ time })
+							: m.common_labels_daysAgoAt({ days: diffDays, time });
 
 				incidents.push({
 					_sortMs: tsMs,
@@ -476,7 +482,7 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 			iconClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
 			barWidth: '0%',
 			barClass: 'bg-secondary',
-			subtext: `${totalCpus} CPU${totalCpus !== 1 ? 's' : ''} total · ${totalMachines} machines`,
+			subtext: m.runtime_kpi_cpuSubtext({ cpus: totalCpus, machines: totalMachines }),
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success'
 		},
@@ -489,7 +495,7 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 			iconClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
 			barWidth: '0%',
 			barClass: 'bg-[#3b82f6]',
-			subtext: `${totalMemoryGb} GB total allocated`,
+			subtext: m.runtime_kpi_ramSubtext({ gb: totalMemoryGb }),
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success'
 		},
@@ -501,7 +507,7 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 			valueClass: uptimeClass,
 			icon: 'fa-check-circle',
 			iconClass: `bg-${uptimePercent >= 99 ? 'success' : 'secondary'}/15 text-${uptimePercent >= 99 ? 'success' : 'secondary'}`,
-			subtext: `${onlineMachines} / ${totalMachines} machines online`,
+			subtext: m.runtime_kpi_uptimeSubtext({ online: onlineMachines, total: totalMachines }),
 			badgeKey: uptimeBadgeKey,
 			badgeClass: uptimeBadgeClass
 		},
@@ -512,7 +518,7 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 			valueClass: restartCount > 0 ? 'text-error' : undefined,
 			icon: 'fa-rotate-right',
 			iconClass: restartCount > 0 ? 'bg-secondary/15 text-secondary' : 'bg-success/15 text-success',
-			subtext: `${totalMachines} machines total`,
+			subtext: m.runtime_kpi_restartsSubtext({ total: totalMachines }),
 			badgeKey: restartCount > 0 ? 'common_status_warning' : 'common_status_ok',
 			badgeClass: restartCount > 0 ? 'bg-secondary/10 text-secondary' : 'bg-success/10 text-success'
 		}

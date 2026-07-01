@@ -12,6 +12,7 @@ export interface RuntimeStat {
 	icon: string;
 	iconClass: string;
 	subtext: string;
+	subtextIsKey?: boolean;
 	barWidth?: string;
 	barClass?: string;
 }
@@ -335,7 +336,7 @@ export function getDeployHistory(): DeployEntry[] {
 			duration: '',
 			status: 'failed',
 			statusClass: 'bg-error/15 text-error',
-			statusKey: 'runtime_deploy_failed',
+			statusKey: 'common_status_warning',
 			icon: 'fa-xmark',
 			iconClass: 'bg-error/15 text-error',
 			subtext: 'Rollback → v1.7.9'

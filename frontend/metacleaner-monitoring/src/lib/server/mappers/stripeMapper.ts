@@ -30,11 +30,18 @@ export function computeMrr(subs: StripeSubscriptionRaw[]): number {
 
 export function computeChurnRate(
 	activeSubs: StripeSubscriptionRaw[],
-	canceledSubs: StripeSubscriptionRaw[]
+	canceledSubs: StripeSubscriptionRaw[],
+	windowStartUnix?: number
 ): number {
-	const activeCount = activeSubs.length;
 	const canceledCount = canceledSubs.length;
-	const total = activeCount + canceledCount;
+	// Denominator = subscriptions active at the START of the window.
+	// New joiners (created during the window) are excluded to avoid inflating the base.
+	const newJoiners =
+		windowStartUnix != null
+			? activeSubs.filter((s) => s.created >= windowStartUnix).length
+			: 0;
+	const activeAtStart = activeSubs.length - newJoiners;
+	const total = activeAtStart + canceledCount;
 	if (total === 0) return 0;
 	return (canceledCount / total) * 100;
 }
@@ -46,7 +53,7 @@ export function computeArpu(mrrCents: number, activeCount: number): number {
 
 function formatMrr(cents: number): string {
 	const dollars = Math.round(cents / 100);
-	return `$${dollars.toLocaleString('en-US')}`;
+	return `$${dollars.toLocaleString()}`;
 }
 
 function formatArpu(cents: number): string {
@@ -56,11 +63,12 @@ function formatArpu(cents: number): string {
 
 export function mapToBusinessKpiStats(
 	activeSubs: StripeSubscriptionRaw[],
-	canceledSubs: StripeSubscriptionRaw[]
+	canceledSubs: StripeSubscriptionRaw[],
+	windowStartUnix?: number
 ): BusinessKpiStat[] {
 	const mrrCents = computeMrr(activeSubs);
 	const activeCount = activeSubs.length;
-	const churnRate = computeChurnRate(activeSubs, canceledSubs);
+	const churnRate = computeChurnRate(activeSubs, canceledSubs, windowStartUnix);
 	const arpuCents = computeArpu(mrrCents, activeCount);
 
 	const churnHigh = churnRate >= 3;
@@ -152,7 +160,7 @@ export function mapToPlanRevenue(
 		const percent = totalCents > 0 ? (info.valueCents / totalCents) * 100 : 0;
 		const isFree = info.unitAmount === 0;
 		const color = isFree ? FREE_COLOR : PLAN_COLORS[paidColorIdx++ % PLAN_COLORS.length];
-		const label = `${info.nickname} (${info.count.toLocaleString('cs-CZ')})`;
+		const label = `${info.nickname} (${info.count.toLocaleString()})`;
 
 		return {
 			id: priceId,

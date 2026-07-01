@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getRuntimeSecondaryKpis } from '$lib/repositories/runtimeRepository';
 	import type { RuntimeStat } from '$lib/repositories/runtimeRepository';
 
 	let { stats }: { stats: RuntimeStat[] } = $props();
 
 	const runtimeStats = $derived(stats);
-	const secondaryKpis = getRuntimeSecondaryKpis();
 </script>
 
 <!-- Desktop: 4-col KPI grids -->
@@ -43,29 +41,14 @@
 						<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 					</div>
 				{/if}
-				<p class="text-xs text-textSec mt-2">{stat.subtext}</p>
+				<p class="text-xs text-textSec mt-2">{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}</p>
 			</div>
 		{/each}
 	</section>
 
-	<!-- Row 2: secondary KPIs -->
-	<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-		{#each secondaryKpis as kpi (kpi.key)}
-			<div class="bg-card border border-surface rounded-xl p-5">
-				<div class="flex items-center gap-3 mb-3">
-					<div class="w-8 h-8 rounded-lg {kpi.iconClass} flex items-center justify-center">
-						<i class="fa-solid {kpi.icon} text-xs"></i>
-					</div>
-					<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
-				</div>
-				<div class="text-2xl font-bold text-textMain">
-					{kpi.value}{#if kpi.unit}<span class="text-sm font-normal text-textSec">
-							{kpi.unit}</span
-						>{/if}
-				</div>
-				<p class="text-xs text-textSec mt-1">{kpi.subtext}</p>
-			</div>
-		{/each}
+	<!-- Row 2: secondary KPIs — no real data source available -->
+	<section class="bg-card border border-surface rounded-xl p-5">
+		<p class="text-sm text-textSec text-center py-4">{t('common_labels_noData')}</p>
 	</section>
 </div>
 
@@ -100,30 +83,13 @@
 						<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 					</div>
 				{/if}
-				<p class="text-[10px] text-textSec {!stat.barWidth ? 'mt-1' : ''}">{stat.subtext}</p>
+				<p class="text-[10px] text-textSec {!stat.barWidth ? 'mt-1' : ''}">{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}</p>
 			</div>
 		{/each}
 	</section>
 
-	<!-- Secondary KPIs 2×2 -->
-	<section class="grid grid-cols-2 gap-3">
-		{#each secondaryKpis as kpi (kpi.key)}
-			<div class="bg-card border border-surface rounded-xl p-4">
-				<div class="flex items-center gap-2 mb-2">
-					<div
-						class="w-7 h-7 rounded-lg {kpi.iconClass} flex items-center justify-center flex-shrink-0"
-					>
-						<i class="fa-solid {kpi.icon} text-xs"></i>
-					</div>
-					<p class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</p>
-				</div>
-				<div class="text-2xl font-bold text-textMain">
-					{kpi.value}{#if kpi.unit}<span class="text-sm font-normal text-textSec">
-							{kpi.unit}</span
-						>{/if}
-				</div>
-				<p class="text-[10px] text-textSec mt-1">{kpi.subtext}</p>
-			</div>
-		{/each}
+	<!-- Secondary KPIs — no real data source available -->
+	<section class="bg-card border border-surface rounded-xl p-4">
+		<p class="text-sm text-textSec text-center py-4">{t('common_labels_noData')}</p>
 	</section>
 </div>

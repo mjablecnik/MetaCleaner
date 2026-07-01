@@ -6,6 +6,7 @@ import type {
 import type { CfAnalyticsRaw } from '../clients/cloudflareClient.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
 import type { SentryIssueRaw } from '../clients/sentryClient.js';
+import * as m from '$lib/paraglide/messages.js';
 
 // Implements the Apdex formula: (satisfied + tolerating * 0.5) / total
 // satisfied: ≤ 500ms, tolerating: 500ms–2000ms, frustrated: > 2000ms
@@ -38,28 +39,6 @@ function formatTimeHms(ms: number): string {
 	const mm = String(date.getMinutes()).padStart(2, '0');
 	const ss = String(date.getSeconds()).padStart(2, '0');
 	return `${hh}:${mm}:${ss}`;
-}
-
-const HTTP_METHODS_KNOWN = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
-
-function parseCulprit(culprit: string): { method: string; path: string } {
-	const parts = culprit.trim().split(/\s+/);
-	if (parts.length >= 2 && HTTP_METHODS_KNOWN.includes(parts[0].toUpperCase())) {
-		return { method: parts[0].toUpperCase(), path: parts.slice(1).join(' ') };
-	}
-	return { method: 'GET', path: culprit || '—' };
-}
-
-function estimateAvgMs(issues: SentryIssueRaw[]): number {
-	const hasTimeout = issues.some((i) => i.title.toLowerCase().includes('timeout'));
-	if (hasTimeout) return 8000;
-	const hasCritical = issues.some((i) => i.level === 'critical');
-	if (hasCritical) return 3000;
-	const hasError = issues.some((i) => i.level === 'error');
-	if (hasError) return 1500;
-	const hasWarning = issues.some((i) => i.level === 'warning');
-	if (hasWarning) return 600;
-	return 250;
 }
 
 function getMethodClass(method: string): string {
@@ -99,7 +78,7 @@ export function mapToSlowEndpoints(raw: RawEndpointRecord[]): SlowEndpoint[] {
 			method: ep.method,
 			methodClass: getMethodClass(ep.method),
 			path: ep.path,
-			callCount: ep.callCount.toLocaleString('en-US'),
+			callCount: ep.callCount.toLocaleString(),
 			errorRate: `${errorRate.toFixed(1)}%`,
 			avgMs: ep.avgMs,
 			barWidth: `${barWidthPercent}%`,
@@ -109,73 +88,20 @@ export function mapToSlowEndpoints(raw: RawEndpointRecord[]): SlowEndpoint[] {
 	});
 }
 
-// Maps Sentry issues to SlowEndpoint by grouping by culprit and estimating latency from severity
-export function mapSentryIssuesToSlowEndpoints(issues: SentryIssueRaw[]): SlowEndpoint[] {
-	const groups = new Map<string, SentryIssueRaw[]>();
-	for (const issue of issues) {
-		const key = issue.culprit || '—';
-		const group = groups.get(key) ?? [];
-		group.push(issue);
-		groups.set(key, group);
-	}
-
-	type WithSortMs = SlowEndpoint & { _avgMs: number };
-	const endpoints: WithSortMs[] = [];
-
-	for (const [culprit, group] of groups) {
-		const { method, path } = parseCulprit(culprit);
-		const avgMs = estimateAvgMs(group);
-		const totalCount = group.reduce((sum, i) => sum + (parseInt(i.count, 10) || 1), 0);
-		const errorIssues = group.filter((i) => i.level === 'error' || i.level === 'critical').length;
-		const errorRate =
-			group.length > 0 ? `${Math.round((errorIssues / group.length) * 100)}%` : '0%';
-
-		endpoints.push({
-			_avgMs: avgMs,
-			id: `ep-${culprit.replace(/[^a-z0-9]/gi, '-').slice(0, 32)}`,
-			method,
-			methodClass: getMethodClass(method),
-			path,
-			callCount: totalCount.toLocaleString('cs-CZ'),
-			errorRate,
-			avgMs,
-			barWidth: '0%',
-			timeColor: getTimeColor(avgMs),
-			barColor: getBarColor(avgMs)
-		});
-	}
-
-	// Sort by avgMs desc, limit to 10 (Property 11)
-	endpoints.sort((a, b) => b._avgMs - a._avgMs);
-	const top10 = endpoints.slice(0, 10);
-	const maxMs = top10[0]?._avgMs ?? 1;
-	return top10.map(({ _avgMs: _, ...ep }) => ({
-		...ep,
-		barWidth: `${Math.round((ep.avgMs / maxMs) * 100)}%`
-	}));
-}
-
 export function mapToPerformanceKpiStats(
 	cfAnalytics: CfAnalyticsRaw | null,
 	flyMachines: Map<string, FlyMachineRaw[]> | null,
 	_issues: SentryIssueRaw[]
 ): PerformanceKpiStat[] {
 	let totalRequests = 0;
-	let totalThreats = 0;
 
 	if (cfAnalytics) {
 		for (const g of cfAnalytics.httpRequests1dGroups) {
 			totalRequests += g.sum.requests;
-			totalThreats += g.sum.threats;
 		}
 	}
 
 	const throughputRpm = totalRequests > 0 ? Math.round(totalRequests / 1440) : 0;
-
-	// Error rate: only use real Cloudflare data (threats/total); show '—' when no CF data.
-	// Do not synthesize from Sentry issue counts — that is a fabricated heuristic.
-	const hasCfData = totalRequests > 1000;
-	const cfErrorRatePct = hasCfData ? (totalThreats / totalRequests) * 100 : null;
 
 	let uptimePct = 100;
 	let machineCount = 0;
@@ -183,27 +109,26 @@ export function mapToPerformanceKpiStats(
 		let total = 0;
 		let online = 0;
 		for (const machines of flyMachines.values()) {
-			for (const m of machines) {
+			for (const machine of machines) {
 				total++;
 				machineCount++;
-				if (m.state === 'started') online++;
+				if (machine.state === 'started') online++;
 			}
 		}
 		if (total > 0) uptimePct = (online / total) * 100;
 	}
 
-	const throughputSubtext =
-		totalRequests > 0
-			? `${totalRequests.toLocaleString('cs-CZ')} requests / 24h`
-			: 'No Cloudflare data';
+	const throughputSubtext = totalRequests > 0
+		? m.performance_kpi_requestsTotal({ count: totalRequests.toLocaleString() })
+		: 'performance_kpi_noCloudflareData';
 
 	const uptimeStr = uptimePct.toFixed(2);
 	const uptimeBadgeKey = uptimePct >= 99.9 ? 'common_status_excellent' : 'common_status_ok';
 	const uptimeBadgeClass =
 		uptimePct >= 99 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary';
 	const uptimeSubtext = flyMachines
-		? `${machineCount} machine${machineCount !== 1 ? 's' : ''} monitored`
-		: 'No Fly.io data';
+		? m.performance_kpi_machinesMonitored({ count: machineCount })
+		: 'performance_kpi_noFlyData';
 
 	// Apdex: no per-request latency source is wired in; render '—' rather than fabricating
 	// a perfect score from computeApdex(0,0,0). Wire real satisfied/tolerating/total counts
@@ -214,31 +139,23 @@ export function mapToPerformanceKpiStats(
 		value: '—',
 		badgeKey: 'common_status_unknown',
 		badgeClass: 'bg-[#475569]/10 text-[#475569]',
-		subtext: 'No latency data · Goal: ≥ 0.90 · Threshold: 500ms'
+		subtext: 'performance_kpi_apdexNoData',
+		subtextIsKey: true
 	};
 
-	const errorRateEntry: PerformanceKpiStat =
-		cfErrorRatePct !== null
-			? {
-					key: 'errorRate',
-					labelKey: 'performance_kpi_errorRate',
-					value: cfErrorRatePct.toFixed(1),
-					unit: '%',
-					badgeKey: cfErrorRatePct < 1 ? 'common_status_ok' : 'common_status_warning',
-					badgeClass:
-						cfErrorRatePct < 1 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary',
-					subtext: `Goal: < 1%${totalThreats > 0 ? ` · ${totalThreats} threats blocked` : ''}`,
-					valueClass: cfErrorRatePct >= 1 ? 'text-secondary' : undefined
-				}
-			: {
-					key: 'errorRate',
-					labelKey: 'performance_kpi_errorRate',
-					value: '—',
-					unit: '%',
-					badgeKey: 'common_status_unknown',
-					badgeClass: 'bg-[#475569]/10 text-[#475569]',
-					subtext: 'Goal: < 1%'
-				};
+	// Error rate: Cloudflare httpRequests1dGroups exposes threats-blocked, not HTTP 5xx counts.
+	// Threats blocked are WAF/security blocks — an unrelated metric. Render '—' until a real
+	// 5xx source is wired in (e.g. httpRequestsAdaptiveGroups). Req 14.2.
+	const errorRateEntry: PerformanceKpiStat = {
+		key: 'errorRate',
+		labelKey: 'performance_kpi_errorRate',
+		value: '—',
+		unit: '%',
+		badgeKey: 'common_status_unknown',
+		badgeClass: 'bg-[#475569]/10 text-[#475569]',
+		subtext: 'performance_kpi_errorRateGoal',
+		subtextIsKey: true
+	};
 
 	return [
 		apdexEntry,
@@ -249,16 +166,18 @@ export function mapToPerformanceKpiStats(
 			unit: '%',
 			badgeKey: uptimeBadgeKey,
 			badgeClass: uptimeBadgeClass,
-			subtext: uptimeSubtext
+			subtext: uptimeSubtext,
+			subtextIsKey: !flyMachines
 		},
 		{
 			key: 'throughput',
 			labelKey: 'performance_kpi_throughput',
-			value: throughputRpm.toLocaleString('cs-CZ'),
+			value: throughputRpm.toLocaleString(),
 			unit: 'req/min',
 			badgeKey: 'performance_kpi_throughputBadge',
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
-			subtext: throughputSubtext
+			subtext: throughputSubtext,
+			subtextIsKey: totalRequests === 0
 		},
 		errorRateEntry
 	];
@@ -289,7 +208,9 @@ export function mapToPerformanceEvents(
 			level,
 			levelKey: isCritical ? 'performance_filters_critical' : 'performance_filters_warning',
 			levelClass: isCritical ? 'bg-error/15 text-error' : 'bg-secondary/15 text-secondary',
-			type: issue.title.toLowerCase().includes('timeout') ? 'Timeout' : 'Error',
+			type: issue.title.toLowerCase().includes('timeout')
+				? m.performance_event_type_timeout()
+				: m.performance_event_type_error(),
 			message: issue.title,
 			endpoint: issue.culprit || undefined,
 			statusKey:
@@ -310,6 +231,11 @@ export function mapToPerformanceEvents(
 					const tsMs = flyTimestampToMs(event.timestamp);
 					const isCritical = event.type === 'kill' || event.type === 'crash';
 
+					const eventType = event.type === 'kill'
+						? m.performance_event_type_oomKill()
+						: event.type === 'crash'
+							? m.performance_event_type_crash()
+							: m.performance_event_type_restart();
 					events.push({
 						_sortMs: tsMs,
 						id: `fly-${machine.id}-${event.timestamp}`,
@@ -317,11 +243,15 @@ export function mapToPerformanceEvents(
 						level: isCritical ? 'critical' : 'warning',
 						levelKey: isCritical ? 'performance_filters_critical' : 'performance_filters_warning',
 						levelClass: isCritical ? 'bg-error/15 text-error' : 'bg-secondary/15 text-secondary',
-						type: event.type === 'kill' ? 'OOM Kill' : event.type === 'crash' ? 'Crash' : 'Restart',
-						message: `Machine ${machine.name} ${event.type} in ${machine.region}`,
+						type: eventType,
+						message: m.performance_event_machineMessage({
+							name: machine.name,
+							eventType: event.type,
+							region: machine.region
+						}),
 						endpoint: machine.name,
-						statusKey: 'common_status_restarted',
-						statusClass: 'bg-success/10 text-success'
+						statusKey: isCritical ? 'common_status_critical' : 'common_status_restarted',
+						statusClass: isCritical ? 'bg-error/10 text-error' : 'bg-success/10 text-success'
 					});
 				}
 			}

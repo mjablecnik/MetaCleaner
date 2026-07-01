@@ -7,6 +7,7 @@ import type {
 	UserStatus
 } from '$lib/repositories/index.js';
 import type { SupabaseTableStatsRaw, SupabaseUserRaw } from '../clients/supabaseClient.js';
+import * as m from '$lib/paraglide/messages.js';
 
 const TABLE_BAR_COLORS = [
 	'bg-[#3b82f6]',
@@ -78,7 +79,7 @@ export function mapToDbKpis(raw: SupabaseTableStatsRaw[]): DbKpi[] {
 			value: storageValue,
 			badgeKey: storageBadgeKey,
 			badgeClass: storageBadgeClass,
-			subtext: `${storagePct}% capacity used`,
+			subtext: m.database_kpi_storageUsed({ pct: storagePct }),
 			unit: storageUnit,
 			max: '/ 8 GB',
 			barWidth: `${storagePct}%`,
@@ -90,7 +91,7 @@ export function mapToDbKpis(raw: SupabaseTableStatsRaw[]): DbKpi[] {
 			value: String(tableCount),
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: `${totalRows.toLocaleString('en-US')} total rows`
+			subtext: m.database_kpi_totalRows({ count: totalRows.toLocaleString() })
 		},
 		{
 			key: 'activeConnections',
@@ -98,7 +99,8 @@ export function mapToDbKpis(raw: SupabaseTableStatsRaw[]): DbKpi[] {
 			value: '—',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'Live stats not available via PostgREST'
+			subtext: 'database_kpi_postgrestNoLive',
+			subtextIsKey: true
 		},
 		{
 			key: 'queryLatency',
@@ -106,7 +108,8 @@ export function mapToDbKpis(raw: SupabaseTableStatsRaw[]): DbKpi[] {
 			value: '—',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: 'Query metrics not available via PostgREST',
+			subtext: 'database_kpi_postgrestNoQuery',
+			subtextIsKey: true,
 			unit: 'ms'
 		}
 	];
@@ -136,37 +139,57 @@ function maskEmail(email: string): string {
 
 function formatRegistered(isoDate: string): string {
 	const d = new Date(isoDate);
-	return `${d.getDate()}. ${d.getMonth() + 1}. ${d.getFullYear()}`;
+	const yyyy = d.getFullYear();
+	const mm = String(d.getMonth() + 1).padStart(2, '0');
+	const dd = String(d.getDate()).padStart(2, '0');
+	return `${yyyy}-${mm}-${dd}`;
 }
 
 function formatLastLogin(lastSignInAt: string | null): string {
 	if (!lastSignInAt) return '—';
 	const diff = Date.now() - new Date(lastSignInAt).getTime();
 	const minutes = Math.floor(diff / (60 * 1000));
-	if (minutes < 2) return 'Just now';
-	if (minutes < 60) return `${minutes} min ago`;
+	if (minutes < 2) return m.users_lastLogin_justNow();
+	if (minutes < 60) return m.users_lastLogin_minAgo({ count: minutes });
 	const hours = Math.floor(minutes / 60);
-	if (hours < 24) return `${hours}h ago`;
+	if (hours < 24) return m.users_lastLogin_hoursAgo({ count: hours });
 	const days = Math.floor(hours / 24);
-	return `${days} days ago`;
+	return m.users_lastLogin_daysAgo({ count: days });
 }
 
-export function mapToUserStats(users: SupabaseUserRaw[], total?: number): UserStat[] {
+export function mapToUserStats(users: SupabaseUserRaw[], total?: number | null): UserStat[] {
 	const now = Date.now();
-	const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+	const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
 
-	const totalCount = total ?? users.length;
+	// GoTrue /auth/v1/admin/users does not always return a total field.
+	// Fall back to the fetched page length so "Total users" never shows 0.
+	const totalCount = total != null ? total : users.length;
 	const onlineCount = users.filter((u) => {
 		if (!u.last_sign_in_at) return false;
 		return now - new Date(u.last_sign_in_at).getTime() < 15 * 60 * 1000;
 	}).length;
-	const newCount = users.filter((u) => new Date(u.created_at).getTime() > thirtyDaysAgo).length;
+	const newCount = users.filter((u) => new Date(u.created_at).getTime() > sevenDaysAgo).length;
+
+	// Auth provider distribution from app_metadata.provider
+	const providerCounts = new Map<string, number>();
+	for (const u of users) {
+		const provider = u.app_metadata?.provider ?? 'unknown';
+		providerCounts.set(provider, (providerCounts.get(provider) ?? 0) + 1);
+	}
+	const sortedProviders = [...providerCounts.entries()].sort((a, b) => b[1] - a[1]);
+	const topProvider = sortedProviders[0]?.[0] ?? '—';
+	const topProviderPct =
+		users.length > 0 && sortedProviders.length > 0
+			? Math.round((sortedProviders[0][1] / users.length) * 100)
+			: 0;
+	const authProviderValue = users.length > 0 ? topProvider : '—';
+	const authProviderTrend = users.length > 0 ? `${topProviderPct}%` : '';
 
 	return [
 		{
 			key: 'totalUsers',
 			labelKey: 'users_stats_totalUsers',
-			value: totalCount.toLocaleString('en-US'),
+			value: totalCount.toLocaleString(),
 			trendKey: 'users_stats_vsLastMonth',
 			trendValue: '',
 			trendPositive: true,
@@ -189,7 +212,7 @@ export function mapToUserStats(users: SupabaseUserRaw[], total?: number): UserSt
 		},
 		{
 			key: 'newRegistrations',
-			labelKey: 'users_stats_newRegistrations',
+			labelKey: 'users_stats_newRegistrations7d',
 			value: String(newCount),
 			trendKey: 'users_stats_vsPreviousPeriod',
 			trendValue: '',
@@ -199,16 +222,15 @@ export function mapToUserStats(users: SupabaseUserRaw[], total?: number): UserSt
 			iconBg: 'bg-secondary/10'
 		},
 		{
-			key: 'avgSessionDuration',
-			labelKey: 'users_stats_avgSessionDuration',
-			value: '—',
-			trendKey: 'users_stats_vsLastMonth',
-			trendValue: '',
+			key: 'authProvider',
+			labelKey: 'users_stats_authProvider',
+			value: authProviderValue,
+			trendKey: 'users_stats_vsPreviousPeriod',
+			trendValue: authProviderTrend,
 			trendPositive: true,
-			icon: 'fa-bolt',
-			iconColor: 'text-purple-400',
-			iconBg: 'bg-purple-500/10',
-			subtextKey: 'users_stats_powerUsers'
+			icon: 'fa-shield-halved',
+			iconColor: 'text-[#f97316]',
+			iconBg: 'bg-[#f97316]/10'
 		}
 	];
 }
@@ -222,6 +244,8 @@ export function mapToUsers(raw: SupabaseUserRaw[]): User[] {
 		status: getUserStatus(user.last_sign_in_at),
 		registered: formatRegistered(user.created_at),
 		lastLogin: formatLastLogin(user.last_sign_in_at),
+		// GoTrue admin API exposes no session count, location, or role data.
+		// These columns have no real source; components should treat them as placeholders.
 		sessions: 0,
 		location: '—',
 		role: 'Viewer' as UserRole

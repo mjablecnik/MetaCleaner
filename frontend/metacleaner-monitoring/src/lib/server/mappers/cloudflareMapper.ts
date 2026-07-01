@@ -5,6 +5,7 @@ import type {
 	HttpStatusDistribution
 } from '$lib/repositories/index.js';
 import type { CfAnalyticsRaw, CfGeoRaw, CfFirewallEventRaw } from '../clients/cloudflareClient.js';
+import * as m from '$lib/paraglide/messages.js';
 
 const GEO_COLORS = ['#3b82f6', '#22c55e', '#8b5cf6', '#f97316', '#ec4899'];
 const GEO_OTHER_COLOR = '#475569';
@@ -175,7 +176,7 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
 			subtext:
 				totalCachedRequests > 0
-					? `${formatNumber(totalCachedRequests)} from cache`
+					? m.edge_kpi_cachedRequests({ count: formatNumber(totalCachedRequests) })
 					: 'common_labels_noData',
 			subtextIsKey: totalCachedRequests === 0
 		},
@@ -186,7 +187,7 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			unit: 'GB',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: `${totalBandwidthGb.toFixed(1)} GB total · ${bandwidthSavePct}% cached`,
+			subtext: m.edge_kpi_bandwidthDetail({ gb: totalBandwidthGb.toFixed(1), pct: bandwidthSavePct }),
 			barWidth: `${bandwidthSavePct}%`,
 			barClass: 'bg-[#3b82f6]'
 		},
@@ -228,7 +229,7 @@ export function mapToGeoDistribution(raw: CfGeoRaw): GeoDistribution[] {
 	if (rest.length > 0) {
 		const topPctSum = result.reduce((sum, c) => sum + c.percent, 0);
 		result.push({
-			country: 'Other',
+			country: m.edge_geo_other(),
 			code: 'XX',
 			flag: '🌍',
 			percent: Math.max(0, 100 - topPctSum),

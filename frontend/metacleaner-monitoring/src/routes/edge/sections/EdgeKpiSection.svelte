@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { t } from '$lib/i18n';
-	import { getEdgeSecondaryKpis } from '$lib/repositories/edgeRepository';
 	import type { EdgeKpiStat } from '$lib/repositories/edgeRepository';
 
 	let { kpis }: { kpis: EdgeKpiStat[] } = $props();
 
 	const edgeKpis = $derived(kpis);
-	const secondaryKpis = getEdgeSecondaryKpis();
 </script>
 
 <!-- Desktop: KPI Stats Row 1 -->
@@ -52,25 +50,9 @@
 	{/each}
 </section>
 
-<!-- Desktop: KPI Stats Row 2 -->
-<section class="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-	{#each secondaryKpis as kpi (kpi.key)}
-		<div class="bg-card border border-surface rounded-xl p-5">
-			<div class="flex items-center gap-3 mb-3">
-				<div class="w-8 h-8 rounded-lg {kpi.iconBg} flex items-center justify-center">
-					<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
-				</div>
-				<h3 class="text-textSec text-sm font-medium">{t(kpi.labelKey)}</h3>
-			</div>
-			<div class="text-2xl font-bold text-textMain">
-				{kpi.value}{#if kpi.unit}
-					<span class="text-sm font-normal text-textSec">{kpi.unit}</span>{/if}
-			</div>
-			<p class="text-xs text-textSec mt-1">
-				{kpi.subtextIsKey ? t(kpi.subtext) : kpi.subtext}
-			</p>
-		</div>
-	{/each}
+<!-- Desktop: KPI Stats Row 2 — no real data source available -->
+<section class="hidden lg:block bg-card border border-surface rounded-xl p-5">
+	<p class="text-sm text-textSec text-center py-4">{t('common_labels_noData')}</p>
 </section>
 
 <!-- Mobile: KPI Primary Row -->
@@ -163,44 +145,10 @@
 				</div>
 			{/if}
 		{/each}
-		{#each secondaryKpis as kpi (kpi.key)}
-			{#if kpi.key === 'avgTtfb'}
-				<div class="bg-card border border-surface rounded-xl p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
-							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
-						</div>
-						<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
-					</div>
-					<div class="text-2xl font-bold text-textMain">
-						{kpi.value} <span class="text-xs font-normal text-textSec">{kpi.unit}</span>
-					</div>
-					<p class="text-xs text-textSec mt-1">-12ms vs. origin</p>
-				</div>
-			{:else if kpi.key === 'activePop'}
-				<div class="bg-card border border-surface rounded-xl p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
-							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
-						</div>
-						<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
-					</div>
-					<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
-					<p class="text-xs text-textSec mt-1">{t('edge_kpi_popSubtextMobile')}</p>
-				</div>
-			{:else if kpi.key === 'wafRules'}
-				<div class="bg-card border border-surface rounded-xl p-4">
-					<div class="flex items-center gap-2 mb-2">
-						<div class="w-6 h-6 rounded-md {kpi.iconBg} flex items-center justify-center">
-							<i class="fa-solid {kpi.icon} {kpi.iconColor} text-xs"></i>
-						</div>
-						<h3 class="text-textSec text-xs font-medium">{t(kpi.labelKey)}</h3>
-					</div>
-					<div class="text-2xl font-bold text-textMain">{kpi.value}</div>
-					<p class="text-xs text-textSec mt-1">3 nová dnes</p>
-				</div>
-			{/if}
-		{/each}
+		<!-- Secondary KPIs — no real data source available -->
+		<div class="col-span-2 bg-card border border-surface rounded-xl p-4">
+			<p class="text-sm text-textSec text-center py-2">{t('common_labels_noData')}</p>
+		</div>
 	</section>
 
 	<!-- Mobile: SSL/TLS Banner -->

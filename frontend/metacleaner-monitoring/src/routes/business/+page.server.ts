@@ -1,5 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 import type { BusinessPageData } from '$lib/types/pageData.js';
+import type { SectionResult } from '$lib/server/clients/types.js';
+import type { ConversionFunnelStep } from '$lib/repositories/businessRepository.js';
 import { getServiceConfigs } from '$lib/server/config.js';
 import {
 	getActiveSubscriptions,
@@ -37,7 +39,7 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 	const kpis = await callSection(async () => {
 		if (activeSettled.status === 'rejected') throw activeSettled.reason;
 		const canceledSubs = canceledSettled.status === 'fulfilled' ? canceledSettled.value : [];
-		return mapToBusinessKpiStats(activeSettled.value, canceledSubs);
+		return mapToBusinessKpiStats(activeSettled.value, canceledSubs, since);
 	});
 
 	const planRevenue = await callSection(async () => {
@@ -46,7 +48,7 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 		return mapToPlanRevenue(activeSettled.value, pricesSettled.value);
 	});
 
-	const conversionFunnel = notConfigured([]);
+	const conversionFunnel: SectionResult<ConversionFunnelStep[]> = { status: 'ok', data: [] };
 
 	return { kpis, planRevenue, conversionFunnel } satisfies BusinessPageData;
 };

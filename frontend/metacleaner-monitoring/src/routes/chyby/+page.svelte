@@ -2,7 +2,6 @@
 	import { base } from '$app/paths';
 	import { invalidate } from '$app/navigation';
 	import { t } from '$lib/i18n';
-	import { getErrorsStats } from '$lib/repositories/errorsRepository';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import MobileBottomNav from '$lib/shared/components/MobileBottomNav.svelte';
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
@@ -15,8 +14,6 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-
-	const errStats = getErrorsStats();
 
 	const navItems = [
 		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
@@ -34,11 +31,10 @@
 
 {#snippet statusBadge()}
 	<div
-		class="flex items-center gap-2 px-3 py-1.5 bg-error/10 border border-error/20 rounded-lg text-error text-sm font-medium"
+		class="flex items-center gap-2 px-3 py-1.5 bg-surface border border-surface rounded-lg text-textSec text-sm font-medium"
 	>
-		<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
-		{errStats.activeIncidents}
-		{t('errors_status_activeIncidents')}
+		<div class="w-2 h-2 rounded-full bg-textSec"></div>
+		{t('common_labels_noData')}
 	</div>
 {/snippet}
 
@@ -73,20 +69,15 @@
 				<option>{t('common_timeRange_last30d')}</option>
 			</select>
 		</div>
-		<div class="p-3 rounded-xl bg-error/10 border border-error/30 flex items-center gap-3">
+		<div class="p-3 rounded-xl bg-surface border border-surface/60 flex items-center gap-3">
 			<div
-				class="w-8 h-8 rounded-full bg-error/20 border border-error/40 flex items-center justify-center flex-shrink-0"
+				class="w-8 h-8 rounded-full bg-surface flex items-center justify-center flex-shrink-0"
 			>
-				<i class="fa-solid fa-triangle-exclamation text-error text-sm"></i>
+				<i class="fa-solid fa-triangle-exclamation text-textSec text-sm"></i>
 			</div>
 			<div class="flex-1 min-w-0">
-				<p class="text-sm font-semibold text-textMain">
-					{errStats.activeIncidents}
-					{t('errors_status_activeIncidents')}
-				</p>
-				<p class="text-xs text-textSec truncate">{errStats.bannerDescription}</p>
+				<p class="text-sm font-semibold text-textMain">{t('common_labels_noData')}</p>
 			</div>
-			<i class="fa-solid fa-chevron-right text-textSec text-xs flex-shrink-0"></i>
 		</div>
 	</div>
 {/snippet}

@@ -541,5 +541,62 @@
 	"common_sectionError_service_unavailable_description": "The service is temporarily unavailable.",
 	"common_sectionError_request_error_title": "Request Failed",
 	"common_sectionError_request_error_description": "An unexpected error occurred while fetching data.",
-	"common_sectionError_retry": "Retry"
+	"common_sectionError_retry": "Retry",
+
+	"performance_kpi_apdexNoData": "No latency data · Goal: ≥ 0.90 · Threshold: 500ms",
+	"performance_kpi_noCloudflareData": "No Cloudflare data",
+	"performance_kpi_noFlyData": "No Fly.io data",
+	"performance_kpi_errorRateGoal": "Goal: < 1%",
+
+	"database_kpi_postgrestNoLive": "Live stats not available via PostgREST",
+	"database_kpi_postgrestNoQuery": "Query metrics not available via PostgREST",
+
+	"availability_outages_none": "0 outages",
+
+	"edge_geo_other": "Other",
+
+	"users_lastLogin_justNow": "Just now",
+	"users_lastLogin_minAgo": "{count} min ago",
+	"users_lastLogin_hoursAgo": "{count}h ago",
+	"users_lastLogin_daysAgo": "{count} days ago",
+
+	"common_labels_todayAt": "Today {time}",
+	"common_labels_yesterdayAt": "Yesterday {time}",
+	"common_labels_daysAgoAt": "{days} days ago {time}",
+
+	"users_stats_newRegistrations7d": "New registrations (7d)",
+	"users_stats_authProvider": "Auth provider distribution",
+	"business_funnel_dataNotAvailable": "Conversion funnel data not available",
+
+	"performance_endpoints_notAvailable": "No endpoint latency data available",
+
+	"runtime_kpi_cpuSubtext": "{cpus} CPUs total · {machines} machines",
+	"runtime_kpi_ramSubtext": "{gb} GB total allocated",
+	"runtime_kpi_uptimeSubtext": "{online} / {total} machines online",
+	"runtime_kpi_restartsSubtext": "{total} machines total",
+	"runtime_event_oomKill": "OOM Kill",
+	"runtime_event_crash": "Crash",
+	"runtime_event_restart": "Restart",
+	"runtime_event_health": "Health",
+	"runtime_event_killedMessage": "Machine {name} killed in {region}",
+	"runtime_event_crashedMessage": "Machine {name} crashed in {region}",
+	"runtime_event_exitedMessage": "Machine {name} exited with status: {status}",
+	"runtime_event_restartedMessage": "Machine {name} restarted in {region}",
+	"runtime_event_healthFailMessage": "Health checks failing on {name}: {checks}",
+	"runtime_deploy_machineEvent": "Machine {name} {eventType}",
+
+	"performance_kpi_requestsTotal": "{count} requests / 24h",
+	"performance_kpi_machinesMonitored": "{count} machines monitored",
+	"performance_event_type_timeout": "Timeout",
+	"performance_event_type_error": "Error",
+	"performance_event_type_oomKill": "OOM Kill",
+	"performance_event_type_crash": "Crash",
+	"performance_event_type_restart": "Restart",
+	"performance_event_machineMessage": "Machine {name} {eventType} in {region}",
+
+	"database_kpi_storageUsed": "{pct}% used",
+	"database_kpi_totalRows": "{count} total rows",
+
+	"edge_kpi_cachedRequests": "{count} from cache",
+	"edge_kpi_bandwidthDetail": "{gb} GB · {pct}% cached"
 }

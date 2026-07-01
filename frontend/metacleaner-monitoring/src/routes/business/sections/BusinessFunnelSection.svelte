@@ -82,7 +82,7 @@
 	<div class="bg-card border border-surface rounded-xl p-5 col-span-1">
 		<h3 class="text-lg font-semibold text-textMain mb-1">{t('business_funnel_title')}</h3>
 		<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
-		{#if conversionFunnel !== null}
+		{#if conversionFunnel && conversionFunnel.length > 0}
 			<div class="space-y-3">
 				{#each conversionFunnel as step (step.labelKey)}
 					<FunnelStep
@@ -104,7 +104,7 @@
 				</div>
 			</div>
 		{:else}
-			<p class="text-sm text-textSec">{t('common_labels_noData')}</p>
+			<p class="text-sm text-textSec">{t('business_funnel_dataNotAvailable')}</p>
 		{/if}
 	</div>
 	<div class="bg-card border border-surface rounded-xl p-5 col-span-2">
@@ -138,7 +138,7 @@
 	<section class="bg-card border border-surface rounded-xl p-4">
 		<h3 class="text-sm font-semibold text-textMain mb-0.5">{t('business_funnel_title')}</h3>
 		<p class="text-xs text-textSec mb-4">{t('business_funnel_subtitle')}</p>
-		{#if conversionFunnel !== null}
+		{#if conversionFunnel && conversionFunnel.length > 0}
 			<div class="space-y-3">
 				{#each conversionFunnel as step (step.labelKey)}
 					<FunnelStep
@@ -160,7 +160,7 @@
 				</div>
 			</div>
 		{:else}
-			<p class="text-sm text-textSec">{t('common_labels_noData')}</p>
+			<p class="text-sm text-textSec">{t('business_funnel_dataNotAvailable')}</p>
 		{/if}
 	</section>
 
