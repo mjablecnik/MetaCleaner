@@ -215,7 +215,7 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 		);
 	});
 
-	it('Apdex value is always a number in [0, 1]', () => {
+	it('Apdex value is always "—" (no latency source wired in)', () => {
 		fc.assert(
 			fc.property(
 				fc.option(cfAnalyticsArb, { nil: null }),
@@ -225,17 +225,16 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 					const result = mapToPerformanceKpiStats(cfData, flyData, issues);
 					const apdexKpi = result.find((kpi) => kpi.key === 'apdex');
 					expect(apdexKpi).toBeDefined();
-					const apdexVal = parseFloat(apdexKpi!.value);
-					expect(isNaN(apdexVal)).toBe(false);
-					expect(apdexVal).toBeGreaterThanOrEqual(0);
-					expect(apdexVal).toBeLessThanOrEqual(1);
+					// No real latency source → always renders '—' rather than a fabricated value
+					expect(apdexKpi!.value).toBe('—');
+					expect(apdexKpi!.barWidth).toBeUndefined();
 				}
 			),
 			{ numRuns: 200 }
 		);
 	});
 
-	it('error rate value is always a non-negative number', () => {
+	it('error rate is "—" when no Cloudflare data (≤1000 requests), numeric otherwise', () => {
 		fc.assert(
 			fc.property(
 				fc.option(cfAnalyticsArb, { nil: null }),
@@ -245,7 +244,9 @@ describe('Property 9: Performance KPI Stats Invariants', () => {
 					const result = mapToPerformanceKpiStats(cfData, flyData, issues);
 					const errKpi = result.find((kpi) => kpi.key === 'errorRate');
 					expect(errKpi).toBeDefined();
-					const errVal = parseFloat(errKpi!.value);
+					const val = errKpi!.value;
+					if (val === '—') return; // No CF data — honest empty state
+					const errVal = parseFloat(val);
 					expect(isNaN(errVal)).toBe(false);
 					expect(errVal).toBeGreaterThanOrEqual(0);
 				}

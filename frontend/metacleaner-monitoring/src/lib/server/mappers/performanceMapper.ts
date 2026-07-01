@@ -158,7 +158,7 @@ export function mapSentryIssuesToSlowEndpoints(issues: SentryIssueRaw[]): SlowEn
 export function mapToPerformanceKpiStats(
 	cfAnalytics: CfAnalyticsRaw | null,
 	flyMachines: Map<string, FlyMachineRaw[]> | null,
-	issues: SentryIssueRaw[]
+	_issues: SentryIssueRaw[]
 ): PerformanceKpiStat[] {
 	let totalRequests = 0;
 	let totalThreats = 0;
@@ -171,12 +171,11 @@ export function mapToPerformanceKpiStats(
 	}
 
 	const throughputRpm = totalRequests > 0 ? Math.round(totalRequests / 1440) : 0;
-	const cfErrorRatePct = totalRequests > 0 ? (totalThreats / totalRequests) * 100 : 0;
 
-	const criticalCount = issues.filter((i) => i.level === 'critical' || i.level === 'error').length;
-	const sentryErrorRatePct = Math.min(100, criticalCount * 0.5);
-	const errorRatePct =
-		totalRequests > 1000 ? Math.max(cfErrorRatePct, sentryErrorRatePct) : sentryErrorRatePct;
+	// Error rate: only use real Cloudflare data (threats/total); show '—' when no CF data.
+	// Do not synthesize from Sentry issue counts — that is a fabricated heuristic.
+	const hasCfData = totalRequests > 1000;
+	const cfErrorRatePct = hasCfData ? (totalThreats / totalRequests) * 100 : null;
 
 	let uptimePct = 100;
 	let machineCount = 0;
@@ -193,27 +192,6 @@ export function mapToPerformanceKpiStats(
 		if (total > 0) uptimePct = (online / total) * 100;
 	}
 
-	// No per-request latency buckets are available from Fly Machines API or Cloudflare Analytics.
-	// computeApdex(0, 0, 0) returns 1.0 — the spec-defined no-data sentinel — rather than a heuristic.
-	// Wire in real satisfied/tolerating/total counts here once a latency source is integrated.
-	const apdex = computeApdex(0, 0, 0);
-	const apdexStr = apdex.toFixed(2);
-	const apdexBadgeKey =
-		apdex >= 0.94
-			? 'common_status_excellent'
-			: apdex >= 0.85
-				? 'common_status_ok'
-				: 'common_status_warning';
-	const apdexBadgeClass =
-		apdex >= 0.85 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary';
-	const apdexBarClass = apdex >= 0.85 ? 'bg-success' : apdex >= 0.7 ? 'bg-secondary' : 'bg-error';
-
-	const errorRateStr = errorRatePct.toFixed(1);
-	const errorBadgeKey = errorRatePct < 1 ? 'common_status_ok' : 'common_status_warning';
-	const errorBadgeClass =
-		errorRatePct < 1 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary';
-	const errorValueClass: string | undefined = errorRatePct >= 1 ? 'text-secondary' : undefined;
-
 	const throughputSubtext =
 		totalRequests > 0
 			? `${totalRequests.toLocaleString('cs-CZ')} requests / 24h`
@@ -227,17 +205,43 @@ export function mapToPerformanceKpiStats(
 		? `${machineCount} machine${machineCount !== 1 ? 's' : ''} monitored`
 		: 'No Fly.io data';
 
+	// Apdex: no per-request latency source is wired in; render '—' rather than fabricating
+	// a perfect score from computeApdex(0,0,0). Wire real satisfied/tolerating/total counts
+	// here once a latency source (e.g. Cloudflare httpRequestsAdaptiveGroups) is available.
+	const apdexEntry: PerformanceKpiStat = {
+		key: 'apdex',
+		labelKey: 'performance_kpi_apdex',
+		value: '—',
+		badgeKey: 'common_status_unknown',
+		badgeClass: 'bg-[#475569]/10 text-[#475569]',
+		subtext: 'No latency data · Goal: ≥ 0.90 · Threshold: 500ms'
+	};
+
+	const errorRateEntry: PerformanceKpiStat =
+		cfErrorRatePct !== null
+			? {
+					key: 'errorRate',
+					labelKey: 'performance_kpi_errorRate',
+					value: cfErrorRatePct.toFixed(1),
+					unit: '%',
+					badgeKey: cfErrorRatePct < 1 ? 'common_status_ok' : 'common_status_warning',
+					badgeClass:
+						cfErrorRatePct < 1 ? 'bg-success/10 text-success' : 'bg-secondary/10 text-secondary',
+					subtext: `Goal: < 1%${totalThreats > 0 ? ` · ${totalThreats} threats blocked` : ''}`,
+					valueClass: cfErrorRatePct >= 1 ? 'text-secondary' : undefined
+				}
+			: {
+					key: 'errorRate',
+					labelKey: 'performance_kpi_errorRate',
+					value: '—',
+					unit: '%',
+					badgeKey: 'common_status_unknown',
+					badgeClass: 'bg-[#475569]/10 text-[#475569]',
+					subtext: 'Goal: < 1%'
+				};
+
 	return [
-		{
-			key: 'apdex',
-			labelKey: 'performance_kpi_apdex',
-			value: apdexStr,
-			badgeKey: apdexBadgeKey,
-			badgeClass: apdexBadgeClass,
-			subtext: 'No latency data · Goal: ≥ 0.90 · Threshold: 500ms',
-			barWidth: `${(apdex * 100).toFixed(0)}%`,
-			barClass: apdexBarClass
-		},
+		apdexEntry,
 		{
 			key: 'uptime',
 			labelKey: 'runtime_kpi_uptime30d',
@@ -256,16 +260,7 @@ export function mapToPerformanceKpiStats(
 			badgeClass: 'bg-[#3b82f6]/10 text-[#3b82f6]',
 			subtext: throughputSubtext
 		},
-		{
-			key: 'errorRate',
-			labelKey: 'performance_kpi_errorRate',
-			value: errorRateStr,
-			unit: '%',
-			badgeKey: errorBadgeKey,
-			badgeClass: errorBadgeClass,
-			subtext: `Goal: < 1%${totalThreats > 0 ? ` · ${totalThreats} threats blocked` : ''}`,
-			valueClass: errorValueClass
-		}
+		errorRateEntry
 	];
 }
 

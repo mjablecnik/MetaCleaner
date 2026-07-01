@@ -1,0 +1,13 @@
+# Tasks — metacleaner-monitoring code review (2026-07-01)
+
+Derived from `.agents/tmp/CODE_REVIEW.md`. Sorted by severity.
+
+- [x] 1. [HIGH] Stop fabricating Performance KPIs: render Apdex as `'—'` (no "excellent" badge, no full green bar) when no latency source exists, and derive error rate from real 5xx data or show `'—'` instead of `Math.min(100, criticalCount * 0.5)` — `src/lib/server/mappers/performanceMapper.ts` (`mapToPerformanceKpiStats`).
+- [ ] 2. [MEDIUM] Remove i18n bypass in mappers: move all hardcoded English/Czech strings (subtext/message/timestamp/commitMessage, "Today/Yesterday/… days ago", "machines online", "Live stats not available via PostgREST", "min ago", etc.) into `messages/en.json` + `messages/cs.json` and emit keys; drop hardcoded `'cs-CZ'`/`'en-US'` locale literals and the hardcoded Czech date format — `performanceMapper.ts`, `cloudflareMapper.ts`, `flyMapper.ts`, `supabaseMapper.ts`.
+- [ ] 3. [MEDIUM] Implement or honestly empty-state the Performance slow-endpoints table (Req 14.1): wire a real per-endpoint latency source into `mapToSlowEndpoints`, or show an explicit "not available" state; delete unused `mapSentryIssuesToSlowEndpoints`/`estimateAvgMs` fabrication code — `src/routes/performance/+page.server.ts`, `performanceMapper.ts`.
+- [ ] 4. [MEDIUM] Fix Users stats (Req 9.2): count new registrations over the last **7 days** (not 30), and add auth-provider distribution (% per provider) from `app_metadata.provider` — `src/lib/server/mappers/supabaseMapper.ts` (`mapToUserStats`).
+- [ ] 5. [MEDIUM] Replace `conversionFunnel = notConfigured([])` with a proper "data not available" state (message, no empty env-var list) or a real funnel; remove dead `getConversionFunnel()` mock — `src/routes/business/+page.server.ts`, `businessRepository.ts`.
+- [ ] 6. [MEDIUM] Align churn-rate computation with Req 8.2 (canceled-in-last-30-days over active-at-start-of-period), or document the approximation — `src/lib/server/mappers/stripeMapper.ts` (`computeChurnRate`).
+- [ ] 7. [LOW] Dashboard: return `'N/A'` for failed-jobs percentage when `totalJobs === 0` (ratios → N/A per Req 13.5) — `src/routes/+page.server.ts`.
+- [ ] 8. [LOW] `getUsers`: treat absent/`0` `total` as unknown and fall back to `users.length` (nullish-vs-zero bug) so total-users stat isn't shown as 0 — `src/lib/server/clients/supabaseClient.ts`, `supabaseMapper.ts`.
+- [ ] 9. [LOW] Remove the non-existent `runtime_deploy_failed` i18n key from `DeployEntry.statusKey` (or add the key), and hide/annotate the constant placeholder user columns (`role: 'Viewer'`, `sessions: 0`, `location: '—'`) — `flyMapper.ts`, `supabaseMapper.ts`.
