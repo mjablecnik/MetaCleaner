@@ -1,5 +1,11 @@
 # Memory
 
+## metacleaner-web: strict-mode violations from nav+footer ambiguity and partial regex matches
+- Project: metacleaner-web
+- Problem: Four E2E tests failed with strict-mode violations or element-not-found: (1) `getByText(/Privacy is/)` matched both hero `<span>Privacy is</span>` AND `about_story_p3` "Privacy isn't a feature…" (regex substring match). (2) `getByText('404', { exact: true })` matched both the TerminalCard footer badge `<span>404</span>` AND the large `<p class="four-zero-four">404</p>`. (3) `getByRole('link', { name: 'Try Free', exact: true })` found nothing — the only "Try Free" link is inside a QuickLinkCard that has a Font Awesome icon which breaks Playwright's accessible-name matching (same pattern as the FA-button MEMORY entry). (4) `getByRole('link', { name: 'Features', exact: true }).click()` resolved to 2 elements: the desktop nav link and the desktop footer link (no icons, exact text match).
+- Solution: (1) Use `getByText('Privacy is', { exact: true })` to match only the span with exactly that text. (2) Use `locator('p.four-zero-four')` to target the CSS class on the large number. (3) Scope all QuickLinksGrid assertions to the container via `page.getByText('Quick links', { exact: true }).locator('xpath=..')` and use `.filter({ hasText })` for icon-wrapped links. (4) Use `.first()` on the click locator since any "Features" link on the 404 page navigates to /features (the test verifies navigation, not the click source).
+- Source: create-tests, 2026-07-01
+
 ## dashboardAlerts: duplicate Sentry issue IDs cause sort test failure
 - Project: metacleaner-monitoring
 - Problem: `mergeAndSortAlerts` allows duplicate alert IDs when Sentry issues have the same `id`. The property test reconstructs timestamps via ID lookup, overwriting the map for duplicate IDs, then seeing a wrong timestamp for the second occurrence — causing a false "not sorted descending" assertion failure.

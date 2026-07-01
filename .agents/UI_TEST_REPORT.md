@@ -1,153 +1,86 @@
 # Test Report
 Created: 2026-06-19T05:26:00+00:00
-Updated: 2026-06-30T01:04:08+00:00
+Updated: 2026-07-01T16:42:00+00:00
 
-Project: **frontend/metacleaner-web** (SvelteKit 2 / Svelte 5 + Vite 8 + Tailwind v4,
-static marketing site). E2E framework: **Playwright** (`**/*.e2e.{ts,js}`, build +
-preview on port 4173, headless Chromium).
+Project: **frontend/metacleaner-web** (SvelteKit 2 / Svelte 5 + Vite + Tailwind v4,
+Paraglide i18n, adapter-static). E2E via Playwright (`**/*.e2e.{ts,js}`, build + `vite preview`
+on :4173, headless Chromium). Run command: `npx playwright test`.
 
 ## Summary
-- Total E2E tests: 60
-- Passing E2E tests: 59
-- Failing E2E tests: 1
-- Total component stories: 112 (across 35 `*.stories.svelte` files)
-- Passing component stories: 0
-- Failing component stories: 0
-
-> **Component stories are not executed.** 35 `*.stories.svelte` files (112 individual
-> `<Story>` states) exist and use Storybook CSF (`@storybook/addon-svelte-csf`), but
-> **no component-catalog runner is installed** (no Storybook / Ladle / Histoire in
-> `package.json`, no `.storybook/` config, no catalog binary). They therefore neither
-> pass nor fail — they are authored but unrunnable. See Notes.
+- Total E2E tests: 97
+- Passing E2E tests: 93
+- Failing E2E tests: 4
+- Total component stories: 0 (no runner — see note below; 35 `*.stories.svelte` source files exist)
+- Passing component stories: 0 (N/A — no catalog runner installed)
+- Failing component stories: 0 (N/A — no catalog runner installed)
 
 ## E2E Test Coverage
 | Page/Route | Test File | Status |
 |---|---|---|
 | `/` (home) | `e2e/home.e2e.ts` | ✅ Pass (9/9) |
 | `/features` | `e2e/features.e2e.ts` | ✅ Pass (4/4) |
-| `/pricing` | `e2e/pricing.e2e.ts` | ❌ Fail (9/10 — 1 failing) |
-| Cross-page navigation (navbar + footer) | `e2e/navigation.e2e.ts` | ✅ Pass (12/12) |
-| Mobile menu / hamburger (drawer variant) | `e2e/mobile-menu.e2e.ts` | ✅ Pass (9/9) |
-| Responsive layout (375px / 1280px) | `e2e/responsive.e2e.ts` | ✅ Pass (16/16) |
+| `/pricing` | `e2e/pricing.e2e.ts` | ✅ Pass (10/10) |
+| `/about` (+ contact form) | `e2e/about.e2e.ts` | ⚠️ Partial (8/9 — 1 fail) |
+| `/privacy` | `e2e/privacy.e2e.ts` | ✅ Pass (3/3) |
+| `/terms` | `e2e/terms.e2e.ts` | ✅ Pass (3/3) |
+| 404 / error (`+error.svelte`) | `e2e/error.e2e.ts` | ⚠️ Partial (3/6 — 3 fail) |
+| Cross-page navigation (navbar + footer legal/company links) | `e2e/navigation.e2e.ts` | ✅ Pass (16/16) |
+| Mobile menu / hamburger drawer | `e2e/mobile-menu.e2e.ts` | ✅ Pass (9/9) |
+| Responsive layout (375px / 1280px, all 6 pages) | `e2e/responsive.e2e.ts` | ✅ Pass (28/28) |
 
-The three application routes with dedicated suites (`/`, `/features`, `/pricing`) plus
-the two cross-cutting behaviour suites (navigation, mobile-menu) and the responsive
-suite are all green except for a single pricing assertion (see Notes). Routes
-`/about`, `/privacy`, `/terms`, and the `+error.svelte` error page have **no** E2E
-coverage.
+Route coverage: **every** page/route (`/`, `/features`, `/pricing`, `/about`, `/privacy`,
+`/terms`, 404) has a dedicated E2E suite, plus cross-cutting navigation, mobile-menu, and
+responsive suites. `/sitemap.xml` is a server endpoint covered by a Vitest unit test
+(`src/routes/sitemap.xml/__tests__/server.test.ts`), not E2E.
 
 ## Component Test Coverage
-No runner executes these; "Status" reflects authored coverage only (⚠️ Not run).
+No component-catalog test runner is installed. There are **35 `*.stories.svelte`** files
+(Storybook CSF, `@storybook/addon-svelte-csf` imports), but **Storybook / Ladle / Histoire are
+not dependencies and there is no `.storybook/` config**, so the stories cannot be built or
+run as tests. Per the pipeline rules, no component catalog is detected → no component
+stories are executed, and no `COMPONENT_TESTS.md` / `COMPONENT_TASKS.md` were produced.
 
 | Component | Story File | States Covered | Status |
 |---|---|---|---|
-| LanguageSwitcher | `components/LanguageSwitcher.stories.svelte` | Desktop, Mobile | ⚠️ Not run |
-| BrandLogo | `elements/BrandLogo.stories.svelte` | Small, Medium, Large | ⚠️ Not run |
-| CheckBullet | `elements/CheckBullet.stories.svelte` | Green, Blue Emphasized, Blue Emphasized Small, Extra small | ⚠️ Not run |
-| CtaButton | `elements/CtaButton.stories.svelte` | Primary, Secondary, Blue, Outline, Disabled, Full Width Primary, Full Width Blue, Link | ⚠️ Not run |
-| FooterBottomBar | `elements/FooterBottomBar.stories.svelte` | WithLinks, WithMadeWith | ⚠️ Not run |
-| FooterBrand | `elements/FooterBrand.stories.svelte` | Default | ⚠️ Not run |
-| FooterColumn | `elements/FooterColumn.stories.svelte` | Product, Company, Legal | ⚠️ Not run |
-| FormatBadge | `elements/FormatBadge.stories.svelte` | JPG, PNG, HEIC, WEBP, Small, Extra small | ⚠️ Not run |
-| GradientText | `elements/GradientText.stories.svelte` | Heading, Inline Text, Large Heading | ⚠️ Not run |
-| IconBadge | `elements/IconBadge.stories.svelte` | Tinted (Blue/Green/Red/Orange), Solid (Blue/Green), Circle, Rounded, sizes Small–Extra Large | ⚠️ Not run |
-| NavLink | `elements/NavLink.stories.svelte` | Default, Active | ⚠️ Not run |
-| SectionHeading | `elements/SectionHeading.stories.svelte` | Large/Small Eyebrow, Blue/Orange Eyebrow, No Eyebrow, No Subtitle | ⚠️ Not run |
-| MobileMenu | `shared/MobileMenu.stories.svelte` | Drawer Open, Dropdown Open (Features/Pricing), Dropdown Closed | ⚠️ Not run |
-| MobileNavbar | `shared/MobileNavbar.stories.svelte` | Closed, Open | ⚠️ Not run |
-| SiteNavbar | `shared/SiteNavbar.stories.svelte` | Home Active, Features Active, Pricing Active | ⚠️ Not run |
-| AudienceCard | `(home)/components/AudienceCard.stories.svelte` | Journalist, Photographer | ⚠️ Not run |
-| FaqAccordionItem | `(home)/components/FaqAccordionItem.stories.svelte` | Collapsed | ⚠️ Not run |
-| MetadataComparisonCard | `(home)/components/MetadataComparisonCard.stories.svelte` | Desktop/Mobile × Before/After | ⚠️ Not run |
-| MetadataFieldRow | `(home)/components/MetadataFieldRow.stories.svelte` | Desktop/Mobile × Before/After | ⚠️ Not run |
-| RiskStatCard | `(home)/components/RiskStatCard.stories.svelte` | Desktop/Mobile × Red/Orange/Blue | ⚠️ Not run |
-| StepCard | `(home)/components/StepCard.stories.svelte` | Desktop/Mobile × Step 1–3 | ⚠️ Not run |
-| UploadCard | `(home)/components/UploadCard.stories.svelte` | Desktop, Mobile | ⚠️ Not run |
-| AudienceSection | `(home)/sections/AudienceSection.stories.svelte` | Default | ⚠️ Not run |
-| FaqSection | `(home)/sections/FaqSection.stories.svelte` | Default | ⚠️ Not run |
-| HeroSection (home) | `(home)/sections/HeroSection.stories.svelte` | Default | ⚠️ Not run |
-| HowItWorksSection | `(home)/sections/HowItWorksSection.stories.svelte` | Default | ⚠️ Not run |
-| WhyItMattersSection | `(home)/sections/WhyItMattersSection.stories.svelte` | Default | ⚠️ Not run |
-| C2paIllustration | `features/components/C2paIllustration.stories.svelte` | Default | ⚠️ Not run |
-| ExifIllustration | `features/components/ExifIllustration.stories.svelte` | Default | ⚠️ Not run |
-| FeatureCard | `features/components/FeatureCard.stories.svelte` | Formats (brand-blue), Bullets (brand-orange) | ⚠️ Not run |
-| FeatureRow | `features/components/FeatureRow.stories.svelte` | LTR/RTL × Formats/Bullets × Image/Illustration | ⚠️ Not run |
-| FormatPill | `features/components/FormatPill.stories.svelte` | Red/Orange/Blue/Green/Muted × desktop/mobile | ⚠️ Not run |
-| FeaturesCtaSection | `features/sections/FeaturesCtaSection.stories.svelte` | Default | ⚠️ Not run |
-| FeaturesHeaderSection | `features/sections/FeaturesHeaderSection.stories.svelte` | Default | ⚠️ Not run |
-| FeaturesShowcaseSection | `features/sections/FeaturesShowcaseSection.stories.svelte` | Default | ⚠️ Not run |
+| — | — | — | N/A — no catalog runner installed |
 
 ## Uncovered (no tests)
-
-### Pages / routes without E2E coverage
-- **`/about`** (`src/routes/about/+page.svelte`) — no `about.e2e.ts`.
-- **`/privacy`** (`src/routes/privacy/+page.svelte`) — no E2E suite.
-- **`/terms`** (`src/routes/terms/+page.svelte`) — no E2E suite.
-- **`+error.svelte`** (root error page) — rendered on 404 / errors; no E2E suite. Its
-  supporting components live under `src/routes/error/` (no `+page` of its own).
-- The `sitemap.xml` server route (`src/routes/sitemap.xml/+server.ts`) has no test.
-
-### Components without a `*.stories.svelte` file (18)
-- `lib/components/shared/CookieConsentBanner.svelte`
-- `lib/components/shared/JsonLd.svelte`
-- `lib/components/shared/SeoHead.svelte`
-- `lib/shared/sections/SiteFooter.svelte` (its links are exercised indirectly by `e2e/navigation.e2e.ts`)
-- `routes/about/components/ContactForm.svelte`
-- `routes/about/components/ContactInfoCard.svelte`
-- `routes/about/components/ResponseTimeCard.svelte`
-- `routes/about/components/StatCard.svelte`
-- `routes/about/components/ValueCard.svelte`
-- `routes/about/sections/ContactSection.svelte`
-- `routes/about/sections/HeroSection.svelte`
-- `routes/about/sections/StorySection.svelte`
-- `routes/about/sections/ValuesSection.svelte`
-- `routes/error/components/QuickLinkCard.svelte`
-- `routes/error/sections/ActionButtons.svelte`
-- `routes/error/sections/OrbitVisual.svelte`
-- `routes/error/sections/QuickLinksGrid.svelte`
-- `routes/error/sections/TerminalCard.svelte`
-
-### Runtime-uncovered
-- **All 35 component story files (112 states)** are effectively uncovered at runtime:
-  they exist but no catalog runner executes them.
+- **Component stories** — 35 `*.stories.svelte` files exist but have no executable runner
+  (no Storybook/Ladle/Histoire). They are documentation-only until a catalog runner is added.
+- **`/cs/*` Czech-locale mirror** — no dedicated E2E suite (English is forced via
+  `PARAGLIDE_LOCALE` in every suite). Locale routing itself is exercised indirectly.
+- All application routes otherwise have E2E coverage.
 
 ## Notes
-- **E2E run:** `npx playwright test` (build + preview on :4173, headless Chromium),
-  total wall time ~1.1 min. Playwright browsers were available at the default path
-  (`PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers`, `chromium-1228` present, which
-  matches Playwright 1.60). No manual browser install was needed this run — unlike
-  prior runs where the matching build was missing.
-- **1 E2E failure** — `e2e/pricing.e2e.ts:49` › "Pro+ plan has Coming soon CTA":
-  ```
-  Locator: locator('.hidden.md\:flex').getByText('Coming soon', { exact: true })
-  Expected: visible — element(s) not found (timeout 5000ms)
-  ```
-  The "Coming soon" string itself exists (`messages/en.json` → `pricing_cta_coming_soon`).
-  The failure is a **selector/markup mismatch**: the test scopes the lookup to the
-  desktop plans container `.hidden.md:flex`, but the exact-text "Coming soon" node is
-  not found there (likely the Pro+ CTA markup or class wrapper changed). The sibling
-  pricing assertions (4 plan cards, prices, Most Popular badge, enterprise banner,
-  billing toggle monthly/yearly) all pass — only this one selector is stale. This is an
-  authored-test bug, not an application/build break.
-- **No component-catalog runner.** Storybook CSF stories reference
-  `@storybook/addon-svelte-csf`, but Storybook itself is not a dependency and there is
-  no `.storybook/` config. To turn the 35 stories (112 states) into executable
-  coverage, either install + configure Storybook with the Svelte CSF addon, or migrate
-  the stories to `vitest-browser-svelte` component tests (which *is* installed and
-  already wired in `vite.config.ts` via the `client` browser project — pattern
-  `src/**/*.svelte.{test,spec}.{js,ts}`, currently zero such files).
-- **Unit/component vitest:** 0 `*.svelte.{test,spec}.ts` files exist; `vitest` runs
-  with `passWithNoTests: true`, so the unit layer is a no-op.
-- **Project drift since last report:** the previous report listed `/pricing`
-  sub-components/stories (BillingToggle, PricingCard, etc.) and `SocialIconLink` that no
-  longer exist; meanwhile `/about`, `/privacy`, `/terms`, and the `error/` component
-  set are new and lack stories/E2E. Coverage tables above reflect the **current** tree
-  (53 components, 35 with stories).
-- **Pipeline cleanup (STEP 4):** `.agents/tmp/` was already empty — no
-  `COMPONENT_TESTS.md` / `E2E_TESTS.md` to delete, and no `COMPONENT_TASKS.md` /
-  `E2E_TASKS.md` present (the AI_LOG step will find none).
-- **Recommendations:** (1) fix the stale `.hidden.md:flex` "Coming soon" selector in
-  `pricing.e2e.ts`; (2) add E2E suites for `/about`, `/privacy`, `/terms`, and the
-  error page; (3) stand up a component-catalog runner so the 112 stories become real
-  coverage; (4) add stories for the 18 uncovered components (notably the whole `about/`
-  and `error/` component sets).
+- **4 failing E2E tests — all are test-authoring (locator) bugs in the freshly generated
+  `error.e2e.ts` / `about.e2e.ts`, NOT application regressions.** Root causes and fixes:
+  1. `about.e2e.ts:17` "hero shows Privacy is / a fundamental right" — `getByText(/Privacy is/)`
+     is an unanchored regex that also matches the Story-section paragraph ("…privacy is…") →
+     **strict-mode violation (2 elements)**. Fix: assert the hero via
+     `getByRole('heading', { name: /a fundamental right/ })` or scope to the hero section and
+     use `{ exact: true }` on the `<span>`.
+  2. `error.e2e.ts:29` "shows the 404 number" — `getByText('404', { exact: true })` matches
+     **both** the badge `<span>404</span>` and the big `<p>404</p>` → strict-mode violation.
+     Fix: scope to the number, e.g. `page.getByRole('paragraph').filter({ hasText: /^404$/ })`
+     or `page.locator('p.four-zero-four')`.
+  3. `error.e2e.ts:34` "Quick Links: Try Free, …" — the quick-link `<a>` accessible names carry
+     a **leading space from the Font Awesome `<i>` icon** (rendered as `" Try Free"`, `" Features"`,
+     …), so `getByRole('link', { name: 'Try Free', exact: true })` finds nothing. Fix: drop
+     `exact: true` (substring match) or scope to the Quick-links grid and match by `hasText`.
+  4. `error.e2e.ts:43` "Features quick link navigates to /features" — `getByRole('link',
+     { name: 'Features', exact: true })` resolves to **2 elements** (navbar + footer both have a
+     "Features" link) → strict-mode violation; the quick-link itself is also `" Features"` (space).
+     Fix: scope to the Quick-links grid container before matching, and use a non-exact/`hasText`
+     name.
+  These mirror the exact gotchas documented in `.agents/AGENT_NOTES.md` (Font Awesome
+  accessible-name noise; dual navbar/footer markup causing strict-mode violations). The
+  generated `error.e2e.ts` did not apply container-scoping / non-exact matching there.
+- The previously-failing `pricing.e2e.ts` "Pro+ CTA" assertion (stale "Coming soon" text) was
+  fixed to assert "Activate Pro+ →"; `pricing.e2e.ts` is now 10/10.
+- New this run: `about.e2e.ts` (incl. contact-form validation/success/rate-limit/server-error
+  with `page.route('**/functions/v1/send-contact-email', …)` mocks), `privacy.e2e.ts`,
+  `terms.e2e.ts`, `error.e2e.ts`; `navigation.e2e.ts` extended with footer legal/company link
+  navigation; `responsive.e2e.ts` extended to cover `/about`, `/privacy`, `/terms`.
+- **Recommendation:** have the E2E generation step fix the 4 `error.e2e.ts` / `about.e2e.ts`
+  locators above (container-scope + drop `exact` on FA-icon links) to reach 97/97 green, and
+  consider adding a component-catalog runner if the 35 stories should be executed as tests.

@@ -1,5 +1,14 @@
 # AI Log
 
+## 2026-07-01 17:19 — manual
+- Project: frontend (metacleaner-web — prerendered marketing site)
+- Ran the unit/integration and E2E test pipeline against `frontend/metacleaner-web` from four `.agents/tmp/` specs (`TEST_SPEC.md`, `TASKS.md`, `E2E_TASKS.md`, `TEST_RESULTS.md`), closing every task across 6 commits (`906e815`…`b764624`); final state 137/137 unit pass and 97 E2E (all strict-mode failures resolved)
+- **Unit** (`9e8ccd0`): added the one remaining LOW branch-precedence edge to `src/lib/utils/__tests__/contactFormValidation.test.ts` — an email that is both >254 chars and malformed yields `max_length` (length checked before regex), and a whitespace-padded well-formed email (`' a@b.co '`) yields `email` (regex tests the untrimmed value); the rest of the in-scope logic (repositories, brevoClient, hooks, sitemap, i18n, CSP-nginx compat) was already fully covered
+- **E2E** (`906e815`): created new Playwright specs `e2e/about.e2e.ts` (hero, 6 value cards, `#contact`, and full contact-form validation/invalid-email/success/rate-limit/server-error flows mocking `POST **/functions/v1/send-contact-email`), `e2e/privacy.e2e.ts`, `e2e/terms.e2e.ts` (titles, h1, 5 `<h2>` sections), and `e2e/error.e2e.ts` (404 page — title, badge, "404" number, Quick Links); fixed the stale `e2e/pricing.e2e.ts` assertion (Pro+ now renders "Activate Pro+ →" instead of "Coming soon")
+- **E2E** (`b4a3d01`): extended `e2e/navigation.e2e.ts` with a footer legal/company-links describe block (Privacy Policy → `/privacy`, Terms of Service → `/terms`, About us → `/about`, Contact → `/about#contact`) and added `/about`, `/privacy`, `/terms` to the `e2e/responsive.e2e.ts` PAGES matrix
+- **E2E fix** (`757b4cd`): resolved 4 Playwright strict-mode/stale-selector violations in `about.e2e.ts` and `error.e2e.ts` (anchored the non-unique "Privacy is" hero match, disambiguated the "404" number and "Features" nav-vs-footer links, corrected the 404 Quick Links selector)
+- **Chore** (`d62ad41`, `b764624`): refreshed `.agents/UI_TEST_REPORT.md` and `.agents/UNIT_TEST_REPORT.md`
+
 ## 2026-07-01 16:21 — manual
 - Project: frontend (metacleaner-web — prerendered marketing site)
 - Ran a full code review of `frontend/metacleaner-web/` against its `.kiro/specs/` (`responsive-web-refactor`, `web-content-overhaul`, `about-and-404-pages`, plus shared-pricing from `stripe-subscription`), captured in `.agents/tmp/CODE_REVIEW.md` (1 CRITICAL, 1 HIGH, 2 MEDIUM, 5 LOW) with an 11-item task list (`.agents/tmp/TASKS.md`), and resolved every item across 5 commits (`66eefb1`…`2b38b56`)

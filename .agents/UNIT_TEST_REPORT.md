@@ -1,44 +1,43 @@
 # Test Report
 Created: 2026-07-01 15:23:56 UTC
-Updated: 2026-07-01 15:23:56 UTC
+Updated: 2026-07-01 17:17 UTC
 
 ## Summary
-- Total tests: 1416
-- Passing: 1416
+- Total tests: 137
+- Passing: 137
 - Failing: 0
-- Coverage: not measured (see Notes)
+- Coverage: 100% of executed source (Statements 72/72, Branches 34/34, Functions 21/21, Lines 68/68). Only files imported by the unit tests are measured; Svelte components and route pages are excluded (validated by the Playwright E2E suite, not unit tests).
 
 ## Test Results
 | Test File | Tests | Pass | Fail | Status |
 |---|---|---|---|---|
-| Vitest `server` project (47 files, node env) | 806 | 806 | 0 | ✅ Pass |
-| Vitest `client` + `storybook` projects (132 files, Playwright/chromium) | 610 | 610 | 0 | ✅ Pass |
-| **Total** | **1416** | **1416** | **0** | ✅ Pass |
-
-> This is a SvelteKit/Vitest project, not Go — results are grouped by Vitest project
-> (`server`, `client`, `storybook`) rather than per Go test file. The two runs cover 179 test files
-> in total (47 server + 132 browser/storybook).
+| src/lib/utils/__tests__/brevoClient.test.ts | 9 | 9 | 0 | ✅ Pass |
+| src/lib/utils/__tests__/contactFormValidation.test.ts | 24 | 24 | 0 | ✅ Pass |
+| src/lib/repositories/__tests__/features.test.ts | 13 | 13 | 0 | ✅ Pass |
+| src/lib/repositories/__tests__/staticRepos.test.ts | 24 | 24 | 0 | ✅ Pass |
+| src/lib/repositories/__tests__/pricing.test.ts | 13 | 13 | 0 | ✅ Pass |
+| src/lib/repositories/__tests__/index.test.ts | 11 | 11 | 0 | ✅ Pass |
+| src/lib/repositories/__tests__/metadataDemo.test.ts | 10 | 10 | 0 | ✅ Pass |
+| src/lib/__tests__/i18n.test.ts | 3 | 3 | 0 | ✅ Pass |
+| src/__tests__/hooks.server.test.ts | 9 | 9 | 0 | ✅ Pass |
+| src/__tests__/hooks.test.ts | 6 | 6 | 0 | ✅ Pass |
+| src/__tests__/csp-nginx-compat.test.ts | 5 | 5 | 0 | ✅ Pass |
+| src/routes/sitemap.xml/__tests__/server.test.ts | 10 | 10 | 0 | ✅ Pass |
+| **Total** | **137** | **137** | **0** | ✅ Pass |
 
 ## Failures (if any)
-- None. All 1416 tests pass.
+- None. All 137 tests passed.
 
 ## Uncovered (no tests)
-- No coverage instrumentation was run this pass, so per-file gaps were not measured.
-  Generated/config files not expected to have unit tests: `src/lib/paraglide/**` (auto-generated i18n
-  runtime), `svelte.config.js`, `vite.config.ts`, and E2E specs under `e2e/` (Playwright, run separately
-  via `bun run test:e2e`).
+The unit suite covers utilities, repositories, hooks, i18n, CSP/nginx compat, and the sitemap endpoint at 100%. The following have no unit tests (by design — the `client` Vitest project defines a browser runner but currently has zero `*.svelte.test.ts` files; UI is validated by the Playwright E2E suite in `e2e/`):
+- Svelte components under `src/lib/components/` (elements, shared) and `src/lib/shared/sections/SiteFooter.svelte`
+- Route page components under `src/routes/` (home, about/contact, features, pricing, privacy, terms, 404)
+- Generated i18n runtime `src/lib/paraglide/**` (auto-generated — not tested directly)
 
 ## Notes
-- Server suite: `bun run test` → `vitest --run --project=server` (Node env). 47 files, 806 tests, ~29s.
-- Browser suite: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers bun run test:browser`
-  → `vitest --run --project=client --project=storybook` (Playwright/chromium, headless). 132 files, 610 tests, ~224s.
-- Coverage reported as "not measured": the two full runs already take ~4 min combined, and a `--coverage`
-  pass across the browser projects is substantially heavier. Re-run with `--coverage` (v8 provider is
-  installed: `@vitest/coverage-v8`) if a coverage figure is required.
-- Non-fatal warnings only (did not fail any test):
-  - `metacleaner-shared` package missing a `svelte` exports condition (vite-plugin-svelte warning).
-  - `vi.mock("mediainfo.js")` in `src/lib/scanner/parsers/__tests__/videoParser.test.ts` is not at module
-    top level — hoisted correctly for now but will become an error in a future Vitest; worth relocating.
-  - A few Svelte a11y hints (ConfirmationModal buttons, AffiliateProgramSection label,
-    SettingsAccordionCard `state_referenced_locally`).
-- `metacleaner-monitoring` is a separate package and is not covered by this app's suite.
+- Command: `bun run test:unit -- --run --coverage` (Vitest 4.1.8, v8 coverage provider).
+- The Vitest config defines two projects: `server` (node env) and `client` (Playwright/chromium browser). All 137 tests ran under `server`; the `client` project matched 0 files (`passWithNoTests`), so no browser tests exist in this package yet.
+- Duration ~3.0s.
+- Non-fatal build warning: `metacleaner-shared` has a `svelte` field in package.json but no `svelte` exports condition (vite-plugin-svelte warning). Cosmetic; does not affect test results.
+- Coverage percentages reflect only source files imported by the unit tests; coverage `all`/`include` is not configured, so untested source files are not part of the denominator. Component/page coverage is provided separately by the Playwright E2E suite (`bun run test:e2e`).
+- Note: a prior version of this file reported ~1416 tests across `server`/`client`/`storybook` projects with `src/lib/scanner/**` paths — those belong to a different package (`metacleaner-app`), not `metacleaner-web`. This report reflects the `frontend/metacleaner-web` suite only.
