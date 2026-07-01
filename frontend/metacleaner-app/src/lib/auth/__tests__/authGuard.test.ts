@@ -84,4 +84,54 @@ describe('guardAuthRoute', () => {
 		await guardAuthRoute();
 		expect(mockRedirect).not.toHaveBeenCalled();
 	});
+
+	it('does not redirect when authenticated and pathname is /email-verified', async () => {
+		vi.stubGlobal('window', { location: { pathname: '/email-verified' } });
+		authState.isAuthenticated = true;
+		await guardAuthRoute();
+		expect(mockRedirect).not.toHaveBeenCalled();
+	});
+
+	it('redirects when authenticated and pathname is not /email-verified', async () => {
+		vi.stubGlobal('window', { location: { pathname: '/login' } });
+		authState.isAuthenticated = true;
+		await guardAuthRoute();
+		expect(mockRedirect).toHaveBeenCalledWith(302, '/');
+	});
+});
+
+// ─── guardProtectedRoute with returnTo ────────────────────────────────────────
+
+describe('guardProtectedRoute (returnTo branch)', () => {
+	beforeEach(() => {
+		authState.isAuthenticated = false;
+		authState.isAuthReady = true;
+		mockRedirect.mockClear();
+		mockResolve.mockClear();
+	});
+
+	it('appends encoded returnTo to /login when returnTo is provided and user is unauthenticated', async () => {
+		await guardProtectedRoute('/subscription?plan=pro&billing=yearly');
+		const expected = `/login?returnTo=${encodeURIComponent('/subscription?plan=pro&billing=yearly')}`;
+		expect(mockRedirect).toHaveBeenCalledWith(302, expected);
+	});
+
+	it('passes the encoded /login?returnTo path through resolve()', async () => {
+		await guardProtectedRoute('/subscription?plan=pro');
+		const expected = `/login?returnTo=${encodeURIComponent('/subscription?plan=pro')}`;
+		expect(mockResolve).toHaveBeenCalledWith(expected);
+	});
+
+	it('encodes returnTo containing ?, &, and / characters', async () => {
+		const returnTo = '/docs?section=auth&ref=home/page';
+		await guardProtectedRoute(returnTo);
+		const encoded = encodeURIComponent(returnTo);
+		expect(mockRedirect).toHaveBeenCalledWith(302, `/login?returnTo=${encoded}`);
+	});
+
+	it('does not redirect (with or without returnTo) when user is authenticated', async () => {
+		authState.isAuthenticated = true;
+		await guardProtectedRoute('/subscription?plan=pro');
+		expect(mockRedirect).not.toHaveBeenCalled();
+	});
 });
