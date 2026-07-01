@@ -1,4 +1,5 @@
 import { test, expect } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
 
 // Minimal JPEG (SOI + EOI): extension-based format detection accepts it.
 const TEST_FILE = {
@@ -10,6 +11,10 @@ const TEST_FILE = {
 test.describe('Step 1 — Upload', () => {
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
+
+		test.beforeEach(async ({ page }) => {
+			await injectAuth(page);
+		});
 
 		test('renders page heading and upload zone', async ({ page }) => {
 			await page.goto('/');
@@ -62,6 +67,10 @@ test.describe('Step 1 — Upload', () => {
 
 	test.describe('mobile viewport (375px)', () => {
 		test.use({ viewport: { width: 375, height: 812 } });
+
+		test.beforeEach(async ({ page }) => {
+			await injectAuth(page);
+		});
 
 		test('renders page heading and mobile upload zone text', async ({ page }) => {
 			await page.goto('/');

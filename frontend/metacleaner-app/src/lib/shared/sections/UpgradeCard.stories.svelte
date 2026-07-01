@@ -19,7 +19,7 @@
 	});
 </script>
 
-<Story name="Default (Pro → Pro Plus)">
+<Story name="Default (Pro → Pro Plus)" exportName="DefaultProToProPlus">
 	<div class="w-full max-w-md">
 		<UpgradeCard
 			targetPlanId="proplus"
@@ -31,7 +31,7 @@
 	</div>
 </Story>
 
-<Story name="Free → Pro">
+<Story name="Free → Pro" exportName="FreeToPro">
 	<div class="w-full max-w-md">
 		<UpgradeCard
 			targetPlanId="pro"

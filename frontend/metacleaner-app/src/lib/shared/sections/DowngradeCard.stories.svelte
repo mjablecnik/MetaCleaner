@@ -19,7 +19,7 @@
 	});
 </script>
 
-<Story name="Default (Pro Plus → Pro)">
+<Story name="Default (Pro Plus → Pro)" exportName="DefaultProPlusToPro">
 	<div class="w-full max-w-md">
 		<DowngradeCard
 			targetPlanId="pro"
@@ -31,7 +31,7 @@
 	</div>
 </Story>
 
-<Story name="Pro → Free">
+<Story name="Pro → Free" exportName="ProToFree">
 	<div class="w-full max-w-md">
 		<DowngradeCard
 			targetPlanId="free"
