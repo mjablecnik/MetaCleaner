@@ -1,4 +1,6 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockAllApis, mockWebSocketProgress } from './helpers/mock-api.js';
 
 // JPEG SOI+EOI bytes — passes file extension and MIME validation
 const ERROR_FILE = {
@@ -27,6 +29,12 @@ async function navigateToErrorState(page: Page, viewport: 'desktop' | 'mobile') 
 }
 
 test.describe('Step 4 — Error flow (SPA)', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockAllApis(page);
+		await mockWebSocketProgress(page, 'error');
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 

@@ -1,4 +1,6 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockAllApis, mockWebSocketProgress } from './helpers/mock-api.js';
 
 // Minimal JPEG (SOI + EOI): accepted by extension/MIME validation
 const TEST_FILE = {
@@ -29,6 +31,12 @@ async function navigateToStep5(page: Page, viewport: 'desktop' | 'mobile') {
 }
 
 test.describe('Step 5 → Report navigation (SPA)', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockAllApis(page);
+		await mockWebSocketProgress(page, 'success');
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 

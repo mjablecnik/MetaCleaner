@@ -1,4 +1,6 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockAllApis, mockWebSocketProgress } from './helpers/mock-api.js';
 
 const TEST_FILE = {
 	name: 'photo.jpg',
@@ -26,6 +28,12 @@ async function enterProcessingState(page: Page, viewport: 'desktop' | 'mobile') 
 }
 
 test.describe('Step 3 cancel — Zastavit / Stop', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockAllApis(page);
+		await mockWebSocketProgress(page, 'success');
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 

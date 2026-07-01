@@ -25,11 +25,11 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
 - [x] Fix `step1-to-step2-transition.spec.ts` — `injectAuth` + `mockUploadApi`.
 - [x] Fix `step2-risk-analysis.spec.ts` — `injectAuth` + `mockAllApis`.
 - [x] Fix `step2-to-step5-complete-flow.spec.ts` — `injectAuth` + `mockAllApis` + `mockWebSocketProgress`.
-- [ ] Fix `step3-processing.spec.ts` — `injectAuth` + `mockJobsApi` + `mockWebSocketProgress`.
-- [ ] Fix `step3-cancel.spec.ts` — `injectAuth` + job mocks.
-- [ ] Fix `step4-error.spec.ts` — `injectAuth` + `mockWebSocketProgress(page,'error')`.
-- [ ] Fix `step5-results.spec.ts` — `injectAuth` + `mockAllApis` (success WS).
-- [ ] Fix `step5-report-navigation.spec.ts` — `injectAuth` + report mocks.
+- [x] Fix `step3-processing.spec.ts` — `injectAuth` + `mockJobsApi` + `mockWebSocketProgress`.
+- [x] Fix `step3-cancel.spec.ts` — `injectAuth` + job mocks.
+- [x] Fix `step4-error.spec.ts` — `injectAuth` + `mockWebSocketProgress(page,'error')`.
+- [x] Fix `step5-results.spec.ts` — `injectAuth` + `mockAllApis` (success WS).
+- [x] Fix `step5-report-navigation.spec.ts` — `injectAuth` + report mocks.
 - [ ] Fix `file-removal.spec.ts` — `injectAuth` before `goto('/')`.
 - [ ] Fix `file-validation.spec.ts` — `injectAuth`; then re-assert the toast/reject behaviour.
 - [ ] Fix `responsive.spec.ts` — `injectAuth` for the `/` and protected-route cases.

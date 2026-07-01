@@ -1,4 +1,6 @@
 import { test, expect, type Page } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockAllApis, mockWebSocketProgress } from './helpers/mock-api.js';
 
 // Use 3 files so processing takes ~2.4s — enough time for assertions before success state
 const TEST_FILES = [
@@ -29,6 +31,12 @@ async function navigateToProcessing(page: Page, viewport: 'desktop' | 'mobile') 
 }
 
 test.describe('Step 3 — Processing', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockAllApis(page);
+		await mockWebSocketProgress(page, 'success');
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 
