@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_URL } from '$env/static/public';
 	import * as m from '$lib/paraglide/messages';
 	import GradientText from '$lib/components/elements/GradientText.svelte';
 	import CtaButton from '$lib/components/elements/CtaButton.svelte';
@@ -34,7 +35,7 @@
 				variant="primary"
 				icon="fa-solid fa-cloud-arrow-up"
 				label={m.cta_try_free()}
-				href="#"
+				href="{PUBLIC_APP_URL}/register"
 			/>
 		</div>
 	</div>

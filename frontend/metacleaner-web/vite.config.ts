@@ -9,6 +9,12 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit({
+			csp: {
+				mode: 'hash',
+				directives: {
+					'script-src': ['self']
+				}
+			},
 			prerender: {
 				entries: [
 					'*',
