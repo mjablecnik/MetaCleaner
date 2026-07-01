@@ -1,5 +1,12 @@
 # AI Log
 
+## 2026-07-01 22:50 — manual
+- Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
+- Worked through a code review (`.agents/tmp/CODE_REVIEW.md` + `TASKS.md`) of `metacleaner-monitoring` against the `monitoring-real-api-integration` spec, closing all 12 findings (2 HIGH, 6 MEDIUM, 4 LOW) across commits `917f514`…`e4f343d`
+- **HIGH — fabricated data** (`917f514`, `b3ab389`): stopped fabricating Performance KPIs and replaced hardcoded mock data rendered as live with honest empty states — wired secondary-KPI rows / charts / tables to live data or explicit "not available" states instead of static `get*()` repository mocks; removed dead `estimateAvgMs` / `mapSentryIssuesToSlowEndpoints` fabrication helpers; fixed `DatabaseKpiSection.svelte` mobile grid (removed hardcoded `87%`, Czech literal `77.5% využito`, `Timeout, deadlock`, static `!`/`OK` badges) to bind live `kpis[i]` + `t(badgeKey)`
+- **MEDIUM — metric correctness & i18n** (`febe6ad`): Performance error-rate no longer derived from Cloudflare threats-blocked (renders `'—'`); slow-endpoints given an explicit empty state (`performanceMapper.ts`); Users stats switched to a 7-day registration window + auth-provider distribution (`supabaseMapper.ts`); Business conversion funnel given a dedicated "data not available" state and dead `getConversionFunnel()` removed; churn-rate denominator aligned to active-at-start-of-window (`stripeMapper.ts`); moved residual hardcoded English in `flyMapper`/`supabaseMapper`/`performanceMapper`/`cloudflareMapper` to Paraglide keys
+- **LOW** (`3f04d9b`, `fbd2b97`, `2c0d0c2`, `e4f343d`): dashboard failed-jobs ratio returns `'N/A'` (not `'0'`) when no jobs processed (Req 13.5); crash/OOM-kill/exit events styled with error/warning status instead of green success (`flyMapper.classifyEvent`, `performanceMapper`); `mapToUserStats` falls back to `users.length` when GoTrue `total` is falsy/absent; removed non-existent `runtime_deploy_failed` i18n key and annotated placeholder Users-table columns (role/sessions/location) with no data source
+
 ## 2026-07-01 17:35 — manual
 - Project: frontend (metacleaner-web — prerendered marketing site)
 - Synced project documentation with the current codebase (`82ae928`); `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit after the previous log entry)
