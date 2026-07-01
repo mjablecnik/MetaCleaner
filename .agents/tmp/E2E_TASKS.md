@@ -51,9 +51,9 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
 - [x] Fix `register.spec.ts` — same drift review (submit button, check-email content, step progress).
 - [x] Fix `forgot-password.spec.ts` — re-check step-progress cards and submit button selectors.
 
-- [ ] Before each Group-B fix, open the page (build + preview) to confirm the failure is selector
+- [x] Before each Group-B fix, open the page (build + preview) to confirm the failure is selector
       drift, **not** a real regression. Do **not** remove the route guards — they are intended behaviour.
-- [ ] Re-run the full suite and confirm 0 failures.
+- [x] Re-run the full suite and confirm 0 failures.
 
 ## Phase 2 — Create missing E2E tests
 
@@ -74,7 +74,7 @@ Run with: `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers npx playwright test
       sidebar links navigate between them.
 - [x] Extend the **navigation test** — authenticated UserDropdown links to `/reports`, `/docs`,
       `/subscription`, `/settings`, and logout.
-- [ ] Create **responsive** assertions for each new page (`/settings`, `/subscription`,
+- [x] Create **responsive** assertions for each new page (`/settings`, `/subscription`,
       `/subscription/success`, `/email-changed`) at mobile 375 px and desktop 1280 px.
 
 > Notes:

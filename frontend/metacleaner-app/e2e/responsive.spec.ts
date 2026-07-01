@@ -1,5 +1,12 @@
 import { test, expect, type Page } from 'playwright/test';
-import { mockReportsApi, mockReportDetail } from './helpers/mock-api';
+import {
+	mockReportsApi,
+	mockReportDetail,
+	mockBillingApi,
+	mockApiKeysListApi,
+	mockSubscriptionPro,
+	mockCreditsPro
+} from './helpers/mock-api';
 import { injectAuth } from './helpers/auth.js';
 
 test.beforeEach(async ({ page }) => {
@@ -405,6 +412,157 @@ test.describe('Responsive — Report Detail', () => {
 				.locator('.hidden.lg\\:flex')
 				.getByRole('button', { name: /download pdf/i });
 			await expect(pdfBtn).toBeVisible();
+		});
+	});
+});
+
+// ─── Settings ────────────────────────────────────────────────────────────────
+
+test.describe('Responsive — Settings', () => {
+	test.beforeEach(async ({ page }) => {
+		await mockBillingApi(page);
+		await mockApiKeysListApi(page);
+	});
+
+	test.describe('mobile viewport (375px)', () => {
+		test.use({ viewport: { width: 375, height: 812 } });
+
+		test('Danger Zone at bottom (lg:hidden) is visible on mobile', async ({ page }) => {
+			await page.goto('/settings');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /account settings/i })
+			).toBeVisible({ timeout: 8000 });
+			// The bottom DangerZone wrapper (.mt-4.lg:hidden) is visible on mobile
+			await expect(page.locator('.mt-4.lg\\:hidden').first()).toBeVisible();
+		});
+
+		test('Danger Zone in desktop grid column (hidden lg:block) is not visible on mobile', async ({
+			page
+		}) => {
+			await page.goto('/settings');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /account settings/i })
+			).toBeVisible({ timeout: 8000 });
+			// The in-grid DangerZone (.hidden.lg:block) is hidden on mobile
+			const gridDangerZone = page.locator('.hidden.lg\\:block').first();
+			await expect(gridDangerZone).not.toBeVisible();
+		});
+	});
+
+	test.describe('desktop viewport (1280px)', () => {
+		test.use({ viewport: { width: 1280, height: 800 } });
+
+		test('Danger Zone in desktop grid column (hidden lg:block) is visible on desktop', async ({
+			page
+		}) => {
+			await page.goto('/settings');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /account settings/i })
+			).toBeVisible({ timeout: 8000 });
+			// The in-grid DangerZone (.hidden.lg:block) is visible on desktop
+			const gridDangerZone = page.locator('.hidden.lg\\:block').first();
+			await expect(gridDangerZone).toBeVisible();
+		});
+
+		test('Danger Zone at bottom (lg:hidden) is not visible on desktop', async ({ page }) => {
+			await page.goto('/settings');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /account settings/i })
+			).toBeVisible({ timeout: 8000 });
+			// The bottom DangerZone wrapper is hidden on desktop
+			await expect(page.locator('.mt-4.lg\\:hidden').first()).not.toBeVisible();
+		});
+	});
+});
+
+// ─── Subscription (management UI header) ─────────────────────────────────────
+
+test.describe('Responsive — Subscription management UI', () => {
+	test.beforeEach(async ({ page }) => {
+		await mockBillingApi(page, mockSubscriptionPro, mockCreditsPro);
+	});
+
+	test.describe('mobile viewport (375px)', () => {
+		test.use({ viewport: { width: 375, height: 812 } });
+
+		test('mobile header (lg:hidden, centered) is visible on mobile', async ({ page }) => {
+			await page.goto('/subscription');
+			await page
+				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
+				.catch(() => {});
+			// Mobile header: mb-6 w-full text-center lg:hidden
+			await expect(
+				page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()
+			).toBeVisible();
+		});
+
+		test('desktop header (hidden lg:flex) is not visible on mobile', async ({ page }) => {
+			await page.goto('/subscription');
+			await page
+				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
+				.catch(() => {});
+			// Desktop header: mb-8 hidden items-center gap-4 lg:flex
+			await expect(
+				page.locator('.mb-8.hidden.items-center.gap-4.lg\\:flex').first()
+			).not.toBeVisible();
+		});
+	});
+
+	test.describe('desktop viewport (1280px)', () => {
+		test.use({ viewport: { width: 1280, height: 800 } });
+
+		test('desktop header (hidden lg:flex) is visible on desktop', async ({ page }) => {
+			await page.goto('/subscription');
+			await page
+				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
+				.catch(() => {});
+			// Desktop header: mb-8 hidden items-center gap-4 lg:flex
+			await expect(
+				page.locator('.mb-8.hidden.items-center.gap-4.lg\\:flex').first()
+			).toBeVisible();
+		});
+
+		test('mobile header (lg:hidden) is not visible on desktop', async ({ page }) => {
+			await page.goto('/subscription');
+			await page
+				.waitForSelector('.animate-pulse', { state: 'detached', timeout: 8000 })
+				.catch(() => {});
+			// Mobile header: mb-6 w-full text-center lg:hidden
+			await expect(
+				page.locator('.mb-6.w-full.text-center.lg\\:hidden').first()
+			).not.toBeVisible();
+		});
+	});
+});
+
+// ─── Subscription Success ──────────────────────────────────────────────────────
+
+test.describe('Responsive — Subscription Success', () => {
+	test.beforeEach(async ({ page }) => {
+		await mockBillingApi(page, mockSubscriptionPro, mockCreditsPro);
+	});
+
+	test.describe('mobile viewport (375px)', () => {
+		test.use({ viewport: { width: 375, height: 812 } });
+
+		test('success heading and CTA link are visible on mobile', async ({ page }) => {
+			await page.goto('/subscription/success');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /payment successful/i })
+			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('link', { name: /start cleaning/i })).toBeVisible();
+		});
+	});
+
+	test.describe('desktop viewport (1280px)', () => {
+		test.use({ viewport: { width: 1280, height: 800 } });
+
+		test('success heading and CTA link are visible on desktop', async ({ page }) => {
+			await page.goto('/subscription/success');
+			await expect(
+				page.getByRole('heading', { level: 1, name: /payment successful/i })
+			).toBeVisible({ timeout: 8000 });
+			await expect(page.getByRole('link', { name: /start cleaning/i })).toBeVisible();
 		});
 	});
 });
