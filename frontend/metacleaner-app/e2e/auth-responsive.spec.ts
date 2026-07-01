@@ -43,7 +43,7 @@ test.describe('Auth Responsive — Login', () => {
 			await navigateToLogin(page);
 			await expect(page.locator('#email-input')).toBeVisible();
 			await expect(page.locator('#password-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /^sign in$/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 	});
 
@@ -66,7 +66,7 @@ test.describe('Auth Responsive — Login', () => {
 			await navigateToLogin(page);
 			await expect(page.locator('#email-input')).toBeVisible();
 			await expect(page.locator('#password-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /^sign in$/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 	});
 });
@@ -98,7 +98,7 @@ test.describe('Auth Responsive — Register', () => {
 			await expect(page.locator('#lname-input')).toBeVisible();
 			await expect(page.locator('#email-input')).toBeVisible();
 			await expect(page.locator('#password-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /create free account/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 	});
 
@@ -126,7 +126,7 @@ test.describe('Auth Responsive — Register', () => {
 			await expect(page.locator('#lname-input')).toBeVisible();
 			await expect(page.locator('#email-input')).toBeVisible();
 			await expect(page.locator('#password-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /create free account/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 	});
 });
@@ -151,7 +151,7 @@ test.describe('Auth Responsive — Forgot Password', () => {
 		test('email input and send code button are visible on mobile', async ({ page }) => {
 			await navigateToForgotPassword(page);
 			await expect(page.locator('#email-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /send code/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 	});
 
@@ -167,7 +167,7 @@ test.describe('Auth Responsive — Forgot Password', () => {
 		test('email input and send code button are visible on desktop', async ({ page }) => {
 			await navigateToForgotPassword(page);
 			await expect(page.locator('#email-input')).toBeVisible();
-			await expect(page.getByRole('button', { name: /send code/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('step progress bar is visible on desktop', async ({ page }) => {

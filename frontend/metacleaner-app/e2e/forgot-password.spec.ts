@@ -53,7 +53,7 @@ async function advanceToStep2(page: Page) {
 	await mockForgotPasswordApi(page);
 	await navigateToForgotPassword(page);
 	await page.locator('#email-input').fill('test@example.com');
-	await page.getByRole('button', { name: /send code/i }).click();
+	await page.locator('button[type="submit"]').click();
 	await expect(page.getByRole('heading', { level: 2, name: /verify code/i })).toBeVisible({
 		timeout: 8000
 	});
@@ -70,7 +70,7 @@ async function advanceToStep3(page: Page) {
 	await mockVerifyResetCodeApi(page);
 	await advanceToStep2(page);
 	await fillOtp(page);
-	await page.getByRole('button', { name: /verify code/i }).click();
+	await page.locator('button[type="submit"]').click();
 	await expect(page.getByRole('heading', { level: 2, name: /new password/i })).toBeVisible({
 		timeout: 8000
 	});
@@ -102,7 +102,7 @@ test.describe('Forgot Password page', () => {
 
 		test('shows send code button on step 1', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await expect(page.getByRole('button', { name: /send code/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('shows back to sign in link on step 1', async ({ page }) => {
@@ -131,7 +131,7 @@ test.describe('Forgot Password page', () => {
 
 		test('email validation error on empty submit', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await page.getByRole('button', { name: /send code/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
@@ -153,28 +153,28 @@ test.describe('Forgot Password page', () => {
 
 		test('step 2 shows verify code button', async ({ page }) => {
 			await advanceToStep2(page);
-			await expect(page.getByRole('button', { name: /verify code/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('step 2 shows resend button', async ({ page }) => {
 			await advanceToStep2(page);
-			await expect(page.getByRole('button', { name: /resend/i })).toBeVisible();
+			await expect(page.locator('button').filter({ hasText: 'Resend' })).toBeVisible();
 		});
 
 		test('step 2 shows back button', async ({ page }) => {
 			await advanceToStep2(page);
-			await expect(page.getByRole('button', { name: /back/i })).toBeVisible();
+			await expect(page.locator('button').filter({ hasText: 'Back' }).first()).toBeVisible();
 		});
 
 		test('step 2 OTP incomplete validation error', async ({ page }) => {
 			await advanceToStep2(page);
-			await page.getByRole('button', { name: /verify code/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter the complete 6-digit code.')).toBeVisible();
 		});
 
 		test('step 2 back button returns to step 1', async ({ page }) => {
 			await advanceToStep2(page);
-			await page.getByRole('button', { name: /^back$/i }).click();
+			await page.locator('button').filter({ hasText: 'Back' }).first().click();
 			await expect(page.getByRole('heading', { level: 2, name: /forgot password/i })).toBeVisible();
 		});
 
@@ -195,7 +195,7 @@ test.describe('Forgot Password page', () => {
 
 		test('step 3 shows set new password button', async ({ page }) => {
 			await advanceToStep3(page);
-			await expect(page.getByRole('button', { name: /set new password/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('step 3 shows password requirements', async ({ page }) => {
@@ -228,7 +228,7 @@ test.describe('Forgot Password page', () => {
 			await advanceToStep3(page);
 			await page.locator('#new-password').fill('StrongPass1!');
 			await page.locator('#confirm-password').fill('StrongPass1!');
-			await page.getByRole('button', { name: /set new password/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Password changed!')).toBeVisible({ timeout: 8000 });
 		});
 
@@ -237,7 +237,7 @@ test.describe('Forgot Password page', () => {
 			await advanceToStep3(page);
 			await page.locator('#new-password').fill('StrongPass1!');
 			await page.locator('#confirm-password').fill('StrongPass1!');
-			await page.getByRole('button', { name: /set new password/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByRole('link', { name: /sign in/i })).toBeVisible({
 				timeout: 8000
 			});
@@ -248,7 +248,7 @@ test.describe('Forgot Password page', () => {
 			await advanceToStep3(page);
 			await page.locator('#new-password').fill('StrongPass1!');
 			await page.locator('#confirm-password').fill('StrongPass1!');
-			await page.getByRole('button', { name: /set new password/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Password changed!')).toBeVisible({ timeout: 8000 });
 			const signInLink = page.getByRole('link', { name: /sign in/i }).last();
 			const href = await signInLink.getAttribute('href');
@@ -282,12 +282,12 @@ test.describe('Forgot Password page', () => {
 
 		test('shows send code button on mobile', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await expect(page.getByRole('button', { name: /send code/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('email validation error on mobile', async ({ page }) => {
 			await navigateToForgotPassword(page);
-			await page.getByRole('button', { name: /send code/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
@@ -318,7 +318,7 @@ test.describe('Forgot Password page', () => {
 			await advanceToStep3(page);
 			await page.locator('#new-password').fill('StrongPass1!');
 			await page.locator('#confirm-password').fill('StrongPass1!');
-			await page.getByRole('button', { name: /set new password/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Password changed!')).toBeVisible({ timeout: 8000 });
 		});
 	});

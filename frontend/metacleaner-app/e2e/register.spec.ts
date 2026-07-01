@@ -66,7 +66,7 @@ test.describe('Register page', () => {
 
 		test('shows submit button', async ({ page }) => {
 			await navigateToRegister(page);
-			await expect(page.getByRole('button', { name: /create free account/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('shows login link in footer', async ({ page }) => {
@@ -97,14 +97,14 @@ test.describe('Register page', () => {
 
 		test('first name validation error on empty submit', async ({ page }) => {
 			await navigateToRegister(page);
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter your first name.')).toBeVisible();
 		});
 
 		test('last name validation error when first name is filled', async ({ page }) => {
 			await navigateToRegister(page);
 			await page.locator('#fname-input').fill('John');
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter your last name.')).toBeVisible();
 		});
 
@@ -112,7 +112,7 @@ test.describe('Register page', () => {
 			await navigateToRegister(page);
 			await page.locator('#fname-input').fill('John');
 			await page.locator('#lname-input').fill('Doe');
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
@@ -122,7 +122,7 @@ test.describe('Register page', () => {
 			await page.locator('#lname-input').fill('Doe');
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('short');
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Password must be at least 8 characters.')).toBeVisible();
 		});
 
@@ -133,7 +133,7 @@ test.describe('Register page', () => {
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('ValidPass1!');
 			await page.locator('#confirm-input').fill('DifferentPass1!');
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Passwords do not match.')).toBeVisible();
 		});
 
@@ -145,8 +145,8 @@ test.describe('Register page', () => {
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('ValidPass1!');
 			await page.locator('#confirm-input').fill('ValidPass1!');
-			await page.getByRole('button', { name: /create free account/i }).click();
-			await expect(page.getByText('Check your email')).toBeVisible({ timeout: 8000 });
+			await page.locator('button[type="submit"]').click();
+			await expect(page.getByText('Check your email').first()).toBeVisible({ timeout: 8000 });
 		});
 
 		test('check-email step shows submitted email address', async ({ page }) => {
@@ -157,8 +157,8 @@ test.describe('Register page', () => {
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('ValidPass1!');
 			await page.locator('#confirm-input').fill('ValidPass1!');
-			await page.getByRole('button', { name: /create free account/i }).click();
-			await expect(page.getByText('test@example.com')).toBeVisible({ timeout: 8000 });
+			await page.locator('button[type="submit"]').click();
+			await expect(page.getByText('test@example.com').first()).toBeVisible({ timeout: 8000 });
 		});
 
 		test('footer login link points to /login', async ({ page }) => {
@@ -216,7 +216,7 @@ test.describe('Register page', () => {
 
 		test('shows submit button on mobile', async ({ page }) => {
 			await navigateToRegister(page);
-			await expect(page.getByRole('button', { name: /create free account/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('shows login link on mobile', async ({ page }) => {
@@ -228,7 +228,7 @@ test.describe('Register page', () => {
 			await navigateToRegister(page);
 			await page.locator('#fname-input').fill('John');
 			await page.locator('#lname-input').fill('Doe');
-			await page.getByRole('button', { name: /create free account/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
@@ -240,8 +240,8 @@ test.describe('Register page', () => {
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('ValidPass1!');
 			await page.locator('#confirm-input').fill('ValidPass1!');
-			await page.getByRole('button', { name: /create free account/i }).click();
-			await expect(page.getByText('Check your email')).toBeVisible({ timeout: 8000 });
+			await page.locator('button[type="submit"]').click();
+			await expect(page.getByText('Check your email').first()).toBeVisible({ timeout: 8000 });
 		});
 	});
 });

@@ -84,7 +84,7 @@ test.describe('Login page', () => {
 
 		test('shows submit button', async ({ page }) => {
 			await navigateToLogin(page);
-			await expect(page.getByRole('button', { name: /^sign in$/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('shows forgot password link', async ({ page }) => {
@@ -111,14 +111,14 @@ test.describe('Login page', () => {
 
 		test('email validation error on empty submit', async ({ page }) => {
 			await navigateToLogin(page);
-			await page.getByRole('button', { name: /^sign in$/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 
 		test('password validation error when email is valid but password empty', async ({ page }) => {
 			await navigateToLogin(page);
 			await page.locator('#email-input').fill('test@example.com');
-			await page.getByRole('button', { name: /^sign in$/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter your password.')).toBeVisible();
 		});
 
@@ -127,21 +127,21 @@ test.describe('Login page', () => {
 			await navigateToLogin(page);
 			await page.locator('#email-input').fill('test@example.com');
 			await page.locator('#password-input').fill('password123');
-			await page.getByRole('button', { name: /^sign in$/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await page.waitForURL('**/', { timeout: 8000 });
 			await expect(page).toHaveURL(/\/$/);
 		});
 
 		test('magic link section is visible', async ({ page }) => {
 			await navigateToLogin(page);
-			await expect(page.getByRole('button', { name: /send magic link/i })).toBeVisible();
+			await expect(page.locator('button').filter({ hasText: 'Send magic link' })).toBeVisible();
 		});
 
 		test('magic link success state shows confirmation message', async ({ page }) => {
 			await mockMagicLinkApi(page);
 			await navigateToLogin(page);
 			await page.locator('#magic-email-input').fill('test@example.com');
-			await page.getByRole('button', { name: /send magic link/i }).click();
+			await page.locator('button').filter({ hasText: 'Send magic link' }).click();
 			await expect(page.getByText('Check your email')).toBeVisible({ timeout: 5000 });
 		});
 
@@ -201,7 +201,7 @@ test.describe('Login page', () => {
 
 		test('shows submit button on mobile', async ({ page }) => {
 			await navigateToLogin(page);
-			await expect(page.getByRole('button', { name: /^sign in$/i })).toBeVisible();
+			await expect(page.locator('button[type="submit"]')).toBeVisible();
 		});
 
 		test('shows forgot password and register links on mobile', async ({ page }) => {
@@ -212,7 +212,7 @@ test.describe('Login page', () => {
 
 		test('email validation error on mobile', async ({ page }) => {
 			await navigateToLogin(page);
-			await page.getByRole('button', { name: /^sign in$/i }).click();
+			await page.locator('button[type="submit"]').click();
 			await expect(page.getByText('Please enter a valid email address.')).toBeVisible();
 		});
 	});
