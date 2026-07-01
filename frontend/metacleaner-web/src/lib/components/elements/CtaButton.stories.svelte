@@ -29,7 +29,7 @@
 />
 <Story
 	name="Secondary"
-	args={{ variant: 'secondary', icon: 'fa-brands fa-apple', label: 'Download App' }}
+	args={{ variant: 'secondary', icon: 'fa-solid fa-arrow-right', label: 'Learn More' }}
 />
 <Story name="Blue" args={{ variant: 'blue', icon: 'fa-solid fa-bolt', label: 'Get Started' }} />
 <Story name="Outline" args={{ variant: 'outline', label: 'Contact Sales' }} />

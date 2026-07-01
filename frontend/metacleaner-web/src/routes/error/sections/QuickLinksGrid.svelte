@@ -5,7 +5,7 @@
 	const links = [
 		{
 			href: '/',
-			icon: 'fa-solid fa-rocket',
+			icon: 'fa-solid fa-cloud-arrow-up',
 			label: m.error_404_link_try_free(),
 			hoverColor: 'brand-green' as const
 		},
