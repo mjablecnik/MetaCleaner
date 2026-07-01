@@ -1,5 +1,11 @@
 # Memory
 
+## monitoring: fabricated Apdex and error-rate KPIs on Performance page
+- Project: metacleaner-monitoring
+- Problem: `mapToPerformanceKpiStats` called `computeApdex(0,0,0)` which returns 1.0 (the formula's no-data sentinel), then rendered it as a live "Excellent / 1.00 / 100% green bar" Apdex score. Error rate was synthesised from `Math.min(100, criticalCount * 0.5)` (Sentry issue count × 0.5%) when Cloudflare data was absent — a made-up heuristic, not the spec-defined "% of 5xx responses".
+- Solution: Apdex always renders `'—'` (neutral badge, no bar) until a real latency source is wired in. Error rate renders `'—'` when `totalRequests ≤ 1000` (no real CF data) and uses real Cloudflare threats/total ratio otherwise. `sentryErrorRatePct` heuristic deleted. Two property tests updated to expect `'—'` for these fields when no data source is available.
+- Source: code-review-fix, 2026-07-01
+
 ## metacleaner-web: strict-mode violations from nav+footer ambiguity and partial regex matches
 - Project: metacleaner-web
 - Problem: Four E2E tests failed with strict-mode violations or element-not-found: (1) `getByText(/Privacy is/)` matched both hero `<span>Privacy is</span>` AND `about_story_p3` "Privacy isn't a feature…" (regex substring match). (2) `getByText('404', { exact: true })` matched both the TerminalCard footer badge `<span>404</span>` AND the large `<p class="four-zero-four">404</p>`. (3) `getByRole('link', { name: 'Try Free', exact: true })` found nothing — the only "Try Free" link is inside a QuickLinkCard that has a Font Awesome icon which breaks Playwright's accessible-name matching (same pattern as the FA-button MEMORY entry). (4) `getByRole('link', { name: 'Features', exact: true }).click()` resolved to 2 elements: the desktop nav link and the desktop footer link (no icons, exact text match).
@@ -920,3 +926,21 @@
 - Problem: HTTP header CSP and meta CSP combine to the MOST RESTRICTIVE policy per the CSP spec. A meta CSP `script-src 'self' 'sha256-...'` CANNOT override nginx's `script-src 'self'` or `default-src 'self'` (which acts as the script-src fallback). Even with `kit.csp mode:'hash'`, the nginx header blocks the inline script if `default-src 'self'` or `script-src 'self'` remains.
 - Solution: Remove BOTH `default-src 'self'` and `script-src 'self'` from the nginx CSP header. This lets SvelteKit's meta CSP (injected by `kit.csp: { mode: 'hash' }`) be the SOLE policy governing scripts, allowing the inline bootstrap via its sha256 hash. All other nginx CSP directives (style-src, font-src, img-src, connect-src, frame-ancestors, base-uri, object-src) remain. Add `src/__tests__/csp-nginx-compat.test.ts` to assert nginx.conf never defines script-src/default-src. For Font Awesome, change `media="print" onload="this.media='all'"` to `media="all"` in app.html (inline event handlers also need 'unsafe-inline' to run under CSP).
 - Source: code-review-fix, 2026-07-01
+
+## Fabricated Performance KPIs (Apdex 1.00 / error-rate heuristic) rendered as live data
+- Project: metacleaner-monitoring
+- Problem: `mapToPerformanceKpiStats` calls `computeApdex(0,0,0)` which returns 1.0, then renders "1.00" with an `common_status_excellent` badge and a 100%-wide green bar — a fabricated perfect score when no latency source exists. Error rate falls back to `Math.min(100, criticalCount * 0.5)` (0.5% per Sentry issue), not the Req 14.2 5xx ratio. Slow-endpoints table is always empty because the load calls `mapToSlowEndpoints([])`; the fabrication helper `mapSentryIssuesToSlowEndpoints`/`estimateAvgMs` is dead code kept around. Matches the AGENT_NOTES "fabricated metrics presented as live data" trap — a green property test on `computeApdex` does NOT mean the value shown is real.
+- Solution: When no real data source is wired in, emit `value: '—'` with a neutral badge and NO bar (Runtime CPU/RAM KPIs already do this correctly). Never synthesize Apdex/error-rate from severity counts. Grep each `+page.server.ts` for the tested function to confirm real inputs flow in before trusting a KPI.
+- Source: code-review, 2026-07-01 15:xx
+
+## i18n bypass concentrated in the mapper layer (monitoring)
+- Project: metacleaner-monitoring
+- Problem: The 2026-06-30 review fixed the page-layer i18n, but hardcoded user-facing English/Czech strings live on in `flyMapper`/`cloudflareMapper`/`performanceMapper`/`supabaseMapper` — subtext/message/timestamp/commitMessage fields like "Today"/"Yesterday"/"N days ago", "machines online", "Live stats not available via PostgREST", "min ago", plus hardcoded `'cs-CZ'`/`'en-US'` locales and a Czech `D. M. YYYY` date format. These render raw regardless of active locale. When reviewing this package, grep the `src/lib/server/mappers/` files for quoted strings and `toLocaleString(`, not just `.svelte` files.
+- Solution: Emit i18n keys from mappers (interfaces already support `subtextKey`/`subtextIsKey`); derive locale from Paraglide runtime instead of pinning it.
+- Source: code-review, 2026-07-01 15:xx
+
+## Note: most 2026-06-30 monitoring findings were fixed by 2026-07-01
+- Project: metacleaner-monitoring
+- Problem: A prior code review flagged retry no-ops, request-time env validation, dashboard runtime `w-[x%]`, and fabricated HttpStatusDistribution.
+- Solution: All four are now FIXED in-tree — `depends('app:<route>')` added to every load (retry works), `hooks.server.ts` eagerly calls `getServiceConfigs()` + `process.exit(1)` at startup, KPI bars use inline `style="width:{barWidth}"`, and `mapToHttpStatusDistribution` returns honest `'—'`. Re-verify against current code before re-reporting a "known" issue — don't trust a stale review.
+- Source: code-review, 2026-07-01 15:xx
