@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-07-01 15:42 — manual
+- Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
+- Finalized the UI/unit test pipeline follow-ups across 4 commits (`fd3e15f`…`0607f62`); `.agents/tmp/` did not exist (already consumed by `f8e8385`), so this entry is derived from git history
+- **Test** (`fd3e15f`): updated `userRepository.test.ts` to assert the current throw-on-500 behavior for `getCurrentUser`
+- **Storybook** (`b48b405`): added the last defensive prop guards to fix Storybook teardown unhandled-errors (26 → 0; 610 tests pass) — optional props + `= []` defaults in UpgradeCard (`differentialFeatures`), DowngradeCard (`featuresLost`), CancellingPlanCard/CancellingView/CurrentPlanCard (`features`), `code = ''` in CodeBlock, `{@render content?.()}` + guarded `onCancel?.()`/`onConfirm?.()` in ConfirmationModal and DeleteKeyModal; regenerated `paraglide/messages/_index.js` (inline format)
+- **Chore** (`f8e8385`): updated `.agents/MEMORY.md` and refreshed `.agents/UNIT_TEST_REPORT.md`, and removed the consumed `.agents/tmp/` specs (TEST_SPEC/TASKS, COMPONENT_TESTS/TASKS, E2E_TESTS/TASKS)
+- **Lint/format** (`0607f62`): fixed ESLint errors and applied Prettier formatting across 8 e2e specs (auth-navigation, docs-navigation, email-changed, navigation, responsive, settings, subscription, subscription-success), several stories (InfoBox, CancellationBanner, CancellingPlanCard/View, ConfirmationModal), and components (LanguageDropdown, CancellingView, DropZone, UploadZoneCard, ReportCard/TableRow, ReportsList/Table, FileProcessingRow, ErrorDetailAccordion, ErrorStateCard) plus the `page.load.test.ts` spec
+
 ## 2026-07-01 15:25 — manual
 - Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
 - Ran the full UI/unit test pipeline against `metacleaner-app` from three `.agents/tmp/` specs (`TEST_SPEC.md`, `COMPONENT_TESTS.md`, `E2E_TESTS.md`) with matching task lists, closing every task across ~20 commits (`ae02dc0`…`d93ee90`)
