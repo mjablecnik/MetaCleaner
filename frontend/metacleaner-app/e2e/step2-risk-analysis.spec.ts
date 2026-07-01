@@ -1,4 +1,6 @@
 import { test, expect } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockAllApis } from './helpers/mock-api.js';
 
 // Minimal JPEG (SOI + EOI) — same as step1 test
 const TEST_FILE = {
@@ -16,6 +18,11 @@ async function enterFilesReadyState(page: import('playwright/test').Page) {
 }
 
 test.describe('Step 2 — Files Ready (Risk Analysis)', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockAllApis(page);
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 

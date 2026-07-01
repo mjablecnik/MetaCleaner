@@ -1,4 +1,6 @@
 import { test, expect } from 'playwright/test';
+import { injectAuth } from './helpers/auth.js';
+import { mockUploadApi } from './helpers/mock-api.js';
 
 // Minimal JPEG (SOI + EOI): accepted by extension/MIME validation.
 const TEST_FILE = {
@@ -14,6 +16,11 @@ const SECOND_FILE = {
 };
 
 test.describe('Step 1 → Step 2 in-place SPA transition', () => {
+	test.beforeEach(async ({ page }) => {
+		await injectAuth(page);
+		await mockUploadApi(page);
+	});
+
 	test.describe('desktop viewport (1280px)', () => {
 		test.use({ viewport: { width: 1280, height: 800 } });
 
