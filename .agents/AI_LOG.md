@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-07-01 16:21 — manual
+- Project: frontend (metacleaner-web — prerendered marketing site)
+- Ran a full code review of `frontend/metacleaner-web/` against its `.kiro/specs/` (`responsive-web-refactor`, `web-content-overhaul`, `about-and-404-pages`, plus shared-pricing from `stripe-subscription`), captured in `.agents/tmp/CODE_REVIEW.md` (1 CRITICAL, 1 HIGH, 2 MEDIUM, 5 LOW) with an 11-item task list (`.agents/tmp/TASKS.md`), and resolved every item across 5 commits (`66eefb1`…`2b38b56`)
+- **CRITICAL/HIGH** (`66eefb1`): fixed the production CSP that blocked SvelteKit's inline bootstrap script (whole site non-interactive in prod — dead mobile menu, language switcher, cookie banner, contact form, pricing toggle) and blocked the Font Awesome `onload` media-swap (all icons invisible); configured `kit.csp` hashing and reconciled the nginx `script-src` / FA loading
+- **MEDIUM** (`948d568`): returned a real HTTP 404 for unmatched routes instead of a soft-404 `200.html` (`nginx.conf`), and pointed the primary "Try for Free" CTAs at the app (`PUBLIC_APP_URL/register`) instead of the dead `href="#"` in `HeroSection.svelte` and `FeaturesCtaSection.svelte`
+- **LOW** (`a064aa3`, `05586b3`, `2b38b56`): added the `fa-circle-info` icon to the MobileMenu `dropdown` About link and removed the leftover "Download App" / `fa-brands fa-apple` example from `CtaButton.stories.svelte`; reconciled the `responsive-web-refactor` and `about-and-404-pages` specs with the implemented reality (intentional prerender + `200.html`, server-side Brevo Edge Function, per-package `CLAUDE.md`); aligned the 404 "Try Free" quick-link icon (`fa-cloud-arrow-up`) with the design in `QuickLinksGrid.svelte`
+- Also noted a follow-up recommendation: add a CI smoke test that serves the built site through the real nginx container to catch production-only CSP breakage (e2e currently runs against Vite preview)
+
 ## 2026-07-01 15:48 — manual
 - Project: frontend (metacleaner-app — SvelteKit cleaning wizard)
 - Synced the app docs with the current codebase (`395ad9e`); `.agents/tmp/` did not exist, so this entry is derived from git history

@@ -29,11 +29,11 @@ Replace the existing About page and 404 error page with fully-featured redesigns
 
   - [x] 1.4 Create `src/lib/utils/brevoClient.ts`
     - Define `ContactEmailPayload` interface (senderName, senderEmail, subject, message)
-    - Implement `sendContactEmail()` function using Brevo transactional email API (`/v3/smtp/email`)
-    - API key from `import.meta.env.VITE_BREVO_API_KEY`
-    - Recipient: hello@metacleaner.app (or from env)
+    - Implement `sendContactEmail()` using a Supabase Edge Function (`send-contact-email`) — **NOT** the Brevo API directly from the browser
+    - INTENTIONAL DIVERGENCE FROM SPEC: The implementation calls the Supabase Edge Function instead of calling `/v3/smtp/email` with `VITE_BREVO_API_KEY` from the browser. The Edge Function holds `BREVO_API_KEY` server-side, avoiding secret exposure in the JS bundle. Do NOT revert to the client-side approach.
+    - Requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (not `VITE_BREVO_API_KEY`) at build time
+    - Recipient: hello@metacleaner.app (configured in the Edge Function)
     - Returns `{ success: boolean; error?: string }`
-    - Add `VITE_BREVO_API_KEY` to `.env.example`
     - _Requirements: 4.9, 4.10, 4.11_
 
   - [ ]* 1.5 Write property tests for `validateContactForm` (Property 1: Valid data passes)

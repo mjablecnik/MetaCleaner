@@ -27,7 +27,7 @@ Refactor the `frontend/metacleaner-web/` SvelteKit marketing site to eliminate d
 1. WHEN the production build is executed, THE Web_App SHALL NOT contain a `src/stories/` directory (default Storybook boilerplate stories)
 2. WHEN the production build is executed, THE Web_App SHALL NOT contain a `src/lib/vitest-examples/` directory
 3. WHEN the production build is executed, THE Web_App SHALL NOT contain a `src/routes/demo/` route directory
-4. THE Web_App SHALL NOT contain a `CLAUDE.md` file in the project root
+4. THE Web_App MAY contain a `CLAUDE.md` file in the project root — the monorepo convention mandates a per-package `CLAUDE.md` for each workspace package, and this takes precedence over the earlier requirement to omit it
 5. THE Web_App `package.json` SHALL NOT list any devDependencies prefixed with `@storybook/`, nor `@chromatic-com/storybook`, nor `eslint-plugin-storybook`
 6. THE Web_App `package.json` SHALL NOT contain `storybook` or `build-storybook` entries in the `scripts` object
 7. THE Web_App SHALL NOT contain a `.storybook/` configuration directory
@@ -149,7 +149,7 @@ Refactor the `frontend/metacleaner-web/` SvelteKit marketing site to eliminate d
 3. THE Web_App `README.md` SHALL list every script defined in `package.json` with a one-sentence description of what it does, grouped by category (development, testing, build)
 4. THE Web_App `README.md` SHALL include a "Quick Start" section containing the exact sequence of shell commands (clone, install, env setup, dev server start) required to reach a running dev server, with no steps requiring information not present in the README or `.env.example`
 5. IF the Web_App `README.md` references an external dependency (Playwright browsers, backend server), THEN the document SHALL state whether that dependency is required or optional and provide the setup command or link to obtain it
-6. THE Web_App SHALL NOT contain a `CLAUDE.md` file — any useful project configuration notes from it SHALL be merged into the README or removed
+6. THE Web_App SHALL contain a `CLAUDE.md` file per the monorepo convention — project configuration notes SHALL be documented there alongside the README
 
 ### Requirement 11: Configure Static Adapter for Production
 
@@ -159,6 +159,6 @@ Refactor the `frontend/metacleaner-web/` SvelteKit marketing site to eliminate d
 
 1. THE Web_App SHALL use `@sveltejs/adapter-static` as the production adapter in the SvelteKit configuration
 2. WHEN the build completes, THE Web_App SHALL produce a `build/` directory containing static HTML, CSS, and JS files with no server-side runtime dependency
-3. THE Web_App SHALL configure a fallback page (`index.html`) for client-side routing support on static hosts
-4. THE Web_App SHALL disable SSR and prerendering globally via the root layout so that all pages are rendered client-side as a single-page application
+3. THE Web_App SHALL configure a fallback page (`200.html`) for client-side routing support on static hosts — NOTE: the implementation intentionally uses `prerender = true` (full SSR prerendering) with a `200.html` fallback instead of the originally-specified `ssr = false; prerender = false` SPA approach, because prerendering produces indexable HTML for better SEO
+4. THE Web_App SHALL prerender all pages at build time via `export const prerender = true` in the root layout, so that nginx serves static HTML files with SEO-friendly content — this supersedes the earlier requirement to disable SSR/prerendering
 5. WHEN the build completes, THE output SHALL contain no server-side entry points, serverless functions, or Node.js runtime files

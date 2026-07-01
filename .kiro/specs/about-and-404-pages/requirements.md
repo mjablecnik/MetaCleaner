@@ -74,7 +74,7 @@ This feature replaces the existing About page and 404 error page in the MetaClea
 8. IF the user submits the contact form with any required field empty or with an invalid email format, THEN THE Contact_Section SHALL display inline validation error messages next to each invalid field without clearing user input
 9. WHEN the user submits the contact form with all fields valid, THE Contact_Section SHALL send the form data via the Brevo (formerly Sendinblue) transactional email API and display a localized success confirmation message indicating the message was sent
 10. IF the contact form submission fails due to a server or network error (including Brevo API failure), THEN THE Contact_Section SHALL display a localized error message near the form indicating the submission failed and preserve all user input
-11. THE Contact_Section SHALL use the Brevo SMTP/API integration to send the form contents as an email to the configured recipient address, using the Brevo API key stored in an environment variable (`VITE_BREVO_API_KEY` or equivalent)
+11. THE Contact_Section SHALL send form contents to the configured recipient address via a server-side integration — NOTE: the implementation deliberately uses a Supabase Edge Function (`send-contact-email`) that holds the `BREVO_API_KEY` secret server-side, rather than calling the Brevo API directly from the browser with `VITE_BREVO_API_KEY`. This is a security improvement over the original spec (a client-side API key would be exposed in the browser bundle). Do NOT revert to the client-side approach.
 
 ### Requirement 5: 404 Error Page Redesign
 
