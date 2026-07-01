@@ -148,7 +148,7 @@ src/
 ├── routes/
 │   ├── (step1)/           # File upload + scan (wizard step 1)
 │   ├── (auth)/            # Login, register, forgot-password, email-verified
-│   ├── api-keys/          # API key management
+│   ├── email-changed/     # Email change confirmation callback
 │   ├── docs/              # API documentation (auth, endpoints, errors)
 │   ├── report/[id]/       # Report detail page
 │   ├── reports/           # Report history list
