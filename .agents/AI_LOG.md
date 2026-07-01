@@ -1,5 +1,13 @@
 # AI Log
 
+## 2026-07-01 23:53 — manual
+- Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
+- Ran three parallel test workstreams for `metacleaner-monitoring` from five `.agents/tmp/` specs (`TEST_SPEC.md`, `TASKS.md`, `E2E_TASKS.md`, `COMPONENT_TASKS.md`, `TEST_RESULTS.md`), closing every task across commits `1c6aaf0`…`0a6613f`; final unit state 37 files / 608 tests passing (Vitest 4.1.9)
+- **Unit + integration** (`c273bc5`, `03e8d84`): added unit tests for all 10 route `+page.server.ts` load functions and the login action — dashboard home stats aggregation (`page.server.test.ts`: uptime %, jobs total, failed-rate %, avg cleaning time incl. `N/A`/`0.0s` branches, `depends`/no-store), `performance` partial-source error propagation, `login` `default` action (`fail(401)` paths + `mc_session` cookie options + `redirect(303)`), and the `business`/`chyby`/`databaze`/`dostupnost`/`edge`/`runtime`/`uzivatele` config-gating + mapper-delegation + section-isolation cases
+- **Unit — libs & repos** (`41e0428`, `0a6613f`): added `i18n.test.ts` (`t()` key lookup/fallback/param passing), `locale.svelte.test.ts` (client project — `initLocale`/`switchLocale` localStorage + paraglide), `hooks.test.ts` (`reroute` → `deLocalizeUrl`), and `staticRepositoriesExtra.test.ts` (data-integrity for the 7 uncovered static repositories); aligned `supabaseClient.test.ts` with actual null-`total` behaviour
+- **E2E** (`d51ee48`, `5b14a02`, `8948229`): bootstrapped the Playwright suite — fixed `playwright.config.ts` `webServer.env` (missing config caused preview `process.exit(1)`), replaced the broken `/demo/playwright` test with real `/login` + auth-guard smoke tests, and added authenticated per-page smoke tests for all 9 routes plus navigation and responsive (mobile 375×812 / desktop 1280×800) app-shell tests
+- **Storybook** (`1c6aaf0`): added stories for `SectionErrorCard` (one per error category + message/no-message + retry button), `NotConfiguredCard` (with/without `missingVars`), and `LanguageSwitcher` (EN/CS active, `aria-pressed`)
+
 ## 2026-07-01 22:50 — manual
 - Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
 - Worked through a code review (`.agents/tmp/CODE_REVIEW.md` + `TASKS.md`) of `metacleaner-monitoring` against the `monitoring-real-api-integration` spec, closing all 12 findings (2 HIGH, 6 MEDIUM, 4 LOW) across commits `917f514`…`e4f343d`
