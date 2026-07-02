@@ -17,6 +17,7 @@ vi.mock('$lib/clients/metaCleanerApi.js', () => {
 	return {
 		uploadFiles: vi.fn(),
 		createJob: vi.fn(),
+		mintProgressTicket: vi.fn(),
 		connectJobProgress: vi.fn(),
 		getJobStatus: vi.fn(),
 		downloadJobZip: vi.fn(),
@@ -130,6 +131,7 @@ async function setupWsScenario(
 		totalFiles: uploadedFiles.length,
 		createdAt: '2024-01-01T00:00:00Z'
 	});
+	vi.mocked(api.mintProgressTicket).mockResolvedValueOnce('test-ws-ticket');
 	vi.mocked(api.connectJobProgress).mockImplementationOnce(() => {
 		const ws = new MockWebSocket();
 		capturedWs = ws;

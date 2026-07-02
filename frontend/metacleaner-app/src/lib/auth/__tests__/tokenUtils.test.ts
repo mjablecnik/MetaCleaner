@@ -88,11 +88,15 @@ describe('extractCallbackParams', () => {
 			});
 		});
 
-		it('handles URLs with both query params and a fragment — uses query params', () => {
-			const url =
+		it('handles URLs with both query params and a fragment — prefers hash, falls back to query when hash has no tokens', () => {
+			// Hash has no tokens → falls back to query params
+			const urlQueryOnly =
 				'https://app.metacleaner.com/callback?access_token=qry&refresh_token=ref&expires_in=3600#ignored=fragment';
-			const result = extractCallbackParams(url);
-			expect(result.tokens?.accessToken).toBe('qry');
+			expect(extractCallbackParams(urlQueryOnly).tokens?.accessToken).toBe('qry');
+			// Hash has tokens → hash takes precedence over query params
+			const urlBoth =
+				'https://app.metacleaner.com/callback?access_token=qry&refresh_token=ref&expires_in=3600#access_token=hash&refresh_token=hashref&expires_in=3600';
+			expect(extractCallbackParams(urlBoth).tokens?.accessToken).toBe('hash');
 		});
 	});
 

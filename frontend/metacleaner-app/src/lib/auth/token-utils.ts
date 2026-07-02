@@ -66,10 +66,15 @@ export function extractCallbackParams(url: string): CallbackResult {
 	}
 
 	// Prefer hash fragment — tokens in the fragment are never sent to the server and
-	// do not appear in access logs or Referer headers.
+	// do not appear in access logs or Referer headers. Fall back to query string only
+	// when the hash is absent or contains no tokens (deep-link compatibility).
 	let params = hash
 		? new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash)
 		: new URLSearchParams(search);
+
+	if (!params.get('access_token') && search) {
+		params = new URLSearchParams(search);
+	}
 
 	const error = params.get('error');
 	if (error) return { error };
