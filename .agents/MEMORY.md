@@ -1,5 +1,17 @@
 # Memory
 
+## golang.org/x/net@latest forces go directive upgrade to 1.25
+- Project: metacleaner-server
+- Problem: Running `go get golang.org/x/net@latest` (v0.56.0) requires `go >= 1.25.0` and automatically upgrades the `go` directive in `go.mod`. If the project targets Go 1.23, `@latest` will unexpectedly raise the minimum Go version.
+- Solution: Use a specific older version (e.g. `go get golang.org/x/net@v0.38.0`) that includes the security fixes but doesn't require Go 1.25+. Alternatively, accept the Go upgrade when the installed toolchain supports it.
+- Source: security-audit, 2026-07-02
+
+## supabase.go: url variable name shadows "net/url" import
+- Project: metacleaner-server
+- Problem: `supabase.go` used the local variable name `url` for query strings (e.g. `url := c.restURL(...)`), which shadows the imported `"net/url"` package after adding `url.QueryEscape`. The code compiled but the variable would shadow the import.
+- Solution: Rename all local `url` variables to `restURL` in the affected functions (`GetReportByHumanID`, `GetReportMetaByHumanID`, `GetJob`, `GetFileRecords`) when adding `"net/url"` import.
+- Source: security-audit, 2026-07-02
+
 ## monitoring: fabricated Apdex and error-rate KPIs on Performance page
 - Project: metacleaner-monitoring
 - Problem: `mapToPerformanceKpiStats` called `computeApdex(0,0,0)` which returns 1.0 (the formula's no-data sentinel), then rendered it as a live "Excellent / 1.00 / 100% green bar" Apdex score. Error rate was synthesised from `Math.min(100, criticalCount * 0.5)` (Sentry issue count × 0.5%) when Cloudflare data was absent — a made-up heuristic, not the spec-defined "% of 5xx responses".

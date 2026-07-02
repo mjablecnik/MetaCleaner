@@ -20,9 +20,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 WORKDIR /app
 
 COPY --from=builder /app/metacleaner-server .
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
 
 EXPOSE 8080
 

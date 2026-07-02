@@ -4,6 +4,7 @@ primary_region = 'fra'
 [build]
 
 [env]
+  APP_ENV = "production"
   PORT = "8080"
   TEMP_STORAGE_PATH = "/tmp/metacleaner"
   RETENTION_PERIOD = "1h"
