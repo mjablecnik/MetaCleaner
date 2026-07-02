@@ -37,9 +37,7 @@ export function computeChurnRate(
 	// Denominator = subscriptions active at the START of the window.
 	// New joiners (created during the window) are excluded to avoid inflating the base.
 	const newJoiners =
-		windowStartUnix != null
-			? activeSubs.filter((s) => s.created >= windowStartUnix).length
-			: 0;
+		windowStartUnix != null ? activeSubs.filter((s) => s.created >= windowStartUnix).length : 0;
 	const activeAtStart = activeSubs.length - newJoiners;
 	const total = activeAtStart + canceledCount;
 	if (total === 0) return 0;

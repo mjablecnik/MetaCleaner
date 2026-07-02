@@ -25,7 +25,9 @@
 <!-- Mobile: Dashboard Row 2 Charts — no real data source available -->
 <section class="lg:hidden space-y-3">
 	<div class="bg-card border border-surface rounded-2xl p-4">
-		<h3 class="text-base font-semibold text-textMain mb-3">{t('dashboard_charts_serverResources')}</h3>
+		<h3 class="text-base font-semibold text-textMain mb-3">
+			{t('dashboard_charts_serverResources')}
+		</h3>
 		<div class="h-[200px] flex items-center justify-center">
 			<p class="text-sm text-textSec">{t('common_labels_noData')}</p>
 		</div>

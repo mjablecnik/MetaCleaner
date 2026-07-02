@@ -295,6 +295,10 @@ describe('dashboard load — alerts delegation', () => {
 		mockGetRecentIssues.mockResolvedValue(fakeIssues);
 
 		await load(makeEvent() as never);
-		expect(mockMergeAndSortAlerts).toHaveBeenCalledWith(fakeIssues, fakeMachines, expect.any(Number));
+		expect(mockMergeAndSortAlerts).toHaveBeenCalledWith(
+			fakeIssues,
+			fakeMachines,
+			expect.any(Number)
+		);
 	});
 });

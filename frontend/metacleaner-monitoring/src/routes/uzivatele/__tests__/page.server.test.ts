@@ -1,14 +1,11 @@
-const {
-	mockGetServiceConfigs,
-	mockGetUsers,
-	mockMapToUserStats,
-	mockMapToUsers
-} = vi.hoisted(() => ({
-	mockGetServiceConfigs: vi.fn(),
-	mockGetUsers: vi.fn(),
-	mockMapToUserStats: vi.fn(),
-	mockMapToUsers: vi.fn()
-}));
+const { mockGetServiceConfigs, mockGetUsers, mockMapToUserStats, mockMapToUsers } = vi.hoisted(
+	() => ({
+		mockGetServiceConfigs: vi.fn(),
+		mockGetUsers: vi.fn(),
+		mockMapToUserStats: vi.fn(),
+		mockMapToUsers: vi.fn()
+	})
+);
 
 vi.mock('$lib/server/config.js', () => ({
 	getServiceConfigs: mockGetServiceConfigs

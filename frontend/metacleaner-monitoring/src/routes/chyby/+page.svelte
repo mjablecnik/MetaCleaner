@@ -70,9 +70,7 @@
 			</select>
 		</div>
 		<div class="p-3 rounded-xl bg-surface border border-surface/60 flex items-center gap-3">
-			<div
-				class="w-8 h-8 rounded-full bg-surface flex items-center justify-center flex-shrink-0"
-			>
+			<div class="w-8 h-8 rounded-full bg-surface flex items-center justify-center flex-shrink-0">
 				<i class="fa-solid fa-triangle-exclamation text-textSec text-sm"></i>
 			</div>
 			<div class="flex-1 min-w-0">

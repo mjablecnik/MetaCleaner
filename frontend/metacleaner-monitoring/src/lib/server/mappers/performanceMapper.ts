@@ -118,9 +118,10 @@ export function mapToPerformanceKpiStats(
 		if (total > 0) uptimePct = (online / total) * 100;
 	}
 
-	const throughputSubtext = totalRequests > 0
-		? m.performance_kpi_requestsTotal({ count: totalRequests.toLocaleString() })
-		: 'performance_kpi_noCloudflareData';
+	const throughputSubtext =
+		totalRequests > 0
+			? m.performance_kpi_requestsTotal({ count: totalRequests.toLocaleString() })
+			: 'performance_kpi_noCloudflareData';
 
 	const uptimeStr = uptimePct.toFixed(2);
 	const uptimeBadgeKey = uptimePct >= 99.9 ? 'common_status_excellent' : 'common_status_ok';
@@ -231,11 +232,12 @@ export function mapToPerformanceEvents(
 					const tsMs = flyTimestampToMs(event.timestamp);
 					const isCritical = event.type === 'kill' || event.type === 'crash';
 
-					const eventType = event.type === 'kill'
-						? m.performance_event_type_oomKill()
-						: event.type === 'crash'
-							? m.performance_event_type_crash()
-							: m.performance_event_type_restart();
+					const eventType =
+						event.type === 'kill'
+							? m.performance_event_type_oomKill()
+							: event.type === 'crash'
+								? m.performance_event_type_crash()
+								: m.performance_event_type_restart();
 					events.push({
 						_sortMs: tsMs,
 						id: `fly-${machine.id}-${event.timestamp}`,

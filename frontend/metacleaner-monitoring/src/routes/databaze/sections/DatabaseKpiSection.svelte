@@ -22,7 +22,9 @@
 		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 			<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 		</div>
-		<p class="text-xs text-textSec mt-2">{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}</p>
+		<p class="text-xs text-textSec mt-2">
+			{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}
+		</p>
 	</div>
 
 	<!-- queryLatency -->
@@ -40,7 +42,9 @@
 				<i class="fa-solid fa-arrow-down text-xs"></i>{kpis[1].trend}
 			</span>
 		</div>
-		<p class="text-xs text-textSec mt-2">{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}</p>
+		<p class="text-xs text-textSec mt-2">
+			{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}
+		</p>
 	</div>
 
 	<!-- storageUsed -->
@@ -58,7 +62,9 @@
 		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
 			<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 		</div>
-		<p class="text-xs text-textSec mt-2">{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}</p>
+		<p class="text-xs text-textSec mt-2">
+			{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}
+		</p>
 	</div>
 
 	<!-- dbErrors -->
@@ -75,7 +81,9 @@
 				<i class="fa-solid fa-arrow-up text-xs"></i>{kpis[3].trend}
 			</span>
 		</div>
-		<p class="text-xs text-textSec mt-2">{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}</p>
+		<p class="text-xs text-textSec mt-2">
+			{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}
+		</p>
 	</div>
 </section>
 
@@ -96,7 +104,9 @@
 		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
 			<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
 		</div>
-		<p class="text-[10px] text-textSec">{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}</p>
+		<p class="text-[10px] text-textSec">
+			{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}
+		</p>
 	</div>
 
 	<!-- queryLatency -->
@@ -114,7 +124,9 @@
 				<i class="fa-solid fa-arrow-down text-[9px]"></i>{kpis[1].trend}
 			</span>
 		</div>
-		<p class="text-[10px] text-textSec">{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}</p>
+		<p class="text-[10px] text-textSec">
+			{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}
+		</p>
 	</div>
 
 	<!-- storageUsed -->
@@ -132,7 +144,9 @@
 		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
 			<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
 		</div>
-		<p class="text-[10px] text-textSec">{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}</p>
+		<p class="text-[10px] text-textSec">
+			{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}
+		</p>
 	</div>
 
 	<!-- dbErrors -->
@@ -149,6 +163,8 @@
 				<i class="fa-solid fa-arrow-up text-[9px]"></i>{kpis[3].trend}
 			</span>
 		</div>
-		<p class="text-[10px] text-textSec">{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}</p>
+		<p class="text-[10px] text-textSec">
+			{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}
+		</p>
 	</div>
 </section>

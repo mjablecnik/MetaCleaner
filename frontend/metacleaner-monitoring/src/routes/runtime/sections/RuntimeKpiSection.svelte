@@ -41,7 +41,9 @@
 						<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 					</div>
 				{/if}
-				<p class="text-xs text-textSec mt-2">{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}</p>
+				<p class="text-xs text-textSec mt-2">
+					{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}
+				</p>
 			</div>
 		{/each}
 	</section>
@@ -83,7 +85,9 @@
 						<div class="h-full {stat.barClass} rounded-full" style="width:{stat.barWidth}"></div>
 					</div>
 				{/if}
-				<p class="text-[10px] text-textSec {!stat.barWidth ? 'mt-1' : ''}">{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}</p>
+				<p class="text-[10px] text-textSec {!stat.barWidth ? 'mt-1' : ''}">
+					{stat.subtextIsKey ? t(stat.subtext) : stat.subtext}
+				</p>
 			</div>
 		{/each}
 	</section>

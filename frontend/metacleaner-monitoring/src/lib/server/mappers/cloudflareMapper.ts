@@ -187,7 +187,10 @@ export function mapToEdgeKpiStats(raw: CfAnalyticsRaw): EdgeKpiStat[] {
 			unit: 'GB',
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
-			subtext: m.edge_kpi_bandwidthDetail({ gb: totalBandwidthGb.toFixed(1), pct: bandwidthSavePct }),
+			subtext: m.edge_kpi_bandwidthDetail({
+				gb: totalBandwidthGb.toFixed(1),
+				pct: bandwidthSavePct
+			}),
 			barWidth: `${bandwidthSavePct}%`,
 			barClass: 'bg-[#3b82f6]'
 		},

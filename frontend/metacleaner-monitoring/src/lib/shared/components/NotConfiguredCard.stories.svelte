@@ -19,7 +19,13 @@
 <Story
 	name="ManyMissingVars"
 	args={{
-		missingVars: ['SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'SENTRY_AUTH_TOKEN', 'SENTRY_ORG', 'CLOUDFLARE_API_TOKEN']
+		missingVars: [
+			'SUPABASE_URL',
+			'SUPABASE_SERVICE_KEY',
+			'SENTRY_AUTH_TOKEN',
+			'SENTRY_ORG',
+			'CLOUDFLARE_API_TOKEN'
+		]
 	}}
 />
 
