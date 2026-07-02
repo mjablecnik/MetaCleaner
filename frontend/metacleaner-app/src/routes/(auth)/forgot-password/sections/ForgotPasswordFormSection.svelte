@@ -114,6 +114,7 @@
 			step = 3;
 		} catch (err: unknown) {
 			otpApiError = (err as Error).message ?? '';
+			resetToken = '';
 		} finally {
 			otpLoading = false;
 		}
@@ -168,6 +169,7 @@
 				const data = await res.json().catch(() => ({ message: res.statusText }));
 				throw new Error((data as { message?: string }).message ?? res.statusText);
 			}
+			resetToken = '';
 			step = 4;
 		} catch (err: unknown) {
 			passwordApiError = (err as Error).message ?? '';
@@ -552,6 +554,7 @@
 				<button
 					type="button"
 					onclick={() => {
+						resetToken = '';
 						step = 2;
 					}}
 					class="inline-block py-1 text-sm text-text-muted transition-colors hover:text-white"
