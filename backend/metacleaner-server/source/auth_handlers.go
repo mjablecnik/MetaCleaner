@@ -45,8 +45,20 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 			return
 		}
 
+		if len(req.Email) > 254 {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidEmail, "email must not exceed 254 characters")
+			return
+		}
 		if !emailRegex.MatchString(req.Email) {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidEmail, "invalid email format")
+			return
+		}
+		if utf8.RuneCountInString(strings.TrimSpace(req.FirstName)) > 100 {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "first_name must not exceed 100 characters")
+			return
+		}
+		if utf8.RuneCountInString(strings.TrimSpace(req.LastName)) > 100 {
+			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "last_name must not exceed 100 characters")
 			return
 		}
 

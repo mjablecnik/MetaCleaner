@@ -492,8 +492,9 @@ func TestHandleMe_Success(t *testing.T) {
 	handler := mw.Middleware(src.HandleMe(authClient, nullDB(t)))
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-001",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 	// Use a non-exempt path so middleware injects user ID into context
 	req := httptest.NewRequest(http.MethodGet, "/api/user/me", nil)
@@ -542,9 +543,11 @@ func TestHandleMe_ProfileNotFound(t *testing.T) {
 	}))
 	mw := src.NewAuthMiddleware(src.Config{SupabaseJWTSecret: testJWTSecret}, nil, nil)
 	handler := mw.Middleware(src.HandleMe(authClient, db))
+	const testUserUUID2 = "b2c3d4e5-f6a7-4890-bcde-f01234567890"
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-999",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID2,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 	req := httptest.NewRequest(http.MethodGet, "/api/user/me", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -557,8 +560,8 @@ func TestHandleMe_ProfileNotFound(t *testing.T) {
 	if err := json.NewDecoder(rr.Body).Decode(&profile); err != nil {
 		t.Fatalf("decode profile response: %v", err)
 	}
-	if profile.ID != "user-999" {
-		t.Errorf("profile.ID = %q, want %q", profile.ID, "user-999")
+	if profile.ID != testUserUUID2 {
+		t.Errorf("profile.ID = %q, want %q", profile.ID, testUserUUID2)
 	}
 }
 

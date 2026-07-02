@@ -96,8 +96,9 @@ func drawWrongSecretToken(t *rapid.T) string {
 		wrongSecret = "definitely-wrong-" + wrongSecret
 	}
 	return buildJWT(wrongSecret, map[string]any{
-		"sub": "user-wrong-sig",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 }
 
@@ -105,8 +106,9 @@ func drawWrongSecretToken(t *rapid.T) string {
 func drawExpiredToken(t *rapid.T) string {
 	secondsAgo := rapid.Int64Range(1, 7200).Draw(t, "expiredAgo")
 	return buildJWT(propertyTestJWTSecret, map[string]any{
-		"sub": "user-expired",
-		"exp": time.Now().Unix() - secondsAgo,
+		"sub":  testUserUUID,
+		"role": "authenticated",
+		"exp":  time.Now().Unix() - secondsAgo,
 	})
 }
 

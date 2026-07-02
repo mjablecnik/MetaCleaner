@@ -16,6 +16,9 @@ import (
 
 const testJWTSecret = "test-secret-key-for-unit-tests"
 
+// testUserUUID is a valid UUID v4 used in tests that require UUID-format sub claims.
+const testUserUUID = "a1b2c3d4-e5f6-4789-abcd-ef0123456789"
+
 // buildJWT constructs a signed HS256 JWT with the given claims and secret.
 func buildJWT(secret string, claims map[string]any) string {
 	headerJSON, _ := json.Marshal(map[string]string{"alg": "HS256", "typ": "JWT"})
@@ -51,16 +54,17 @@ func reqWithBearer(token string) *http.Request {
 func TestAuthenticate_ValidToken(t *testing.T) {
 	m := newTestAuthMiddleware()
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-abc-123",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 
 	userID, err := m.Authenticate(reqWithBearer(token))
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
-	if userID != "user-abc-123" {
-		t.Fatalf("expected userID 'user-abc-123', got %q", userID)
+	if userID != testUserUUID {
+		t.Fatalf("expected userID %q, got %q", testUserUUID, userID)
 	}
 }
 
@@ -136,7 +140,8 @@ func TestAuthenticate_WrongSignature(t *testing.T) {
 func TestAuthenticate_MissingSubClaim(t *testing.T) {
 	m := newTestAuthMiddleware()
 	token := buildJWT(testJWTSecret, map[string]any{
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 		// no "sub"
 	})
 
@@ -149,19 +154,21 @@ func TestAuthenticate_MissingSubClaim(t *testing.T) {
 	}
 }
 
-func TestAuthenticate_NoExpClaim_Valid(t *testing.T) {
+func TestAuthenticate_NoExpClaim_Rejected(t *testing.T) {
 	m := newTestAuthMiddleware()
-	// Token with no exp: should be accepted (exp=0 skips the check)
+	// Tokens without an exp claim must be rejected — they would otherwise be accepted forever.
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-no-exp",
+		"sub":  testUserUUID,
+		"role": "authenticated",
+		// no "exp"
 	})
 
-	userID, err := m.Authenticate(reqWithBearer(token))
-	if err != nil {
-		t.Fatalf("expected no error for token without exp, got: %v", err)
+	_, err := m.Authenticate(reqWithBearer(token))
+	if err == nil {
+		t.Fatal("expected error for token without exp claim, got nil")
 	}
-	if userID != "user-no-exp" {
-		t.Fatalf("expected 'user-no-exp', got %q", userID)
+	if err.Error() != "AUTH_TOKEN_INVALID: token missing expiry claim" {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
@@ -235,8 +242,9 @@ func TestMiddleware_ProtectedPath_ValidToken_PassesThrough(t *testing.T) {
 	handler := m.Middleware(next)
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-xyz",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 	req := httptest.NewRequest(http.MethodGet, "/api/files", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -246,8 +254,8 @@ func TestMiddleware_ProtectedPath_ValidToken_PassesThrough(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	if receivedUserID != "user-xyz" {
-		t.Fatalf("expected userID 'user-xyz' in context, got %q", receivedUserID)
+	if receivedUserID != testUserUUID {
+		t.Fatalf("expected userID %q in context, got %q", testUserUUID, receivedUserID)
 	}
 }
 

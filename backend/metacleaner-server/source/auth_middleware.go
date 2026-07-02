@@ -14,11 +14,18 @@ import (
 	"log/slog"
 	"math/big"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 )
+
+// subjectPattern validates that the JWT sub claim is a well-formed UUID.
+// The JWT signature is already verified, so this is defense-in-depth: it ensures
+// a legitimately-signed token with a malformed sub can't inject into PostgREST
+// user_id=eq. filters (e.g. via a weak SUPABASE_JWT_SECRET or future code paths).
+var subjectPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
 
 const (
 	ErrAuthUnauthorized = "AUTH_UNAUTHORIZED"
@@ -283,7 +290,8 @@ func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 		}
 		pubKey, err := m.cache.getKey(header.KID)
 		if err != nil {
-			return "", &authError{code: ErrAuthTokenInvalid, message: "unable to verify token: " + err.Error()}
+			slog.Warn("auth-middleware: JWKS key lookup failed", "kid", header.KID, "error", err)
+			return "", &authError{code: ErrAuthTokenInvalid, message: "unable to verify token"}
 		}
 		hash := sha256.Sum256([]byte(signingInput))
 		// ES256 signature is r || s, each 32 bytes
@@ -310,13 +318,25 @@ func (m *AuthMiddleware) validateJWT(token string) (string, error) {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "malformed token claims"}
 	}
 
-	// Check expiry
-	if claims.Exp > 0 && time.Now().Unix() > claims.Exp {
+	// Require exp — tokens without an expiry would be accepted forever.
+	if claims.Exp == 0 {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "token missing expiry claim"}
+	}
+	if time.Now().Unix() > claims.Exp {
 		return "", &authError{code: ErrAuthTokenExpired, message: "token has expired"}
+	}
+
+	// Reject Supabase anon and service_role tokens. Previously these were incidentally
+	// blocked by the empty-sub check, but an explicit role assertion is more robust.
+	if claims.Role != "authenticated" {
+		return "", &authError{code: ErrAuthUnauthorized, message: "insufficient role"}
 	}
 
 	if claims.Sub == "" {
 		return "", &authError{code: ErrAuthTokenInvalid, message: "token missing subject claim"}
+	}
+	if !subjectPattern.MatchString(claims.Sub) {
+		return "", &authError{code: ErrAuthTokenInvalid, message: "invalid subject claim"}
 	}
 
 	return claims.Sub, nil
