@@ -132,7 +132,11 @@
 		isCheckingOut = true;
 		try {
 			const { url } = await billingClient.createCheckoutSession(planId, billing);
-			window.location.href = url;
+			const parsed = new URL(url);
+			if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+				throw new Error('Invalid redirect URL from server');
+			}
+			window.location.href = parsed.toString();
 		} catch (err: unknown) {
 			checkoutError = (err as Error).message || tx('pricing.checkout.error');
 			isCheckingOut = false;
