@@ -1,5 +1,11 @@
 # AI Log
 
+## 2026-07-02 00:04 — manual
+- Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
+- `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit `d15787f` after the previous log entry)
+- **Chore/format** (`d15787f`): ran `prettier --write` to fix code style across 12 source files (`cloudflareMapper.ts`, `performanceMapper.ts`, `stripeMapper.ts`, `NotConfiguredCard.stories.svelte`, `routes/__tests__/page.server.test.ts`, `chyby/+page.svelte`, `DatabaseKpiSection.svelte`, `EdgeCacheRulesSection.svelte`, `PerformanceKpiSection.svelte`, `RuntimeKpiSection.svelte`, `DashboardChartsRow2Section.svelte`, `uzivatele/__tests__/page.server.test.ts`)
+- **Fix — .env.example**: added the previously missing `DASHBOARD_SESSION_SECRET` (required for login to work) and replaced `NODE_ENV=production` with a comment noting it belongs in the Dockerfile (Vite warns/ignores it when set in `.env`)
+
 ## 2026-07-01 23:53 — manual
 - Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
 - Ran three parallel test workstreams for `metacleaner-monitoring` from five `.agents/tmp/` specs (`TEST_SPEC.md`, `TASKS.md`, `E2E_TASKS.md`, `COMPONENT_TASKS.md`, `TEST_RESULTS.md`), closing every task across commits `1c6aaf0`…`0a6613f`; final unit state 37 files / 608 tests passing (Vitest 4.1.9)
