@@ -1,5 +1,10 @@
 # AI Log
 
+## 2026-07-02 00:09 — manual
+- Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
+- Synced project documentation with the current codebase (`8450a24`); `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit after the previous log entry)
+- **Docs** (`8450a24`): updated `CLAUDE.md` and `DOCS.md` to match the actual `src/lib/` layout and env-var behaviour — documented the previously-missing `shared/` (cross-route `components/`, `elements/`, `sections/` — KpiGrid, PlotlyChart, DataTable, etc.), `theme/` (chart colour constants), and `types/` (`pageData.ts`) directories; corrected the `DASHBOARD_SESSION_SECRET` note (it is now present in `.env.example` and the login form value must match it exactly); and flagged `SENTRY_DSN` and `STRIPE_WEBHOOK_SECRET` as appearing in `.env.example` but unused by server code. Despite the commit message naming README.md, only CLAUDE.md and DOCS.md required changes
+
 ## 2026-07-02 00:04 — manual
 - Project: frontend (metacleaner-monitoring — SSR monitoring dashboard)
 - `.agents/tmp/` did not exist, so this entry is derived from git history (single new commit `d15787f` after the previous log entry)
