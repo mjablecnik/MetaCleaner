@@ -101,13 +101,19 @@
 		getReportPdf(id)
 			.then((url) => {
 				if (url) {
-					const link = document.createElement('a');
-					link.href = url;
-					link.target = '_blank';
-					link.rel = 'noopener noreferrer';
-					document.body.appendChild(link);
-					link.click();
-					document.body.removeChild(link);
+					try {
+						const parsed = new URL(url);
+						if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return;
+						const link = document.createElement('a');
+						link.href = parsed.toString();
+						link.target = '_blank';
+						link.rel = 'noopener noreferrer';
+						document.body.appendChild(link);
+						link.click();
+						document.body.removeChild(link);
+					} catch {
+						// Invalid URL — skip navigation
+					}
 				}
 			})
 			.catch((err) => {

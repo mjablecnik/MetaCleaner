@@ -74,10 +74,12 @@
 		try {
 			const url = await getReportPdf(reportId);
 			if (url) {
+				const parsed = new URL(url);
+				if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return;
 				// Use programmatic anchor click instead of window.open()
 				// to avoid Firefox popup blocker (async window.open is blocked).
 				const link = document.createElement('a');
-				link.href = url;
+				link.href = parsed.toString();
 				link.target = '_blank';
 				link.rel = 'noopener noreferrer';
 				document.body.appendChild(link);
