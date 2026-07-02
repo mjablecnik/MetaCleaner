@@ -8,6 +8,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -313,11 +314,11 @@ func (c *SupabaseClient) UpdateJob(ctx context.Context, job *Job) error {
 // GetJob fetches a job by ID, optionally filtering by user ID.
 func (c *SupabaseClient) GetJob(ctx context.Context, jobID, userID string) (*Job, error) {
 	var rows []dbJob
-	url := c.restURL("cleaning_jobs?id=eq." + jobID)
+	restURL := c.restURL("cleaning_jobs?id=eq." + url.QueryEscape(jobID))
 	if userID != "" {
-		url += "&user_id=eq." + userID
+		restURL += "&user_id=eq." + url.QueryEscape(userID)
 	}
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, err
 	}
 	if len(rows) == 0 {
@@ -528,8 +529,7 @@ func (c *SupabaseClient) sequentialUpdateFileRecords(ctx context.Context, files 
 // GetFileRecords returns all file records for a job.
 func (c *SupabaseClient) GetFileRecords(ctx context.Context, jobID string) ([]FileRecord, error) {
 	var rows []dbFileRecord
-	url := c.restURL("job_files?job_id=eq." + jobID)
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, c.restURL("job_files?job_id=eq."+url.QueryEscape(jobID)), nil, &rows); err != nil {
 		return nil, err
 	}
 	files := make([]FileRecord, len(rows))
@@ -699,11 +699,11 @@ func (c *SupabaseClient) GetReport(ctx context.Context, reportID string) (*Repor
 // Returns both the raw Report (with PDFPath/PDFStatus) and the full ReportDetail.
 func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID string) (*Report, *ReportDetail, error) {
 	var rows []dbReport
-	url := c.restURL("cleaning_reports?report_id=eq." + humanID)
+	restURL := c.restURL("cleaning_reports?report_id=eq." + url.QueryEscape(humanID))
 	if userID != "" {
-		url += "&user_id=eq." + userID
+		restURL += "&user_id=eq." + url.QueryEscape(userID)
 	}
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, nil, err
 	}
 	if len(rows) == 0 {
@@ -722,11 +722,11 @@ func (c *SupabaseClient) GetReportByHumanID(ctx context.Context, humanID, userID
 // Use this when you only need PDFPath/PDFStatus and don't need the full ReportDetail.
 func (c *SupabaseClient) GetReportMetaByHumanID(ctx context.Context, humanID, userID string) (*Report, error) {
 	var rows []dbReport
-	url := c.restURL("cleaning_reports?report_id=eq." + humanID + "&select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at")
+	restURL := c.restURL("cleaning_reports?report_id=eq." + url.QueryEscape(humanID) + "&select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at")
 	if userID != "" {
-		url += "&user_id=eq." + userID
+		restURL += "&user_id=eq." + url.QueryEscape(userID)
 	}
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, err
 	}
 	if len(rows) == 0 {

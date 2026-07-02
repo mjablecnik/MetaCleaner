@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -81,15 +82,15 @@ func (c *SupabaseClient) ListAPIKeys(ctx context.Context, userID string) ([]APIK
 func (c *SupabaseClient) DeleteAPIKey(ctx context.Context, keyID, userID string) (bool, error) {
 	// Fetch first to confirm ownership.
 	var rows []dbAPIKey
-	url := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID + "&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID) + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return false, fmt.Errorf("delete api key lookup: %w", err)
 	}
 	if len(rows) == 0 {
 		return false, nil
 	}
 
-	deleteURL := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID)
+	deleteURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID))
 	if err := c.doJSON(ctx, http.MethodDelete, deleteURL, nil, nil); err != nil {
 		return false, fmt.Errorf("delete api key: %w", err)
 	}
@@ -102,8 +103,8 @@ func (c *SupabaseClient) DeleteAPIKey(ctx context.Context, keyID, userID string)
 func (c *SupabaseClient) RevokeAPIKey(ctx context.Context, keyID, userID string) (*APIKey, bool, error) {
 	// Fetch the key to validate ownership and current status.
 	var rows []dbAPIKey
-	url := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID + "&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID) + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, false, fmt.Errorf("revoke api key lookup: %w", err)
 	}
 	if len(rows) == 0 {
@@ -121,7 +122,7 @@ func (c *SupabaseClient) RevokeAPIKey(ctx context.Context, keyID, userID string)
 		"status":     "revoked",
 		"revoked_at": now,
 	}
-	patchURL := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID)
+	patchURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID))
 	var updated []dbAPIKey
 	if err := c.doJSON(ctx, http.MethodPatch, patchURL, patch, &updated); err != nil {
 		return nil, false, fmt.Errorf("revoke api key patch: %w", err)
@@ -140,8 +141,8 @@ func (c *SupabaseClient) RevokeAPIKey(ctx context.Context, keyID, userID string)
 func (c *SupabaseClient) ActivateAPIKey(ctx context.Context, keyID, userID string) (*APIKey, bool, error) {
 	// Fetch the key to validate ownership and current status.
 	var rows []dbAPIKey
-	url := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID + "&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID) + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, false, fmt.Errorf("activate api key lookup: %w", err)
 	}
 	if len(rows) == 0 {
@@ -158,7 +159,7 @@ func (c *SupabaseClient) ActivateAPIKey(ctx context.Context, keyID, userID strin
 		"status":     "active",
 		"revoked_at": nil,
 	}
-	patchURL := c.restURL("api_keys?id=eq." + keyID + "&user_id=eq." + userID)
+	patchURL := c.restURL("api_keys?id=eq." + url.QueryEscape(keyID) + "&user_id=eq." + url.QueryEscape(userID))
 	var updated []dbAPIKey
 	if err := c.doJSON(ctx, http.MethodPatch, patchURL, patch, &updated); err != nil {
 		return nil, false, fmt.Errorf("activate api key patch: %w", err)

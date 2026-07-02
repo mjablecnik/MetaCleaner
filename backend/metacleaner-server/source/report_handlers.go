@@ -7,10 +7,14 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
 )
+
+// reportIDPattern validates the human-readable report ID format: MCR-YYYY-MMDD-<32 hex>.
+var reportIDPattern = regexp.MustCompile(`^MCR-\d{4}-\d{4}-[0-9A-F]{32}$`)
 
 // generateReportID returns a human-readable report ID with 16 random bytes (128 bits) of
 // entropy appended as hex, making enumeration computationally infeasible.
@@ -218,7 +222,15 @@ func HandleGetReport(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
 			return
 		}
+		if !reportIDPattern.MatchString(reportID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid report ID")
+			return
+		}
 		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
 		_, detail, err := db.GetReportByHumanID(r.Context(), reportID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
@@ -270,6 +282,10 @@ func HandleGetPublicReport(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
 			return
 		}
+		if !reportIDPattern.MatchString(reportID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid report ID")
+			return
+		}
 		// No userID filter — public access by human-readable report ID only
 		_, detail, err := db.GetReportByHumanID(r.Context(), reportID, "")
 		if err != nil {
@@ -293,6 +309,10 @@ func HandleGetPublicReportPDF(db *SupabaseClient) http.HandlerFunc {
 		reportID := r.PathValue("id")
 		if reportID == "" {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
+			return
+		}
+		if !reportIDPattern.MatchString(reportID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid report ID")
 			return
 		}
 		// No userID filter — public access
@@ -326,7 +346,15 @@ func HandleGetReportPDF(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing report ID")
 			return
 		}
+		if !reportIDPattern.MatchString(reportID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid report ID")
+			return
+		}
 		userID := UserIDFromContext(r.Context())
+		if userID == "" {
+			WriteError(w, http.StatusUnauthorized, ErrAuthUnauthorized, "authentication required")
+			return
+		}
 		report, err := db.GetReportMetaByHumanID(r.Context(), reportID, userID)
 		if err != nil {
 			WriteError(w, http.StatusInternalServerError, ErrDatabaseError, "Failed to fetch report")
