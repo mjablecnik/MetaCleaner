@@ -10,9 +10,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Project refs
-DEV_PROJECT_REF="asxkfzpsxglifgmtgujx"
-PROD_PROJECT_REF="asxkfzpsxglifgmtgujx"  # TODO: Replace with production project ref when available
+# Project refs — prefer environment variables so refs aren't hardcoded in
+# version control. SUPABASE_DEV_PROJECT_REF / SUPABASE_PROD_PROJECT_REF can
+# be set in CI secrets or a local .env file (never commit real project refs).
+DEV_PROJECT_REF="${SUPABASE_DEV_PROJECT_REF:-asxkfzpsxglifgmtgujx}"
+PROD_PROJECT_REF="${SUPABASE_PROD_PROJECT_REF:-}"  # must be set before prod deploy
 
 # Parse --env argument
 DEPLOY_ENV="development"
@@ -36,12 +38,18 @@ done
 
 # Select project ref based on environment
 if [ "$DEPLOY_ENV" = "production" ]; then
-  # Refuse to deploy to production while PROD_PROJECT_REF is still the
-  # placeholder dev ref — this prevents dev and prod from sharing the same
-  # backend, which would conflate secrets, data, and CORS configuration.
+  # Refuse to deploy to production without a real, separate project ref set
+  # via the SUPABASE_PROD_PROJECT_REF environment variable. This prevents
+  # dev and prod from sharing the same backend (secrets, data, CORS).
+  if [ -z "$PROD_PROJECT_REF" ]; then
+    echo "Error: SUPABASE_PROD_PROJECT_REF is not set."
+    echo "  Export a real production project ref before deploying:"
+    echo "    export SUPABASE_PROD_PROJECT_REF=<your-prod-ref>"
+    exit 1
+  fi
   if [ "$PROD_PROJECT_REF" = "$DEV_PROJECT_REF" ]; then
-    echo "Error: PROD_PROJECT_REF is still set to the dev project ref."
-    echo "  Set a real, separate production project ref in this script before deploying."
+    echo "Error: SUPABASE_PROD_PROJECT_REF matches the dev project ref."
+    echo "  Set a distinct production ref to avoid sharing backends."
     echo "  Current value: $PROD_PROJECT_REF"
     exit 1
   fi
