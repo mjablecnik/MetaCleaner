@@ -21,6 +21,7 @@ var emailRegex = regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
 // Validates input, creates a Supabase auth user, and inserts a profile record.
 func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req RegisterRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -103,6 +104,7 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 // If the account was deactivated (pending deletion), login automatically reactivates it.
 func HandleLogin(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req LoginRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -190,6 +192,7 @@ func HandleLogout(authClient *SupabaseAuthClient) http.HandlerFunc {
 // Accepts a JSON body with refresh_token and exchanges it for a new session via Supabase.
 func HandleRefresh(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req RefreshRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -299,6 +302,7 @@ func HandleMe(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFu
 // Always returns 200 for valid email formats (even unregistered emails) to prevent enumeration.
 func HandleForgotPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req ForgotPasswordRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -335,6 +339,7 @@ func HandleForgotPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 // that authorises only the /api/auth/reset-password endpoint.
 func HandleVerifyResetCode(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req VerifyResetCodeRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -382,6 +387,7 @@ func HandleResetPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 		}
 		accessToken := strings.TrimPrefix(authHeader, "Bearer ")
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req ResetPasswordRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -430,6 +436,7 @@ func HandleResetPassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 // Always returns 200 for valid emails (Supabase creates accounts for new addresses).
 func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req MagicLinkRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -529,12 +536,14 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 		params.Set("refresh_token", session.RefreshToken)
 		params.Set("expires_in", strconv.Itoa(session.ExpiresIn))
 
+		// Deliver tokens via the URL fragment (#) so they are never sent to servers
+		// in Referer headers or written to proxy/CDN access logs.
 		// Email confirmations (signup) land on the email-verified success page;
 		// magic links and other types go to the login page to complete sign-in.
 		if tokenType == "signup" {
-			http.Redirect(w, r, frontendEmailVerified+"?"+params.Encode(), http.StatusFound)
+			http.Redirect(w, r, frontendEmailVerified+"#"+params.Encode(), http.StatusFound)
 		} else {
-			http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+			http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
 		}
 	}
 }
@@ -608,6 +617,7 @@ func HandleOAuthInitiate(authClient *SupabaseAuthClient) http.HandlerFunc {
 			Value:    verifier,
 			Path:     "/api/auth/oauth",
 			HttpOnly: true,
+			Secure:   true,
 			SameSite: http.SameSiteLaxMode,
 			MaxAge:   600,
 		})
@@ -693,7 +703,8 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) htt
 		params.Set("access_token", session.AccessToken)
 		params.Set("refresh_token", session.RefreshToken)
 		params.Set("expires_in", strconv.Itoa(session.ExpiresIn))
-		http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+		// Deliver tokens via the URL fragment (#) to keep them out of server logs and Referer headers.
+		http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
 	}
 }
 

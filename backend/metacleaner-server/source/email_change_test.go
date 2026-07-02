@@ -346,7 +346,7 @@ func TestHandleConfirmEmailChange_ValidToken_UpdatesEmailAndRedirects(t *testing
 	})
 	cfg := Config{FrontendURL: "https://app.example.com"}
 
-	req := httptest.NewRequest(http.MethodGet, "/api/auth/confirm-email-change?token=valid-token-xyz", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/auth/confirm-email-change?token="+strings.Repeat("a", 64), nil)
 	rr := httptest.NewRecorder()
 	HandleConfirmEmailChange(cfg, authClient, store)(rr, req)
 
@@ -394,7 +394,7 @@ func TestHandleConfirmEmailChange_AdminUpdateFails_RedirectsWithUpdateFailedErro
 	})
 	cfg := Config{FrontendURL: "https://app.example.com"}
 
-	req := httptest.NewRequest(http.MethodGet, "/api/auth/confirm-email-change?token=valid-token", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/auth/confirm-email-change?token="+strings.Repeat("b", 64), nil)
 	rr := httptest.NewRecorder()
 	HandleConfirmEmailChange(cfg, authClient, store)(rr, req)
 

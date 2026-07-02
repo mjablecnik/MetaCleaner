@@ -8,9 +8,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"regexp"
 	"strings"
 	"time"
 )
+
+// emailChangeTokenPattern validates the 64-hex-character email-change token.
+var emailChangeTokenPattern = regexp.MustCompile(`^[0-9a-f]{64}$`)
 
 // --- Database-backed email change token store (via Supabase PostgREST) ---
 
@@ -84,8 +89,8 @@ func (s *emailChangeStore) Create(userID, newEmail string) (string, error) {
 // Verify retrieves and deletes the token if it exists and hasn't expired.
 func (s *emailChangeStore) Verify(token string) (emailChangeRequest, bool) {
 	// Fetch token where token matches and expires_at > now
-	url := s.restURL + "?token=eq." + token + "&expires_at=gt.now()&select=user_id,new_email"
-	getReq, err := http.NewRequest(http.MethodGet, url, nil)
+	fetchURL := s.restURL + "?token=eq." + url.QueryEscape(token) + "&expires_at=gt.now()&select=user_id,new_email"
+	getReq, err := http.NewRequest(http.MethodGet, fetchURL, nil)
 	if err != nil {
 		return emailChangeRequest{}, false
 	}
@@ -113,7 +118,7 @@ func (s *emailChangeStore) Verify(token string) (emailChangeRequest, bool) {
 	}
 
 	// Delete the token (consumed)
-	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?token=eq."+token, nil)
+	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?token=eq."+url.QueryEscape(token), nil)
 	if err == nil {
 		s.setHeaders(delReq)
 		delResp, err := client.Do(delReq)
@@ -222,6 +227,7 @@ func HandleChangeEmail(cfg Config, authClient *SupabaseAuthClient, store *emailC
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req ChangeEmailRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -283,6 +289,10 @@ func HandleConfirmEmailChange(cfg Config, authClient *SupabaseAuthClient, store 
 		token := r.URL.Query().Get("token")
 		if token == "" {
 			redirectWithError(w, r, cfg.FrontendURL, "missing_token")
+			return
+		}
+		if !emailChangeTokenPattern.MatchString(token) {
+			redirectWithError(w, r, cfg.FrontendURL, "invalid_or_expired_token")
 			return
 		}
 

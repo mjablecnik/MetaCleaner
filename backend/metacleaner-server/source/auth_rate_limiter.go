@@ -93,7 +93,7 @@ func (arl *AuthRateLimiter) cleanup() {
 // /api/auth/forgot-password, and /api/auth/verify-reset-code.
 func (arl *AuthRateLimiter) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip := extractRemoteIP(r.RemoteAddr)
+		ip := clientIP(r)
 		limiter := arl.getIPLimiter(ip)
 		reservation := limiter.Reserve()
 		delay := reservation.Delay()
@@ -114,7 +114,9 @@ func (arl *AuthRateLimiter) Middleware(next http.Handler) http.Handler {
 // The request body is read to extract the email, then restored for downstream handlers.
 func (arl *AuthRateLimiter) MagicLinkMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		body, err := io.ReadAll(r.Body)
+		// Limit body read to 1 MB before rate-limit decision to prevent memory DoS
+		// on the unauthenticated magic-link endpoint.
+		body, err := io.ReadAll(io.LimitReader(r.Body, 1<<20))
 		if err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "failed to read request body")
 			return
@@ -128,7 +130,7 @@ func (arl *AuthRateLimiter) MagicLinkMiddleware(next http.Handler) http.Handler 
 			return
 		}
 
-		ip := extractRemoteIP(r.RemoteAddr)
+		ip := clientIP(r)
 		key := req.Email + ":" + ip
 		limiter := arl.getMagicLinkLimiter(key)
 		reservation := limiter.Reserve()
@@ -145,12 +147,3 @@ func (arl *AuthRateLimiter) MagicLinkMiddleware(next http.Handler) http.Handler 
 	})
 }
 
-// extractRemoteIP strips the port from a RemoteAddr string (e.g., "1.2.3.4:5678" → "1.2.3.4").
-func extractRemoteIP(remoteAddr string) string {
-	for i := len(remoteAddr) - 1; i >= 0; i-- {
-		if remoteAddr[i] == ':' {
-			return remoteAddr[:i]
-		}
-	}
-	return remoteAddr
-}

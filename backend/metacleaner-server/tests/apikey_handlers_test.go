@@ -189,8 +189,8 @@ func TestHandleDeleteAPIKey_MissingUserID_Returns401(t *testing.T) {
 	db := newAPIKeyDB(t, http.NotFoundHandler())
 	handler := src.HandleDeleteAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/keys/key-1", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodDelete, "/api/keys/00000000-0000-4000-8000-000000000001", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
 
@@ -206,8 +206,8 @@ func TestHandleDeleteAPIKey_NotFound_Returns404(t *testing.T) {
 	}))
 	handler := src.HandleDeleteAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/keys/key-99", nil)
-	req.SetPathValue("id", "key-99")
+	req := httptest.NewRequest(http.MethodDelete, "/api/keys/00000000-0000-4000-8000-000000000099", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000099")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -233,8 +233,8 @@ func TestHandleDeleteAPIKey_Success_Returns204(t *testing.T) {
 	}))
 	handler := src.HandleDeleteAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodDelete, "/api/keys/key-1", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodDelete, "/api/keys/00000000-0000-4000-8000-000000000001", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -250,8 +250,8 @@ func TestHandleRevokeAPIKey_MissingUserID_Returns401(t *testing.T) {
 	db := newAPIKeyDB(t, http.NotFoundHandler())
 	handler := src.HandleRevokeAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/revoke", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/revoke", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
 
@@ -266,8 +266,8 @@ func TestHandleRevokeAPIKey_NotFound_Returns404(t *testing.T) {
 	}))
 	handler := src.HandleRevokeAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-99/revoke", nil)
-	req.SetPathValue("id", "key-99")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000099/revoke", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000099")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -291,8 +291,8 @@ func TestHandleRevokeAPIKey_AlreadyRevoked_Returns409(t *testing.T) {
 	}))
 	handler := src.HandleRevokeAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/revoke", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/revoke", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -319,8 +319,8 @@ func TestHandleRevokeAPIKey_Success_ReturnsKey(t *testing.T) {
 	}))
 	handler := src.HandleRevokeAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/revoke", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/revoke", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -346,8 +346,8 @@ func TestHandleActivateAPIKey_MissingUserID_Returns401(t *testing.T) {
 	db := newAPIKeyDB(t, http.NotFoundHandler())
 	handler := src.HandleActivateAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/activate", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/activate", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
 
@@ -362,8 +362,8 @@ func TestHandleActivateAPIKey_NotFound_Returns404(t *testing.T) {
 	}))
 	handler := src.HandleActivateAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-99/activate", nil)
-	req.SetPathValue("id", "key-99")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000099/activate", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000099")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -387,8 +387,8 @@ func TestHandleActivateAPIKey_AlreadyActive_Returns409(t *testing.T) {
 	}))
 	handler := src.HandleActivateAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/activate", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/activate", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -415,8 +415,8 @@ func TestHandleActivateAPIKey_Success_ReturnsKey(t *testing.T) {
 	}))
 	handler := src.HandleActivateAPIKey(db)
 
-	req := httptest.NewRequest(http.MethodPatch, "/api/keys/key-1/activate", nil)
-	req.SetPathValue("id", "key-1")
+	req := httptest.NewRequest(http.MethodPatch, "/api/keys/00000000-0000-4000-8000-000000000001/activate", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000001")
 	req = withUserID(req, "user-1")
 	rr := httptest.NewRecorder()
 	handler(rr, req)

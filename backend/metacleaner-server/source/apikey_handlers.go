@@ -17,6 +17,7 @@ func HandleCreateAPIKey(db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req CreateAPIKeyRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrValidationError, "invalid request body")
@@ -101,6 +102,10 @@ func HandleDeleteAPIKey(db *SupabaseClient) http.HandlerFunc {
 			WriteError(w, http.StatusBadRequest, ErrValidationError, "key ID is required")
 			return
 		}
+		if !uuidV4Pattern.MatchString(keyID) {
+			WriteError(w, http.StatusBadRequest, ErrValidationError, "invalid key ID format")
+			return
+		}
 
 		found, err := db.DeleteAPIKey(r.Context(), keyID, userID)
 		if err != nil {
@@ -131,6 +136,10 @@ func HandleRevokeAPIKey(db *SupabaseClient) http.HandlerFunc {
 		keyID := r.PathValue("id")
 		if keyID == "" {
 			WriteError(w, http.StatusBadRequest, ErrValidationError, "key ID is required")
+			return
+		}
+		if !uuidV4Pattern.MatchString(keyID) {
+			WriteError(w, http.StatusBadRequest, ErrValidationError, "invalid key ID format")
 			return
 		}
 
@@ -169,6 +178,10 @@ func HandleActivateAPIKey(db *SupabaseClient) http.HandlerFunc {
 		keyID := r.PathValue("id")
 		if keyID == "" {
 			WriteError(w, http.StatusBadRequest, ErrValidationError, "key ID is required")
+			return
+		}
+		if !uuidV4Pattern.MatchString(keyID) {
+			WriteError(w, http.StatusBadRequest, ErrValidationError, "invalid key ID format")
 			return
 		}
 
