@@ -124,9 +124,25 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResponse> {
 	return res.json();
 }
 
-export function connectJobProgress(jobId: string, token: string | null): WebSocket {
-	const tokenParam = token ? `?token=${encodeURIComponent(token)}` : '';
-	const url = buildWsUrl(`/api/jobs/${jobId}/progress${tokenParam}`);
+/**
+ * Mints a short-lived single-use progress ticket via the authenticated POST endpoint.
+ * The ticket is valid for 30 seconds and must be consumed on the WebSocket upgrade.
+ * Use this instead of the bearer token to avoid logging the JWT in proxy access logs.
+ */
+export async function mintProgressTicket(jobId: string): Promise<string> {
+	const res = await apiFetch(`/api/jobs/${jobId}/ws-ticket`, { method: 'POST' });
+	if (!res.ok) throw await parseErrorResponse(res);
+	const data: { ticket: string } = await res.json();
+	return data.ticket;
+}
+
+/**
+ * Opens a WebSocket connection to the job progress endpoint using a short-lived ticket.
+ * The ticket must be obtained first via mintProgressTicket() to avoid placing the long-lived
+ * bearer JWT in the URL query string where reverse proxies would log it.
+ */
+export function connectJobProgress(jobId: string, ticket: string): WebSocket {
+	const url = buildWsUrl(`/api/jobs/${jobId}/progress?ticket=${encodeURIComponent(ticket)}`);
 	return new WebSocket(url);
 }
 
