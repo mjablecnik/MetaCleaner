@@ -1,12 +1,28 @@
 package source
 
 import (
+	"net"
 	"net/http"
 	"sync"
 	"time"
 
 	"golang.org/x/time/rate"
 )
+
+// clientIP extracts the real client IP from the request.
+// Prefers the Fly-Client-IP header (trusted at the Fly.io edge) over
+// r.RemoteAddr so per-IP rate limiting works correctly behind the proxy.
+// Uses net.SplitHostPort to handle IPv6 addresses correctly.
+func clientIP(r *http.Request) string {
+	if ip := r.Header.Get("Fly-Client-IP"); ip != "" {
+		return ip
+	}
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+	return host
+}
 
 // corsMiddleware adds CORS headers and handles OPTIONS preflight requests.
 func corsMiddleware(origin string) func(http.Handler) http.Handler {
@@ -88,16 +104,7 @@ func (rl *ipRateLimiter) cleanup() {
 func rateLimitMiddleware(rl *ipRateLimiter) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ip := r.RemoteAddr
-			// Strip port if present (IPv4).
-			if idx := len(ip) - 1; idx >= 0 {
-				for i := len(ip) - 1; i >= 0; i-- {
-					if ip[i] == ':' {
-						ip = ip[:i]
-						break
-					}
-				}
-			}
+			ip := clientIP(r)
 			limiter := rl.get(ip)
 			if !limiter.Allow() {
 				w.Header().Set("Retry-After", "60")
@@ -116,6 +123,11 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		w.Header().Set("X-XSS-Protection", "0")
+		// Restrict all resource loading for any HTML/redirect responses this
+		// API might return (error pages, OAuth redirects). Has no effect on
+		// JSON responses but prevents any future HTML from loading external
+		// resources without explicit policy changes.
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
 		next.ServeHTTP(w, r)
 	})
 }

@@ -30,6 +30,13 @@ func Run() {
 		os.Exit(1)
 	}
 
+	// Fail-closed in production: FRONTEND_ORIGIN is required so CORS and the
+	// WebSocket origin check are never silently disabled by a misconfigured deploy.
+	if os.Getenv("APP_ENV") == "production" && cfg.FrontendOrigin == "" {
+		slog.Error("startup: FRONTEND_ORIGIN must be set in production (required for CORS and WebSocket origin protection)")
+		os.Exit(1)
+	}
+
 	// Startup: verify ExifTool in PATH.
 	if err := checkTool("exiftool", "-ver"); err != nil {
 		slog.Error("startup", "error", err)
@@ -86,11 +93,13 @@ func Run() {
 	router := NewRouter(cfg, db, hub, pl, authClient)
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		Handler:      router,
-		ReadTimeout:  60 * time.Second,
-		WriteTimeout: 300 * time.Second,
-		IdleTimeout:  120 * time.Second,
+		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		Handler:           router,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       60 * time.Second,
+		WriteTimeout:      300 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		MaxHeaderBytes:    1 << 20, // 1 MB
 	}
 
 	// Start server in background.

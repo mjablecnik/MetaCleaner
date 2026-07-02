@@ -21,6 +21,7 @@ func HandleUpdateProfile(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req UpdateProfileRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")
@@ -61,6 +62,7 @@ func HandleChangePassword(authClient *SupabaseAuthClient) http.HandlerFunc {
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req ChangePasswordRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrAuthInvalidRequest, "invalid request body")

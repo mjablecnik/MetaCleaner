@@ -57,6 +57,16 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
 				return
 			}
+
+			// Verify ownership: if an .owner sidecar exists, its recorded userID must
+			// match the caller. Files uploaded anonymously (no sidecar) skip this check.
+			ownerPath := filepath.Join(uploadsDir, fileID+".owner")
+			if ownerData, err := os.ReadFile(ownerPath); err == nil {
+				if string(ownerData) != userID {
+					WriteError(w, http.StatusForbidden, ErrAuthUnauthorized, fmt.Sprintf("File %q does not belong to the current user", fileID))
+					return
+				}
+			}
 			info, err := os.Stat(matches[0])
 			if err != nil {
 				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not accessible", fileID))
@@ -117,7 +127,9 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 			// Wait until a WS client connects or the timeout expires.
 			<-wsReady
 
-			ctx := context.Background()
+			// Bound each job so a hanging ExifTool/FFmpeg cannot exhaust the worker pool.
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+			defer cancel()
 			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files, authClient)
 		}()
 
@@ -190,13 +202,13 @@ func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		}
 
 		// Verify that the file belongs to the authenticated user.
+		// Check is unconditional: an empty userID would never match a valid ownership
+		// row, so it fails safely regardless of how auth-middleware evolves.
 		userID := UserIDFromContext(r.Context())
-		if userID != "" {
-			owned, err := db.VerifyFileOwnership(r.Context(), fileID, userID)
-			if err != nil || !owned {
-				WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
-				return
-			}
+		owned, err := db.VerifyFileOwnership(r.Context(), fileID, userID)
+		if err != nil || !owned {
+			WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+			return
 		}
 
 		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
@@ -233,8 +245,8 @@ func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
-		if jobID == "" {
-			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+		if jobID == "" || !uuidV4Pattern.MatchString(jobID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid job ID")
 			return
 		}
 
@@ -338,8 +350,8 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 func HandleGetJob(db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
-		if jobID == "" {
-			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+		if jobID == "" || !uuidV4Pattern.MatchString(jobID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid job ID")
 			return
 		}
 		userID := UserIDFromContext(r.Context())

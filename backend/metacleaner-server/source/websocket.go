@@ -9,6 +9,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+const (
+	// maxWSConnsPerJob is the maximum concurrent WebSocket connections allowed per job.
+	maxWSConnsPerJob = 5
+	// wsReadLimit is the maximum frame size accepted from the client (bytes).
+	// The progress endpoint expects no meaningful client payload.
+	wsReadLimit = 512
+	// wsPingInterval is how often the server sends a ping to keep the connection alive.
+	wsPingInterval = 30 * time.Second
+	// wsPongTimeout is how long the server waits for a pong before closing the connection.
+	wsPongTimeout = 60 * time.Second
+)
+
 
 // WebSocketHub manages WebSocket connections per job ID.
 type WebSocketHub struct {
@@ -71,8 +83,13 @@ func (h *WebSocketHub) WaitForRegistration(jobID string, timeout time.Duration) 
 }
 
 // Register adds conn to the set of connections listening for jobID.
-func (h *WebSocketHub) Register(jobID string, conn *websocket.Conn) {
+// Returns false if the per-job connection cap has been reached.
+func (h *WebSocketHub) Register(jobID string, conn *websocket.Conn) bool {
 	h.mu.Lock()
+	if len(h.conns[jobID]) >= maxWSConnsPerJob {
+		h.mu.Unlock()
+		return false
+	}
 	h.conns[jobID] = append(h.conns[jobID], conn)
 	// Signal all waiters that a client has connected
 	waiters := h.waiters[jobID]
@@ -87,6 +104,7 @@ func (h *WebSocketHub) Register(jobID string, conn *websocket.Conn) {
 			close(ch)
 		}
 	}
+	return true
 }
 
 // Unregister removes conn from the set for jobID.
@@ -187,8 +205,8 @@ func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, db *SupabaseClie
 		}
 
 		jobID := r.PathValue("id")
-		if jobID == "" {
-			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Missing job ID")
+		if jobID == "" || !uuidV4Pattern.MatchString(jobID) {
+			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid job ID")
 			return
 		}
 
@@ -208,10 +226,34 @@ func HandleJobProgress(hub *WebSocketHub, auth *AuthMiddleware, db *SupabaseClie
 			return
 		}
 
-		hub.Register(jobID, conn)
+		// Cap frame size and enforce a read deadline refreshed by pong replies.
+		conn.SetReadLimit(wsReadLimit)
+		conn.SetReadDeadline(time.Now().Add(wsPongTimeout)) //nolint:errcheck
+		conn.SetPongHandler(func(string) error {
+			conn.SetReadDeadline(time.Now().Add(wsPongTimeout)) //nolint:errcheck
+			return nil
+		})
+
+		if !hub.Register(jobID, conn) {
+			conn.WriteMessage(websocket.CloseMessage, //nolint:errcheck
+				websocket.FormatCloseMessage(websocket.CloseTryAgainLater, "too many connections for this job"))
+			conn.Close()
+			return
+		}
 		defer func() {
 			hub.Unregister(jobID, conn)
 			conn.Close()
+		}()
+
+		// Send periodic pings so we can detect dead connections via read deadline.
+		go func() {
+			ticker := time.NewTicker(wsPingInterval)
+			defer ticker.Stop()
+			for range ticker.C {
+				if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+					return
+				}
+			}
 		}()
 
 		// Read loop — discard messages, detect client disconnect.

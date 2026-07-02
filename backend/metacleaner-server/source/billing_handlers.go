@@ -55,6 +55,7 @@ func HandleCreateCheckout(cfg Config, db *SupabaseClient, authClient *SupabaseAu
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req CheckoutRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "invalid request body")
@@ -346,6 +347,7 @@ func HandleChangePlan(cfg Config, db *SupabaseClient) http.HandlerFunc {
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 		var req ChangePlanRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			WriteError(w, http.StatusBadRequest, ErrBillingInvalidPlan, "invalid request body")
