@@ -6,5 +6,9 @@
     "frontend/metacleaner-shared",
     "frontend/metacleaner-web",
     "terminal/metacleaner-cli"
-  ]
+  ],
+  "overrides": {
+    "cookie": ">=0.7.0",
+    "esbuild": ">=0.28.1"
+  }
 }
