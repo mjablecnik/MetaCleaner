@@ -43,10 +43,11 @@ export interface CallbackResult {
 }
 
 /**
- * Parses auth callback query parameters from any URL string.
+ * Parses auth callback parameters from any URL string.
  * Handles both web browser (window.location.href) and Capacitor deep link URLs.
- * Checks both query params (?key=value) and hash fragments (#key=value) since
- * Supabase may redirect with tokens in either location depending on flow type.
+ * Prefers the hash fragment (never sent to the server/proxy) over query params.
+ * Query-string tokens are accepted here for deep-link compatibility but rejected
+ * by extractAndCleanBrowserTokens() on the browser path to prevent proxy log leakage.
  * Returns tokens if present, error string if an error param is present, or an empty object.
  */
 export function extractCallbackParams(url: string): CallbackResult {
@@ -64,13 +65,11 @@ export function extractCallbackParams(url: string): CallbackResult {
 		return {};
 	}
 
-	// Try query params first, then fall back to hash fragment
-	let params = new URLSearchParams(search);
-
-	if (!params.get('access_token') && hash) {
-		// Supabase sometimes returns tokens in hash fragment (e.g. #access_token=...&refresh_token=...)
-		params = new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash);
-	}
+	// Prefer hash fragment — tokens in the fragment are never sent to the server and
+	// do not appear in access logs or Referer headers.
+	let params = hash
+		? new URLSearchParams(hash.startsWith('#') ? hash.slice(1) : hash)
+		: new URLSearchParams(search);
 
 	const error = params.get('error');
 	if (error) return { error };
@@ -86,24 +85,37 @@ export function extractCallbackParams(url: string): CallbackResult {
 }
 
 /**
- * Extracts auth callback params from window.location and removes them from the
- * address bar using history.replaceState so tokens are not visible in browser history.
+ * Extracts auth callback params from window.location (browser path only) and removes
+ * them from the address bar using history.replaceState so tokens are not visible in
+ * browser history. Query-string tokens are rejected — only hash-fragment tokens are
+ * accepted, since query params are logged by reverse proxies before cleanup runs.
  * (Req 15.4, 18.7)
  */
 export function extractAndCleanBrowserTokens(): CallbackResult {
 	if (!browser) return {};
 
-	const result = extractCallbackParams(window.location.href);
-
-	const hasTokenParams =
+	// Only accept hash-fragment tokens on the browser path.
+	// Query-string tokens reach the server in the initial HTTP request and are
+	// logged before this cleanup runs — they must be rejected, not silently adopted.
+	const hasQueryTokens =
 		window.location.search.includes('access_token') ||
-		window.location.search.includes('refresh_token') ||
-		window.location.search.includes('error') ||
-		window.location.hash.includes('access_token') ||
-		window.location.hash.includes('refresh_token') ||
-		window.location.hash.includes('error');
+		window.location.search.includes('refresh_token');
 
-	if (hasTokenParams) {
+	const hasHashTokens =
+		window.location.hash.includes('access_token') ||
+		window.location.hash.includes('refresh_token');
+
+	const hasError =
+		window.location.search.includes('error') || window.location.hash.includes('error');
+
+	// Build a hash-only URL for extraction so query-string tokens are never processed
+	const hashOnlyUrl = window.location.hash
+		? `https://x${window.location.hash}`
+		: window.location.href;
+
+	const result = hasHashTokens || hasError ? extractCallbackParams(hashOnlyUrl) : {};
+
+	if (hasQueryTokens || hasHashTokens || hasError) {
 		const clean = new URL(window.location.href);
 		clean.searchParams.delete('access_token');
 		clean.searchParams.delete('refresh_token');
