@@ -116,6 +116,10 @@ function _persist(access: string, refresh: string, expiresIn: number): void {
 		// Access token is kept in memory only (not in localStorage) to prevent
 		// exfiltration by XSS or a compromised dependency. The refresh token persists
 		// the session across page loads via a silent refresh on restore.
+		// TODO(security): migrate the refresh token to an HttpOnly; Secure; SameSite=Strict
+		// cookie set by the backend so JS cannot read it. Requires backend cooperation to
+		// set the cookie on /api/auth/login|refresh and clear it on /api/auth/logout.
+		// Tracked: SECURITY_AUDIT finding #8 (LOW).
 		localStorage.setItem(REFRESH_KEY, refresh);
 		localStorage.setItem(EXPIRES_KEY, String(Date.now() + effectiveExpiresMs));
 	}
