@@ -41,7 +41,10 @@ src/
       clients/           — one file per API (flyClient, cloudflareClient, sentryClient, stripeClient, supabaseClient)
       mappers/           — transform raw API responses → page data shapes
     repositories/        — client-side data types and static repos
-    components/          — shared Svelte components
+    components/          — shared Svelte components (e.g. LanguageSwitcher)
+    shared/              — cross-route components, elements, sections (KpiGrid, PlotlyChart, DataTable, etc.)
+    theme/               — chart colour constants
+    types/               — shared TypeScript types (pageData.ts)
     paraglide/           — GENERATED i18n runtime (do not edit)
   routes/
     +page.{server,svelte}  — dashboard home (/)
@@ -73,8 +76,8 @@ Dockerfile               — multi-stage: Bun build → Node 22 runtime
 ## Important Notes
 
 - `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` are required — the server exits with `[FATAL]` if either is absent.
-- `DASHBOARD_SESSION_SECRET` is **not** in `.env.example` but is required for login to work. Add it manually.
-- Sentry integration uses `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` — **not** `SENTRY_DSN` (which appears in `.env.example` but is unused in server code).
+- `DASHBOARD_SESSION_SECRET` is in `.env.example` and required for login to work. The login form value must match this variable exactly.
+- Sentry integration uses `SENTRY_AUTH_TOKEN` / `SENTRY_ORG` / `SENTRY_PROJECT` — **not** `SENTRY_DSN` (which appears in `.env.example` but is unused in server code). `STRIPE_WEBHOOK_SECRET` in `.env.example` is also unused in server code.
 - `invalidate('app:<route>')` only re-runs loads that called `depends('app:<route>')`. Without the matching `depends()`, the retry button is a no-op.
 - `mergeAndSortAlerts` deduplicates alerts by ID before slicing to 10. Duplicate Sentry issue IDs from the same `id` field would otherwise cause property-test failures.
 - Docker: `start-docker.sh` maps container port 3000 → host port **3002** (not 3000).

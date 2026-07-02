@@ -39,11 +39,15 @@ All three must be set together; a partial set disables the Fly.io integration.
 | `SENTRY_ORG`        | Sentry organisation slug               |
 | `SENTRY_PROJECT`    | Sentry project slug                    |
 
+> `SENTRY_DSN` appears in `.env.example` but is not read by any server code — it is present for reference only.
+
 ### Optional — Stripe (business section)
 
 | Variable            | Description                                    |
 | ------------------- | ---------------------------------------------- |
 | `STRIPE_SECRET_KEY` | Stripe secret key (`sk_live_…` or `sk_test_…`) |
+
+> `STRIPE_WEBHOOK_SECRET` appears in `.env.example` but is not read by any server code — it is present for reference only.
 
 ### Server (set in fly.toml for production)
 
@@ -64,7 +68,13 @@ metacleaner-monitoring/
 │   ├── hooks.ts               # Client-side reroute hook
 │   ├── lib/
 │   │   ├── components/        # Shared Svelte components (LanguageSwitcher)
+│   │   ├── shared/            # Cross-route UI components, elements, and sections
+│   │   │   ├── components/    # KpiGrid, PlotlyChart, EventLogTable, TabSwitcher, etc.
+│   │   │   ├── elements/      # Primitive UI elements (FilterPill, ProgressBar, DataTable, etc.)
+│   │   │   └── sections/      # Reusable page-section components
 │   │   ├── repositories/      # Client-side data shapes and static repos
+│   │   ├── theme/             # Chart colour constants
+│   │   ├── types/             # Shared TypeScript types (pageData.ts)
 │   │   ├── paraglide/         # Generated i18n runtime (do not edit manually)
 │   │   └── server/
 │   │       ├── config.ts      # Reads env vars; validates required vars at startup
