@@ -1,6 +1,7 @@
 package source
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -15,6 +16,9 @@ import (
 
 // localIDPattern validates the expected on-disk file ID format (f-{hex}).
 var localIDPattern = regexp.MustCompile(`^f-[0-9a-f]+$`)
+
+// uuidV4Pattern validates UUIDv4 format used for job IDs.
+var uuidV4Pattern = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 
 // UploadedFileInfo is the metadata returned for each accepted file on upload.
 type UploadedFileInfo struct {
@@ -56,6 +60,40 @@ func canonicalFormat(ext string) string {
 	default:
 		return ext
 	}
+}
+
+// magicByteExtensions maps extensions that have reliable magic-byte signatures to their
+// expected MIME type as returned by http.DetectContentType. Extensions absent from this
+// map accept any image/*, video/*, or application/octet-stream (e.g. HEIC, AVIF, DNG).
+var magicByteExtensions = map[string]string{
+	".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+	".png": "image/png", ".gif": "image/gif",
+	".webp": "image/webp",
+	".tiff": "image/tiff", ".tif": "image/tiff",
+	".mp4": "video/mp4", ".webm": "video/webm",
+	".mpeg": "video/mpeg", ".mpg": "video/mpeg",
+	".ogv": "video/ogg",
+}
+
+// validateMagicBytes reads the first 512 bytes from r to detect the real content type
+// and checks that it is consistent with ext. Returns the peeked bytes so the caller can
+// reconstruct a full reader via io.MultiReader(bytes.NewReader(header), r).
+func validateMagicBytes(r io.Reader, ext string) ([]byte, error) {
+	header := make([]byte, 512)
+	n, err := io.ReadAtLeast(r, header, 1)
+	if err != nil && err != io.ErrUnexpectedEOF {
+		return nil, err
+	}
+	header = header[:n]
+	detected := http.DetectContentType(header)
+	if want, ok := magicByteExtensions[ext]; ok {
+		if detected != want {
+			return nil, fmt.Errorf("content type mismatch: extension %q but content detected as %q", ext, detected)
+		}
+	} else if !strings.HasPrefix(detected, "image/") && !strings.HasPrefix(detected, "video/") && detected != "application/octet-stream" {
+		return nil, fmt.Errorf("content type mismatch: extension %q but content detected as %q", ext, detected)
+	}
+	return header, nil
 }
 
 // HandleUpload handles POST /api/upload — validates, saves, and returns file metadata.
@@ -127,6 +165,21 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 				continue
 			}
 
+			// Validate magic bytes before accepting the file so arbitrary content
+			// cannot be uploaded under a supported extension and handed to ExifTool/FFmpeg.
+			header, magicErr := validateMagicBytes(src, ext)
+			if magicErr != nil {
+				src.Close()
+				fileErrors = append(fileErrors, UploadedFileError{
+					Name:    fh.Filename,
+					Error:   ErrUnsupportedFormat,
+					Message: fmt.Sprintf("File %q content does not match its extension", fh.Filename),
+				})
+				continue
+			}
+			// Reconstruct the full reader with the already-consumed header bytes.
+			fullSrc := io.MultiReader(bytes.NewReader(header), src)
+
 			extNoDot := strings.TrimPrefix(ext, ".")
 			destPath := filepath.Join(uploadsDir, fileID+"_original."+extNoDot)
 			dst, err := os.Create(destPath)
@@ -141,7 +194,7 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 			}
 
 			// LimitReader acts as a safety net if Content-Length header was missing or spoofed.
-			limitedSrc := io.LimitReader(src, cfg.MaxFileSize+1)
+			limitedSrc := io.LimitReader(fullSrc, cfg.MaxFileSize+1)
 			written, copyErr := io.Copy(dst, limitedSrc)
 			dst.Close()
 			src.Close()
@@ -155,14 +208,30 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 				})
 				continue
 			}
-			if written > cfg.MaxFileSize {
+			if !ValidateFileSize(written, cfg.MaxFileSize) {
 				os.Remove(destPath)
-				fileErrors = append(fileErrors, UploadedFileError{
-					Name:    fh.Filename,
-					Error:   ErrFileTooLarge,
-					Message: fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)),
-				})
+				if written == 0 {
+					fileErrors = append(fileErrors, UploadedFileError{
+						Name:    fh.Filename,
+						Error:   ErrInvalidRequest,
+						Message: fmt.Sprintf("File %q is empty", fh.Filename),
+					})
+				} else {
+					fileErrors = append(fileErrors, UploadedFileError{
+						Name:    fh.Filename,
+						Error:   ErrFileTooLarge,
+						Message: fmt.Sprintf("File %q exceeds maximum allowed size of %d MB", fh.Filename, cfg.MaxFileSize/(1024*1024)),
+					})
+				}
 				continue
+			}
+
+			// Write a sidecar .owner file so HandleCreateJob can verify ownership.
+			// Only written when the uploader is authenticated; anonymous uploads
+			// (no auth token) get no owner file and skip the ownership check.
+			if ownerID := UserIDFromContext(r.Context()); ownerID != "" {
+				ownerPath := filepath.Join(uploadsDir, fileID+".owner")
+				_ = os.WriteFile(ownerPath, []byte(ownerID), 0600)
 			}
 
 			accepted = append(accepted, UploadedFileInfo{

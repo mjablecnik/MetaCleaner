@@ -17,12 +17,31 @@ import (
 	src "metacleaner-server/source"
 )
 
+// newFileOwnershipMockSupabase creates a Supabase mock that confirms ownership for the given fileID and userID.
+func newFileOwnershipMockSupabase(t *testing.T, fileID, ownerID string) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if strings.Contains(r.URL.Path, "job_files") && strings.Contains(r.URL.RawQuery, fileID) {
+			fmt.Fprintf(w, `[{"file_name":%q,"user_id":%q}]`, fileID+"_original.jpg", ownerID)
+		} else {
+			w.Write([]byte(`[]`))
+		}
+	}))
+}
+
 // Test download of a completed (cleaned) file → 200 with correct headers
 func TestHandleFileDownloadCompleted(t *testing.T) {
+	fileID := "f-aa1234bb"
+	userID := "user-download-1"
+
+	srv := newFileOwnershipMockSupabase(t, fileID, userID)
+	defer srv.Close()
+
 	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	fileID := "f-aa1234bb"
 	cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
 	if err := os.MkdirAll(cleanedDir, 0755); err != nil {
 		t.Fatal(err)
@@ -34,6 +53,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
+	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
 	src.HandleFileDownload(cfg, db)(rr, req)
 
@@ -52,10 +72,16 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 
 // Test download of a file that is still being processed → 409
 func TestHandleFileDownloadInProgress(t *testing.T) {
+	fileID := "f-cc5678dd"
+	userID := "user-download-2"
+
+	srv := newFileOwnershipMockSupabase(t, fileID, userID)
+	defer srv.Close()
+
 	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	fileID := "f-cc5678dd"
 	uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
 	if err := os.MkdirAll(uploadsDir, 0755); err != nil {
 		t.Fatal(err)
@@ -67,6 +93,7 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
 	req.SetPathValue("id", fileID)
+	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
 	src.HandleFileDownload(cfg, db)(rr, req)
 
@@ -82,11 +109,23 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 
 // Test download of an expired or never-uploaded file → 404
 func TestHandleFileDownloadNotFound(t *testing.T) {
+	fileID := "f-ffffffff"
+	userID := "user-download-3"
+
+	// Ownership mock returns empty — file not found in DB.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`[]`))
+	}))
+	defer srv.Close()
+
 	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/files/f-ffffffff/download", nil)
-	req.SetPathValue("id", "f-ffffffff")
+	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
+	req.SetPathValue("id", fileID)
+	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
 	src.HandleFileDownload(cfg, db)(rr, req)
 
