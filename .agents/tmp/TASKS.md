@@ -1,30 +1,25 @@
-# Security Remediation Tasks — MetaCleaner Go Backend
+# Security Remediation Tasks — MetaCleaner Go Backend (re-audit 2026-07-02)
 
-Derived from `SECURITY_AUDIT.md`. Sorted by severity (critical first). Each task is independently fixable.
+Derived from `SECURITY_AUDIT.md`. Sorted by severity (highest first). Each task is a single, independently fixable issue.
 
-- [x] 1. [CRITICAL] Validate `reportID` (regex `^MCR-\d{4}-\d{4}-[0-9A-F]{32}$`) and `url.QueryEscape` it in the sink to stop PostgREST filter injection on the unauthenticated public report endpoints — source/report_handlers.go:266-319, source/supabase.go:700-728
-- [x] 2. [HIGH] Validate `jobID` as UUIDv4 and escape it before building PostgREST URLs to stop cross-user job/file IDOR via injection — source/job_handlers.go:235,340, source/websocket.go:189, source/supabase.go:314-319,529-531
-- [x] 3. [HIGH] Validate/escape `reportID` on the authenticated report endpoints to stop report IDOR via injection — source/report_handlers.go:214-234,322-352
-- [x] 4. [HIGH] Wrap the processing pipeline in `context.WithTimeout` so hanging ExifTool/FFmpeg runs can't permanently exhaust the worker pool — source/job_handlers.go:120, source/pipeline.go
-- [x] 5. [HIGH] Stop putting `access_token`/`refresh_token` in redirect URL query strings; use the URL fragment or a one-time exchange code / HttpOnly+Secure cookie — source/auth_handlers.go:527-537,692-696
-- [x] 6. [HIGH] Set `APP_ENV=production` in deploy config so prod uses JSON@Info logging instead of Debug (which logs userID/keyID) — fly.toml, Dockerfile, source/logger.go:17-27
-- [x] 7. [HIGH] Add `conn.SetReadLimit(512)` and a read deadline/ping-pong to the WebSocket connection to prevent memory-DoS from oversized frames — source/websocket.go:167-172,205-222
-- [x] 8. [HIGH] Cap concurrent WebSocket connections per job/user and rate-limit the `/progress` upgrade path — source/websocket.go:74-90, source/router.go:48
-- [x] 9. [HIGH] Add `http.MaxBytesReader` to every JSON handler and replace the unbounded magic-link `io.ReadAll` with `io.LimitReader` — source/auth_handlers.go:25,107,194,303,339,386,434, source/account_handlers.go:25,65, source/billing_handlers.go:59,350, source/email_change.go:226, source/apikey_handlers.go:21, source/auth_rate_limiter.go:117
-- [x] 10. [HIGH] Validate uploaded file content by magic bytes/content-type (not extension alone) before handing it to ExifTool/FFmpeg — source/upload_handlers.go:99-108
-- [x] 11. [MEDIUM] Validate API-key `id` as UUID and escape it in the delete/revoke/activate queries — source/apikey_handlers.go:99,131,169, source/supabase_apikeys.go:84,92,105,124,143,161
-- [x] 12. [MEDIUM] Validate email-change `token` (`^[0-9a-f]{64}$`) and escape it so injection can't bypass the `expires_at` freshness filter — source/email_change.go:283,87,116
-- [x] 13. [MEDIUM] Bind uploaded files to the uploader (record user_id at upload) and verify ownership in job creation — source/job_handlers.go:49-80, source/upload_handlers.go
-- [x] 14. [MEDIUM] Add `Secure: true` to the PKCE verifier cookie — source/auth_handlers.go:606-613
-- [x] 15. [MEDIUM] Add a non-root `USER` to the Dockerfile so the media-processing server doesn't run as root — Dockerfile
-- [x] 16. [MEDIUM] Apply the auth rate limiter to `reset-password` and `refresh` (and a general limiter to change-password/email, account delete, and API-key CRUD) — source/router.go:30,34,35,38,71-75
-- [x] 17. [MEDIUM] Key the rate limiter on `Fly-Client-IP` with an IPv6-aware host parse instead of raw `r.RemoteAddr` — source/middleware.go:91-100, source/auth_rate_limiter.go:96,131
-- [x] 18. [MEDIUM] Bump `golang.org/x/net` (currently v0.23.0) and other `golang.org/x/*` deps to patched versions — go.mod, go.sum
-- [x] 19. [MEDIUM] Fail startup in production when `FRONTEND_ORIGIN` is unset so CORS/WS origin protection can't silently disable — source/config.go, source/middleware.go:12-31, source/websocket.go:170
-- [x] 20. [LOW] Add an explicit `if userID == ""` guard in the authenticated report handlers (defense in depth) — source/report_handlers.go:214-234,321-352
-- [x] 21. [LOW] Make the file-download ownership check unconditional (remove the `if userID != ""` wrapper) — source/job_handlers.go:193-200
-- [x] 22. [LOW] Reject zero-byte uploads (call `ValidateFileSize`) before processing — source/upload_handlers.go, source/models.go
-- [x] 23. [LOW] Update or drop the archived `github.com/pkg/errors v0.8.1` dependency — go.mod:16
-- [x] 24. [LOW] Set `ReadHeaderTimeout` and an explicit `MaxHeaderBytes` on the HTTP server — source/main.go:88-94
-- [x] 25. [LOW] Add a restrictive Content-Security-Policy header for HTML/redirect responses — source/middleware.go:113-121
+> The prior audit's 25 tasks are all remediated and verified in place; this list covers only the residual and newly-found issues.
+
+- [x] 1. [HIGH] Move `context.WithTimeout(5m)` creation inside the pool's submitted closure so the pipeline runs under a live (not immediately-canceled) context — restores the worker-pool DoS bound and stops jobs failing on arrival — source/job_handlers.go:126-134, source/job_worker.go:76-116
+- [x] 2. [HIGH] Add a per-connection write mutex (or `*wsConn` wrapper) and route Broadcast, the ping goroutine, and the close-message through it to stop the concurrent-write panic that crashes the whole process — source/websocket.go:173,238,253
+- [x] 3. [MEDIUM] Add `.env-*` (and keep `!.env.example`) to `.gitignore` and `.dockerignore` so the deploy script's `.env-prod` secrets file can't be committed — backend/metacleaner-server/.gitignore, .dockerignore
+- [x] 4. [MEDIUM] Apply `authRateLimited` to change-password/change-email/account-delete and `rateLimited` to the `/api/keys` CRUD routes (change-password is an unthrottled password oracle) — source/router.go:33,34,35,71-75
+- [x] 5. [MEDIUM] Bump `go` directive to a patched 1.25.x (≥1.25.11) and update the Dockerfile builder to `golang:1.25-bookworm` (digest-pinned); add `govulncheck` to CI — resolves 21 reachable stdlib CVEs — go.mod:3, Dockerfile:2
+- [x] 6. [MEDIUM] Validate JWT `sub` as a UUID in validateJWT and `url.QueryEscape` every `user_id=eq.`+userID interpolation to close the last PostgREST-injection gap — source/auth_middleware.go:318, source/supabase.go:560,745, source/supabase_auth.go:432,466,495,544,568, source/supabase_billing.go:62,85,109,223,245,389, source/supabase_apikeys.go:69,222, source/email_change.go:49
+- [x] 7. [LOW] Require a present, non-zero `exp` claim in validateJWT so tokens without an expiry are rejected — source/auth_middleware.go:314
+- [x] 8. [LOW] Explicitly require `claims.Role == "authenticated"` (and optionally validate `aud`/`iss`) instead of relying on the anon/service key's missing `sub` — source/auth_middleware.go:226-322
+- [x] 9. [LOW] Make `GetJob`'s `user_id` filter unconditional and add `userID == ""` guards in HandleGetJob/HandleJobDownload — source/supabase.go:315-320, source/job_handlers.go:254,358
+- [x] 10. [LOW] Replace the WebSocket `?token=` access-JWT with a short-lived single-use progress ticket (or Sec-WebSocket-Protocol) to keep the bearer token out of proxy logs — source/websocket.go:192
+- [x] 11. [LOW] Log the JWKS lookup error server-side and return a generic "unable to verify token" so the Supabase project host isn't disclosed — source/auth_middleware.go:286
+- [x] 12. [LOW] Stop logging the new email address (PII) at Info; drop `newEmail` or log only its domain — source/email_change.go:275
+- [x] 13. [LOW] Store email-change tokens as `sha256` hashes and hash the presented token before the lookup — source/email_change.go:62-66,93
+- [x] 14. [LOW] Return only `{status}` from unauthenticated `/api/health`, cache the tool checks, and rate-limit the route — source/health_handlers.go:25-58, source/router.go:79
+- [x] 15. [LOW] Cap `firstName`/`lastName` (≤100 runes) and `email` (≤254) length in HandleRegister, mirroring HandleUpdateProfile — source/auth_handlers.go:31-57
+- [x] 16. [LOW] Add `url.QueryEscape` to the two resource-ID sinks missed by the escape pass — source/supabase.go:546,560
+- [x] 17. [LOW] Add a global/per-user WebSocket connection cap and rate-limit the `/progress` upgrade path — source/websocket.go:87-92, source/router.go:48
+- [x] 18. [LOW] Track upstream `gopdf` for a release that drops the archived `github.com/pkg/errors` transitive dependency — go.mod (no code change required; pinned to latest available release — monitor https://github.com/signintech/gopdf for an update)
 </content>

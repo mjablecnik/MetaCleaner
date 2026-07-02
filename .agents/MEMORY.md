@@ -1,5 +1,11 @@
 # Memory
 
+## JWT hardening (role/UUID/exp) requires test JWT updates across the test suite
+- Project: metacleaner-server
+- Problem: Adding `role == "authenticated"`, non-zero `exp`, and UUID-format `sub` checks to `validateJWT` causes any test JWT that omits these fields to fail — typically with "insufficient role" or "token missing expiry claim" before reaching the error the test was designed to check. Affects tests in `auth_middleware_test.go`, `auth_handlers_test.go`, `cors_test.go`, `websocket_test.go`, and property tests in `auth_property_middleware_test.go`.
+- Solution: (1) Define a shared `testUserUUID = "a1b2c3d4-e5f6-4789-abcd-ef0123456789"` constant and use it as `sub` in all valid test JWTs. (2) Add `"role": "authenticated"` to all test JWTs that are expected to pass auth. (3) The `drawExpiredToken` and `drawWrongSecretToken` property helpers also need UUID subs for expired/wrong-sig tokens (though those fail earlier, consistency prevents future issues). (4) The `TestAuthenticate_NoExpClaim_Valid` test must be renamed and flipped to expect rejection — tokens without exp must now be rejected.
+- Source: security-audit, 2026-07-02
+
 ## golang.org/x/net@latest forces go directive upgrade to 1.25
 - Project: metacleaner-server
 - Problem: Running `go get golang.org/x/net@latest` (v0.56.0) requires `go >= 1.25.0` and automatically upgrades the `go` directive in `go.mod`. If the project targets Go 1.23, `@latest` will unexpectedly raise the minimum Go version.

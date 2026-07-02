@@ -1,257 +1,252 @@
 # Security Audit — MetaCleaner Go Backend (`backend/metacleaner-server/`)
 
-**Date:** 2026-07-02
-**Scope:** `backend/metacleaner-server/` — Go 1.23 HTTP server (net/http `ServeMux`), Supabase (PostgREST/Storage/Auth) via REST with the service-role key, Stripe billing, Brevo email, ExifTool/FFmpeg subprocess pipeline.
-**Method:** Route map (`router.go`) → per-handler data-flow tracing → DB sink review, across injection, authN/authZ, data exposure, cryptography, dependencies, input validation, and configuration/deployment. The core injection class was empirically verified with a Go test showing `r.PathValue("id")` returns URL-decoded input that is concatenated verbatim onto the PostgREST query string.
+**Date:** 2026-07-02 (re-audit)
+**Scope:** `backend/metacleaner-server/` — Go 1.25 HTTP server (net/http `ServeMux`), Supabase (PostgREST/Storage/Auth) via REST with the service-role key, Stripe billing, Brevo email, ExifTool/FFmpeg subprocess pipeline.
+**Method:** Full re-audit of the current tree at commit `e3ef4d8`. Route map (`router.go`) → per-handler data-flow tracing → DB-sink review, across injection, authN/authZ, data exposure, cryptography, dependencies, input validation, and configuration/deployment. Four parallel deep-dive passes (injection / auth / data-exposure+config / input-validation+DoS+deps), then hand-verification of every HIGH/MEDIUM finding against the source and a `govulncheck` run.
+
+> **Relationship to the prior audit.** The previous pass (same date) found a CRITICAL unauthenticated PostgREST-filter-injection exfiltration plus 24 lesser items; all 25 were remediated (see `TASKS.md` history and the five `security:` commits). **This re-audit verified every one of those fixes is in place and correct** — the CRITICAL is closed. The findings below are the *residual and newly-discovered* issues in the current code. The headline change is that the top risks are now two self-inflicted **denial-of-service** bugs (one crashes the whole process), not data exfiltration.
 
 ---
 
 ## Executive Summary
 
-**Overall risk: HIGH** (a single CRITICAL, unauthenticated, network-exploitable data-exfiltration path).
+**Overall risk: HIGH** — driven by **H-2**, a network-triggerable concurrent-write panic that crashes the entire server process (all users dropped), and **H-1**, a broken job-timeout that both nullifies the worker-pool DoS protection and cancels legitimate jobs at startup. No CRITICAL and no unauthenticated data-exfiltration path remains.
 
-The dominant issue is **PostgREST filter injection**: user-controlled path/query IDs (`reportID`, `jobID`, API-key `id`, email-change `token`) are concatenated **raw and unvalidated** into Supabase REST query URLs that run with the **service-role key** (Row-Level Security bypassed). File IDs are correctly guarded by a regex (`localIDPattern`), but the other identifiers are only empty-checked. An injected `&` becomes a new PostgREST query parameter, letting an attacker append `or=`, `select=`, `limit=`, `order=` clauses to defeat the intended single-row equality lookup and the `user_id` ownership filter. The public (no-auth) report endpoint makes this exploitable by anyone.
+The core security architecture is sound and the prior hardening holds up under re-review:
 
-Command injection, path traversal, SSRF, raw-SQL, template and LDAP injection were investigated and found **not exploitable** (subprocess args are discrete argv from server-generated, regex-validated IDs; all outbound base URLs are constants). Cryptography is sound (`crypto/rand` throughout, correct JWT verification with no `alg=none`/HS-RS confusion, Stripe webhook HMAC verified). Passwords are fully delegated to Supabase. Most resource handlers correctly scope by `userID`.
+- **Injection** — the four headline PostgREST-injection sinks (report ID, job ID, API-key ID, email-change token) now have **both** handler-side regex validation **and** `url.QueryEscape` at the sink. Command injection, path traversal, SQL, SSRF, and template injection were re-checked and are **not exploitable** (discrete argv, server-generated/regex-validated paths, fixed outbound hosts). One residual gap: the `userID`/JWT-`sub` filter parameter is interpolated raw and never format-validated (**M-4**).
+- **Auth** — JWT verification is real and complete (HS256 via `hmac.Equal`, ES256 via JWKS, `alg=none` rejected, no HS/ES confusion), Stripe webhook is HMAC-verified, PKCE cookie flags are correct, and session tokens now travel in the URL **fragment** (not query). Residual hardening: require `exp`, validate `role`/`aud` (**L-1/L-2**).
+- **Crypto** — clean: `crypto/rand` throughout, SHA-256 API-key hashing, no MD5/SHA-1/DES/RC4, no hardcoded keys/IVs, no committed secrets.
+- **Config/deploy** — `APP_ENV=production`, fixed-origin CORS with fail-closed startup, full security-header set incl. CSP/HSTS, non-root Docker `USER`, and HTTP server timeouts are all present.
 
-Secondary themes: a detached processing pipeline with **no timeout** (worker-pool exhaustion DoS), session **tokens placed in redirect URL query strings**, **production defaulting to Debug logging**, and several **DoS-hardening gaps** (WebSocket read/connection limits, missing request-body caps, upload validated by extension only).
+Secondary themes this pass: an **outdated Go toolchain** (21 reachable stdlib CVEs) with a Dockerfile builder pinned even further back (**M-3**); **unthrottled sensitive authenticated endpoints**, including a password-verification oracle on `change-password` (**M-2**); a missing **`.env-*` gitignore guard** for the exact file the deploy script tells operators to create (**M-1**); and several low-severity data-hygiene / defense-in-depth items.
 
 | Severity | Count |
 |---|---|
-| CRITICAL | 1 |
-| HIGH | 8 |
-| MEDIUM | 9 |
-| LOW | 6 |
-
----
-
-## CRITICAL
-
-### C-1. PostgREST filter injection on the public (unauthenticated) report endpoints — arbitrary report exfiltration
-- **Category:** Injection (NoSQL / PostgREST API injection) → broken access control / data exposure
-- **Severity:** CRITICAL
-- **Files:** `source/report_handlers.go:266-286` (`HandleGetPublicReport`), `source/report_handlers.go:291-319` (`HandleGetPublicReportPDF`); sink `source/supabase.go:700-706` (`GetReportByHumanID`) and `source/supabase.go:723-728` (`GetReportMetaByHumanID`).
-- **Description:** `reportID := r.PathValue("id")` is only checked for emptiness, then flows into:
-  ```go
-  url := c.restURL("cleaning_reports?report_id=eq." + humanID) // humanID unescaped, unvalidated
-  if userID != "" { url += "&user_id=eq." + userID }           // "" on the public path — no scoping at all
-  ```
-  `restURL` (`supabase.go:242`) does no encoding: `return c.baseURL + "/rest/v1/" + path`. These routes are in `isExemptPath` (`auth_middleware.go:443`, prefix `/api/public/`), so no token is required, and the query runs with the **service-role key** (RLS bypassed).
-- **Proof of concept:**
-  ```
-  GET /api/public/reports/eq.null%26or=(report_id.not.is.null)&order=date.desc
-  ```
-  The decoded `id` is `eq.null&or=(report_id.not.is.null)`, so the wire query becomes
-  `cleaning_reports?report_id=eq.eq.null&or=(report_id.not.is.null)&order=date.desc` — the injected `or=` clause overrides the equality match and returns arbitrary rows. `HandleGetPublicReportPDF` then hands back a signed URL to the full (unredacted) PDF of any report.
-- **Recommended fix (defense in depth — do both):**
-  1. Validate at the handler before the DB call (mirror the existing `localIDPattern` approach):
-     ```go
-     var reportIDPattern = regexp.MustCompile(`^MCR-\d{4}-\d{4}-[0-9A-F]{32}$`)
-     if !reportIDPattern.MatchString(reportID) {
-         WriteError(w, http.StatusBadRequest, ErrInvalidRequest, "Invalid report ID")
-         return
-     }
-     ```
-  2. Encode at the sink so no value can break out of its `col=eq.<value>` token:
-     ```go
-     url := c.restURL("cleaning_reports?report_id=eq." + url.QueryEscape(humanID))
-     if userID != "" { url += "&user_id=eq." + url.QueryEscape(userID) }
-     ```
+| CRITICAL | 0 |
+| HIGH | 2 |
+| MEDIUM | 4 |
+| LOW | 9 |
 
 ---
 
 ## HIGH
 
-### H-1. PostgREST filter injection via unvalidated `jobID` — cross-user job/file IDOR
-- **Category:** Injection (PostgREST) → IDOR
+### H-1. Job-processing timeout is canceled immediately — DoS protection defeated and legitimate jobs killed
+- **Category:** Configuration / DoS (resource exhaustion) — broken security control
 - **Severity:** HIGH
-- **Files:** `source/job_handlers.go:235-237` (`HandleJobDownload`), `source/job_handlers.go:340-342` (`HandleGetJob`), `source/websocket.go:189` (`HandleJobProgress`); sinks `source/supabase.go:314-319` (`GetJob`) and `source/supabase.go:529-531` (`GetFileRecords` — **no** user filter at all).
-- **Description:** `jobID := r.PathValue("id")` is empty-checked only, then concatenated into `"cleaning_jobs?id=eq." + jobID + "&user_id=eq." + userID`. An injected `or=` defeats the trailing ownership filter; `GetFileRecords` has no `user_id` filter, so broadening it exposes other users' file records and cleaned-file names.
-- **Proof of concept:** `GET /api/jobs/eq.null%26or=(status.eq.completed)` → returns completed jobs regardless of owner.
-- **Fix:** validate `jobID` as UUIDv4 at the handler and `url.QueryEscape` at the sink (see C-1).
-
-### H-2. PostgREST filter injection via unvalidated `reportID` on authenticated report endpoints — report IDOR
-- **Category:** Injection (PostgREST) → IDOR
-- **Severity:** HIGH
-- **Files:** `source/report_handlers.go:214-234` (`HandleGetReport`), `source/report_handlers.go:322-352` (`HandleGetReportPDF`); same sinks as C-1.
-- **Description:** identical mechanism to C-1 but on the authenticated routes; injecting `or=` defeats the `&user_id=eq.<uuid>` scope and returns another user's full report detail (raw GPS coordinates, camera serials, XMP creator) or a signed URL to their PDF.
-- **Proof of concept:** `GET /api/reports/eq.null%26or=(id.not.is.null)&order=date.desc`.
-- **Fix:** as C-1 (reportID regex + `url.QueryEscape`).
-
-### H-3. Unbounded subprocess pipeline — no processing timeout (worker-pool exhaustion DoS)
-- **Category:** Configuration / DoS (resource exhaustion)
-- **Severity:** HIGH
-- **Files:** `source/job_handlers.go:120` (`ctx := context.Background()`), through `source/job_worker.go` → `source/pipeline.go` → `source/pipeline_ffmpeg.go:58,92` / `source/pipeline_exiftool.go:200,245`.
-- **Description:** the job goroutine builds `context.Background()` with **no deadline** and threads it into every `exec.CommandContext(ctx, "ffmpeg"/"ffprobe"/"exiftool", ...)`. There is no `context.WithTimeout`/`WithDeadline` anywhere in the pipeline (verified). A crafted/pathological media file that makes a tool hang or run very long occupies a worker slot forever. With `MaxConcurrentJobs=3` (default), three such files permanently exhaust the pool; all other jobs queue indefinitely. The HTTP `WriteTimeout` does not help because processing is detached from the request.
-- **Fix:** wrap each file/job in a bounded context:
+- **Files:** `source/job_handlers.go:126-134`, `source/job_worker.go:29-55` (`Submit`), `source/job_worker.go:76-116` (`ProcessJobWithPool`)
+- **Description:** The prior audit added a 5-minute `context.WithTimeout` to bound hanging ExifTool/FFmpeg runs. It is created in the wrong scope:
   ```go
-  ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-  defer cancel()
+  go func() {
+      <-wsReady
+      ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+      defer cancel()
+      ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files, authClient)
+  }()
+  ```
+  `ProcessJobWithPool` calls `pool.Submit(...)`, and `Submit` is **asynchronous** — it spawns its own goroutine and returns immediately (`job_worker.go:39-54`). So `ProcessJobWithPool` returns at once, the outer goroutine unwinds, and **`defer cancel()` fires before the pooled work runs**. The pipeline (`pl.ProcessJob`) therefore executes with an already-canceled context. `pipeline.go` checks `ctx.Err()` at the top of its per-file loop and bails out, so the job never reaches `completed`: it is stuck in `processing`, no files are cleaned, credits/report steps are skipped.
+- **Proof of concept / impact:** No attacker action is required — this is a latent correctness + resource bug. Submit any job: the context is canceled essentially at once (`cancel()` is synchronous and immediate; the pool goroutine must still acquire a semaphore slot and log before invoking `fn()`, so `cancel` wins the race). Independently reproduced in isolation (10 jobs, pool size 3): all observed `ctx.Err() == context.Canceled`. Consequence (a): whenever the pipeline *does* start before cancel lands, its ExifTool/FFmpeg run is **unbounded** — the exact worker-pool exhaustion the timeout was meant to prevent. Consequence (b): jobs fail on arrival.
+- **Recommended fix:** create the timeout context **inside** the unit of work submitted to the pool, so its lifetime spans execution:
+  ```go
+  // job_handlers.go
+  go func() {
+      <-wsReady
+      ProcessJobWithPool(pool, cfg, db, hub, pl, job, files, authClient)
+  }()
+
+  // job_worker.go
+  func ProcessJobWithPool(pool *JobWorkerPool, cfg Config, /* ... */) {
+      pool.Submit(job.ID, func() {
+          ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+          defer cancel()
+          // ... existing body, using ctx ...
+      })
+  }
   ```
 
-### H-4. Session access & refresh tokens placed in redirect URL query strings
-- **Category:** Data exposure
+### H-2. Concurrent writes to a WebSocket connection panic → whole-process crash (remote DoS)
+- **Category:** DoS (unrecovered panic) — availability
 - **Severity:** HIGH
-- **Files:** `source/auth_handlers.go:527-537` (magic-link callback), `source/auth_handlers.go:~692-696` (OAuth callback).
-- **Description:** the callbacks set `access_token` and `refresh_token` as URL **query** parameters and 302-redirect the browser:
+- **Files:** `source/websocket.go:173` (`Broadcast`) vs `source/websocket.go:249-257` (per-connection ping goroutine)
+- **Description:** `gorilla/websocket` `*Conn.WriteMessage` is **not safe for concurrent use** and deliberately `panic("concurrent write to websocket connection")` when it detects one. Two independent writers touch the same `*Conn` with no serialization:
+  1. the per-connection **ping goroutine** — `conn.WriteMessage(websocket.PingMessage, nil)` every 30 s (`websocket.go:253`), and
+  2. **`Broadcast`** — `c.WriteMessage(websocket.TextMessage, data)` driven by the pipeline worker's `progressFn` (`websocket.go:173`, called from `job_worker.go:78`).
+
+  The hub's `sync.Mutex` guards only the `conns` map, not the writes. There is **no per-connection write lock**. When a broadcast and a ping overlap on the same connection, gorilla panics. The ping runs in a goroutine spawned by the handler (`websocket.go:249`); a panic there is **not** recovered by `net/http` (which only recovers the request goroutine), so it **crashes the entire server process**, dropping every connected user across all jobs.
+- **Proof of concept / exploitation:** Normal usage triggers it: open a progress WebSocket for an active job and keep it open ≥30 s so a keep-alive ping coincides with a progress broadcast. The per-event collision window is small, but across concurrent jobs it is statistically certain; a malicious client can widen it by opening many long-lived connections against active jobs.
+- **Recommended fix:** serialize all writes to a connection behind a per-connection mutex, and route the broadcast, ping, and close-message paths through it:
   ```go
-  params.Set("access_token", session.AccessToken)
-  params.Set("refresh_token", session.RefreshToken)
-  http.Redirect(w, r, frontendLogin+"?"+params.Encode(), http.StatusFound)
+  type wsConn struct {
+      conn *websocket.Conn
+      mu   sync.Mutex
+  }
+  func (c *wsConn) write(msgType int, data []byte) error {
+      c.mu.Lock()
+      defer c.mu.Unlock()
+      return c.conn.WriteMessage(msgType, data)
+  }
   ```
-  Tokens in the query land in browser history, `Referer` headers to any third-party resources on the landing page, and any intermediary/proxy/CDN access logs. The refresh token is long-lived.
-- **Fix:** deliver via the URL **fragment** (`#`, not sent to servers/Referer) or a one-time exchange code redeemed over POST, or set an HttpOnly+Secure cookie server-side.
-
-### H-5. Production defaults to Debug/text logging (`APP_ENV` unset in deploy config)
-- **Category:** Configuration / data exposure
-- **Severity:** HIGH
-- **Files:** `source/logger.go:17-27`; `fly.toml`, `Dockerfile` (verified: `APP_ENV` set in neither).
-- **Description:** `InitLogger` selects JSON@Info only when `APP_ENV == "production"`, else **text handler at Debug level**. Because `APP_ENV` is not set in `fly.toml [env]` or the `Dockerfile`, the deployed container runs at Debug. Debug lines then execute in prod, e.g. `auth_middleware.go:341` logs resolved `userID`/`keyID` on every API-key request, plus broad Debug verbosity to Fly logs.
-- **Fix:** set `APP_ENV=production` in `fly.toml [env]` (and/or fail-closed to Info level when the value is unrecognized).
-
-### H-6. WebSocket connection has no read-size limit or read deadline (memory DoS)
-- **Category:** Input validation / WebSocket DoS
-- **Severity:** HIGH
-- **Files:** `source/websocket.go:167-172` (upgrader), `source/websocket.go:205-222` (read loop).
-- **Description:** the upgrader sets only `CheckOrigin`; the connection never calls `SetReadLimit` or `SetReadDeadline` (verified — neither appears anywhere in `source/`). gorilla/websocket defaults to **no** read-size cap, so an authenticated client can send one arbitrarily large frame and `ReadMessage` buffers it fully into memory. Half-open connections also linger with no idle deadline.
-- **Fix:** the progress endpoint expects no client payload — `conn.SetReadLimit(512)`, set a read deadline, and use ping/pong keepalive.
-
-### H-7. No cap on WebSocket connections per job/user (goroutine/FD/memory DoS)
-- **Category:** WebSocket DoS / unbounded resource use
-- **Severity:** HIGH
-- **Files:** `source/websocket.go:74-90` (`Register`), route `source/router.go:48` (no `rateLimited` wrapper), exempt from IP limiter via `auth_middleware.go:439`.
-- **Description:** `Register` appends to `h.conns[jobID]` with no per-job/per-user limit, and the `/progress` upgrade path is exempt from the IP rate limiter, so a user who owns a job can open unbounded connections. Combined with H-6 this multiplies memory pressure.
-- **Fix:** cap concurrent connections per job/user and apply a connection-establishment rate limit on the upgrade path.
-
-### H-8. Missing request-body size limits on JSON endpoints (incl. unauthenticated `io.ReadAll`)
-- **Category:** Input validation / DoS
-- **Severity:** HIGH
-- **Files:** `source/auth_handlers.go:25,107,194,303,339,386,434`; `source/account_handlers.go:25,65`; `source/billing_handlers.go:59,350`; `source/email_change.go:226`; `source/apikey_handlers.go:21`; and `source/auth_rate_limiter.go:117` (`io.ReadAll` in `MagicLinkMiddleware`).
-- **Description:** only `job_handlers.go:35` and `upload_handlers.go:66` wrap the body in `http.MaxBytesReader`. Every other JSON handler decodes an **unbounded** body, including unauthenticated `/api/auth/register|login|refresh|forgot-password|magic-link`. The magic-link rate-limit middleware does `io.ReadAll(r.Body)` with no limit — the whole body is buffered into memory *before* rate limiting applies, a direct unauthenticated memory-DoS amplifier.
-- **Fix:** wrap every handler body in `http.MaxBytesReader` (e.g. 1 MB); replace the magic-link `io.ReadAll` with `io.LimitReader` (as `billing_webhook.go:45` already does).
-
-### H-9. Upload content validated by extension only — no magic-byte / content-type check
-- **Category:** Input validation / file upload
-- **Severity:** HIGH
-- **Files:** `source/upload_handlers.go:99-108` (`ValidateFileFormat` on `filepath.Ext(fh.Filename)`); consumed at `pipeline.go` via `SelectTool(f.FileExtension)`.
-- **Description:** acceptance is based purely on the client-supplied filename extension; the multipart `Content-Type` is ignored and no content sniffing is done. Arbitrary bytes can be uploaded as `.jpg` and are later fed to ExifTool/FFmpeg (which have their own CVE history). This is the entry point for the H-3 media-bomb/hang scenario. (Path traversal is *not* possible — the on-disk name is a server-generated `f-<hex>` ID, not the user filename.)
-- **Fix:** sniff magic bytes (`http.DetectContentType` / a format allow-list) and cross-check against the extension before accepting; keep processing behind the H-3 timeout.
+  Store `*wsConn` in the hub's `conns` map and use `write(...)` in `Broadcast`, the ping loop, and the "too many connections"/close path. (Minimally, add one `sync.Mutex` per connection and guard all three `WriteMessage` sites; as a backstop, also `recover()` inside the ping goroutine.)
 
 ---
 
 ## MEDIUM
 
-### M-1. PostgREST filter injection via unvalidated API-key `id`
-- **Category:** Injection (PostgREST)
-- **Severity:** MEDIUM (queries retain `&user_id=eq.<uuid>`, but an injected `or=` can broaden the match on DELETE/PATCH)
-- **Files:** `source/apikey_handlers.go:99,131,169`; sinks `source/supabase_apikeys.go:84,92,105,124,143,161`.
-- **Description:** `keyID := r.PathValue("id")` (empty-check only) is concatenated into `"api_keys?id=eq." + keyID + "&user_id=eq." + userID` for delete/revoke/activate. PostgREST honors all filters on mutating requests, so a broadening clause can affect rows beyond the caller.
-- **Fix:** validate `keyID` as UUID + `url.QueryEscape` at the sink.
-
-### M-2. PostgREST filter injection via unvalidated email-change `token`
-- **Category:** Injection (PostgREST)
-- **Severity:** MEDIUM (unauthenticated; can defeat the `expires_at=gt.now()` freshness gate)
-- **Files:** `source/email_change.go:283` (`HandleConfirmEmailChange`); sink `source/email_change.go:87` (`Verify`) and delete at `source/email_change.go:116`.
-- **Description:** `token := r.URL.Query().Get("token")` (empty-check only) flows into `"...?token=eq." + token + "&expires_at=gt.now()&select=user_id,new_email"`. An injected `or=` can bypass expiry and, combined with a broadening clause, match a pending token — the subsequent `AdminUpdateUser` then applies the email change.
-- **Fix:** validate `token` against `^[0-9a-f]{64}$` + `url.QueryEscape`.
-
-### M-3. Job creation does not verify the uploader owns the referenced files (IDOR)
-- **Category:** Authorization (broken object-level authorization)
-- **Severity:** MEDIUM (file IDs are 128-bit random, so exploitation needs a leaked ID)
-- **File:** `source/job_handlers.go:49-80` (`HandleCreateJob`).
-- **Description:** the loop validates only that `fileID` matches `localIDPattern` and that `<uploads>/<fileID>_original.*` exists on disk; it never checks who uploaded it. `HandleUpload` records no `user_id` at upload time, so no ownership binding exists. If user A learns user B's freshly-uploaded file ID, A can process it under A's account.
-- **Fix:** record the uploader's `user_id` at upload time (persist an upload record) and verify it in `HandleCreateJob`.
-
-### M-4. PKCE verifier cookie missing the `Secure` flag
-- **Category:** Cryptography / configuration
+### M-1. `.env-prod` (production secrets) is not gitignored or dockerignored
+- **Category:** Configuration / sensitive-file exposure
 - **Severity:** MEDIUM
-- **File:** `source/auth_handlers.go:606-613`.
-- **Description:** the `mc_pkce_verifier` cookie is `HttpOnly` + `SameSite=Lax` but not `Secure`, so it can be sent over plaintext HTTP, weakening PKCE's protection against auth-code interception.
-- **Fix:** add `Secure: true` to the cookie.
+- **Files:** `backend/metacleaner-server/.gitignore` (matches only `.env`), `.dockerignore` (only `.env`), `scripts/deploy.sh:9,44-57`
+- **Description:** `deploy.sh` instructs operators to place all production secrets (Supabase service-role key, Stripe secret key, JWT secret, Brevo key) in `.env-prod` (or `.env-<name>` via `--env`). `.gitignore` matches only the exact name `.env`, so `git check-ignore .env-prod` returns nothing — the secrets file the deploy process tells you to create is **not** ignored. The file doesn't exist right now, so nothing is leaked today; the guardrail is simply absent.
+- **Exploitation scenario:** An operator runs `scripts/deploy.sh`, later runs `git add .` — the full production secret set is committed and propagates to every clone and CI cache.
+- **Recommended fix:** in `.gitignore` and `.dockerignore`:
+  ```gitignore
+  .env
+  .env-*
+  .env.*
+  !.env.example
+  ```
 
-### M-5. Docker container runs as root
-- **Category:** Deployment
+### M-2. Sensitive authenticated endpoints have no rate limiting; `change-password` is a password oracle
+- **Category:** Data exposure / missing rate limiting → credential brute force
 - **Severity:** MEDIUM
-- **File:** `Dockerfile` (no `USER` directive — verified).
-- **Description:** the server (which shells out to `exiftool`/`ffmpeg` on user-uploaded files) runs as root, enlarging the blast radius of any RCE/container escape.
-- **Fix:** add a non-root user and `USER appuser` before `ENTRYPOINT`.
+- **Files:** `source/router.go:33-35,71-75`, `source/account_handlers.go:89`
+- **Description:** Rate limiting is opt-in per route (there is no global fallback limiter). These mutating/sensitive routes are wrapped by **neither** `rateLimited` **nor** `authRateLimited`: `POST /api/auth/change-password` (`router.go:34`), `POST /api/auth/change-email` (`:33`), `DELETE /api/auth/account` (`:35`), and all API-key CRUD `POST/GET/DELETE/PATCH /api/keys*` (`:71-75`). `HandleChangePassword` calls `authClient.SignInWithPassword(profile.Email, req.CurrentPassword)` to verify the current password (`account_handlers.go:89`) — an **unthrottled password-verification oracle** for anyone holding a valid session/JWT (e.g. a stolen-but-not-yet-revoked token), enabling online brute force of the real password without tripping the login limiter. The `/api/keys` endpoints permit unlimited key creation/enumeration attempts.
+- **Recommended fix:** apply `authRateLimited` (or a dedicated per-user limiter) to `change-password`, `change-email`, and account delete, and `rateLimited` to the `/api/keys` routes. Consider a low global fallback limiter in the middleware chain so no authenticated route is entirely unthrottled.
 
-### M-6. Rate-limiting gaps on sensitive auth and key endpoints
-- **Category:** Configuration / DoS / credential attack surface
+### M-3. Outdated Go toolchain — 21 reachable stdlib CVEs; Dockerfile builder pinned even older
+- **Category:** Dependency / configuration
 - **Severity:** MEDIUM
-- **File:** `source/router.go` — `authRateLimited` wraps only `register`, `login`, `forgot-password`, `verify-reset-code`.
-- **Description:** unthrottled: `POST /api/auth/reset-password` (:38), `POST /api/auth/refresh` (:30), `change-password`/`change-email`/`DELETE account` (:34,33,35), and API-key CRUD `POST/DELETE/PATCH /api/keys` (:71-75). Reset-password and refresh being unthrottled are the notable brute-force/grinding surfaces.
-- **Fix:** apply the auth rate limiter to reset-password and refresh (and a general limiter to the rest).
+- **Files:** `go.mod:3` (`go 1.25.0`), `Dockerfile:2` (`FROM golang:1.23-bookworm`)
+- **Description:** `govulncheck ./...` reports **21 called standard-library vulnerabilities** reachable from this code (net/http, crypto/tls, crypto/x509, net/url, net, os, encoding/pem, encoding/asn1, net/textproto). Notable reachable ones:
+  - **GO-2026-4918** — HTTP/2 transport infinite loop on a bad `SETTINGS_MAX_FRAME_SIZE`, reached via the JWKS fetch (`auth_middleware.go`) and Supabase calls. Fixed in go1.25.10.
+  - **GO-2026-4870** — TLS 1.3 KeyUpdate connection-retention DoS, reached via `main.go` `ListenAndServe`. Fixed in go1.25.9.
+  - **GO-2026-4341** — memory exhaustion parsing query parameters, reached via `ParseMultipartForm` (`upload_handlers.go`) and `URL.Query()` (`websocket.go`). Fixed in go1.25.6.
+  - **GO-2026-4602** — `FileInfo` can escape a `Root`, reached via `http.ServeFile` (`job_handlers.go`). Fixed in go1.25.8.
 
-### M-7. Rate limiter keys on `r.RemoteAddr`, ignoring the Fly proxy (and mis-splits IPv6)
-- **Category:** Configuration
-- **Severity:** MEDIUM
-- **Files:** `source/middleware.go:91-100`, `source/auth_rate_limiter.go:96,131`.
-- **Description:** the client IP is taken from `r.RemoteAddr` and never from `Fly-Client-IP`/`X-Forwarded-For`. Behind Fly's proxy this can collapse all clients into one bucket (or make per-IP limiting ineffective). The port-stripping also splits on the last `:`, corrupting IPv6 keys.
-- **Fix:** derive the client IP from `Fly-Client-IP` (trusted at the edge) with a correct IPv6-aware host parse.
+  Separately, the **Dockerfile builds with `golang:1.23`** while `go.mod` requires `1.25.0`; the build only succeeds because `GOTOOLCHAIN=auto` downloads go1.25.0 at build time, so the pinned base is fiction and `golang:1.23-bookworm` is itself past upstream support. Neither stage is digest-pinned.
+- **Recommended fix:** bump the `go` directive to `go 1.25.11` (or newer) and set `FROM golang:1.25-bookworm` (ideally `@sha256:...`-pinned) for the builder. Add `govulncheck ./...` to CI. *(Note: `golang.org/x/net v0.38.0` is only an indirect requirement and `go mod why` shows the main module doesn't import it — the HTTP/2 CVE here is the stdlib copy, fixed by the toolchain bump.)*
 
-### M-8. Outdated transitive dependency `golang.org/x/net v0.23.0`
-- **Category:** Dependency vulnerability
+### M-4. `userID`/JWT-`sub` interpolated raw and never format-validated into PostgREST filters
+- **Category:** Injection (PostgREST filter injection) — incomplete remediation / defense-in-depth
 - **Severity:** MEDIUM
-- **File:** `go.sum` (`golang.org/x/net v0.23.0`).
-- **Description:** this version trails later `golang.org/x/net/http2` advisories (fixes shipped in 0.33+/0.38+). Bump regardless of runtime reachability.
-- **Fix:** `go get golang.org/x/net@latest && go mod tidy`; also refresh other `golang.org/x/*` modules and build on the latest Go 1.23.x patch.
-
-### M-9. No startup guard requiring `FRONTEND_ORIGIN` (WS origin protection can silently disable)
-- **Category:** Configuration
-- **Severity:** MEDIUM
-- **Files:** `source/middleware.go:12-31`, `source/websocket.go:170`, `source/config.go`.
-- **Description:** if `FRONTEND_ORIGIN` is empty, `corsMiddleware` becomes a no-op and the WS `CheckOrigin` comparison degrades, so a misconfigured prod deploy silently loses origin protection. Not a confirmed bypass when the value is set, but there is no guard enforcing it.
-- **Fix:** fail startup in production if `FRONTEND_ORIGIN` is unset.
+- **Files:** `source/auth_middleware.go:314-322` (`sub` returned unvalidated); unescaped `user_id=eq.`+`userID` sinks at `source/supabase.go:560,745`, `source/supabase_apikeys.go:69,222`, `source/supabase_auth.go:432,466,495,544,568`, `source/supabase_billing.go:62,85,109,223,245,389`, `source/email_change.go:49`
+- **Description:** The prior injection fix escaped the *resource* IDs but not the ownership parameter. `validateJWT` returns `claims.Sub` with **no format check** (only an emptiness check at `auth_middleware.go:318`), and every ownership filter concatenates it **raw**, without `url.QueryEscape`. Under the current threat model this is not externally exploitable (the JWT signature is verified, so `sub` can't be attacker-chosen), but it is exactly the injection class the prior audit set out to close and it was left open for `user_id` across ~15 filters — including a `DELETE` at `email_change.go:49`. If a legitimately-signed token with a crafted `sub` ever entered the system (e.g. a leaked/weak `SUPABASE_JWT_SECRET` on the HS256 path, or a future code path populating `userID` from request input), a value like `x&user_id=neq.x` or an injected `or=(...)` clause would break out of the `user_id=eq.` scope → cross-user read/write/delete.
+- **Recommended fix:** validate `sub` as a UUID at the single choke point, and escape at the sinks for consistency:
+  ```go
+  // auth_middleware.go — after the claims.Sub == "" check
+  var subjectPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
+  if !subjectPattern.MatchString(claims.Sub) {
+      return "", &authError{code: ErrAuthTokenInvalid, message: "invalid subject claim"}
+  }
+  ```
+  and wrap each interpolation: `... + url.QueryEscape(userID)`.
 
 ---
 
 ## LOW
 
-### L-1. Report handlers rely on middleware to guarantee non-empty `userID` (defense-in-depth)
-- **Severity:** LOW (not currently exploitable)
-- **Files:** `source/report_handlers.go:214-234,321-352`.
-- **Description:** unlike most handlers, `HandleGetReport`/`HandleGetReportPDF` don't check `if userID == ""`. If a future refactor made these exempt, the empty userID would drop the DB `user_id` filter and expose any report. Add the explicit guard.
-
-### L-2. `HandleFileDownload` performs ownership check only when `userID != ""`
-- **Severity:** LOW (not currently exploitable — route is non-exempt so `userID` is always set)
-- **File:** `source/job_handlers.go:193-200`.
-- **Description:** the `if userID != ""` wrapper around `VerifyFileOwnership` is fragile; make the check unconditional so an auth-config change can't turn it into a file IDOR.
-
-### L-3. Email-change confirmation token delivered in URL query
-- **Severity:** LOW (single-use, 1h TTL, deleted on use)
-- **File:** `source/email_change.go:259`.
-- **Description:** the confirmation link carries `?token=<token>`, which lands in server/proxy access logs for that GET. Acceptable given single-use + short TTL; noted for completeness.
-
-### L-4. Outdated/archived dependency `github.com/pkg/errors v0.8.1`
-- **Severity:** LOW (no known CVE)
-- **File:** `go.mod:16`.
-- **Description:** archived library, v0.9.1 is the last release. Bump or drop.
-
-### L-5. HTTP server missing `ReadHeaderTimeout` / `MaxHeaderBytes`
+### L-1. JWT accepts tokens with no `exp` claim (effectively non-expiring)
+- **Category:** Authentication / session management
 - **Severity:** LOW
-- **File:** `source/main.go:88-94`.
-- **Description:** `ReadTimeout`/`WriteTimeout`/`IdleTimeout` are set but `ReadHeaderTimeout` and an explicit `MaxHeaderBytes` are not. Minor Slowloris/large-header hardening.
+- **File:** `source/auth_middleware.go:314`
+- **Description:** Expiry is enforced only when present: `if claims.Exp > 0 && time.Now().Unix() > claims.Exp`. A validly-signed token that omits `exp` (or sets it to 0) bypasses expiry and is accepted forever. Not exploitable without the signing key (signature is still verified), but a mis-issued long-lived/no-`exp` token would never age out.
+- **Recommended fix:** require `exp` present and non-zero, then compare:
+  ```go
+  if claims.Exp == 0 { return "", &authError{code: ErrAuthTokenInvalid, message: "token missing expiry claim"} }
+  if time.Now().Unix() > claims.Exp { return "", &authError{code: ErrAuthTokenExpired, message: "token has expired"} }
+  ```
 
-### L-6. No Content-Security-Policy header
-- **Severity:** LOW (JSON API surface)
-- **File:** `source/middleware.go:113-121`.
-- **Description:** security headers are present (`X-Content-Type-Options`, `X-Frame-Options: DENY`, HSTS, `X-XSS-Protection: 0`) but no CSP. Low impact for a JSON API; add a restrictive default CSP for any HTML/redirect responses.
+### L-2. No `role`/`aud`/`iss` validation — anon/service-key rejection is incidental
+- **Category:** Authentication / authorization
+- **Severity:** LOW
+- **File:** `source/auth_middleware.go:226-322`
+- **Description:** `jwtClaims` parses `Role` but never checks it; `aud`/`iss` are not parsed. On the HS256 path (`SUPABASE_JWT_SECRET` set), the Supabase **anon** and **service_role** keys are themselves JWTs signed with that same secret; the only thing stopping an attacker from presenting the public anon key as a Bearer token is that those legacy keys carry no `sub`, so line 318 rejects them — a fragile, incidental guard rather than an explicit authorization decision.
+- **Recommended fix:** explicitly require `claims.Role == "authenticated"` (and optionally validate `aud`/`iss` against the expected Supabase issuer).
+
+### L-3. `GetJob` applies the ownership filter conditionally (`if userID != ""`)
+- **Category:** Authorization (IDOR class — defense-in-depth)
+- **Severity:** LOW
+- **Files:** `source/supabase.go:315-320` (`GetJob`), callers `source/job_handlers.go:254` (`HandleJobDownload`), `:358` (`HandleGetJob`)
+- **Description:** `GetJob` adds `&user_id=eq.<userID>` only when `userID != ""`, and neither caller guards `userID == ""` before calling it (unlike `HandleGetReport`/`HandleGetReportPDF`, which do). Safe today because `/api/jobs/*` is non-exempt and middleware guarantees a non-empty `sub`; but this is the exact conditional-scoping pattern the prior audit flagged, and a future change to `isExemptPath` or the middleware would silently reopen cross-user access. `HandleFileDownload` already does this correctly via an unconditional `VerifyFileOwnership`.
+- **Recommended fix:** make the DB filter unconditional (treat empty `userID` as a hard failure) and/or add explicit `userID == ""` guards in `HandleGetJob`/`HandleJobDownload`.
+
+### L-4. Access JWT passed in the WebSocket URL query string
+- **Category:** Data exposure (sensitive data in URL)
+- **Severity:** LOW
+- **File:** `source/websocket.go:192`
+- **Description:** The full Supabase access JWT is sent as `?token=` on `GET /api/jobs/{id}/progress`. The app has no access-log middleware, but the URL (with query) is visible in Fly.io proxy logs, intermediaries, and browser history. Browsers genuinely can't set headers on a WS upgrade, so the limitation is real and documented — but the token is long-lived (~1 h) and grants full API access.
+- **Recommended fix:** mint a short-lived (≤60 s), single-use WS ticket via an authenticated endpoint and pass that in the query instead of the access token, or use the `Sec-WebSocket-Protocol` header technique.
+
+### L-5. Internal error detail leaked to clients on JWKS lookup failure
+- **Category:** Data exposure (verbose error)
+- **Severity:** LOW
+- **File:** `source/auth_middleware.go:286`
+- **Description:** `return "", &authError{..., message: "unable to verify token: " + err.Error()}` — on a JWKS key-lookup failure the raw Go error reaches the client via `WriteError`, and Go HTTP errors embed the full URL (e.g. `Get "https://<project>.supabase.co/auth/v1/.well-known/jwks.json": dial tcp ..."`), disclosing the Supabase project hostname and network state. This is the only place a raw internal `err.Error()` reaches clients.
+- **Recommended fix:** log the error server-side and return a generic `"unable to verify token"`.
+
+### L-6. New email address (PII) logged at Info level in production
+- **Category:** Data exposure (PII in logs)
+- **Severity:** LOW
+- **File:** `source/email_change.go:275`
+- **Description:** `...Info("change-email: verification email sent", "userId", userID, "newEmail", newEmail)` writes a user email (PII) to prod logs (Info passes the prod filter). Every other handler logs only opaque UUIDs.
+- **Recommended fix:** drop `newEmail` or log a redacted form (e.g. domain only).
+
+### L-7. Email-change verification tokens stored in plaintext in the DB
+- **Category:** Cryptography / data-at-rest exposure
+- **Severity:** LOW
+- **Files:** `source/email_change.go:62-66` (insert `"token": token`), `:93` (equality lookup)
+- **Description:** The 256-bit email-change token is stored as-is and matched by direct equality, whereas API keys in the same codebase are correctly stored as SHA-256 hashes (`apikey_models.go:51`). Tokens are single-use and expire (1 h), which bounds the damage, but DB/backup read access (or any future PostgREST leak) yields a usable pending token → email-change → account-takeover pivot.
+- **Recommended fix:** store `hex(sha256(token))` and hash the presented token before the `token=eq.` lookup (same 64-hex shape, no schema change).
+
+### L-8. Unauthenticated `/api/health` discloses infrastructure state and amplifies subprocess spawns
+- **Category:** Data exposure / DoS (amplification)
+- **Severity:** LOW
+- **Files:** `source/health_handlers.go:25-58`; route registered without a limiter at `source/router.go:79`
+- **Description:** The public health endpoint returns tool availability (`exiftool`, `ffmpeg`), live DB connectivity, and disk capacity/free space of the storage volume — useful recon (exact stack; watching free disk shrink to time a disk-exhaustion DoS via uploads). Each hit also spawns two subprocesses (`exiftool -ver`, `ffmpeg -version`) plus a DB ping, and the route is not rate-limited.
+- **Recommended fix:** return only `{"status":"healthy|degraded"}` to unauthenticated callers (reserve details for authenticated admins), cache the tool checks (immutable at runtime), and wrap the route in `rateLimited`.
+
+### L-9. Registration `firstName`/`lastName`/`email` have no maximum length
+- **Category:** Input validation
+- **Severity:** LOW
+- **File:** `source/auth_handlers.go:31-57` (stored at `:78-83`)
+- **Description:** `HandleRegister` checks presence and email *format* and password length, but imposes no upper bound on name/email length (unlike `HandleUpdateProfile`, which caps names at 100 runes). Bounded only by the 1 MB body cap, so ~1 MB names/emails can be persisted to Supabase.
+- **Recommended fix:** mirror the profile handler — reject names > 100 runes and cap email length (≤254 per RFC 5321).
+
+### L-10. Two resource-ID sinks missed by the `QueryEscape` pass
+- **Category:** Injection (defense-in-depth)
+- **Severity:** LOW
+- **Files:** `source/supabase.go:546` (`GetReportIDByJobID`, `jobID` unescaped), `source/supabase.go:560` (`VerifyFileOwnership`, `localID` unescaped)
+- **Description:** Both are safe today because callers pass `uuidV4Pattern`/`localIDPattern`-validated or DB-issued values, but they are the resource-ID sinks the escape fix skipped — inconsistent with the rest of the remediation.
+- **Recommended fix:** add `url.QueryEscape` at both sinks for uniformity.
+
+### L-11. No per-user/global WebSocket connection cap; upgrade path unrated
+- **Category:** DoS (resource exhaustion)
+- **Severity:** LOW
+- **Files:** `source/websocket.go:87-92` (per-job cap only), `source/router.go:48` (route not rate-limited)
+- **Description:** `maxWSConnsPerJob = 5` caps connections per job, but a user with many valid jobs can open many long-lived connections (each holds a goroutine + ping ticker), and the upgrade route is not rate-limited. No global or per-user ceiling exists.
+- **Recommended fix:** add a global and/or per-user connection counter in the hub and rate-limit the upgrade path by client IP.
+
+### L-12. Archived/unmaintained transitive dependency `github.com/pkg/errors`
+- **Category:** Dependency hygiene
+- **Severity:** LOW
+- **File:** `go.mod` (`github.com/pkg/errors v0.9.1 // indirect`)
+- **Description:** `pkg/errors` is archived/unmaintained, pulled in transitively via `signintech/gopdf` → `phpdave11/gofpdi`; not directly used by this code. No known CVE — flagged for future dependency hygiene. *(Third-party deps `gorilla/websocket v1.5.3`, `stripe-go/v82 v82.5.1`, `gopdf v0.36.1`, `skip2/go-qrcode`, `joho/godotenv v1.5.1`, `golang.org/x/time v0.15.0` show no known CVEs at these versions.)*
+- **Recommended fix:** track upstream (`gopdf`) for a release that drops `pkg/errors`; no urgent action.
 
 ---
 
-## Verified NOT vulnerable (checked to avoid false positives)
+## Verified NOT vulnerable (re-checked this pass — do not re-flag)
 
-- **Command injection:** ExifTool/FFmpeg invoked via `exec.CommandContext` with discrete argv (no shell); paths are server-generated `f-<hex>` IDs prefixed by the temp dir, so no option/`../` injection. (`pipeline_exiftool.go`, `pipeline_ffmpeg.go`)
-- **Path traversal:** all filesystem paths derive from `generateFileID` output or values validated against `localIDPattern = ^f-[0-9a-f]+$`. (`upload_handlers.go`, `job_handlers.go`, `cleanup.go`)
-- **SSRF / raw SQL / template / LDAP injection:** all outbound base URLs are constants/config; no `database/sql` string building; no `text/template` on user data; no LDAP.
-- **JWT:** HS256/ES256 strictly separated (no HS/RS confusion), `alg=none`/unknown rejected, expiry and non-empty `sub` enforced. (`auth_middleware.go`)
-- **Cryptography:** `crypto/rand` for API keys, email-change tokens, file/report IDs, PKCE verifiers; API keys stored as SHA-256; HMAC compared with `hmac.Equal`. No MD5/SHA1/DES/RC4, no `math/rand`.
-- **Stripe webhook:** signature verified via `webhook.ConstructEventWithOptions`, rejects on failure, body capped at 64 KB; plan/credits come from server-set session metadata. (`billing_webhook.go`)
-- **Billing & API-key ownership:** all scope by `GetSubscriptionByUserID`/`&user_id=eq.<userID>`; no direct client control of plan/credits.
-- **Passwords:** fully delegated to Supabase; change-password re-verifies the current password first. No local hashing.
-- **CORS:** single configured origin, not reflected/wildcarded.
-- **Secrets:** none hardcoded; `.env` gitignored; no keys committed.
-- **ReDoS:** email/fileID regexes are linear and Go's RE2 engine has no catastrophic backtracking.
+- **PostgREST injection on resource IDs** — report ID, job ID, API-key ID, and email-change token all have handler-side regex validation **and** `url.QueryEscape` at the sink. The prior CRITICAL (unauthenticated `/api/public/reports/{id}` exfiltration) is **closed**.
+- **Command injection** — `exec.CommandContext` with discrete argv, no shell; paths are `filepath.Join(TempStoragePath, …)` from server-generated `LocalID` (`f-<hex>`) + validated extension (`pipeline*.go`).
+- **Path traversal** — `localIDPattern`/`uuidV4Pattern` contain no `/`, `.`, or `\`; enforced at job creation, file download, and job download.
+- **SSRF** — all outbound hosts are constants (Supabase, Brevo, Stripe SDK) or Supabase-issued signed URLs; OAuth `provider` is whitelisted.
+- **SQL injection** — no `database/sql` / raw SQL anywhere (all DB access via PostgREST HTTP).
+- **JWT** — real signature verification, HS256 (`hmac.Equal`) and ES256 (JWKS) separated (no confusion), `alg=none`/unknown rejected, signature length checked, missing `sub` rejected.
+- **Cryptography** — `crypto/rand` for all tokens (API keys, report IDs, email-change tokens, PKCE verifier), SHA-256 API-key hashing, no MD5/SHA-1/DES/RC4, no hardcoded keys/IVs.
+- **Stripe webhook** — HMAC-verified with fail-closed on empty secret and a 64 KB body cap.
+- **CORS / security headers** — single fixed `FRONTEND_ORIGIN` (fail-closed startup in prod), full header set (`nosniff`, `X-Frame-Options: DENY`, HSTS, CSP `default-src 'none'`).
+- **Secrets** — none committed (only placeholder `.env.example`); no `.pem`/key files in the tree; all secrets read from env.
+- **Prior DoS-hardening (present & correct)** — magic-byte upload validation, zero-byte rejection, `http.MaxBytesReader` on JSON handlers, `io.LimitReader` on magic-link, WebSocket `SetReadLimit(512)` + read deadline/pong, IPv6-aware `Fly-Client-IP` rate-limit keying, HTTP server timeouts, non-root Docker `USER`. Regex patterns are all linear (no ReDoS).
 </content>
-</invoke>
