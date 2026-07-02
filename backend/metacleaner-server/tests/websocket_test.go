@@ -13,6 +13,13 @@ import (
 	src "metacleaner-server/source"
 )
 
+// testWSJobID is a valid UUID v4 used as the job ID in WebSocket tests.
+const testWSJobID = "11223344-5566-4778-8990-aabbccddeeff"
+
+// wsTestTicketStore is a shared ticket store for WebSocket tests so tickets
+// minted by validWSTicket() can be consumed by the handlers under test.
+var wsTestTicketStore = src.NewWSTicketStore()
+
 // newWSMockSupabase creates a mock Supabase HTTP server that returns a valid job
 // for any cleaning_jobs GET request. Used by WebSocket tests that reach db.GetJob().
 func newWSMockSupabase(t *testing.T) *httptest.Server {
@@ -21,7 +28,7 @@ func newWSMockSupabase(t *testing.T) *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		if strings.Contains(r.URL.Path, "/cleaning_jobs") && r.Method == http.MethodGet {
 			now := time.Now().UTC().Format(time.RFC3339)
-			fmt.Fprintf(w, `[{"id":"test-job-id","status":"processing","total_files":1,"files_completed":0,"fields_removed":0,"gps_locations_removed":0,"created_at":%q}]`, now)
+			fmt.Fprintf(w, `[{"id":%q,"status":"processing","total_files":1,"files_completed":0,"fields_removed":0,"gps_locations_removed":0,"created_at":%q}]`, testWSJobID, now)
 			return
 		}
 		w.Write([]byte(`[]`))
@@ -29,76 +36,51 @@ func newWSMockSupabase(t *testing.T) *httptest.Server {
 }
 
 // newTestWSServer creates an httptest.Server that serves HandleJobProgress.
-// The wrapper sets the {id} path value so the handler can proceed to the WebSocket upgrade.
+// It uses wsTestTicketStore so validWSTicket() tickets are accepted.
 func newTestWSServer(t *testing.T, frontendOrigin string) *httptest.Server {
 	t.Helper()
-	cfg := newTestConfig(t)
-	cfg.SupabaseJWTSecret = testJWTSecret
-	cfg.FrontendOrigin = frontendOrigin
-
-	mockDB := newWSMockSupabase(t)
-	t.Cleanup(mockDB.Close)
-	cfg.SupabaseURL = mockDB.URL
-
-	authMW := src.NewAuthMiddleware(cfg, nil, nil)
 	hub := src.NewWebSocketHub()
-	db := src.NewSupabaseClient(cfg)
-
-	handler := src.HandleJobProgress(hub, authMW, db, frontendOrigin)
-
+	handler := src.HandleJobProgress(hub, wsTestTicketStore, frontendOrigin)
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.SetPathValue("id", "test-job-id")
+		r.SetPathValue("id", testWSJobID)
 		handler(w, r)
 	}))
 }
 
-// validWSToken returns a short-lived JWT signed with testJWTSecret.
-func validWSToken() string {
-	return buildJWT(testJWTSecret, map[string]any{
-		"sub": "ws-test-user",
-		"exp": time.Now().Add(time.Hour).Unix(),
-	})
+// validWSTicket mints a fresh 30-second ticket for testWSJobID/testUserUUID.
+func validWSTicket() string {
+	ticket, err := wsTestTicketStore.Mint(testUserUUID, testWSJobID)
+	if err != nil {
+		panic("validWSTicket: " + err.Error())
+	}
+	return ticket
 }
 
 // --- Task 6: WebSocket CheckOrigin restriction ---
 
-// TestHandleJobProgress_MissingToken_Returns401 verifies that the WebSocket handler
-// rejects requests with no ?token= query parameter before attempting the upgrade.
-func TestHandleJobProgress_MissingToken_Returns401(t *testing.T) {
-	cfg := newTestConfig(t)
-	cfg.SupabaseJWTSecret = testJWTSecret
-	authMW := src.NewAuthMiddleware(cfg, nil, nil)
+// TestHandleJobProgress_MissingTicket_Returns401 verifies that the WebSocket handler
+// rejects requests with no ?ticket= query parameter before attempting the upgrade.
+func TestHandleJobProgress_MissingTicket_Returns401(t *testing.T) {
 	hub := src.NewWebSocketHub()
-
-	req := httptest.NewRequest(http.MethodGet, "/api/jobs/job1/progress", nil)
-	req.SetPathValue("id", "job1")
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+testWSJobID+"/progress", nil)
+	req.SetPathValue("id", testWSJobID)
 	rr := httptest.NewRecorder()
-
-	// db is nil: the handler returns before reaching db.GetJob() (missing token returns 401 early).
-	src.HandleJobProgress(hub, authMW, nil, "https://app.example.com")(rr, req)
-
+	src.HandleJobProgress(hub, src.NewWSTicketStore(), "https://app.example.com")(rr, req)
 	if rr.Code != http.StatusUnauthorized {
-		t.Fatalf("expected 401 for missing token, got %d: %s", rr.Code, rr.Body.String())
+		t.Fatalf("expected 401 for missing ticket, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 
-// TestHandleJobProgress_InvalidToken_Returns401 verifies that an invalid/malformed
-// JWT query token is rejected before the WebSocket upgrade.
-func TestHandleJobProgress_InvalidToken_Returns401(t *testing.T) {
-	cfg := newTestConfig(t)
-	cfg.SupabaseJWTSecret = testJWTSecret
-	authMW := src.NewAuthMiddleware(cfg, nil, nil)
+// TestHandleJobProgress_InvalidTicket_Returns401 verifies that an unknown/expired
+// ticket value is rejected before the WebSocket upgrade.
+func TestHandleJobProgress_InvalidTicket_Returns401(t *testing.T) {
 	hub := src.NewWebSocketHub()
-
-	req := httptest.NewRequest(http.MethodGet, "/api/jobs/job1/progress?token=not.a.valid.jwt", nil)
-	req.SetPathValue("id", "job1")
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+testWSJobID+"/progress?ticket=not-a-valid-ticket", nil)
+	req.SetPathValue("id", testWSJobID)
 	rr := httptest.NewRecorder()
-
-	// db is nil: the handler returns before reaching db.GetJob() (invalid token returns 401 early).
-	src.HandleJobProgress(hub, authMW, nil, "https://app.example.com")(rr, req)
-
+	src.HandleJobProgress(hub, src.NewWSTicketStore(), "https://app.example.com")(rr, req)
 	if rr.Code != http.StatusUnauthorized {
-		t.Fatalf("expected 401 for invalid token, got %d: %s", rr.Code, rr.Body.String())
+		t.Fatalf("expected 401 for invalid ticket, got %d: %s", rr.Code, rr.Body.String())
 	}
 }
 
@@ -109,8 +91,8 @@ func TestHandleJobProgress_WrongOrigin_Returns403(t *testing.T) {
 	srv := newTestWSServer(t, frontendOrigin)
 	defer srv.Close()
 
-	token := validWSToken()
-	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?token=" + token
+	ticket := validWSTicket()
+	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?ticket=" + ticket
 
 	dialer := &websocket.Dialer{HandshakeTimeout: 2 * time.Second}
 	header := http.Header{"Origin": {"https://attacker.com"}}
@@ -141,8 +123,8 @@ func TestHandleJobProgress_CorrectOrigin_Accepted(t *testing.T) {
 	srv := newTestWSServer(t, frontendOrigin)
 	defer srv.Close()
 
-	token := validWSToken()
-	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?token=" + token
+	ticket := validWSTicket()
+	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?ticket=" + ticket
 
 	dialer := &websocket.Dialer{HandshakeTimeout: 2 * time.Second}
 	header := http.Header{"Origin": {frontendOrigin}}
@@ -167,8 +149,8 @@ func TestHandleJobProgress_EmptyOrigin_Accepted(t *testing.T) {
 	srv := newTestWSServer(t, frontendOrigin)
 	defer srv.Close()
 
-	token := validWSToken()
-	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?token=" + token
+	ticket := validWSTicket()
+	wsURL := "ws" + strings.TrimPrefix(srv.URL, "http") + "/?ticket=" + ticket
 
 	// No Origin header
 	dialer := &websocket.Dialer{HandshakeTimeout: 2 * time.Second}

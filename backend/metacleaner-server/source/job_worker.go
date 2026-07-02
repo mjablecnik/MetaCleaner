@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"sync"
+	"time"
 )
 
 // JobWorkerPool limits the number of concurrently processing cleaning jobs.
@@ -73,8 +74,12 @@ func (p *JobWorkerPool) RunningCount() int {
 
 // ProcessJobWithPool wraps the pipeline execution with all the post-processing
 // (DB updates, report creation) in a single unit of work submitted to the pool.
-func ProcessJobWithPool(pool *JobWorkerPool, ctx context.Context, cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, job *Job, files []FileRecord, authClient *SupabaseAuthClient) {
+// The 5-minute timeout is created inside the submitted closure so its lifetime
+// spans actual execution, not just the Submit() call (which returns immediately).
+func ProcessJobWithPool(pool *JobWorkerPool, cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, job *Job, files []FileRecord, authClient *SupabaseAuthClient) {
 	pool.Submit(job.ID, func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+		defer cancel()
 		progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
 		if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
 			slog.Error("job: pipeline error", "jobId", job.ID, "error", err)
