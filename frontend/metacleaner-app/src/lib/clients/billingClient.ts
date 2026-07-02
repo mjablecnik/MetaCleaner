@@ -1,5 +1,4 @@
-import { buildApiUrl } from './api-config.js';
-import { authStore } from '$lib/auth/auth.svelte.js';
+import { apiFetch } from '$lib/auth/api-client.js';
 import type {
 	CancelDowngradeResponse,
 	CancelResponse,
@@ -14,12 +13,9 @@ export const billingClient = {
 		planId: string,
 		billing: 'monthly' | 'yearly'
 	): Promise<CheckoutResponse> {
-		const res = await fetch(buildApiUrl('/api/billing/checkout'), {
+		const res = await apiFetch('/api/billing/checkout', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authStore.accessToken}`
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ plan_id: planId, billing_period: billing })
 		});
 		if (!res.ok) {
@@ -30,9 +26,7 @@ export const billingClient = {
 	},
 
 	async getSubscription(): Promise<SubscriptionStatus> {
-		const res = await fetch(buildApiUrl('/api/billing/subscription'), {
-			headers: { Authorization: `Bearer ${authStore.accessToken}` }
-		});
+		const res = await apiFetch('/api/billing/subscription');
 		if (!res.ok) throw new Error(await res.text());
 		return res.json() as Promise<SubscriptionStatus>;
 	},
@@ -41,12 +35,9 @@ export const billingClient = {
 		planId: string,
 		billingPeriod: 'monthly' | 'yearly'
 	): Promise<ChangePlanResponse> {
-		const res = await fetch(buildApiUrl('/api/billing/change-plan'), {
+		const res = await apiFetch('/api/billing/change-plan', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authStore.accessToken}`
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ plan_id: planId, billing_period: billingPeriod })
 		});
 		if (!res.ok) {
@@ -57,12 +48,9 @@ export const billingClient = {
 	},
 
 	async cancelSubscription(): Promise<CancelResponse> {
-		const res = await fetch(buildApiUrl('/api/billing/cancel'), {
+		const res = await apiFetch('/api/billing/cancel', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authStore.accessToken}`
-			}
+			headers: { 'Content-Type': 'application/json' }
 		});
 		if (!res.ok) {
 			const body = await res.json().catch(() => ({ message: res.statusText }));
@@ -72,12 +60,9 @@ export const billingClient = {
 	},
 
 	async reactivateSubscription(): Promise<ReactivateResponse> {
-		const res = await fetch(buildApiUrl('/api/billing/reactivate'), {
+		const res = await apiFetch('/api/billing/reactivate', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authStore.accessToken}`
-			}
+			headers: { 'Content-Type': 'application/json' }
 		});
 		if (!res.ok) {
 			const body = await res.json().catch(() => ({ message: res.statusText }));
@@ -87,12 +72,9 @@ export const billingClient = {
 	},
 
 	async cancelDowngrade(): Promise<CancelDowngradeResponse> {
-		const res = await fetch(buildApiUrl('/api/billing/cancel-downgrade'), {
+		const res = await apiFetch('/api/billing/cancel-downgrade', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${authStore.accessToken}`
-			}
+			headers: { 'Content-Type': 'application/json' }
 		});
 		if (!res.ok) {
 			const body = await res.json().catch(() => ({ message: res.statusText }));

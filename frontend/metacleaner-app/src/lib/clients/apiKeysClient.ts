@@ -1,5 +1,4 @@
-import { buildApiUrl } from './api-config.js';
-import { authStore } from '$lib/auth/auth.svelte.js';
+import { apiFetch } from '$lib/auth/api-client.js';
 
 export interface ApiKey {
 	id: string;
@@ -42,12 +41,9 @@ async function parseErrorResponse(res: Response): Promise<ApiKeyError> {
 }
 
 export async function createApiKey(req: CreateKeyRequest): Promise<CreateKeyResponse> {
-	const res = await fetch(buildApiUrl('/api/keys'), {
+	const res = await apiFetch('/api/keys', {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${authStore.accessToken}`
-		},
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(req)
 	});
 	if (!res.ok) throw await parseErrorResponse(res);
@@ -55,26 +51,18 @@ export async function createApiKey(req: CreateKeyRequest): Promise<CreateKeyResp
 }
 
 export async function listApiKeys(): Promise<ApiKey[]> {
-	const res = await fetch(buildApiUrl('/api/keys'), {
-		headers: { Authorization: `Bearer ${authStore.accessToken}` }
-	});
+	const res = await apiFetch('/api/keys');
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json() as Promise<ApiKey[]>;
 }
 
 export async function deleteApiKey(id: string): Promise<void> {
-	const res = await fetch(buildApiUrl(`/api/keys/${id}`), {
-		method: 'DELETE',
-		headers: { Authorization: `Bearer ${authStore.accessToken}` }
-	});
+	const res = await apiFetch(`/api/keys/${id}`, { method: 'DELETE' });
 	if (!res.ok) throw await parseErrorResponse(res);
 }
 
 export async function revokeApiKey(id: string): Promise<ApiKey> {
-	const res = await fetch(buildApiUrl(`/api/keys/${id}/revoke`), {
-		method: 'PATCH',
-		headers: { Authorization: `Bearer ${authStore.accessToken}` }
-	});
+	const res = await apiFetch(`/api/keys/${id}/revoke`, { method: 'PATCH' });
 	if (!res.ok) throw await parseErrorResponse(res);
 	return res.json() as Promise<ApiKey>;
 }
