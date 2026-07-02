@@ -12,7 +12,7 @@
 	import { appState } from '$lib/stores/appState.svelte';
 	import { authStore } from '$lib/auth/auth.svelte.js';
 	import { billingStore } from '$lib/stores/billingStore.svelte.js';
-	import { handleAuthCallback } from '$lib/auth/token-utils.js';
+	import { handleAuthCallback, BROWSER_CALLBACK_PATHS } from '$lib/auth/token-utils.js';
 
 	let { children } = $props();
 
@@ -94,8 +94,11 @@
 			langOptions = langs;
 		});
 
-		// Handle auth callback tokens in URL (magic link or OAuth redirect to any page)
-		handleAuthCallback(window.location.href, true);
+		// Only process auth-callback tokens on dedicated callback routes.
+		// Adopting tokens on arbitrary pages enables login-CSRF / session-fixation.
+		if (BROWSER_CALLBACK_PATHS.some((p) => window.location.pathname.startsWith(p))) {
+			handleAuthCallback(window.location.href, true);
+		}
 
 		// Handle Android hardware back button
 		App.addListener('backButton', ({ canGoBack }) => {

@@ -4,7 +4,6 @@ import { resolve } from '$app/paths';
 import type { Pathname } from '$app/types';
 import { buildApiUrl } from '$lib/clients/api-config.js';
 import type { SubscriptionStatus } from '$lib/types/billing.js';
-import { SvelteURL } from 'svelte/reactivity';
 
 const TOKEN_KEY = 'mc_access_token';
 const REFRESH_KEY = 'mc_refresh_token';
@@ -154,47 +153,11 @@ function _restore(): void {
 		return;
 	}
 
-	// Check if URL contains auth callback tokens (magic link / OAuth redirect).
-	// Process them before checking localStorage so auth guard sees the session immediately.
-	// Guard with typeof window to avoid ReferenceError in SSR/node test environments where
-	// browser is mocked as true but window is not available.
-	const href = typeof window !== 'undefined' ? window.location.href : '';
-	const hasCallbackTokens = href.includes('access_token') && href.includes('refresh_token');
-	const hasHashTokens =
-		typeof window !== 'undefined' &&
-		window.location.hash.includes('access_token') &&
-		window.location.hash.includes('refresh_token');
-
-	if (hasCallbackTokens || hasHashTokens) {
-		let params: URLSearchParams;
-		// Prefer the hash fragment: tokens in the fragment are NOT sent to the server and
-		// do not appear in access logs or the Referer header. Query-string tokens may be
-		// recorded in reverse-proxy logs before this cleanup runs.
-		if (hasHashTokens) {
-			params = new URLSearchParams(window.location.hash.slice(1));
-		} else {
-			// Query-string fallback (backend should be configured to use hash fragment instead)
-			params = new URLSearchParams(window.location.search);
-		}
-
-		const accessToken = params.get('access_token');
-		const refreshToken = params.get('refresh_token');
-		const expiresIn = Number(params.get('expires_in') ?? '3600');
-
-		if (accessToken && refreshToken) {
-			_persist(accessToken, refreshToken, expiresIn);
-			// Clean URL (remove tokens from address bar)
-			const clean = new SvelteURL(window.location.href);
-			clean.searchParams.delete('access_token');
-			clean.searchParams.delete('refresh_token');
-			clean.searchParams.delete('expires_in');
-			clean.hash = '';
-			history.replaceState(null, '', clean.toString());
-			_isAuthReady = true;
-			_fetchSubscription(accessToken);
-			return;
-		}
-	}
+	// Auth-callback tokens (magic link / OAuth redirect) are ONLY processed on dedicated
+	// callback routes (e.g. /email-verified) via handleAuthCallback(), never here.
+	// Processing tokens on arbitrary routes enables login-CSRF / session-fixation attacks:
+	// an attacker can craft a URL with their own valid tokens and trick the victim into
+	// adopting the attacker's session. See token-utils.ts for the callback handling.
 
 	// Access token is never persisted to localStorage — purge any value left by older code.
 	localStorage.removeItem(TOKEN_KEY);

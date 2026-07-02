@@ -4,6 +4,33 @@ import { resolve } from '$app/paths';
 import type { Pathname } from '$app/types';
 import { authStore } from './auth.svelte.js';
 
+// Routes that legitimately receive auth-callback tokens from the backend redirect.
+// Tokens found on any OTHER route are silently discarded to prevent login-CSRF / session-fixation.
+export const BROWSER_CALLBACK_PATHS = ['/email-verified'];
+
+const OAUTH_STATE_KEY = 'mc_oauth_state';
+
+/**
+ * Generates a random state nonce, stores it in sessionStorage, and returns it.
+ * Call this before redirecting to an OAuth provider so the callback can be verified.
+ */
+export function generateOAuthState(): string {
+	const state = crypto.randomUUID();
+	sessionStorage.setItem(OAUTH_STATE_KEY, state);
+	return state;
+}
+
+/**
+ * Verifies the OAuth state nonce received in the callback against the stored value.
+ * The stored nonce is consumed (deleted) on first call — reuse is rejected.
+ * Returns true only when the received state matches the stored nonce.
+ */
+export function verifyOAuthState(receivedState: string | null): boolean {
+	const stored = sessionStorage.getItem(OAUTH_STATE_KEY);
+	sessionStorage.removeItem(OAUTH_STATE_KEY);
+	return stored !== null && stored === receivedState;
+}
+
 export interface TokenParams {
 	accessToken: string;
 	refreshToken: string;
