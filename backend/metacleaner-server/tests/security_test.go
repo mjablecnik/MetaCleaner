@@ -87,8 +87,9 @@ func TestRateLimit_FileDownload_BlocksAfterBurst(t *testing.T) {
 	router := newTestRouter(t, cfg)
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-rate-limit-file",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 
 	makeReq := func() *httptest.ResponseRecorder {
@@ -130,12 +131,13 @@ func TestRateLimit_JobDownload_BlocksAfterBurst(t *testing.T) {
 	router := newTestRouter(t, cfg)
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-rate-limit-job",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 
 	makeReq := func() *httptest.ResponseRecorder {
-		req := httptest.NewRequest(http.MethodGet, "/api/jobs/some-job-id/download", nil)
+		req := httptest.NewRequest(http.MethodGet, "/api/jobs/11223344-5566-4778-8990-aabbccddeeff/download", nil)
 		req.RemoteAddr = "10.0.99.2:12345"
 		req.Header.Set("Authorization", "Bearer "+token)
 		rr := httptest.NewRecorder()
@@ -166,8 +168,9 @@ func TestRateLimit_DifferentIPsHaveSeparateLimits(t *testing.T) {
 	router := newTestRouter(t, cfg)
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-rate-limit-ips",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 
 	makeReqFrom := func(ip string) *httptest.ResponseRecorder {

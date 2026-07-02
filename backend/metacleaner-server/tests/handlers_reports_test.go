@@ -25,21 +25,21 @@ func newMockSupabaseReports(t *testing.T) *httptest.Server {
 		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "order=date.desc"):
 			// ListReports
 			fmt.Fprintf(w, `[
-				{"id":"r1","job_id":"j1","report_id":"MCR-2024-0115-AA","date":%q,"files_processed":3,"fields_removed":50,"gps_locations_removed":1,"total_time_ms":10,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","tags":["GPS","EXIF"],"icon_color":"green"},
-				{"id":"r2","job_id":"j2","report_id":"MCR-2024-0116-BB","date":%q,"files_processed":2,"fields_removed":30,"gps_locations_removed":0,"total_time_ms":8,"file_types":"MP4","dominant_type":"video","has_gps":false,"pdf_status":"pending","tags":["ID3"],"icon_color":"blue"}
+				{"id":"r1","job_id":"j1","report_id":"MCR-2024-0115-AABBCCDDEEFF00112233445566778800","date":%q,"files_processed":3,"fields_removed":50,"gps_locations_removed":1,"total_time_ms":10,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","tags":["GPS","EXIF"],"icon_color":"green"},
+				{"id":"r2","job_id":"j2","report_id":"MCR-2024-0116-AABBCCDDEEFF00112233445566778801","date":%q,"files_processed":2,"fields_removed":30,"gps_locations_removed":0,"total_time_ms":8,"file_types":"MP4","dominant_type":"video","has_gps":false,"pdf_status":"pending","tags":["ID3"],"icon_color":"blue"}
 			]`, now, now)
 
-		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-2024-0115-AA"):
+		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-2024-0115-AABBCCDDEEFF00112233445566778800"):
 			// GetReportByHumanID — found
-			fmt.Fprintf(w, `[{"id":"r1","job_id":"j1","report_id":"MCR-2024-0115-AA","date":%q,"files_processed":3,"fields_removed":50,"gps_locations_removed":1,"total_time_ms":10,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","pdf_path":"r1.pdf","tags":["GPS","EXIF"],"icon_color":"green","chart_data":[{"label":"GPS","fields":10,"percentage":20}]}]`, now)
+			fmt.Fprintf(w, `[{"id":"r1","job_id":"j1","report_id":"MCR-2024-0115-AABBCCDDEEFF00112233445566778800","date":%q,"files_processed":3,"fields_removed":50,"gps_locations_removed":1,"total_time_ms":10,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","pdf_path":"r1.pdf","tags":["GPS","EXIF"],"icon_color":"green","chart_data":[{"label":"GPS","fields":10,"percentage":20}]}]`, now)
 
-		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-NOTFOUND"):
+		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-9999-9999-AABBCCDDEEFF00112233445566778802"):
 			// GetReportByHumanID — not found
 			w.Write([]byte(`[]`))
 
-		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-NOPDF"):
+		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-2024-0115-AABBCCDDEEFF00112233445566778803"):
 			// Report with pdf_status != "uploaded"
-			fmt.Fprintf(w, `[{"id":"r3","job_id":"j3","report_id":"MCR-NOPDF","date":%q,"files_processed":1,"fields_removed":5,"gps_locations_removed":0,"total_time_ms":3,"file_types":"PNG","dominant_type":"image","has_gps":false,"pdf_status":"failed","pdf_path":"","tags":["EXIF"],"icon_color":"green"}]`, now)
+			fmt.Fprintf(w, `[{"id":"r3","job_id":"j3","report_id":"MCR-2024-0115-AABBCCDDEEFF00112233445566778803","date":%q,"files_processed":1,"fields_removed":5,"gps_locations_removed":0,"total_time_ms":3,"file_types":"PNG","dominant_type":"image","has_gps":false,"pdf_status":"failed","pdf_path":"","tags":["EXIF"],"icon_color":"green"}]`, now)
 
 		case strings.Contains(path, "job_files") && strings.Contains(query, "job_id=eq.j1"):
 			// File records for job j1
@@ -106,8 +106,9 @@ func TestHandleGetReportSuccess(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AA", nil)
-	req.SetPathValue("id", "MCR-2024-0115-AA")
+	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AABBCCDDEEFF00112233445566778800", nil)
+	req.SetPathValue("id", "MCR-2024-0115-AABBCCDDEEFF00112233445566778800")
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleGetReport(db)(rr, req)
 
@@ -119,8 +120,8 @@ func TestHandleGetReportSuccess(t *testing.T) {
 	if err := json.NewDecoder(rr.Body).Decode(&detail); err != nil {
 		t.Fatalf("decode error: %v", err)
 	}
-	if detail.ReportID != "MCR-2024-0115-AA" {
-		t.Errorf("expected reportId MCR-2024-0115-AA, got %q", detail.ReportID)
+	if detail.ReportID != "MCR-2024-0115-AABBCCDDEEFF00112233445566778800" {
+		t.Errorf("expected reportId MCR-2024-0115-AABBCCDDEEFF00112233445566778800, got %q", detail.ReportID)
 	}
 	if detail.FieldsRemoved != 50 {
 		t.Errorf("expected fieldsRemoved 50, got %d", detail.FieldsRemoved)
@@ -139,8 +140,9 @@ func TestHandleGetReportNotFound(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-NOTFOUND", nil)
-	req.SetPathValue("id", "MCR-NOTFOUND")
+	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-9999-9999-AABBCCDDEEFF00112233445566778802", nil)
+	req.SetPathValue("id", "MCR-9999-9999-AABBCCDDEEFF00112233445566778802")
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleGetReport(db)(rr, req)
 
@@ -163,8 +165,9 @@ func TestHandleGetReportPDFRedirect(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AA/pdf", nil)
-	req.SetPathValue("id", "MCR-2024-0115-AA")
+	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AABBCCDDEEFF00112233445566778800/pdf", nil)
+	req.SetPathValue("id", "MCR-2024-0115-AABBCCDDEEFF00112233445566778800")
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleGetReportPDF(db)(rr, req)
 
@@ -189,8 +192,9 @@ func TestHandleGetReportPDFNotAvailable(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-NOPDF/pdf", nil)
-	req.SetPathValue("id", "MCR-NOPDF")
+	req := httptest.NewRequest(http.MethodGet, "/api/reports/MCR-2024-0115-AABBCCDDEEFF00112233445566778803/pdf", nil)
+	req.SetPathValue("id", "MCR-2024-0115-AABBCCDDEEFF00112233445566778803")
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleGetReportPDF(db)(rr, req)
 
@@ -212,8 +216,8 @@ func TestHandleGetPublicReport_ReturnsRedactedDetail(t *testing.T) {
 		path := r.URL.Path
 		query := r.URL.RawQuery
 		switch {
-		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-TEST"):
-			fmt.Fprintf(w, `[{"id":"r9","job_id":"j9","report_id":"MCR-TEST","date":%q,"files_processed":1,"fields_removed":5,"gps_locations_removed":1,"total_time_ms":3,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","tags":["GPS"],"chart_data":[{"label":"GPS","fields":5,"percentage":100}]}]`, now)
+		case strings.Contains(path, "cleaning_reports") && strings.Contains(query, "report_id=eq.MCR-2024-0101-AABBCCDDEEFF00112233445566778804"):
+			fmt.Fprintf(w, `[{"id":"r9","job_id":"j9","report_id":"MCR-2024-0101-AABBCCDDEEFF00112233445566778804","date":%q,"files_processed":1,"fields_removed":5,"gps_locations_removed":1,"total_time_ms":3,"file_types":"JPEG","dominant_type":"image","has_gps":true,"pdf_status":"uploaded","tags":["GPS"],"chart_data":[{"label":"GPS","fields":5,"percentage":100}]}]`, now)
 		case strings.Contains(path, "job_files") && strings.Contains(query, "job_id=eq.j9"):
 			// Return a file record WITH raw metadata values that must be stripped.
 			w.Write([]byte(`[{"id":"f9","job_id":"j9","file_name":"secret.jpg","original_name":"vacation-barcelona.jpg","file_extension":".jpg","file_size_bytes":2097152,"file_type":"image","format":"jpeg","device":"Nikon D850","status":"done","fields_removed":5,"gps_removed":true,"sha256_hash":"abc123","metadata_breakdown":{"gpsFields":[{"label":"GPSLatitude","value":"41.3851"},{"label":"GPSLongitude","value":"2.1734"}],"exifFields":[{"label":"SerialNumber","value":"SN-99887766"}],"xmpFields":[],"id3Fields":[],"mp4Atoms":[],"totalRemoved":3}}]`))
@@ -227,8 +231,8 @@ func TestHandleGetPublicReport_ReturnsRedactedDetail(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/public/reports/MCR-TEST", nil)
-	req.SetPathValue("id", "MCR-TEST")
+	req := httptest.NewRequest(http.MethodGet, "/api/public/reports/MCR-2024-0101-AABBCCDDEEFF00112233445566778804", nil)
+	req.SetPathValue("id", "MCR-2024-0101-AABBCCDDEEFF00112233445566778804")
 	rr := httptest.NewRecorder()
 	src.HandleGetPublicReport(db)(rr, req)
 
@@ -242,8 +246,8 @@ func TestHandleGetPublicReport_ReturnsRedactedDetail(t *testing.T) {
 	}
 
 	// Aggregate data must be present.
-	if pub.ReportID != "MCR-TEST" {
-		t.Errorf("expected reportId MCR-TEST, got %q", pub.ReportID)
+	if pub.ReportID != "MCR-2024-0101-AABBCCDDEEFF00112233445566778804" {
+		t.Errorf("expected reportId MCR-2024-0101-AABBCCDDEEFF00112233445566778804, got %q", pub.ReportID)
 	}
 	if pub.FieldsRemoved != 5 {
 		t.Errorf("expected fieldsRemoved 5, got %d", pub.FieldsRemoved)
@@ -288,8 +292,8 @@ func TestHandleGetPublicReport_NotFound(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/public/reports/MCR-UNKNOWN", nil)
-	req.SetPathValue("id", "MCR-UNKNOWN")
+	req := httptest.NewRequest(http.MethodGet, "/api/public/reports/MCR-9999-0101-AABBCCDDEEFF00112233445566778805", nil)
+	req.SetPathValue("id", "MCR-9999-0101-AABBCCDDEEFF00112233445566778805")
 	rr := httptest.NewRecorder()
 	src.HandleGetPublicReport(db)(rr, req)
 

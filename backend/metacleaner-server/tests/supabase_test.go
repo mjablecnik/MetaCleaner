@@ -103,7 +103,7 @@ func TestSupabaseClient_GetJob_Found(t *testing.T) {
 	defer srv.Close()
 
 	client := src.NewSupabaseClient(newSupabaseConfig(srv.URL))
-	job, err := client.GetJob(context.Background(), "job-abc", "")
+	job, err := client.GetJob(context.Background(), "job-abc", testUserUUID)
 	if err != nil {
 		t.Fatalf("GetJob returned error: %v", err)
 	}
@@ -132,7 +132,7 @@ func TestSupabaseClient_GetJob_NotFound(t *testing.T) {
 	defer srv.Close()
 
 	client := src.NewSupabaseClient(newSupabaseConfig(srv.URL))
-	job, err := client.GetJob(context.Background(), "missing-job", "")
+	job, err := client.GetJob(context.Background(), "missing-job", testUserUUID)
 	if err != nil {
 		t.Fatalf("GetJob (not found) returned error: %v", err)
 	}

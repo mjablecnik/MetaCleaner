@@ -20,6 +20,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	// Job worker pool — limits concurrent pipeline executions.
 	pool := NewJobWorkerPool(cfg.MaxConcurrentJobs)
 
+	// WebSocket progress ticket store — 30-second single-use tokens, one per upgrade.
+	ticketStore := NewWSTicketStore()
+
 	// Email change verification store (tokens stored in Supabase DB).
 	emailChangeStore := newEmailChangeStore(cfg.SupabaseURL, cfg.SupabaseServiceRoleKey, cfg.SupabaseTimeout)
 
@@ -30,9 +33,9 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/auth/refresh", authRateLimited(HandleRefresh(authClient)))
 	mux.Handle("GET /api/auth/me", HandleMe(authClient, db))
 	mux.Handle("PATCH /api/auth/profile", HandleUpdateProfile(authClient))
-	mux.Handle("POST /api/auth/change-email", HandleChangeEmail(cfg, authClient, emailChangeStore))
-	mux.Handle("POST /api/auth/change-password", HandleChangePassword(authClient))
-	mux.Handle("DELETE /api/auth/account", HandleDeleteAccount(cfg, authClient, db))
+	mux.Handle("POST /api/auth/change-email", authRateLimited(HandleChangeEmail(cfg, authClient, emailChangeStore)))
+	mux.Handle("POST /api/auth/change-password", authRateLimited(HandleChangePassword(authClient)))
+	mux.Handle("DELETE /api/auth/account", authRateLimited(HandleDeleteAccount(cfg, authClient, db)))
 	mux.Handle("POST /api/auth/forgot-password", authRateLimited(HandleForgotPassword(authClient)))
 	mux.Handle("POST /api/auth/verify-reset-code", authRateLimited(HandleVerifyResetCode(authClient)))
 	mux.Handle("POST /api/auth/reset-password", authRateLimited(HandleResetPassword(authClient)))
@@ -45,7 +48,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
 	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool, authClient))
 	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))
-	mux.Handle("GET /api/jobs/{id}/progress", HandleJobProgress(hub, authMW, db, cfg.FrontendOrigin))
+	mux.Handle("POST /api/jobs/{id}/ws-ticket", rateLimited(HandleMintWSTicket(ticketStore, db)))
+	mux.Handle("GET /api/jobs/{id}/progress", rateLimited(HandleJobProgress(hub, ticketStore, cfg.FrontendOrigin)))
 	mux.Handle("GET /api/jobs/{id}/download", rateLimited(HandleJobDownload(cfg, db)))
 	mux.Handle("GET /api/files/{id}/download", rateLimited(HandleFileDownload(cfg, db)))
 
@@ -68,15 +72,15 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("POST /api/billing/reactivate", rateLimited(HandleReactivateSubscription(cfg, db)))
 
 	// --- API Key routes ---
-	mux.Handle("POST /api/keys", HandleCreateAPIKey(db))
-	mux.Handle("GET /api/keys", HandleListAPIKeys(db))
-	mux.Handle("DELETE /api/keys/{id}", HandleDeleteAPIKey(db))
-	mux.Handle("PATCH /api/keys/{id}/revoke", HandleRevokeAPIKey(db))
-	mux.Handle("PATCH /api/keys/{id}/activate", HandleActivateAPIKey(db))
+	mux.Handle("POST /api/keys", rateLimited(HandleCreateAPIKey(db)))
+	mux.Handle("GET /api/keys", rateLimited(HandleListAPIKeys(db)))
+	mux.Handle("DELETE /api/keys/{id}", rateLimited(HandleDeleteAPIKey(db)))
+	mux.Handle("PATCH /api/keys/{id}/revoke", rateLimited(HandleRevokeAPIKey(db)))
+	mux.Handle("PATCH /api/keys/{id}/activate", rateLimited(HandleActivateAPIKey(db)))
 
 	// --- Other routes ---
 	mux.Handle("GET /api/account", rateLimited(HandleAccount(cfg, db)))
-	mux.Handle("GET /api/health", HandleHealth(cfg, db))
+	mux.Handle("GET /api/health", rateLimited(HandleHealth(cfg, db)))
 	mux.Handle("GET /.well-known/assetlinks.json", HandleAssetLinks(cfg))
 	mux.Handle("GET /.well-known/apple-app-site-association", HandleAppleAppSiteAssociation(cfg))
 

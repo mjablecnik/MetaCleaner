@@ -3,6 +3,7 @@ package source
 import (
 	"bytes"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -46,7 +47,7 @@ func (s *emailChangeStore) Create(userID, newEmail string) (string, error) {
 	}
 
 	// Delete existing pending tokens for this user
-	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?user_id=eq."+userID, nil)
+	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?user_id=eq."+url.QueryEscape(userID), nil)
 	if err != nil {
 		return "", fmt.Errorf("email change store: create delete request: %w", err)
 	}
@@ -58,10 +59,11 @@ func (s *emailChangeStore) Create(userID, newEmail string) (string, error) {
 	}
 	resp.Body.Close()
 
-	// Insert new token
+	// Insert token hash — raw token is returned to caller and sent in email link;
+	// only the hash is persisted so a DB breach cannot be replayed directly.
 	payload := map[string]string{
 		"user_id":   userID,
-		"token":     token,
+		"token":     hashToken(token),
 		"new_email": newEmail,
 	}
 	data, _ := json.Marshal(payload)
@@ -87,9 +89,11 @@ func (s *emailChangeStore) Create(userID, newEmail string) (string, error) {
 }
 
 // Verify retrieves and deletes the token if it exists and hasn't expired.
+// The raw token is hashed before lookup; the DB only ever holds hashes.
 func (s *emailChangeStore) Verify(token string) (emailChangeRequest, bool) {
-	// Fetch token where token matches and expires_at > now
-	fetchURL := s.restURL + "?token=eq." + url.QueryEscape(token) + "&expires_at=gt.now()&select=user_id,new_email"
+	tokenHash := hashToken(token)
+	// Fetch token where hash matches and expires_at > now
+	fetchURL := s.restURL + "?token=eq." + url.QueryEscape(tokenHash) + "&expires_at=gt.now()&select=user_id,new_email"
 	getReq, err := http.NewRequest(http.MethodGet, fetchURL, nil)
 	if err != nil {
 		return emailChangeRequest{}, false
@@ -117,8 +121,8 @@ func (s *emailChangeStore) Verify(token string) (emailChangeRequest, bool) {
 		return emailChangeRequest{}, false
 	}
 
-	// Delete the token (consumed)
-	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?token=eq."+url.QueryEscape(token), nil)
+	// Delete the token hash (consumed)
+	delReq, err := http.NewRequest(http.MethodDelete, s.restURL+"?token=eq."+url.QueryEscape(tokenHash), nil)
 	if err == nil {
 		s.setHeaders(delReq)
 		delResp, err := client.Do(delReq)
@@ -137,6 +141,13 @@ func (s *emailChangeStore) setHeaders(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("apikey", s.serviceKey)
 	req.Header.Set("Authorization", "Bearer "+s.serviceKey)
+}
+
+// hashToken returns the hex-encoded SHA-256 digest of token.
+// Tokens are stored as hashes so a DB breach does not expose bearer secrets.
+func hashToken(token string) string {
+	h := sha256.Sum256([]byte(token))
+	return hex.EncodeToString(h[:])
 }
 
 func generateSecureToken(length int) (string, error) {
@@ -272,7 +283,7 @@ func HandleChangeEmail(cfg Config, authClient *SupabaseAuthClient, store *emailC
 			return
 		}
 
-		LoggerFromContext(r.Context()).Info("change-email: verification email sent", "userId", userID, "newEmail", newEmail)
+		LoggerFromContext(r.Context()).Info("change-email: verification email sent", "userId", userID)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

@@ -5,56 +5,45 @@ import (
 	"fmt"
 	"net/http"
 	"os/exec"
+	"sync"
 	"syscall"
 )
 
-type diskSpaceInfo struct {
-	Available string `json:"available"`
-	Total     string `json:"total"`
+// toolCache caches exiftool/ffmpeg availability at startup (immutable at runtime).
+var toolCache struct {
+	once       sync.Once
+	exiftoolOK bool
+	ffmpegOK   bool
+}
+
+func checkTools() (bool, bool) {
+	toolCache.once.Do(func() {
+		toolCache.exiftoolOK = exec.Command("exiftool", "-ver").Run() == nil
+		toolCache.ffmpegOK = exec.Command("ffmpeg", "-version").Run() == nil
+	})
+	return toolCache.exiftoolOK, toolCache.ffmpegOK
 }
 
 type healthResponse struct {
-	Status    string        `json:"status"`
-	ExifTool  bool          `json:"exiftool"`
-	FFmpeg    bool          `json:"ffmpeg"`
-	Database  bool          `json:"database"`
-	DiskSpace diskSpaceInfo `json:"diskSpace"`
+	Status string `json:"status"`
 }
 
-// HandleHealth handles GET /api/health — checks tool availability, DB connectivity, and disk space.
+// HandleHealth handles GET /api/health.
+// Returns only {"status":"healthy|degraded"} to avoid disclosing infrastructure
+// details (exact stack, DB state, free disk) to unauthenticated callers.
+// Tool checks are cached after the first call since exiftool/ffmpeg don't change at runtime.
 func HandleHealth(cfg Config, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		exiftoolOK := exec.Command("exiftool", "-ver").Run() == nil
-		ffmpegOK := exec.Command("ffmpeg", "-version").Run() == nil
+		exiftoolOK, ffmpegOK := checkTools()
 		dbOK := db.Ping(r.Context()) == nil
-
-		var stat syscall.Statfs_t
-		diskAvail := "unknown"
-		diskTotal := "unknown"
-		if syscall.Statfs(cfg.TempStoragePath, &stat) == nil {
-			avail := stat.Bavail * uint64(stat.Bsize)
-			total := stat.Blocks * uint64(stat.Bsize)
-			diskAvail = formatBytesHuman(int64(avail))
-			diskTotal = formatBytesHuman(int64(total))
-		}
 
 		status := "healthy"
 		if !exiftoolOK || !ffmpegOK || !dbOK {
 			status = "degraded"
 		}
 
-		resp := healthResponse{
-			Status:   status,
-			ExifTool: exiftoolOK,
-			FFmpeg:   ffmpegOK,
-			Database: dbOK,
-			DiskSpace: diskSpaceInfo{
-				Available: diskAvail,
-				Total:     diskTotal,
-			},
-		}
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(resp)
+		json.NewEncoder(w).Encode(healthResponse{Status: status})
 	}
 }
 
@@ -71,4 +60,21 @@ func formatBytesHuman(b int64) string {
 	default:
 		return fmt.Sprintf("%d B", b)
 	}
+}
+
+// Keep diskSpaceInfo for future internal use.
+type diskSpaceInfo struct {
+	Available string `json:"available"`
+	Total     string `json:"total"`
+}
+
+func getDiskSpace(path string) diskSpaceInfo {
+	var stat syscall.Statfs_t
+	if syscall.Statfs(path, &stat) == nil {
+		return diskSpaceInfo{
+			Available: formatBytesHuman(int64(stat.Bavail * uint64(stat.Bsize))),
+			Total:     formatBytesHuman(int64(stat.Blocks * uint64(stat.Bsize))),
+		}
+	}
+	return diskSpaceInfo{Available: "unknown", Total: "unknown"}
 }

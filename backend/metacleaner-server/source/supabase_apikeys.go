@@ -66,8 +66,8 @@ func (c *SupabaseClient) CreateAPIKey(ctx context.Context, userID, name, keyHash
 // ListAPIKeys returns all API keys for the given user, ordered by created_at DESC.
 func (c *SupabaseClient) ListAPIKeys(ctx context.Context, userID string) ([]APIKey, error) {
 	var rows []dbAPIKey
-	url := c.restURL("api_keys?user_id=eq." + userID + "&order=created_at.desc")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("api_keys?user_id=eq." + url.QueryEscape(userID) + "&order=created_at.desc")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, fmt.Errorf("list api keys: %w", err)
 	}
 	keys := make([]APIKey, len(rows))
@@ -219,6 +219,6 @@ func (c *SupabaseClient) RevokeAllAPIKeys(ctx context.Context, userID string) er
 		"status":     "revoked",
 		"revoked_at": now,
 	}
-	url := c.restURL("api_keys?user_id=eq." + userID + "&status=eq.active")
-	return c.doJSON(ctx, http.MethodPatch, url, patch, nil)
+	restURL := c.restURL("api_keys?user_id=eq." + url.QueryEscape(userID) + "&status=eq.active")
+	return c.doJSON(ctx, http.MethodPatch, restURL, patch, nil)
 }

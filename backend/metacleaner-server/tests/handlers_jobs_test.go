@@ -143,8 +143,8 @@ func TestHandleGetJobNotFound(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/jobs/missing-id", nil)
-	req.SetPathValue("id", "missing-id")
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/00000000-0000-4000-8000-000000000000", nil)
+	req.SetPathValue("id", "00000000-0000-4000-8000-000000000000")
 	rr := httptest.NewRecorder()
 	src.HandleGetJob(db)(rr, req)
 
@@ -160,7 +160,7 @@ func TestHandleGetJobNotFound(t *testing.T) {
 
 // Test GET /api/jobs/{id} with an existing job → 200 with correct fields
 func TestHandleGetJobSuccess(t *testing.T) {
-	jobID := "cccccccc-dddd-eeee-ffff-000000000000"
+	jobID := "cccccccc-dddd-4eee-8fff-000000000000"
 	srv := newMockSupabase(t, jobID)
 	defer srv.Close()
 
@@ -170,6 +170,7 @@ func TestHandleGetJobSuccess(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID, nil)
 	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleGetJob(db)(rr, req)
 
@@ -183,6 +184,7 @@ func TestHandleGetJobSuccess(t *testing.T) {
 	if job.ID != jobID {
 		t.Errorf("expected jobId %q, got %q", jobID, job.ID)
 	}
+
 	if job.Status != "processing" {
 		t.Errorf("expected status 'processing', got %q", job.Status)
 	}

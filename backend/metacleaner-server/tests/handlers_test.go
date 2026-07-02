@@ -13,6 +13,18 @@ import (
 	src "metacleaner-server/source"
 )
 
+// jpegContent is a minimal valid JPEG: SOI + APP0 marker bytes that
+// http.DetectContentType recognises as "image/jpeg".
+var jpegContent = append([]byte{0xFF, 0xD8, 0xFF, 0xE0}, make([]byte, 20)...)
+
+// mp4Content is a minimal valid MP4 ftyp box (24 bytes) that
+// http.DetectContentType recognises as "video/mp4".
+var mp4Content = []byte{
+	0x00, 0x00, 0x00, 0x18, 'f', 't', 'y', 'p',
+	'i', 's', 'o', 'm', 0x00, 0x00, 0x00, 0x00,
+	'i', 's', 'o', 'm', 'm', 'p', '4', '1',
+}
+
 func newTestConfig(t *testing.T) src.Config {
 	t.Helper()
 	return src.Config{
@@ -43,8 +55,8 @@ func TestHandleUploadMultiFile(t *testing.T) {
 	handler := src.HandleUpload(cfg)
 
 	req := buildUploadRequest(t, map[string][]byte{
-		"photo.jpg": []byte("fake jpeg content"),
-		"clip.mp4":  []byte("fake mp4 content"),
+		"photo.jpg": jpegContent,
+		"clip.mp4":  mp4Content,
 	})
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -132,7 +144,7 @@ func TestHandleUploadMixedBatch(t *testing.T) {
 	cfg := newTestConfig(t)
 
 	req := buildUploadRequest(t, map[string][]byte{
-		"photo.jpg":    []byte("fake jpeg content"),
+		"photo.jpg":    jpegContent,
 		"document.pdf": []byte("fake pdf content"),
 	})
 	rr := httptest.NewRecorder()
@@ -182,7 +194,7 @@ func TestHandleUploadResponseFields(t *testing.T) {
 	cfg := newTestConfig(t)
 
 	req := buildUploadRequest(t, map[string][]byte{
-		"IMG_4821.jpg": []byte("fake jpeg data here"),
+		"IMG_4821.jpg": jpegContent,
 	})
 	rr := httptest.NewRecorder()
 	src.HandleUpload(cfg)(rr, req)
@@ -229,7 +241,7 @@ func TestUploadFileIDHas32HexChars(t *testing.T) {
 	handler := src.HandleUpload(cfg)
 
 	req := buildUploadRequest(t, map[string][]byte{
-		"photo.jpg": []byte("fake jpeg content"),
+		"photo.jpg": jpegContent,
 	})
 	rr := httptest.NewRecorder()
 	handler(rr, req)
@@ -261,9 +273,9 @@ func TestUploadMultipleFilesHaveUniqueIDs(t *testing.T) {
 	handler := src.HandleUpload(cfg)
 
 	req := buildUploadRequest(t, map[string][]byte{
-		"photo1.jpg": []byte("fake jpeg 1"),
-		"photo2.jpg": []byte("fake jpeg 2"),
-		"clip.mp4":   []byte("fake mp4"),
+		"photo1.jpg": jpegContent,
+		"photo2.jpg": jpegContent,
+		"clip.mp4":   mp4Content,
 	})
 	rr := httptest.NewRecorder()
 	handler(rr, req)

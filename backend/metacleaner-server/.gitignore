@@ -1,4 +1,7 @@
 .env
+.env-*
+.env.*
+!.env.example
 metacleaner-server
 metacleaner-server.exe
 .stripe-webhook.log

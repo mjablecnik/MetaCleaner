@@ -311,13 +311,14 @@ func (c *SupabaseClient) UpdateJob(ctx context.Context, job *Job) error {
 	return c.doJSON(ctx, http.MethodPatch, url, rec, nil)
 }
 
-// GetJob fetches a job by ID, optionally filtering by user ID.
+// GetJob fetches a job by ID scoped to the given user. userID must be non-empty;
+// callers must guard against empty values before invoking this function.
 func (c *SupabaseClient) GetJob(ctx context.Context, jobID, userID string) (*Job, error) {
-	var rows []dbJob
-	restURL := c.restURL("cleaning_jobs?id=eq." + url.QueryEscape(jobID))
-	if userID != "" {
-		restURL += "&user_id=eq." + url.QueryEscape(userID)
+	if userID == "" {
+		return nil, nil
 	}
+	var rows []dbJob
+	restURL := c.restURL("cleaning_jobs?id=eq." + url.QueryEscape(jobID) + "&user_id=eq." + url.QueryEscape(userID))
 	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, err
 	}
@@ -543,8 +544,8 @@ func (c *SupabaseClient) GetFileRecords(ctx context.Context, jobID string) ([]Fi
 // Returns an empty string if no report exists yet (report creation is asynchronous).
 func (c *SupabaseClient) GetReportIDByJobID(ctx context.Context, jobID string) (string, error) {
 	var rows []dbReport
-	url := c.restURL("cleaning_reports?job_id=eq." + jobID + "&select=report_id&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	queryURL := c.restURL("cleaning_reports?job_id=eq." + url.QueryEscape(jobID) + "&select=report_id&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, queryURL, nil, &rows); err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
@@ -557,8 +558,8 @@ func (c *SupabaseClient) GetReportIDByJobID(ctx context.Context, jobID string) (
 // Returns false if not found or if the file belongs to a different user.
 func (c *SupabaseClient) VerifyFileOwnership(ctx context.Context, localID, userID string) (bool, error) {
 	var rows []dbFileRecord
-	url := c.restURL("job_files?file_name=like." + localID + "%25&user_id=eq." + userID)
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	queryURL := c.restURL("job_files?file_name=like." + url.QueryEscape(localID) + "%25&user_id=eq." + url.QueryEscape(userID))
+	if err := c.doJSON(ctx, http.MethodGet, queryURL, nil, &rows); err != nil {
 		return false, err
 	}
 	return len(rows) > 0, nil
@@ -740,12 +741,12 @@ func (c *SupabaseClient) ListReports(ctx context.Context, userID string) ([]Repo
 	var rows []dbReport
 	// Select only the columns needed for the summary list (avoid fetching large chart_data JSONB).
 	// Limit to 50 most recent reports to prevent oversized responses from Supabase free tier.
-	url := c.restURL("cleaning_reports?select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at&order=date.desc&limit=50")
+	restURL := c.restURL("cleaning_reports?select=id,job_id,report_id,date,files_processed,fields_removed,gps_locations_removed,total_time_ms,file_types,dominant_type,has_gps,tags,pdf_path,pdf_status,created_at&order=date.desc&limit=50")
 	if userID != "" {
-		url += "&user_id=eq." + userID
+		restURL += "&user_id=eq." + url.QueryEscape(userID)
 	}
 
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		slog.Error("list-reports: PostgREST query failed", "userID", userID, "error", err)
 		return nil, err
 	}

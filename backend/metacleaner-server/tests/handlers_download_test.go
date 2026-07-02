@@ -166,6 +166,9 @@ func newJobDownloadMockSupabase(t *testing.T, jobID, jobStatus string, fileRecor
 	}))
 }
 
+// jobIDDownloadMissing is a valid UUID v4 with no matching DB row.
+const jobIDDownloadMissing = "00000000-0000-4000-8000-000000000001"
+
 // Test HandleJobDownload: job not found → 404 JOB_NOT_FOUND
 func TestHandleJobDownloadJobNotFound(t *testing.T) {
 	srv := newJobDownloadMockSupabase(t, "", "", "")
@@ -175,8 +178,8 @@ func TestHandleJobDownloadJobNotFound(t *testing.T) {
 	cfg.SupabaseURL = srv.URL
 	db := src.NewSupabaseClient(cfg)
 
-	req := httptest.NewRequest(http.MethodGet, "/api/jobs/missing-job/download", nil)
-	req.SetPathValue("id", "missing-job")
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobIDDownloadMissing+"/download", nil)
+	req.SetPathValue("id", jobIDDownloadMissing)
 	rr := httptest.NewRecorder()
 	src.HandleJobDownload(cfg, db)(rr, req)
 
@@ -192,7 +195,7 @@ func TestHandleJobDownloadJobNotFound(t *testing.T) {
 
 // Test HandleJobDownload: job status != "completed" → 409 JOB_NOT_READY
 func TestHandleJobDownloadJobNotReady(t *testing.T) {
-	jobID := "job-in-progress"
+	jobID := "00000000-0000-4000-8000-000000000002"
 	srv := newJobDownloadMockSupabase(t, jobID, "processing", "")
 	defer srv.Close()
 
@@ -202,6 +205,7 @@ func TestHandleJobDownloadJobNotReady(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID+"/download", nil)
 	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleJobDownload(cfg, db)(rr, req)
 
@@ -217,7 +221,7 @@ func TestHandleJobDownloadJobNotReady(t *testing.T) {
 
 // Test HandleJobDownload: completed job but cleaned files missing from disk → 404 FILES_EXPIRED
 func TestHandleJobDownloadFilesExpired(t *testing.T) {
-	jobID := "job-expired"
+	jobID := "00000000-0000-4000-8000-000000000003"
 	fileRecords := fmt.Sprintf(`[{"id":"fr-001","job_id":%q,"file_name":"f-abc12345.jpg","file_extension":".jpg","file_size_bytes":1024,"file_type":"image","format":"jpeg","status":"done","fields_removed":5,"gps_removed":true}]`, jobID)
 	srv := newJobDownloadMockSupabase(t, jobID, "completed", fileRecords)
 	defer srv.Close()
@@ -228,6 +232,7 @@ func TestHandleJobDownloadFilesExpired(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID+"/download", nil)
 	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleJobDownload(cfg, db)(rr, req)
 
@@ -243,7 +248,7 @@ func TestHandleJobDownloadFilesExpired(t *testing.T) {
 
 // Test HandleJobDownload: successful download → 200 with ZIP headers and correct file contents
 func TestHandleJobDownloadSuccess(t *testing.T) {
-	jobID := "job-success"
+	jobID := "00000000-0000-4000-8000-000000000004"
 	fileID := "f-aabb1234"
 	fileRecords := fmt.Sprintf(`[{"id":"fr-002","job_id":%q,"file_name":%q,"file_extension":".jpg","file_size_bytes":2048,"file_type":"image","format":"jpeg","status":"done","fields_removed":3,"gps_removed":false}]`,
 		jobID, fileID+".jpg")
@@ -265,6 +270,7 @@ func TestHandleJobDownloadSuccess(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID+"/download", nil)
 	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
 	src.HandleJobDownload(cfg, db)(rr, req)
 

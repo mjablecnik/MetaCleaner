@@ -2,7 +2,6 @@ package source
 
 import (
 	"archive/zip"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -126,11 +125,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		go func() {
 			// Wait until a WS client connects or the timeout expires.
 			<-wsReady
-
-			// Bound each job so a hanging ExifTool/FFmpeg cannot exhaust the worker pool.
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-			defer cancel()
-			ProcessJobWithPool(pool, ctx, cfg, db, hub, pl, job, files, authClient)
+			ProcessJobWithPool(pool, cfg, db, hub, pl, job, files, authClient)
 		}()
 
 		w.Header().Set("Content-Type", "application/json")

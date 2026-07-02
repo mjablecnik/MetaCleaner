@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -59,8 +60,8 @@ type Subscription struct {
 // GetStripeCustomer returns the Stripe customer ID for a user, or "" if no mapping exists.
 func (c *SupabaseClient) GetStripeCustomer(ctx context.Context, userID string) (string, error) {
 	var rows []dbStripeCustomer
-	url := c.restURL("stripe_customers?user_id=eq." + userID + "&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("stripe_customers?user_id=eq." + url.QueryEscape(userID) + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return "", fmt.Errorf("get stripe customer: %w", err)
 	}
 	if len(rows) == 0 {
@@ -82,8 +83,8 @@ func (c *SupabaseClient) CreateStripeCustomer(ctx context.Context, userID, strip
 // DeleteStripeCustomer removes the Stripe customer mapping for a user.
 // Used when a stored customer ID is no longer valid in Stripe.
 func (c *SupabaseClient) DeleteStripeCustomer(ctx context.Context, userID string) error {
-	url := c.restURL("stripe_customers?user_id=eq." + userID)
-	req, err := c.newRequest(ctx, http.MethodDelete, url, nil)
+	restURL := c.restURL("stripe_customers?user_id=eq." + url.QueryEscape(userID))
+	req, err := c.newRequest(ctx, http.MethodDelete, restURL, nil)
 	if err != nil {
 		return err
 	}
@@ -106,8 +107,8 @@ func (c *SupabaseClient) DeleteStripeCustomer(ctx context.Context, userID string
 // GetSubscriptionByUserID returns the most recent subscription for a user, or nil if none exists.
 func (c *SupabaseClient) GetSubscriptionByUserID(ctx context.Context, userID string) (*Subscription, error) {
 	var rows []dbSubscription
-	url := c.restURL("subscriptions?user_id=eq." + userID + "&order=created_at.desc&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("subscriptions?user_id=eq." + url.QueryEscape(userID) + "&order=created_at.desc&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, fmt.Errorf("get subscription: %w", err)
 	}
 	if len(rows) == 0 {
@@ -220,8 +221,8 @@ type dbCreditBalance struct {
 // Returns (0, 0, nil) when no credit balance row exists yet.
 func (c *SupabaseClient) GetCreditBalance(ctx context.Context, userID string) (subscriptionCredits, purchasedCredits int, err error) {
 	var rows []dbCreditBalance
-	url := c.restURL("credit_balances?user_id=eq." + userID + "&limit=1")
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL("credit_balances?user_id=eq." + url.QueryEscape(userID) + "&limit=1")
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return 0, 0, fmt.Errorf("get credit balance: %w", err)
 	}
 	if len(rows) == 0 {
@@ -242,8 +243,8 @@ func (c *SupabaseClient) UpsertCreditBalance(ctx context.Context, userID string,
 	}
 
 	// Use PATCH to update the existing row. Falls back to POST (insert) if no row exists.
-	url := c.restURL("credit_balances?user_id=eq." + userID)
-	req, err := c.newRequest(ctx, http.MethodPatch, url, bytes.NewReader(data))
+	restURL := c.restURL("credit_balances?user_id=eq." + url.QueryEscape(userID))
+	req, err := c.newRequest(ctx, http.MethodPatch, restURL, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
@@ -386,8 +387,8 @@ func (c *SupabaseClient) RecordCreditTransaction(ctx context.Context, userID str
 // GetCreditTransactions returns up to limit recent credit_transactions for a user, ordered newest first.
 func (c *SupabaseClient) GetCreditTransactions(ctx context.Context, userID string, limit int) ([]CreditTransaction, error) {
 	var rows []dbCreditTransaction
-	url := c.restURL(fmt.Sprintf("credit_transactions?user_id=eq.%s&order=created_at.desc&limit=%d", userID, limit))
-	if err := c.doJSON(ctx, http.MethodGet, url, nil, &rows); err != nil {
+	restURL := c.restURL(fmt.Sprintf("credit_transactions?user_id=eq.%s&order=created_at.desc&limit=%d", url.QueryEscape(userID), limit))
+	if err := c.doJSON(ctx, http.MethodGet, restURL, nil, &rows); err != nil {
 		return nil, fmt.Errorf("get credit transactions: %w", err)
 	}
 	txs := make([]CreditTransaction, len(rows))

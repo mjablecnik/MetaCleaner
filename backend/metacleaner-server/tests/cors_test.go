@@ -146,8 +146,9 @@ func TestCORSMiddleware_NonOPTIONSWithOrigin_RequestPassesThrough(t *testing.T) 
 	router := newTestRouter(t, cfg)
 
 	token := buildJWT(testJWTSecret, map[string]any{
-		"sub": "user-cors-test",
-		"exp": time.Now().Add(time.Hour).Unix(),
+		"sub":  testUserUUID,
+		"exp":  time.Now().Add(time.Hour).Unix(),
+		"role": "authenticated",
 	})
 
 	req := httptest.NewRequest(http.MethodGet, "/api/reports", nil)
