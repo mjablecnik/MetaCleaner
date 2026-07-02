@@ -1,25 +1,16 @@
-# Security Remediation Tasks — MetaCleaner Go Backend (re-audit 2026-07-02)
+# Security Remediation Tasks — `frontend/metacleaner-app` (audit 2026-07-02)
 
 Derived from `SECURITY_AUDIT.md`. Sorted by severity (highest first). Each task is a single, independently fixable issue.
 
-> The prior audit's 25 tasks are all remediated and verified in place; this list covers only the residual and newly-found issues.
+> Overall risk: **MEDIUM**. This is a static client-side SPA (no server code/DB/shell), so classic server-side vuln classes are out of scope here. The rating is driven by an auth flow that adopts URL tokens on any route with no OAuth `state` (login CSRF), plus the access token being placed in the WebSocket URL.
 
-- [x] 1. [HIGH] Move `context.WithTimeout(5m)` creation inside the pool's submitted closure so the pipeline runs under a live (not immediately-canceled) context — restores the worker-pool DoS bound and stops jobs failing on arrival — source/job_handlers.go:126-134, source/job_worker.go:76-116
-- [x] 2. [HIGH] Add a per-connection write mutex (or `*wsConn` wrapper) and route Broadcast, the ping goroutine, and the close-message through it to stop the concurrent-write panic that crashes the whole process — source/websocket.go:173,238,253
-- [x] 3. [MEDIUM] Add `.env-*` (and keep `!.env.example`) to `.gitignore` and `.dockerignore` so the deploy script's `.env-prod` secrets file can't be committed — backend/metacleaner-server/.gitignore, .dockerignore
-- [x] 4. [MEDIUM] Apply `authRateLimited` to change-password/change-email/account-delete and `rateLimited` to the `/api/keys` CRUD routes (change-password is an unthrottled password oracle) — source/router.go:33,34,35,71-75
-- [x] 5. [MEDIUM] Bump `go` directive to a patched 1.25.x (≥1.25.11) and update the Dockerfile builder to `golang:1.25-bookworm` (digest-pinned); add `govulncheck` to CI — resolves 21 reachable stdlib CVEs — go.mod:3, Dockerfile:2
-- [x] 6. [MEDIUM] Validate JWT `sub` as a UUID in validateJWT and `url.QueryEscape` every `user_id=eq.`+userID interpolation to close the last PostgREST-injection gap — source/auth_middleware.go:318, source/supabase.go:560,745, source/supabase_auth.go:432,466,495,544,568, source/supabase_billing.go:62,85,109,223,245,389, source/supabase_apikeys.go:69,222, source/email_change.go:49
-- [x] 7. [LOW] Require a present, non-zero `exp` claim in validateJWT so tokens without an expiry are rejected — source/auth_middleware.go:314
-- [x] 8. [LOW] Explicitly require `claims.Role == "authenticated"` (and optionally validate `aud`/`iss`) instead of relying on the anon/service key's missing `sub` — source/auth_middleware.go:226-322
-- [x] 9. [LOW] Make `GetJob`'s `user_id` filter unconditional and add `userID == ""` guards in HandleGetJob/HandleJobDownload — source/supabase.go:315-320, source/job_handlers.go:254,358
-- [x] 10. [LOW] Replace the WebSocket `?token=` access-JWT with a short-lived single-use progress ticket (or Sec-WebSocket-Protocol) to keep the bearer token out of proxy logs — source/websocket.go:192
-- [x] 11. [LOW] Log the JWKS lookup error server-side and return a generic "unable to verify token" so the Supabase project host isn't disclosed — source/auth_middleware.go:286
-- [x] 12. [LOW] Stop logging the new email address (PII) at Info; drop `newEmail` or log only its domain — source/email_change.go:275
-- [x] 13. [LOW] Store email-change tokens as `sha256` hashes and hash the presented token before the lookup — source/email_change.go:62-66,93
-- [x] 14. [LOW] Return only `{status}` from unauthenticated `/api/health`, cache the tool checks, and rate-limit the route — source/health_handlers.go:25-58, source/router.go:79
-- [x] 15. [LOW] Cap `firstName`/`lastName` (≤100 runes) and `email` (≤254) length in HandleRegister, mirroring HandleUpdateProfile — source/auth_handlers.go:31-57
-- [x] 16. [LOW] Add `url.QueryEscape` to the two resource-ID sinks missed by the escape pass — source/supabase.go:546,560
-- [x] 17. [LOW] Add a global/per-user WebSocket connection cap and rate-limit the `/progress` upgrade path — source/websocket.go:87-92, source/router.go:48
-- [x] 18. [LOW] Track upstream `gopdf` for a release that drops the archived `github.com/pkg/errors` transitive dependency — go.mod (no code change required; pinned to latest available release — monitor https://github.com/signintech/gopdf for an update)
-</content>
+- [x] 1. [HIGH] Restrict auth-callback token adoption to a single dedicated callback route and require a verified OAuth `state`/nonce; stop `_restore()` and the layout `onMount` from adopting `access_token`/`refresh_token` present on arbitrary routes — src/lib/auth/auth.svelte.ts:161-196,231, src/routes/+layout.svelte:98, src/lib/auth/token-utils.ts:66-90
+- [x] 2. [MEDIUM] Replace the WebSocket `?token=<access-JWT>` with a short-lived single-use progress ticket (or cookie/subprotocol) so the bearer token is not written to proxy logs — src/lib/clients/metaCleanerApi.ts:127-131 (coordinate with backend task 10)
+- [x] 3. [MEDIUM] Add `.env-*` to the `# Env` block so the deploy script's `.env-prod`/`.env-staging` secrets files can't be committed (keep `!.env.example`, `!.env.test`) — src/../.gitignore:19-22
+- [x] 4. [MEDIUM] Reject query-string callback tokens (accept hash-fragment only) so tokens never reach server logs / `Referer` before the address-bar scrub — src/lib/auth/auth.svelte.ts:175-192
+- [x] 5. [LOW] Validate URL scheme (http/https only) before `window.location.href = url` for the Stripe checkout redirect — src/routes/subscription/+page.svelte:135
+- [x] 6. [LOW] Validate URL scheme before assigning the backend PDF URL to `link.href` in both report views — src/routes/report/[id]/+page.svelte:80, src/routes/reports/+page.svelte:105
+- [x] 7. [LOW] Move to a nonce-/hash-based CSP (via SvelteKit `kit.csp`) so `script-src` can drop `'unsafe-inline'`; tighten `connect-src` to known API/WS origins — nginx.conf (CSP header) + svelte.config.js
+- [x] 8. [LOW] Track migrating the refresh token from `localStorage` to an `HttpOnly; Secure; SameSite=Strict` cookie set by the backend (needs backend cooperation; access token already memory-only) — src/lib/auth/auth.svelte.ts:120
+- [x] 9. [LOW] Clear the password-reset `resetToken` `$state` after `/api/auth/reset-password` succeeds and on step change/unmount — src/routes/(auth)/forgot-password/sections/ForgotPasswordFormSection.svelte:112-113,163
+- [x] 10. [LOW] Route `billingClient`/`apiKeysClient` calls through `apiFetch` so token refresh is centralized and they never send `Bearer null` — src/lib/clients/billingClient.ts:21,34,48,64,79,94, src/lib/clients/apiKeysClient.ts:49,59,68,76
