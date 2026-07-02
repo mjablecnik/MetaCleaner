@@ -16,9 +16,10 @@ node_modules
 .DS_Store
 Thumbs.db
 
-# Env
+# Env — also covers .env-prod, .env-staging etc. (deploy script uses hyphen-separated names)
 .env
 .env.*
+.env-*
 !.env.example
 !.env.test
 
