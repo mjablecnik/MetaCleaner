@@ -44,7 +44,7 @@ describe('getCleanedFields()', () => {
 
 	it('cleaned fields have no value property', () => {
 		for (const field of getCleanedFields()) {
-			expect((field as Record<string, unknown>)['value']).toBeUndefined();
+			expect((field as unknown as Record<string, unknown>)['value']).toBeUndefined();
 		}
 	});
 
