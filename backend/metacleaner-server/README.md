@@ -18,7 +18,7 @@ MetaCleaner Backend solves the privacy problem of hidden metadata in media files
 
 ## Prerequisites
 
-- [Go 1.23+](https://golang.org/dl/)
+- [Go 1.25+](https://golang.org/dl/)
 - [Docker](https://docs.docker.com/get-docker/)
 - [ExifTool](https://exiftool.org/) (required for local non-Docker runs)
 - [FFmpeg](https://ffmpeg.org/download.html) (required for local non-Docker runs)
