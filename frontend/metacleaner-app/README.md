@@ -35,8 +35,12 @@ MetaCleaner helps users protect their privacy by stripping hidden metadata (EXIF
 
 ## Installation / Setup
 
+> **Run from the workspace root** (`metacleaner/`), not from this directory.
+> `npm install` will fail — the `workspace:*` protocol requires bun.
+
 ```bash
-bun install            # Install dependencies
+# From the workspace root:
+bun install            # Install all workspace dependencies
 ```
 
 ## Development

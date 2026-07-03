@@ -107,8 +107,7 @@ export function extractAndCleanBrowserTokens(): CallbackResult {
 		window.location.search.includes('refresh_token');
 
 	const hasHashTokens =
-		window.location.hash.includes('access_token') ||
-		window.location.hash.includes('refresh_token');
+		window.location.hash.includes('access_token') || window.location.hash.includes('refresh_token');
 
 	const hasError =
 		window.location.search.includes('error') || window.location.hash.includes('error');
