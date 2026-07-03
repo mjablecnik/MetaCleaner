@@ -44,6 +44,7 @@
 		</div>
 	</div>
 	<button
+		aria-label={t('common_actions_menu')}
 		class="w-9 h-9 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-white transition-colors flex-shrink-0 ml-1"
 	>
 		<i class="fa-solid fa-ellipsis-vertical text-xs"></i>

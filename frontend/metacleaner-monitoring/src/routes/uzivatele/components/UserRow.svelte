@@ -54,6 +54,7 @@
 	</td>
 	<td class="px-5 py-3.5 text-right">
 		<button
+			aria-label={t('common_table_action')}
 			class="opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 bg-badge border border-border text-textSec text-xs rounded-md hover:text-textMain"
 		>
 			<i class="fa-solid fa-ellipsis-h"></i>

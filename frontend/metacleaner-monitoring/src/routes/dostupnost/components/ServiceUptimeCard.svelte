@@ -35,7 +35,7 @@
 	const bar = $derived(statusBar[card.status]);
 	const dot = $derived(statusDot[card.status]);
 
-	const barContainerId = `bar-${card.key}${variant === 'mobile' ? '-m' : ''}`;
+	const barContainerId = $derived(`bar-${card.key}${variant === 'mobile' ? '-m' : ''}`);
 
 	onMount(() => {
 		const container = document.getElementById(barContainerId);

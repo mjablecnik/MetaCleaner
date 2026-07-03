@@ -10,8 +10,8 @@
 
 	let { card, variant = 'desktop' }: Props = $props();
 
-	const containerId = `bar-${card.key}${variant === 'mobile' ? '-m' : ''}`;
-	const isMobile = variant === 'mobile';
+	const containerId = $derived(`bar-${card.key}${variant === 'mobile' ? '-m' : ''}`);
+	const isMobile = $derived(variant === 'mobile');
 	const valueClass = $derived(card.status === 'degraded' ? 'text-secondary' : 'text-success');
 
 	onMount(() => {

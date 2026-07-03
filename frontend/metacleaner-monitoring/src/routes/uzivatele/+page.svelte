@@ -67,11 +67,13 @@
 			<div class="flex items-center gap-2">
 				<button
 					onclick={toggleSearch}
+					aria-label={t('common_actions_search')}
 					class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-textMain transition-colors"
 				>
 					<i class="fa-solid fa-search text-sm"></i>
 				</button>
 				<button
+					aria-label={t('common_actions_download')}
 					class="w-10 h-10 flex items-center justify-center rounded-lg bg-badge border border-border text-textSec hover:text-textMain transition-colors"
 				>
 					<i class="fa-solid fa-download text-sm"></i>
@@ -92,6 +94,7 @@
 					/>
 					<button
 						onclick={toggleSearch}
+						aria-label={t('common_actions_close')}
 						class="absolute right-3 top-1/2 -translate-y-1/2 text-textSec hover:text-textMain"
 					>
 						<i class="fa-solid fa-xmark text-sm"></i>

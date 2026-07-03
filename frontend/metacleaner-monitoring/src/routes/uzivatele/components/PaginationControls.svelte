@@ -31,6 +31,7 @@
 		</p>
 		<div class="flex items-center gap-1">
 			<button
+				aria-label={t('common_pagination_previous')}
 				class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors"
 			>
 				<i class="fa-solid fa-chevron-left text-xs"></i>
@@ -53,6 +54,7 @@
 				</button>
 			{/if}
 			<button
+				aria-label={t('common_pagination_next')}
 				class="px-3 py-1.5 bg-badge border border-border text-textSec text-sm rounded-lg hover:text-textMain transition-colors"
 			>
 				<i class="fa-solid fa-chevron-right text-xs"></i>
