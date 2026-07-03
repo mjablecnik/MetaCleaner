@@ -969,6 +969,12 @@
 - Solution: When reviewing this package, grep `grep -rn "= get[A-Z]" src/routes --include=*.svelte` — any data-returning `get*()` in a section is a mock still rendered as live (nav/tab-label getters like `getNavSections`/`getUserTabs` are fine). Wire each to the route load + `SectionResult`, or replace with an explicit "data not available" empty state when no source exists. A wired primary KPI row does NOT mean the page is done — check the mobile grid and the secondary/chart sections too.
 - Source: code-review, 2026-07-01 18:xx
 
+## SvelteKit Reroute type now requires `fetch` in addition to `url`
+- Project: metacleaner-web
+- Problem: `svelte-check` reported type errors in `src/__tests__/hooks.test.ts` because the `Reroute` callback parameter type from `@sveltejs/kit` was updated to require a `fetch` property alongside `url`. Tests only passed `{ url }`, failing type checking (but passing at runtime since `reroute` doesn't use `fetch`).
+- Solution: Add `fetch: globalThis.fetch` to each `reroute({ url })` call in the test file. For the `CleanedField` cast error in `metadataDemo.test.ts`, route through `unknown` first: `(field as unknown as Record<string, unknown>)`.
+- Source: check-build, 2026-07-03
+
 ## cookie override ">=0.7.0" resolves to cookie@2.0.1 which breaks @sveltejs/kit
 - Project: metacleaner-app (root workspace package.json)
 - Problem: The root `package.json` had `"overrides": { "cookie": ">=0.7.0" }` (added as a security patch for cookie <0.7.0 advisory). Bun resolved this to `cookie@2.0.1`, which is a major breaking release — it removed the `parse` and `serialize` named exports that `@sveltejs/kit` relies on. The build failed with `[MISSING_EXPORT] "parse" is not exported`. In a fresh environment (Docker), bun correctly resolves using the lockfile. In a stale local bun cache, the SvelteKit `.bun/` cached package had a hardcoded symlink to `../../cookie@2.0.1/` that needed manual updating to `../../cookie@1.1.1/`.
