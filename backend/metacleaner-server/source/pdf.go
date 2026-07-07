@@ -108,13 +108,22 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 	y += 56
 
 	// --- Report identification ---
+	// Limit text width to avoid overlapping the QR code
+	maxHeaderTextWidth := qrX - pdfMargin - 80 - 10 // leave 10pt gap before QR
+
 	_ = pdf.SetFont("bold", "", 11)
 	pdf.SetXY(pdfMargin, y)
 	_ = pdf.Cell(nil, "Report ID:")
-	_ = pdf.SetFont("sans", "", 11)
+	_ = pdf.SetFont("sans", "", 10)
 	pdf.SetXY(pdfMargin+80, y)
-	_ = pdf.Cell(nil, report.ReportID)
-	y += 16
+	// Truncate or wrap Report ID if too long
+	ridWidth, _ := pdf.MeasureTextWidth(report.ReportID)
+	if ridWidth > maxHeaderTextWidth {
+		y = drawWrappedText(&pdf, pdfMargin+80, y, maxHeaderTextWidth, report.ReportID, 13)
+	} else {
+		_ = pdf.Cell(nil, report.ReportID)
+		y += 16
+	}
 
 	_ = pdf.SetFont("bold", "", 11)
 	pdf.SetXY(pdfMargin, y)
@@ -124,16 +133,23 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 	_ = pdf.Cell(nil, report.Date)
 	y += 16
 
-	// Verification URL
+	// Verification URL — wrap if too long to avoid overlapping QR code
 	verifyURL := buildVerifyURL(ctx)
 	if verifyURL != "" {
 		_ = pdf.SetFont("bold", "", 11)
 		pdf.SetXY(pdfMargin, y)
 		_ = pdf.Cell(nil, "Verify online:")
-		_ = pdf.SetFont("sans", "", 9)
+		_ = pdf.SetFont("sans", "", 8)
 		pdf.SetXY(pdfMargin+80, y)
-		_ = pdf.Cell(nil, verifyURL)
-		y += 16
+		// Check if URL fits in available width
+		urlWidth, _ := pdf.MeasureTextWidth(verifyURL)
+		if urlWidth > maxHeaderTextWidth {
+			// Wrap the URL text within the available space
+			y = drawWrappedText(&pdf, pdfMargin+80, y, maxHeaderTextWidth, verifyURL, 12)
+		} else {
+			_ = pdf.Cell(nil, verifyURL)
+			y += 16
+		}
 	}
 
 	// Separator

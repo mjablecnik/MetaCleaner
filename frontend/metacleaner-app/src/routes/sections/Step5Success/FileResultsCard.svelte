@@ -20,20 +20,20 @@
 
 	function getFileIconColor(file: QueuedFile): string {
 		if (file.type === 'video') return 'text-brand-orange';
-		const ext = file.extension.replace('.', '').toLowerCase();
+		const ext = file.extension.replaceAll('.', '').toLowerCase();
 		if (ext === 'png') return 'text-brand-blue';
 		return 'text-brand-green';
 	}
 
 	function getFileIconBorder(file: QueuedFile): string {
 		if (file.type === 'video') return 'border-brand-orange/20 bg-brand-orange/10';
-		const ext = file.extension.replace('.', '').toLowerCase();
+		const ext = file.extension.replaceAll('.', '').toLowerCase();
 		if (ext === 'png') return 'border-brand-blue/20 bg-brand-blue/10';
 		return 'border-brand-green/20 bg-brand-green/10';
 	}
 
 	function getExtBadge(file: QueuedFile): string {
-		return file.extension.replace('.', '').toUpperCase();
+		return file.extension.replaceAll('.', '').toUpperCase();
 	}
 
 	interface FileDisplayData {
@@ -66,7 +66,7 @@
 	<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
 		{#each displayData as { file, result } (file.id)}
 			<div
-				class="overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60 transition-colors hover:bg-navy-lighter"
+				class="overflow-hidden rounded-xl border border-brand-green/20 bg-navy-main/60"
 			>
 				<div class="flex items-center gap-3 px-4 py-3">
 					<div

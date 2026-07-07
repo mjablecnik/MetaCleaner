@@ -66,9 +66,7 @@
 				logoHref: '/' as string | undefined,
 				compact: true,
 				showLangDropdown: true,
-				showBackButton: true,
-				backAction: () => history.back(),
-				backLabel: tx('report.nav.backToResults'),
+				showBackButton: false,
 				reducedDesktopPadding: true,
 				noPrint: true
 			};

@@ -20,7 +20,7 @@
 	const isAIGenerated = $derived(file?.scanResult?.aiDetection?.isAIGenerated ?? false);
 	const isVideo = $derived(file?.type === 'video');
 	const sizeLabel = $derived(formatSize(file?.size));
-	const ext = $derived(file?.extension?.replace('.', '').toUpperCase() || 'FILE');
+	const ext = $derived(file?.extension?.replaceAll('.', '').toUpperCase() || 'FILE');
 
 	// Row border class based on state
 	const rowBorderClass = $derived((): string => {
