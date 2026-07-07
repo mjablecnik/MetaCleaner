@@ -46,9 +46,7 @@
 				logoHref: '/' as string | undefined,
 				compact: true,
 				showLangDropdown: true,
-				showBackButton: true,
-				backHref: '/',
-				backLabel: tx('docs.nav.back')
+				showBackButton: false
 			};
 		}
 		if (path === '/reports') {

@@ -199,19 +199,7 @@
 						{/each}
 
 						<li class="mt-2">
-							<p
-								class="mb-1 px-3 text-[10px] font-bold tracking-widest text-text-muted/60 uppercase"
-							>
-								{tx('docs.sidebar.endpointsHeading')}
-							</p>
-							{#each sidebarEndpoints as ep, i (ep.id)}
-								{#if i === 0 || sidebarEndpoints[i - 1].group !== ep.group}
-									<p
-										class="mt-2 mb-0.5 px-3 text-[9px] font-bold tracking-widest text-text-muted/50 uppercase"
-									>
-										{tx('docs.sidebar.group.' + ep.group)}
-									</p>
-								{/if}
+							{#each sidebarEndpoints as ep (ep.id)}
 								<!-- eslint-disable svelte/no-navigation-without-resolve -->
 								<a
 									href={resolve('/docs/endpoints') + '#' + ep.id}
