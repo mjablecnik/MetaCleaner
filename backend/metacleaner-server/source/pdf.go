@@ -471,6 +471,8 @@ func buildVerifyURL(ctx *PDFReportContext) string {
 }
 
 // drawWrappedText renders multi-line text within maxWidth, returning the final Y position.
+// It handles long unbreakable strings (like URLs) by splitting them character-by-character
+// when a single word exceeds the available width.
 func drawWrappedText(pdf *gopdf.GoPdf, x, y, maxWidth float64, text string, lineHeight float64) float64 {
 	words := strings.Fields(text)
 	line := ""
@@ -483,12 +485,37 @@ func drawWrappedText(pdf *gopdf.GoPdf, x, y, maxWidth float64, text string, line
 
 		w, _ := pdf.MeasureTextWidth(test)
 		if w > maxWidth && line != "" {
+			// Flush current line
 			pdf.SetXY(x, y)
 			_ = pdf.Cell(nil, line)
 			y += lineHeight
-			line = word
+			line = ""
+		}
+
+		// Check if the word itself exceeds maxWidth (e.g. a long URL)
+		wordWidth, _ := pdf.MeasureTextWidth(word)
+		if wordWidth > maxWidth {
+			// Split the word character by character
+			chunk := ""
+			for _, ch := range word {
+				testChunk := chunk + string(ch)
+				cw, _ := pdf.MeasureTextWidth(testChunk)
+				if cw > maxWidth && chunk != "" {
+					pdf.SetXY(x, y)
+					_ = pdf.Cell(nil, chunk)
+					y += lineHeight
+					chunk = string(ch)
+				} else {
+					chunk = testChunk
+				}
+			}
+			line = chunk
 		} else {
-			line = test
+			if line == "" {
+				line = word
+			} else {
+				line += " " + word
+			}
 		}
 	}
 	if line != "" {
