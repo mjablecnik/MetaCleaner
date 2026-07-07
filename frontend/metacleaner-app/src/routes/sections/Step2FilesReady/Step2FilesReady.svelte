@@ -9,7 +9,6 @@
 	import FileListCard from '../../(step1)/sections/FileListCard.svelte';
 	import RiskScannerCard from '../../(step1)/sections/RiskScannerCard.svelte';
 	import MobileRiskBanner from '../../(step1)/sections/MobileRiskBanner.svelte';
-	import CreditsBanner from '../CreditsBanner.svelte';
 	import CreditSummaryRow from '../../(step1)/components/CreditSummaryRow.svelte';
 	import ProOverlay from '../../(step1)/components/ProOverlay.svelte';
 
@@ -23,18 +22,6 @@
 		if (scannerStore.hasFiles && !insufficient) appState.transitionTo('processing');
 	}
 </script>
-
-<!-- CreditsBanner between page header and file upload section -->
-<div class="mb-4 lg:mb-5">
-	<CreditsBanner
-		credits={billingStore.credits ?? 0}
-		subscriptionCredits={billingStore.subscriptionCredits}
-		monthlyAllowance={billingStore.monthlyAllowance}
-		planId={billingStore.planId}
-		planStatus={billingStore.planStatus}
-		isPaidPlan={billingStore.isPaidPlan || billingStore.isCancellingPlan}
-	/>
-</div>
 
 <!-- Desktop: two-column grid 55%/43% | Mobile: single column -->
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-[55%_43%] lg:gap-6">
