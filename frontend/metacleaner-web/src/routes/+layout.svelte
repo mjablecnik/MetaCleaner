@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { deLocalizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
 	import SiteNavbar from '$lib/components/shared/SiteNavbar.svelte';
 	import MobileNavbar from '$lib/components/shared/MobileNavbar.svelte';
@@ -49,7 +50,7 @@
 	let mobileMenuOpen = $state(false);
 
 	const activePage = $derived.by(() => {
-		const path = $page.url.pathname;
+		const path = deLocalizeHref($page.url.pathname);
 		if (path.startsWith('/features')) return 'features' as const;
 		if (path.startsWith('/pricing')) return 'pricing' as const;
 		if (path.startsWith('/about')) return 'about' as const;

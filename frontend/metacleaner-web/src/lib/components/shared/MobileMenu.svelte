@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_APP_URL } from '$env/static/public';
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages';
 	import BrandLogo from '$lib/components/elements/BrandLogo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
@@ -48,7 +47,7 @@
 				{m.nav_navigation()}
 			</p>
 			<a
-				href="{resolve('/' as Pathname)}#how-it-works"
+				href={localizeHref('/#how-it-works')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -61,7 +60,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="{resolve('/' as Pathname)}#why-it-matters"
+				href={localizeHref('/#why-it-matters')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -74,7 +73,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="{resolve('/' as Pathname)}#who-its-for"
+				href={localizeHref('/#who-its-for')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -87,7 +86,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href={resolve('/features' as Pathname)}
+				href={localizeHref('/features')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -100,7 +99,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href={resolve('/pricing' as Pathname)}
+				href={localizeHref('/pricing')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -113,7 +112,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href={resolve('/about' as Pathname)}
+				href={localizeHref('/about')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl {active === 'about'
 					? 'text-white'
@@ -128,7 +127,7 @@
 				<i class="fa-solid fa-chevron-right text-[10px] ml-auto opacity-40"></i>
 			</a>
 			<a
-				href="{resolve('/' as Pathname)}#faq"
+				href={localizeHref('/#faq')}
 				onclick={onClose}
 				class="flex items-center gap-3 px-3 py-3 rounded-xl text-text-muted hover:bg-navy-lighter hover:text-white transition-all group"
 			>
@@ -171,14 +170,14 @@
 			: 'hidden'} md:hidden w-full flex-col bg-navy-card border-b border-border px-4 py-4 gap-3 z-40"
 	>
 		<a
-			href="{resolve('/' as Pathname)}#how-it-works"
+			href={localizeHref('/#how-it-works')}
 			onclick={onClose}
 			class="text-sm font-medium text-text-muted py-3 border-b border-border flex items-center justify-between"
 		>
 			{m.nav_how_it_works()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href={resolve('/features' as Pathname)}
+			href={localizeHref('/features')}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'features'
 				? 'text-white'
@@ -187,7 +186,7 @@
 			{m.nav_features()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href={resolve('/pricing' as Pathname)}
+			href={localizeHref('/pricing')}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'pricing'
 				? 'text-white'
@@ -196,7 +195,7 @@
 			{m.nav_pricing()} <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href={resolve('/about' as Pathname)}
+			href={localizeHref('/about')}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'about'
 				? 'text-white'
@@ -207,7 +206,7 @@
 			> <i class="fa-solid fa-chevron-right text-xs"></i>
 		</a>
 		<a
-			href="{resolve('/' as Pathname)}#faq"
+			href={localizeHref('/#faq')}
 			onclick={onClose}
 			class="text-sm font-medium {active === 'faq'
 				? 'text-white'

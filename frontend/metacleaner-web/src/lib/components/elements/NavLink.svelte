@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	interface Props {
 		href: string;
@@ -17,4 +16,4 @@
 	);
 </script>
 
-<a href={resolve(href as Pathname)} class={classes}>{label}</a>
+<a href={localizeHref(href)} class={classes}>{label}</a>

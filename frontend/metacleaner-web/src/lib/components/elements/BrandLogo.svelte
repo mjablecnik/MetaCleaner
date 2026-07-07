@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
-	import type { Pathname } from '$app/types';
+	import { localizeHref } from '$lib/paraglide/runtime';
 
 	interface Props {
 		size?: 'sm' | 'md' | 'lg';
-		href?: Pathname;
+		href?: string;
 	}
 
 	const { size = 'md', href = '/' }: Props = $props();
@@ -18,7 +17,7 @@
 	const s = $derived(sizeMap[size]);
 </script>
 
-<a href={resolve(href)} class="flex items-center {s.gap}">
+<a href={localizeHref(href)} class="flex items-center {s.gap}">
 	<div
 		class="{s.container} rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-glow-blue"
 	>
