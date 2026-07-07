@@ -19,7 +19,8 @@ const config = {
 		csp: {
 			mode: 'hash',
 			directives: {
-				'script-src': ["'wasm-unsafe-eval'"]
+				'script-src': ['self', "'wasm-unsafe-eval'"],
+				'connect-src': ['self', 'https:', 'http:', 'wss:', 'ws:']
 			}
 		}
 	}
