@@ -5,7 +5,6 @@
 	import { setContext, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { Pathname } from '$app/types';
-	import MethodBadge from '$lib/shared/elements/MethodBadge.svelte';
 	import {
 		getDocsConfig,
 		getSidebarSections,
@@ -219,7 +218,6 @@
 									class="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors duration-200
 										{openEndpointIds.has(ep.id) ? 'font-semibold text-brand-blue' : 'text-text-muted hover:text-white'}"
 								>
-									<MethodBadge method={ep.method} size="sm" />
 									<span class="truncate">{ep.label}</span>
 								</a>
 								<!-- eslint-enable svelte/no-navigation-without-resolve -->

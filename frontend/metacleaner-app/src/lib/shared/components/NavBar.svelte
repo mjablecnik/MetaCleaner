@@ -167,14 +167,11 @@
 			{/if}
 			{#if user}
 				<PlanPill planId={billingStore.planId} planStatus={billingStore.planStatus} />
-				<a
-					href={resolve('/docs' as Pathname)}
-					class="text-sm font-medium transition-colors {page.url.pathname.startsWith('/docs')
-						? 'text-brand-blue'
-						: 'text-text-muted hover:text-white'}"
-				>
-					{tx('docs.nav.docs')}
-				</a>
+				<CreditBalanceIndicator
+					credits={billingStore.credits}
+					isLoading={billingStore.isLoading}
+					hasError={billingStore.hasError}
+				/>
 			{/if}
 			{#if showLangDropdown}
 				<LanguageDropdown
@@ -183,13 +180,6 @@
 					bind:open={langDropdownOpen}
 					onSelect={handleLangSelect}
 					wrapperId="nav-langDropdown"
-				/>
-			{/if}
-			{#if user}
-				<CreditBalanceIndicator
-					credits={billingStore.credits}
-					isLoading={billingStore.isLoading}
-					hasError={billingStore.hasError}
 				/>
 			{/if}
 			<UserDropdown {user} bind:open={userDropdownOpen} wrapperId="nav-userDropdown" {onLogout} />
