@@ -412,12 +412,7 @@
 						class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-gray-700 py-4 text-sm font-bold text-gray-500 opacity-60 transition-all"
 					>
 						<i class="fa-solid fa-wand-magic-sparkles"></i> Spustit čištění</button
-					><button
-						onclick="openOptionsSheet()"
-						class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-navy-lighter py-3.5 text-sm font-semibold text-white"
 					>
-						<i class="fa-solid fa-sliders"></i> Možnosti
-					</button>
 				</div>
 			</div>
 			<!-- Status Card -->
@@ -508,76 +503,6 @@
 				</div>
 			</div>
 		</main>
-		<!-- Options Bottom Sheet Overlay -->
-		<div id="sheet-overlay" onclick="closeOptionsSheet()" class="sheet-overlay"></div>
-		<!-- Options Bottom Sheet -->
-		<div id="options-sheet" class="bottom-sheet">
-			<div class="flex flex-col gap-0">
-				<div class="flex items-center justify-between border-b border-gray-800 px-5 pt-5 pb-4">
-					<h3 class="text-base font-bold text-white">Možnosti čištění</h3>
-					<button
-						onclick="closeOptionsSheet()"
-						class="flex h-10 w-10 items-center justify-center rounded-full bg-navy-lighter text-text-muted"
-					>
-						<i class="fa-solid fa-xmark"></i>
-					</button>
-				</div>
-				<div class="flex flex-col gap-4 px-5 py-4">
-					<div class="flex items-center justify-between py-2">
-						<div>
-							<p class="text-sm font-semibold text-white">GPS lokace</p>
-							<p class="mt-0.5 text-xs text-text-muted">Odstranit souřadnice polohy</p>
-						</div>
-						<div
-							class="relative flex h-6 w-12 cursor-pointer items-center rounded-full bg-brand-blue px-1"
-						>
-							<div class="ml-auto h-4 w-4 rounded-full bg-white"></div>
-						</div>
-					</div>
-					<div class="flex items-center justify-between py-2">
-						<div>
-							<p class="text-sm font-semibold text-white">Datum a čas</p>
-							<p class="mt-0.5 text-xs text-text-muted">Odstranit časové razítko</p>
-						</div>
-						<div
-							class="relative flex h-6 w-12 cursor-pointer items-center rounded-full bg-brand-blue px-1"
-						>
-							<div class="ml-auto h-4 w-4 rounded-full bg-white"></div>
-						</div>
-					</div>
-					<div class="flex items-center justify-between py-2">
-						<div>
-							<p class="text-sm font-semibold text-white">Informace o zařízení</p>
-							<p class="mt-0.5 text-xs text-text-muted">Model fotoaparátu, výrobce</p>
-						</div>
-						<div
-							class="relative flex h-6 w-12 cursor-pointer items-center rounded-full bg-brand-blue px-1"
-						>
-							<div class="ml-auto h-4 w-4 rounded-full bg-white"></div>
-						</div>
-					</div>
-					<div class="flex items-center justify-between py-2">
-						<div>
-							<p class="text-sm font-semibold text-white">Komentáře a popisy</p>
-							<p class="mt-0.5 text-xs text-text-muted">Textová metadata a tagy</p>
-						</div>
-						<div
-							class="relative flex h-6 w-12 cursor-pointer items-center rounded-full border border-gray-600 bg-navy-lighter px-1"
-						>
-							<div class="h-4 w-4 rounded-full bg-gray-500"></div>
-						</div>
-					</div>
-				</div>
-				<div class="px-5 pt-2 pb-6">
-					<button
-						onclick="closeOptionsSheet()"
-						class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-blue py-4 text-sm font-bold text-white"
-					>
-						<i class="fa-solid fa-check"></i> Uložit možnosti
-					</button>
-				</div>
-			</div>
-		</div>
 		<!-- Upgrade Bottom Sheet Overlay -->
 		<div id="upgrade-overlay" onclick="closeUpgradeSheet()" class="sheet-overlay"></div>
 		<!-- Upgrade Bottom Sheet -->
@@ -700,16 +625,6 @@
 			function toggleUserDropdown() {}
 
 			function setLang(lang) {}
-
-			function openOptionsSheet() {
-				document.getElementById('options-sheet').classList.add('open');
-				document.getElementById('sheet-overlay').classList.add('open');
-			}
-
-			function closeOptionsSheet() {
-				document.getElementById('options-sheet').classList.remove('open');
-				document.getElementById('sheet-overlay').classList.remove('open');
-			}
 
 			function handleFiles(files) {
 				updateCleanBtn(files && files.length > 0);

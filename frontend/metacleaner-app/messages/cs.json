@@ -26,6 +26,7 @@
 	"step1.scan.progress": "Skenování {scanned}/{total} souborů...",
 	"step1.files.title": "Soubory ke zpracování",
 	"step1.files.clearAll": "Vymazat vše",
+	"step1.status.title": "Stav zpracování",
 	"step1.status.uploadPrompt": "Nahrajte soubory pro zahájení čištění metadat.",
 	"step2.meta.title": "MetaCleaner — Soubory načteny",
 	"step2.risk.title": "Risk Scanner",

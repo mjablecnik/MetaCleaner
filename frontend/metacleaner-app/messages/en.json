@@ -26,6 +26,7 @@
 	"step1.scan.progress": "Scanning {scanned}/{total} files...",
 	"step1.files.title": "Files to process",
 	"step1.files.clearAll": "Clear all",
+	"step1.status.title": "Processing status",
 	"step1.status.uploadPrompt": "Upload files to start cleaning metadata.",
 	"step2.meta.title": "MetaCleaner — Files Loaded",
 	"step2.risk.title": "Risk Scanner",
