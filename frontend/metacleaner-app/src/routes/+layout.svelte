@@ -78,7 +78,7 @@
 		if (path !== '/') {
 			return { logoHref: '/' as string | undefined };
 		}
-		if (appState.current === 'success') {
+		if (appState.current !== 'idle') {
 			return { onLogoClick: () => appState.reset() };
 		}
 		return {};
