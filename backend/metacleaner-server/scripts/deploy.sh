@@ -50,13 +50,18 @@ echo ""
 echo "App: $APP_NAME"
 echo ""
 
+# Parse org from fly config (if present), default to "personal"
+FLY_ORG=$(grep '^org\s*=' "$FLY_CONFIG" | sed "s/^org\s*=\s*[\"']\(.*\)[\"']/\1/" | tr -d '\r' || true)
+FLY_ORG="${FLY_ORG:-personal}"
+
 # Create Fly.io app if not exists
-if fly apps list | grep -q "^$APP_NAME\s"; then
-  echo "✓ App $APP_NAME already exists"
-else
-  echo "Creating app $APP_NAME..."
-  fly apps create "$APP_NAME"
+APP_EXISTS=$(fly status --app "$APP_NAME" 2>&1 || true)
+if echo "$APP_EXISTS" | grep -qi "could not find app"; then
+  echo "Creating app $APP_NAME (org: $FLY_ORG)..."
+  fly apps create "$APP_NAME" --org "$FLY_ORG"
   echo "✓ App $APP_NAME created"
+else
+  echo "✓ App $APP_NAME already exists"
 fi
 
 # Check if volume exists (backend needs a mount for temp storage)
@@ -90,13 +95,12 @@ done < "$ENV_FILE"
 
 if [ -n "$SECRETS_ARGS" ]; then
   fly secrets set $SECRETS_ARGS --app "$APP_NAME" --stage
-  fly secrets deploy --app "$APP_NAME"
-  echo "✓ Secrets deployed"
+  echo "✓ Secrets staged"
 else
   echo "  No secrets to set"
 fi
 
-# Deploy
+# Deploy (staged secrets are applied automatically during deploy)
 echo ""
 echo "Deploying $APP_NAME..."
 fly deploy --config "$FLY_CONFIG" --app "$APP_NAME"
