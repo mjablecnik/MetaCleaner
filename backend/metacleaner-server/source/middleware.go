@@ -1,6 +1,7 @@
 package source
 
 import (
+	"log/slog"
 	"net"
 	"net/http"
 	"sync"
@@ -8,6 +9,49 @@ import (
 
 	"golang.org/x/time/rate"
 )
+
+// responseRecorder wraps http.ResponseWriter to capture the status code.
+type responseRecorder struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rr *responseRecorder) WriteHeader(code int) {
+	rr.statusCode = code
+	rr.ResponseWriter.WriteHeader(code)
+}
+
+// requestLoggingMiddleware logs every incoming HTTP request with method, path,
+// status code, duration, and client IP. Skips noisy health checks.
+func requestLoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Skip health check logs to avoid noise.
+		if r.URL.Path == "/api/health" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		start := time.Now()
+		rec := &responseRecorder{ResponseWriter: w, statusCode: http.StatusOK}
+		next.ServeHTTP(rec, r)
+		duration := time.Since(start)
+
+		level := slog.LevelInfo
+		if rec.statusCode >= 500 {
+			level = slog.LevelError
+		} else if rec.statusCode >= 400 {
+			level = slog.LevelWarn
+		}
+
+		slog.Log(r.Context(), level, "request",
+			"method", r.Method,
+			"path", r.URL.Path,
+			"status", rec.statusCode,
+			"duration", duration.Round(time.Millisecond).String(),
+			"ip", clientIP(r),
+		)
+	})
+}
 
 // clientIP extracts the real client IP from the request.
 // Prefers the Fly-Client-IP header (trusted at the Fly.io edge) over

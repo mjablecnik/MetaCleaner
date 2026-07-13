@@ -86,5 +86,5 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 
 	// Wrap with middleware chain
 	cors := corsMiddleware(cfg.FrontendOrigin)
-	return securityHeadersMiddleware(RequestIDMiddleware(cors(authMW.Middleware(mux))))
+	return requestLoggingMiddleware(securityHeadersMiddleware(RequestIDMiddleware(cors(authMW.Middleware(mux)))))
 }
