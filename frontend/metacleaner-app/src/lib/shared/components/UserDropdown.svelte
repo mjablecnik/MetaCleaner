@@ -21,6 +21,8 @@
 		wrapperId = 'userDropdown'
 	}: Props = $props();
 
+	const displayName = $derived(user?.name || user?.email?.split('@')[0] || '');
+
 	function handleToggle() {
 		open = !open;
 		onToggle?.();
@@ -38,7 +40,7 @@
 		>
 			<i class="fa-solid fa-user text-xs text-brand-blue"></i>
 		</div>
-		<span class="hidden md:block">{user?.name ?? ''}</span>
+		<span class="hidden md:block">{displayName}</span>
 		<i
 			class="fa-solid fa-chevron-down text-xs text-text-muted transition-transform {open
 				? 'rotate-180'
