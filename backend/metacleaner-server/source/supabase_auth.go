@@ -242,12 +242,14 @@ func (c *SupabaseAuthClient) SignInWithPassword(ctx context.Context, email, pass
 }
 
 // SignInWithOtp sends a magic link to the given email address. The link redirects
-// to the configured MagicLinkCallbackURL.
+// directly to the frontend login page where hash-fragment tokens are processed
+// client-side. Profile auto-provisioning for first-time users happens in HandleMe.
 func (c *SupabaseAuthClient) SignInWithOtp(ctx context.Context, email string) error {
+	// Supabase implicit flow delivers tokens as a URL hash fragment (#access_token=...).
+	// Hash fragments are never sent to the server, so redirecting to a backend callback
+	// does not work. Instead, redirect directly to the frontend login page which extracts
+	// tokens from the hash via handleAuthCallback() in onMount.
 	redirectTo := c.frontendURL + "/login"
-	if c.magicCallback != "" {
-		redirectTo = c.magicCallback
-	}
 	payload := map[string]interface{}{
 		"email": email,
 		"options": map[string]string{
