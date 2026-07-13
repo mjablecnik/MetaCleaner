@@ -157,7 +157,10 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 		// Channel signals that at least one WebSocket client has registered for this job,
 		// or a timeout elapsed — whichever comes first. This ensures progress events
 		// are not lost due to the WS connection being slower than the pipeline start.
-		wsReady := hub.WaitForRegistration(job.ID, 3*time.Second)
+		// 10 seconds gives the frontend enough time for the full sequence:
+		// receive job response → mint WS ticket → establish WS connection, even on
+		// high-latency deployments (e.g. Fly.io staging with cold connections).
+		wsReady := hub.WaitForRegistration(job.ID, 10*time.Second)
 
 		go func() {
 			// Wait until a WS client connects or the timeout expires.

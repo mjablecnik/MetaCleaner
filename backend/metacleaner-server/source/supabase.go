@@ -311,6 +311,19 @@ func (c *SupabaseClient) UpdateJob(ctx context.Context, job *Job) error {
 	return c.doJSON(ctx, http.MethodPatch, url, rec, nil)
 }
 
+// UpdateJobProgress updates only the in-progress counters (files_completed, fields_removed,
+// gps_locations_removed) without touching status or completed_at. This allows the polling
+// endpoint to return real-time progress even when the WebSocket connection fails.
+func (c *SupabaseClient) UpdateJobProgress(ctx context.Context, jobID string, filesCompleted, fieldsRemoved, gpsLocationsRemoved int) error {
+	payload := map[string]int{
+		"files_completed":      filesCompleted,
+		"fields_removed":       fieldsRemoved,
+		"gps_locations_removed": gpsLocationsRemoved,
+	}
+	url := c.restURL("cleaning_jobs?id=eq." + jobID)
+	return c.doJSON(ctx, http.MethodPatch, url, payload, nil)
+}
+
 // GetJob fetches a job by ID scoped to the given user. userID must be non-empty;
 // callers must guard against empty values before invoking this function.
 func (c *SupabaseClient) GetJob(ctx context.Context, jobID, userID string) (*Job, error) {

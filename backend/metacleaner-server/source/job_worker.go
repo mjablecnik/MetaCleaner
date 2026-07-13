@@ -83,7 +83,17 @@ func ProcessJobWithPool(pool *JobWorkerPool, cfg Config, db *SupabaseClient, hub
 	pool.Submit(job.ID, func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 		defer cancel()
-		progressFn := func(event ProgressEvent) { hub.Broadcast(job.ID, event) }
+		progressFn := func(event ProgressEvent) {
+			hub.Broadcast(job.ID, event)
+			// Persist progress to DB after each file completes so the HTTP polling
+			// endpoint (/api/jobs/{id}) returns real-time progress even when WebSocket
+			// connections fail (e.g. behind certain proxies or on staging).
+			if event.Type == "file_complete" || event.Type == "file_error" {
+				if err := db.UpdateJobProgress(ctx, job.ID, job.FilesCompleted, job.FieldsRemoved, job.GPSLocationsRemoved); err != nil {
+					slog.Warn("job: progress DB update failed", "jobId", job.ID, "error", err)
+				}
+			}
+		}
 		if err := pl.ProcessJob(ctx, job, files, progressFn); err != nil {
 			slog.Error("job: pipeline error", "jobId", job.ID, "error", err)
 		}

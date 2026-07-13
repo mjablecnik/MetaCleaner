@@ -82,8 +82,8 @@ interface BackendReportDetail {
 
 // ─── Polling fallback when WebSocket disconnects mid-job ────────
 
-const POLL_INTERVAL_MS = 3000;
-const MAX_POLLS = 100; // ~5 minutes
+const POLL_INTERVAL_MS = 2000;
+const MAX_POLLS = 150; // ~5 minutes
 
 async function pollUntilComplete(
 	jobId: string,
@@ -93,6 +93,8 @@ async function pollUntilComplete(
 	isCompleted: () => boolean,
 	setReportId: (id: string) => void
 ): Promise<void> {
+	let lastFilesCompleted = 0;
+
 	for (let i = 0; i < MAX_POLLS; i++) {
 		if (isCancelled() || isCompleted()) return;
 
@@ -129,7 +131,34 @@ async function pollUntilComplete(
 				});
 				return;
 			}
-			// still 'pending' or 'running' — continue polling
+
+			// Job is still processing — report progress from polling data.
+			// Even if filesCompleted hasn't changed in the DB yet, show an advancing
+			// progress indicator so the user knows something is happening.
+			const totalFiles = status.totalFiles || 0;
+			const filesCompleted = status.filesCompleted || 0;
+
+			if (totalFiles > 0) {
+				// If DB has real progress, use it
+				if (filesCompleted > lastFilesCompleted) {
+					lastFilesCompleted = filesCompleted;
+				}
+
+				// Compute a synthetic progress: even without per-file DB updates,
+				// advance progress slowly to show activity (based on poll iteration)
+				const dbProgress = totalFiles > 0 ? (filesCompleted / totalFiles) * 100 : 0;
+				// Synthetic progress: advances 1% per poll interval, capped below completion
+				const syntheticProgress = Math.min(dbProgress + Math.min(i * 2, 90), 95);
+				const overallProgress = Math.max(dbProgress, syntheticProgress);
+
+				callbacks.onProgress(
+					overallProgress,
+					filesCompleted,
+					totalFiles,
+					status.fieldsRemoved || 0,
+					0
+				);
+			}
 		} catch {
 			// network error during poll — continue trying
 		}
