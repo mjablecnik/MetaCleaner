@@ -1,12 +1,26 @@
-# Security Remediation Tasks — `frontend/metacleaner-web` (audit 2026-07-02)
+# Tigris Integration — Task List
 
-Derived from `SECURITY_AUDIT.md`. Sorted by severity (highest first). Each task is a single, independently fixable issue.
-
-> Overall risk: **LOW**. This is a fully prerendered static marketing site served by nginx — no runtime server, DB, shell, or auth in this package, so server-side vuln classes are out of scope. The one dynamic surface (contact-email Supabase Edge Function) is well validated, rate-limited, and fail-closed. All findings below are hardening / defense-in-depth.
-
-- [x] 1. [LOW] Re-declare (or `include`) the security headers inside the static-asset `location ~* \.(js|css|...)` block so CSP/HSTS/nosniff/X-Frame-Options aren't dropped by nginx's non-inheriting `add_header` — nginx.conf:18-21
-- [x] 2. [LOW] Drop `'unsafe-inline'` from CSP `style-src` (move to hashed/nonce styles) — nginx.conf:33
-- [x] 3. [LOW] Replace the wildcard `https://*.supabase.co` in CSP `connect-src` with the exact project origin — nginx.conf:33
-- [x] 4. [LOW] Defensively escape `<` (as `<`) in the serialized JSON-LD before `{@html}`, and keep `data` developer-controlled only — src/lib/components/shared/JsonLd.svelte:7
-- [x] 5. [LOW] Run `bun update` at the workspace root to patch transitive `cookie` (≥0.7.0) and `esbuild` (≥0.28.1) advisories, then re-run `bun audit` — bun.lock
-- [x] 6. [LOW] Set a real, separate `PROD_PROJECT_REF` (or source both refs from env) before any production Edge Function deploy — scripts/deploy-functions.sh:15-16
+- [x] 1. [HIGH] Add `aws-sdk-go-v2` S3 dependencies to `go.mod` (`github.com/aws/aws-sdk-go-v2`, `github.com/aws/aws-sdk-go-v2/config`, `github.com/aws/aws-sdk-go-v2/service/s3`, `github.com/aws/aws-sdk-go-v2/credentials`, `github.com/aws/aws-sdk-go-v2/feature/s3/manager`)
+- [x] 2. [HIGH] Add Tigris config fields to `Config` struct and `LoadConfig()` in `source/config.go` — `TigrisAccessKey`, `TigrisSecretKey`, `TigrisBucket` (default: `metacleaner-files`), `TigrisEndpoint` (default: `https://fly.storage.tigris.dev`), `TigrisPresignExpiry` (default: 1h)
+- [x] 3. [HIGH] Create `source/tigris.go` — `TigrisClient` struct with `NewTigrisClient(cfg Config)` constructor, S3 client initialization with static credentials and custom endpoint
+- [x] 4. [HIGH] Implement `TigrisClient.Upload(ctx, key, reader, contentType)` — uploads an object to the configured bucket using `s3manager.Uploader` for multipart support
+- [x] 5. [HIGH] Implement `TigrisClient.PresignGetURL(ctx, key, expiry)` — returns a presigned GET URL for downloading an object
+- [x] 6. [HIGH] Implement `TigrisClient.GetObject(ctx, key)` — returns an `io.ReadCloser` for streaming object content (used by ZIP handler)
+- [x] 7. [MEDIUM] Implement `TigrisClient.Delete(ctx, key)` — deletes an object from the bucket (for future cleanup/admin use)
+- [x] 8. [HIGH] Add `CleanedStorageKey` field to `FileRecord` in `source/models.go` — stores the Tigris object key (e.g., `cleaned/f-abc123_cleaned.jpg`)
+- [x] 9. [HIGH] Update `ProcessJob` in `source/pipeline.go` — after SHA-256 computation and before `file_complete` event, upload the cleaned file to Tigris using `TigrisClient.Upload`, set `FileRecord.CleanedStorageKey`, then delete the local cleaned file with `os.Remove`
+- [x] 10. [HIGH] Add `TigrisClient` parameter to `ProcessJobWithPool` and wire it through `source/job_worker.go`
+- [x] 11. [HIGH] Initialize `TigrisClient` in `source/main.go` — create instance from config, skip if `TigrisEndpoint` is empty (local dev fallback)
+- [x] 12. [HIGH] Update `source/router.go` — pass `TigrisClient` to download handler factories
+- [x] 13. [HIGH] Rewrite `HandleFileDownload` in `source/job_handlers.go` — generate presigned URL via `TigrisClient.PresignGetURL` and respond with `302 Found` redirect. Fall back to local file serving if Tigris is not configured.
+- [x] 14. [HIGH] Rewrite `HandleJobDownload` ZIP handler in `source/job_handlers.go` — stream each file from Tigris via `TigrisClient.GetObject` into the ZIP writer instead of `os.Open`. Fall back to local files if Tigris not configured.
+- [x] 15. [MEDIUM] Update `CleanupScheduler.RunCleanup()` in `source/cleanup.go` — remove the `cleaned/` directory from the scan list (cleaned files are deleted immediately after Tigris upload; Tigris lifecycle handles object expiry)
+- [x] 16. [MEDIUM] Remove `[[mounts]]` section from `fly.toml`
+- [x] 17. [MEDIUM] Remove `[[mounts]]` section from `fly.stage.toml`
+- [x] 18. [MEDIUM] Remove volume creation block (`fly volumes create metacleaner_tmp`) from `scripts/deploy.sh`
+- [x] 19. [MEDIUM] Add Tigris environment variables to `.env.example` — `TIGRIS_ACCESS_KEY`, `TIGRIS_SECRET_KEY`, `TIGRIS_BUCKET`, `TIGRIS_ENDPOINT`, `TIGRIS_PRESIGN_EXPIRY`
+- [x] 20. [MEDIUM] Write unit tests for `TigrisClient` in `tests/tigris_test.go` — test Upload, PresignGetURL, GetObject, Delete with a mocked S3 interface
+- [x] 21. [MEDIUM] Update download handler tests in `tests/handlers_download_test.go` — verify 302 redirect behavior for single file download and streaming behavior for ZIP download
+- [x] 22. [LOW] Update pipeline tests in `tests/pipeline_test.go` and `tests/pipeline_integration_test.go` — mock TigrisClient in pipeline tests to verify upload is called after cleaning
+- [x] 23. [LOW] Run `go mod tidy` to clean up dependency graph after adding AWS SDK modules
+- [x] 24. [LOW] Verify build compiles cleanly with `go build ./...` and all tests pass with `go test ./tests/ -v`
