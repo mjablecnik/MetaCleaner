@@ -11,14 +11,15 @@ set -euo pipefail
 # Changes to workspace.dsl are detected automatically — no restart needed.
 #
 # Usage:
-#   ./start-structurizr.sh
+#   ./scripts/start-docker.sh
+#   dploy start architecture
 #
 # Access from this machine:    http://localhost:8081
 # Access from other devices:   http://<your-ip>:8081
 # ============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$SCRIPT_DIR"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
 
 CONTAINER_NAME="structurizr"
@@ -66,7 +67,7 @@ if docker ps --filter "name=${CONTAINER_NAME}" --format '{{.Status}}' | grep -q 
     echo "   Local:   http://localhost:${PORT}"
     echo "   Network: http://${LOCAL_IP}:${PORT}"
     echo ""
-    echo "   Stop with:  docker stop ${CONTAINER_NAME}"
+    echo "   Stop with:  dploy stop architecture"
     echo "   Logs with:  docker logs -f ${CONTAINER_NAME}"
 else
     echo ""

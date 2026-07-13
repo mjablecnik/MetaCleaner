@@ -5,57 +5,93 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
 
-# Resolve env file: DPLOY_ENV_FILE > --env flag > .env-prod default
-ENV_FILE=".env-prod"
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --env)
-      ENV_FILE=".env-$2"
-      shift 2
-      ;;
-    *)
-      shift
-      ;;
-  esac
-done
-if [[ -n "${DPLOY_ENV_FILE:-}" ]]; then
-  ENV_FILE="$DPLOY_ENV_FILE"
-fi
+# Resolve environment from $1 (dploy passes env as first positional arg)
+ENV="${1:-prod}"
 
-APP_NAME=$(grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*["\x27]\(.*\)["\x27]/\1/' | tr -d '\r')
-
-echo "Deploying $APP_NAME using env file: $ENV_FILE"
-
-# Create Fly.io app if not exists
-if fly apps list | grep -q "^$APP_NAME\s"; then
-  echo "App $APP_NAME already exists, skipping creation."
+# Select fly config and env file based on environment
+if [ "$ENV" = "prod" ]; then
+  FLY_CONFIG="fly.toml"
+  ENV_FILE=".env.prod"
 else
-  echo "Creating app $APP_NAME..."
-  fly apps create "$APP_NAME"
+  FLY_CONFIG="fly.${ENV}.toml"
+  ENV_FILE=".env.${ENV}"
 fi
 
-# Extract keys already in fly.toml [env] section (non-secret config)
-FLY_ENV_KEYS=$(sed -n '/^\[env\]/,/^\[/p' fly.toml | grep '=' | sed 's/\s*=.*//' | tr -d '\r')
+echo "=== MetaCleaner Monitoring — Deployment ($ENV) ==="
+echo ""
 
-# Set secrets from env file (skip keys already in fly.toml [env])
-if [ -f "$ENV_FILE" ]; then
-  echo ""
-  echo "Setting secrets from $ENV_FILE..."
-  while IFS= read -r line; do
-    [[ -z "$line" || "$line" == \#* ]] && continue
-    KEY="${line%%=*}"
-    VALUE="${line#*=}"
-    [[ -z "$VALUE" ]] && continue
-    if echo "$FLY_ENV_KEYS" | grep -qx "$KEY"; then
-      echo "  Skipping $KEY (already in fly.toml [env])"
-      continue
-    fi
-    echo "  Setting $KEY"
-    fly secrets set "$KEY=$VALUE" --app "$APP_NAME" --stage
-  done < "$ENV_FILE"
-  fly secrets deploy --app "$APP_NAME"
+# Validate all required files exist
+MISSING=()
+[ ! -f "$FLY_CONFIG" ] && MISSING+=("$FLY_CONFIG")
+[ ! -f "$ENV_FILE" ] && MISSING+=("$ENV_FILE")
+[ ! -f "Dockerfile" ] && MISSING+=("Dockerfile")
+
+if [ ${#MISSING[@]} -gt 0 ]; then
+  echo "ERROR: Required files not found in $PROJECT_DIR:"
+  for f in "${MISSING[@]}"; do
+    echo "  ✗ $f"
+  done
+  exit 2
+fi
+
+echo "✓ Config:     $FLY_CONFIG"
+echo "✓ Env:        $ENV_FILE"
+echo "✓ Dockerfile"
+
+# Parse app name from fly config
+APP_NAME=$(grep '^app\s*=' "$FLY_CONFIG" | sed "s/^app\s*=\s*[\"']\(.*\)[\"']/\1/" | tr -d '\r')
+
+if [ -z "$APP_NAME" ]; then
+  echo "ERROR: Could not parse app name from $FLY_CONFIG"
+  exit 2
 fi
 
 echo ""
-echo "Running fly deploy..."
-fly deploy
+echo "App: $APP_NAME"
+echo ""
+
+# Create Fly.io app if not exists
+if fly apps list | grep -q "^$APP_NAME\s"; then
+  echo "✓ App $APP_NAME already exists"
+else
+  echo "Creating app $APP_NAME..."
+  fly apps create "$APP_NAME"
+  echo "✓ App $APP_NAME created"
+fi
+
+# Extract keys already in fly config [env] section (non-secret config)
+FLY_ENV_KEYS=$(sed -n '/^\[env\]/,/^\[/p' "$FLY_CONFIG" | grep '=' | sed 's/\s*=.*//' | tr -d '\r')
+
+# Set secrets from env file (skip keys already in fly config [env])
+echo ""
+echo "Setting secrets from $ENV_FILE..."
+SECRETS_ARGS=""
+while IFS= read -r line; do
+  [[ -z "$line" || "$line" == \#* ]] && continue
+  KEY="${line%%=*}"
+  VALUE="${line#*=}"
+  [[ -z "$VALUE" ]] && continue
+  if echo "$FLY_ENV_KEYS" | grep -qx "$KEY"; then
+    echo "  Skipping $KEY (already in $FLY_CONFIG [env])"
+    continue
+  fi
+  echo "  Setting $KEY"
+  SECRETS_ARGS="$SECRETS_ARGS $KEY=$VALUE"
+done < "$ENV_FILE"
+
+if [ -n "$SECRETS_ARGS" ]; then
+  fly secrets set $SECRETS_ARGS --app "$APP_NAME" --stage
+  fly secrets deploy --app "$APP_NAME"
+  echo "✓ Secrets deployed"
+else
+  echo "  No secrets to set"
+fi
+
+# Deploy
+echo ""
+echo "Deploying $APP_NAME..."
+fly deploy --config "$FLY_CONFIG" --app "$APP_NAME"
+
+echo ""
+echo "=== ✓ $APP_NAME deployed successfully ==="
+echo "URL: https://$APP_NAME.fly.dev"
