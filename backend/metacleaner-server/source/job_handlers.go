@@ -188,7 +188,9 @@ func contentTypeForExt(ext string) string {
 }
 
 // HandleFileDownload handles GET /api/files/{id}/download — serves the cleaned file.
-func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
+// When tigris is configured, redirects to a presigned Tigris URL; otherwise falls back
+// to serving the cleaned file directly from local disk (dev-only).
+func HandleFileDownload(cfg Config, db *SupabaseClient, tigris *TigrisClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileID := r.PathValue("id")
 		if fileID == "" || !localIDPattern.MatchString(fileID) {
@@ -200,44 +202,56 @@ func HandleFileDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		// Check is unconditional: an empty userID would never match a valid ownership
 		// row, so it fails safely regardless of how auth-middleware evolves.
 		userID := UserIDFromContext(r.Context())
-		owned, err := db.VerifyFileOwnership(r.Context(), fileID, userID)
-		if err != nil || !owned {
+		record, err := db.GetFileRecordByLocalID(r.Context(), fileID, userID)
+		if err != nil || record == nil {
 			WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
 			return
 		}
 
-		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
-		uploadsDir := filepath.Join(cfg.TempStoragePath, "uploads")
-
-		// Look for the cleaned file.
-		cleanedMatches, _ := filepath.Glob(filepath.Join(cleanedDir, fileID+"_cleaned.*"))
-		if len(cleanedMatches) > 0 {
-			// File is ready — serve it.
-			cleanedPath := cleanedMatches[0]
-			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
-
-			downloadName := buildCleanedFileName(fileID, ext)
-
-			w.Header().Set("Content-Type", contentTypeForExt(ext))
-			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, downloadName))
-			http.ServeFile(w, r, cleanedPath)
-			return
-		}
-
-		// Cleaned file doesn't exist — check if original is still present (in progress).
-		originalMatches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
-		if len(originalMatches) > 0 {
+		switch record.Status {
+		case "pending", "in_progress":
 			WriteError(w, http.StatusConflict, ErrFileNotReady, "File is not ready for download yet")
 			return
+		case "done":
+			// proceed below
+		default:
+			WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+			return
 		}
 
-		// Neither file found — expired or never existed.
-		WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+		ext := strings.TrimPrefix(record.FileExtension, ".")
+		downloadName := buildCleanedFileName(fileID, ext)
+
+		if tigris != nil {
+			key := fmt.Sprintf("cleaned/%s_cleaned.%s", fileID, ext)
+			presignedURL, err := tigris.PresignGetURL(r.Context(), key, cfg.TigrisPresignExpiry)
+			if err != nil {
+				WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+				return
+			}
+			http.Redirect(w, r, presignedURL, http.StatusFound)
+			return
+		}
+
+		// Local dev fallback: serve the cleaned file directly from disk.
+		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
+		cleanedMatches, _ := filepath.Glob(filepath.Join(cleanedDir, fileID+"_cleaned.*"))
+		if len(cleanedMatches) == 0 {
+			WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
+			return
+		}
+		cleanedPath := cleanedMatches[0]
+
+		w.Header().Set("Content-Type", contentTypeForExt(ext))
+		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, downloadName))
+		http.ServeFile(w, r, cleanedPath)
 	}
 }
 
 // HandleJobDownload handles GET /api/jobs/{id}/download — streams all cleaned files as a ZIP archive.
-func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
+// When tigris is configured, each file is streamed from Tigris; otherwise cleaned files are
+// read directly from local disk (dev-only fallback).
+func HandleJobDownload(cfg Config, db *SupabaseClient, tigris *TigrisClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		jobID := r.PathValue("id")
 		if jobID == "" || !uuidV4Pattern.MatchString(jobID) {
@@ -269,7 +283,8 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		cleanedDir := filepath.Join(cfg.TempStoragePath, "cleaned")
 
 		type zipEntry struct {
-			path     string
+			localID  string
+			ext      string
 			fileName string
 		}
 		entries := make([]zipEntry, 0, len(files))
@@ -284,14 +299,17 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 				LoggerFromContext(r.Context()).Warn("HandleJobDownload: derived localID does not match expected pattern, skipping file", "localID", localID, "fileName", f.FileName, "fileId", f.ID)
 				continue
 			}
-			matches, _ := filepath.Glob(filepath.Join(cleanedDir, localID+"_cleaned.*"))
-			if len(matches) == 0 {
-				continue
+			ext := strings.TrimPrefix(f.FileExtension, ".")
+
+			if tigris == nil {
+				matches, _ := filepath.Glob(filepath.Join(cleanedDir, localID+"_cleaned.*"))
+				if len(matches) == 0 {
+					continue
+				}
+				ext = strings.TrimPrefix(filepath.Ext(matches[0]), ".")
 			}
-			cleanedPath := matches[0]
-			ext := strings.TrimPrefix(filepath.Ext(cleanedPath), ".")
-			downloadName := buildCleanedFileName(localID, ext)
-			entries = append(entries, zipEntry{path: cleanedPath, fileName: downloadName})
+
+			entries = append(entries, zipEntry{localID: localID, ext: ext, fileName: buildCleanedFileName(localID, ext)})
 		}
 
 		if len(entries) == 0 {
@@ -306,17 +324,30 @@ func HandleJobDownload(cfg Config, db *SupabaseClient) http.HandlerFunc {
 		defer zipWriter.Close()
 
 		for _, entry := range entries {
-			file, err := os.Open(entry.path)
-			if err != nil {
-				continue
+			var rc io.ReadCloser
+			if tigris != nil {
+				key := fmt.Sprintf("cleaned/%s_cleaned.%s", entry.localID, entry.ext)
+				obj, err := tigris.GetObject(r.Context(), key)
+				if err != nil {
+					slog.Warn("job-download: failed to stream cleaned file from tigris", "key", key, "error", err)
+					continue
+				}
+				rc = obj
+			} else {
+				file, err := os.Open(filepath.Join(cleanedDir, entry.localID+"_cleaned."+entry.ext))
+				if err != nil {
+					continue
+				}
+				rc = file
 			}
+
 			writer, err := zipWriter.Create(entry.fileName)
 			if err != nil {
-				file.Close()
+				rc.Close()
 				continue
 			}
-			io.Copy(writer, file) //nolint:errcheck
-			file.Close()
+			io.Copy(writer, rc) //nolint:errcheck
+			rc.Close()
 		}
 
 		// Include the PDF report in the ZIP if available.

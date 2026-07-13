@@ -55,6 +55,7 @@ type FileRecord struct {
 	ErrorMessage      string          `json:"errorMessage,omitempty"`
 	MetadataBreakdown *MetadataDetail `json:"metadata,omitempty"`
 	SHA256Hash        string          `json:"sha256Hash,omitempty"` // SHA-256 of the cleaned file
+	CleanedStorageKey string          `json:"-"`                    // Tigris object key for the cleaned file, e.g. cleaned/f-abc123_cleaned.jpg
 	ProcessedAt       *time.Time      `json:"processedAt,omitempty"`
 }
 

@@ -565,6 +565,21 @@ func (c *SupabaseClient) VerifyFileOwnership(ctx context.Context, localID, userI
 	return len(rows) > 0, nil
 }
 
+// GetFileRecordByLocalID looks up a file record by its local ID prefix (e.g. "f-abc123"),
+// scoped to the given user. Returns (nil, nil) if not found or owned by a different user.
+func (c *SupabaseClient) GetFileRecordByLocalID(ctx context.Context, localID, userID string) (*FileRecord, error) {
+	var rows []dbFileRecord
+	queryURL := c.restURL("job_files?file_name=like." + url.QueryEscape(localID) + "%25&user_id=eq." + url.QueryEscape(userID))
+	if err := c.doJSON(ctx, http.MethodGet, queryURL, nil, &rows); err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil
+	}
+	f := dbToFileRecord(rows[0])
+	return &f, nil
+}
+
 // --- Report operations ---
 
 // CreateReport inserts a new report record.

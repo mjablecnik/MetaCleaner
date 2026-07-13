@@ -76,6 +76,9 @@ func (p *JobWorkerPool) RunningCount() int {
 // (DB updates, report creation) in a single unit of work submitted to the pool.
 // The 5-minute timeout is created inside the submitted closure so its lifetime
 // spans actual execution, not just the Submit() call (which returns immediately).
+// Tigris upload (if configured) happens inside pl.ProcessJob — pl carries its
+// TigrisClient internally (see NewCleaningPipelineWithTigris), so no separate
+// TigrisClient parameter is threaded through this function.
 func ProcessJobWithPool(pool *JobWorkerPool, cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, job *Job, files []FileRecord, authClient *SupabaseAuthClient) {
 	pool.Submit(job.ID, func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)

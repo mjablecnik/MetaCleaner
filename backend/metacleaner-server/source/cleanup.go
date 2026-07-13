@@ -41,11 +41,12 @@ func (cs *CleanupScheduler) Start(ctx context.Context) {
 	}()
 }
 
-// RunCleanup scans uploads/ and cleaned/ directories and deletes expired files.
+// RunCleanup scans the uploads/ directory and deletes expired files. Cleaned files are
+// deleted immediately after Tigris upload (or, in local-dev fallback, served directly),
+// so cleaned/ no longer needs scanning here — Tigris bucket lifecycle handles its expiry.
 func (cs *CleanupScheduler) RunCleanup() {
 	dirs := []string{
 		filepath.Join(cs.tempStoragePath, "uploads"),
-		filepath.Join(cs.tempStoragePath, "cleaned"),
 	}
 
 	now := time.Now()

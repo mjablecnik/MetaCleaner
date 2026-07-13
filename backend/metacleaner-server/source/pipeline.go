@@ -4,7 +4,9 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,12 +16,21 @@ import (
 
 // CleaningPipeline orchestrates file metadata stripping.
 type CleaningPipeline struct {
-	cfg Config
+	cfg    Config
+	tigris *TigrisClient
 }
 
-// NewCleaningPipeline creates a pipeline using the given config.
+// NewCleaningPipeline creates a pipeline using the given config. Cleaned files are
+// kept on local disk (no Tigris upload) unless a TigrisClient is attached via
+// NewCleaningPipelineWithTigris.
 func NewCleaningPipeline(cfg Config) *CleaningPipeline {
 	return &CleaningPipeline{cfg: cfg}
+}
+
+// NewCleaningPipelineWithTigris creates a pipeline that uploads cleaned files to
+// Tigris and deletes the local copy immediately after each successful upload.
+func NewCleaningPipelineWithTigris(cfg Config, tigris *TigrisClient) *CleaningPipeline {
+	return &CleaningPipeline{cfg: cfg, tigris: tigris}
 }
 
 // Cfg returns the pipeline's configuration (used by tests to access TempStoragePath).
@@ -95,6 +106,17 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 			continue
 		}
 
+		ext := strings.TrimPrefix(f.FileExtension, ".")
+
+		if p.tigris != nil {
+			if key, uploadErr := p.uploadCleanedFile(ctx, cleanedPath, f.LocalID, ext); uploadErr != nil {
+				slog.Warn("pipeline: tigris upload failed, keeping local file", "fileId", f.LocalID, "error", uploadErr)
+			} else {
+				f.CleanedStorageKey = key
+				os.Remove(cleanedPath) //nolint:errcheck
+			}
+		}
+
 		f.Status = "done"
 		f.ProcessedAt = &now
 		f.FieldsRemoved = result.FieldsRemoved
@@ -102,7 +124,7 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		f.Device = result.Device
 		f.MetadataBreakdown = result.MetadataBreakdown
 		f.SHA256Hash = fileHash
-		f.CleanedName = buildCleanedFileName(f.LocalID, strings.TrimPrefix(f.FileExtension, "."))
+		f.CleanedName = buildCleanedFileName(f.LocalID, ext)
 
 		job.FilesCompleted++
 		job.FieldsRemoved += result.FieldsRemoved
@@ -158,6 +180,22 @@ func buildFileErrorEvent(f *FileRecord, completed, total int) ProgressEvent {
 		FilesCompleted:  completed,
 		TotalFiles:      total,
 	}
+}
+
+// uploadCleanedFile uploads the cleaned file at path to Tigris under the standard
+// cleaned/{localId}_cleaned.{ext} key pattern and returns the key on success.
+func (p *CleaningPipeline) uploadCleanedFile(ctx context.Context, path, localID, ext string) (string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	key := fmt.Sprintf("cleaned/%s_cleaned.%s", localID, ext)
+	if err := p.tigris.Upload(ctx, key, file, contentTypeForExt(ext)); err != nil {
+		return "", err
+	}
+	return key, nil
 }
 
 // computeFileSHA256 computes the SHA-256 hash of a file and returns it as a hex string.

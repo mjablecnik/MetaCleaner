@@ -21,45 +21,53 @@ func (e *ErrConfig) Error() string {
 }
 
 type Config struct {
-	Port                   int
-	FrontendOrigin         string
-	MaxFileSize            int64
-	RetentionPeriod        time.Duration
-	TempStoragePath        string
-	SupabaseURL            string
-	SupabaseAPIKey         string
-	SupabaseServiceRoleKey string
-	SupabaseJWTSecret      string
-	OAuthCallbackURL       string
-	MagicLinkCallbackURL   string
-	FrontendURL            string
-	RateLimitRPM           int
-	AndroidCertFingerprint string
-	AppleTeamID            string
-	SupabaseTimeout        time.Duration
-	MaxConcurrentJobs      int
-	StripeSecretKey          string
-	StripeWebhookSecret      string
-	StripePriceProMonth      string
-	StripePriceProYear       string
-	StripePriceProPlusMonth  string
-	StripePriceProPlusYear   string
-	StripePriceCreditPack    string
-	BrevoAPIKey              string
-	BrevoSenderEmail         string
+	Port                    int
+	FrontendOrigin          string
+	MaxFileSize             int64
+	RetentionPeriod         time.Duration
+	TempStoragePath         string
+	SupabaseURL             string
+	SupabaseAPIKey          string
+	SupabaseServiceRoleKey  string
+	SupabaseJWTSecret       string
+	OAuthCallbackURL        string
+	MagicLinkCallbackURL    string
+	FrontendURL             string
+	RateLimitRPM            int
+	AndroidCertFingerprint  string
+	AppleTeamID             string
+	SupabaseTimeout         time.Duration
+	MaxConcurrentJobs       int
+	StripeSecretKey         string
+	StripeWebhookSecret     string
+	StripePriceProMonth     string
+	StripePriceProYear      string
+	StripePriceProPlusMonth string
+	StripePriceProPlusYear  string
+	StripePriceCreditPack   string
+	BrevoAPIKey             string
+	BrevoSenderEmail        string
+	TigrisAccessKey         string
+	TigrisSecretKey         string
+	TigrisBucket            string
+	TigrisEndpoint          string
+	TigrisPresignExpiry     time.Duration
 }
 
 func LoadConfig() (Config, error) {
 	_ = godotenv.Load()
 
 	cfg := Config{
-		Port:              8080,
-		MaxFileSize:       500 * 1024 * 1024, // 500 MB
-		RetentionPeriod:   time.Hour,
-		TempStoragePath:   "/tmp/metacleaner",
-		RateLimitRPM:      10,
-		SupabaseTimeout:   30 * time.Second,
-		MaxConcurrentJobs: 3,
+		Port:                8080,
+		MaxFileSize:         500 * 1024 * 1024, // 500 MB
+		RetentionPeriod:     time.Hour,
+		TempStoragePath:     "/tmp/metacleaner",
+		RateLimitRPM:        10,
+		SupabaseTimeout:     30 * time.Second,
+		MaxConcurrentJobs:   3,
+		TigrisBucket:        "metacleaner-files",
+		TigrisEndpoint:      "https://fly.storage.tigris.dev",
+		TigrisPresignExpiry: time.Hour,
 	}
 
 	if v := os.Getenv("PORT"); v != "" {
@@ -126,6 +134,26 @@ func LoadConfig() (Config, error) {
 	cfg.BrevoSenderEmail = os.Getenv("BREVO_SENDER_EMAIL")
 	if cfg.BrevoSenderEmail == "" {
 		cfg.BrevoSenderEmail = "noreply@metacleaner.app"
+	}
+
+	cfg.TigrisAccessKey = os.Getenv("TIGRIS_ACCESS_KEY")
+	cfg.TigrisSecretKey = os.Getenv("TIGRIS_SECRET_KEY")
+
+	if v := os.Getenv("TIGRIS_BUCKET"); v != "" {
+		cfg.TigrisBucket = v
+	}
+
+	// TIGRIS_ENDPOINT uses LookupEnv (not a plain != "" check) so that setting it to an
+	// explicit empty string in .env disables Tigris and falls back to local file storage,
+	// while leaving it unset keeps the production endpoint default.
+	if v, ok := os.LookupEnv("TIGRIS_ENDPOINT"); ok {
+		cfg.TigrisEndpoint = v
+	}
+
+	if v := os.Getenv("TIGRIS_PRESIGN_EXPIRY"); v != "" {
+		if d, err := time.ParseDuration(v); err == nil {
+			cfg.TigrisPresignExpiry = d
+		}
 	}
 
 	if cfg.SupabaseURL == "" {

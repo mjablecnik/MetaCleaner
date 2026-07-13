@@ -77,9 +77,20 @@ func Run() {
 	scheduler.Start(schedulerCtx)
 	slog.Info("startup: cleanup scheduler started")
 
-	// Initialize WebSocketHub and CleaningPipeline.
+	// Initialize WebSocketHub and CleaningPipeline. TigrisClient is only attached
+	// when TIGRIS_ENDPOINT is configured — an empty endpoint means local dev without
+	// Tigris, and the pipeline falls back to keeping cleaned files on local disk.
 	hub := NewWebSocketHub()
-	pl := NewCleaningPipeline(cfg)
+	var pl *CleaningPipeline
+	var tigris *TigrisClient
+	if cfg.TigrisEndpoint == "" {
+		slog.Warn("startup: TIGRIS_ENDPOINT not set, cleaned files will be kept on local disk")
+		pl = NewCleaningPipeline(cfg)
+	} else {
+		tigris = NewTigrisClient(cfg)
+		pl = NewCleaningPipelineWithTigris(cfg, tigris)
+		slog.Info("startup: Tigris storage configured", "bucket", cfg.TigrisBucket, "endpoint", cfg.TigrisEndpoint)
+	}
 
 	// Initialize Supabase Auth client.
 	authClient := NewSupabaseAuthClient(cfg)
@@ -90,7 +101,7 @@ func Run() {
 	slog.Info("startup: account cleanup scheduler started")
 
 	// Build router.
-	router := NewRouter(cfg, db, hub, pl, authClient)
+	router := NewRouter(cfg, db, hub, pl, authClient, tigris)
 
 	srv := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.Port),

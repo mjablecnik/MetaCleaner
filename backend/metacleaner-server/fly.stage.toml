@@ -28,7 +28,3 @@ primary_region = 'fra'
     grace_period = "10s"
     method = "get"
     path = "/api/health"
-
-[[mounts]]
-  source = "metacleaner_tmp"
-  destination = "/tmp/metacleaner"

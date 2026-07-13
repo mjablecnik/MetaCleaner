@@ -85,15 +85,6 @@ else
   echo "✓ App $APP_NAME already exists"
 fi
 
-# Check if volume exists (backend needs a mount for temp storage)
-if fly volumes list --app "$APP_NAME" 2>/dev/null | grep -q "metacleaner_tmp"; then
-  echo "✓ Volume metacleaner_tmp already exists"
-else
-  echo "Creating volume metacleaner_tmp (1GB, fra)..."
-  fly volumes create metacleaner_tmp --region fra --size 1 --app "$APP_NAME" -y
-  echo "✓ Volume created"
-fi
-
 # Extract keys already in fly config [env] section (non-secret config)
 FLY_ENV_KEYS=$(sed -n '/^\[env\]/,/^\[/p' "$FLY_CONFIG" | grep '=' | sed 's/\s*=.*//' | tr -d '\r')
 

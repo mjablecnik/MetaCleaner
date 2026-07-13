@@ -35,7 +35,3 @@ primary_region = 'fra'
     method = "get"
     path = "/api/health"
     protocol = "http"
-
-[[mounts]]
-  source = "metacleaner_tmp"
-  destination = "/tmp/metacleaner"
