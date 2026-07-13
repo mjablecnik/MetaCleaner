@@ -94,6 +94,11 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 			Email:     req.Email,
 		}); err != nil {
 			LoggerFromContext(r.Context()).Warn("register: failed to create profile", "userId", user.ID, "error", err)
+			errMsg := strings.ToLower(err.Error())
+			if strings.Contains(errMsg, "status 409") || strings.Contains(errMsg, "duplicate key") || strings.Contains(errMsg, "already exists") || strings.Contains(errMsg, "violates") {
+				WriteError(w, http.StatusConflict, ErrAuthEmailExists, "an account with this email already exists")
+				return
+			}
 			WriteError(w, http.StatusServiceUnavailable, ErrAuthProviderUnavailable, "authentication service temporarily unavailable")
 			return
 		}

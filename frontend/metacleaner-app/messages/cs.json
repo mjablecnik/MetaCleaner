@@ -264,6 +264,8 @@
 	"auth.common.validation.passwordsMismatch": "Hesla se neshodují.",
 	"auth.common.validation.passwordMax72": "Heslo může mít nejvýše 72 znaků.",
 	"auth.common.error.unknown": "Došlo k neočekávané chybě. Zkuste to prosím znovu.",
+	"auth.common.error.emailExists": "Účet s tímto e-mailem již existuje. Zkuste se přihlásit.",
+	"auth.common.error.providerUnavailable": "Služba ověřování je dočasně nedostupná. Zkuste to prosím později.",
 	"auth.common.validation.passwordsMatch": "Hesla se shodují.",
 	"auth.common.validation.otpIncomplete": "Zadejte celý 6místný kód.",
 	"auth.common.strength.weak": "Slabé",

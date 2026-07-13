@@ -119,7 +119,14 @@
 			onSuccess?.(email, password);
 		} catch (err: unknown) {
 			submitState = 'idle';
-			apiError = err instanceof Error ? err.message : tx('auth.common.error.unknown');
+			const code = (err as { code?: string })?.code;
+			if (code === 'AUTH_EMAIL_EXISTS') {
+				apiError = tx('auth.common.error.emailExists');
+			} else if (code === 'AUTH_PROVIDER_UNAVAILABLE') {
+				apiError = tx('auth.common.error.providerUnavailable');
+			} else {
+				apiError = err instanceof Error ? err.message : tx('auth.common.error.unknown');
+			}
 		}
 	}
 </script>

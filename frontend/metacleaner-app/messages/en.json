@@ -264,6 +264,8 @@
 	"auth.common.validation.passwordsMismatch": "Passwords do not match.",
 	"auth.common.validation.passwordMax72": "Password must be at most 72 characters.",
 	"auth.common.error.unknown": "An unexpected error occurred. Please try again.",
+	"auth.common.error.emailExists": "An account with this email already exists. Try signing in instead.",
+	"auth.common.error.providerUnavailable": "Authentication service temporarily unavailable. Please try again later.",
 	"auth.common.validation.passwordsMatch": "Passwords match.",
 	"auth.common.validation.otpIncomplete": "Please enter the complete 6-digit code.",
 	"auth.common.strength.weak": "Weak",
