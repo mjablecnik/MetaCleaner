@@ -13,8 +13,15 @@ if [ -f .env ]; then
 fi
 PUBLIC_API_URL="${PUBLIC_API_URL:-http://localhost:8080}"
 
+DOCKER_ARGS=""
+for arg in "$@"; do
+  case "$arg" in
+    --no-cache) DOCKER_ARGS="$DOCKER_ARGS --no-cache" ;;
+  esac
+done
+
 echo "Building Docker image: $APP_NAME (PUBLIC_API_URL=$PUBLIC_API_URL)"
 WORKSPACE_ROOT="$(dirname "$(dirname "$PROJECT_DIR")")"
-docker build --no-cache -t "$APP_NAME" \
+docker build $DOCKER_ARGS -t "$APP_NAME" \
   --build-arg "PUBLIC_API_URL=$PUBLIC_API_URL" \
   -f "$PROJECT_DIR/Dockerfile" "$WORKSPACE_ROOT"
