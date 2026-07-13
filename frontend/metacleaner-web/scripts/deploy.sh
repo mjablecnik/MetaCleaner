@@ -53,13 +53,34 @@ echo ""
 echo "App: $APP_NAME"
 echo ""
 
-# Parse org from fly config (if present), default to "personal"
+# Parse org from fly config (if present)
 FLY_ORG=$(grep '^org\s*=' "$FLY_CONFIG" | sed "s/^org\s*=\s*[\"']\(.*\)[\"']/\1/" | tr -d '\r' || true)
-FLY_ORG="${FLY_ORG:-personal}"
 
 # Create Fly.io app if not exists
 APP_EXISTS=$(fly status --app "$APP_NAME" 2>&1 || true)
 if echo "$APP_EXISTS" | grep -qi "could not find app"; then
+  # If org not in config, ask interactively
+  if [ -z "$FLY_ORG" ]; then
+    echo "Available organizations:"
+    ORGS=()
+    NAMES=()
+    i=1
+    while IFS='|' read -r slug name; do
+      [ -z "$slug" ] && continue
+      ORGS+=("$slug")
+      NAMES+=("$name")
+      echo "  $i) $name ($slug)"
+      i=$((i + 1))
+    done < <(fly orgs list --json | jq -r 'to_entries[] | "\(.key)|\(.value)"')
+    echo ""
+    printf "Select organization for $APP_NAME [1-${#ORGS[@]}]: "
+    read -r ORG_NUM
+    FLY_ORG="${ORGS[$((ORG_NUM - 1))]}"
+    if [ -z "$FLY_ORG" ]; then
+      echo "ERROR: Invalid selection" >&2
+      exit 2
+    fi
+  fi
   echo "Creating app $APP_NAME (org: $FLY_ORG)..."
   fly apps create "$APP_NAME" --org "$FLY_ORG"
   echo "✓ App $APP_NAME created"
