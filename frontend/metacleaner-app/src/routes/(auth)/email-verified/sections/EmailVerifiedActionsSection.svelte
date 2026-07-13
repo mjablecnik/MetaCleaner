@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tx } from '$lib/shared/utils/i18n';
 	import { resolve } from '$app/paths';
+	import type { Pathname } from '$app/types';
 	import ActionCard from '../components/ActionCard.svelte';
 </script>
 
@@ -36,10 +37,10 @@
 <!-- Mobile: CTA buttons -->
 <div class="mt-5 flex flex-col gap-3 pt-1 lg:hidden">
 	<a
-		href={resolve('/' as import('$app/types').Pathname)}
+		href={resolve('/login' as Pathname)}
 		class="cta-btn flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl py-4 text-base font-bold text-white shadow-glow-green"
 	>
-		<i class="fa-solid fa-shield-halved"></i>
+		<i class="fa-solid fa-right-to-bracket"></i>
 		{tx('auth.emailVerified.cta.login')}
 	</a>
 	<button
@@ -81,10 +82,10 @@
 	</div>
 	<div class="flex flex-col gap-3">
 		<a
-			href={resolve('/' as import('$app/types').Pathname)}
+			href={resolve('/login' as Pathname)}
 			class="cta-btn flex w-full items-center justify-center gap-2.5 rounded-xl py-3.5 text-sm font-bold text-white shadow-glow-green"
 		>
-			<i class="fa-solid fa-shield-halved"></i>
+			<i class="fa-solid fa-right-to-bracket"></i>
 			{tx('auth.emailVerified.cta.login')}
 		</a>
 		<button

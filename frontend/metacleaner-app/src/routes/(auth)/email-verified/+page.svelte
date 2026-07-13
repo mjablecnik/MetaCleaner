@@ -1,28 +1,15 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
 	import { tx } from '$lib/shared/utils/i18n';
-	import { resolve } from '$app/paths';
-	import { onMount } from 'svelte';
-	import { handleAuthCallback } from '$lib/auth/token-utils.js';
 	import AuthLayout from '../components/AuthLayout.svelte';
 	import TrustBadges from '../components/TrustBadges.svelte';
-	import { getCurrentUser } from '$lib/repositories/userRepository';
 	import EmailVerifiedHeroSection from './sections/EmailVerifiedHeroSection.svelte';
 	import EmailVerifiedProgressSection from './sections/EmailVerifiedProgressSection.svelte';
 	import EmailVerifiedStatsSection from './sections/EmailVerifiedStatsSection.svelte';
 	import EmailVerifiedActionsSection from './sections/EmailVerifiedActionsSection.svelte';
 
-	let userEmail = $state('');
-
-	onMount(async () => {
-		if (!browser) return;
-		handleAuthCallback(window.location.href, true).then((urlError) => {
-			if (urlError) goto(resolve('/login' as import('$app/types').Pathname));
-		});
-		const user = await getCurrentUser();
-		userEmail = user.email;
-	});
+	// This page is shown after clicking the email verification link.
+	// No auto-login — user must sign in manually via the login page.
+	const userEmail = '';
 </script>
 
 <svelte:head>

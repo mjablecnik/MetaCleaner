@@ -3,7 +3,6 @@
 	import { resolve } from '$app/paths';
 	import type { Pathname } from '$app/types';
 	import { onMount, onDestroy } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { buildApiUrl } from '$lib/clients/api-config.js';
 	import { authStore } from '$lib/auth/auth.svelte.js';
 	import CountdownTimer from '../../components/CountdownTimer.svelte';
@@ -19,6 +18,7 @@
 	let resendLoading = $state(false);
 	let showToast = $state(false);
 	let pollInterval: ReturnType<typeof setInterval> | null = null;
+	let emailVerified = $state(false);
 
 	const totalSeconds = 86400;
 	let remaining = $state(totalSeconds);
@@ -37,14 +37,17 @@
 			if (remaining > 0) remaining--;
 		}, 1000);
 
-		// Auto-login polling: try to login every 5 seconds
+		// Poll login to detect email confirmation.
+		// Once login succeeds, we know the email is confirmed — show success state.
 		if (password) {
 			pollInterval = setInterval(async () => {
 				try {
 					await authStore.login(email, password!);
-					// Login succeeded — email was confirmed, redirect to main app
+					// Login succeeded — email was confirmed.
 					if (pollInterval) clearInterval(pollInterval);
-					await goto(resolve('/' as Pathname));
+					// Log out immediately — we only used login to verify confirmation status.
+					await authStore.logout();
+					emailVerified = true;
 				} catch {
 					// 403 (not confirmed) or other error — keep polling
 				}
@@ -83,6 +86,34 @@
 	}
 </script>
 
+<!-- Email verified success state -->
+{#if emailVerified}
+<div class="flex flex-col items-center gap-4 text-center">
+	<div class="relative">
+		<div
+			class="flex h-20 w-20 items-center justify-center rounded-2xl border border-brand-green/20 bg-brand-green/10 lg:h-24 lg:w-24"
+		>
+			<i class="fa-solid fa-circle-check text-4xl text-brand-green lg:text-5xl"></i>
+		</div>
+		<div
+			class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-brand-green shadow-glow-green"
+		>
+			<i class="fa-solid fa-check text-xs text-white"></i>
+		</div>
+	</div>
+	<div>
+		<h2 class="text-2xl font-bold text-white">{tx('auth.checkEmail.verified.title')}</h2>
+		<p class="mt-2 text-sm text-text-muted">{tx('auth.checkEmail.verified.description')}</p>
+	</div>
+	<a
+		href={resolve('/login' as Pathname)}
+		class="verified-cta mt-4 flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-xl py-4 text-base font-bold text-white shadow-glow-green lg:min-h-0 lg:py-3.5 lg:text-sm"
+	>
+		<i class="fa-solid fa-right-to-bracket"></i>
+		{tx('auth.checkEmail.verified.loginButton')}
+	</a>
+</div>
+{:else}
 <!-- Mobile: badge + floating icon + heading -->
 <div class="flex flex-col items-center gap-3 text-center lg:hidden">
 	<div
@@ -274,6 +305,8 @@
 	</div>
 </div>
 
+{/if}
+
 <!-- Trust badges -->
 <div class="mt-4 flex flex-wrap items-center justify-center gap-4 lg:mt-5 lg:gap-5">
 	<div class="flex items-center gap-1.5 text-xs text-text-muted">
@@ -365,5 +398,26 @@
 	.step-pending {
 		background: var(--color-navy-lighter);
 		border-color: var(--color-gray-700);
+	}
+
+	.verified-cta {
+		background: linear-gradient(
+			135deg,
+			var(--color-brand-green) 0%,
+			var(--color-brand-green-dark) 100%
+		);
+		transition: all 0.2s ease;
+	}
+	.verified-cta:hover {
+		background: linear-gradient(
+			135deg,
+			var(--color-brand-green-dark) 0%,
+			var(--color-brand-green-darker) 100%
+		);
+		transform: translateY(-1px);
+		box-shadow: 0 8px 24px var(--color-brand-green-40);
+	}
+	.verified-cta:active {
+		transform: scale(0.98);
 	}
 </style>

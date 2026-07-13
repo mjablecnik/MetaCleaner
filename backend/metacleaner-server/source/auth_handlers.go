@@ -548,6 +548,14 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			}
 		}
 
+		// Email confirmations (signup) land on the email-verified success page
+		// WITHOUT tokens — the user must sign in manually after verification.
+		// Magic links and other types deliver tokens to complete sign-in.
+		if tokenType == "signup" {
+			http.Redirect(w, r, frontendEmailVerified+"?verified=true", http.StatusFound)
+			return
+		}
+
 		params := url.Values{}
 		params.Set("access_token", session.AccessToken)
 		params.Set("refresh_token", session.RefreshToken)
@@ -555,13 +563,7 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 
 		// Deliver tokens via the URL fragment (#) so they are never sent to servers
 		// in Referer headers or written to proxy/CDN access logs.
-		// Email confirmations (signup) land on the email-verified success page;
-		// magic links and other types go to the login page to complete sign-in.
-		if tokenType == "signup" {
-			http.Redirect(w, r, frontendEmailVerified+"#"+params.Encode(), http.StatusFound)
-		} else {
-			http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
-		}
+		http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
 	}
 }
 
