@@ -1,4 +1,4 @@
-app = 'metacleaner-server'
+app = 'metacleaner-server-dev'
 primary_region = 'fra'
 
 [build]

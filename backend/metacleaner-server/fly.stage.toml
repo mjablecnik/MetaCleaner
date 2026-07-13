@@ -1,0 +1,41 @@
+app = 'metacleaner-server-stage'
+primary_region = 'fra'
+
+[build]
+
+[env]
+  APP_ENV = "production"
+  PORT = "8080"
+  TEMP_STORAGE_PATH = "/tmp/metacleaner"
+  RETENTION_PERIOD = "1h"
+  MAX_FILE_SIZE = "524288000"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+    force_https = true
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.http_checks]]
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "get"
+    path = "/api/health"
+    protocol = "http"
+
+[[mounts]]
+  source = "metacleaner_tmp"
+  destination = "/tmp/metacleaner"
