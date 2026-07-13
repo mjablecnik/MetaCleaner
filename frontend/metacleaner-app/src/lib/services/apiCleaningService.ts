@@ -91,7 +91,8 @@ async function pollUntilComplete(
 	accumulatedResults: AccumulatedFileResult[],
 	isCancelled: () => boolean,
 	isCompleted: () => boolean,
-	setReportId: (id: string) => void
+	setReportId: (id: string) => void,
+	setJobCompleted: () => void
 ): Promise<void> {
 	let lastFilesCompleted = 0;
 
@@ -106,6 +107,10 @@ async function pollUntilComplete(
 			const status = await api.getJobStatus(jobId);
 
 			if (status.status === 'completed') {
+				// Guard: if WS already handled job_complete and deducted credits, skip duplicate deduct.
+				if (isCompleted()) return;
+
+				setJobCompleted();
 				if (status.reportId) setReportId(status.reportId);
 				// Optimistically deduct credits immediately so UI updates instantly.
 				const filesCompleted =
@@ -634,10 +639,11 @@ class ApiCleaningService implements CleaningService {
 
 				ws.onmessage = (event) => {
 					const msg = JSON.parse(event.data as string) as Record<string, unknown>;
-					if (cancelled) {
-						// After job_complete + cancel, still capture a trailing report_ready
-						// that may arrive within the 500ms WS close delay (defensive measure
-						// for edge case where backend omits reportId from job_complete).
+					if (cancelled || jobCompleted) {
+						// After job_complete + cancel (or polling already completed the job),
+						// still capture a trailing report_ready that may arrive within the WS
+						// close delay (defensive measure for edge case where backend omits
+						// reportId from job_complete).
 						if (jobCompleted && msg.type === 'report_ready') {
 							const id = (msg.reportId as string) ?? '';
 							if (id) {
@@ -677,6 +683,9 @@ class ApiCleaningService implements CleaningService {
 							(id) => {
 								jobHandle.reportId = id;
 								cleaningResultsStore.setReportId(id);
+							},
+							() => {
+								jobCompleted = true;
 							}
 						);
 					}
@@ -693,6 +702,9 @@ class ApiCleaningService implements CleaningService {
 							(id) => {
 								jobHandle.reportId = id;
 								cleaningResultsStore.setReportId(id);
+							},
+							() => {
+								jobCompleted = true;
 							}
 						);
 					}
