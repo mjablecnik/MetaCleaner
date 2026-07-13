@@ -214,6 +214,16 @@ All variables are read at startup. `SUPABASE_URL` and `SUPABASE_API_KEY` are req
 | `BREVO_API_KEY` | _(empty)_ | Brevo transactional email API key — required for email-change verification |
 | `BREVO_SENDER_EMAIL` | `noreply@metacleaner.app` | From address for outbound emails |
 
+### Tigris (object storage)
+
+| Variable | Default | Description |
+|---|---|---|
+| `TIGRIS_ACCESS_KEY` | _(empty)_ | Tigris (S3-compatible) access key |
+| `TIGRIS_SECRET_KEY` | _(empty)_ | Tigris (S3-compatible) secret key |
+| `TIGRIS_BUCKET` | `metacleaner-files` | Bucket name cleaned files are uploaded to |
+| `TIGRIS_ENDPOINT` | `https://fly.storage.tigris.dev` | S3-compatible endpoint. Set to an explicit empty value (`TIGRIS_ENDPOINT=`) to disable Tigris and keep cleaned files on local disk — the default for local development |
+| `TIGRIS_PRESIGN_EXPIRY` | `1h` | Expiry for presigned cleaned-file download URLs. Go duration format: `30m`, `2h` |
+
 ---
 
 ## Project Structure
@@ -264,7 +274,8 @@ backend/metacleaner-server/
 │   ├── supabase_auth.go         # SupabaseAuthClient — Supabase Auth API calls
 │   ├── supabase_apikeys.go      # API key DB operations
 │   ├── supabase_billing.go      # Billing DB operations (subscriptions, credits)
-│   └── cleanup.go               # CleanupScheduler — periodic temp file deletion
+│   ├── cleanup.go               # CleanupScheduler — periodic temp file deletion
+│   └── tigris.go                # TigrisClient — S3-compatible upload/presign for cleaned files
 ├── tests/
 │   ├── handlers_test.go               # Upload handler tests
 │   ├── handlers_jobs_test.go          # Job creation tests
@@ -314,7 +325,7 @@ backend/metacleaner-server/
 ├── go.sum                       # Dependency checksums
 ├── .env.example                 # Environment variable template
 ├── .dockerignore                # Docker build exclusions
-├── Dockerfile                   # Multi-stage: golang:1.23 builder + debian-slim runtime
+├── Dockerfile                   # Multi-stage: golang:1.25 builder + debian-slim runtime
 └── fly.toml                     # Fly.io configuration (port, env, health check, volume)
 ```
 
