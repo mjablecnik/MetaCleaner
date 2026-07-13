@@ -146,4 +146,3 @@ func (arl *AuthRateLimiter) MagicLinkMiddleware(next http.Handler) http.Handler 
 		next.ServeHTTP(w, r)
 	})
 }
-

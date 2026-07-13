@@ -153,7 +153,7 @@ func drawValidEmail(rt *rapid.T) string {
 // drawUserID generates a random UUID-shaped user ID string.
 func drawUserID(rt *rapid.T) string {
 	seg := func(n int, name string) string {
-		return rapid.StringMatching(`[a-f0-9]{` + string(rune('0'+n)) + `}`).Draw(rt, name)
+		return rapid.StringMatching(`[a-f0-9]{`+string(rune('0'+n))+`}`).Draw(rt, name)
 	}
 	return seg(8, "uid1") + "-" + seg(4, "uid2") + "-" + seg(4, "uid3") + "-" +
 		seg(4, "uid4") + "-" + seg(8, "uid5") + seg(4, "uid6")

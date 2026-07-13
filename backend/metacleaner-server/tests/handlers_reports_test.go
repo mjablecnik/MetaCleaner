@@ -174,7 +174,9 @@ func TestHandleGetReportPDFRedirect(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
 	}
-	var resp struct{ URL string `json:"url"` }
+	var resp struct {
+		URL string `json:"url"`
+	}
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Fatalf("failed to decode JSON response: %v", err)
 	}
@@ -337,7 +339,7 @@ func TestBuildReport(t *testing.T) {
 		FilesCompleted:      2,
 		FieldsRemoved:       30,
 		GPSLocationsRemoved: 1,
-		TotalTimeMs:    5,
+		TotalTimeMs:         5,
 	}
 	files := []src.FileRecord{
 		{

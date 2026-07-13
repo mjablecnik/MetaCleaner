@@ -33,7 +33,6 @@ func newCleanupDB(t *testing.T, srv *httptest.Server) *src.SupabaseClient {
 	return src.NewSupabaseClient(cfg)
 }
 
-
 func TestRunCleanup_NoExpiredUsers_NoDeleteCalled(t *testing.T) {
 	var deleteCalled int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

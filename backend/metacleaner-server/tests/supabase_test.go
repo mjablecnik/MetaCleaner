@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -423,13 +424,13 @@ func TestSupabaseClient_UpdateJob_SendsCorrectVerbAndPath(t *testing.T) {
 	client := src.NewSupabaseClient(newSupabaseConfig(srv.URL))
 	now := time.Now().UTC()
 	job := &src.Job{
-		ID:              "job-upd",
-		Status:          "done",
-		TotalFiles:      2,
-		FilesCompleted:  2,
-		FieldsRemoved:   8,
-		TotalTimeMs: 5,
-		CompletedAt:     &now,
+		ID:             "job-upd",
+		Status:         "done",
+		TotalFiles:     2,
+		FilesCompleted: 2,
+		FieldsRemoved:  8,
+		TotalTimeMs:    5,
+		CompletedAt:    &now,
 	}
 	if err := client.UpdateJob(context.Background(), job); err != nil {
 		t.Fatalf("UpdateJob returned error: %v", err)
@@ -442,9 +443,9 @@ func TestSupabaseClient_UpdateJob_SendsCorrectVerbAndPath(t *testing.T) {
 // does NOT retry when a transport error occurs. Retrying a POST insert could
 // produce duplicate rows if the first request succeeded but the response was lost.
 func TestSupabaseClient_CreateJob_NoRetryOnTransportError(t *testing.T) {
-	callCount := 0
+	var callCount atomic.Int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		callCount++
+		callCount.Add(1)
 		// Close the connection immediately to simulate a transport error.
 		hj, ok := w.(http.Hijacker)
 		if !ok {
@@ -462,17 +463,17 @@ func TestSupabaseClient_CreateJob_NoRetryOnTransportError(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error on transport failure, got nil")
 	}
-	if callCount != 1 {
-		t.Errorf("CreateJob should not retry on transport error: expected 1 call, got %d", callCount)
+	if got := callCount.Load(); got != 1 {
+		t.Errorf("CreateJob should not retry on transport error: expected 1 call, got %d", got)
 	}
 }
 
 // TestSupabaseClient_CreateFileRecords_NoRetryOnTransportError verifies that
 // CreateFileRecords does NOT retry on transport errors for the same reason.
 func TestSupabaseClient_CreateFileRecords_NoRetryOnTransportError(t *testing.T) {
-	callCount := 0
+	var callCount atomic.Int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		callCount++
+		callCount.Add(1)
 		hj, ok := w.(http.Hijacker)
 		if !ok {
 			t.Error("ResponseWriter does not implement http.Hijacker")
@@ -497,7 +498,7 @@ func TestSupabaseClient_CreateFileRecords_NoRetryOnTransportError(t *testing.T) 
 	if err == nil {
 		t.Fatal("expected error on transport failure, got nil")
 	}
-	if callCount != 1 {
-		t.Errorf("CreateFileRecords should not retry on transport error: expected 1 call, got %d", callCount)
+	if got := callCount.Load(); got != 1 {
+		t.Errorf("CreateFileRecords should not retry on transport error: expected 1 call, got %d", got)
 	}
 }

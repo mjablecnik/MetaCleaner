@@ -137,8 +137,8 @@ func (c *wsConn) close() {
 type WebSocketHub struct {
 	mu         sync.Mutex
 	conns      map[string][]*wsConn
-	userConns  map[string]int          // userID → active connection count
-	totalConns int                     // global connection count
+	userConns  map[string]int             // userID → active connection count
+	totalConns int                        // global connection count
 	waiters    map[string][]chan struct{} // channels closed when first client registers for a job
 }
 

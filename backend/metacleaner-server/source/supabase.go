@@ -76,7 +76,7 @@ type dbJob struct {
 	FilesCompleted      int        `json:"files_completed"`
 	FieldsRemoved       int        `json:"fields_removed"`
 	GPSLocationsRemoved int        `json:"gps_locations_removed"`
-	TotalTimeMs    *int       `json:"total_time_ms,omitempty"`
+	TotalTimeMs         *int       `json:"total_time_ms,omitempty"`
 	CreatedAt           *time.Time `json:"created_at,omitempty"`
 	CompletedAt         *time.Time `json:"completed_at,omitempty"`
 }
@@ -113,7 +113,7 @@ type dbReport struct {
 	FilesProcessed      int             `json:"files_processed"`
 	FieldsRemoved       int             `json:"fields_removed"`
 	GPSLocationsRemoved int             `json:"gps_locations_removed"`
-	TotalTimeMs    int             `json:"total_time_ms"`
+	TotalTimeMs         int             `json:"total_time_ms"`
 	FileTypes           string          `json:"file_types"`
 	DominantType        string          `json:"dominant_type"`
 	HasGPS              bool            `json:"has_gps"`
@@ -596,7 +596,7 @@ func (c *SupabaseClient) CreateReport(ctx context.Context, report *Report) error
 		FilesProcessed:      report.FilesProcessed,
 		FieldsRemoved:       report.FieldsRemoved,
 		GPSLocationsRemoved: report.GPSLocationsRemoved,
-		TotalTimeMs:    report.TotalTimeMs,
+		TotalTimeMs:         report.TotalTimeMs,
 		FileTypes:           report.FileTypes,
 		DominantType:        report.DominantType,
 		HasGPS:              report.HasGPS,
@@ -668,7 +668,7 @@ func (c *SupabaseClient) buildReportDetail(ctx context.Context, r dbReport) (*Re
 		FilesProcessed:      r.FilesProcessed,
 		FieldsRemoved:       r.FieldsRemoved,
 		GPSLocationsRemoved: r.GPSLocationsRemoved,
-		TotalTimeMs:    r.TotalTimeMs,
+		TotalTimeMs:         r.TotalTimeMs,
 		ChartData:           chartData,
 		Files:               fileDetails,
 	}, nil
@@ -684,7 +684,7 @@ func dbRowToReport(r dbReport) *Report {
 		FilesProcessed:      r.FilesProcessed,
 		FieldsRemoved:       r.FieldsRemoved,
 		GPSLocationsRemoved: r.GPSLocationsRemoved,
-		TotalTimeMs:    r.TotalTimeMs,
+		TotalTimeMs:         r.TotalTimeMs,
 		FileTypes:           r.FileTypes,
 		DominantType:        r.DominantType,
 		HasGPS:              r.HasGPS,

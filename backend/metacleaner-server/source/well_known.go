@@ -7,13 +7,13 @@ import (
 
 // assetLinksEntry represents one entry in the Digital Asset Links JSON file.
 type assetLinksEntry struct {
-	Relation []string          `json:"relation"`
-	Target   assetLinksTarget  `json:"target"`
+	Relation []string         `json:"relation"`
+	Target   assetLinksTarget `json:"target"`
 }
 
 type assetLinksTarget struct {
-	Namespace            string   `json:"namespace"`
-	PackageName          string   `json:"package_name"`
+	Namespace              string   `json:"namespace"`
+	PackageName            string   `json:"package_name"`
 	SHA256CertFingerprints []string `json:"sha256_cert_fingerprints"`
 }
 
@@ -23,8 +23,8 @@ type appleAppSiteAssociation struct {
 }
 
 type appleApplinks struct {
-	Apps    []string           `json:"apps"`
-	Details []appleAppDetail   `json:"details"`
+	Apps    []string         `json:"apps"`
+	Details []appleAppDetail `json:"details"`
 }
 
 type appleAppDetail struct {

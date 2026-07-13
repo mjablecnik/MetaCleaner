@@ -342,15 +342,15 @@ func TestGetSubscriptionByUserID_Found(t *testing.T) {
 			t.Errorf("missing user_id filter, query=%q", r.URL.RawQuery)
 		}
 		writeJSONResp(w, http.StatusOK, []map[string]interface{}{{
-			"id":                      "sub-abc",
-			"user_id":                 "user-1",
-			"stripe_subscription_id":  "sub_stripe_123",
-			"stripe_customer_id":      "cus_123",
-			"plan_id":                 "pro",
-			"status":                  "active",
-			"billing_period":          "monthly",
-			"created_at":              now.Format(time.RFC3339),
-			"updated_at":              now.Format(time.RFC3339),
+			"id":                     "sub-abc",
+			"user_id":                "user-1",
+			"stripe_subscription_id": "sub_stripe_123",
+			"stripe_customer_id":     "cus_123",
+			"plan_id":                "pro",
+			"status":                 "active",
+			"billing_period":         "monthly",
+			"created_at":             now.Format(time.RFC3339),
+			"updated_at":             now.Format(time.RFC3339),
 		}})
 	}))
 	defer srv.Close()

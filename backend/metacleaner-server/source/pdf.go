@@ -343,25 +343,25 @@ func GenerateReportPDF(ctx *PDFReportContext) ([]byte, error) {
 			// NOTE: Commented out to keep PDF compact. Detail is available in the online report via QR code.
 			// Uncomment to include per-field listing in the PDF.
 			/*
-			if f.Metadata != nil {
-				allFields := collectMetadataLabels(f.Metadata)
-				if len(allFields) > 0 {
-					y += 6
-					ensureSpace(&y, 30)
-					_ = pdf.SetFont("bold", "", 10)
-					pdf.SetXY(pdfMargin+10, y)
-					_ = pdf.Cell(nil, "Removed metadata fields:")
-					y += 14
+				if f.Metadata != nil {
+					allFields := collectMetadataLabels(f.Metadata)
+					if len(allFields) > 0 {
+						y += 6
+						ensureSpace(&y, 30)
+						_ = pdf.SetFont("bold", "", 10)
+						pdf.SetXY(pdfMargin+10, y)
+						_ = pdf.Cell(nil, "Removed metadata fields:")
+						y += 14
 
-					_ = pdf.SetFont("sans", "", 9)
-					for _, fieldGroup := range allFields {
-						ensureSpace(&y, 13)
-						pdf.SetXY(pdfMargin+20, y)
-						_ = pdf.Cell(nil, fmt.Sprintf("[%s] %s", fieldGroup.category, fieldGroup.label))
-						y += 13
+						_ = pdf.SetFont("sans", "", 9)
+						for _, fieldGroup := range allFields {
+							ensureSpace(&y, 13)
+							pdf.SetXY(pdfMargin+20, y)
+							_ = pdf.Cell(nil, fmt.Sprintf("[%s] %s", fieldGroup.category, fieldGroup.label))
+							y += 13
+						}
 					}
 				}
-			}
 			*/
 
 			// Separator between files

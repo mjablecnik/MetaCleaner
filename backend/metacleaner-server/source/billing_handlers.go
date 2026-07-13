@@ -16,14 +16,14 @@ import (
 )
 
 const (
-	ErrBillingConflict           = "BILLING_CONFLICT"
-	ErrBillingInvalidPlan        = "BILLING_INVALID_PLAN"
-	ErrBillingStripeError        = "BILLING_STRIPE_ERROR"
-	ErrBillingConfigError        = "BILLING_CONFIG_ERROR"
-	ErrNoActiveSubscription      = "NO_ACTIVE_SUBSCRIPTION"
-	ErrAlreadyCancelled          = "ALREADY_CANCELLED"
-	ErrNoCancellingSubscription  = "NO_CANCELLING_SUBSCRIPTION"
-	ErrNoScheduledDowngrade      = "NO_SCHEDULED_DOWNGRADE"
+	ErrBillingConflict          = "BILLING_CONFLICT"
+	ErrBillingInvalidPlan       = "BILLING_INVALID_PLAN"
+	ErrBillingStripeError       = "BILLING_STRIPE_ERROR"
+	ErrBillingConfigError       = "BILLING_CONFIG_ERROR"
+	ErrNoActiveSubscription     = "NO_ACTIVE_SUBSCRIPTION"
+	ErrAlreadyCancelled         = "ALREADY_CANCELLED"
+	ErrNoCancellingSubscription = "NO_CANCELLING_SUBSCRIPTION"
+	ErrNoScheduledDowngrade     = "NO_SCHEDULED_DOWNGRADE"
 )
 
 // planHierarchy defines the upgrade/downgrade ordering for paid plans.
@@ -220,10 +220,10 @@ type CreditTransactionResponse struct {
 
 // CreditsResponse is the response body for GET /api/billing/credits.
 type CreditsResponse struct {
-	SubscriptionCredits int                          `json:"subscription_credits"`
-	PurchasedCredits    int                          `json:"purchased_credits"`
-	TotalCredits        int                          `json:"total_credits"`
-	Transactions        []CreditTransactionResponse  `json:"transactions"`
+	SubscriptionCredits int                         `json:"subscription_credits"`
+	PurchasedCredits    int                         `json:"purchased_credits"`
+	TotalCredits        int                         `json:"total_credits"`
+	Transactions        []CreditTransactionResponse `json:"transactions"`
 }
 
 // HandleGetCredits handles GET /api/billing/credits.
