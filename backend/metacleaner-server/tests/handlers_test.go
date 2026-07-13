@@ -52,7 +52,7 @@ func buildUploadRequest(t *testing.T, files map[string][]byte) *http.Request {
 
 func TestHandleUploadMultiFile(t *testing.T) {
 	cfg := newTestConfig(t)
-	handler := src.HandleUpload(cfg)
+	handler := src.HandleUpload(cfg, nil)
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"photo.jpg": jpegContent,
@@ -97,7 +97,7 @@ func TestHandleUploadFileTooLarge(t *testing.T) {
 		"big.jpg": bytes.Repeat([]byte("x"), 20),
 	})
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	// Files exceeding the size limit are now reported as per-file errors (status 200).
 	if rr.Code != http.StatusOK {
@@ -122,7 +122,7 @@ func TestHandleUploadUnsupportedFormat(t *testing.T) {
 		"document.pdf": []byte("fake pdf content"),
 	})
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	// Unsupported formats are now reported as per-file errors (status 200).
 	if rr.Code != http.StatusOK {
@@ -148,7 +148,7 @@ func TestHandleUploadMixedBatch(t *testing.T) {
 		"document.pdf": []byte("fake pdf content"),
 	})
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	// Mixed batch: valid file accepted, unsupported format reported as per-file error.
 	if rr.Code != http.StatusOK {
@@ -178,7 +178,7 @@ func TestHandleUploadDiskWriteFailure(t *testing.T) {
 		"photo.jpg": []byte("fake jpeg content"),
 	})
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	if rr.Code != http.StatusInsufficientStorage {
 		t.Fatalf("expected 507, got %d: %s", rr.Code, rr.Body.String())
@@ -197,7 +197,7 @@ func TestHandleUploadResponseFields(t *testing.T) {
 		"IMG_4821.jpg": jpegContent,
 	})
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
@@ -238,7 +238,7 @@ var fileIDPattern = regexp.MustCompile(`^f-[0-9a-f]{32}$`)
 // consists of "f-" + 32 lowercase hex characters (16 bytes = high entropy).
 func TestUploadFileIDHas32HexChars(t *testing.T) {
 	cfg := newTestConfig(t)
-	handler := src.HandleUpload(cfg)
+	handler := src.HandleUpload(cfg, nil)
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"photo.jpg": jpegContent,
@@ -270,7 +270,7 @@ func TestUploadFileIDHas32HexChars(t *testing.T) {
 // distinct ID (no collision on high-entropy random generation).
 func TestUploadMultipleFilesHaveUniqueIDs(t *testing.T) {
 	cfg := newTestConfig(t)
-	handler := src.HandleUpload(cfg)
+	handler := src.HandleUpload(cfg, nil)
 
 	req := buildUploadRequest(t, map[string][]byte{
 		"photo1.jpg": jpegContent,
@@ -318,7 +318,7 @@ func TestHandleUploadBodyTooLarge(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/upload", &buf)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 	rr := httptest.NewRecorder()
-	src.HandleUpload(cfg)(rr, req)
+	src.HandleUpload(cfg, nil)(rr, req)
 
 	if rr.Code != http.StatusRequestEntityTooLarge {
 		t.Fatalf("expected 413, got %d: %s", rr.Code, rr.Body.String())

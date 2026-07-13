@@ -97,7 +97,7 @@ func validateMagicBytes(r io.Reader, ext string) ([]byte, error) {
 }
 
 // HandleUpload handles POST /api/upload — validates, saves, and returns file metadata.
-func HandleUpload(cfg Config) http.HandlerFunc {
+func HandleUpload(cfg Config, tigris *TigrisClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Reject oversized request bodies before multipart parsing spools them to disk.
 		// Allow up to 10 files at max size plus multipart overhead.
@@ -229,9 +229,57 @@ func HandleUpload(cfg Config) http.HandlerFunc {
 			// Write a sidecar .owner file so HandleCreateJob can verify ownership.
 			// Only written when the uploader is authenticated; anonymous uploads
 			// (no auth token) get no owner file and skip the ownership check.
-			if ownerID := UserIDFromContext(r.Context()); ownerID != "" {
+			ownerID := UserIDFromContext(r.Context())
+			if ownerID != "" {
 				ownerPath := filepath.Join(uploadsDir, fileID+".owner")
 				_ = os.WriteFile(ownerPath, []byte(ownerID), 0600)
+			}
+
+			// Upload original file to Tigris for cross-machine persistence.
+			// When Tigris is configured, the canonical copy lives in object storage;
+			// the local file is just a temporary artifact of the upload processing.
+			if tigris != nil {
+				extNoDotForKey := strings.TrimPrefix(ext, ".")
+				tigrisKey := fmt.Sprintf("uploads/%s_original.%s", fileID, extNoDotForKey)
+				uploadFile, openErr := os.Open(destPath)
+				if openErr != nil {
+					os.Remove(destPath)
+					fileErrors = append(fileErrors, UploadedFileError{
+						Name:    fh.Filename,
+						Error:   ErrInsufficientStorage,
+						Message: "Failed to read stored file for remote upload",
+					})
+					continue
+				}
+				tigrisErr := tigris.Upload(r.Context(), tigrisKey, uploadFile, contentTypeForExt(extNoDotForKey))
+				uploadFile.Close()
+				if tigrisErr != nil {
+					os.Remove(destPath)
+					fileErrors = append(fileErrors, UploadedFileError{
+						Name:    fh.Filename,
+						Error:   ErrInsufficientStorage,
+						Message: "Failed to upload file to remote storage",
+					})
+					continue
+				}
+				// Upload ownership metadata to Tigris as well so any machine can check it.
+				if ownerID != "" {
+					ownerKey := fmt.Sprintf("uploads/%s.owner", fileID)
+					_ = tigris.Upload(r.Context(), ownerKey, strings.NewReader(ownerID), "text/plain")
+				}
+				// Upload file metadata to Tigris so HandleCreateJob can resolve
+				// the extension and size without globbing local disk.
+				metaJSON, _ := json.Marshal(map[string]interface{}{
+					"ext":   extNoDot,
+					"size":  written,
+					"owner": ownerID,
+				})
+				metaKey := fmt.Sprintf("uploads/%s.meta", fileID)
+				_ = tigris.Upload(r.Context(), metaKey, strings.NewReader(string(metaJSON)), "application/json")
+				// Remove local copy — Tigris is the source of truth.
+				os.Remove(destPath)
+				ownerLocalPath := filepath.Join(uploadsDir, fileID+".owner")
+				os.Remove(ownerLocalPath)
 			}
 
 			accepted = append(accepted, UploadedFileInfo{

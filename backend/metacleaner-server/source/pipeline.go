@@ -67,6 +67,24 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 		})
 
 		originalPath := filepath.Join(p.cfg.TempStoragePath, "uploads", f.LocalID+"_original."+strings.TrimPrefix(f.FileExtension, "."))
+
+		// If Tigris is configured and the file isn't on local disk, download it.
+		if p.tigris != nil {
+			if _, statErr := os.Stat(originalPath); os.IsNotExist(statErr) {
+				uploadsDir := filepath.Join(p.cfg.TempStoragePath, "uploads")
+				os.MkdirAll(uploadsDir, 0755) //nolint:errcheck
+				tigrisKey := fmt.Sprintf("uploads/%s_original.%s", f.LocalID, strings.TrimPrefix(f.FileExtension, "."))
+				if dlErr := p.tigris.Download(ctx, tigrisKey, originalPath); dlErr != nil {
+					f.Status = "error"
+					f.ErrorCode = ErrFileNotFound
+					f.ErrorMessage = "failed to download original file from storage"
+					slog.Warn("pipeline: tigris download failed", "fileId", f.LocalID, "key", tigrisKey, "error", dlErr)
+					progressFn(buildFileErrorEvent(f, i+1, total))
+					continue
+				}
+			}
+		}
+
 		cleanedDir := filepath.Join(p.cfg.TempStoragePath, "cleaned")
 		if err := os.MkdirAll(cleanedDir, 0755); err != nil {
 			f.Status = "error"
@@ -115,6 +133,8 @@ func (p *CleaningPipeline) ProcessJob(ctx context.Context, job *Job, files []Fil
 				f.CleanedStorageKey = key
 				os.Remove(cleanedPath) //nolint:errcheck
 			}
+			// Remove local original — it was downloaded from Tigris temporarily.
+			os.Remove(originalPath) //nolint:errcheck
 		}
 
 		f.Status = "done"

@@ -27,7 +27,7 @@ type CreateJobResponse struct {
 }
 
 // HandleCreateJob handles POST /api/jobs — validates file IDs, creates a job record, and starts the pipeline.
-func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, pool *JobWorkerPool, authClient *SupabaseAuthClient) http.HandlerFunc {
+func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPipeline, pool *JobWorkerPool, authClient *SupabaseAuthClient, tigris *TigrisClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID := UserIDFromContext(r.Context())
 
@@ -51,27 +51,64 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 					fmt.Sprintf("Invalid file ID format: %q", fileID))
 				return
 			}
-			matches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
-			if len(matches) == 0 {
-				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
+
+			var ext string
+			var fileSize int64
+			var fileOwner string
+
+			if tigris != nil {
+				// Read file metadata from Tigris (cross-machine safe).
+				metaKey := fmt.Sprintf("uploads/%s.meta", fileID)
+				metaBody, metaErr := tigris.GetObject(r.Context(), metaKey)
+				if metaErr != nil {
+					WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
+					return
+				}
+				metaData, readErr := io.ReadAll(metaBody)
+				metaBody.Close()
+				if readErr != nil {
+					WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not accessible", fileID))
+					return
+				}
+				var meta struct {
+					Ext   string `json:"ext"`
+					Size  int64  `json:"size"`
+					Owner string `json:"owner"`
+				}
+				if jsonErr := json.Unmarshal(metaData, &meta); jsonErr != nil {
+					WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q metadata corrupted", fileID))
+					return
+				}
+				ext = "." + meta.Ext
+				fileSize = meta.Size
+				fileOwner = meta.Owner
+			} else {
+				// Local disk fallback (dev mode without Tigris).
+				matches, _ := filepath.Glob(filepath.Join(uploadsDir, fileID+"_original.*"))
+				if len(matches) == 0 {
+					WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not found", fileID))
+					return
+				}
+				info, statErr := os.Stat(matches[0])
+				if statErr != nil {
+					WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not accessible", fileID))
+					return
+				}
+				ext = filepath.Ext(matches[0])
+				fileSize = info.Size()
+				// Read local ownership sidecar.
+				ownerPath := filepath.Join(uploadsDir, fileID+".owner")
+				if ownerData, err := os.ReadFile(ownerPath); err == nil {
+					fileOwner = string(ownerData)
+				}
+			}
+
+			// Verify ownership: if an owner is recorded, it must match the caller.
+			if fileOwner != "" && fileOwner != userID {
+				WriteError(w, http.StatusForbidden, ErrAuthUnauthorized, fmt.Sprintf("File %q does not belong to the current user", fileID))
 				return
 			}
 
-			// Verify ownership: if an .owner sidecar exists, its recorded userID must
-			// match the caller. Files uploaded anonymously (no sidecar) skip this check.
-			ownerPath := filepath.Join(uploadsDir, fileID+".owner")
-			if ownerData, err := os.ReadFile(ownerPath); err == nil {
-				if string(ownerData) != userID {
-					WriteError(w, http.StatusForbidden, ErrAuthUnauthorized, fmt.Sprintf("File %q does not belong to the current user", fileID))
-					return
-				}
-			}
-			info, err := os.Stat(matches[0])
-			if err != nil {
-				WriteError(w, http.StatusNotFound, ErrFileNotFound, fmt.Sprintf("File %q not accessible", fileID))
-				return
-			}
-			ext := filepath.Ext(matches[0])
 			originalName := ""
 			if req.FileNames != nil {
 				originalName = req.FileNames[fileID]
@@ -81,7 +118,7 @@ func HandleCreateJob(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *Clea
 				FileName:      fileID + ext,
 				OriginalName:  originalName,
 				FileExtension: ext,
-				FileSizeBytes: info.Size(),
+				FileSizeBytes: fileSize,
 				FileType:      GetFileType(ext),
 				Format:        canonicalFormat(ext),
 				Status:        "pending",

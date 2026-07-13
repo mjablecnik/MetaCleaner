@@ -45,8 +45,8 @@ func NewRouter(cfg Config, db *SupabaseClient, hub *WebSocketHub, pl *CleaningPi
 	mux.Handle("GET /api/auth/magic-link/callback", HandleMagicLinkCallback(authClient, db))
 
 	// --- File & Job routes ---
-	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg)))
-	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool, authClient))
+	mux.Handle("POST /api/upload", rateLimited(HandleUpload(cfg, tigris)))
+	mux.Handle("POST /api/jobs", HandleCreateJob(cfg, db, hub, pl, pool, authClient, tigris))
 	mux.Handle("GET /api/jobs/{id}", HandleGetJob(db))
 	mux.Handle("POST /api/jobs/{id}/ws-ticket", rateLimited(HandleMintWSTicket(ticketStore, db)))
 	mux.Handle("GET /api/jobs/{id}/progress", rateLimited(HandleJobProgress(hub, ticketStore, cfg.FrontendOrigin)))

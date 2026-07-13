@@ -28,7 +28,7 @@ func setupCleanupDirs(t *testing.T) (string, *src.CleanupScheduler) {
 			t.Fatalf("mkdir %s: %v", sub, err)
 		}
 	}
-	return base, src.NewCleanupScheduler(time.Hour, base)
+	return base, src.NewCleanupScheduler(time.Hour, base, false)
 }
 
 // Test: expired files in uploads/ are deleted.
@@ -85,7 +85,7 @@ func TestCleanupRetainsNonExpiredFiles(t *testing.T) {
 
 // Test: cleanup handles missing directories gracefully without panicking.
 func TestCleanupMissingDirectories(t *testing.T) {
-	cs := src.NewCleanupScheduler(time.Hour, t.TempDir()+"/nonexistent")
+	cs := src.NewCleanupScheduler(time.Hour, t.TempDir()+"/nonexistent", false)
 	// Should not panic
 	cs.RunCleanup()
 }

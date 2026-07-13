@@ -13,13 +13,15 @@ import (
 type CleanupScheduler struct {
 	retentionPeriod time.Duration
 	tempStoragePath string
+	tigrisEnabled   bool
 }
 
 // NewCleanupScheduler creates a scheduler with the given retention period and temp path.
-func NewCleanupScheduler(retentionPeriod time.Duration, tempStoragePath string) *CleanupScheduler {
+func NewCleanupScheduler(retentionPeriod time.Duration, tempStoragePath string, tigrisEnabled bool) *CleanupScheduler {
 	return &CleanupScheduler{
 		retentionPeriod: retentionPeriod,
 		tempStoragePath: tempStoragePath,
+		tigrisEnabled:   tigrisEnabled,
 	}
 }
 
@@ -44,6 +46,9 @@ func (cs *CleanupScheduler) Start(ctx context.Context) {
 // RunCleanup scans the uploads/ directory and deletes expired files. Cleaned files are
 // deleted immediately after Tigris upload (or, in local-dev fallback, served directly),
 // so cleaned/ no longer needs scanning here — Tigris bucket lifecycle handles its expiry.
+// When Tigris is enabled for uploads, the uploads/ directory only contains transient
+// downloads from Tigris during pipeline processing — these are cleaned up after processing,
+// but this scheduler catches any stragglers from interrupted jobs.
 func (cs *CleanupScheduler) RunCleanup() {
 	dirs := []string{
 		filepath.Join(cs.tempStoragePath, "uploads"),

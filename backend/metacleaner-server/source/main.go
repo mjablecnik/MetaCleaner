@@ -71,7 +71,7 @@ func Run() {
 	slog.Info("startup: Supabase DB OK")
 
 	// Start cleanup scheduler.
-	scheduler := NewCleanupScheduler(cfg.RetentionPeriod, cfg.TempStoragePath)
+	scheduler := NewCleanupScheduler(cfg.RetentionPeriod, cfg.TempStoragePath, cfg.TigrisEndpoint != "")
 	schedulerCtx, cancelScheduler := context.WithCancel(startupCtx)
 	defer cancelScheduler()
 	scheduler.Start(schedulerCtx)
