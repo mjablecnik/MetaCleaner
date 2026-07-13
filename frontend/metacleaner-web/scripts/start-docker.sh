@@ -16,6 +16,7 @@ docker rm "$APP_NAME" 2>/dev/null || true
 echo "Starting container: $APP_NAME on port 3001"
 docker run -d \
   --name "$APP_NAME" \
+  --env-file .env \
   -p 3001:8080 \
   "$APP_NAME"
 

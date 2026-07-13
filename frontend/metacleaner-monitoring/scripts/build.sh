@@ -8,4 +8,4 @@ cd "$PROJECT_DIR"
 APP_NAME=$(grep '^app\s*=' fly.toml | sed 's/^app\s*=\s*["\x27]\(.*\)["\x27]/\1/' | tr -d '\r')
 
 echo "Building Docker image: $APP_NAME"
-docker build -t "$APP_NAME" .
+docker build --no-cache -t "$APP_NAME" .

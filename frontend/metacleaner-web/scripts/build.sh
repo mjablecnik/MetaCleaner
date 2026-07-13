@@ -17,7 +17,7 @@ PUBLIC_APP_URL="${PUBLIC_APP_URL:-https://app.metacleaner.com}"
 
 echo "Building Docker image: $APP_NAME (PUBLIC_APP_URL=$PUBLIC_APP_URL)"
 WORKSPACE_ROOT="$(dirname "$(dirname "$PROJECT_DIR")")"
-docker build -t "$APP_NAME" \
+docker build --no-cache -t "$APP_NAME" \
   --build-arg "PUBLIC_APP_URL=$PUBLIC_APP_URL" \
   --build-arg "VITE_SUPABASE_URL=${VITE_SUPABASE_URL:-}" \
   --build-arg "VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY:-}" \
