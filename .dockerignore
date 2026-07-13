@@ -1,0 +1,57 @@
+# MonoRepo .dockerignore — used when building from workspace root
+# Each service Dockerfile COPYs only what it needs; this excludes the rest.
+
+# Version control
+.git/
+
+# All node_modules (reinstalled in container)
+node_modules/
+**/node_modules/
+
+# Build outputs
+**/build/
+**/.svelte-kit/
+**/storybook-static/
+**/test-results/
+**/dist/
+
+# Backend binary
+backend/metacleaner-server/metacleaner-server.exe
+
+# Mobile platform dirs
+frontend/metacleaner-app/android/
+frontend/metacleaner-app/ios/
+
+# IDE / OS
+.vscode/
+.idea/
+**/.DS_Store
+**/Thumbs.db
+
+# Env files (secrets — not needed in image)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs
+**/*.log
+
+# Documentation / agents / specs / architecture (not needed for build)
+.agents/
+.kiro/
+architecture/
+**/.design/
+**/.design-old/
+**/CLAUDE.md
+**/.mcp.json
+
+# E2E tests
+**/e2e/
+**/playwright-report/
+
+# Storybook
+frontend/metacleaner-app/.storybook/
+
+# Terminal CLI images (test fixtures)
+terminal/metacleaner-cli/images/
+terminal/metacleaner-cli/bin/
