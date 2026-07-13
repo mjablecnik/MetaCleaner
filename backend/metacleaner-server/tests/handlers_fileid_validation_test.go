@@ -120,7 +120,7 @@ func TestHandleFileDownload_InvalidFileIDFormats(t *testing.T) {
 			req.SetPathValue("id", tc.fileID)
 			rr := httptest.NewRecorder()
 
-			src.HandleFileDownload(cfg, db)(rr, req)
+			src.HandleFileDownload(cfg, db, nil)(rr, req)
 
 			if rr.Code != http.StatusBadRequest {
 				t.Errorf("fileID %q: expected 400, got %d: %s", tc.fileID, rr.Code, rr.Body.String())
@@ -153,7 +153,7 @@ func TestHandleFileDownload_ValidFileIDFormat(t *testing.T) {
 			req.SetPathValue("id", fileID)
 			rr := httptest.NewRecorder()
 
-			src.HandleFileDownload(cfg, db)(rr, req)
+			src.HandleFileDownload(cfg, db, nil)(rr, req)
 
 			if rr.Code == http.StatusBadRequest {
 				var resp src.ErrorResponse

@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -146,6 +147,104 @@ func TestPipelineMixedSuccess(t *testing.T) {
 	}
 	if files[1].Status != "error" {
 		t.Errorf("file f-fail: expected status=error, got %q", files[1].Status)
+	}
+}
+
+func TestPipelineUploadsCleanedFileToTigris(t *testing.T) {
+	toolDir := t.TempDir()
+	exiftoolScript := "case \"$1\" in\n  -json)\n    echo '[{\"Make\":\"TestCam\"}]'\n    ;;\n  -all=)\n    cp \"$4\" \"$3\"\n    ;;\nesac\nexit 0"
+	writeFakeExec(t, toolDir, "exiftool", exiftoolScript)
+
+	origPath := os.Getenv("PATH")
+	os.Setenv("PATH", toolDir+":"+origPath)
+	defer os.Setenv("PATH", origPath)
+
+	tmp := t.TempDir()
+	cfg := src.Config{
+		TempStoragePath: tmp,
+		MaxFileSize:     500 * 1024 * 1024,
+		RetentionPeriod: time.Hour,
+	}
+
+	transport := &fakeS3Transport{}
+	tigris := newTestTigrisClient(transport)
+	pipeline := src.NewCleaningPipelineWithTigris(cfg, tigris)
+
+	createFakeOriginal(t, tmp, "f-tigris1", "jpg")
+
+	job := &src.Job{ID: "job-tigris", Status: "processing", TotalFiles: 1}
+	files := []src.FileRecord{
+		{ID: "f-tigris1", LocalID: "f-tigris1", FileExtension: ".jpg", FileType: "image"},
+	}
+
+	err := pipeline.ProcessJob(context.Background(), job, files, func(e src.ProgressEvent) {})
+	if err != nil {
+		t.Fatalf("ProcessJob returned unexpected error: %v", err)
+	}
+
+	if files[0].Status != "done" {
+		t.Fatalf("expected status=done, got %q", files[0].Status)
+	}
+	if transport.uploadedBody == nil {
+		t.Error("expected Tigris upload to be called")
+	}
+	if transport.uploadedContentType != "image/jpeg" {
+		t.Errorf("uploaded Content-Type = %q, want image/jpeg", transport.uploadedContentType)
+	}
+
+	wantKey := "cleaned/f-tigris1_cleaned.jpg"
+	if files[0].CleanedStorageKey != wantKey {
+		t.Errorf("CleanedStorageKey = %q, want %q", files[0].CleanedStorageKey, wantKey)
+	}
+
+	cleanedPath := filepath.Join(tmp, "cleaned", "f-tigris1_cleaned.jpg")
+	if _, statErr := os.Stat(cleanedPath); !os.IsNotExist(statErr) {
+		t.Errorf("expected local cleaned file to be removed after Tigris upload, stat err = %v", statErr)
+	}
+}
+
+func TestPipelineKeepsLocalFileWhenTigrisUploadFails(t *testing.T) {
+	toolDir := t.TempDir()
+	exiftoolScript := "case \"$1\" in\n  -json)\n    echo '[{\"Make\":\"TestCam\"}]'\n    ;;\n  -all=)\n    cp \"$4\" \"$3\"\n    ;;\nesac\nexit 0"
+	writeFakeExec(t, toolDir, "exiftool", exiftoolScript)
+
+	origPath := os.Getenv("PATH")
+	os.Setenv("PATH", toolDir+":"+origPath)
+	defer os.Setenv("PATH", origPath)
+
+	tmp := t.TempDir()
+	cfg := src.Config{
+		TempStoragePath: tmp,
+		MaxFileSize:     500 * 1024 * 1024,
+		RetentionPeriod: time.Hour,
+	}
+
+	transport := &fakeS3Transport{putErr: errors.New("connection refused")}
+	tigris := newTestTigrisClient(transport)
+	pipeline := src.NewCleaningPipelineWithTigris(cfg, tigris)
+
+	createFakeOriginal(t, tmp, "f-tigris2", "jpg")
+
+	job := &src.Job{ID: "job-tigris-fail", Status: "processing", TotalFiles: 1}
+	files := []src.FileRecord{
+		{ID: "f-tigris2", LocalID: "f-tigris2", FileExtension: ".jpg", FileType: "image"},
+	}
+
+	err := pipeline.ProcessJob(context.Background(), job, files, func(e src.ProgressEvent) {})
+	if err != nil {
+		t.Fatalf("ProcessJob returned unexpected error: %v", err)
+	}
+
+	if files[0].Status != "done" {
+		t.Fatalf("expected status=done despite Tigris upload failure, got %q", files[0].Status)
+	}
+	if files[0].CleanedStorageKey != "" {
+		t.Errorf("expected empty CleanedStorageKey when upload fails, got %q", files[0].CleanedStorageKey)
+	}
+
+	cleanedPath := filepath.Join(tmp, "cleaned", "f-tigris2_cleaned.jpg")
+	if _, statErr := os.Stat(cleanedPath); statErr != nil {
+		t.Errorf("expected local cleaned file to remain when Tigris upload fails, stat err = %v", statErr)
 	}
 }
 

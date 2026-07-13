@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,13 +18,15 @@ import (
 	src "metacleaner-server/source"
 )
 
-// newFileOwnershipMockSupabase creates a Supabase mock that confirms ownership for the given fileID and userID.
-func newFileOwnershipMockSupabase(t *testing.T, fileID, ownerID string) *httptest.Server {
+// newFileOwnershipMockSupabase creates a Supabase mock that confirms ownership for the given
+// fileID and userID, reporting the given DB status and file extension (with leading dot).
+func newFileOwnershipMockSupabase(t *testing.T, fileID, ownerID, status, ext string) *httptest.Server {
 	t.Helper()
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if strings.Contains(r.URL.Path, "job_files") && strings.Contains(r.URL.RawQuery, fileID) {
-			fmt.Fprintf(w, `[{"file_name":%q,"user_id":%q}]`, fileID+"_original.jpg", ownerID)
+			fmt.Fprintf(w, `[{"file_name":%q,"user_id":%q,"status":%q,"file_extension":%q}]`,
+				fileID+"_original"+ext, ownerID, status, ext)
 		} else {
 			w.Write([]byte(`[]`))
 		}
@@ -35,7 +38,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 	fileID := "f-aa1234bb"
 	userID := "user-download-1"
 
-	srv := newFileOwnershipMockSupabase(t, fileID, userID)
+	srv := newFileOwnershipMockSupabase(t, fileID, userID, "done", ".jpg")
 	defer srv.Close()
 
 	cfg := newTestConfig(t)
@@ -55,7 +58,7 @@ func TestHandleFileDownloadCompleted(t *testing.T) {
 	req.SetPathValue("id", fileID)
 	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg, db)(rr, req)
+	src.HandleFileDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
@@ -75,7 +78,7 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 	fileID := "f-cc5678dd"
 	userID := "user-download-2"
 
-	srv := newFileOwnershipMockSupabase(t, fileID, userID)
+	srv := newFileOwnershipMockSupabase(t, fileID, userID, "in_progress", ".png")
 	defer srv.Close()
 
 	cfg := newTestConfig(t)
@@ -95,7 +98,7 @@ func TestHandleFileDownloadInProgress(t *testing.T) {
 	req.SetPathValue("id", fileID)
 	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg, db)(rr, req)
+	src.HandleFileDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusConflict {
 		t.Fatalf("expected 409, got %d: %s", rr.Code, rr.Body.String())
@@ -127,7 +130,74 @@ func TestHandleFileDownloadNotFound(t *testing.T) {
 	req.SetPathValue("id", fileID)
 	req = withUserID(req, userID)
 	rr := httptest.NewRecorder()
-	src.HandleFileDownload(cfg, db)(rr, req)
+	src.HandleFileDownload(cfg, db, nil)(rr, req)
+
+	if rr.Code != http.StatusNotFound {
+		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
+	}
+	var resp src.ErrorResponse
+	json.NewDecoder(rr.Body).Decode(&resp)
+	if resp.Error != src.ErrFileNotFound {
+		t.Errorf("expected error %q, got %q", src.ErrFileNotFound, resp.Error)
+	}
+}
+
+// Test download of a completed file when Tigris is configured → 302 redirect to a signed Tigris URL
+func TestHandleFileDownloadCompletedTigrisRedirect(t *testing.T) {
+	fileID := "f-aa1234bb"
+	userID := "user-download-tigris-1"
+
+	srv := newFileOwnershipMockSupabase(t, fileID, userID, "done", ".jpg")
+	defer srv.Close()
+
+	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
+	cfg.TigrisPresignExpiry = time.Hour
+	db := src.NewSupabaseClient(cfg)
+
+	tigris := newTestTigrisClient(&fakeS3Transport{})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
+	req.SetPathValue("id", fileID)
+	req = withUserID(req, userID)
+	rr := httptest.NewRecorder()
+	src.HandleFileDownload(cfg, db, tigris)(rr, req)
+
+	if rr.Code != http.StatusFound {
+		t.Fatalf("expected 302, got %d: %s", rr.Code, rr.Body.String())
+	}
+	location := rr.Header().Get("Location")
+	if !strings.Contains(location, "cleaned/"+fileID+"_cleaned.jpg") {
+		t.Errorf("redirect location %q does not reference the expected Tigris key", location)
+	}
+	if !strings.Contains(location, "X-Amz-Signature=") {
+		t.Errorf("redirect location %q is not a signed URL", location)
+	}
+}
+
+// Test download when Tigris is configured but presigning fails → 404 (file expired)
+func TestHandleFileDownloadTigrisPresignError(t *testing.T) {
+	fileID := "f-aa1234cc"
+	userID := "user-download-tigris-2"
+
+	srv := newFileOwnershipMockSupabase(t, fileID, userID, "done", ".jpg")
+	defer srv.Close()
+
+	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
+	cfg.TigrisPresignExpiry = time.Hour
+	db := src.NewSupabaseClient(cfg)
+
+	// PresignGetURL signs locally and never calls Do(), so the only way to make it
+	// fail here is an invalid expiry — negative durations are rejected by the SDK.
+	cfg.TigrisPresignExpiry = -time.Hour
+	tigris := newTestTigrisClient(&fakeS3Transport{})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/files/"+fileID+"/download", nil)
+	req.SetPathValue("id", fileID)
+	req = withUserID(req, userID)
+	rr := httptest.NewRecorder()
+	src.HandleFileDownload(cfg, db, tigris)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
@@ -181,7 +251,7 @@ func TestHandleJobDownloadJobNotFound(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobIDDownloadMissing+"/download", nil)
 	req.SetPathValue("id", jobIDDownloadMissing)
 	rr := httptest.NewRecorder()
-	src.HandleJobDownload(cfg, db)(rr, req)
+	src.HandleJobDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
@@ -207,7 +277,7 @@ func TestHandleJobDownloadJobNotReady(t *testing.T) {
 	req.SetPathValue("id", jobID)
 	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
-	src.HandleJobDownload(cfg, db)(rr, req)
+	src.HandleJobDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusConflict {
 		t.Fatalf("expected 409, got %d: %s", rr.Code, rr.Body.String())
@@ -234,7 +304,7 @@ func TestHandleJobDownloadFilesExpired(t *testing.T) {
 	req.SetPathValue("id", jobID)
 	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
-	src.HandleJobDownload(cfg, db)(rr, req)
+	src.HandleJobDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Fatalf("expected 404, got %d: %s", rr.Code, rr.Body.String())
@@ -272,7 +342,7 @@ func TestHandleJobDownloadSuccess(t *testing.T) {
 	req.SetPathValue("id", jobID)
 	req = withUserID(req, testUserUUID)
 	rr := httptest.NewRecorder()
-	src.HandleJobDownload(cfg, db)(rr, req)
+	src.HandleJobDownload(cfg, db, nil)(rr, req)
 
 	if rr.Code != http.StatusOK {
 		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
@@ -304,5 +374,88 @@ func TestHandleJobDownloadSuccess(t *testing.T) {
 	}
 	if !bytes.Equal(data, cleanedContent) {
 		t.Errorf("ZIP file content mismatch: got %q, want %q", data, cleanedContent)
+	}
+}
+
+// Test HandleJobDownload: when Tigris is configured, files are streamed from Tigris
+// (no local disk involved) into the ZIP response.
+func TestHandleJobDownloadSuccessTigrisStreaming(t *testing.T) {
+	jobID := "00000000-0000-4000-8000-000000000005"
+	fileID := "f-aabb5678"
+	fileRecords := fmt.Sprintf(`[{"id":"fr-003","job_id":%q,"file_name":%q,"file_extension":".jpg","file_size_bytes":2048,"file_type":"image","format":"jpeg","status":"done","fields_removed":3,"gps_removed":false}]`,
+		jobID, fileID+".jpg")
+	srv := newJobDownloadMockSupabase(t, jobID, "completed", fileRecords)
+	defer srv.Close()
+
+	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
+	db := src.NewSupabaseClient(cfg)
+
+	cleanedContent := []byte("cleaned jpeg data streamed from tigris")
+	tigris := newTestTigrisClient(&fakeS3Transport{getBody: cleanedContent})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID+"/download", nil)
+	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
+	rr := httptest.NewRecorder()
+	src.HandleJobDownload(cfg, db, tigris)(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200, got %d: %s", rr.Code, rr.Body.String())
+	}
+
+	zipReader, err := zip.NewReader(bytes.NewReader(rr.Body.Bytes()), int64(rr.Body.Len()))
+	if err != nil {
+		t.Fatalf("failed to read ZIP response: %v", err)
+	}
+	if len(zipReader.File) != 1 {
+		t.Fatalf("expected 1 file in ZIP, got %d", len(zipReader.File))
+	}
+
+	rc, err := zipReader.File[0].Open()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer rc.Close()
+	data, err := io.ReadAll(rc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(data, cleanedContent) {
+		t.Errorf("ZIP file content mismatch: got %q, want %q", data, cleanedContent)
+	}
+}
+
+// Test HandleJobDownload: when Tigris is configured but the object stream fails,
+// that file is skipped and any other successful files still appear in the ZIP.
+func TestHandleJobDownloadTigrisStreamError(t *testing.T) {
+	jobID := "00000000-0000-4000-8000-000000000006"
+	fileID := "f-aabb9999"
+	fileRecords := fmt.Sprintf(`[{"id":"fr-004","job_id":%q,"file_name":%q,"file_extension":".jpg","file_size_bytes":2048,"file_type":"image","format":"jpeg","status":"done","fields_removed":3,"gps_removed":false}]`,
+		jobID, fileID+".jpg")
+	srv := newJobDownloadMockSupabase(t, jobID, "completed", fileRecords)
+	defer srv.Close()
+
+	cfg := newTestConfig(t)
+	cfg.SupabaseURL = srv.URL
+	db := src.NewSupabaseClient(cfg)
+
+	tigris := newTestTigrisClient(&fakeS3Transport{getErr: errors.New("connection refused")})
+
+	req := httptest.NewRequest(http.MethodGet, "/api/jobs/"+jobID+"/download", nil)
+	req.SetPathValue("id", jobID)
+	req = withUserID(req, testUserUUID)
+	rr := httptest.NewRecorder()
+	src.HandleJobDownload(cfg, db, tigris)(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected 200 (empty ZIP, not an error response), got %d: %s", rr.Code, rr.Body.String())
+	}
+	zipReader, err := zip.NewReader(bytes.NewReader(rr.Body.Bytes()), int64(rr.Body.Len()))
+	if err != nil {
+		t.Fatalf("failed to read ZIP response: %v", err)
+	}
+	if len(zipReader.File) != 0 {
+		t.Fatalf("expected 0 files in ZIP (stream error skipped), got %d", len(zipReader.File))
 	}
 }

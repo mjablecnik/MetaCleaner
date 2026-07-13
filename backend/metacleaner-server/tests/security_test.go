@@ -18,7 +18,7 @@ func newTestRouter(t *testing.T, cfg src.Config) http.Handler {
 	hub := src.NewWebSocketHub()
 	pl := src.NewCleaningPipeline(cfg)
 	authClient := src.NewSupabaseAuthClient(cfg)
-	return src.NewRouter(cfg, db, hub, pl, authClient)
+	return src.NewRouter(cfg, db, hub, pl, authClient, nil)
 }
 
 // --- Task 5: Security headers middleware ---

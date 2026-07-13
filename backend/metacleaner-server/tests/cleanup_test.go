@@ -31,23 +31,35 @@ func setupCleanupDirs(t *testing.T) (string, *src.CleanupScheduler) {
 	return base, src.NewCleanupScheduler(time.Hour, base)
 }
 
-// Test: expired files in both uploads/ and cleaned/ are deleted.
+// Test: expired files in uploads/ are deleted.
 func TestCleanupRemovesExpiredFiles(t *testing.T) {
 	base, cs := setupCleanupDirs(t)
 	old := time.Now().Add(-2 * time.Hour)
 
 	expiredUpload := filepath.Join(base, "uploads", "f-aa001122_original.jpg")
-	expiredCleaned := filepath.Join(base, "cleaned", "f-aa001122_cleaned.jpg")
 	writeTestFile(t, expiredUpload, old)
-	writeTestFile(t, expiredCleaned, old)
 
 	cs.RunCleanup()
 
 	if _, err := os.Stat(expiredUpload); !os.IsNotExist(err) {
 		t.Error("expired upload file should have been deleted")
 	}
-	if _, err := os.Stat(expiredCleaned); !os.IsNotExist(err) {
-		t.Error("expired cleaned file should have been deleted")
+}
+
+// Test: cleaned/ is no longer scanned — cleaned files are deleted immediately after
+// Tigris upload (or kept in local-dev fallback), so an expired file left there must
+// survive cleanup; Tigris bucket lifecycle is the only expiry mechanism for it now.
+func TestCleanupIgnoresCleanedDir(t *testing.T) {
+	base, cs := setupCleanupDirs(t)
+	old := time.Now().Add(-2 * time.Hour)
+
+	expiredCleaned := filepath.Join(base, "cleaned", "f-aa001122_cleaned.jpg")
+	writeTestFile(t, expiredCleaned, old)
+
+	cs.RunCleanup()
+
+	if _, err := os.Stat(expiredCleaned); err != nil {
+		t.Errorf("cleaned/ file should not be touched by cleanup: %v", err)
 	}
 }
 
