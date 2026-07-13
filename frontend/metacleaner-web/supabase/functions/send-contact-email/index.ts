@@ -188,7 +188,8 @@ Deno.serve(async (req) => {
 
 	// Get secrets
 	const brevoApiKey = Deno.env.get('BREVO_API_KEY');
-	const recipient = Deno.env.get('CONTACT_RECIPIENT') ?? 'hello@metacleaner.app';
+	const recipientEnv = Deno.env.get('CONTACT_RECIPIENT') ?? 'hello@metacleaner.app';
+	const recipients = recipientEnv.split(',').map((email) => ({ email: email.trim() }));
 	const senderEmail = Deno.env.get('CONTACT_SENDER_EMAIL') ?? 'noreply@metacleaner.app';
 
 	if (!brevoApiKey) {
@@ -231,7 +232,7 @@ Deno.serve(async (req) => {
 			body: JSON.stringify({
 				sender: { name: 'MetaCleaner', email: senderEmail },
 				replyTo: { name: data.senderName, email: data.senderEmail },
-				to: [{ email: recipient }],
+				to: recipients,
 				subject: `Contact form message`,
 				textContent: `From: ${data.senderName} (${data.senderEmail})\n\nSubject: ${data.subject}\n\n${data.message}`
 			})
