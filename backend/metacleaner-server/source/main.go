@@ -70,13 +70,6 @@ func Run() {
 	}
 	slog.Info("startup: Supabase DB OK")
 
-	// Start cleanup scheduler.
-	scheduler := NewCleanupScheduler(cfg.RetentionPeriod, cfg.TempStoragePath, cfg.TigrisEndpoint != "")
-	schedulerCtx, cancelScheduler := context.WithCancel(startupCtx)
-	defer cancelScheduler()
-	scheduler.Start(schedulerCtx)
-	slog.Info("startup: cleanup scheduler started")
-
 	// Initialize WebSocketHub and CleaningPipeline. TigrisClient is only attached
 	// when TIGRIS_ENDPOINT is configured — an empty endpoint means local dev without
 	// Tigris, and the pipeline falls back to keeping cleaned files on local disk.
@@ -97,7 +90,9 @@ func Run() {
 
 	// Start account cleanup scheduler (hard-deletes accounts deactivated for 30+ days).
 	accountCleanup := NewAccountCleanupScheduler(30*24*time.Hour, authClient, db)
-	accountCleanup.Start(schedulerCtx)
+	accountCleanupCtx, cancelAccountCleanup := context.WithCancel(startupCtx)
+	defer cancelAccountCleanup()
+	accountCleanup.Start(accountCleanupCtx)
 	slog.Info("startup: account cleanup scheduler started")
 
 	// Build router.
@@ -135,6 +130,6 @@ func Run() {
 		slog.Error("shutdown: HTTP server error", "error", err)
 	}
 
-	cancelScheduler()
+	cancelAccountCleanup()
 	slog.Info("shutdown: complete")
 }

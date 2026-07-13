@@ -17,7 +17,6 @@ func setRequiredConfigEnv(t *testing.T) {
 	// Clear optional vars to ensure defaults are tested predictably
 	t.Setenv("PORT", "")
 	t.Setenv("MAX_FILE_SIZE", "")
-	t.Setenv("RETENTION_PERIOD", "")
 	t.Setenv("TEMP_STORAGE_PATH", "")
 	t.Setenv("RATE_LIMIT_RPM", "")
 	t.Setenv("SUPABASE_TIMEOUT", "")
@@ -103,9 +102,6 @@ func TestLoadConfigDefaults(t *testing.T) {
 	if cfg.MaxFileSize != 500*1024*1024 {
 		t.Errorf("MaxFileSize default = %d, want %d", cfg.MaxFileSize, 500*1024*1024)
 	}
-	if cfg.RetentionPeriod != time.Hour {
-		t.Errorf("RetentionPeriod default = %v, want 1h", cfg.RetentionPeriod)
-	}
 	if cfg.TempStoragePath != "/tmp/metacleaner" {
 		t.Errorf("TempStoragePath default = %q, want %q", cfg.TempStoragePath, "/tmp/metacleaner")
 	}
@@ -134,20 +130,6 @@ func TestLoadConfigNumericParsing(t *testing.T) {
 	}
 	if cfg.RateLimitRPM != 30 {
 		t.Errorf("RateLimitRPM = %d, want 30", cfg.RateLimitRPM)
-	}
-}
-
-// TestLoadConfigRetentionParsing verifies that RETENTION_PERIOD parses Go duration strings.
-func TestLoadConfigRetentionParsing(t *testing.T) {
-	setRequiredConfigEnv(t)
-	t.Setenv("RETENTION_PERIOD", "24h")
-
-	cfg, err := src.LoadConfig()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if cfg.RetentionPeriod != 24*time.Hour {
-		t.Errorf("RetentionPeriod = %v, want 24h", cfg.RetentionPeriod)
 	}
 }
 

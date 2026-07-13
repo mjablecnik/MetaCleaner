@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	src "metacleaner-server/source"
 )
@@ -30,7 +29,6 @@ func buildPipelineWithTools(t *testing.T, toolDir string) (*src.CleaningPipeline
 	cfg := src.Config{
 		TempStoragePath: tmp,
 		MaxFileSize:     500 * 1024 * 1024,
-		RetentionPeriod: time.Hour,
 	}
 	return src.NewCleaningPipeline(cfg), restore
 }
@@ -163,7 +161,6 @@ func TestPipelineUploadsCleanedFileToTigris(t *testing.T) {
 	cfg := src.Config{
 		TempStoragePath: tmp,
 		MaxFileSize:     500 * 1024 * 1024,
-		RetentionPeriod: time.Hour,
 	}
 
 	transport := &fakeS3Transport{}
@@ -216,7 +213,6 @@ func TestPipelineKeepsLocalFileWhenTigrisUploadFails(t *testing.T) {
 	cfg := src.Config{
 		TempStoragePath: tmp,
 		MaxFileSize:     500 * 1024 * 1024,
-		RetentionPeriod: time.Hour,
 	}
 
 	transport := &fakeS3Transport{putErr: errors.New("connection refused")}

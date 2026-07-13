@@ -24,7 +24,6 @@ type Config struct {
 	Port                    int
 	FrontendOrigin          string
 	MaxFileSize             int64
-	RetentionPeriod         time.Duration
 	TempStoragePath         string
 	SupabaseURL             string
 	SupabaseAPIKey          string
@@ -60,7 +59,6 @@ func LoadConfig() (Config, error) {
 	cfg := Config{
 		Port:                8080,
 		MaxFileSize:         500 * 1024 * 1024, // 500 MB
-		RetentionPeriod:     time.Hour,
 		TempStoragePath:     "/tmp/metacleaner",
 		RateLimitRPM:        10,
 		SupabaseTimeout:     30 * time.Second,
@@ -83,12 +81,6 @@ func LoadConfig() (Config, error) {
 	if v := os.Getenv("MAX_FILE_SIZE"); v != "" {
 		if n, err := strconv.ParseInt(v, 10, 64); err == nil {
 			cfg.MaxFileSize = n
-		}
-	}
-
-	if v := os.Getenv("RETENTION_PERIOD"); v != "" {
-		if d, err := time.ParseDuration(v); err == nil {
-			cfg.RetentionPeriod = d
 		}
 	}
 
@@ -169,7 +161,7 @@ func LoadConfig() (Config, error) {
 		}
 	}
 
-	slog.Info("config loaded", "port", cfg.Port, "maxFileSize", formatBytes(cfg.MaxFileSize), "retentionPeriod", cfg.RetentionPeriod)
+	slog.Info("config loaded", "port", cfg.Port, "maxFileSize", formatBytes(cfg.MaxFileSize))
 
 	return cfg, nil
 }
