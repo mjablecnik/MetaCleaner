@@ -75,7 +75,13 @@
 
 		totalFiles = files.length;
 
+		// Build a name→clientId map so we can resolve server-side fileIds back to
+		// client-side scanner IDs (they differ because the backend assigns its own UUIDs).
+		const nameToClientId = new Map<string, string>();
+		// Track server→client ID mapping as we discover them via onFileStart
+		const serverToClientId = new Map<string, string>();
 		for (const file of files) {
+			nameToClientId.set(file.name, file.id);
 			fileProcessStates[file.id] = {
 				status: 'waiting',
 				progress: 0,
@@ -90,6 +96,22 @@
 			text: `${file.name} — ${tx('step3.log.waiting')}`,
 			status: 'waiting' as const
 		}));
+
+		// Helper: resolve server fileId to client fileId via fileName lookup
+		function resolveClientId(serverFileId: string, fileName: string): string {
+			// Check cache first
+			const cached = serverToClientId.get(serverFileId);
+			if (cached) return cached;
+			// Direct match (same id) — unlikely but handle it
+			if (files.some((f) => f.id === serverFileId)) {
+				serverToClientId.set(serverFileId, serverFileId);
+				return serverFileId;
+			}
+			// Match via file name
+			const clientId = nameToClientId.get(fileName) ?? serverFileId;
+			serverToClientId.set(serverFileId, clientId);
+			return clientId;
+		}
 
 		job = apiCleaningService.startCleaning(
 			files,
@@ -118,16 +140,17 @@
 				onFileStart(fileId, fileName) {
 					currentFileName = fileName;
 					startProgressForCurrentFile = overallProgress;
-					fileProcessStates[fileId] = {
+					const clientId = resolveClientId(fileId, fileName);
+					fileProcessStates[clientId] = {
 						status: 'in_progress',
 						progress: 0,
 						fieldsRemoved: 0,
 						gpsRemoved: false
 					};
-					const idx = internalLog.findIndex((e) => e.fileId === fileId);
+					const idx = internalLog.findIndex((e) => e.fileId === clientId);
 					if (idx !== -1) {
 						internalLog[idx] = {
-							fileId,
+							fileId: clientId,
 							timestamp: nowTime(),
 							text: `${fileName} — ${tx('step3.log.inProgress', { pct: 0 })}`,
 							status: 'in_progress'
@@ -135,21 +158,23 @@
 					}
 				},
 				onFileComplete(fileId, fields, gpsRemoved) {
-					fileProcessStates[fileId] = {
+					// Resolve server fileId → client fileId using the mapping built in onFileStart
+					const clientId = serverToClientId.get(fileId) ?? fileId;
+					const clientFile = files.find((f) => f.id === clientId);
+					const name = clientFile?.name ?? fileId;
+					fileProcessStates[clientId] = {
 						status: 'done',
 						progress: 100,
 						fieldsRemoved: fields,
 						gpsRemoved
 					};
-					const file = files.find((f) => f.id === fileId);
-					const name = file?.name ?? fileId;
 					const detail = gpsRemoved
 						? tx('step3.log.gpsSuccess', { count: fields })
 						: `${fields} ${tx('step3.files.fieldsRemoved')}`;
-					const idx = internalLog.findIndex((e) => e.fileId === fileId);
+					const idx = internalLog.findIndex((e) => e.fileId === clientId);
 					if (idx !== -1) {
 						internalLog[idx] = {
-							fileId,
+							fileId: clientId,
 							timestamp: nowTime(),
 							text: `✓ ${name} — ${detail}`,
 							status: 'success'

@@ -129,11 +129,17 @@ async function pollUntilComplete(
 				// Guard: if WS already handled job_complete and deducted credits, skip duplicate deduct.
 				if (isCompleted()) return;
 
-				// Emit onFileComplete for any remaining files that completed since last poll.
+				// Emit onFileStart + onFileComplete for any remaining files that completed since last poll.
 				const finalCompleted = status.filesCompleted || 0;
 				while (lastFilesCompleted < finalCompleted && lastFilesCompleted < fileIds.length) {
 					const fileId = fileIds[lastFilesCompleted];
 					if (fileId && !accumulatedResults.some((r) => r.fileId === fileId)) {
+						// Ensure onFileStart fires before onFileComplete so the UI can resolve IDs
+						if (!alreadyStarted.has(fileId)) {
+							const fileName = fileNameMap.get(fileId) ?? fileId;
+							callbacks.onFileStart(fileId, fileName);
+							alreadyStarted.add(fileId);
+						}
 						callbacks.onFileComplete(fileId, 0, false);
 						accumulatedResults.push({ fileId, fieldsRemoved: 0, gpsRemoved: false });
 					}
