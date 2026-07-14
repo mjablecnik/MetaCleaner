@@ -141,7 +141,6 @@
 					currentFileName = fileName;
 					startProgressForCurrentFile = overallProgress;
 					const clientId = resolveClientId(fileId, fileName);
-					console.log('[ActivityLog] onFileStart', { fileId, fileName, clientId, found: internalLog.some((e) => e.fileId === clientId) });
 					fileProcessStates[clientId] = {
 						status: 'in_progress',
 						progress: 0,
@@ -160,8 +159,6 @@
 									}
 								: e
 						);
-					} else {
-						console.warn('[ActivityLog] onFileStart: no log entry found for clientId', clientId, 'internalLog fileIds:', internalLog.map(e => e.fileId));
 					}
 				},
 				onFileComplete(fileId, fields, gpsRemoved) {
@@ -169,7 +166,6 @@
 					const clientId = serverToClientId.get(fileId) ?? fileId;
 					const clientFile = files.find((f) => f.id === clientId);
 					const name = clientFile?.name ?? fileId;
-					console.log('[ActivityLog] onFileComplete', { fileId, clientId, name, found: internalLog.some((e) => e.fileId === clientId) });
 					fileProcessStates[clientId] = {
 						status: 'done',
 						progress: 100,
@@ -191,8 +187,6 @@
 									}
 								: e
 						);
-					} else {
-						console.warn('[ActivityLog] onFileComplete: no log entry found for clientId', clientId, 'internalLog fileIds:', internalLog.map(e => e.fileId));
 					}
 				},
 				onComplete(results) {

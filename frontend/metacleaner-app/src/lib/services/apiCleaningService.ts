@@ -100,8 +100,6 @@ async function pollUntilComplete(
 	// Build an ordered list of fileIds so we can map filesCompleted index → fileId.
 	const fileIds = Array.from(fileNameMap.keys());
 
-	console.log('[Polling] started', { jobId, fileIdsCount: fileIds.length, lastFilesCompleted, fileIds });
-
 	// Mark files already completed by WS before polling took over.
 	const alreadyStarted = new Set<string>(accumulatedResults.map((r) => r.fileId));
 
@@ -180,7 +178,6 @@ async function pollUntilComplete(
 			const filesCompleted = status.filesCompleted || 0;
 
 			if (totalFiles > 0) {
-				console.log('[Polling] poll iteration', { i, filesCompleted, lastFilesCompleted, totalFiles, status: status.status });
 				// Detect newly completed files since last poll and emit callbacks.
 				if (filesCompleted > lastFilesCompleted) {
 					// Complete files that finished since last poll
@@ -744,7 +741,6 @@ class ApiCleaningService implements CleaningService {
 				// immediately surfacing an error. The backend continues processing
 				// even when the frontend loses the WebSocket connection.
 				ws.onerror = () => {
-					console.log('[WS] onerror fired', { cancelled, jobCompleted });
 					if (!cancelled && !jobCompleted) {
 						void pollUntilComplete(
 							jobHandle.jobId,
@@ -765,7 +761,6 @@ class ApiCleaningService implements CleaningService {
 				};
 
 				ws.onclose = (event) => {
-					console.log('[WS] onclose fired', { code: event.code, reason: event.reason, cancelled, jobCompleted });
 					if (!cancelled && !jobCompleted && event.code !== 1000) {
 						void pollUntilComplete(
 							jobHandle.jobId,
