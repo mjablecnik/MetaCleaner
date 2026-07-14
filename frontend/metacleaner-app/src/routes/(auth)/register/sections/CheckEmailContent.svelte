@@ -39,12 +39,21 @@
 
 		// Poll login to detect email confirmation.
 		// Once login succeeds, we know the email is confirmed — show success state.
+		// IMPORTANT: If the user is already authenticated (e.g. they verified in another
+		// tab and logged in manually), stop polling immediately to avoid overwriting
+		// their active session with a login→logout cycle.
 		if (password) {
 			pollInterval = setInterval(async () => {
+				if (authStore.isAuthenticated) {
+					if (pollInterval) clearInterval(pollInterval);
+					pollInterval = null;
+					return;
+				}
 				try {
 					await authStore.login(email, password!);
 					// Login succeeded — email was confirmed.
 					if (pollInterval) clearInterval(pollInterval);
+					pollInterval = null;
 					// Log out immediately — we only used login to verify confirmation status.
 					await authStore.logout();
 					emailVerified = true;
