@@ -930,8 +930,9 @@ func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T
 		t.Fatalf("expected 302 redirect, got %d: %s", rr.Code, rr.Body.String())
 	}
 	loc := rr.Header().Get("Location")
-	if !strings.Contains(loc, "/email-verified") {
-		t.Fatalf("expected redirect to /email-verified, got: %s", loc)
+	// Signup type now also delivers tokens (signs user in immediately after email confirmation).
+	if !strings.Contains(loc, "/login") {
+		t.Fatalf("expected redirect to /login, got: %s", loc)
 	}
 	if !strings.Contains(loc, "access_token=at") {
 		t.Fatalf("expected access_token in redirect URL, got: %s", loc)

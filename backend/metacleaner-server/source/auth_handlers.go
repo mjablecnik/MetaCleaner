@@ -494,7 +494,6 @@ func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
 func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		frontendLogin := authClient.frontendURL + "/login"
-		frontendEmailVerified := authClient.frontendURL + "/email-verified"
 
 		if errParam := r.URL.Query().Get("error"); errParam != "" {
 			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape(errParam), http.StatusFound)
@@ -548,14 +547,6 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			}
 		}
 
-		// Email confirmations (signup) land on the email-verified success page
-		// WITHOUT tokens — the user must sign in manually after verification.
-		// Magic links and other types deliver tokens to complete sign-in.
-		if tokenType == "signup" {
-			http.Redirect(w, r, frontendEmailVerified+"?verified=true", http.StatusFound)
-			return
-		}
-
 		params := url.Values{}
 		params.Set("access_token", session.AccessToken)
 		params.Set("refresh_token", session.RefreshToken)
@@ -563,6 +554,8 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 
 		// Deliver tokens via the URL fragment (#) so they are never sent to servers
 		// in Referer headers or written to proxy/CDN access logs.
+		// Both signup (email confirmation for new users) and magiclink types
+		// deliver tokens — the user clicked the link, so we sign them in immediately.
 		http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
 	}
 }
