@@ -92,9 +92,28 @@ async function pollUntilComplete(
 	isCancelled: () => boolean,
 	isCompleted: () => boolean,
 	setReportId: (id: string) => void,
-	setJobCompleted: () => void
+	setJobCompleted: () => void,
+	fileNameMap: Map<string, string>
 ): Promise<void> {
-	let lastFilesCompleted = 0;
+	let lastFilesCompleted = accumulatedResults.length;
+
+	// Build an ordered list of fileIds so we can map filesCompleted index → fileId.
+	const fileIds = Array.from(fileNameMap.keys());
+
+	// Mark files already completed by WS before polling took over.
+	const alreadyStarted = new Set<string>(accumulatedResults.map((r) => r.fileId));
+
+	// If there's a file currently in progress (started by WS but not yet completed),
+	// track it so we can emit onFileComplete when polling detects it's done.
+	let currentInProgressFileId: string | null = null;
+	if (fileIds.length > 0 && lastFilesCompleted < fileIds.length) {
+		const candidateId = fileIds[lastFilesCompleted];
+		if (candidateId && alreadyStarted.has(candidateId) === false) {
+			// No file was started beyond what was completed — next poll will start it.
+		} else if (candidateId) {
+			currentInProgressFileId = candidateId;
+		}
+	}
 
 	for (let i = 0; i < MAX_POLLS; i++) {
 		if (isCancelled() || isCompleted()) return;
@@ -109,6 +128,17 @@ async function pollUntilComplete(
 			if (status.status === 'completed') {
 				// Guard: if WS already handled job_complete and deducted credits, skip duplicate deduct.
 				if (isCompleted()) return;
+
+				// Emit onFileComplete for any remaining files that completed since last poll.
+				const finalCompleted = status.filesCompleted || 0;
+				while (lastFilesCompleted < finalCompleted && lastFilesCompleted < fileIds.length) {
+					const fileId = fileIds[lastFilesCompleted];
+					if (fileId && !accumulatedResults.some((r) => r.fileId === fileId)) {
+						callbacks.onFileComplete(fileId, 0, false);
+						accumulatedResults.push({ fileId, fieldsRemoved: 0, gpsRemoved: false });
+					}
+					lastFilesCompleted++;
+				}
 
 				setJobCompleted();
 				if (status.reportId) setReportId(status.reportId);
@@ -138,21 +168,53 @@ async function pollUntilComplete(
 			}
 
 			// Job is still processing — report progress from polling data.
-			// Even if filesCompleted hasn't changed in the DB yet, show an advancing
-			// progress indicator so the user knows something is happening.
 			const totalFiles = status.totalFiles || 0;
 			const filesCompleted = status.filesCompleted || 0;
 
 			if (totalFiles > 0) {
-				// If DB has real progress, use it
+				// Detect newly completed files since last poll and emit callbacks.
 				if (filesCompleted > lastFilesCompleted) {
-					lastFilesCompleted = filesCompleted;
+					// Complete files that finished since last poll
+					while (lastFilesCompleted < filesCompleted && lastFilesCompleted < fileIds.length) {
+						const completedFileId = fileIds[lastFilesCompleted];
+						if (completedFileId && !accumulatedResults.some((r) => r.fileId === completedFileId)) {
+							// If this file wasn't started yet, emit onFileStart first
+							if (!alreadyStarted.has(completedFileId)) {
+								const fileName = fileNameMap.get(completedFileId) ?? completedFileId;
+								callbacks.onFileStart(completedFileId, fileName);
+								alreadyStarted.add(completedFileId);
+							}
+							callbacks.onFileComplete(completedFileId, 0, false);
+							accumulatedResults.push({ fileId: completedFileId, fieldsRemoved: 0, gpsRemoved: false });
+						}
+						lastFilesCompleted++;
+					}
+
+					// Start the next file if there is one
+					if (lastFilesCompleted < fileIds.length) {
+						const nextFileId = fileIds[lastFilesCompleted];
+						if (nextFileId && !alreadyStarted.has(nextFileId)) {
+							const nextFileName = fileNameMap.get(nextFileId) ?? nextFileId;
+							callbacks.onFileStart(nextFileId, nextFileName);
+							alreadyStarted.add(nextFileId);
+							currentInProgressFileId = nextFileId;
+						}
+					} else {
+						currentInProgressFileId = null;
+					}
+				} else if (!currentInProgressFileId && lastFilesCompleted < fileIds.length) {
+					// First poll iteration — start the current file if not already started
+					const nextFileId = fileIds[lastFilesCompleted];
+					if (nextFileId && !alreadyStarted.has(nextFileId)) {
+						const nextFileName = fileNameMap.get(nextFileId) ?? nextFileId;
+						callbacks.onFileStart(nextFileId, nextFileName);
+						alreadyStarted.add(nextFileId);
+						currentInProgressFileId = nextFileId;
+					}
 				}
 
-				// Compute a synthetic progress: even without per-file DB updates,
-				// advance progress slowly to show activity (based on poll iteration)
+				// Compute a synthetic progress: advance slowly to show activity
 				const dbProgress = totalFiles > 0 ? (filesCompleted / totalFiles) * 100 : 0;
-				// Synthetic progress: advances 1% per poll interval, capped below completion
 				const syntheticProgress = Math.min(dbProgress + Math.min(i * 2, 90), 95);
 				const overallProgress = Math.max(dbProgress, syntheticProgress);
 
@@ -686,7 +748,8 @@ class ApiCleaningService implements CleaningService {
 							},
 							() => {
 								jobCompleted = true;
-							}
+							},
+							fileNameMap
 						);
 					}
 				};
@@ -705,7 +768,8 @@ class ApiCleaningService implements CleaningService {
 							},
 							() => {
 								jobCompleted = true;
-							}
+							},
+							fileNameMap
 						);
 					}
 				};
