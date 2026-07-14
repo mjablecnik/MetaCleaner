@@ -930,12 +930,41 @@ func TestHandleMagicLinkCallback_SignupTypeRedirectsToEmailVerified(t *testing.T
 		t.Fatalf("expected 302 redirect, got %d: %s", rr.Code, rr.Body.String())
 	}
 	loc := rr.Header().Get("Location")
-	// Signup type now also delivers tokens (signs user in immediately after email confirmation).
+	// Signup type via magic link (no source=register) delivers tokens immediately.
 	if !strings.Contains(loc, "/login") {
 		t.Fatalf("expected redirect to /login, got: %s", loc)
 	}
 	if !strings.Contains(loc, "access_token=at") {
 		t.Fatalf("expected access_token in redirect URL, got: %s", loc)
+	}
+}
+
+func TestHandleMagicLinkCallback_RegisterSourceRedirectsToEmailVerified(t *testing.T) {
+	authClient, db := newFakeAuthAndDBClients(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/auth/v1/verify":
+			writeJSONResp(w, http.StatusOK, map[string]interface{}{
+				"access_token": "at", "refresh_token": "rt", "expires_in": 3600,
+				"user": map[string]interface{}{"id": "user-reg", "email": "reg@example.com"},
+			})
+		}
+	}))
+
+	handler := src.HandleMagicLinkCallback(authClient, db)
+	req := httptest.NewRequest(http.MethodGet, "/api/auth/magic-link/callback?token_hash=abc123&type=signup&source=register", nil)
+	rr := httptest.NewRecorder()
+	handler(rr, req)
+
+	if rr.Code != http.StatusFound {
+		t.Fatalf("expected 302 redirect, got %d: %s", rr.Code, rr.Body.String())
+	}
+	loc := rr.Header().Get("Location")
+	// Registration confirmation shows "email verified" page without tokens.
+	if !strings.Contains(loc, "/email-verified") {
+		t.Fatalf("expected redirect to /email-verified, got: %s", loc)
+	}
+	if strings.Contains(loc, "access_token") {
+		t.Fatalf("expected no tokens in redirect URL for register source, got: %s", loc)
 	}
 }
 

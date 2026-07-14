@@ -205,11 +205,21 @@ func (c *SupabaseAuthClient) doRequest(req *http.Request, result interface{}) er
 
 // SignUp creates a new user with email/password. Metadata (first_name, last_name) is stored
 // in user_metadata. When email confirmation is required, returns the user with no session.
+// The email_redirect_to option points to the magic-link callback with &source=register so
+// the callback knows this is a registration confirmation (show "email verified" page) vs
+// a magic-link sign-in (deliver tokens immediately).
 func (c *SupabaseAuthClient) SignUp(ctx context.Context, email, password string, metadata map[string]interface{}) (*SupabaseAuthUser, error) {
+	redirectTo := c.frontendURL + "/login"
+	if c.magicCallback != "" {
+		redirectTo = c.magicCallback + "?source=register"
+	}
 	payload := map[string]interface{}{
 		"email":    email,
 		"password": password,
 		"data":     metadata,
+		"options": map[string]interface{}{
+			"email_redirect_to": redirectTo,
+		},
 	}
 	data, _ := json.Marshal(payload)
 	req, err := c.newAnonRequest(ctx, http.MethodPost, c.authURL("signup"), bytes.NewReader(data))
@@ -245,6 +255,13 @@ func (c *SupabaseAuthClient) SignInWithPassword(ctx context.Context, email, pass
 // to the backend magic-link callback where the token_hash is verified server-side.
 // Supabase passes token_hash and type as query parameters to the redirect_to URL.
 // The callback URL MUST be in Supabase's Redirect URL allowlist.
+//
+// For new users Supabase auto-creates an account and sends a confirmation email
+// (type=signup). The callback handler treats both signup and magiclink tokens
+// identically — verifying the token and delivering a session to the frontend.
+// The Supabase "Confirm signup" email template MUST use the backend callback URL
+// as the redirect destination ({{ .SiteURL }}/api/auth/magic-link/callback) so that
+// the confirmation link lands on our callback handler, not the default Supabase page.
 func (c *SupabaseAuthClient) SignInWithOtp(ctx context.Context, email string) error {
 	redirectTo := c.frontendURL + "/login"
 	if c.magicCallback != "" {
@@ -252,8 +269,9 @@ func (c *SupabaseAuthClient) SignInWithOtp(ctx context.Context, email string) er
 	}
 	payload := map[string]interface{}{
 		"email": email,
-		"options": map[string]string{
-			"email_redirect_to": redirectTo,
+		"options": map[string]interface{}{
+			"email_redirect_to":  redirectTo,
+			"should_create_user": true,
 		},
 	}
 	data, _ := json.Marshal(payload)

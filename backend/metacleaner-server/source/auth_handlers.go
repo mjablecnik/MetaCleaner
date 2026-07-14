@@ -494,6 +494,7 @@ func HandleMagicLink(authClient *SupabaseAuthClient) http.HandlerFunc {
 func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		frontendLogin := authClient.frontendURL + "/login"
+		frontendEmailVerified := authClient.frontendURL + "/email-verified"
 
 		if errParam := r.URL.Query().Get("error"); errParam != "" {
 			http.Redirect(w, r, frontendLogin+"?error="+url.QueryEscape(errParam), http.StatusFound)
@@ -511,6 +512,11 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			tokenType = "magiclink"
 		}
 
+		// source=register means this confirmation came from email+password registration.
+		// In that case we only confirm the email and show "email verified" page — the user
+		// already has a password and will sign in manually.
+		source := r.URL.Query().Get("source")
+
 		session, err := authClient.VerifyTokenHash(r.Context(), tokenHash, tokenType)
 		if err != nil {
 			LoggerFromContext(r.Context()).Error("magic link callback: token verification failed", "tokenType", tokenType, "error", err)
@@ -522,29 +528,39 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 			return
 		}
 
-		// Create profile only for first-time magic link users.
-		existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
-		if existing == nil {
-			if createErr := authClient.CreateProfile(r.Context(), UserProfile{
-				ID:        session.User.ID,
-				FirstName: "",
-				LastName:  "",
-				Email:     session.User.Email,
-			}); createErr != nil {
-				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
-			}
+		// Create profile only for first-time magic link users (not for register — profile
+		// is already created by the register handler).
+		if source != "register" {
+			existing, _ := authClient.GetProfile(r.Context(), session.User.ID)
+			if existing == nil {
+				if createErr := authClient.CreateProfile(r.Context(), UserProfile{
+					ID:        session.User.ID,
+					FirstName: "",
+					LastName:  "",
+					Email:     session.User.Email,
+				}); createErr != nil {
+					LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
+				}
 
-			// Provision initial trial credits in credit_balances table.
-			if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
-				LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
+				// Provision initial trial credits in credit_balances table.
+				if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
+					LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
+				}
+			} else if existing.DeactivatedAt != nil {
+				// Auto-reactivate if the account was deactivated (pending deletion).
+				if err := authClient.ReactivateProfile(r.Context(), session.User.ID); err != nil {
+					LoggerFromContext(r.Context()).Warn("magic link callback: failed to reactivate profile", "userId", session.User.ID, "error", err)
+				} else {
+					LoggerFromContext(r.Context()).Info("magic link callback: account reactivated", "userId", session.User.ID)
+				}
 			}
-		} else if existing.DeactivatedAt != nil {
-			// Auto-reactivate if the account was deactivated (pending deletion).
-			if err := authClient.ReactivateProfile(r.Context(), session.User.ID); err != nil {
-				LoggerFromContext(r.Context()).Warn("magic link callback: failed to reactivate profile", "userId", session.User.ID, "error", err)
-			} else {
-				LoggerFromContext(r.Context()).Info("magic link callback: account reactivated", "userId", session.User.ID)
-			}
+		}
+
+		// Registration confirmations redirect to "email verified" page without tokens.
+		// The user already has a password and will sign in manually.
+		if source == "register" {
+			http.Redirect(w, r, frontendEmailVerified+"?verified=true", http.StatusFound)
+			return
 		}
 
 		params := url.Values{}
@@ -554,8 +570,7 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 
 		// Deliver tokens via the URL fragment (#) so they are never sent to servers
 		// in Referer headers or written to proxy/CDN access logs.
-		// Both signup (email confirmation for new users) and magiclink types
-		// deliver tokens — the user clicked the link, so we sign them in immediately.
+		// Magic link sign-ins (including new users created via OTP) get tokens immediately.
 		http.Redirect(w, r, frontendLogin+"#"+params.Encode(), http.StatusFound)
 	}
 }
