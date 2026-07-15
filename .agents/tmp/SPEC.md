@@ -1,105 +1,162 @@
-# Tigris Integration — Cleaned Files Storage
+# MetaCleaner Monitoring — Fly.io Prometheus Integration Spec
 
 ## Overview
 
-Replace the Fly.io persistent volume (`metacleaner_tmp`) with Tigris object storage (S3-compatible) for storing cleaned files. This eliminates the shared filesystem dependency, enabling horizontal scaling across multiple machines. Uploads and pipeline processing remain on ephemeral `/tmp` disk; only the "save result" and "download" paths change.
+The runtime page in the monitoring dashboard currently shows "No data" for CPU and RAM metrics because the Fly Machines API only returns machine state/config, not real-time resource utilization. Fly.io exposes a managed Prometheus-compatible API that provides actual CPU/RAM metrics. This feature integrates that API to populate:
 
-## Goals
-
-1. Cleaned files stored in Tigris instead of local persistent volume
-2. Local files deleted immediately after upload to Tigris
-3. Download endpoints serve presigned URLs (302 redirect) instead of `os.Open`
-4. ZIP download streams objects from Tigris
-5. Remove `[[mounts]]` from both `fly.toml` and `fly.stage.toml`
-6. Cleanup scheduler only handles `/tmp` uploads (Tigris lifecycle handles cleaned file expiry)
-7. Deploy script no longer creates volumes
+1. CPU Usage KPI card (current %)
+2. RAM Usage KPI card (current used / total)
+3. CPU Usage Over Time chart (24h time-series)
+4. RAM Usage Over Time chart (24h time-series)
 
 ## Technical Approach
 
-### S3 Client
+### Architecture
 
-Use AWS SDK for Go v2 (`github.com/aws/aws-sdk-go-v2`) with S3-compatible endpoint configuration pointing to Tigris (`https://fly.storage.tigris.dev`). A single `TigrisClient` struct wraps upload, download (presign), and delete operations.
+Follows the existing project pattern: **Client → Mapper → page.server.ts → Component**.
 
-**Bucket**: `metacleaner-files`
-**Key pattern**: `cleaned/{localId}_cleaned.{ext}`
+- **Client** (`flyPrometheusClient.ts`): Thin HTTP layer that calls the Prometheus query/query_range endpoints. Uses existing `ClientError` pattern, `fetchWithTimeout`, and `FlyClientConfig` (reuses `FLY_API_TOKEN` and `FLY_ORG`).
+- **Mapper** (`flyPrometheusMapper.ts`): Transforms Prometheus JSON response format into UI-ready data shapes (current values for KPIs, time-series arrays for charts).
+- **Config**: Prometheus base URL derived from existing `FLY_ORG` config value. No new env vars needed.
+- **page.server.ts**: Adds Prometheus data fetching alongside existing Machines API calls, passes data as new fields in the page load response.
 
-### Config Changes
+### Prometheus API
 
-Add to `Config` struct:
-- `TigrisAccessKey` (required when not in dev mode)
-- `TigrisSecretKey` (required when not in dev mode)
-- `TigrisBucket` (default: `metacleaner-files`)
-- `TigrisEndpoint` (default: `https://fly.storage.tigris.dev`)
-- `TigrisPresignExpiry` (default: 1 hour)
+Base URL: `https://api.fly.io/prometheus/{org}/api/v1/`
 
-### Pipeline Changes
+Two endpoints:
+- `GET /query?query=<promql>` — instant vector (current value)
+- `GET /query_range?query=<promql>&start=<unix>&end=<unix>&step=<seconds>` — matrix (time-series)
 
-After exiftool/ffmpeg produces the cleaned file on disk:
-1. Upload cleaned file to Tigris at key `cleaned/{localId}_cleaned.{ext}`
-2. Delete the local cleaned file immediately
-3. Store the Tigris object key in `FileRecord.CleanedStorageKey`
+Auth: `Authorization: Bearer <FLY_API_TOKEN>`
 
-The upload step happens inside `ProcessJob` after computing SHA-256 and before emitting `file_complete`.
+### PromQL Queries
 
-### Download Handler Changes
+| Metric | PromQL | Endpoint |
+|--------|--------|----------|
+| Current CPU % | `100 - avg(rate(fly_instance_cpu{mode="idle"}[5m])) by (app) * 100` | `/query` |
+| Current RAM used | `fly_instance_memory_mem_total - fly_instance_memory_mem_available` | `/query` |
+| CPU over time | `100 - avg(rate(fly_instance_cpu{mode="idle"}[5m])) by (app) * 100` | `/query_range` (24h, step=300) |
+| RAM over time | `fly_instance_memory_mem_total - fly_instance_memory_mem_available` | `/query_range` (24h, step=300) |
 
-**Single file download** (`GET /api/files/{id}/download`):
-- Generate a presigned GET URL (1h expiry) from Tigris
-- Return `302 Found` redirect to the presigned URL
-- Fallback: if Tigris key not found, return 404 (file expired)
+### Response Formats
 
-**ZIP download** (`GET /api/jobs/{id}/download`):
-- Stream each cleaned file from Tigris via `GetObject` into the ZIP writer
-- No local disk needed for ZIP assembly (stream directly to HTTP response)
-- PDF inclusion from Supabase Storage remains unchanged
+**Instant (`/query`):**
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      { "metric": {"app": "metacleaner-server"}, "value": [1752506100, "42.5"] }
+    ]
+  }
+}
+```
 
-### Cleanup Changes
+**Range (`/query_range`):**
+```json
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      { "metric": {"app": "..."}, "values": [[1752500000, "40.2"], [1752500300, "41.8"], ...] }
+    ]
+  }
+}
+```
 
-- `CleanupScheduler` continues to clean `/tmp/metacleaner/uploads/` for upload expiry
-- Remove cleaning of `/tmp/metacleaner/cleaned/` — files are deleted immediately after Tigris upload
-- Tigris bucket lifecycle policy (24h TTL) serves as safety net for object expiry
+## Key Components
 
-### Deployment Changes
+### 1. `src/lib/server/clients/flyPrometheusClient.ts`
 
-- Remove `[[mounts]]` from `fly.toml` and `fly.stage.toml`
-- Remove volume creation from `scripts/deploy.sh`
-- Add Tigris env vars to `.env.example`
-- Set Tigris secrets via `fly secrets set`
+- `queryInstant(config, promql)` → raw Prometheus vector response
+- `queryRange(config, promql, start, end, step)` → raw Prometheus matrix response
+- `getCurrentCpuPercent(config)` → calls queryInstant with CPU PromQL
+- `getCurrentRamUsage(config)` → calls queryInstant with RAM PromQL
+- `getCpuOverTime(config, start, end, step)` → calls queryRange with CPU PromQL
+- `getRamOverTime(config, start, end, step)` → calls queryRange with RAM PromQL
+
+Uses `FlyClientConfig` which already has `token` and `org`. Constructs Prometheus base URL internally: `https://api.fly.io/prometheus/${config.org}/api/v1`.
+
+### 2. `src/lib/server/mappers/flyPrometheusMapper.ts`
+
+- `mapToCurrentCpu(response)` → `{ percent: number, perApp: Map<string, number> }`
+- `mapToCurrentRam(response)` → `{ usedBytes: number, perInstance: Map<string, number> }`
+- `mapToTimeSeries(response)` → `Array<{ timestamp: number, value: number }>` (aggregated) or per-app map
+
+Output shapes must match what `RuntimeChartsSection.svelte` and `RuntimeKpiSection.svelte` can consume.
+
+### 3. Config Update (`src/lib/server/config.ts`)
+
+No new config interface needed. The Prometheus URL is derived from `FlyClientConfig.org`:
+```
+prometheusBaseUrl: `https://api.fly.io/prometheus/${org}/api/v1`
+```
+
+This can be computed inside the client or added as a derived property on the config.
+
+### 4. `src/routes/runtime/+page.server.ts`
+
+Add Prometheus calls using `callSection()` wrapper (same pattern as existing Machines API):
+- Fetch current CPU/RAM for KPI cards
+- Fetch 24h CPU/RAM time-series for charts
+- Return as new fields: `cpuTimeSeries`, `ramTimeSeries` (plus update `stats` KPI values)
+
+### 5. `RuntimeChartsSection.svelte` Update
+
+Currently displays static "No data" text. Will receive time-series data as props and render it using either:
+- Existing Plotly chart component (if `PlotlyChart` is available in the project)
+- Simple SVG/CSS bar chart (matches existing patterns)
+
+### 6. `RuntimeKpiSection.svelte` Update
+
+Already renders `stats` array. The mapper will populate the `value` and `barWidth` fields for `cpuUsage` and `ramUsage` KPI stats with real data from Prometheus (instead of current `'—'` and `'0%'`).
 
 ## File Structure
 
-New file:
+### New Files
+- `src/lib/server/clients/flyPrometheusClient.ts`
+- `src/lib/server/mappers/flyPrometheusMapper.ts`
+- `src/lib/server/clients/__tests__/flyPrometheusClient.test.ts`
+- `src/lib/server/mappers/__tests__/flyPrometheusMapper.test.ts`
+
+### Modified Files
+- `src/lib/server/config.ts` — add `prometheusBaseUrl` to `FlyClientConfig`
+- `src/routes/runtime/+page.server.ts` — add Prometheus data fetching
+- `src/routes/runtime/sections/RuntimeChartsSection.svelte` — render time-series data
+- `src/routes/runtime/sections/RuntimeKpiSection.svelte` — (possibly) no changes if KPI data comes pre-mapped
+- `src/lib/types/pageData.ts` — extend `RuntimePageData` with chart data fields
+- `src/lib/server/mappers/flyMapper.ts` — update `mapToRuntimeStats` to accept optional Prometheus data
+
+## Constraints
+
+- No new npm dependencies — uses native `fetch` via existing `fetchWithTimeout`
+- No new environment variables — reuses `FLY_API_TOKEN` and `FLY_ORG`
+- Prometheus data retained 15 days by Fly.io
+- Use 5-minute step minimum to avoid excessive data points
+- Must handle gracefully when Prometheus returns empty results (no running machines)
+- Must preserve existing "not-configured" behavior when `FLY_API_TOKEN`/`FLY_ORG` are missing
+- All user-facing text goes through i18n (`t()` helper)
+
+## Data Flow
+
 ```
-source/tigris.go       — TigrisClient: NewTigrisClient, Upload, PresignURL, Delete, GetObject
+page.server.ts
+  ├── getMachinesForAllApps(flyConfig)     → existing machine state
+  ├── getCurrentCpuPercent(flyConfig)      → NEW: current CPU %
+  ├── getCurrentRamUsage(flyConfig)        → NEW: current RAM bytes
+  ├── getCpuOverTime(flyConfig, ...)       → NEW: 24h CPU time-series
+  └── getRamOverTime(flyConfig, ...)       → NEW: 24h RAM time-series
+         │
+         ▼
+  mappers transform raw Prometheus responses
+         │
+         ▼
+  Return to page component via SectionResult<T> pattern
 ```
 
-Modified files:
-```
-source/config.go       — Add Tigris config fields + env loading
-source/pipeline.go     — Upload to Tigris after cleaning, delete local file
-source/job_handlers.go — Rewrite download handlers to use presigned URLs / streaming
-source/cleanup.go      — Remove cleaned/ directory scanning
-source/main.go         — Initialize TigrisClient, pass to handlers/pipeline
-source/router.go       — Pass TigrisClient to handlers
-source/models.go       — Add CleanedStorageKey field to FileRecord
-fly.toml               — Remove [[mounts]]
-fly.stage.toml         — Remove [[mounts]]
-scripts/deploy.sh      — Remove volume creation block
-.env.example           — Add Tigris vars
-go.mod                 — Add aws-sdk-go-v2 dependencies
-```
+## Estimated Scope
 
-Test files:
-```
-tests/tigris_test.go   — Unit tests for TigrisClient (mocked S3)
-tests/job_handlers_download_test.go — Updated download handler tests
-```
-
-## Constraints & Edge Cases
-
-1. **Pipeline failure after Tigris upload**: If the pipeline crashes between uploading to Tigris and emitting progress, the object still exists with 24h TTL — no data loss, just orphaned.
-2. **Presigned URL expiry**: If a user gets a 302 but delays the actual download beyond 1h, they'll get a Tigris 403. Frontend should retry the download endpoint.
-3. **Large files**: Tigris supports multipart upload for files >5GB. Use `s3manager.Uploader` for automatic multipart handling.
-4. **Local dev without Tigris**: Support a `TIGRIS_ENDPOINT=""` check — if Tigris is not configured, fall back to existing local file behavior. This keeps local dev simple.
-5. **Concurrent access**: Presigned URLs are stateless — multiple downloads of the same file don't conflict.
-6. **ZIP streaming memory**: Streaming from Tigris → ZIP → HTTP response uses constant memory regardless of file size.
+~250–350 lines of new code across client, mapper, and integration. No architectural changes. Pure additive feature following existing conventions.
