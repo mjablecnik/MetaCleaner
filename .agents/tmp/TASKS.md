@@ -1,26 +1,18 @@
-# Tigris Integration — Task List
+# MetaCleaner Monitoring — Fly.io Prometheus Integration Tasks
 
-- [x] 1. [HIGH] Add `aws-sdk-go-v2` S3 dependencies to `go.mod` (`github.com/aws/aws-sdk-go-v2`, `github.com/aws/aws-sdk-go-v2/config`, `github.com/aws/aws-sdk-go-v2/service/s3`, `github.com/aws/aws-sdk-go-v2/credentials`, `github.com/aws/aws-sdk-go-v2/feature/s3/manager`)
-- [x] 2. [HIGH] Add Tigris config fields to `Config` struct and `LoadConfig()` in `source/config.go` — `TigrisAccessKey`, `TigrisSecretKey`, `TigrisBucket` (default: `metacleaner-files`), `TigrisEndpoint` (default: `https://fly.storage.tigris.dev`), `TigrisPresignExpiry` (default: 1h)
-- [x] 3. [HIGH] Create `source/tigris.go` — `TigrisClient` struct with `NewTigrisClient(cfg Config)` constructor, S3 client initialization with static credentials and custom endpoint
-- [x] 4. [HIGH] Implement `TigrisClient.Upload(ctx, key, reader, contentType)` — uploads an object to the configured bucket using `s3manager.Uploader` for multipart support
-- [x] 5. [HIGH] Implement `TigrisClient.PresignGetURL(ctx, key, expiry)` — returns a presigned GET URL for downloading an object
-- [x] 6. [HIGH] Implement `TigrisClient.GetObject(ctx, key)` — returns an `io.ReadCloser` for streaming object content (used by ZIP handler)
-- [x] 7. [MEDIUM] Implement `TigrisClient.Delete(ctx, key)` — deletes an object from the bucket (for future cleanup/admin use)
-- [x] 8. [HIGH] Add `CleanedStorageKey` field to `FileRecord` in `source/models.go` — stores the Tigris object key (e.g., `cleaned/f-abc123_cleaned.jpg`)
-- [x] 9. [HIGH] Update `ProcessJob` in `source/pipeline.go` — after SHA-256 computation and before `file_complete` event, upload the cleaned file to Tigris using `TigrisClient.Upload`, set `FileRecord.CleanedStorageKey`, then delete the local cleaned file with `os.Remove`
-- [x] 10. [HIGH] Add `TigrisClient` parameter to `ProcessJobWithPool` and wire it through `source/job_worker.go`
-- [x] 11. [HIGH] Initialize `TigrisClient` in `source/main.go` — create instance from config, skip if `TigrisEndpoint` is empty (local dev fallback)
-- [x] 12. [HIGH] Update `source/router.go` — pass `TigrisClient` to download handler factories
-- [x] 13. [HIGH] Rewrite `HandleFileDownload` in `source/job_handlers.go` — generate presigned URL via `TigrisClient.PresignGetURL` and respond with `302 Found` redirect. Fall back to local file serving if Tigris is not configured.
-- [x] 14. [HIGH] Rewrite `HandleJobDownload` ZIP handler in `source/job_handlers.go` — stream each file from Tigris via `TigrisClient.GetObject` into the ZIP writer instead of `os.Open`. Fall back to local files if Tigris not configured.
-- [x] 15. [MEDIUM] Update `CleanupScheduler.RunCleanup()` in `source/cleanup.go` — remove the `cleaned/` directory from the scan list (cleaned files are deleted immediately after Tigris upload; Tigris lifecycle handles object expiry)
-- [x] 16. [MEDIUM] Remove `[[mounts]]` section from `fly.toml`
-- [x] 17. [MEDIUM] Remove `[[mounts]]` section from `fly.stage.toml`
-- [x] 18. [MEDIUM] Remove volume creation block (`fly volumes create metacleaner_tmp`) from `scripts/deploy.sh`
-- [x] 19. [MEDIUM] Add Tigris environment variables to `.env.example` — `TIGRIS_ACCESS_KEY`, `TIGRIS_SECRET_KEY`, `TIGRIS_BUCKET`, `TIGRIS_ENDPOINT`, `TIGRIS_PRESIGN_EXPIRY`
-- [x] 20. [MEDIUM] Write unit tests for `TigrisClient` in `tests/tigris_test.go` — test Upload, PresignGetURL, GetObject, Delete with a mocked S3 interface
-- [x] 21. [MEDIUM] Update download handler tests in `tests/handlers_download_test.go` — verify 302 redirect behavior for single file download and streaming behavior for ZIP download
-- [x] 22. [LOW] Update pipeline tests in `tests/pipeline_test.go` and `tests/pipeline_integration_test.go` — mock TigrisClient in pipeline tests to verify upload is called after cleaning
-- [x] 23. [LOW] Run `go mod tidy` to clean up dependency graph after adding AWS SDK modules
-- [x] 24. [LOW] Verify build compiles cleanly with `go build ./...` and all tests pass with `go test ./tests/ -v`
+- [x] 1. [HIGH] Create `src/lib/server/clients/flyPrometheusClient.ts` — implement `queryInstant(config, promql)` that calls `GET /api/v1/query` with Bearer token auth, error handling via `ClientError`, and `fetchWithTimeout`
+- [x] 2. [HIGH] Add `queryRange(config, promql, start, end, step)` to `flyPrometheusClient.ts` — calls `GET /api/v1/query_range` with time range params, same error/timeout handling
+- [x] 3. [HIGH] Add convenience functions to `flyPrometheusClient.ts`: `getCurrentCpuPercent(config)` and `getCurrentRamUsage(config)` — wrap `queryInstant` with the correct PromQL queries
+- [x] 4. [HIGH] Add convenience functions to `flyPrometheusClient.ts`: `getCpuOverTime(config, start, end, step)` and `getRamOverTime(config, start, end, step)` — wrap `queryRange` with correct PromQL queries
+- [ ] 5. [HIGH] Create `src/lib/server/mappers/flyPrometheusMapper.ts` — implement `mapToCurrentCpu(response)` that extracts aggregated CPU % from Prometheus instant vector response
+- [ ] 6. [HIGH] Add `mapToCurrentRam(response)` to `flyPrometheusMapper.ts` — extracts per-instance RAM used (total - available) and aggregates across instances, returns bytes
+- [ ] 7. [HIGH] Add `mapToTimeSeries(response)` to `flyPrometheusMapper.ts` — transforms Prometheus matrix response into `Array<{ timestamp: number; value: number }>` suitable for chart rendering
+- [ ] 8. [MEDIUM] Update `src/lib/server/config.ts` — add `prometheusBaseUrl` field to `FlyClientConfig` interface, computed as `https://api.fly.io/prometheus/${org}/api/v1` in `getServiceConfigs()`
+- [ ] 9. [HIGH] Update `src/lib/types/pageData.ts` — extend `RuntimePageData` with `cpuCurrent`, `ramCurrent`, `cpuTimeSeries`, and `ramTimeSeries` fields using `SectionResult<T>` wrapper
+- [ ] 10. [HIGH] Update `src/routes/runtime/+page.server.ts` — add Prometheus API calls (current CPU/RAM + 24h time-series) using `callSection()` pattern, pass results in page load response
+- [ ] 11. [HIGH] Update `src/lib/server/mappers/flyMapper.ts` — modify `mapToRuntimeStats()` to accept optional current CPU/RAM values from Prometheus and populate the `value`/`barWidth` fields instead of `'—'`/`'0%'`
+- [ ] 12. [HIGH] Update `src/routes/runtime/sections/RuntimeChartsSection.svelte` — accept time-series data as props and render CPU/RAM line charts (or use existing PlotlyChart component if available), with "No data" fallback when data is empty
+- [ ] 13. [MEDIUM] Update `src/routes/runtime/+page.svelte` — pass `cpuTimeSeries` and `ramTimeSeries` data to `RuntimeChartsSection`, handle `SectionResult` status variants (ok/error/not-configured)
+- [ ] 14. [MEDIUM] Create `src/lib/server/clients/__tests__/flyPrometheusClient.test.ts` — test `queryInstant` and `queryRange` with mocked fetch (success, error, timeout scenarios)
+- [ ] 15. [MEDIUM] Create `src/lib/server/mappers/__tests__/flyPrometheusMapper.test.ts` — test `mapToCurrentCpu`, `mapToCurrentRam`, `mapToTimeSeries` with sample Prometheus JSON responses, empty results, and edge cases
+- [ ] 16. [LOW] Verify build compiles cleanly with `bun run check` and all unit tests pass with `bun run test:unit`

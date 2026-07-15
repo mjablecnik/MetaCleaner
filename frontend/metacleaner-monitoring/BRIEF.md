@@ -5,6 +5,7 @@
 The Runtime (Fly.io) page in the monitoring dashboard shows "No data" for CPU and RAM metrics. The current Fly client (`flyClient.ts`) uses only the Machines API, which returns machine state (started/stopped) and configuration (allocated CPU/RAM), but **not actual resource utilization** (current CPU %, current RAM usage).
 
 This means the dashboard displays:
+
 - CPU Usage: `— %` (empty)
 - RAM Usage: `— / 1.5 GB` (empty)
 - CPU Usage Over Time graph: "No data"
@@ -23,12 +24,12 @@ This API exposes real-time CPU and memory metrics for all running machines. Auth
 
 ## Available Metrics
 
-| Metric | Type | What it measures |
-|--------|------|-----------------|
-| `fly_instance_memory_mem_total` | Gauge (bytes) | Total RAM allocated to the instance |
-| `fly_instance_memory_mem_available` | Gauge (bytes) | Available (free) RAM |
-| `fly_instance_load_average{minutes="1"}` | Gauge | 1-minute load average |
-| `fly_instance_cpu{cpu_id, mode}` | Counter (centiseconds) | CPU time per mode (user, system, idle, etc.) |
+| Metric                                   | Type                   | What it measures                             |
+| ---------------------------------------- | ---------------------- | -------------------------------------------- |
+| `fly_instance_memory_mem_total`          | Gauge (bytes)          | Total RAM allocated to the instance          |
+| `fly_instance_memory_mem_available`      | Gauge (bytes)          | Available (free) RAM                         |
+| `fly_instance_load_average{minutes="1"}` | Gauge                  | 1-minute load average                        |
+| `fly_instance_cpu{cpu_id, mode}`         | Counter (centiseconds) | CPU time per mode (user, system, idle, etc.) |
 
 CPU percentage is derived using `rate(fly_instance_cpu{mode!="idle"}[5m])` in PromQL.
 
@@ -37,6 +38,7 @@ CPU percentage is derived using `rate(fly_instance_cpu{mode!="idle"}[5m])` in Pr
 ### 1. Create `src/lib/server/clients/flyPrometheusClient.ts`
 
 A new client that:
+
 - Calls `/api/v1/query` for instant (current) values
 - Calls `/api/v1/query_range` for time-series data (graphs)
 - Uses `FLY_API_TOKEN` for authentication (Bearer token)
@@ -46,6 +48,7 @@ A new client that:
 ### 2. Create `src/lib/server/mappers/flyPrometheusMapper.ts`
 
 A mapper that transforms Prometheus JSON responses into the UI data shapes:
+
 - Current CPU % per machine and aggregated across all machines
 - Current RAM used (total - available) per machine and aggregated
 - Time-series arrays for CPU/RAM "Over Time" charts (array of `[timestamp, value]` pairs)
@@ -53,6 +56,7 @@ A mapper that transforms Prometheus JSON responses into the UI data shapes:
 ### 3. Update `src/lib/server/config.ts`
 
 Add Prometheus base URL construction using existing `FLY_ORG` value:
+
 ```
 baseUrl: `https://api.fly.io/prometheus/${org}`
 ```
@@ -62,6 +66,7 @@ No new env vars needed — `FLY_API_TOKEN` and `FLY_ORG` are already configured.
 ### 4. Update `src/routes/runtime/+page.server.ts`
 
 Add Prometheus API calls alongside existing Machines API calls:
+
 - Fetch current CPU/RAM for the KPI cards at the top
 - Fetch time-range CPU/RAM for the "Over Time" Plotly charts
 - Pass data to the page as additional fields in the load response
@@ -73,43 +78,54 @@ The components likely already support receiving CPU/RAM data (they render "No da
 ## PromQL Queries to Use
 
 **Current CPU % (aggregated per app):**
+
 ```promql
 100 - avg(rate(fly_instance_cpu{mode="idle"}[5m])) by (app) * 100
 ```
 
 **Current RAM usage (per instance):**
+
 ```promql
 fly_instance_memory_mem_total - fly_instance_memory_mem_available
 ```
 
 **CPU over time (last 24h, 5-min steps):**
+
 ```promql
 100 - avg(rate(fly_instance_cpu{mode="idle"}[5m])) by (app)
 ```
+
 → Use `query_range` with `start`, `end`, `step=300`
 
 **RAM over time (last 24h, 5-min steps):**
+
 ```promql
 fly_instance_memory_mem_total - fly_instance_memory_mem_available
 ```
+
 → Use `query_range` with `start`, `end`, `step=300`
 
 ## API Response Format
 
 **Instant query (`/api/v1/query`):**
+
 ```json
 {
-  "status": "success",
-  "data": {
-    "resultType": "vector",
-    "result": [
-      { "metric": {"app": "metacleaner-server-stage", "instance": "..."}, "value": [1752506100, "42.5"] }
-    ]
-  }
+	"status": "success",
+	"data": {
+		"resultType": "vector",
+		"result": [
+			{
+				"metric": { "app": "metacleaner-server-stage", "instance": "..." },
+				"value": [1752506100, "42.5"]
+			}
+		]
+	}
 }
 ```
 
 **Range query (`/api/v1/query_range`):**
+
 ```json
 {
   "status": "success",
