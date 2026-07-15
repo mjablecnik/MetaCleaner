@@ -1,6 +1,7 @@
 const { mockEnv } = vi.hoisted(() => {
 	const mockEnv: Record<string, string | undefined> = {
-		DASHBOARD_SESSION_SECRET: 'test-secret'
+		DASHBOARD_SESSION_SECRET: 'test-secret',
+		ORIGIN: 'https://dashboard.example.com'
 	};
 	return { mockEnv };
 });
