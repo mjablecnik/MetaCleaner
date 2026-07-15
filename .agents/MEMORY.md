@@ -1,5 +1,23 @@
 # Memory
 
+## node build/index.js (adapter-node) does not load .env — needs --env-file
+- Project: metacleaner-monitoring
+- Problem: Following the README's documented "Production build and start" steps (`bun run build` then `node build/index.js`) crashes immediately with `[FATAL] Missing required configuration: Missing required environment variables: SUPABASE_URL, SUPABASE_SERVICE_KEY` even though `.env` is fully populated. `bun run dev`/`preview` work fine because Vite loads `.env` itself, and Docker works because `start-docker.sh` passes `--env-file .env` to `docker run` — but plain `node build/index.js` never reads `.env`, since SvelteKit's adapter-node output relies entirely on `process.env`.
+- Solution: Run `node --env-file=.env build/index.js` (Node 20.6+, this project targets Node 22). Updated README.md and DOCS.md's troubleshooting section to document this.
+- Source: check-build, 2026-07-15T22:10:00Z
+
+## login page.server.test.ts asserted secure:true unconditionally after isSecure logic was added
+- Project: metacleaner-monitoring
+- Problem: Commit 910e02b changed the `mc_session` cookie's `secure` flag from hardcoded `true` to `isSecure` (derived from `env.ORIGIN` starting with `https`), but `src/routes/login/__tests__/page.server.test.ts`'s mocked `$env/dynamic/private` never set `ORIGIN`, so `isSecure` evaluated to `false` in the test and the "sets mc_session cookie with exact options" assertion (expecting `secure: true`) failed.
+- Solution: Added `ORIGIN: 'https://dashboard.example.com'` to the test's hoisted `mockEnv` object, matching a realistic production origin.
+- Source: check-build, 2026-07-15T22:10:00Z
+
+## svelte-check errors in *page.server.test.ts (216 total) are an inherent SvelteKit typing artifact, not bugs
+- Project: metacleaner-monitoring
+- Problem: `bun run check` reports ~216 errors across every `src/routes/**/__tests__/page.server.test.ts` (e.g. "Property 'stats' does not exist on type 'void | (...)'") when tests call `load(event as never)` directly and access properties on the result. Root cause: SvelteKit's generated `./$types.d.ts` defines `type MaybeWithVoid<T> = {} extends T ? T | void : T;` and `OutputDataShape` always includes `Record<string, any>`, which makes `{} extends T` true — so every generated `PageServerLoad` return type always includes `| void`, regardless of what the load function actually returns. This is separate from (and much larger in scope than) the previously-recorded 22 errors in `mapperCompleteness.test.ts` re: `Record<string, unknown>[]`.
+- Solution: Not a real bug — confirmed present at clean HEAD before any changes this session, and `bun run build` (vite build, no type-checking) and `bun run test:unit` (vitest, transpile-only) both pass cleanly regardless. Fixing it properly would mean adding type assertions/narrowing to 9+ test files, which is out of scope for a routine build-verification pass. Left alone per the "don't fix cosmetic issues requiring large changes" rule.
+- Source: check-build, 2026-07-15T22:10:00Z
+
 ## Download handlers can't rely on CleanedStorageKey (never persisted) or local disk — use DB status + deterministic key instead
 - Project: metacleaner-server
 - Problem: TASKS.md tasks 13/14 say to rewrite `HandleFileDownload`/`HandleJobDownload` to presign/stream from Tigris using the file's Tigris key. `FileRecord.CleanedStorageKey` (added in task 8) is tagged `json:"-"` and `fileRecordToDB`/`dbToFileRecord`/the `uniformFileRecord` batch-update struct in `supabase.go` never touch it — so it is never written to or read from Supabase. By the time a download request arrives (possibly on a different machine than the one that processed the job — the whole point of the Tigris migration per SPEC goal 1), there is no in-memory FileRecord left and no DB column to read the key from. The old code also used local-disk `filepath.Glob` existence checks to decide "done" vs "in progress" vs "expired", which likewise breaks once the cleaned file no longer lives on the answering machine's disk.

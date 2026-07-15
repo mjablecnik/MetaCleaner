@@ -46,9 +46,11 @@ bun run dev
 
 **Production build and start:**
 
+`node build/index.js` reads configuration from the process environment, not from `.env` directly — pass it explicitly (Node 20.6+):
+
 ```sh
 bun run build
-node build/index.js
+node --env-file=.env build/index.js
 ```
 
 **Preview production build locally:**

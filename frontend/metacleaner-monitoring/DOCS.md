@@ -195,7 +195,7 @@ bun run build-storybook  # static build → storybook-static/
 ## Troubleshooting
 
 **Server exits immediately at startup**
-Check that `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` are set. The server calls `getServiceConfigs()` and exits with a `[FATAL]` log if either is missing.
+Check that `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` are set. The server calls `getServiceConfigs()` and exits with a `[FATAL]` log if either is missing. Note that `node build/index.js` does not read `.env` on its own — run it with `node --env-file=.env build/index.js`, or export the variables into the shell first (`bun run dev`/`preview` and Docker already load `.env` for you).
 
 **Login page keeps rejecting the password**
 Ensure `DASHBOARD_SESSION_SECRET` is set in `.env`. The value you enter on the login form must exactly match this variable.
