@@ -192,11 +192,11 @@ func TestProperty_TrialCreditsEmailRegistration(t *testing.T) {
 		if tr.balanceUpsertCount != 1 {
 			rt.Fatalf("expected exactly 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
 		}
-		if tr.subCredits != 3 {
-			rt.Fatalf("expected subscription_credits=3 in credit_balances, got %d", tr.subCredits)
+		if tr.subCredits != 0 {
+			rt.Fatalf("expected subscription_credits=0 in credit_balances, got %d", tr.subCredits)
 		}
-		if tr.purchasedCredits != 0 {
-			rt.Fatalf("expected purchased_credits=0 in credit_balances, got %d", tr.purchasedCredits)
+		if tr.purchasedCredits != 3 {
+			rt.Fatalf("expected purchased_credits=3 in credit_balances, got %d", tr.purchasedCredits)
 		}
 		if tr.modifyCount != 0 {
 			rt.Fatalf("expected 0 profile modifications, got %d", tr.modifyCount)
@@ -230,8 +230,8 @@ func TestProperty_TrialCreditsOAuthCallback(t *testing.T) {
 		if tr.balanceUpsertCount != 1 {
 			rt.Fatalf("first OAuth: expected 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
 		}
-		if tr.subCredits != 3 {
-			rt.Fatalf("first OAuth: expected subscription_credits=3, got %d", tr.subCredits)
+		if tr.subCredits != 0 {
+			rt.Fatalf("first OAuth: expected subscription_credits=0, got %d", tr.subCredits)
 		}
 
 		// --- Second visit: returning user (profile already exists) ---
@@ -280,8 +280,8 @@ func TestProperty_TrialCreditsMagicLinkCallback(t *testing.T) {
 		if tr.balanceUpsertCount != 1 {
 			rt.Fatalf("first magic-link: expected 1 credit_balances upsert, got %d", tr.balanceUpsertCount)
 		}
-		if tr.subCredits != 3 {
-			rt.Fatalf("first magic-link: expected subscription_credits=3, got %d", tr.subCredits)
+		if tr.subCredits != 0 {
+			rt.Fatalf("first magic-link: expected subscription_credits=0, got %d", tr.subCredits)
 		}
 
 		// --- Second visit: returning user ---
@@ -319,7 +319,8 @@ func TestProperty_TrialCreditsNotModifiedByLoginRefresh(t *testing.T) {
 		tr.currentEmail = drawValidEmail(rt)
 		tr.profileCreated = true // simulate existing account
 		tr.creditBalanceCreated = true
-		tr.subCredits = 3
+		tr.subCredits = 0
+		tr.purchasedCredits = 3
 
 		// Capture baseline (should be 0 since we called resetCounts above-ish).
 		tr.createCount = 0

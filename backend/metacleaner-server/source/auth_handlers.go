@@ -103,8 +103,8 @@ func HandleRegister(authClient *SupabaseAuthClient, db *SupabaseClient) http.Han
 			return
 		}
 
-		// Provision initial trial credits in credit_balances table.
-		if err := db.CreateCreditBalance(r.Context(), user.ID, 3, 0); err != nil {
+		// Provision initial trial credits as purchased credits (persist across plan changes).
+		if err := db.CreateCreditBalance(r.Context(), user.ID, 0, 3); err != nil {
 			LoggerFromContext(r.Context()).Warn("register: failed to create credit balance", "userId", user.ID, "error", err)
 		}
 
@@ -542,8 +542,8 @@ func HandleMagicLinkCallback(authClient *SupabaseAuthClient, db *SupabaseClient)
 					LoggerFromContext(r.Context()).Warn("magic link callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 				}
 
-				// Provision initial trial credits in credit_balances table.
-				if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
+				// Provision initial trial credits as purchased credits (persist across plan changes).
+				if err := db.CreateCreditBalance(r.Context(), session.User.ID, 0, 3); err != nil {
 					LoggerFromContext(r.Context()).Warn("magic link callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 				}
 			} else if existing.DeactivatedAt != nil {
@@ -713,8 +713,8 @@ func HandleOAuthCallback(authClient *SupabaseAuthClient, db *SupabaseClient) htt
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create profile", "userId", session.User.ID, "error", createErr)
 			}
 
-			// Provision initial trial credits in credit_balances table.
-			if err := db.CreateCreditBalance(r.Context(), session.User.ID, 3, 0); err != nil {
+			// Provision initial trial credits as purchased credits (persist across plan changes).
+			if err := db.CreateCreditBalance(r.Context(), session.User.ID, 0, 3); err != nil {
 				LoggerFromContext(r.Context()).Warn("oauth callback: failed to create credit balance", "userId", session.User.ID, "error", err)
 			}
 		} else if existing.DeactivatedAt != nil {

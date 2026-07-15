@@ -6,4 +6,5 @@ metacleaner-server
 metacleaner-server.exe
 .stripe-webhook.log
 .stripe-webhook.pid
+tests/testdata/
 

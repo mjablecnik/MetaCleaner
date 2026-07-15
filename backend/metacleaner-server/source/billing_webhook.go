@@ -18,7 +18,7 @@ const maxWebhookBodyBytes = 65536 // 64 KB — Stripe events are never larger
 
 // planCreditAllowance maps plan IDs to their monthly credit allowance.
 var planCreditAllowance = map[string]int{
-	"free":    3,
+	"free":    0,
 	"pro":     100,
 	"proplus": 300,
 }
