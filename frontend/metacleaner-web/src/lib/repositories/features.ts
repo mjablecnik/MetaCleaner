@@ -5,11 +5,6 @@ export interface FormatItem {
 	label?: string;
 }
 
-export interface FeatureImage {
-	src: string;
-	altKey: string;
-}
-
 export interface Feature {
 	id: string;
 	number: number;
@@ -20,7 +15,6 @@ export interface Feature {
 	descKey: string;
 	bullets?: string[];
 	formats?: FormatItem[];
-	image?: FeatureImage;
 }
 
 export function featuresRepository(): Feature[] {
@@ -55,11 +49,7 @@ export function featuresRepository(): Feature[] {
 				'feature_ai_bullet2',
 				'feature_ai_bullet3',
 				'feature_ai_bullet4'
-			],
-			image: {
-				src: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/13e0bf6e0f-aa80ce2947ef80f51f20.png',
-				altKey: 'feature_ai_img_alt'
-			}
+			]
 		},
 		{
 			id: 'c2pa',
@@ -84,11 +74,7 @@ export function featuresRepository(): Feature[] {
 				'feature_risk_bullet2',
 				'feature_risk_bullet3',
 				'feature_risk_bullet4'
-			],
-			image: {
-				src: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/8ecbe2e659-79866aab835cb0bd68bf.png',
-				altKey: 'feature_risk_img_alt'
-			}
+			]
 		},
 		{
 			id: 'batch',
@@ -103,11 +89,7 @@ export function featuresRepository(): Feature[] {
 				{ icon: 'fa-file-pdf', color: 'brand-red', key: 'feature_batch_fmt_pdf' },
 				{ icon: 'fa-file-video', color: 'brand-orange', key: 'feature_batch_fmt_video' },
 				{ icon: 'fa-folder-open', color: 'brand-green', key: 'feature_batch_fmt_folders' }
-			],
-			image: {
-				src: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/086bb62676-9932975e36639131dcde.png',
-				altKey: 'feature_batch_img_alt'
-			}
+			]
 		},
 		{
 			id: 'pdf',
@@ -122,11 +104,7 @@ export function featuresRepository(): Feature[] {
 				'feature_pdf_bullet2',
 				'feature_pdf_bullet3',
 				'feature_pdf_bullet4'
-			],
-			image: {
-				src: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/7c7b53abbf-a7c6cc514cdacd768cbf.png',
-				altKey: 'feature_pdf_img_alt'
-			}
+			]
 		}
 	];
 }

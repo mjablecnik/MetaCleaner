@@ -76,15 +76,6 @@ describe('featuresRepository()', () => {
 		}
 	});
 
-	it('image entries have non-empty src and altKey when present', () => {
-		for (const feature of features) {
-			if (feature.image) {
-				expect(feature.image.src).toBeTruthy();
-				expect(feature.image.altKey).toBeTruthy();
-			}
-		}
-	});
-
 	it('ltr and rtl layouts alternate (no two consecutive same layout)', () => {
 		for (let i = 1; i < features.length; i++) {
 			expect(features[i].layout).not.toBe(features[i - 1].layout);

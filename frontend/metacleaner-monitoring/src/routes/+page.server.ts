@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 		configs.fly.configured ? getMachinesForAllApps(configs.fly.config) : Promise.resolve(null),
 		configs.sentry.configured ? getRecentIssues(configs.sentry.config, 5) : Promise.resolve(null),
 		configs.supabase.configured
-			? queryTable<JobRow>(configs.supabase.config, 'jobs', {
+			? queryTable<JobRow>(configs.supabase.config, 'cleaning_jobs', {
 					created_at: `gte.${since24h}`,
 					select: '*'
 				})

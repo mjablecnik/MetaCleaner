@@ -12,10 +12,13 @@ export const actions = {
 			return fail(401, { error: true });
 		}
 
+		const origin = env.ORIGIN ?? '';
+		const isSecure = origin.startsWith('https');
+
 		cookies.set('mc_session', secret, {
 			path: '/',
 			httpOnly: true,
-			secure: true,
+			secure: isSecure,
 			sameSite: 'strict',
 			maxAge: 60 * 60 * 8
 		});

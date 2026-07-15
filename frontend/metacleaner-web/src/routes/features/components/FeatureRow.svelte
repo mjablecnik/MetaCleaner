@@ -7,6 +7,10 @@
 	import CheckBullet from '$lib/components/elements/CheckBullet.svelte';
 	import ExifIllustration from './ExifIllustration.svelte';
 	import C2paIllustration from './C2paIllustration.svelte';
+	import AiDetectionIllustration from './AiDetectionIllustration.svelte';
+	import RiskScannerIllustration from './RiskScannerIllustration.svelte';
+	import BatchProcessingIllustration from './BatchProcessingIllustration.svelte';
+	import PdfReportIllustration from './PdfReportIllustration.svelte';
 
 	interface Props {
 		feature: Feature;
@@ -64,20 +68,19 @@
 		</div>
 
 		<!-- Visual -->
-		<div class="hidden lg:flex flex-shrink-0 w-full lg:w-72 h-64 items-center justify-center">
-			{#if feature.image}
-				<img
-					class="w-full h-full object-contain"
-					src={feature.image.src}
-					alt={t(feature.image.altKey)}
-					width="288"
-					height="256"
-					loading="lazy"
-				/>
-			{:else if feature.id === 'exif'}
+		<div class="hidden lg:flex shrink-0 w-full lg:w-72 h-64 items-center justify-center">
+			{#if feature.id === 'exif'}
 				<ExifIllustration />
+			{:else if feature.id === 'ai'}
+				<AiDetectionIllustration />
 			{:else if feature.id === 'c2pa'}
 				<C2paIllustration />
+			{:else if feature.id === 'risk'}
+				<RiskScannerIllustration />
+			{:else if feature.id === 'batch'}
+				<BatchProcessingIllustration />
+			{:else if feature.id === 'pdf'}
+				<PdfReportIllustration />
 			{/if}
 		</div>
 	</div>

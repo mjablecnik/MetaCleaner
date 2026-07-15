@@ -68,8 +68,10 @@ const securityHeaders: Handle = async ({ event, resolve }) => {
 			"default-src 'self'",
 			"img-src 'self' https: data:",
 			// Plotly and inline Svelte styles require unsafe-inline; tighten with nonces when feasible
-			"style-src 'self' 'unsafe-inline'",
-			"script-src 'self' 'unsafe-inline'",
+			"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
+			"script-src 'self' 'unsafe-inline' https://cdn.plot.ly",
+			"font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+			"connect-src 'self'",
 			"frame-ancestors 'none'"
 		].join('; ')
 	);

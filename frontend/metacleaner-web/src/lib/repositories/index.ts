@@ -1,4 +1,4 @@
-export type { FormatItem, FeatureImage, Feature } from './features.js';
+export type { FormatItem, Feature } from './features.js';
 export { featuresRepository } from './features.js';
 
 export type { Plan, EnterprisePlan } from './pricing.js';
