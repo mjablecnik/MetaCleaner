@@ -43,7 +43,7 @@ export function pricingRepository(): Plan[] {
 			disabled: false
 		},
 		{
-			id: 'pack',
+			id: 'credits',
 			nameKey: 'pricing_plan_pack_name',
 			nameText: null,
 			priceMonthly: '€4',

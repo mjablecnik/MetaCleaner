@@ -121,7 +121,7 @@
 			>
 				{translate(plan.ctaKey)}
 			</button>
-		{:else if plan.id === 'pack' || plan.id === 'proplus'}
+		{:else if plan.id === 'credits' || plan.id === 'proplus'}
 			<button
 				onclick={handleSelect}
 				class="w-full rounded-xl bg-brand-blue py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
@@ -158,7 +158,7 @@
 			class="flex items-end justify-center gap-1 text-center {plan.originalYearly ? 'mb-1' : 'mb-2'}"
 		>
 			<span class="text-5xl font-black">{price}</span>
-			{#if plan.perKey && plan.id === 'pack'}
+			{#if plan.perKey && plan.id === 'credits'}
 				<span class="mb-1 text-sm text-text-muted">{translate(plan.perKey)}</span>
 			{/if}
 		</div>
@@ -207,7 +207,7 @@
 			>
 				{translate(plan.ctaKey)}
 			</button>
-		{:else if plan.id === 'pack' || plan.id === 'proplus'}
+		{:else if plan.id === 'credits' || plan.id === 'proplus'}
 			<button
 				onclick={handleSelect}
 				class="mt-auto w-full rounded-lg bg-brand-blue py-3 font-semibold text-white transition-colors hover:bg-blue-600"

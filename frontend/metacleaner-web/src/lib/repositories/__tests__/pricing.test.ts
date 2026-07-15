@@ -40,10 +40,10 @@ describe('pricingRepository()', () => {
 		expect(new Set(ids).size).toBe(ids.length);
 	});
 
-	it('includes plans with ids: free, pack, pro, proplus', () => {
+	it('includes plans with ids: free, credits, pro, proplus', () => {
 		const ids = plans.map((p) => p.id);
 		expect(ids).toContain('free');
-		expect(ids).toContain('pack');
+		expect(ids).toContain('credits');
 		expect(ids).toContain('pro');
 		expect(ids).toContain('proplus');
 	});
