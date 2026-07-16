@@ -3,168 +3,100 @@
 	import type { DbKpi } from '$lib/repositories/databaseRepository';
 
 	let { kpis }: { kpis: DbKpi[] } = $props();
+
+	const storage = $derived(kpis.find((k) => k.key === 'storageUsed'));
+	const tableCount = $derived(kpis.find((k) => k.key === 'tableCount'));
 </script>
 
-<!-- Desktop: 4-col KPI grid -->
-<section class="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-	<!-- activeConnections -->
-	<div class="bg-card border border-surface rounded-xl p-5">
-		<div class="flex justify-between items-start mb-3">
-			<h3 class="text-textSec text-sm font-medium">{t(kpis[0].labelKey)}</h3>
-			<span class="px-2 py-0.5 {kpis[0].badgeClass} text-xs rounded-full font-medium"
-				>{t(kpis[0].badgeKey)}</span
-			>
+<!-- Desktop: 2-col KPI grid (only metrics with real data) -->
+<section class="hidden lg:grid grid-cols-2 gap-4">
+	{#if storage}
+		<div class="bg-card border border-surface rounded-xl p-5">
+			<div class="flex justify-between items-start mb-3">
+				<h3 class="text-textSec text-sm font-medium">{t(storage.labelKey)}</h3>
+				<span class="px-2 py-0.5 {storage.badgeClass} text-xs rounded-full font-medium"
+					>{t(storage.badgeKey)}</span
+				>
+			</div>
+			<div class="flex items-end gap-2 mb-3">
+				<span class="text-3xl font-bold text-textMain">{storage.value}</span>
+				<span class="text-sm text-textSec mb-1">{storage.unit}</span>
+				<span class="text-sm text-textSec mb-1">{storage.max}</span>
+			</div>
+			{#if storage.barWidth}
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
+					<div
+						class="h-full {storage.barClass} rounded-full"
+						style="width:{storage.barWidth}"
+					></div>
+				</div>
+			{/if}
+			<p class="text-xs text-textSec mt-2">
+				{storage.subtextIsKey ? t(storage.subtext) : storage.subtext}
+			</p>
 		</div>
-		<div class="flex items-end gap-2 mb-3">
-			<span class="text-3xl font-bold text-textMain">{kpis[0].value}</span>
-			<span class="text-sm text-textSec mb-1">{kpis[0].max}</span>
-		</div>
-		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
-			<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
-		</div>
-		<p class="text-xs text-textSec mt-2">
-			{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}
-		</p>
-	</div>
+	{/if}
 
-	<!-- queryLatency -->
-	<div class="bg-card border border-surface rounded-xl p-5">
-		<div class="flex justify-between items-start mb-3">
-			<h3 class="text-textSec text-sm font-medium">{t(kpis[1].labelKey)}</h3>
-			<span class="px-2 py-0.5 {kpis[1].badgeClass} text-xs rounded-full font-medium"
-				>{t(kpis[1].badgeKey)}</span
-			>
+	{#if tableCount}
+		<div class="bg-card border border-surface rounded-xl p-5">
+			<div class="flex justify-between items-start mb-3">
+				<h3 class="text-textSec text-sm font-medium">{t(tableCount.labelKey)}</h3>
+				<span class="px-2 py-0.5 {tableCount.badgeClass} text-xs rounded-full font-medium"
+					>{t(tableCount.badgeKey)}</span
+				>
+			</div>
+			<div class="flex items-end gap-2">
+				<span class="text-3xl font-bold text-textMain">{tableCount.value}</span>
+			</div>
+			<p class="text-xs text-textSec mt-2">
+				{tableCount.subtextIsKey ? t(tableCount.subtext) : tableCount.subtext}
+			</p>
 		</div>
-		<div class="flex items-end gap-2">
-			<span class="text-3xl font-bold text-textMain">{kpis[1].value}</span>
-			<span class="text-sm text-textSec mb-1">{kpis[1].unit}</span>
-			<span class="text-sm {kpis[1].trendClass} mb-1 flex items-center gap-1 ml-1">
-				<i class="fa-solid fa-arrow-down text-xs"></i>{kpis[1].trend}
-			</span>
-		</div>
-		<p class="text-xs text-textSec mt-2">
-			{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}
-		</p>
-	</div>
-
-	<!-- storageUsed -->
-	<div class="bg-card border border-surface rounded-xl p-5">
-		<div class="flex justify-between items-start mb-3">
-			<h3 class="text-textSec text-sm font-medium">{t(kpis[2].labelKey)}</h3>
-			<span class="px-2 py-0.5 {kpis[2].badgeClass} text-xs rounded-full font-medium"
-				>{t(kpis[2].badgeKey)}</span
-			>
-		</div>
-		<div class="flex items-end gap-2 mb-3">
-			<span class="text-3xl font-bold text-textMain">{kpis[2].value}</span>
-			<span class="text-sm text-textSec mb-1">{kpis[2].max}</span>
-		</div>
-		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden">
-			<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
-		</div>
-		<p class="text-xs text-textSec mt-2">
-			{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}
-		</p>
-	</div>
-
-	<!-- dbErrors -->
-	<div class="bg-card border border-surface rounded-xl p-5">
-		<div class="flex justify-between items-start mb-3">
-			<h3 class="text-textSec text-sm font-medium">{t(kpis[3].labelKey)}</h3>
-			<span class="px-2 py-0.5 {kpis[3].badgeClass} text-xs rounded-full font-medium"
-				>{t(kpis[3].badgeKey)}</span
-			>
-		</div>
-		<div class="flex items-end gap-2">
-			<span class="text-3xl font-bold {kpis[3].valueClass}">{kpis[3].value}</span>
-			<span class="text-sm {kpis[3].trendClass} mb-1 flex items-center gap-1">
-				<i class="fa-solid fa-arrow-up text-xs"></i>{kpis[3].trend}
-			</span>
-		</div>
-		<p class="text-xs text-textSec mt-2">
-			{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}
-		</p>
-	</div>
+	{/if}
 </section>
 
-<!-- Mobile: 2x2 compact KPI grid -->
+<!-- Mobile: 2-col compact KPI grid -->
 <section class="lg:hidden grid grid-cols-2 gap-3">
-	<!-- activeConnections -->
-	<div class="bg-card border border-surface rounded-xl p-4">
-		<div class="flex items-center justify-between mb-2">
-			<h3 class="text-textSec text-xs font-medium">{t(kpis[0].labelKey)}</h3>
-			<span class="px-1.5 py-0.5 {kpis[0].badgeClass} text-[10px] rounded-full font-medium"
-				>{t(kpis[0].badgeKey)}</span
-			>
+	{#if storage}
+		<div class="bg-card border border-surface rounded-xl p-4">
+			<div class="flex items-center justify-between mb-2">
+				<h3 class="text-textSec text-xs font-medium">{t(storage.labelKey)}</h3>
+				<span class="px-1.5 py-0.5 {storage.badgeClass} text-[10px] rounded-full font-medium"
+					>{t(storage.badgeKey)}</span
+				>
+			</div>
+			<div class="flex items-end gap-1 mb-2">
+				<span class="text-2xl font-bold text-textMain">{storage.value}</span>
+				<span class="text-xs text-textSec mb-0.5">{storage.unit} {storage.max}</span>
+			</div>
+			{#if storage.barWidth}
+				<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
+					<div
+						class="h-full {storage.barClass} rounded-full"
+						style="width:{storage.barWidth}"
+					></div>
+				</div>
+			{/if}
+			<p class="text-[10px] text-textSec">
+				{storage.subtextIsKey ? t(storage.subtext) : storage.subtext}
+			</p>
 		</div>
-		<div class="flex items-end gap-1 mb-2">
-			<span class="text-2xl font-bold text-textMain">{kpis[0].value}</span>
-			<span class="text-xs text-textSec mb-0.5">{kpis[0].max}</span>
-		</div>
-		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
-			<div class="h-full {kpis[0].barClass} rounded-full" style="width:{kpis[0].barWidth}"></div>
-		</div>
-		<p class="text-[10px] text-textSec">
-			{kpis[0].subtextIsKey ? t(kpis[0].subtext) : kpis[0].subtext}
-		</p>
-	</div>
+	{/if}
 
-	<!-- queryLatency -->
-	<div class="bg-card border border-surface rounded-xl p-4">
-		<div class="flex items-center justify-between mb-2">
-			<h3 class="text-textSec text-xs font-medium">{t(kpis[1].labelKey)}</h3>
-			<span class="px-1.5 py-0.5 {kpis[1].badgeClass} text-[10px] rounded-full font-medium"
-				>{t(kpis[1].badgeKey)}</span
-			>
+	{#if tableCount}
+		<div class="bg-card border border-surface rounded-xl p-4">
+			<div class="flex items-center justify-between mb-2">
+				<h3 class="text-textSec text-xs font-medium">{t(tableCount.labelKey)}</h3>
+				<span class="px-1.5 py-0.5 {tableCount.badgeClass} text-[10px] rounded-full font-medium"
+					>{t(tableCount.badgeKey)}</span
+				>
+			</div>
+			<div class="flex items-end gap-1">
+				<span class="text-2xl font-bold text-textMain">{tableCount.value}</span>
+			</div>
+			<p class="text-[10px] text-textSec mt-1">
+				{tableCount.subtextIsKey ? t(tableCount.subtext) : tableCount.subtext}
+			</p>
 		</div>
-		<div class="flex items-end gap-1 mb-1">
-			<span class="text-2xl font-bold text-textMain">{kpis[1].value}</span>
-			<span class="text-xs text-textSec mb-0.5">{kpis[1].unit}</span>
-			<span class="text-xs {kpis[1].trendClass} mb-0.5 flex items-center gap-0.5 ml-1">
-				<i class="fa-solid fa-arrow-down text-[9px]"></i>{kpis[1].trend}
-			</span>
-		</div>
-		<p class="text-[10px] text-textSec">
-			{kpis[1].subtextIsKey ? t(kpis[1].subtext) : kpis[1].subtext}
-		</p>
-	</div>
-
-	<!-- storageUsed -->
-	<div class="bg-card border border-surface rounded-xl p-4">
-		<div class="flex items-center justify-between mb-2">
-			<h3 class="text-textSec text-xs font-medium">{t(kpis[2].labelKey)}</h3>
-			<span class="px-1.5 py-0.5 {kpis[2].badgeClass} text-[10px] rounded-full font-medium"
-				>{t(kpis[2].badgeKey)}</span
-			>
-		</div>
-		<div class="flex items-end gap-1 mb-2">
-			<span class="text-2xl font-bold text-textMain">{kpis[2].value}</span>
-			<span class="text-xs text-textSec mb-0.5">{kpis[2].max}</span>
-		</div>
-		<div class="w-full h-1.5 bg-surface rounded-full overflow-hidden mb-1">
-			<div class="h-full {kpis[2].barClass} rounded-full" style="width:{kpis[2].barWidth}"></div>
-		</div>
-		<p class="text-[10px] text-textSec">
-			{kpis[2].subtextIsKey ? t(kpis[2].subtext) : kpis[2].subtext}
-		</p>
-	</div>
-
-	<!-- dbErrors -->
-	<div class="bg-card border border-surface rounded-xl p-4">
-		<div class="flex items-center justify-between mb-2">
-			<h3 class="text-textSec text-xs font-medium">{t(kpis[3].labelKey)}</h3>
-			<span class="px-1.5 py-0.5 {kpis[3].badgeClass} text-[10px] rounded-full font-medium"
-				>{t(kpis[3].badgeKey)}</span
-			>
-		</div>
-		<div class="flex items-end gap-1 mb-1">
-			<span class="text-2xl font-bold {kpis[3].valueClass}">{kpis[3].value}</span>
-			<span class="text-xs {kpis[3].trendClass} mb-0.5 flex items-center gap-0.5">
-				<i class="fa-solid fa-arrow-up text-[9px]"></i>{kpis[3].trend}
-			</span>
-		</div>
-		<p class="text-[10px] text-textSec">
-			{kpis[3].subtextIsKey ? t(kpis[3].subtext) : kpis[3].subtext}
-		</p>
-	</div>
+	{/if}
 </section>

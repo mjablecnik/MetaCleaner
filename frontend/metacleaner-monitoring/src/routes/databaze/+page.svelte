@@ -7,10 +7,7 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import DatabaseKpiSection from './sections/DatabaseKpiSection.svelte';
-	import DatabaseChartsSection from './sections/DatabaseChartsSection.svelte';
-	import DatabaseQueriesSection from './sections/DatabaseQueriesSection.svelte';
 	import DatabaseTablesSection from './sections/DatabaseTablesSection.svelte';
-	import DatabaseErrorLogSection from './sections/DatabaseErrorLogSection.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -113,8 +110,6 @@
 			onretry={() => invalidate('app:databaze')}
 		/>
 	{/if}
-	<DatabaseChartsSection />
-	<DatabaseQueriesSection />
 	{#if data.tableSizes.status === 'ok'}
 		<DatabaseTablesSection tableSizes={data.tableSizes.data} />
 	{:else if data.tableSizes.status === 'not-configured'}
@@ -126,7 +121,6 @@
 			onretry={() => invalidate('app:databaze')}
 		/>
 	{/if}
-	<DatabaseErrorLogSection />
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/databaze" />

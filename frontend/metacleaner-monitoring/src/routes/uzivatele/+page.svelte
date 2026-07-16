@@ -7,7 +7,6 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import UsersKpiSection from './sections/UsersKpiSection.svelte';
-	import UsersChartsSection from './sections/UsersChartsSection.svelte';
 	import UsersTableSection from './sections/UsersTableSection.svelte';
 	import type { PageData } from './$types';
 
@@ -129,7 +128,6 @@
 			onretry={() => invalidate('app:uzivatele')}
 		/>
 	{/if}
-	<UsersChartsSection />
 	{#if data.users.status === 'ok'}
 		<UsersTableSection users={data.users.data} />
 	{:else if data.users.status === 'not-configured'}

@@ -51,7 +51,7 @@
 		gridcolor: chartColors.surface,
 		zeroline: false,
 		tickfont: { size: 10 },
-		title: 'MB'
+		ticksuffix: ' MB'
 	};
 
 	const cpuLayout = { ...baseLayout, yaxis: cpuYAxis };

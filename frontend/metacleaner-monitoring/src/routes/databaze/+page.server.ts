@@ -21,12 +21,23 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 
 	const kpis = await callSection(async () => {
 		if (tableStatsSettled.status === 'rejected') throw tableStatsSettled.reason;
-		return mapToDbKpis(tableStatsSettled.value);
+		const raw = tableStatsSettled.value;
+		if (!Array.isArray(raw)) throw new Error('Unexpected response from get_table_stats RPC');
+		return mapToDbKpis(raw);
 	});
 
 	const tableSizes = await callSection(async () => {
 		if (tableStatsSettled.status === 'rejected') throw tableStatsSettled.reason;
-		return mapToTableSizes(tableStatsSettled.value);
+		const raw = tableStatsSettled.value;
+		if (!Array.isArray(raw)) throw new Error('Unexpected response from get_table_stats RPC');
+		// Deduplicate by table_name to prevent each_key_duplicate errors
+		const seen = new Set<string>();
+		const deduped = raw.filter((row) => {
+			if (seen.has(row.table_name)) return false;
+			seen.add(row.table_name);
+			return true;
+		});
+		return mapToTableSizes(deduped);
 	});
 
 	return { kpis, tableSizes } satisfies DatabasePageData;

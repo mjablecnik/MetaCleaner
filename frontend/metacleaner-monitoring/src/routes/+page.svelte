@@ -5,8 +5,6 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import DashboardKpiSection from './sections/DashboardKpiSection.svelte';
-	import DashboardChartsRow1Section from './sections/DashboardChartsRow1Section.svelte';
-	import DashboardChartsRow2Section from './sections/DashboardChartsRow2Section.svelte';
 	import DashboardAlertsSection from './sections/DashboardAlertsSection.svelte';
 	import type { PageData } from './$types';
 
@@ -51,8 +49,6 @@
 			onretry={() => invalidate('app:dashboard')}
 		/>
 	{/if}
-	<DashboardChartsRow1Section />
-	<DashboardChartsRow2Section />
 	{#if data.alerts.status === 'ok'}
 		<DashboardAlertsSection alerts={data.alerts.data} />
 	{:else if data.alerts.status === 'not-configured'}

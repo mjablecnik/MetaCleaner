@@ -92,25 +92,6 @@ export function mapToDbKpis(raw: SupabaseTableStatsRaw[]): DbKpi[] {
 			badgeKey: 'common_status_ok',
 			badgeClass: 'bg-success/10 text-success',
 			subtext: m.database_kpi_totalRows({ count: totalRows.toLocaleString() })
-		},
-		{
-			key: 'activeConnections',
-			labelKey: 'database_kpi_activeConnections',
-			value: '—',
-			badgeKey: 'common_status_ok',
-			badgeClass: 'bg-success/10 text-success',
-			subtext: 'database_kpi_postgrestNoLive',
-			subtextIsKey: true
-		},
-		{
-			key: 'queryLatency',
-			labelKey: 'database_kpi_queryLatency',
-			value: '—',
-			badgeKey: 'common_status_ok',
-			badgeClass: 'bg-success/10 text-success',
-			subtext: 'database_kpi_postgrestNoQuery',
-			subtextIsKey: true,
-			unit: 'ms'
 		}
 	];
 }
