@@ -7,10 +7,7 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import BusinessKpiSection from './sections/BusinessKpiSection.svelte';
-	import BusinessRevenueChartsSection from './sections/BusinessRevenueChartsSection.svelte';
 	import BusinessFunnelSection from './sections/BusinessFunnelSection.svelte';
-	import BusinessCohortSection from './sections/BusinessCohortSection.svelte';
-	import BusinessTopCustomersSection from './sections/BusinessTopCustomersSection.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -114,7 +111,6 @@
 			onretry={() => invalidate('app:business')}
 		/>
 	{/if}
-	<BusinessRevenueChartsSection />
 	{#if data.planRevenue.status === 'ok'}
 		<BusinessFunnelSection
 			planRevenue={data.planRevenue.data}
@@ -129,8 +125,6 @@
 			onretry={() => invalidate('app:business')}
 		/>
 	{/if}
-	<BusinessCohortSection />
-	<BusinessTopCustomersSection />
 </div>
 
 <MobileBottomNav items={navItems} activeHref="{base}/business" />

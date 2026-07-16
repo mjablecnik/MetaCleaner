@@ -7,8 +7,6 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import ErrorsKpiSection from './sections/ErrorsKpiSection.svelte';
-	import ErrorsTimelineSection from './sections/ErrorsTimelineSection.svelte';
-	import ErrorsComparisonSection from './sections/ErrorsComparisonSection.svelte';
 	import ErrorsEndpointsSection from './sections/ErrorsEndpointsSection.svelte';
 	import ErrorsLogSection from './sections/ErrorsLogSection.svelte';
 	import type { PageData } from './$types';
@@ -100,8 +98,6 @@
 			onretry={() => invalidate('app:chyby')}
 		/>
 	{/if}
-	<ErrorsTimelineSection />
-	<ErrorsComparisonSection />
 	{#if data.topEndpoints.status === 'ok'}
 		<ErrorsEndpointsSection endpoints={data.topEndpoints.data} />
 	{:else if data.topEndpoints.status === 'not-configured'}

@@ -7,7 +7,6 @@
 	import NotConfiguredCard from '$lib/shared/components/NotConfiguredCard.svelte';
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import PerformanceKpiSection from './sections/PerformanceKpiSection.svelte';
-	import PerformanceChartsSection from './sections/PerformanceChartsSection.svelte';
 	import PerformanceEndpointsSection from './sections/PerformanceEndpointsSection.svelte';
 	import PerformanceEventLogSection from './sections/PerformanceEventLogSection.svelte';
 	import type { PageData } from './$types';
@@ -99,7 +98,6 @@
 			onretry={() => invalidate('app:performance')}
 		/>
 	{/if}
-	<PerformanceChartsSection />
 	{#if data.slowEndpoints.status === 'ok'}
 		<PerformanceEndpointsSection slowEndpoints={data.slowEndpoints.data} />
 	{:else if data.slowEndpoints.status === 'not-configured'}

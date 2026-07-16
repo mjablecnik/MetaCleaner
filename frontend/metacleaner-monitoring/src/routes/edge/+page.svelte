@@ -8,8 +8,6 @@
 	import SectionErrorCard from '$lib/shared/components/SectionErrorCard.svelte';
 	import EdgeKpiSection from './sections/EdgeKpiSection.svelte';
 	import EdgeChartsSection from './sections/EdgeChartsSection.svelte';
-	import EdgeThreatSection from './sections/EdgeThreatSection.svelte';
-	import EdgeCacheRulesSection from './sections/EdgeCacheRulesSection.svelte';
 	import EdgeSecurityLogSection from './sections/EdgeSecurityLogSection.svelte';
 	import type { PageData } from './$types';
 
@@ -121,8 +119,6 @@
 			onretry={() => invalidate('app:edge')}
 		/>
 	{/if}
-	<EdgeThreatSection />
-	<EdgeCacheRulesSection />
 	{#if data.wafLog.status === 'ok'}
 		<EdgeSecurityLogSection wafLog={data.wafLog.data} />
 	{:else if data.wafLog.status === 'not-configured'}

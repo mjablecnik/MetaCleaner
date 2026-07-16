@@ -9,6 +9,8 @@
 	import RuntimeKpiSection from './sections/RuntimeKpiSection.svelte';
 	import RuntimeChartsSection from './sections/RuntimeChartsSection.svelte';
 	import RuntimeInstancesSection from './sections/RuntimeInstancesSection.svelte';
+	import RuntimeDeploySection from './sections/RuntimeDeploySection.svelte';
+	import RuntimeErrorLogSection from './sections/RuntimeErrorLogSection.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -159,6 +161,28 @@
 		<SectionErrorCard
 			category={data.machines.error.category}
 			message={data.machines.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
+	{#if data.deploys.status === 'ok'}
+		<RuntimeDeploySection deploys={data.deploys.data} />
+	{:else if data.deploys.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.deploys.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.deploys.error.category}
+			message={data.deploys.error.message}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{/if}
+	{#if data.errors.status === 'ok'}
+		<RuntimeErrorLogSection errors={data.errors.data} />
+	{:else if data.errors.status === 'not-configured'}
+		<NotConfiguredCard missingVars={data.errors.missingVars} />
+	{:else}
+		<SectionErrorCard
+			category={data.errors.error.category}
+			message={data.errors.error.message}
 			onretry={() => invalidate('app:runtime')}
 		/>
 	{/if}
