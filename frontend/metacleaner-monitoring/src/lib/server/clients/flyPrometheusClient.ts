@@ -31,6 +31,15 @@ function prometheusBaseUrl(config: FlyClientConfig): string {
 	return `https://api.fly.io/prometheus/${config.org}/api/v1`;
 }
 
+function authHeader(token: string): string {
+	// Tokens from `fly tokens create` start with "fm2_" and use FlyV1 scheme.
+	// Tokens from `flyctl auth token` use Bearer scheme.
+	if (token.startsWith('fm2_') || token.startsWith('FlyV1')) {
+		return `FlyV1 ${token}`;
+	}
+	return `Bearer ${token}`;
+}
+
 export async function queryInstant(
 	config: FlyClientConfig,
 	promql: string
@@ -47,7 +56,7 @@ export async function queryInstant(
 			url,
 			{
 				headers: {
-					Authorization: `Bearer ${config.token}`
+					Authorization: authHeader(config.token)
 				}
 			},
 			config.timeout ?? 10_000
@@ -102,7 +111,7 @@ export async function queryRange(
 			url,
 			{
 				headers: {
-					Authorization: `Bearer ${config.token}`
+					Authorization: authHeader(config.token)
 				}
 			},
 			config.timeout ?? 10_000
@@ -136,7 +145,8 @@ export async function queryRange(
 	return response.json() as Promise<PrometheusRangeResponse>;
 }
 
-const CPU_PERCENT_PROMQL = '100 - avg(rate(fly_instance_cpu{mode="idle"}[5m])) by (app) * 100';
+const CPU_PERCENT_PROMQL =
+	'avg(fly_instance_load_average{minutes="1"}) by (app) * 100';
 const RAM_USED_PROMQL = 'fly_instance_memory_mem_total - fly_instance_memory_mem_available';
 
 export function getCurrentCpuPercent(config: FlyClientConfig): Promise<PrometheusInstantResponse> {
