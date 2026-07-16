@@ -58,13 +58,13 @@ export function mergeAndSortAlerts(
 		const flyAlerts: AlertWithMs[] = [];
 		for (const [app, machines] of flyMachines) {
 			for (const machine of machines) {
-				for (const event of machine.events ?? []) {
+				for (const [idx, event] of (machine.events ?? []).entries()) {
 					if (event.type === 'launch' || event.type === 'start') continue;
 					const ms = flyTsToMs(event.timestamp);
 					const { mobile, desktop } = timeAgo(ms, now);
 					flyAlerts.push({
 						_ms: ms,
-						id: `fly-${machine.id}-${event.timestamp}`,
+						id: `fly-${machine.id}-${event.type}-${event.timestamp}-${idx}`,
 						severity: deriveFlySeverity(event.type, event.status),
 						title: `${event.type} on ${machine.name}`,
 						descriptionMobile: `${app} (${machine.region})`,

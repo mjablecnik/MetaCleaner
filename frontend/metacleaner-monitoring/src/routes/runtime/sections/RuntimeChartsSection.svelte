@@ -51,7 +51,7 @@
 		gridcolor: chartColors.surface,
 		zeroline: false,
 		tickfont: { size: 10 },
-		title: 'GB'
+		title: 'MB'
 	};
 
 	const cpuLayout = { ...baseLayout, yaxis: cpuYAxis };
@@ -61,7 +61,7 @@
 
 	const cpuChartData = $derived([
 		{
-			x: cpuTimeSeries.map((p) => formatTime(p.timestamp)),
+			x: cpuTimeSeries.map((p) => new Date(p.timestamp * 1000).toISOString()),
 			y: cpuTimeSeries.map((p) => p.value),
 			type: 'scatter',
 			mode: 'lines',
@@ -74,8 +74,8 @@
 
 	const ramChartData = $derived([
 		{
-			x: ramTimeSeries.map((p) => formatTime(p.timestamp)),
-			y: ramTimeSeries.map((p) => p.value / (1024 * 1024 * 1024)),
+			x: ramTimeSeries.map((p) => new Date(p.timestamp * 1000).toISOString()),
+			y: ramTimeSeries.map((p) => p.value / (1024 * 1024)),
 			type: 'scatter',
 			mode: 'lines',
 			name: 'RAM',

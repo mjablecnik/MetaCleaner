@@ -75,7 +75,9 @@ export const load: PageServerLoad = async ({ setHeaders, depends }) => {
 
 	const machines = await callSection(async () => {
 		if (machinesSettled.status === 'rejected') throw machinesSettled.reason;
-		return mapToMachineInstances(machinesSettled.value);
+		const cpuData = cpuCurrent.status === 'ok' ? cpuCurrent.data : undefined;
+		const ramData = ramCurrent.status === 'ok' ? ramCurrent.data : undefined;
+		return mapToMachineInstances(machinesSettled.value, cpuData, ramData);
 	});
 
 	const deploys = await callSection(async () => {

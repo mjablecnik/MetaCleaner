@@ -102,22 +102,42 @@ function getAppStatus(machines: FlyMachineRaw[]): 'online' | 'degraded' | 'offli
 	return hasFailingChecks ? 'degraded' : 'online';
 }
 
-export function mapToMachineInstances(raw: Map<string, FlyMachineRaw[]>): MachineInstance[] {
+export function mapToMachineInstances(
+	raw: Map<string, FlyMachineRaw[]>,
+	cpuUsage?: CurrentCpuUsage,
+	ramUsage?: CurrentRamUsage
+): MachineInstance[] {
 	const result: MachineInstance[] = [];
 
 	for (const [app, machines] of raw) {
+		// Get per-app CPU from Prometheus (load average based)
+		const appCpu = cpuUsage?.perApp.get(app);
+
 		for (const machine of machines) {
 			const status = getMachineStatus(machine);
 			const memoryMb = machine.config?.guest?.memory_mb ?? 256;
 
-			// Find last start event for uptime; fall back to created_at
+			// Find last start event for uptime; fall back to updated_at for running machines
+			let lastStartMs: number;
 			const startEvents = (machine.events ?? [])
 				.filter((e) => e.type === 'start')
 				.sort((a, b) => b.timestamp - a.timestamp);
-			const lastStartMs =
-				startEvents.length > 0
-					? flyTimestampToMs(startEvents[0].timestamp)
-					: new Date(machine.created_at).getTime();
+
+			if (startEvents.length > 0) {
+				const rawTs = startEvents[0].timestamp;
+				// Fly timestamps can be nanoseconds (>1e18), microseconds (>1e15), milliseconds (>1e12), or seconds
+				if (rawTs > 1e18) {
+					lastStartMs = rawTs / 1_000_000;
+				} else if (rawTs > 1e15) {
+					lastStartMs = rawTs / 1_000;
+				} else if (rawTs > 1e12) {
+					lastStartMs = rawTs;
+				} else {
+					lastStartMs = rawTs * 1_000;
+				}
+			} else {
+				lastStartMs = new Date(machine.updated_at).getTime();
+			}
 			const uptime = status === 'running' ? formatUptime(lastStartMs) : '—';
 
 			const regionCode = machine.region ?? '';
@@ -128,9 +148,19 @@ export function mapToMachineInstances(raw: Map<string, FlyMachineRaw[]>): Machin
 			const ramTotalDisplay =
 				ramTotalGb < 1 ? ramTotalGb.toFixed(2) : String(Math.round(ramTotalGb * 10) / 10);
 
-			// Fly Machines API does not expose real-time CPU metrics
-			const cpuPercent = 0;
+			// Use Prometheus data if available, otherwise 0
+			const cpuPercent = status === 'running' && appCpu != null ? Math.round(appCpu * 10) / 10 : 0;
 			const cpuClass = status === 'running' ? 'bg-[#a78bfa]' : 'bg-[#334155]';
+
+			// RAM: try to find per-instance usage from Prometheus
+			const instanceRamBytes = ramUsage?.perInstance.get(machine.id);
+			const ramUsedMb =
+				status === 'running' && instanceRamBytes != null
+					? Math.round(instanceRamBytes / (1024 * 1024))
+					: undefined;
+			const ramDisplay = ramUsedMb != null ? `${ramUsedMb} MB` : `${memoryMb} MB`;
+			const ramBarWidth =
+				ramUsedMb != null ? `${Math.min(100, (ramUsedMb / memoryMb) * 100).toFixed(0)}%` : '0%';
 
 			result.push({
 				id: machine.id,
@@ -142,10 +172,10 @@ export function mapToMachineInstances(raw: Map<string, FlyMachineRaw[]>): Machin
 				cpuPercent,
 				cpuClass,
 				cpuDisplay: `${cpuPercent}%`,
-				cpuWarning: false,
-				ramDisplay: `${memoryMb} MB`,
+				cpuWarning: cpuPercent > 80,
+				ramDisplay,
 				ramTotalDisplay,
-				ramBarWidth: '0%',
+				ramBarWidth,
 				uptime
 			});
 		}
@@ -163,14 +193,14 @@ export function mapToDeployEntries(machines: FlyMachineRaw[]): DeployEntry[] {
 			(e) => e.type === 'launch' || e.type === 'start'
 		);
 
-		for (const event of launchEvents) {
+		for (const [idx, event] of launchEvents.entries()) {
 			const tsMs = flyTimestampToMs(event.timestamp);
 			const succeeded = !event.status || event.status === 'success';
 			const deployStatus: 'success' | 'failed' | 'rollback' = succeeded ? 'success' : 'failed';
 
 			entries.push({
 				_sortMs: tsMs,
-				id: `${machine.id}-${event.timestamp}`,
+				id: `${machine.id}-${event.type}-${event.timestamp}-${idx}`,
 				version: '—',
 				app: machine.name,
 				author: '—',
@@ -315,14 +345,14 @@ export function mapToRuntimeErrors(machines: FlyMachineRaw[]): RuntimeErrorEntry
 		}
 
 		// Collect error events
-		for (const event of machine.events ?? []) {
+		for (const [idx, event] of (machine.events ?? []).entries()) {
 			const cfg = classifyEvent(event.type, event.status);
 			if (!cfg) continue;
 
 			const tsMs = flyTimestampToMs(event.timestamp);
 			entries.push({
 				_sortMs: tsMs,
-				id: `${event.type}-${machine.id}-${event.timestamp}`,
+				id: `${event.type}-${machine.id}-${event.timestamp}-${idx}`,
 				time: formatTimeHms(tsMs),
 				level: cfg.level,
 				levelClass: cfg.levelClass,
@@ -345,11 +375,12 @@ export function mapToHealthChecks(raw: Map<string, FlyMachineRaw[]>): HealthChec
 
 	for (const [app, machines] of raw) {
 		for (const machine of machines) {
+			const machineShortId = machine.id.slice(0, 8);
 			if (machine.checks && machine.checks.length > 0) {
 				for (const check of machine.checks) {
 					const isPassing = check.status === 'passing';
 					checks.push({
-						endpoint: check.name || `check:${machine.id.slice(0, 8)}`,
+						endpoint: `${check.name || 'check'}:${machineShortId}`,
 						service: app,
 						status: isPassing ? 'online' : 'degraded',
 						statusCode: isPassing ? '200 OK' : '—',
@@ -359,7 +390,7 @@ export function mapToHealthChecks(raw: Map<string, FlyMachineRaw[]>): HealthChec
 			} else {
 				const isRunning = machine.state === 'started';
 				checks.push({
-					endpoint: `machine:${machine.id.slice(0, 8)}`,
+					endpoint: `machine:${machineShortId}`,
 					service: app,
 					status: isRunning ? 'online' : 'offline',
 					statusCode: isRunning ? '200 OK' : '—',
@@ -378,7 +409,7 @@ export function mapToIncidents(raw: Map<string, FlyMachineRaw[]>): Incident[] {
 
 	for (const [app, machines] of raw) {
 		for (const machine of machines) {
-			for (const event of machine.events ?? []) {
+			for (const [idx, event] of (machine.events ?? []).entries()) {
 				const cfg = classifyEvent(event.type, event.status);
 				if (!cfg) continue;
 
@@ -398,7 +429,7 @@ export function mapToIncidents(raw: Map<string, FlyMachineRaw[]>): Incident[] {
 
 				incidents.push({
 					_sortMs: tsMs,
-					id: `fly-${machine.id}-${event.timestamp}`,
+					id: `fly-${machine.id}-${event.type}-${event.timestamp}-${idx}`,
 					status: 'resolved',
 					title: `${cfg.level} on ${machine.name}`,
 					descriptionDesktop: cfg.message(machine, event.type),

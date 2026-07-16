@@ -47,11 +47,6 @@
 			</div>
 		{/each}
 	</section>
-
-	<!-- Row 2: secondary KPIs — no real data source available -->
-	<section class="bg-card border border-surface rounded-xl p-5">
-		<p class="text-sm text-textSec text-center py-4">{t('common_labels_noData')}</p>
-	</section>
 </div>
 
 <!-- Mobile: 2×2 grids -->
@@ -90,10 +85,5 @@
 				</p>
 			</div>
 		{/each}
-	</section>
-
-	<!-- Secondary KPIs — no real data source available -->
-	<section class="bg-card border border-surface rounded-xl p-4">
-		<p class="text-sm text-textSec text-center py-4">{t('common_labels_noData')}</p>
 	</section>
 </div>
