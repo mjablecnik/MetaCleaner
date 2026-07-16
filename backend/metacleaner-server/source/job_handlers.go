@@ -264,12 +264,16 @@ func HandleFileDownload(cfg Config, db *SupabaseClient, tigris *TigrisClient) ht
 
 		if tigris != nil {
 			key := fmt.Sprintf("cleaned/%s_cleaned.%s", fileID, ext)
-			presignedURL, err := tigris.PresignGetURL(r.Context(), key, cfg.TigrisPresignExpiry)
+			body, err := tigris.GetObject(r.Context(), key)
 			if err != nil {
 				WriteError(w, http.StatusNotFound, ErrFileNotFound, "File not found or has expired")
 				return
 			}
-			http.Redirect(w, r, presignedURL, http.StatusFound)
+			defer body.Close()
+
+			w.Header().Set("Content-Type", contentTypeForExt(ext))
+			w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, downloadName))
+			io.Copy(w, body)
 			return
 		}
 
