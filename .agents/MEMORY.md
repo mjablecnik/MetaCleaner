@@ -1,5 +1,11 @@
 # Memory
 
+## cloudflareMapper.test.ts geo-percentage property test is flaky (no fixed fast-check seed)
+- Project: metacleaner-monitoring
+- Problem: `bun run test:unit` occasionally fails on "percentages sum to 100% (±1% rounding tolerance) when total > 0" in `src/lib/server/mappers/__tests__/cloudflareMapper.test.ts` with e.g. `AssertionError: expected 102 to be less than or equal to 101`. This is unrelated to whatever feature is being worked on (confirmed while verifying the Fly.io Prometheus integration, task 16) — the test file wasn't touched, and rerunning just that file in isolation passes immediately.
+- Solution: `fc.assert` isn't given a fixed seed here, so each run samples different random inputs and occasionally hits a rounding edge case the tolerance doesn't cover. Before treating a `bun run test:unit` failure as caused by your change, rerun the specific failing file alone (`bunx vitest run <path>`) — if it passes, it's this pre-existing flake, not a regression. Not fixed as part of unrelated feature work; would need a rounding-remainder-distribution fix in the mapper or a wider tolerance to fix properly.
+- Source: from-brief, 2026-07-16T08:49:00Z
+
 ## node build/index.js (adapter-node) does not load .env — needs --env-file
 - Project: metacleaner-monitoring
 - Problem: Following the README's documented "Production build and start" steps (`bun run build` then `node build/index.js`) crashes immediately with `[FATAL] Missing required configuration: Missing required environment variables: SUPABASE_URL, SUPABASE_SERVICE_KEY` even though `.env` is fully populated. `bun run dev`/`preview` work fine because Vite loads `.env` itself, and Docker works because `start-docker.sh` passes `--env-file .env` to `docker run` — but plain `node build/index.js` never reads `.env`, since SvelteKit's adapter-node output relies entirely on `process.env`.
