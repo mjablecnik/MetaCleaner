@@ -56,6 +56,7 @@
 	"common_status_incident": "Incident",
 	"common_status_all": "Vše",
 	"common_status_unknown": "Neznámý",
+	"common_status_error": "Chyba",
 
 	"common_pagination_showing": "Zobrazeno {from}–{to} z {total} uživatelů",
 	"common_pagination_previous": "Předchozí",
@@ -513,6 +514,16 @@
 	"business_kpi_churnRateSubtext": "Cíl: <2.0% · Odešlo: 48 zákazníků",
 	"business_kpi_npsSubtext": "1,840 odpovědí",
 	"business_kpi_churnBadge": "-0.3% Zlepšení",
+	"business_kpi_newSubscriptions": "ARPU",
+	"business_kpi_newSubscriptionsSubtext": "Průměrný příjem na uživatele",
+	"business_kpi_activeSubscriptions": "Aktivní předplatná",
+	"business_kpi_activeSubscriptionsSubtext": "Aktuální platící předplatitelé",
+	"business_kpi_newCustomersSubtext": "tento měsíc",
+	"business_okr_mrrTarget": "Cíl MRR",
+	"business_okr_churnTarget": "Cíl odchodu zákazníků",
+	"business_okr_userTarget": "Cíl aktivních uživatelů",
+	"business_okr_onTrack": "Na dobré cestě",
+	"business_okr_nearTarget": "Blízko cíle",
 	"business_okr_currently": "Aktuálně: {value}",
 	"business_payback_badge": "<12 měs.",
 	"business_cohort_month_feb24": "Únor '24",
@@ -566,6 +577,7 @@
 
 	"users_stats_newRegistrations7d": "Nové registrace (7d)",
 	"users_stats_authProvider": "Distribuce způsobu přihlášení",
+	"users_stats_powerUsers": "Aktivní uživatelé (>10 relací)",
 	"business_funnel_dataNotAvailable": "Data konverzního trychtýře nejsou k dispozici",
 
 	"performance_endpoints_notAvailable": "Data o latenci jednotlivých endpointů nejsou k dispozici",
@@ -596,6 +608,7 @@
 
 	"database_kpi_storageUsed": "{pct}% využito",
 	"database_kpi_totalRows": "celkem {count} řádků",
+	"database_kpi_tableCount": "Tabulky",
 
 	"edge_kpi_cachedRequests": "{count} z cache",
 	"edge_kpi_bandwidthDetail": "{gb} GB · {pct}% cachováno"

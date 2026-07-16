@@ -56,6 +56,7 @@
 	"common_status_incident": "Incident",
 	"common_status_all": "All",
 	"common_status_unknown": "Unknown",
+	"common_status_error": "Error",
 
 	"common_pagination_showing": "Showing {from}–{to} of {total} users",
 	"common_pagination_previous": "Previous",
@@ -513,6 +514,16 @@
 	"business_kpi_churnRateSubtext": "Target: <2.0% · Left: 48 customers",
 	"business_kpi_npsSubtext": "1,840 responses",
 	"business_kpi_churnBadge": "-0.3% improvement",
+	"business_kpi_newSubscriptions": "ARPU",
+	"business_kpi_newSubscriptionsSubtext": "Average revenue per user",
+	"business_kpi_activeSubscriptions": "Active Subscriptions",
+	"business_kpi_activeSubscriptionsSubtext": "Current paying subscribers",
+	"business_kpi_newCustomersSubtext": "this month",
+	"business_okr_mrrTarget": "MRR Target",
+	"business_okr_churnTarget": "Churn Rate Target",
+	"business_okr_userTarget": "Active Users Target",
+	"business_okr_onTrack": "On Track",
+	"business_okr_nearTarget": "Near Target",
 	"business_okr_currently": "Currently: {value}",
 	"business_payback_badge": "<12 months",
 	"business_cohort_month_feb24": "Feb '24",
@@ -566,6 +577,7 @@
 
 	"users_stats_newRegistrations7d": "New registrations (7d)",
 	"users_stats_authProvider": "Auth provider distribution",
+	"users_stats_powerUsers": "Power users (>10 sessions)",
 	"business_funnel_dataNotAvailable": "Conversion funnel data not available",
 
 	"performance_endpoints_notAvailable": "No endpoint latency data available",
@@ -596,6 +608,7 @@
 
 	"database_kpi_storageUsed": "{pct}% used",
 	"database_kpi_totalRows": "{count} total rows",
+	"database_kpi_tableCount": "Tables",
 
 	"edge_kpi_cachedRequests": "{count} from cache",
 	"edge_kpi_bandwidthDetail": "{gb} GB · {pct}% cached"
