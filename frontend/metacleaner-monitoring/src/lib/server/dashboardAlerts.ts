@@ -5,18 +5,24 @@ import type { SentryIssueRaw } from './clients/sentryClient.js';
 type AlertWithMs = DashboardAlert & { _ms: number };
 
 export function flyTsToMs(ts: number): number {
-	if (ts > 1e15) return ts / 1_000_000;
-	if (ts > 1e12) return ts / 1_000;
+	if (ts > 1e18) return ts / 1_000_000;
+	if (ts > 1e15) return ts / 1_000;
+	if (ts > 1e12) return ts;
 	return ts * 1_000;
 }
 
 export function timeAgo(ms: number, now: number): { mobile: string; desktop: string } {
 	const diff = now - ms;
+	if (diff < 0) return { mobile: 'now', desktop: 'just now' };
 	const mins = Math.round(diff / 60_000);
 	if (mins < 1) return { mobile: 'now', desktop: 'just now' };
 	if (mins < 60) return { mobile: `${mins} min`, desktop: `${mins} min ago` };
 	const hrs = Math.floor(mins / 60);
-	return { mobile: `${hrs} hrs`, desktop: `${hrs} hours ago` };
+	if (hrs < 24) return { mobile: `${hrs} hrs`, desktop: `${hrs} hours ago` };
+	const days = Math.floor(hrs / 24);
+	if (days < 30) return { mobile: `${days}d`, desktop: `${days} days ago` };
+	const months = Math.floor(days / 30);
+	return { mobile: `${months}mo`, desktop: `${months} months ago` };
 }
 
 export function deriveSentrySeverity(level: string): 'error' | 'warning' {
