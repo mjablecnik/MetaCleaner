@@ -4,6 +4,7 @@ import type { ClientConfig } from './clients/types.js';
 export interface FlyClientConfig extends ClientConfig {
 	org: string;
 	apps: string[];
+	prometheusBaseUrl: string;
 }
 
 export interface CloudflareClientConfig extends ClientConfig {
@@ -66,6 +67,7 @@ export function getServiceConfigs(): ServiceConfigs {
 							.FLY_APPS!.split(',')
 							.map((s) => s.trim())
 							.filter(Boolean),
+						prometheusBaseUrl: `https://api.fly.io/prometheus/${env.FLY_ORG!}/api/v1`,
 						timeout: 10_000
 					}
 				}

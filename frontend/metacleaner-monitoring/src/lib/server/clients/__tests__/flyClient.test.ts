@@ -8,6 +8,7 @@ const BASE_CONFIG: FlyClientConfig = {
 	baseUrl: 'https://api.machines.dev/v1',
 	org: 'my-org',
 	apps: ['app1', 'app2'],
+	prometheusBaseUrl: 'https://api.fly.io/prometheus/my-org/api/v1',
 	timeout: 5_000
 };
 
@@ -123,6 +124,7 @@ describe('getMachines', () => {
 			token: 'tok',
 			org: 'org',
 			apps: [],
+			prometheusBaseUrl: 'https://api.fly.io/prometheus/org/api/v1',
 			timeout: 5_000
 		};
 		await getMachines(configWithoutBase, 'someapp');

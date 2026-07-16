@@ -60,6 +60,18 @@ describe('Property 1: Configuration Detection', () => {
 		expect(configs.sentry.configured).toBe(true);
 	});
 
+	it('fly config derives prometheusBaseUrl from FLY_ORG', () => {
+		setEnv({ ...REQUIRED_VARS, ...FULL_OPTIONAL_VALS });
+		const configs = getServiceConfigs();
+		if (configs.fly.configured) {
+			expect(configs.fly.config.prometheusBaseUrl).toBe(
+				'https://api.fly.io/prometheus/my-org/api/v1'
+			);
+		} else {
+			throw new Error('expected fly to be configured');
+		}
+	});
+
 	it('missing optional service vars → configured=false with exact missingVars', () => {
 		// For each optional service, generate a non-empty subset of vars to omit
 		const serviceArb = fc.constantFrom(

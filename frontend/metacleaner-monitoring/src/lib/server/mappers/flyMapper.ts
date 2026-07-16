@@ -9,6 +9,7 @@ import type {
 	SlaGoal
 } from '$lib/repositories/index.js';
 import type { FlyMachineRaw } from '../clients/flyClient.js';
+import type { CurrentCpuUsage, CurrentRamUsage } from './flyPrometheusMapper.js';
 import * as m from '$lib/paraglide/messages.js';
 
 const REGION_NAMES: Record<string, string> = {
@@ -441,7 +442,15 @@ export function mapToSlaGoals(raw: Map<string, FlyMachineRaw[]>): SlaGoal[] {
 	return goals;
 }
 
-export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeStat[] {
+function clampPercent(value: number): number {
+	return Math.min(100, Math.max(0, value));
+}
+
+export function mapToRuntimeStats(
+	raw: Map<string, FlyMachineRaw[]>,
+	cpuUsage?: CurrentCpuUsage,
+	ramUsage?: CurrentRamUsage
+): RuntimeStat[] {
 	let totalMachines = 0;
 	let onlineMachines = 0;
 	let totalCpus = 0;
@@ -465,6 +474,17 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 	const uptimePercent =
 		totalMachines > 0 ? Math.round((onlineMachines / totalMachines) * 10000) / 100 : 0;
 	const totalMemoryGb = Math.round((totalMemoryMb / 1024) * 10) / 10;
+	const totalMemoryBytes = totalMemoryMb * 1024 * 1024;
+
+	const cpuValue = cpuUsage ? cpuUsage.percent.toFixed(1) : '—';
+	const cpuBarWidth = cpuUsage ? `${clampPercent(cpuUsage.percent)}%` : '0%';
+
+	const ramUsedGb = ramUsage ? ramUsage.usedBytes / (1024 * 1024 * 1024) : undefined;
+	const ramValue = ramUsedGb !== undefined ? ramUsedGb.toFixed(1) : '—';
+	const ramBarWidth =
+		ramUsage && totalMemoryBytes > 0
+			? `${clampPercent((ramUsage.usedBytes / totalMemoryBytes) * 100)}%`
+			: '0%';
 
 	const uptimeClass =
 		uptimePercent >= 99 ? 'text-success' : uptimePercent >= 95 ? 'text-secondary' : 'text-error';
@@ -476,11 +496,11 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 		{
 			key: 'cpuUsage',
 			labelKey: 'runtime_kpi_cpuUsage',
-			value: '—',
+			value: cpuValue,
 			unit: '%',
 			icon: 'fa-microchip',
 			iconClass: 'bg-[#3b82f6]/15 text-[#3b82f6]',
-			barWidth: '0%',
+			barWidth: cpuBarWidth,
 			barClass: 'bg-secondary',
 			subtext: m.runtime_kpi_cpuSubtext({ cpus: totalCpus, machines: totalMachines }),
 			badgeKey: 'common_status_ok',
@@ -489,11 +509,11 @@ export function mapToRuntimeStats(raw: Map<string, FlyMachineRaw[]>): RuntimeSta
 		{
 			key: 'ramUsage',
 			labelKey: 'runtime_kpi_ramUsage',
-			value: '—',
+			value: ramValue,
 			unit: `/ ${totalMemoryGb} GB`,
 			icon: 'fa-memory',
 			iconClass: 'bg-[#8b5cf6]/15 text-[#8b5cf6]',
-			barWidth: '0%',
+			barWidth: ramBarWidth,
 			barClass: 'bg-[#3b82f6]',
 			subtext: m.runtime_kpi_ramSubtext({ gb: totalMemoryGb }),
 			badgeKey: 'common_status_ok',

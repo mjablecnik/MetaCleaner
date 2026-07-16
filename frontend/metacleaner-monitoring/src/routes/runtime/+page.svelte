@@ -125,7 +125,34 @@
 			onretry={() => invalidate('app:runtime')}
 		/>
 	{/if}
-	<RuntimeChartsSection />
+	{#if data.cpuTimeSeries.status === 'not-configured' || data.ramTimeSeries.status === 'not-configured'}
+		<NotConfiguredCard
+			missingVars={data.cpuTimeSeries.status === 'not-configured'
+				? data.cpuTimeSeries.missingVars
+				: data.ramTimeSeries.status === 'not-configured'
+					? data.ramTimeSeries.missingVars
+					: []}
+		/>
+	{:else if data.cpuTimeSeries.status === 'error' || data.ramTimeSeries.status === 'error'}
+		<SectionErrorCard
+			category={data.cpuTimeSeries.status === 'error'
+				? data.cpuTimeSeries.error.category
+				: data.ramTimeSeries.status === 'error'
+					? data.ramTimeSeries.error.category
+					: 'request_error'}
+			message={data.cpuTimeSeries.status === 'error'
+				? data.cpuTimeSeries.error.message
+				: data.ramTimeSeries.status === 'error'
+					? data.ramTimeSeries.error.message
+					: ''}
+			onretry={() => invalidate('app:runtime')}
+		/>
+	{:else}
+		<RuntimeChartsSection
+			cpuTimeSeries={data.cpuTimeSeries.data}
+			ramTimeSeries={data.ramTimeSeries.data}
+		/>
+	{/if}
 	{#if data.machines.status === 'ok'}
 		<RuntimeInstancesSection machines={data.machines.data} />
 	{:else if data.machines.status === 'not-configured'}

@@ -1,5 +1,10 @@
 import type { SectionResult } from '$lib/server/clients/types.js';
 import type {
+	CurrentCpuUsage,
+	CurrentRamUsage,
+	TimeSeriesPoint
+} from '$lib/server/mappers/flyPrometheusMapper.js';
+import type {
 	DashboardStat,
 	DashboardAlert,
 	MachineInstance,
@@ -39,6 +44,10 @@ export interface RuntimePageData {
 	machines: SectionResult<MachineInstance[]>;
 	deploys: SectionResult<DeployEntry[]>;
 	errors: SectionResult<RuntimeErrorEntry[]>;
+	cpuCurrent: SectionResult<CurrentCpuUsage>;
+	ramCurrent: SectionResult<CurrentRamUsage>;
+	cpuTimeSeries: SectionResult<TimeSeriesPoint[]>;
+	ramTimeSeries: SectionResult<TimeSeriesPoint[]>;
 }
 
 export interface AvailabilityPageData {

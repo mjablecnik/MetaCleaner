@@ -79,6 +79,11 @@ export interface RuntimeSummary {
 	statusBadge: string;
 }
 
+export interface TimeSeriesPoint {
+	timestamp: number;
+	value: number;
+}
+
 export function getRuntimeStats(): RuntimeStat[] {
 	return [
 		{
