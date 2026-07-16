@@ -13,16 +13,15 @@
 	let { data }: { data: PageData } = $props();
 
 	const navItems = [
-		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
 		{ href: `${base}/dostupnost`, icon: 'fa-server', label: t('layout_nav_availability') },
 		{ href: `${base}/chyby`, icon: 'fa-triangle-exclamation', label: t('layout_nav_errors') },
-		{ href: `${base}/performance`, icon: 'fa-bolt', label: t('layout_nav_performance') },
 		{
 			href: `${base}/business`,
 			icon: 'fa-chart-line',
 			label: t('layout_nav_business'),
 			activeClass: 'text-success'
-		}
+		},
+		{ href: `${base}/nastaveni`, icon: 'fa-gear', label: t('layout_nav_settings') }
 	];
 </script>
 

@@ -14,7 +14,6 @@
 	let { data }: { data: PageData } = $props();
 
 	const navItems = [
-		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
 		{ href: `${base}/dostupnost`, icon: 'fa-server', label: t('layout_nav_availability') },
 		{
 			href: `${base}/edge`,
@@ -22,7 +21,8 @@
 			label: t('layout_nav_edge'),
 			activeClass: 'text-cf-orange'
 		},
-		{ href: `${base}/business`, icon: 'fa-chart-line', label: t('layout_nav_business') }
+		{ href: `${base}/business`, icon: 'fa-chart-line', label: t('layout_nav_business') },
+		{ href: `${base}/nastaveni`, icon: 'fa-gear', label: t('layout_nav_settings') }
 	];
 </script>
 

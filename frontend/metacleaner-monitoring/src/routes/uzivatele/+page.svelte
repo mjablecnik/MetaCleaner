@@ -19,7 +19,6 @@
 	}
 
 	const navItems = [
-		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
 		{ href: `${base}/dostupnost`, icon: 'fa-server', label: t('layout_nav_availability') },
 		{ href: `${base}/chyby`, icon: 'fa-triangle-exclamation', label: t('layout_nav_errors') },
 		{

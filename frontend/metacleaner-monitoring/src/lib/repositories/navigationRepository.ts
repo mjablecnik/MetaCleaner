@@ -14,7 +14,6 @@ export function getNavSections(base: string): NavSection[] {
 		{
 			labelKey: 'layout_nav_overviews',
 			items: [
-				{ href: `${base}/`, labelKey: 'layout_nav_dashboard', icon: 'fa-gauge-high' },
 				{ href: `${base}/dostupnost`, labelKey: 'layout_nav_availability', icon: 'fa-server' },
 				{ href: `${base}/chyby`, labelKey: 'layout_nav_errors', icon: 'fa-triangle-exclamation' }
 			]
@@ -30,7 +29,6 @@ export function getNavSections(base: string): NavSection[] {
 		{
 			labelKey: 'layout_nav_analytics',
 			items: [
-				{ href: `${base}/performance`, labelKey: 'layout_nav_performance', icon: 'fa-bolt' },
 				{ href: `${base}/business`, labelKey: 'layout_nav_business', icon: 'fa-chart-line' },
 				{ href: `${base}/uzivatele`, labelKey: 'layout_nav_users', icon: 'fa-users' }
 			]

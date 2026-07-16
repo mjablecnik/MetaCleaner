@@ -21,7 +21,6 @@
 	);
 
 	const navItems = [
-		{ href: `${base}/`, icon: 'fa-gauge-high', label: t('layout_nav_dashboard') },
 		{
 			href: `${base}/dostupnost`,
 			icon: 'fa-server',
@@ -29,7 +28,7 @@
 			activeClass: 'text-primary'
 		},
 		{ href: `${base}/chyby`, icon: 'fa-triangle-exclamation', label: t('layout_nav_errors') },
-		{ href: `${base}/performance`, icon: 'fa-bolt', label: t('layout_nav_performance') },
+		{ href: `${base}/runtime`, icon: 'fa-microchip', label: t('layout_nav_runtime') },
 		{ href: `${base}/nastaveni`, icon: 'fa-gear', label: t('layout_nav_settings') }
 	];
 </script>
