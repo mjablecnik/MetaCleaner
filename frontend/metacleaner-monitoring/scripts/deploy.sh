@@ -50,9 +50,63 @@ echo ""
 echo "App: $APP_NAME"
 echo ""
 
-# Parse org from fly config (if present), default to "personal"
+# Parse org from fly config (if present)
 FLY_ORG=$(grep '^org\s*=' "$FLY_CONFIG" | sed "s/^org\s*=\s*[\"']\(.*\)[\"']/\1/" | tr -d '\r' || true)
-FLY_ORG="${FLY_ORG:-personal}"
+
+# If org is not set in fly config, prompt user to choose
+if [ -z "$FLY_ORG" ]; then
+  echo "No org specified in $FLY_CONFIG."
+  echo "Fetching available organizations..."
+  echo ""
+
+  # Get org slugs from fly orgs list output
+  # Output format: columns are space-padded (Name, Slug, Type)
+  # Skip header (line 1) and separator (line 2), extract Slug column
+  ORG_OUTPUT=$(fly orgs list 2>/dev/null)
+  # Find slug column position from header
+  SLUG_START=$(echo "$ORG_OUTPUT" | head -1 | grep -bo 'Slug' | cut -d: -f1)
+  TYPE_START=$(echo "$ORG_OUTPUT" | head -1 | grep -bo 'Type' | cut -d: -f1)
+  SLUG_LEN=$((TYPE_START - SLUG_START))
+  # Extract slug values (skip first 2 lines: header + separator), trim whitespace
+  ORGS=($(echo "$ORG_OUTPUT" | tail -n +3 | cut -c$((SLUG_START+1))-$((SLUG_START+SLUG_LEN)) | sed 's/[[:space:]]*$//' | grep -v '^$' | grep -v '^-'))
+
+  if [ ${#ORGS[@]} -eq 0 ]; then
+    echo "ERROR: No organizations found. Are you logged in? (fly auth login)" >&2
+    exit 1
+  elif [ ${#ORGS[@]} -eq 1 ]; then
+    FLY_ORG="${ORGS[0]}"
+    echo "Only one org available: $FLY_ORG"
+  else
+    # Also extract org names for display
+    NAME_LEN=$((SLUG_START))
+    ORG_NAMES=()
+    while IFS= read -r line; do
+      NAME=$(echo "$line" | cut -c1-$NAME_LEN | sed 's/[[:space:]]*$//')
+      [ -n "$NAME" ] && [ "$NAME" != "----" ] && [ "$NAME" != "Name" ] && ORG_NAMES+=("$NAME")
+    done <<< "$(echo "$ORG_OUTPUT" | tail -n +3)"
+
+    echo "Select organization:"
+    for i in "${!ORGS[@]}"; do
+      echo "  $((i+1))) ${ORG_NAMES[$i]:-${ORGS[$i]}} (${ORGS[$i]})"
+    done
+    echo ""
+    while true; do
+      printf "Choice [1-${#ORGS[@]}]: " >&2
+      read -r CHOICE < /dev/tty
+      CHOICE=$(echo "$CHOICE" | tr -d '[:space:]')
+      if [[ "$CHOICE" =~ ^[0-9]+$ ]] && [ "$CHOICE" -ge 1 ] && [ "$CHOICE" -le ${#ORGS[@]} ]; then
+        FLY_ORG="${ORGS[$((CHOICE-1))]}"
+        break
+      fi
+      echo "Invalid choice. Try again."
+    done
+  fi
+
+  # Save org to fly config so next deploy doesn't ask again
+  sed -i "s/^app\s*=.*/&\norg = \"$FLY_ORG\"/" "$FLY_CONFIG"
+  echo "✓ Saved org = \"$FLY_ORG\" to $FLY_CONFIG"
+  echo ""
+fi
 
 # Create Fly.io app if not exists
 APP_EXISTS=$(fly status --app "$APP_NAME" 2>&1 || true)
@@ -72,6 +126,7 @@ echo ""
 echo "Setting secrets from $ENV_FILE..."
 SECRETS_ARGS=""
 while IFS= read -r line; do
+  line="${line//$'\r'/}"
   [[ -z "$line" || "$line" == \#* ]] && continue
   KEY="${line%%=*}"
   VALUE="${line#*=}"
