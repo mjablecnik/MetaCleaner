@@ -23,13 +23,13 @@ Each layer is a separate Markdown file inside a dedicated folder. Together they 
 ```
 .kiro/
 └── specs/
-    └── <feature-slug>/
+    └── <NNN>-<feature-slug>/
         ├── requirements.md
         ├── design.md
         └── tasks.md
 ```
 
-- `<feature-slug>` is a lowercase, hyphen-separated name describing the feature (e.g., `user-authentication`, `api-keys-management`, `metadata-inspect-cli`).
+- `<NNN>-<feature-slug>` is a three-digit sequential number followed by a lowercase, hyphen-separated name describing the feature (e.g., `001-user-authentication`, `007-api-keys-management`, `012-metadata-inspect-cli`). See §4 for the numbering rules.
 - All three files are always present together. A spec without all three files is incomplete.
 - Multiple specs can coexist in `.kiro/specs/` — each in its own subdirectory.
 - Specs are independent of each other unless they share referenced types or components.
@@ -97,7 +97,7 @@ Each layer is a separate Markdown file inside a dedicated folder. Together they 
 **Structure:**
 
 ```markdown
-# Design Document: <feature-slug>
+# Design Document: <Feature Name>
 
 ## Overview
 
@@ -153,8 +153,8 @@ graph LR
 
 **Rules for design.md:**
 
-- The document title is always `# Design Document: <feature-slug>`.
-- The **Overview** briefly re-states the feature, then focuses on key design decisions. It uses a `**Key design decisions:**` bullet list to call out the 3–5 most important architectural choices (e.g., "Bun workspace link: Scanner logic is imported directly — no code duplication").
+- The document title is `# Design Document: <name>`, where `<name>` is either the feature slug (without the numeric prefix) or a human-readable Title Case feature name (e.g., `# Design Document: API Keys Management`). Both forms are valid; the Title Case form is the more common one.
+- The **Overview** briefly re-states the feature, then focuses on key design decisions. *Optionally*, it may use a `**Key design decisions:**` bullet list to call out the 3–5 most important architectural choices (e.g., "Bun workspace link: Scanner logic is imported directly — no code duplication"). This list is recommended for complex features but not required.
 - **Architecture** diagrams use Mermaid syntax. Sequence diagrams (`sequenceDiagram`) show the flow between user, client, server, and external systems. Flowcharts (`flowchart TD` or `graph LR`) show component relationships. State diagrams (`stateDiagram-v2`) show lifecycle state machines.
 - **Project Structure** is shown as a code block (not a list), using a tree format with inline comments for each file explaining its purpose. This mirrors the actual file system layout.
 - **Components and Interfaces** is the largest section. Components are numbered sequentially. Each component includes:
@@ -205,6 +205,12 @@ graph LR
 - [ ] 3. Checkpoint — <description>
   - <Single bullet: what to verify>
 
+## Task Dependency Graph   <!-- optional section, complex multi-service features only -->
+
+```json
+{ "waves": [ ... ] }
+```
+
 ## Notes
 
 - <Bullet list of important conventions, caveats, or non-obvious decisions for the implementer>
@@ -219,13 +225,13 @@ graph LR
   - Level 1: top-level group (e.g., `1. Set up project structure`)
   - Level 2: specific sub-tasks (e.g., `1.1 Create CLI package.json`)
   - Level 2 sub-tasks contain bullet points (not checkboxes) describing implementation details
-- Every sub-task ends with `_Requirements: N.M, N.M_` in italics, listing the requirement IDs from `requirements.md` that the task fulfills.
+- Every **implementation sub-task** ends with `_Requirements: N.M, N.M_` in italics, listing the requirement IDs from `requirements.md` that the task fulfills. **Property-test sub-tasks** are the exception: they end with a `**Validates: Requirements N.M**` line instead (see the test sub-task rule below) — they do not repeat a `_Requirements:_` line. Plain unit/integration test sub-tasks (not tied to a design property) use the normal `_Requirements:_` line.
 - Sub-task bullet points describe **what to do**, not how the code works. They name specific file paths, function names, expected behavior, and values. They are detailed enough for an agent to act on without reading the design document.
 - **Checkpoint tasks** appear periodically (e.g., after a backend phase, after a frontend phase) as a dedicated top-level task with a simple instruction: "Ensure all tests pass, ask the user if questions arise."
-- Optional sub-tasks are marked with an asterisk suffix: `- [ ] 4.2*` or `- [x]* 4.2`. The Notes section explains: "Tasks marked with `*` are optional and can be skipped for faster MVP."
+- Optional sub-tasks are marked with an asterisk placed directly after the checkbox bracket: `- [ ]* 4.2` (pending) or `- [x]* 4.2` (completed). This is the only valid placement — do not put the asterisk after the task number. The Notes section explains: "Tasks marked with `*` are optional and can be skipped for faster MVP."
 - Test tasks are interleaved with implementation tasks, not all grouped at the end. Each test task immediately follows the implementation task it validates.
-- Test sub-tasks include a `**Property N: <title>**` bold header (matching a property from design.md) followed by a description of what the property test verifies and a `**Validates: Requirements N.M**` line.
-- A **Task Dependency Graph** may appear as a JSON block in the Notes section for complex multi-service features, showing which tasks can run in parallel:
+- Property-test sub-tasks include a `**Property N: <title>**` bold header (matching a property from design.md) followed by a description of what the property test verifies and a `**Validates: Requirements N.M**` line. The `**Validates:**` line replaces the `_Requirements:_` line for these sub-tasks.
+- A **Task Dependency Graph** may appear for complex multi-service features, showing which tasks can run in parallel. It is a dedicated `## Task Dependency Graph` section (typically placed right before or after the `## Notes` section), containing a JSON block in this canonical format:
 
 ```json
 {
@@ -236,6 +242,8 @@ graph LR
 }
 ```
 
+Each wave is an object with a sequential `id` and a `tasks` array of sub-task IDs; all tasks within a wave can run in parallel, and waves execute in `id` order.
+
 - The **Notes** section at the end captures gotchas, conventions, and decisions the implementer must know: which shell to use, how tests are run, known quirks, and what was intentionally excluded.
 
 ---
@@ -244,12 +252,21 @@ graph LR
 
 ### Feature Slug
 
-The folder name under `.kiro/specs/` uses `lowercase-kebab-case`. It should be concise but descriptive:
-- `user-authentication`
-- `metadata-inspect-cli`
-- `api-keys-management`
-- `credits-and-subscription-overview`
-- `responsive-web-refactor`
+The folder name under `.kiro/specs/` uses the format `<NNN>-<feature-slug>`:
+
+- `<NNN>` is a **three-digit, zero-padded sequential number** (`001`, `002`, … `042`). Numbers are assigned in creation order and never reused. To pick the next number, look at the highest existing prefix in `.kiro/specs/` and increment it.
+- `<feature-slug>` is a concise but descriptive `lowercase-kebab-case` name.
+
+Examples:
+- `001-user-authentication`
+- `002-metadata-inspect-cli`
+- `007-api-keys-management`
+- `013-credits-and-subscription-overview`
+- `021-responsive-web-refactor`
+
+The numeric prefix makes creation order visible at a glance and keeps directory listings chronologically sorted. When a spec references another spec, it uses the full folder name including the prefix.
+
+> **Note:** Specs created before this convention was introduced may exist without a numeric prefix. They remain valid — do not rename them. The prefix is required only for newly created specs.
 
 ### Document Language
 
@@ -276,7 +293,7 @@ requirements.md → design.md → tasks.md
 ```
 
 - Every design decision in design.md should be traceable to at least one requirement.
-- Every sub-task in tasks.md must reference at least one requirement via `_Requirements: N.M_`.
+- Every sub-task in tasks.md must reference at least one requirement — via `_Requirements: N.M_` for implementation sub-tasks, or via `**Validates: Requirements N.M**` for property-test sub-tasks.
 - Correctness Properties in design.md reference specific requirements: `**Validates: Requirements N.M**`.
 - Test tasks in tasks.md reference the corresponding Property: `**Property N: <title>** → **Validates: Requirements N.M**`.
 
@@ -363,7 +380,7 @@ Key rules:
 
 Below is a complete, minimal but correct example of all three files for a hypothetical feature.
 
-### `.kiro/specs/health-check-endpoint/requirements.md`
+### `.kiro/specs/001-health-check-endpoint/requirements.md`
 
 ```markdown
 # Requirements Document
@@ -400,7 +417,7 @@ A health check HTTP endpoint for the Go backend server. It allows load balancers
 2. THE Health_Endpoint SHALL NOT perform any database queries or external calls
 ```
 
-### `.kiro/specs/health-check-endpoint/design.md`
+### `.kiro/specs/001-health-check-endpoint/design.md`
 
 ```markdown
 # Design Document: health-check-endpoint
@@ -445,7 +462,7 @@ func HandleHealth(shuttingDown *atomic.Bool) http.HandlerFunc {
 Unit tests (Go `testing`): verify 200 when healthy, 503 when shutting down, correct JSON body in both cases.
 ```
 
-### `.kiro/specs/health-check-endpoint/tasks.md`
+### `.kiro/specs/001-health-check-endpoint/tasks.md`
 
 ```markdown
 # Implementation Plan: health-check-endpoint
@@ -500,7 +517,7 @@ Add a `GET /api/health` endpoint to the Go backend. The handler is static (no DB
 - Do not invent new component names for things that already exist in the project — reference existing files and components.
 
 **In tasks.md:**
-- Do not create tasks without requirement references. Every `_Requirements: N.M_` is mandatory.
+- Do not create tasks without requirement references. Every sub-task needs a `_Requirements: N.M_` line (or `**Validates: Requirements N.M**` for property-test sub-tasks).
 - Do not write tasks that are too vague: "Implement the feature" is not a task. "Implement `HandleCreateAPIKey` in `source/apikey_handlers.go` — validate name length, generate key via `generateAPIKey()`, insert into Supabase, return 201 with `CreateAPIKeyResponse`" is a task.
 - Do not put all tests in a single final task. Interleave test tasks with implementation tasks.
 - Do not forget checkpoints. A complex spec should have 2–3 checkpoints at natural phase boundaries.
@@ -539,7 +556,7 @@ This causes Kiro to inline the referenced file's content when the spec is loaded
 
 To create a new spec from scratch, follow this sequence:
 
-1. Create `.kiro/specs/<feature-slug>/`
+1. Create `.kiro/specs/<NNN>-<feature-slug>/` — pick `<NNN>` as the highest existing numeric prefix in `.kiro/specs/` plus one (zero-padded to three digits)
 2. Write `requirements.md`:
    - Introduction (scope + context)
    - Glossary (all domain terms)
