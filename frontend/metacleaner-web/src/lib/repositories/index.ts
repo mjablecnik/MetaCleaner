@@ -1,9 +1,6 @@
 export type { FormatItem, Feature } from './features.js';
 export { featuresRepository } from './features.js';
 
-export type { Plan, EnterprisePlan } from './pricing.js';
-export { pricingRepository, getEnterprise, getPlanPrice } from './pricing.js';
-
 export type { Audience } from './audience.js';
 export { getAudience } from './audience.js';
 

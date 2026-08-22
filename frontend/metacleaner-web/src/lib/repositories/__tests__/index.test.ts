@@ -6,18 +6,6 @@ describe('repositories/index.ts barrel exports', () => {
 		expect(typeof repositories.featuresRepository).toBe('function');
 	});
 
-	it('exports pricingRepository as a function', () => {
-		expect(typeof repositories.pricingRepository).toBe('function');
-	});
-
-	it('exports getEnterprise as a function', () => {
-		expect(typeof repositories.getEnterprise).toBe('function');
-	});
-
-	it('exports getPlanPrice as a function', () => {
-		expect(typeof repositories.getPlanPrice).toBe('function');
-	});
-
 	it('exports getAudience as a function', () => {
 		expect(typeof repositories.getAudience).toBe('function');
 	});
@@ -44,7 +32,6 @@ describe('repositories/index.ts barrel exports', () => {
 
 	it('each exported function returns a non-empty array when called', () => {
 		expect(repositories.featuresRepository().length).toBeGreaterThan(0);
-		expect(repositories.pricingRepository().length).toBeGreaterThan(0);
 		expect(repositories.getAudience().length).toBeGreaterThan(0);
 		expect(repositories.getFaq().length).toBeGreaterThan(0);
 		expect(repositories.stepsRepository().length).toBeGreaterThan(0);
