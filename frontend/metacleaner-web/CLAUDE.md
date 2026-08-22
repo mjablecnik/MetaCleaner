@@ -35,7 +35,7 @@ src/
       elements/      atomic UI components
       shared/        layout components (SiteNavbar, MobileMenu, SeoHead, …)
     paraglide/       generated i18n runtime — DO NOT edit
-    repositories/    data factories: audience, faq, features, pricing, stats, steps
+    repositories/    data factories: audience, faq, features, metadataDemo, stats, steps
     shared/sections/ SiteFooter.svelte
     utils/           brevoClient.ts, contactFormValidation.ts
   routes/
