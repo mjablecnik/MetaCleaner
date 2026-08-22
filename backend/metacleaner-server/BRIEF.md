@@ -1,5 +1,7 @@
 # Tigris Integration — Cleaned Files Storage
 
+> **Status: completed.** This migration has already been fully implemented (see `source/tigris.go`, `DOCS.md`). Kept as a historical design record of why and how it was done, not a pending plan.
+
 ## Goal
 
 Replace local persistent volume with Tigris (S3-compatible object storage) for storing cleaned files. This enables horizontal scaling (multiple machines) without shared filesystem.
