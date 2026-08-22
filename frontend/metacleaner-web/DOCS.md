@@ -95,8 +95,8 @@ docker build -f frontend/metacleaner-web/Dockerfile \
 ### Fly.io
 
 ```sh
-scripts/deploy.sh                   # deploy using .env-prod
-scripts/deploy.sh --env staging     # deploy using .env-staging
+scripts/deploy.sh                   # deploy using .env.prod
+scripts/deploy.sh staging           # deploy using .env.staging
 ```
 
 The script creates the Fly app if needed, syncs secrets from the env file (skipping keys already in `fly.toml [env]`), then runs `fly deploy`.

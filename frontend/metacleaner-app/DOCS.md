@@ -110,7 +110,8 @@ scripts/stop-docker.sh       # Stop container
 ### Fly.io Deployment
 
 ```bash
-scripts/deploy.sh                                  # Deploy (creates app if missing, reads .env-prod)
+scripts/deploy.sh                                  # Deploy (creates app if missing, reads .env.prod)
+scripts/deploy.sh staging                          # Deploy using .env.staging instead
 fly logs --app metacleaner-app                     # View logs
 fly status --app metacleaner-app                   # Check status
 ```

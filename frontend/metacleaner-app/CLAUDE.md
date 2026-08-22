@@ -18,7 +18,8 @@ bun run test:e2e             # Playwright E2E tests
 bun run storybook            # Storybook dev server (port 6006)
 scripts/start-docker.sh      # Build Docker image + run on port 3000
 scripts/stop-docker.sh       # Stop Docker container
-scripts/deploy.sh            # Deploy to Fly.io (creates app if missing, reads .env-prod)
+scripts/deploy.sh            # Deploy to Fly.io (creates app if missing, reads .env.prod)
+scripts/deploy.sh staging    # Deploy using .env.staging instead
 scripts/sync-android.sh      # Build + sync web assets to Android (Capacitor)
 ```
 

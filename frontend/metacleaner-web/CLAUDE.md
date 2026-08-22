@@ -18,7 +18,7 @@ bun run test             # unit (once) + e2e
 
 scripts/start-docker.sh  # build Docker image and run on http://localhost:3001
 scripts/stop-docker.sh   # stop the local container
-scripts/deploy.sh        # deploy to Fly.io (reads .env-prod by default)
+scripts/deploy.sh        # deploy to Fly.io (reads .env.prod by default)
 scripts/deploy-functions.sh  # deploy Supabase Edge Functions
 ```
 
@@ -71,7 +71,7 @@ supabase/            Supabase config
 - **Contact form** calls a Supabase Edge Function (`send-contact-email`). It requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` at build time and a deployed Edge Function with the `BREVO_API_KEY` secret.
 - **Workspace**: this package depends on `metacleaner-shared` via `workspace:*`. Always run `bun install` from the workspace root, not from this directory alone.
 - **Docker context**: `scripts/build.sh` runs docker from the workspace root automatically. If building manually, you must run from the root.
-- **Fly.io deploy**: `scripts/deploy.sh` reads `.env-prod` by default. Pass `--env <name>` to use `.env-<name>` instead.
+- **Fly.io deploy**: `scripts/deploy.sh` reads `.env.prod` by default. Pass an environment name as the first argument (e.g. `scripts/deploy.sh staging`) to use `.env.staging` instead.
 
 ## Reference
 

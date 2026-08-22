@@ -27,7 +27,7 @@ scripts/build.sh
 scripts/start-docker.sh   # build + run
 scripts/stop-docker.sh    # stop
 
-# Deploy to Fly.io (reads .env-prod, sets secrets, runs fly deploy)
+# Deploy to Fly.io (reads .env.prod, sets secrets, runs fly deploy)
 scripts/deploy.sh
 
 # Stripe webhook listener (local dev)

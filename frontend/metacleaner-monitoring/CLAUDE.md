@@ -25,8 +25,8 @@ bun run build-storybook     # build storybook → storybook-static/
 
 ./scripts/start-docker.sh   # docker build + run on port 3002
 ./scripts/stop-docker.sh    # stop container
-./scripts/deploy.sh         # deploy to Fly.io (reads .env-prod by default)
-./scripts/deploy.sh --env staging  # use .env-staging
+./scripts/deploy.sh         # deploy to Fly.io (reads .env.prod by default)
+./scripts/deploy.sh staging # use .env.staging
 ```
 
 ## Project Structure

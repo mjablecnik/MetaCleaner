@@ -117,14 +117,11 @@ metacleaner-monitoring/
 The deploy script reads secrets from a local env file and pushes them to Fly.io before deploying.
 
 ```sh
-# Deploy using .env-prod (default)
+# Deploy using .env.prod (default)
 ./scripts/deploy.sh
 
-# Deploy using a named env file (.env-staging)
-./scripts/deploy.sh --env staging
-
-# Or override via environment variable
-DPLOY_ENV_FILE=.env-custom ./scripts/deploy.sh
+# Deploy using a named env file (.env.staging)
+./scripts/deploy.sh staging
 ```
 
 The script:

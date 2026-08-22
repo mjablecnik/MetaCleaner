@@ -372,11 +372,11 @@ Run `migrations/001_full_schema.sql` once against your Supabase project. The scr
 flyctl auth login
 ```
 
-2. Create a `.env-prod` file with production values (the deploy script reads it by default):
+2. Create a `.env.prod` file with production values (the deploy script reads it by default):
 
 ```bash
-cp .env.example .env-prod
-# edit .env-prod with production values
+cp .env.example .env.prod
+# edit .env.prod with production values
 ```
 
 3. Run the deployment script (creates the app if it doesn't exist, sets secrets, deploys):
@@ -385,11 +385,11 @@ cp .env.example .env-prod
 scripts/deploy.sh
 ```
 
-To use a different env file:
+To use a different env file, pass the environment name as the first argument:
 
 ```bash
-scripts/deploy.sh --env staging
-# reads .env-staging
+scripts/deploy.sh staging
+# reads .env.staging
 ```
 
 Useful Fly.io commands:
