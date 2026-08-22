@@ -24,7 +24,11 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         # EXTERNAL SYSTEMS
         # ==========================================================================
 
-        supabase = softwareSystem "Supabase" "Managed PostgreSQL, Auth (JWT), and S3 file storage." {
+        supabase = softwareSystem "Supabase" "Managed PostgreSQL, Auth (JWT), and PDF report storage." {
+            tags "External System"
+        }
+
+        tigris = softwareSystem "Tigris" "S3-compatible object storage for uploaded and cleaned media files." {
             tags "External System"
         }
 
@@ -127,7 +131,9 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
 
                 apiKeyService = component "API Key Service" "API key CRUD and App Links endpoints." "Go"
 
-                supabaseClient = component "Supabase Client" "HTTP client for PostgREST, Auth, and Storage APIs." "Go, net/http"
+                supabaseClient = component "Supabase Client" "HTTP client for PostgREST, Auth, and PDF report Storage APIs." "Go, net/http"
+
+                tigrisClient = component "Tigris Client" "S3-compatible client for uploaded/cleaned media files: upload, presigned download, delete." "Go, aws-sdk-go-v2"
 
                 pdfGenerator = component "PDF Generator" "Creates branded PDF reports with QR codes." "Go, gopdf"
             }
@@ -138,8 +144,9 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         # ==========================================================================
 
         user -> metacleaner "Removes metadata from files" "HTTPS"
-        developer -> metacleaner "Automates via CLI or API keys" "HTTPS / CLI"
+        developer -> metacleaner "Automates via CLI or REST API" "HTTPS / CLI"
         metacleaner -> supabase "Stores data and authenticates users" "HTTPS"
+        metacleaner -> tigris "Stores uploaded and cleaned media files" "HTTPS"
         metacleaner -> stripe "Processes payments" "HTTPS"
         stripe -> metacleaner "Sends webhook events" "HTTPS"
         metacleaner -> exiftool "Strips image metadata" "Subprocess"
@@ -164,7 +171,8 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         metacleaner.webApp -> metacleaner.sharedLib "Uses pricing components" "npm workspace"
         metacleaner.marketingWebsite -> metacleaner.sharedLib "Uses pricing components" "npm workspace"
 
-        metacleaner.backendApi -> supabase "DB + Auth + Storage" "HTTPS"
+        metacleaner.backendApi -> supabase "DB + Auth + PDF report Storage" "HTTPS"
+        metacleaner.backendApi -> tigris "Uploaded + cleaned media files" "HTTPS"
         metacleaner.backendApi -> stripe "Checkout + webhooks" "HTTPS"
         metacleaner.backendApi -> exiftool "Strips image metadata" "Subprocess"
         metacleaner.backendApi -> ffmpeg "Strips video metadata" "Subprocess"
@@ -189,6 +197,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "Emits progress events" "Function call"
         metacleaner.backendApi.websocketHub -> metacleaner.webApp "Streams real-time progress" "WebSocket"
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "CRUD jobs + files" "Function call"
+        metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.tigrisClient "Uploads cleaned file, deletes local copy" "Function call"
         metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.pdfGenerator "Generates report PDF" "Function call"
         metacleaner.backendApi.cleaningPipeline -> exiftool "Strips image metadata" "Subprocess"
         metacleaner.backendApi.cleaningPipeline -> ffmpeg "Strips video metadata" "Subprocess"
@@ -200,6 +209,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
         metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "Uploads PDF" "Function call"
 
         metacleaner.backendApi.supabaseClient -> supabase "All data operations" "HTTPS"
+        metacleaner.backendApi.tigrisClient -> tigris "Upload, presigned download, delete" "HTTPS"
 
         # ==========================================================================
         # RELATIONSHIPS — LEVEL 3: Components — Web Application
@@ -244,20 +254,18 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
                     containerInstance metacleaner.webApp
                 }
 
-                deploymentNode "Persistent Volume" "" "Fly.io Volumes" {
-                    properties {
-                        "Mount"     "/tmp/metacleaner"
-                        "Retention" "1 hour (auto-cleanup)"
-                    }
-                }
             }
 
             deploymentNode "CDN / Static Host" "" "nginx or CDN" {
                 containerInstance metacleaner.marketingWebsite
             }
 
-            deploymentNode "Supabase Cloud" "" "PostgreSQL 15, Auth, Storage" {
+            deploymentNode "Supabase Cloud" "" "PostgreSQL 15, Auth, PDF report Storage" {
                 softwareSystemInstance supabase
+            }
+
+            deploymentNode "Tigris" "" "S3-compatible object storage" {
+                softwareSystemInstance tigris
             }
 
             deploymentNode "Stripe" "" "Payment platform" {
@@ -288,6 +296,10 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
 
             deploymentNode "Supabase (dev)" "" "Supabase Cloud or local CLI" {
                 softwareSystemInstance supabase
+            }
+
+            deploymentNode "Tigris (dev)" "" "Tigris Cloud" {
+                softwareSystemInstance tigris
             }
         }
     }
@@ -335,6 +347,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
             metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.websocketHub "6b. Upgrades to WebSocket"
             metacleaner.backendApi.cleaningPipeline -> exiftool "7. Strips image metadata"
             metacleaner.backendApi.cleaningPipeline -> ffmpeg "8. Strips video metadata"
+            metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.tigrisClient "8b. Uploads cleaned file to Tigris, deletes local copy"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "9. Broadcasts per-file progress"
             metacleaner.backendApi.websocketHub -> metacleaner.webApp "10. Streams events to client"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.supabaseClient "11. Updates job + file results"
@@ -342,6 +355,7 @@ workspace "MetaCleaner" "Privacy-focused SaaS platform for metadata removal from
             metacleaner.backendApi.pdfGenerator -> metacleaner.backendApi.supabaseClient "13. Uploads PDF to Storage"
             metacleaner.backendApi.cleaningPipeline -> metacleaner.backendApi.websocketHub "14. Broadcasts report_ready"
             metacleaner.webApp -> metacleaner.backendApi.requestPipeline "15. GET /api/files/{id}/download"
+            metacleaner.backendApi.requestPipeline -> metacleaner.backendApi.tigrisClient "16. Generates presigned Tigris URL, redirects client"
 
             autoLayout tb 300 150
         }

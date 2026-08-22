@@ -17,7 +17,7 @@ The frontend lives in `frontend/metacleaner-app/`.
 - **Testing**: Vitest 4 (server + browser projects) + Storybook 10 + Playwright E2E
 - **Mobile**: Capacitor 8 (Android)
 - **Build Output**: Static site via `@sveltejs/adapter-static` (SPA fallback)
-- **Auth**: Supabase Auth via backend proxy (JWT in localStorage)
+- **Auth**: Supabase Auth via backend proxy (access token in memory only, refresh token in localStorage)
 - **Shared**: `metacleaner-shared` workspace package (pricing components/types/data shared with web)
 
 ## Project Structure
@@ -183,7 +183,7 @@ The scanner module performs metadata extraction and risk analysis entirely in th
 ### Auth Module
 
 JWT-based authentication with proactive token refresh:
-- Tokens stored in localStorage (accessToken, refreshToken, user)
+- Access token and user object kept in memory only (never localStorage, to limit XSS exposure); refreshToken and its expiry persisted to localStorage to survive reloads (`TODO(security)`: migrate to an HttpOnly cookie — see `auth.svelte.ts`)
 - Auto-refresh when access token is within 60s of expiry
 - Auth guard redirects unauthenticated users to `/login`
 - OAuth (Google, Apple) and magic link flows with deep link support for Capacitor

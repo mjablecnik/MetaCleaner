@@ -29,8 +29,9 @@ C4 is a hierarchical set of diagrams for visualising software architecture at fo
 ### Level 1 — System Context (`SystemContext`)
 Shows MetaCleaner as a black box and its relationships with:
 - **User** — uses the web or mobile app to clean photos and videos
-- **Developer / Power User** — uses the CLI or REST API with API keys
-- **Supabase** — managed database, auth, and file storage
+- **Developer / Power User** — uses the CLI (no built-in auth; the separate `parallel_clean.sh` script logs in with email/password to get a JWT) or the REST API directly. Backend API-key infrastructure exists (create/list/revoke, see API Key Handler) but the CLI does not use it yet.
+- **Supabase** — managed database, auth, and PDF report storage
+- **Tigris** — S3-compatible object storage for uploaded/cleaned media files
 - **Stripe** — payment processing and subscription management
 - **ExifTool** — image metadata removal
 - **FFmpeg** — video metadata removal
@@ -50,7 +51,7 @@ Shows all deployable units and internal packages:
 
 ### Level 3 — Components: Backend API (`BackendAPIComponents`)
 Internal components of the Go backend:
-- **HTTP Router & Middleware** — gorilla/mux, CORS, security headers, request ID
+- **HTTP Router & Middleware** — stdlib `net/http.ServeMux`, CORS, security headers, request ID
 - **Auth Middleware** — JWT validation via Supabase
 - **Rate Limiter** — per-IP, per-email, per-API-key limits
 - **Upload Handler** — multipart file upload, temp storage
@@ -60,7 +61,8 @@ Internal components of the Go backend:
 - **API Key Handler** — create, list, revoke, activate API keys
 - **WebSocket Hub** — real-time progress broadcasting per job
 - **Cleaning Pipeline** — ExifTool + FFmpeg subprocess orchestration
-- **Supabase Client** — PostgREST, Auth, and Storage API calls
+- **Supabase Client** — PostgREST, Auth, and PDF report Storage API calls
+- **Tigris Client** — S3-compatible client for uploaded/cleaned media files (upload, presigned download, delete)
 - **PDF Report Generator** — branded reports with QR codes
 - **Cleanup Scheduler** — background temp file expiry
 
@@ -83,9 +85,9 @@ Internal modules of the SvelteKit SPA:
 
 ### Deployment — Production (`ProductionDeployment`)
 - **Fly.io Frankfurt** — Backend (Docker, Go), Web App (Docker, nginx)
-- **Fly.io Volume** — Persistent temp storage for cleaning jobs (1 h retention)
 - **CDN / nginx** — Marketing Website
-- **Supabase Cloud** — PostgreSQL + Auth + Storage
+- **Supabase Cloud** — PostgreSQL + Auth + PDF report Storage
+- **Tigris** — S3-compatible object storage for uploaded/cleaned media files (ephemeral local `/tmp` used only during processing)
 - **Stripe** — Payment processing
 
 ### Deployment — Development (`DevelopmentDeployment`)
@@ -131,10 +133,11 @@ Install the [Structurizr plugin](https://plugins.jetbrains.com/plugin/18828-stru
 
 ### File cleaning flow
 ```
-User → Web App → POST /api/upload → Backend
-                → POST /api/jobs  → Backend → Cleaning Pipeline → ExifTool / FFmpeg
+User → Web App → POST /api/upload → Backend (saved to local /tmp)
+                → POST /api/jobs  → Backend → Cleaning Pipeline → ExifTool / FFmpeg (on local disk)
+                                            → Tigris Client → upload cleaned file to Tigris, delete local files
                 → WebSocket       → Backend → WebSocket Hub → User (real-time progress)
-                → GET /api/files/{id}/download → Backend → User
+                → GET /api/files/{id}/download → Backend → Tigris Client → presigned Tigris URL → User
                                               → PDF Generator → Supabase Storage
 ```
 
@@ -142,7 +145,7 @@ User → Web App → POST /api/upload → Backend
 ```
 User → Web App → POST /api/auth/login → Backend → Supabase Auth API
                                                  ← JWT access + refresh tokens
-Web App stores tokens in localStorage, attaches Bearer token to every API request.
+Web App keeps the access token in memory only (never localStorage, to limit XSS exposure) and attaches it as a Bearer token to every API request. Only the refresh token is persisted to localStorage, to survive page reloads via a silent refresh on restore.
 Backend Auth Middleware validates each token against the Supabase JWT secret.
 ```
 

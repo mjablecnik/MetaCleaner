@@ -11,7 +11,7 @@ MetaCleaner Backend solves the privacy problem of hidden metadata in media files
 - Stripe billing — Pro/Pro+ subscriptions, credit packs, usage metering, and webhook processing
 - API key management — create, list, revoke, and rate-limit programmatic access
 - Real-time WebSocket progress updates during cleaning
-- PDF report generation stored in Supabase Storage
+- PDF report generation stored in Supabase Storage; uploaded/cleaned media files stored in Tigris (S3-compatible object storage — see `DOCS.md`)
 - Configurable rate limiting on upload and auth endpoints
 - Automatic cleanup of temporary files and deactivated accounts
 - Health check endpoint with dependency status

@@ -1,6 +1,6 @@
 # MetaCleaner Backend — Agent Guide
 
-Go HTTP server for stripping metadata from media files. Uses ExifTool (images) and FFmpeg (videos), with Supabase for DB/auth/storage, Stripe for billing, and Brevo for transactional email.
+Go HTTP server for stripping metadata from media files. Uses ExifTool (images) and FFmpeg (videos), with Supabase for DB/auth/PDF report storage, Tigris (S3-compatible) for uploaded/cleaned media files, Stripe for billing, and Brevo for transactional email. See `DOCS.md` for the Tigris storage architecture.
 
 ## Key Commands
 
@@ -75,8 +75,9 @@ source/
   apikey_models.go     # APIKey types
   apikey_rate_limiter.go # Per-key rate limiting
 
-  supabase.go          # SupabaseClient (DB + Storage) — uses service role key
+  supabase.go          # SupabaseClient (DB + PDF report Storage) — uses service role key
   supabase_auth.go     # SupabaseAuthClient (Supabase Auth API) — uses anon key
+  tigris.go            # TigrisClient — S3-compatible storage for uploaded/cleaned media files
   supabase_apikeys.go  # API key DB operations
   supabase_billing.go  # Billing DB operations
   cleanup.go           # CleanupScheduler — temp file deletion

@@ -33,7 +33,7 @@ scripts/sync-android.sh      # Build + sync web assets to Android (Capacitor)
 - **Testing**: Vitest 4 (server + browser projects) + Storybook 10 + Playwright E2E
 - **Mobile**: Capacitor 8 (Android)
 - **Build output**: `@sveltejs/adapter-static` (pure SPA, no SSR)
-- **Auth**: JWT in localStorage via backend proxy
+- **Auth**: JWT via backend proxy — access token kept in memory only, refresh token in localStorage (see `TODO(security)` in `auth.svelte.ts` about migrating the refresh token to an HttpOnly cookie)
 - **Shared**: `metacleaner-shared` workspace package (pricing UI shared with metacleaner-web)
 
 ## Project Structure
