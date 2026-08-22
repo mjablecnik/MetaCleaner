@@ -25,6 +25,5 @@ a shared library, a CLI, and a Go backend.
 - **`.agents/AGENT_NOTES.md`** — cross-project test gotchas, review checklist (i18n, invalidate/depends,
   runtime Tailwind classes, SSR `window` guards) and process notes. Read before writing tests / i18n / code review.
 - **`.agents/MEMORY.md`** — full history of specific problems and fixes (with line numbers).
-- **`.agents/POST_RESTART_CHECKLIST.md`** — environment verification after a restart (bun, Playwright browsers, system libraries).
 
 Each package has its own `CLAUDE.md` with project-specific details.

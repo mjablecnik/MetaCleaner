@@ -22,7 +22,6 @@ Packages in this repo:
 - **Playwright browsers** live in `/opt/playwright-browsers` → run tests with `PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers`. If that path is read-only, install into `~/.playwright-browsers` and export that path.
 - **System libraries for Chromium** (`libnspr4` etc.): `npx playwright install-deps chromium` (root). Without them, browser/storybook tests fail with `libnspr4.so: cannot open shared object file` — server-only tests (`bun run test`) still run.
 - **Go backend** requires `exiftool` + `ffmpeg` in PATH to run locally.
-- After an environment restart, go through `.agents/POST_RESTART_CHECKLIST.md`.
 
 ## 2) Test tooling — recurring gotchas
 
